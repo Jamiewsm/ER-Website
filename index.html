@@ -521,15 +521,15 @@
                         <div class="grid grid-cols-1 gap-10 md:grid-cols-3 lg:gap-8 fade-in">
                             <div class="space-y-4 text-center">
                                 <div class="mx-auto h-28 w-28 rounded-full bg-gray-200 flex items-center justify-center text-xl text-gray-400">Coach A</div>
-                                <div class="space-y-1"><h3 class="text-lg font-bold"> 초윤 코치</h3><p class="text-er-accent text-sm">가정 사역 전문</p><p class="text-xs text-gray-500 mt-2">부부/자녀 관계 워크숍 전문</p></div>
+                                <div class="space-y-1"><h3 class="text-lg font-bold"> 초윤 코치</h3><p class="text-er-accent text-sm">가정/부부 코칭 </p><p class="text-xs text-gray-500 mt-2">부부/자녀 관계 워크숍 전문</p></div>
                             </div>
                             <div class="space-y-4 text-center">
                                 <div class="mx-auto h-28 w-28 rounded-full bg-gray-200 flex items-center justify-center text-xl text-gray-400">Coach B</div>
-                                <div class="space-y-1"><h3 class="text-lg font-bold">수잔 코치</h3><p class="text-er-accent text-sm">비즈니스 코칭 전문</p><p class="text-xs text-gray-500 mt-2">조직 갈등 관리 및 리더십</p></div>
+                                <div class="space-y-1"><h3 class="text-lg font-bold">수잔 코치</h3><p class="text-er-accent text-sm">비즈니스/팀 코칭 </p><p class="text-xs text-gray-500 mt-2">조직 갈등 관리 및 리더십</p></div>
                             </div>
                             <div class="space-y-4 text-center">
                                 <div class="mx-auto h-28 w-28 rounded-full bg-gray-200 flex items-center justify-center text-xl text-gray-400">Coach C</div>
-                                <div class="space-y-1"><h3 class="text-lg font-bold">다영 코치</h3><p class="text-er-accent text-sm">영성 지도 및 수퍼비전</p><p class="text-xs text-gray-500 mt-2">목회자 번아웃 상담</p></div>
+                                <div class="space-y-1"><h3 class="text-lg font-bold">다영 코치</h3><p class="text-er-accent text-sm">교회/사역자 코칭 </p><p class="text-xs text-gray-500 mt-2">목회자 번아웃 상담</p></div>
                             </div>
                         </div>
                     </div>
@@ -712,7 +712,7 @@
                 cardsHtml = `${createProgramCard('HR', '강점 기반 채용/배치', '구성원의 성격 유형에 따른 직무 적합성을 분석하여 최적의 팀을 구성합니다.', 'fas fa-briefcase')}${createProgramCard('소통', '조직 내 소통/갈등 해결', '성격 유형별 의사소통 방식을 이해하여 갈등을 줄이고 협업을 증진합니다.', 'fas fa-handshake')}${createProgramCard('팀빌딩', '팀 시너지 워크숍', '서로의 다름을 시너지로 바꾸는 체험형 팀빌딩 프로그램입니다.', 'fas fa-layer-group')}`;
             } else if (filterType === 'training') {
                 introHtml = `<h3 class="text-xl font-bold text-er-primary mb-2">에니어그램 전문가 양성</h3><p class="text-gray-600 break-keep">에니어그램의 지혜를 깊이 있게 배우고, 타인을 돕는 전문가로 성장하는 과정입니다.</p>`;
-                cardsHtml = `${createProgramCard('자격증', '전문 강사 양성반 (8주)', '에니어그램 이론과 실제, 강의 스킬을 습득하는 전문가 과정입니다.', 'fas fa-chalkboard')}${createProgramCard('심화', '심화 스터디 그룹', '유형별 심층 탐구 및 임상 사례 연구를 진행합니다.', 'fas fa-book-reader')}${createProgramCard('멘토링', '수퍼비전 (Supervision)', '상담 사례에 대한 전문가의 피드백과 지도를 받습니다.', 'fas fa-user-md')}`;
+                cardsHtml = `${createProgramCard('자격증', '전문 강사 양성반 (8주)', '에니어그램 이론과 실제, 강의 스킬을 습득하는 전문가 과정입니다.', 'fas fa-chalkboard')}${createProgramCard('심화', '심화 스터디 그룹', '유형별 심층 탐구 및 임상 사례 연구를 진행합니다.', 'fas fa-book-reader')}${createProgramCard('멘토링', '인턴쉽 (Practicum)', '상담 사례에 대한 전문가의 피드백과 지도를 받습니다.', 'fas fa-user-md')}`;
             }
             introEl.innerHTML = introHtml;
             cardsEl.innerHTML = cardsHtml;
