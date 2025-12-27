@@ -62,10 +62,20 @@
     <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-er-primary/10 transition-all">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
-                <!-- Logo -->
+               <!-- Logo -->
                 <div class="flex items-center">
                     <a href="#" onclick="renderSection('home')" class="text-xl sm:text-2xl font-bold text-er-dark tracking-tighter flex items-center gap-2">
-                        ER <span class="hidden sm:inline text-xs font-normal text-er-primary">Enneagram for Restoration</span>
+                        <!-- ER 텍스트 대신 로고 -->
+                            <img 
+                                src="ER-Logo.png"
+                                alt="ER Logo"
+                                class="h-8 sm:h-9 w-auto"
+                            /> 
+        
+                    <!-- 원래 있던 글씨체/색/스타일 그대로 유지 -->
+                            <span class="hidden sm:inline text-xs font-normal text-er-primary">
+                                  Enneagram for Restoration
+                            </span>
                     </a>
                 </div>
                 
@@ -116,7 +126,14 @@
     <footer class="bg-white border-t border-gray-200 mt-auto py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
             <div>
-                <h3 class="text-lg font-bold text-er-dark mb-4">ER (Enneagram for Restoration)</h3>
+                <a href="#" onclick="renderSection('home')" class="inline-flex justify-center md:justify-start mb-4">
+                    <img 
+                      src="ER-Logo.png"
+                        alt="ER Enneagram for Restoration"
+                        class="h-10 w-auto opacity-90 hover:opacity-100 transition"
+                    >
+                </a>    
+
                 <p class="text-sm text-gray-500 leading-relaxed">
                     본 단체는 비영리 목적으로 운영됩니다.<br>
                     나의 Original Design을 회복하고,<br>
@@ -134,7 +151,18 @@
             <div>
                 <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Partners</h4>
                 <div class="flex justify-center md:justify-start space-x-4 items-center">
-                    <span class="text-gray-400 font-serif text-lg border border-gray-300 px-2 py-1 rounded">SOIM</span>
+                    <a 
+                        href="https://www.soim.online/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center opacity-80 hover:opacity-100 transition"
+                    >
+                        <img
+                        src="SOIM-Logo.png"
+                        alt="SOIM"
+                        class="h-10 w-auto"
+                        >
+                    </a>
                     <span class="text-gray-400 font-serif text-lg border border-gray-300 px-2 py-1 rounded">IEA</span>
                 </div>
             </div>
