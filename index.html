@@ -76,10 +76,10 @@
                     <button onclick="renderSection('community')" class="text-gray-500 hover:text-er-accent px-3 py-2 text-sm font-medium transition-colors">Stories</button>
                     <button onclick="renderSection('resources')" class="text-gray-500 hover:text-er-accent px-3 py-2 text-sm font-medium transition-colors">Resources</button>
                     
-                    <!-- Donate Button -->
+                    <!-- Donate Button 
                     <button onclick="renderSection('donate')" class="text-er-heart hover:bg-red-50 px-3 py-2 text-sm font-bold transition-colors border border-er-heart/30 rounded-full flex items-center gap-1">
                         <i class="fas fa-heart text-xs"></i> 후원하기
-                    </button>
+                    </button> -->
 
                     <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-5 py-2 rounded-full text-sm font-bold shadow-md transition-transform hover:-translate-y-0.5">상담 문의</button>
                     <button onclick="toggleLogin()" class="text-gray-400 hover:text-er-dark"><i class="fas fa-user-circle text-xl"></i></button>
@@ -517,7 +517,8 @@
             return html;
         }
 
-        function renderDonate() {
+         // 후원버튼 주석처리
+    /* function renderDonate() {
             return `
                 <div class="bg-white min-h-screen">
                     <div class="bg-er-base py-16 px-4 sm:px-6 lg:px-8 text-center">
@@ -599,6 +600,7 @@
                 </div>
             `;
         }
+    */
 
         function renderPrograms() {
             return `
@@ -749,7 +751,7 @@
                 </div>
             `;
         }
-        
+
         function updateProgramView(filterType) {
             state.programFilter = filterType;
             ['individual', 'church', 'business', 'training'].forEach(type => {
