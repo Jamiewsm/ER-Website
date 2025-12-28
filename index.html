@@ -336,7 +336,7 @@
                                         <canvas id="heroChart"></canvas>
                                     </div>
                                     <div class="text-center mt-4">
-                                        <p class="text-sm text-gray-500 font-medium">"모든 성격에는 고유한 빛깔이 있습니다"</p>
+                                        <p class="text-sm text-gray-500 font-medium">"에니어그램을 통해 관계가 회복되고, 팀이 살아납니다"</p>
                                     </div>
                                 </div>
                             </div>
@@ -1066,7 +1066,13 @@
                                 padding: 12,
                                 cornerRadius: 8,
                                 titleFont: { size: 14, weight: 'bold' },
-                                bodyFont: { size: 12 }
+                                bodyFont: { size: 12 },
+                                callbacks: {
+                                    // 제목(타이틀)에 label만 표시
+                                    title: (items) => items[0].label,
+                                    // 본문(body)은 아예 비워서 ":8" 같은 숫자 제거
+                                    label: () => ''
+                                }
                             }
                         }, 
                         scales: { 
