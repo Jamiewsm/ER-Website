@@ -3,10 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ER - Enneagram For Restoration: 나를 찾고 공동체를 치유하는 회복의 여정">
     <title>ER - Enneagram For Restoration</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts: Pretendard -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
         tailwind.config = {
@@ -14,80 +21,124 @@
                 extend: {
                     colors: {
                         er: {
-                            base: '#f5f5f0',
-                            primary: '#8c8680',
-                            accent: '#bfa68a',
-                            dark: '#4a4540',
-                            light: '#ffffff',
-                            heart: '#e57373' 
+                            base: '#FDFBF7',      /* 더 따뜻하고 밝은 배경색 */
+                            surface: '#F5F5F0',   /* 카드 배경 등 */
+                            primary: '#8C8680',   /* 본문 텍스트, 중간 톤 */
+                            accent: '#BFA68A',    /* 포인트 컬러 (금색/베이지) */
+                            accentDark: '#A38B70',/* 포인트 호버 */
+                            dark: '#2C2A29',      /* 진한 제목 텍스트 (완전 블랙 아님) */
+                            muted: '#9CA3AF',
+                            heart: '#D97777' 
                         }
                     },
                     fontFamily: {
-                        sans: ['Pretendard', 'Malgun Gothic', 'Dotum', 'sans-serif'],
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                        serif: ['Times New Roman', 'serif'] /* 영문 포인트용 */
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 10px 30px -5px rgba(0, 0, 0, 0.08)',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #FDFBF7;
+            color: #2C2A29;
+        }
         
+        /* Smooth Scrolling */
+        html { scroll-behavior: smooth; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
-            height: 250px;
+            height: 300px;
             margin: 0 auto;
         }
         @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
+            .chart-container { height: 400px; }
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
+        /* Hero Background Pattern */
+        .bg-pattern {
+            background-image: radial-gradient(#BFA68A 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.15;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-er-base text-er-dark antialiased selection:bg-er-accent selection:text-white">
+<body class="antialiased selection:bg-er-accent selection:text-white flex flex-col min-h-screen">
 
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-er-primary/10 transition-all">
+    <nav class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-lg border-b border-er-primary/10" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex justify-between h-20 items-center">
                <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="#" onclick="renderSection('home')" class="text-xl sm:text-2xl font-bold text-er-dark tracking-tighter flex items-center gap-2">
-                        ER <span class="hidden sm:inline text-xs font-normal text-er-primary">Enneagram for Restoration</span>
-                    </a>
+                <div class="flex items-center cursor-pointer group" onclick="renderSection('home')">
+                    <div class="w-10 h-10 bg-er-dark text-white rounded-full flex items-center justify-center font-serif font-bold text-xl mr-3 group-hover:scale-105 transition-transform duration-300">E</div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold text-er-dark tracking-tight leading-none">ER</span>
+                        <span class="text-[10px] uppercase tracking-widest text-er-primary font-medium mt-0.5">Enneagram for Restoration</span>
+                    </div>
                 </div>
                 
                 <!-- Desktop Menu -->
-                <div class="hidden md:flex space-x-6 items-center">
-                    <button onclick="renderSection('about')" class="text-gray-500 hover:text-er-accent px-3 py-2 text-sm font-medium transition-colors">About</button>
-                    <button onclick="renderSection('programs')" class="text-gray-500 hover:text-er-accent px-3 py-2 text-sm font-medium transition-colors">Programs</button>
-                    <button onclick="renderSection('community')" class="text-gray-500 hover:text-er-accent px-3 py-2 text-sm font-medium transition-colors">Stories</button>
-                    <button onclick="renderSection('resources')" class="text-gray-500 hover:text-er-accent px-3 py-2 text-sm font-medium transition-colors">Resources</button>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group">
+                        About
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                    </button>
+                    <button onclick="renderSection('programs')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group">
+                        Programs
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                    </button>
+                    <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group">
+                        Stories
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                    </button>
+                    <button onclick="renderSection('resources')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group">
+                        Resources
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                    </button>
                     
-                    <!-- Donate Button 
-                    <button onclick="renderSection('donate')" class="text-er-heart hover:bg-red-50 px-3 py-2 text-sm font-bold transition-colors border border-er-heart/30 rounded-full flex items-center gap-1">
-                        <i class="fas fa-heart text-xs"></i> 후원하기
-                    </button> -->
+                    <div class="h-4 w-px bg-gray-300 mx-2"></div>
 
-                    <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-5 py-2 rounded-full text-sm font-bold shadow-md transition-transform hover:-translate-y-0.5">상담 문의</button>
-                    <button onclick="toggleLogin()" class="text-gray-400 hover:text-er-dark"><i class="fas fa-user-circle text-xl"></i></button>
+                    <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-gray-200 hover:shadow-xl transition-all hover:-translate-y-0.5">
+                        상담 문의
+                    </button>
+                    <!-- Login Placeholder -->
+                    <button onclick="toggleLogin()" class="text-gray-400 hover:text-er-dark transition-colors">
+                        <i class="far fa-user text-lg"></i>
+                    </button>
                 </div>
                 
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center">
-                    <button onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none">
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -95,74 +146,75 @@
         </div>
         
         <!-- Mobile Dropdown Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-100 absolute w-full shadow-lg z-50">
-            <div class="px-4 pt-2 pb-4 space-y-2">
-                <button onclick="renderSection('about')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-lg">About ER</button>
-                <button onclick="renderSection('programs')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-lg">Programs</button>
-                <button onclick="renderSection('community')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-lg">Stories</button>
-                <button onclick="renderSection('resources')" class="block w-full text-left px-3 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 rounded-lg">Resources</button>
-                <button onclick="renderSection('donate')" class="block w-full text-left px-3 py-3 text-base font-bold text-er-heart hover:bg-red-50 rounded-lg"><i class="fas fa-heart mr-2"></i>후원하기</button>
-                <button onclick="renderSection('apply')" class="block w-full text-left px-3 py-3 text-base font-bold text-er-accent bg-er-base/50 rounded-lg mt-2">상담/강의 문의하기</button>
+        <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-white border-b border-gray-100 shadow-xl z-40 animate-fade-in">
+            <div class="px-4 py-6 space-y-3">
+                <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-er-dark rounded-xl transition-colors">About ER</button>
+                <button onclick="renderSection('programs')" class="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-er-dark rounded-xl transition-colors">Programs</button>
+                <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-er-dark rounded-xl transition-colors">Stories</button>
+                <button onclick="renderSection('resources')" class="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-er-dark rounded-xl transition-colors">Resources</button>
+                <div class="h-px bg-gray-100 my-2"></div>
+                <button onclick="renderSection('apply')" class="block w-full text-center px-4 py-3 text-base font-bold text-white bg-er-dark hover:bg-gray-800 rounded-xl mt-2 shadow-md">상담/강의 문의하기</button>
             </div>
         </div>
     </nav>
 
     <!-- Main Content Area -->
-    <main id="main-content" class="min-h-screen pb-10">
+    <main id="main-content" class="flex-grow pt-20">
         <!-- Dynamic content injected here -->
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-auto py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
-            <div>
-                <a href="#" onclick="renderSection('home')" class="inline-flex justify-center md:justify-start mb-4">
-                    <h3 class="text-lg font-bold text-er-dark mb-4">ER (Enneagram for Restoration)</h3>
-                </a>    
-
-                <p class="text-sm text-gray-500 leading-relaxed">
-                    본 단체는 비영리 목적으로 운영됩니다.<br>
-                    나의 Original Design을 회복하고,<br>
-                    공동체를 치유하는 여정에 함께합니다.
-                </p>
-            </div>
-            <div>
-                <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Contact</h4>
-                <ul class="space-y-2 text-sm text-gray-500">
-                    <li><i class="far fa-envelope w-5"></i> restoration.son@gmail.com</li>
-                    <li><i class="fas fa-map-marker-alt w-5"></i> Korea | USA (Non-profit)</li>
-                    <li><i class="far fa-clock w-5"></i> Mon-Fri 10:00 - 17:00 (EST)</li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Partners</h4>
-                <div class="flex justify-center md:justify-start space-x-4 items-center">
-                    <a 
-                        href="https://www.soim.online/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="inline-flex items-center opacity-80 hover:opacity-100 transition"
-                    >
-                        <img
-                        src="SOIM-Logo.png"
-                        alt="SOIM"
-                        class="h-10 w-auto"
-                        >
-                    </a>
-                    <span class="text-gray-400 font-serif text-lg border border-gray-300 px-2 py-1 rounded">IEA</span>
+    <footer class="bg-white border-t border-er-primary/10 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
+                <div class="md:col-span-5 space-y-6">
+                    <a href="#" onclick="renderSection('home')" class="inline-flex items-center gap-2">
+                        <div class="w-8 h-8 bg-er-dark text-white rounded-full flex items-center justify-center font-serif font-bold text-sm">E</div>
+                        <span class="text-lg font-bold text-er-dark">ER</span>
+                    </a>    
+                    <p class="text-sm text-gray-500 leading-7 max-w-sm">
+                        Original Design을 회복하고 공동체를 치유하는 여정.<br>
+                        기독교 세계관과 에니어그램의 통합적 접근을 통해<br>
+                        나 자신을 이해하고 사랑하는 법을 배웁니다.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-er-accent hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-er-accent hover:text-white transition-colors"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-3">
+                    <h4 class="text-sm font-bold text-er-dark uppercase tracking-wider mb-6">Contact</h4>
+                    <ul class="space-y-4 text-sm text-gray-500">
+                        <li class="flex items-center gap-3"><i class="far fa-envelope text-er-accent"></i> restoration.son@gmail.com</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-map-marker-alt text-er-accent"></i> Korea | USA (Non-profit)</li>
+                        <li class="flex items-center gap-3"><i class="far fa-clock text-er-accent"></i> Mon-Fri 10:00 - 17:00 (EST)</li>
+                    </ul>
+                </div>
+                
+                <div class="md:col-span-4">
+                    <h4 class="text-sm font-bold text-er-dark uppercase tracking-wider mb-6">Partnership</h4>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                            <img src="SOIM-Logo.png" alt="SOIM" class="h-8 w-auto opacity-80 grayscale hover:grayscale-0 transition-all" onerror="this.style.display='none'">
+                            <span class="text-gray-400 font-serif text-xl font-bold tracking-widest opacity-50">IEA</span>
+                            <span class="text-xs text-gray-400 ml-auto">Certified<br>Professional</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-gray-100 text-center text-xs text-gray-400">
-            &copy; 2025 ER. All rights reserved. Currently operating as a pilot non-profit program.
+            
+            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
+                <p>&copy; 2025 ER (Enneagram for Restoration). All rights reserved.</p>
+                <p class="mt-2 md:mt-0">Operating as a pilot non-profit program.</p>
+            </div>
         </div>
     </footer>
 
     <!-- Global State & Logic -->
     <script>
-        // 전역 변수
+        // --- State Management ---
         let submitted = false;
-
         const state = {
             currentSection: 'home',
             user: null, 
@@ -182,20 +234,23 @@
                 ]
             },
             types: {
-                labels: ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 효율적인 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 명령한 사람', '8번 강한 사람', '9번 조화로운 사람'],
+                labels: ['1. Reformer', '2. Helper', '3. Achiever', '4. Individualist', '5. Investigator', '6. Loyalist', '7. Enthusiast', '8. Challenger', '9. Peacemaker'],
                 data: [8, 9, 8, 7, 6, 8, 7, 8, 9] 
             }
         };
 
+        // --- Core Functions ---
         function renderSection(sectionId) {
             state.currentSection = sectionId;
             const main = document.getElementById('main-content');
             
+            // Close mobile menu if open
             document.getElementById('mobile-menu').classList.add('hidden');
-            window.scrollTo(0,0);
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
             let html = '';
-
             switch(sectionId) {
                 case 'home': html = renderHome(); break;
                 case 'about': html = renderAbout(); break;
@@ -204,153 +259,319 @@
                 case 'resources': html = renderResources(); break;
                 case 'types_guide': html = renderTypesGuide(); break; 
                 case 'apply': html = renderApply(); break;
-                case 'donate': html = renderDonate(); break; 
-                case 'thankyou': html = renderThankYou(); break;
                 case 'mypage': html = renderMyPage(); break;
+                case 'thankyou': html = renderThankYou(); break;
                 default: html = renderHome();
             }
 
             main.innerHTML = html;
             
-            if(sectionId === 'home' || sectionId === 'community') {
-                initCharts(sectionId);
-            }
-            if(sectionId === 'programs') {
-                updateProgramView(state.programFilter);
-            }
+            // Post-render actions
+            if(sectionId === 'home') initCharts('home');
+            if(sectionId === 'community') initCharts('community');
+            if(sectionId === 'programs') updateProgramView(state.programFilter);
         }
 
-        // --- Render Functions ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- View Components (Renderers) ---
 
         function renderHome() {
             return `
-                <div class="relative bg-er-base overflow-hidden">
-                    <div class="max-w-7xl mx-auto">
-                        <div class="relative z-10 pb-8 bg-er-base sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-                            <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-                                <div class="text-center lg:text-left fade-in">
-                                    <span class="inline-block py-1 px-3 rounded-full bg-er-accent/20 text-er-dark text-xs font-semibold tracking-wide uppercase mb-4">Non-profit Organization</span>
-                                    <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl break-keep">
-                                        <span class="block xl:inline">Original Design을</span>
-                                        <span class="block text-er-accent xl:inline">발견하고 회복합니다</span>
-                                    </h1>
-                                    <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0 break-keep">
-                                        기독교 세계관과 에니어그램의 통합적 접근을 통해
-                                        나 자신을 이해하고, 가정과 공동체를 치유하는
-                                        회복의 여정에 당신을 초대합니다.
-                                    </p>
-                                    <div class="mt-8 sm:mt-8 sm:flex sm:justify-center lg:justify-start gap-3">
-                                        <div class="rounded-md shadow">
-                                            <button onclick="renderSection('programs')" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-er-dark hover:bg-gray-800 md:py-4 md:text-lg md:px-10">
-                                                프로그램 보기
-                                            </button>
-                                        </div>
-                                        <div class="mt-3 sm:mt-0">
-                                            <button onclick="renderSection('apply')" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-er-dark bg-er-accent/20 hover:bg-er-accent/30 md:py-4 md:text-lg md:px-10">
-                                                예약 문의하기
-                                            </button>
-                                        </div>
+                <div class="relative overflow-hidden">
+                    <div class="absolute inset-0 bg-pattern z-0"></div>
+                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-er-accent/10 rounded-full blur-3xl z-0"></div>
+                    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-gray-200/50 rounded-full blur-3xl z-0"></div>
+
+                    <div class="max-w-7xl mx-auto pt-16 pb-20 px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+                            <!-- Text Content -->
+                            <div class="text-center lg:text-left animate-fade-in-up">
+                                <span class="inline-block py-1.5 px-4 rounded-full bg-white border border-er-accent/30 text-er-dark text-xs font-bold tracking-widest uppercase mb-6 shadow-sm">
+                                    Non-profit Organization
+                                </span>
+                                <h1 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight font-extrabold text-er-dark mb-6 leading-tight break-keep">
+                                    Original Design을<br>
+                                    <span class="text-er-accent relative whitespace-nowrap">
+                                        발견하고 회복합니다
+                                        <svg class="absolute w-full h-3 -bottom-1 left-0 text-er-accent/20" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" /></svg>
+                                    </span>
+                                </h1>
+                                <p class="mt-4 text-lg text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 break-keep">
+                                    기독교 세계관과 에니어그램의 통합적 접근을 통해<br class="hidden sm:block">
+                                    나 자신을 있는 그대로 이해하고, 가정과 공동체를<br class="hidden sm:block">
+                                    건강하게 치유하는 회복의 여정에 당신을 초대합니다.
+                                </p>
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                    <button onclick="renderSection('programs')" class="px-8 py-4 bg-er-dark text-white rounded-full font-bold shadow-soft hover:shadow-card hover:-translate-y-1 transition-all">
+                                        프로그램 살펴보기
+                                    </button>
+                                    <button onclick="renderSection('apply')" class="px-8 py-4 bg-white text-er-dark border border-gray-200 rounded-full font-bold shadow-sm hover:bg-gray-50 hover:border-er-accent transition-all">
+                                        상담/문의하기
+                                    </button>
+                                </div>
+                                <div class="mt-10 flex items-center justify-center lg:justify-start gap-6 text-sm text-gray-400 font-medium">
+                                    <div class="flex items-center gap-2"><i class="fas fa-check text-er-accent"></i> 전문 자격 코치진</div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check text-er-accent"></i> 1:1 맞춤형 케어</div>
+                                </div>
+                            </div>
+
+                            <!-- Hero Visual (Chart) -->
+                            <div class="relative lg:h-[600px] flex items-center justify-center animate-fade-in" style="animation-delay: 0.2s;">
+                                <div class="relative w-full max-w-md bg-white/60 backdrop-blur-sm rounded-3xl p-6 border border-white shadow-card">
+                                    <div class="absolute -top-4 -right-4 w-20 h-20 bg-er-accent rounded-full flex items-center justify-center text-white font-bold shadow-lg z-20 animate-bounce" style="animation-duration: 3s;">
+                                        <div class="text-center text-xs leading-tight">9가지<br>유형</div>
+                                    </div>
+                                    <div class="chart-container">
+                                        <canvas id="heroChart"></canvas>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <p class="text-sm text-gray-500 font-medium">"모든 성격에는 고유한 빛깔이 있습니다"</p>
                                     </div>
                                 </div>
-                            </main>
-                        </div>
-                    </div>
-                    <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gray-100 flex items-center justify-center overflow-hidden py-10 lg:py-0">
-                        <div class="chart-container">
-                            <canvas id="heroChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
         }
 
-        // Updated About Section with new CV data and Coaches list
         function renderAbout() {
             return `
-                <div class="bg-white py-12 px-4 sm:px-6 lg:px-8">
+                <div class="py-20 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
                     <div class="max-w-7xl mx-auto">
-                        <div class="text-center mb-12 fade-in">
-                            <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl mb-4">Vision & Mission</h2>
-                            <p class="max-w-2xl mx-auto text-lg md:text-xl text-gray-500 break-keep">"나의 Original Design을 발견하고 회복한다.<br>또한 타인을 이해하고 품어 공동체를 회복한다."</p>
+                        <!-- Vision Section -->
+                        <div class="text-center mb-20 animate-fade-in-up">
+                            <h2 class="text-er-accent font-serif italic text-xl mb-3">Vision & Mission</h2>
+                            <h3 class="text-3xl md:text-4xl font-bold text-er-dark mb-6 break-keep">"나의 Original Design을 찾고,<br>우리를 회복시킵니다."</h3>
+                            <div class="w-16 h-1 bg-er-accent mx-auto rounded-full"></div>
                         </div>
-                        <div class="lg:grid lg:grid-cols-2 lg:gap-8 items-center mb-16 bg-er-base rounded-2xl p-6 md:p-12 fade-in">
-                            <div class="mb-8 lg:mb-0 text-center lg:text-left">
-                                <div class="w-40 h-40 mx-auto lg:mx-0 mb-6 rounded-full overflow-hidden">
-                                    <img
-                                        src="son-profile-picture.png"
-                                        alt="Jiyoung Son – Founder & Coach"
-                                        class="w-full h-full object-cover"
-                                    >                       
+
+                        <!-- Founder Profile -->
+                        <div class="bg-er-base rounded-3xl p-8 md:p-12 shadow-soft mb-20 animate-fade-in-up" style="animation-delay: 0.1s;">
+                            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                                <div class="w-full lg:w-1/3 relative group">
+                                    <div class="aspect-[3/4] rounded-2xl overflow-hidden shadow-lg relative z-10 bg-gray-200">
+                                        <img src="son-profile-picture.png" alt="Jiyoung Son" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://via.placeholder.com/400x500?text=Founder+Image'">
+                                    </div>
+                                    <!-- Decorative border -->
+                                    <div class="absolute top-4 -left-4 w-full h-full border-2 border-er-accent/30 rounded-2xl z-0"></div>
                                 </div>
+                                
+                                <div class="w-full lg:w-2/3">
+                                    <div class="mb-6">
+                                        <span class="text-er-accent font-bold tracking-widest text-xs uppercase mb-2 block">Founder & Head Coach</span>
+                                        <h2 class="text-3xl font-bold text-er-dark mb-2">손지영 <span class="text-lg text-gray-500 font-normal ml-2">Jiyoung Son</span></h2>
+                                    </div>
+                                    
+                                    <p class="text-gray-600 leading-relaxed mb-8 text-lg break-keep">
+                                        "진정한 회복은 나를 있는 그대로 바라보는 용기에서 시작됩니다.<br>
+                                        내 안의 깊은 동기를 이해할 때, 비로소 나와 타인을 향한 긍휼이 싹틉니다."
+                                    </p>
 
-
-                                <h3 class="text-2xl font-bold text-gray-900">손지영 | Jiyoung Son </h3>
-                                <p class="text-er-accent font-semibold mb-4">Founder & Coach</p>
-
-                                <!-- IEA Certified Badge 혀용 안함
-                                    <div class="mt-3 flex justify-center lg:justify-start">
-                                         <img
-                                            src="IEA-Certificate.png"
-                                            alt="IEA Certified Advanced Instructor"
-                                            class="w-20 h-20 object-contain"
-                                            loading="lazy"
-                                        >
-                                    </div> -->
+                                    <div class="space-y-4">
+                                        <div class="flex items-start gap-4 p-4 bg-white rounded-xl border border-er-primary/10 shadow-sm">
+                                            <div class="bg-er-base p-2 rounded-full text-er-accent"><i class="fas fa-certificate"></i></div>
+                                            <div>
+                                                <h4 class="font-bold text-er-dark">Enneagram Spectrum Advanced Certification</h4>
+                                                <p class="text-sm text-gray-500">Dr. Wagner (International Enneagram Association)</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-4 p-4 bg-white rounded-xl border border-er-primary/10 shadow-sm">
+                                            <div class="bg-er-base p-2 rounded-full text-er-accent"><i class="fas fa-check-circle"></i></div>
+                                            <div>
+                                                <h4 class="font-bold text-er-dark">IEA Accredited Professional</h4>
+                                                <p class="text-sm text-gray-500">국제 에니어그램 협회 인증 전문가</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-4 p-4 bg-white rounded-xl border border-er-primary/10 shadow-sm">
+                                            <div class="bg-er-base p-2 rounded-full text-er-accent"><i class="fas fa-graduation-cap"></i></div>
+                                            <div>
+                                                <h4 class="font-bold text-er-dark">Dallas Theological Seminary (DTS)</h4>
+                                                <p class="text-sm text-gray-500">상담학 석사 과정 중</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <ul class="space-y-4 text-gray-600 text-sm md:text-base">
-                                    <li class="flex items-start"><i class="fas fa-certificate text-er-accent mt-1 mr-3 flex-shrink-0"></i><span>Enneagram Spectrum(Dr. Wagner) Advanced Certification</span></li>
-                                    <li class="flex items-start"><i class="fas fa-check text-er-accent mt-1 mr-3 flex-shrink-0"></i><span>IEA(국제에니어그램협회) Accredited Professional</span></li>
-                                    <li class="flex items-start"><i class="fas fa-globe text-er-accent mt-1 mr-3 flex-shrink-0"></i><span>SOIM Global Leadership Certified Instructor</span></li>
-                                    <li class="flex items-start"><i class="fas fa-graduation-cap text-er-accent mt-1 mr-3 flex-shrink-0"></i><span>Dallas Theological Seminary (DTS) 상담학 석사 과정중</span></li>
-                                </ul>
-                                <blockquote class="mt-8 border-l-4 border-er-accent pl-4 italic text-gray-500 text-sm md:text-base break-keep">"진정한 회복은 나를 있는 그대로 바라보는 용기에서 시작됩니다."</blockquote>
+                        </div>
+
+                        <!-- Coaches Grid -->
+                        <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
+                            <h3 class="text-2xl font-bold text-center text-er-dark mb-10">함께하는 전문 코치진</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                ${['김수잔', '서초윤', '정익훈', '정경하', '주찬미', '임효조', '최다영'].map(name => `
+                                    <div class="group bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-card hover:-translate-y-1 transition-all duration-300">
+                                        <div class="w-16 h-16 mx-auto bg-gray-50 rounded-full flex items-center justify-center text-xl font-bold text-gray-400 mb-4 group-hover:bg-er-accent group-hover:text-white transition-colors">
+                                            ${name.substring(0,1)}
+                                        </div>
+                                        <h4 class="font-bold text-gray-900">${name}</h4>
+                                        <p class="text-xs text-er-accent mt-1">Coach</p>
+                                    </div>
+                                `).join('')}
+                                <div class="bg-gray-50 rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-dashed border-gray-300">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-gray-300 mb-3"><i class="fas fa-plus"></i></div>
+                                    <p class="text-xs text-gray-500">전문가 양성과정<br>모집 중</p>
+                                </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPrograms() {
+            return `
+                <div class="bg-er-base min-h-screen">
+                    <div class="bg-er-dark text-white py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-pattern opacity-5"></div>
+                        <div class="relative z-10 max-w-7xl mx-auto text-center">
+                            <h2 class="text-3xl sm:text-4xl font-bold mb-4">맞춤형 프로그램</h2>
+                            <p class="text-gray-300 text-lg max-w-2xl mx-auto">개인의 회복에서 공동체의 성장까지,<br>가장 적합한 솔루션을 제안합니다.</p>
+                            
+                            <!-- Tab Navigation -->
+                            <div class="mt-10 inline-flex flex-wrap justify-center gap-2 bg-white/10 p-1.5 rounded-full backdrop-blur-sm">
+                                ${['individual:개인/가정', 'church:사역/교회', 'business:비즈니스', 'training:강사양성'].map(item => {
+                                    const [key, label] = item.split(':');
+                                    const isActive = state.programFilter === key;
+                                    return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
+                                        class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${isActive ? 'bg-white text-er-dark shadow-md' : 'text-gray-300 hover:text-white hover:bg-white/5'}">
+                                        ${label}
+                                    </button>`
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 pb-20">
+                        <div id="program-intro" class="mb-8 text-center bg-white rounded-2xl p-8 shadow-soft max-w-3xl mx-auto border border-gray-100 animate-fade-in-up">
+                            <!-- Intro text injected by JS -->
                         </div>
                         
-                        <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">함께하는 코치진</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 fade-in">
-                            <!-- Coach 1 -->
-                            <div class="bg-gray-50 rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-                                <div class="mx-auto h-20 w-20 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl text-er-primary mb-3">수</div>
-                                <h3 class="font-bold text-gray-900">김수잔</h3>
-                                <p class="text-xs text-gray-500 mt-1">Coach in Training</p>
+                        <div id="program-cards" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <!-- Cards injected by JS -->
+                        </div>
+
+                        <!-- Process Section -->
+                        <div class="mt-24">
+                            <div class="text-center mb-12">
+                                <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Process</span>
+                                <h3 class="text-2xl font-bold text-er-dark mt-2">어떻게 진행되나요?</h3>
                             </div>
-                            <!-- Coach 2 -->
-                            <div class="bg-gray-50 rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-                                <div class="mx-auto h-20 w-20 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl text-er-primary mb-3">서</div>
-                                <h3 class="font-bold text-gray-900">서초윤</h3>
-                                <p class="text-xs text-gray-500 mt-1">Coach in Training</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 max-w-5xl mx-auto">
+                                <div class="bg-white p-8 rounded-3xl text-center shadow-sm relative group hover:shadow-md transition-all">
+                                    <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-2xl"></i></div>
+                                    <div class="w-14 h-14 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="far fa-file-alt"></i></div>
+                                    <h4 class="font-bold text-lg mb-2">1. 신청서 작성</h4>
+                                    <p class="text-sm text-gray-500">온라인 신청서를 통해<br>현재 상황과 니즈를 파악합니다.</p>
+                                </div>
+                                <div class="bg-white p-8 rounded-3xl text-center shadow-sm relative group hover:shadow-md transition-all">
+                                    <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-2xl"></i></div>
+                                    <div class="w-14 h-14 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="far fa-comments"></i></div>
+                                    <h4 class="font-bold text-lg mb-2">2. 사전 인터뷰</h4>
+                                    <p class="text-sm text-gray-500">코치와 1:1 상담을 통해<br>방향을 설정하고 일정을 조율합니다.</p>
+                                </div>
+                                <div class="bg-white p-8 rounded-3xl text-center shadow-sm group hover:shadow-md transition-all">
+                                    <div class="w-14 h-14 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="fas fa-chalkboard-teacher"></i></div>
+                                    <h4 class="font-bold text-lg mb-2">3. 코칭/강의 진행</h4>
+                                    <p class="text-sm text-gray-500">맞춤형 커리큘럼으로<br>회복의 여정을 시작합니다.</p>
+                                </div>
                             </div>
-                            <!-- Coach 3 -->
-                            <div class="bg-gray-50 rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-                                <div class="mx-auto h-20 w-20 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl text-er-primary mb-3">정</div>
-                                <h3 class="font-bold text-gray-900">정익훈</h3>
-                                <p class="text-xs text-gray-500 mt-1">Coach in Training</p>
+                            <div class="text-center mt-12">
+                                <button onclick="renderSection('apply')" class="bg-er-dark text-white px-10 py-4 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-1 transition-all">
+                                    지금 상담 신청하기
+                                </button>
                             </div>
-                            <!-- Coach 4 -->
-                            <div class="bg-gray-50 rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-                                <div class="mx-auto h-20 w-20 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl text-er-primary mb-3">정</div>
-                                <h3 class="font-bold text-gray-900">정경하</h3>
-                                <p class="text-xs text-gray-500 mt-1">Coach in Training</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCommunity() {
+            return `
+                <div class="bg-white min-h-screen py-20">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="text-center mb-16 animate-fade-in-up">
+                            <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Stories</span>
+                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">회복과 변화의 이야기</h2>
+                            <p class="mt-4 text-gray-500">100건 이상의 임상 경험이 증명하는 ER의 노하우</p>
+                        </div>
+
+                        <div class="grid lg:grid-cols-2 gap-12 mb-20">
+                            <!-- Chart Section -->
+                            <div class="bg-er-base rounded-3xl p-8 shadow-inner animate-fade-in-up">
+                                <h3 class="font-bold text-lg text-gray-800 mb-6 flex items-center gap-2">
+                                    <i class="fas fa-chart-pie text-er-accent"></i> 상담 케이스 분포
+                                </h3>
+                                <div class="chart-container h-64">
+                                    <canvas id="impactChart"></canvas>
+                                </div>
+                                <p class="text-center text-xs text-gray-400 mt-4">* 2024년 기준 누적 데이터</p>
                             </div>
-                            <!-- Coach 5 -->
-                            <div class="bg-gray-50 rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-                                <div class="mx-auto h-20 w-20 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl text-er-primary mb-3">주</div>
-                                <h3 class="font-bold text-gray-900">주찬미</h3>
-                                <p class="text-xs text-gray-500 mt-1">Coach in Training</p>
+
+                            <!-- Testimonials -->
+                            <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.2s;">
+                                <div class="bg-er-dark text-white p-8 rounded-3xl relative overflow-hidden">
+                                    <i class="fas fa-quote-right absolute bottom-4 right-4 text-6xl text-white/5"></i>
+                                    <h4 class="font-bold text-lg mb-3 text-er-accent">왜 효과적인가요?</h4>
+                                    <p class="text-gray-300 leading-relaxed text-sm">
+                                        단순히 성격을 분류하는 것이 아니라, <span class="text-white font-bold underline decoration-er-accent">근본적인 동기(Motivation)</span>를 파악하여 내면의 상처를 치유하기 때문입니다. 기독교적 영성은 이 과정에 깊은 안정감을 더해줍니다.
+                                    </p>
+                                </div>
+
+                                <div class="bg-white border border-gray-100 p-8 rounded-3xl shadow-soft hover:shadow-card transition-all">
+                                    <div class="flex text-er-accent mb-4 text-xs">
+                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                    </div>
+                                    <p class="text-gray-600 italic mb-6 text-sm md:text-base leading-relaxed">
+                                        "남편과 매일 싸우며 이혼까지 생각했습니다. 에니어그램을 통해 남편이 저를 무시한 게 아니라, 불안해서 확인하려 했다는 걸 알게 되었어요. 이제는 서로의 언어로 대화합니다."
+                                    </p>
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-er-accent to-gray-400 flex items-center justify-center text-white font-bold text-xs">JH</div>
+                                        <div>
+                                            <p class="text-sm font-bold text-gray-900">30대 부부</p>
+                                            <p class="text-xs text-gray-400">가정 회복 코칭</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <!-- Coach 6 -->
-                            <div class="bg-gray-50 rounded-lg p-6 text-center hover:shadow-md transition-shadow">
-                                <div class="mx-auto h-20 w-20 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl text-er-primary mb-3">임</div>
-                                <h3 class="font-bold text-gray-900">임효조</h3>
-                                <p class="text-xs text-gray-500 mt-1">Coach in Training</p>
+                        </div>
+
+                        <!-- Gallery & Notice -->
+                        <div class="grid md:grid-cols-3 gap-8 animate-fade-in-up" style="animation-delay: 0.3s;">
+                            <div class="md:col-span-2">
+                                <h3 class="text-xl font-bold text-gray-900 mb-6">Activity Gallery</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    ${[1,2,3,4].map(i => `
+                                        <div class="aspect-square bg-gray-100 rounded-2xl overflow-hidden hover:opacity-90 transition-opacity cursor-pointer relative group">
+                                            <div class="absolute inset-0 bg-er-dark/20 group-hover:bg-transparent transition-all"></div>
+                                            <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">Image ${i}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
                             </div>
-                            <!-- Coach 7 -->
-                            <div class="bg-gray-50 rounded-lg p-6 text-center hover:shadow-md transition-shadow md:col-start-2 lg:col-auto">
-                                <div class="mx-auto h-20 w-20 rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl text-er-primary mb-3">최</div>
-                                <h3 class="font-bold text-gray-900">최다영</h3>
-                                <p class="text-xs text-gray-500 mt-1">Coach in Training</p>
+                            
+                            <div class="bg-gray-50 rounded-3xl p-6 border border-gray-100">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4 flex justify-between items-center">
+                                    공지사항 
+                                    <span class="text-xs font-normal text-gray-400 cursor-pointer">더보기 +</span>
+                                </h3>
+                                <div class="space-y-4">
+                                    <a href="#" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all">
+                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-er-accent/10 text-er-accent mb-1">모집중</span>
+                                        <h4 class="text-sm font-bold text-gray-800 truncate">에니어그램 강사과정 5기 모집</h4>
+                                        <p class="text-xs text-gray-400 mt-1">2025.01.15 마감</p>
+                                    </a>
+                                    <a href="#" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all">
+                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-500 mb-1">안내</span>
+                                        <h4 class="text-sm font-bold text-gray-800 truncate">홈페이지 리뉴얼 안내</h4>
+                                        <p class="text-xs text-gray-400 mt-1">2024.12.20</p>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -360,330 +581,75 @@
 
         function renderResources() {
             return `
-                <div class="bg-er-base min-h-screen py-12">
-                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="text-center mb-10">
-                            <h2 class="text-3xl font-extrabold text-gray-900">자료실 (Resources)</h2>
-                            <p class="mt-4 text-gray-500">회복을 위한 전문 지식과 추천 자료를 확인해보세요.</p>
+                <div class="bg-er-base min-h-screen py-20 px-4">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="text-center mb-16 animate-fade-in-up">
+                            <h2 class="text-3xl font-bold text-gray-900">자료실 (Resources)</h2>
+                            <p class="mt-3 text-gray-500">회복을 위한 전문 지식과 추천 자료를 확인해보세요.</p>
                         </div>
-                        <div class="space-y-6">
+
+                        <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.1s;">
                             
-                            <!-- 9 Types Healing Guide Card (New) -->
-                            <div onclick="renderSection('types_guide')" class="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1 relative overflow-hidden group border-l-4 border-er-accent">
-                                <div class="flex items-center justify-between relative z-10">
-                                    <div class="flex items-start gap-4">
-                                        <div class="bg-er-base p-3 rounded-full">
-                                            <i class="fas fa-fingerprint text-2xl text-er-dark"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="text-xl font-bold text-gray-900">9가지 유형별 회복 가이드</h3>
-                                            <p class="text-gray-600 text-sm mt-2 leading-relaxed">
-                                                단순한 성격 분류를 넘어, 애착 유형(불안형/회피형)에 따른<br class="hidden sm:block">
-                                                각 유형의 고착 상태와 구체적인 치유(Healing) 방법을 소개합니다.
-                                            </p>
-                                        </div>
+                            <!-- Hero Resource Card -->
+                            <div onclick="renderSection('types_guide')" class="group bg-white rounded-3xl p-8 shadow-soft hover:shadow-card transition-all cursor-pointer relative overflow-hidden border border-white">
+                                <div class="absolute top-0 right-0 w-64 h-64 bg-er-accent/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-er-accent/20 transition-all"></div>
+                                
+                                <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
+                                    <div class="w-16 h-16 rounded-2xl bg-er-base flex items-center justify-center text-3xl text-er-dark shadow-inner shrink-0">
+                                        <i class="fas fa-fingerprint"></i>
                                     </div>
-                                    <div class="ml-4 text-er-accent">
-                                        <i class="fas fa-chevron-right text-xl group-hover:translate-x-1 transition-transform"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Diagnosis Lite -->
-                            <div class="bg-er-dark text-white rounded-lg shadow-sm p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-                                <div>
-                                    <h3 class="text-lg font-bold"><i class="fas fa-clipboard-check mr-2"></i>약식 자가 진단 (Self-Check)</h3>
-                                    <p class="text-gray-300 text-sm mt-1">3분 만에 알아보는 나의 중심 에너지 센터(머리/가슴/장) 찾기</p>
-                                </div>
-                                <button onclick="alert('로그인이 필요한 서비스입니다.')" class="bg-white text-er-dark px-5 py-2 rounded-full text-sm font-bold hover:bg-gray-100 transition-colors whitespace-nowrap">
-                                    진단 시작하기
-                                </button>
-                            </div>
-
-                            <!-- Book List -->
-                            <div class="bg-white rounded-lg shadow-sm p-6">
-                                <h3 class="text-lg font-bold text-gray-900 mb-4"><i class="fas fa-book mr-2 text-er-accent"></i>추천 도서 목록</h3>
-                                <ul class="divide-y divide-gray-100">
-                                    <li class="py-3 flex justify-between items-center">
-                                        <span class="text-gray-700 text-sm">에니어그램의 지혜 (Don Richard Riso)</span>
-                                        <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">필독서</span>
-                                    </li>
-                                    <li class="py-3 flex justify-between items-center">
-                                        <span class="text-gray-700 text-sm">내면의 감옥에서 벗어나라 (Richard Rohr)</span>
-                                        <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">영성</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // --- New 9 Types Healing Guide Section ---
-        function renderTypesGuide() {
-            // Data provided by user
-            const types = [
-                {
-                    id: 1, name: "올바른 사람 (The Perfectionist)",
-                    desc: "사랑받기 위해 '올바름'을 추구하며(불안형), 비난을 피하기 위해 자신의 약점을 숨깁니다(회피형).",
-                    healing: "자기 연민(Self-compassion), 불완전함을 있는 그대로 포용하기(Wabi-Sabi)."
-                },
-                {
-                    id: 2, name: "아낌없이 주는 사람 (The Seductive Giver)",
-                    desc: "가치 있게 느껴지기 위해 과도하게 베풀며(불안형), 사랑이 불확실할 때 감정 조절이 어렵습니다(혼란형).",
-                    healing: "내면의 욕구 기록하기, 자기 돌봄 실천."
-                },
-                {
-                    id: 3, name: "성취자 (The Achiever)",
-                    desc: "성과를 통해 인정받기를 갈망하며(불안형), 유능해 보이기 위해 취약성을 억압합니다(회피형).",
-                    healing: "감정 일기 쓰기, 마음을 여는 진솔한 대화."
-                },
-                {
-                    id: 4, name: "예술가 (The Singular One)",
-                    desc: "연결을 갈망하지만 거절을 두려워하며(혼란형), 주목받기 위해 감정을 극적으로 표현합니다(불안형).",
-                    healing: "오감을 통한 그라운딩(Grounding), 감정 알아차림(Mindfulness)."
-                },
-                {
-                    id: 5, name: "탐구자 (The Observer)",
-                    desc: "자율성을 지키기 위해 거리를 두며(회피형), 정서적 침해를 받을 때 예민해집니다(혼란형).",
-                    healing: "친밀한 대화 시도, 신체 감각 기반 조절 연습."
-                },
-                {
-                    id: 6, name: "충실가 (The Loyal Skeptic)",
-                    desc: "충성심을 통해 안전을 추구하며(불안형), 배신을 피하기 위해 미리 거리를 둡니다(회피형).",
-                    healing: "자기 긍정 확언(Mantra), 불안을 잠재우는 그라운딩."
-                },
-                {
-                    id: 7, name: "열정가 (The Planner)",
-                    desc: "자극을 통해 내면의 불편함을 회피하며(회피형), 자유가 제한되는 것을 두려워합니다(불안형).",
-                    healing: "깊은 심호흡, 현재 순간을 온전히 음미하기."
-                },
-                {
-                    id: 8, name: "도전가 (The Boss)",
-                    desc: "취약성을 피하기 위해 환경을 통제하려 하며(회피형), 위협에 대해 강렬하게 반응합니다(혼란형).",
-                    healing: "안전한 감정 표현 연습, 자애(Loving-kindness) 명상."
-                },
-                {
-                    id: 9, name: "화합가 (The Mediator)",
-                    desc: "갈등을 피하기 위해 타인에게 융합하며(혼란형), 불편함을 피하기 위해 내면으로 철수합니다(회피형).",
-                    healing: "자신의 욕구 일기 쓰기, 단호한 의사소통 연습."
-                }
-            ];
-
-            let html = `
-                <div class="min-h-screen bg-gray-50 py-12">
-                    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="mb-8 flex items-center justify-between">
-                            <button onclick="renderSection('resources')" class="text-gray-500 hover:text-er-dark flex items-center gap-2 transition-colors">
-                                <i class="fas fa-arrow-left"></i> 목록으로
-                            </button>
-                            <h2 class="text-xl font-bold text-gray-900 hidden sm:block">9가지 유형별 회복의 길</h2>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in">
-            `;
-
-            types.forEach(t => {
-                html += `
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                        <div class="bg-er-base/50 px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                            <h3 class="font-bold text-lg text-gray-800"><span class="text-er-accent mr-2">${t.id}.</span>${t.name.split('(')[0]}</h3>
-                            <span class="text-xs text-gray-400 font-serif italic">${t.name.split('(')[1].replace(')','')}</span>
-                        </div>
-                        <div class="p-6">
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4 min-h-[4rem]">${t.desc}</p>
-                            <div class="bg-green-50 rounded-lg p-3">
-                                <div class="flex items-start gap-2">
-                                    <i class="fas fa-seedling text-green-500 mt-1"></i>
-                                    <p class="text-sm text-green-800 font-medium">Healing: <span class="font-normal text-gray-700">${t.healing}</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += `
-                        </div>
-                        <div class="mt-12 text-center">
-                            <p class="text-gray-500 mb-4">내 유형을 더 깊이 이해하고 회복하고 싶다면?</p>
-                            <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors">
-                                전문가 상담 신청하기
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            return html;
-        }
-
-         // 후원버튼 주석처리
-    /* function renderDonate() {
-            return `
-                <div class="bg-white min-h-screen">
-                    <div class="bg-er-base py-16 px-4 sm:px-6 lg:px-8 text-center">
-                        <i class="fas fa-hand-holding-heart text-5xl text-er-heart mb-6 animate-pulse"></i>
-                        <h2 class="text-3xl font-extrabold text-gray-900 break-keep">회복의 마중물이 되어주세요</h2>
-                        <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto break-keep">
-                            ER은 재정적인 어려움이 회복의 걸림돌이 되지 않도록 돕습니다.<br>
-                            여러분의 후원은 벼랑 끝에 선 가정과 사역자들을 다시 세우는 데 전액 사용됩니다.
-                        </p>
-                    </div>
-
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                            <div class="space-y-8 fade-in">
-                                <div class="bg-white border-l-4 border-er-heart p-6 shadow-sm rounded-r-lg">
-                                    <h3 class="text-xl font-bold text-gray-900 mb-2">💡 투명한 운영 원칙</h3>
-                                    <ul class="space-y-3 text-gray-600">
-                                        <li class="flex items-start"><i class="fas fa-check text-er-accent mt-1 mr-3"></i><span><strong>100% 재능 기부:</strong> 설립자와 모든 전문 코치진은 무보수로 섬깁니다.</span></li>
-                                        <li class="flex items-start"><i class="fas fa-check text-er-accent mt-1 mr-3"></i><span><strong>후원금 용도:</strong> 오직 홈페이지 운영 실비와 경제적으로 어려운 내담자의 검사비 지원에만 사용됩니다.</span></li>
-                                        <li class="flex items-start"><i class="fas fa-check text-er-accent mt-1 mr-3"></i><span><strong>가치의 선순환:</strong> 상담받으신 분이 회복되어 또 다른 분을 돕는 선순환을 만듭니다.</span></li>
-                                    </ul>
-                                </div>
-                                <div class="bg-gray-50 p-6 rounded-lg">
-                                    <h3 class="text-lg font-bold text-gray-900 mb-4">후원이 만드는 변화</h3>
-                                    <div class="space-y-4">
-                                        <div class="flex items-center">
-                                            <div class="w-12 h-12 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mr-4"><i class="fas fa-coffee"></i></div>
-                                            <div>
-                                                <p class="font-bold">커피 2잔 ($10)</p>
-                                                <p class="text-sm text-gray-500">한 청소년의 정밀 에니어그램 검사비를 지원할 수 있습니다.</p>
-                                            </div>
+                                    <div class="flex-grow">
+                                        <div class="flex items-center gap-3 mb-2">
+                                            <span class="px-2 py-1 bg-er-accent/10 text-er-accent text-[10px] font-bold rounded uppercase">Featured</span>
+                                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-er-accent transition-colors">9가지 유형별 회복 가이드</h3>
                                         </div>
-                                        <div class="flex items-center">
-                                            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-4"><i class="fas fa-users"></i></div>
-                                            <div>
-                                                <p class="font-bold">식사 1끼 ($20)</p>
-                                                <p class="text-sm text-gray-500">번아웃된 선교사님 한 분에게 1시간 전문 코칭을 제공합니다.</p>
-                                            </div>
+                                        <p class="text-gray-600 text-sm leading-relaxed">
+                                            단순한 성격 분류를 넘어, 애착 유형(불안형/회피형)에 따른 각 유형의 고착 상태와<br class="hidden lg:block"> 구체적인 치유(Healing) 방법을 소개합니다.
+                                        </p>
+                                    </div>
+                                    <div class="self-end md:self-center">
+                                        <div class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all">
+                                            <i class="fas fa-arrow-right"></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 fade-in">
-                                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">후원 방법 안내</h3>
-                                <div class="bg-gray-100 p-1 rounded-lg flex mb-6">
-                                    <button class="w-1/2 bg-white shadow-sm py-2 rounded-md text-sm font-bold text-gray-800">계좌 이체 (Bank)</button>
-                                    <button class="w-1/2 py-2 rounded-md text-sm font-medium text-gray-500" onclick="alert('준비 중입니다.')">카드/페이팔</button>
-                                </div>
-                                <div class="space-y-6">
-                                    <div class="border border-er-primary/20 rounded-xl p-5 bg-er-base/30">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="text-xs font-bold text-er-primary uppercase tracking-wide">Korea</span>
-                                            <i class="fas fa-won-sign text-gray-400"></i>
-                                        </div>
-                                        <p class="text-gray-500 text-sm mb-1">카카오뱅크</p>
-                                        <p class="text-xl font-bold text-gray-900 tracking-wider">3333-XX-XXXXXX</p>
-                                        <p class="text-sm text-gray-500 mt-1">예금주: 홍길동 (ER)</p>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <!-- Self Check -->
+                                <div class="bg-er-dark text-white rounded-3xl p-8 flex flex-col justify-between shadow-lg">
+                                    <div>
+                                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-4 text-xl"><i class="fas fa-clipboard-check"></i></div>
+                                        <h3 class="text-lg font-bold mb-2">약식 자가 진단</h3>
+                                        <p class="text-gray-300 text-sm">3분 만에 알아보는 나의 중심 에너지 센터<br>(머리/가슴/장) 찾기</p>
                                     </div>
-                                    <div class="border border-er-primary/20 rounded-xl p-5 bg-er-base/30">
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span class="text-xs font-bold text-er-primary uppercase tracking-wide">USA (Zelle/Venmo)</span>
-                                            <i class="fas fa-dollar-sign text-gray-400"></i>
-                                        </div>
-                                        <p class="text-gray-500 text-sm mb-1">Zelle / Venmo</p>
-                                        <p class="text-xl font-bold text-gray-900 tracking-wider">213-XXX-XXXX</p>
-                                        <p class="text-sm text-gray-500 mt-1">Recipient: ER Restoration</p>
-                                    </div>
-                                </div>
-                                <div class="mt-8 text-center">
-                                    <p class="text-xs text-gray-500 mb-3">후원 후 아래 버튼을 눌러 알려주시면 감사 인사를 드립니다.</p>
-                                    <button onclick="renderSection('apply')" class="block w-full bg-er-heart hover:bg-red-400 text-white font-bold py-3 rounded-lg transition-colors shadow-md">
-                                        후원 알림 보내기 (문의하기 이용)
+                                    <button onclick="alert('로그인이 필요한 서비스입니다.')" class="mt-6 w-full py-3 bg-white text-er-dark rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors">
+                                        진단 시작하기
                                     </button>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-    */
 
-        function renderPrograms() {
-            return `
-                <div class="bg-white min-h-screen">
-                    <div class="bg-er-base py-12 px-4 sm:px-6 lg:px-8 text-center">
-                        <h2 class="text-3xl font-extrabold text-gray-900">맞춤형 프로그램</h2>
-                        <p class="mt-4 text-lg text-gray-500 break-keep">개인, 교회, 기업의 필요에 맞춘 전문화된 커리큘럼</p>
-                        <div class="mt-8 flex flex-wrap justify-center gap-2">
-                            <button onclick="updateProgramView('individual')" id="tab-individual" class="px-4 py-2 rounded-full text-sm font-medium transition-all bg-er-dark text-white shadow-lg">개인/가정</button>
-                            <button onclick="updateProgramView('church')" id="tab-church" class="px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-200 transition-all">사역/교회</button>
-                            <button onclick="updateProgramView('business')" id="tab-business" class="px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-200 transition-all">비즈니스</button>
-                            <button onclick="updateProgramView('training')" id="tab-training" class="px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-200 transition-all">강사 양성</button>
-                        </div>
-                    </div>
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                        <div id="program-intro" class="mb-12 text-center max-w-3xl mx-auto"></div>
-                        <div id="program-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in"></div>
-                        <div class="mt-20 border-t border-gray-100 pt-12">
-                            <h3 class="text-2xl font-bold text-center text-gray-900 mb-10">진행 프로세스</h3>
-                            <div class="flex flex-col md:flex-row justify-center items-center gap-6">
-                                <div class="bg-white border border-gray-200 rounded-lg p-6 w-full md:w-64 text-center shadow-sm relative">
-                                    <div class="text-er-accent text-3xl mb-3"><i class="far fa-file-alt"></i></div><h4 class="font-bold mb-2">1. 신청서 작성</h4><p class="text-sm text-gray-500">온라인 신청서를 통해<br>니즈를 파악합니다.</p>
-                                </div>
-                                <div class="hidden md:block text-gray-300"><i class="fas fa-chevron-right"></i></div>
-                                <div class="md:hidden text-gray-300"><i class="fas fa-chevron-down"></i></div>
-                                <div class="bg-white border border-gray-200 rounded-lg p-6 w-full md:w-64 text-center shadow-sm">
-                                    <div class="text-er-accent text-3xl mb-3"><i class="far fa-comments"></i></div><h4 class="font-bold mb-2">2. 사전 인터뷰</h4><p class="text-sm text-gray-500">코치와 1:1 상담을 통해<br>방향을 설정합니다.</p>
-                                </div>
-                                <div class="hidden md:block text-gray-300"><i class="fas fa-chevron-right"></i></div>
-                                <div class="md:hidden text-gray-300"><i class="fas fa-chevron-down"></i></div>
-                                <div class="bg-white border border-gray-200 rounded-lg p-6 w-full md:w-64 text-center shadow-sm">
-                                    <div class="text-er-accent text-3xl mb-3"><i class="fas fa-chalkboard-teacher"></i></div><h4 class="font-bold mb-2">3. 코칭/강의 진행</h4><p class="text-sm text-gray-500">맞춤형 커리큘럼으로<br>회복을 시작합니다.</p>
-                                </div>
-                            </div>
-                             <div class="text-center mt-10">
-                                <button onclick="renderSection('apply')" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-er-accent hover:bg-yellow-600 transition-colors shadow-md">상담/강의 신청하기</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
- function renderCommunity() {
-            return `
-                <div class="bg-white py-12">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="text-center mb-12">
-                            <h2 class="text-3xl font-extrabold text-gray-900">회복과 변화의 이야기</h2>
-                            <p class="mt-4 text-lg text-gray-500">100건 이상의 임상 경험이 증명하는 ER의 노하우</p>
-                        </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 items-center">
-                            <div>
-                                <h3 class="text-lg font-bold text-gray-900 mb-4 ml-2">상담/코칭 주제별 현황</h3>
-                                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100"><div class="chart-container"><canvas id="impactChart"></canvas></div></div>
-                                <p class="text-sm text-center text-gray-400 mt-2">* 2024년 기준 누적 데이터</p>
-                            </div>
-                            <div class="space-y-6">
-                                <div class="bg-er-base p-6 rounded-lg"><h4 class="font-bold text-er-dark mb-2">왜 효과적인가?</h4><p class="text-gray-600 text-sm leading-relaxed break-keep">단순히 성격을 분류하는 것이 아니라, <span class="font-bold text-er-accent">근본적인 동기(Motivation)</span>를 파악하여 내면의 상처를 치유하기 때문입니다. 기독교적 영성은 이 과정에 깊은 안정감을 더해줍니다.</p></div>
-                                <div class="relative bg-white border-l-4 border-er-accent p-6 shadow-sm">
-                                    <i class="fas fa-quote-left text-2xl text-gray-200 absolute top-4 left-4"></i>
-                                    <p class="text-gray-600 italic mb-4 relative z-10 text-sm md:text-base break-keep">"남편과 매일 싸우며 이혼까지 생각했습니다. 에니어그램을 통해 남편이 저를 무시한 게 아니라, 불안해서 확인하려 했다는 걸 알게 되었어요. 이제는 서로의 언어로 대화합니다."</p>
-                                    <div class="flex items-center"><div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-xs">J.H</div><div class="ml-3"><p class="text-sm font-medium text-gray-900">30대 부부, 서울</p><div class="flex text-yellow-400 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div></div></div>
-                                </div>
-                                 <div class="relative bg-white border-l-4 border-gray-300 p-6 shadow-sm">
-                                    <p class="text-gray-600 italic mb-4 text-sm md:text-base break-keep">"선교지에서 번아웃되어 귀국했을 때, 제가 실패자처럼 느껴졌습니다. 코칭을 통해 제 기질적 특성을 이해하고, 하나님이 주신 원래의 디자인을 다시 사랑하게 되었습니다."</p>
-                                    <div class="flex items-center"><div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-xs">K.M</div><div class="ml-3"><p class="text-sm font-medium text-gray-900">선교사, 15년차</p></div></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div class="md:col-span-2">
-                                <h3 class="text-xl font-bold text-gray-900 mb-4">Activity Gallery</h3>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="bg-gray-200 h-32 md:h-48 rounded-lg flex items-center justify-center text-gray-400 text-sm">워크숍 사진 1</div><div class="bg-gray-200 h-32 md:h-48 rounded-lg flex items-center justify-center text-gray-400 text-sm">수련회 사진 2</div><div class="bg-gray-200 h-32 md:h-48 rounded-lg flex items-center justify-center text-gray-400 text-sm">강의 사진 3</div><div class="bg-gray-200 h-32 md:h-48 rounded-lg flex items-center justify-center text-gray-400 text-sm">코칭 사진 4</div>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-4 mt-8 md:mt-0">공지사항</h3>
-                                <div class="bg-white border border-gray-200 rounded-lg divide-y divide-gray-100">
-                                    <a href="#" class="block p-4 hover:bg-gray-50"><span class="text-xs text-er-accent font-bold">모집</span><h4 class="text-sm font-medium text-gray-900 mt-1">에니어그램 강사과정 5기 모집</h4><p class="text-xs text-gray-500 mt-1">2025.01.15 마감</p></a>
-                                    <a href="#" class="block p-4 hover:bg-gray-50"><span class="text-xs text-gray-500 font-bold">안내</span><h4 class="text-sm font-medium text-gray-900 mt-1">홈페이지 리뉴얼 및 파일럿 운영</h4><p class="text-xs text-gray-500 mt-1">2024.12.20</p></a>
-                                    <a href="#" class="block p-4 hover:bg-gray-50"><span class="text-xs text-er-primary font-bold">세미나</span><h4 class="text-sm font-medium text-gray-900 mt-1">1월 무료 공개 특강: '불안' 다루기</h4><p class="text-xs text-gray-500 mt-1">2025.01.10 예정</p></a>
+                                <!-- Books -->
+                                <div class="bg-white rounded-3xl p-8 shadow-soft border border-white">
+                                    <div class="flex items-center gap-3 mb-6">
+                                        <i class="fas fa-book text-er-accent text-xl"></i>
+                                        <h3 class="text-lg font-bold text-gray-900">추천 도서</h3>
+                                    </div>
+                                    <ul class="space-y-4">
+                                        <li class="flex items-start gap-3 pb-4 border-b border-gray-50 last:border-0 last:pb-0">
+                                            <span class="text-gray-300 font-serif italic text-lg">01</span>
+                                            <div>
+                                                <h4 class="text-sm font-bold text-gray-800">에니어그램의 지혜</h4>
+                                                <p class="text-xs text-gray-500">Don Richard Riso &middot; 필독서</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start gap-3">
+                                            <span class="text-gray-300 font-serif italic text-lg">02</span>
+                                            <div>
+                                                <h4 class="text-sm font-bold text-gray-800">내면의 감옥에서 벗어나라</h4>
+                                                <p class="text-xs text-gray-500">Richard Rohr &middot; 영성/치유</p>
+                                            </div>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -692,127 +658,364 @@
             `;
         }
 
-        // Apply Form
+        function renderTypesGuide() {
+            const types = [
+                { id: 1, name: "개혁가 (The Reformer)", color: "border-red-200", bg: "bg-red-50", desc: "올바름을 추구하며 실수를 두려워합니다.", healing: "불완전함을 수용하는 자기 연민" },
+                { id: 2, name: "조력가 (The Helper)", color: "border-orange-200", bg: "bg-orange-50", desc: "사랑받기 위해 타인을 돕습니다.", healing: "내면의 욕구를 돌보는 연습" },
+                { id: 3, name: "성취자 (The Achiever)", color: "border-yellow-200", bg: "bg-yellow-50", desc: "성공을 통해 가치를 증명하려 합니다.", healing: "성취 이면의 진실한 나 마주하기" },
+                { id: 4, name: "예술가 (The Individualist)", color: "border-purple-200", bg: "bg-purple-50", desc: "독특함과 깊이를 추구합니다.", healing: "감정의 균형과 일상성 회복" },
+                { id: 5, name: "탐구자 (The Investigator)", color: "border-blue-200", bg: "bg-blue-50", desc: "지식을 통해 유능함을 추구합니다.", healing: "신체 감각 깨우기와 연결" },
+                { id: 6, name: "충실가 (The Loyalist)", color: "border-indigo-200", bg: "bg-indigo-50", desc: "안전을 위해 대비하고 의심합니다.", healing: "내면의 신뢰와 용기 회복" },
+                { id: 7, name: "열정가 (The Enthusiast)", color: "border-green-200", bg: "bg-green-50", desc: "새로운 경험과 즐거움을 쫓습니다.", healing: "현재의 고요함에 머무르기" },
+                { id: 8, name: "도전가 (The Challenger)", color: "border-pink-200", bg: "bg-pink-50", desc: "강함을 통해 통제하려 합니다.", healing: "취약성을 드러내는 용기" },
+                { id: 9, name: "중재자 (The Peacemaker)", color: "border-gray-200", bg: "bg-gray-50", desc: "평화를 위해 갈등을 회피합니다.", healing: "자기 목소리 내기와 행동" }
+            ];
+
+            return `
+                <div class="min-h-screen bg-gray-50 py-20 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="mb-10 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-up">
+                            <button onclick="renderSection('resources')" class="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-600 hover:text-er-dark shadow-sm hover:shadow flex items-center gap-2 transition-all">
+                                <i class="fas fa-arrow-left"></i> 목록으로
+                            </button>
+                            <h2 class="text-2xl font-bold text-gray-900">9가지 유형별 회복의 길</h2>
+                            <div class="w-24 hidden md:block"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                            ${types.map((t, idx) => `
+                                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+                                    <div class="h-2 w-full ${t.bg.replace('bg-', 'bg-').replace('50', '400')}"></div>
+                                    <div class="p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <span class="text-4xl font-serif font-bold text-gray-100 group-hover:text-er-accent/20 transition-colors absolute right-4 top-8">${t.id}</span>
+                                            <h3 class="text-lg font-bold text-gray-800 relative z-10">${t.name.split('(')[0]}</h3>
+                                        </div>
+                                        <p class="text-xs text-gray-400 font-serif italic mb-4">${t.name.split('(')[1].replace(')','')}</p>
+                                        <p class="text-gray-600 text-sm leading-relaxed mb-6 h-10">${t.desc}</p>
+                                        
+                                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 group-hover:bg-er-base transition-colors">
+                                            <div class="flex items-start gap-2">
+                                                <i class="fas fa-seedling text-er-accent mt-1 text-xs"></i>
+                                                <div>
+                                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Healing Path</p>
+                                                    <p class="text-sm text-gray-800 font-medium mt-0.5">${t.healing}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="mt-16 text-center animate-fade-in-up">
+                            <div class="inline-block p-8 bg-white rounded-3xl shadow-soft">
+                                <p class="text-gray-600 mb-6">내 유형을 더 깊이 이해하고 회복하고 싶다면?</p>
+                                <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors">
+                                    전문가 상담 신청하기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function renderApply() {
             return `
-                <div class="bg-white min-h-screen py-12">
-                    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="text-center mb-10">
-                            <span class="bg-er-accent/10 text-er-accent px-3 py-1 rounded-full text-xs font-bold uppercase">Inquiry</span>
-                            <h2 class="text-3xl font-extrabold text-gray-900 mt-4">상담 및 강의 신청</h2>
-                            <p class="mt-4 text-gray-500 break-keep">신청서를 작성해 주시면 담당 코치가 24시간 이내에 연락드립니다.<br class="hidden md:block"> 현재 파일럿 기간으로 자발적 후원으로 운영됩니다.</p>
+                <div class="bg-er-base min-h-screen py-20 px-4">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="text-center mb-10 animate-fade-in-up">
+                            <h2 class="text-3xl font-bold text-gray-900">상담 및 강의 신청</h2>
+                            <p class="mt-3 text-gray-500 text-sm">작성해주신 내용은 철저히 비밀이 보장됩니다.</p>
                         </div>
-                        <div class="bg-er-base rounded-2xl p-6 md:p-8 mb-10">
-                            <h3 class="font-bold text-gray-900 mb-4 text-center">진행 절차 안내</h3>
-                            <div class="flex justify-between text-xs md:text-sm text-gray-600 text-center gap-2">
-                                <div class="flex-1"><div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold border">1</div>신청서 제출</div>
-                                <div class="flex-1 self-center border-t mx-1"></div>
-                                <div class="flex-1"><div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold border">2</div>일정 조율</div>
-                                <div class="flex-1 self-center border-t mx-1"></div>
-                                <div class="flex-1"><div class="w-8 h-8 bg-white rounded-full flex items-center justify-center mx-auto mb-2 font-bold border">3</div>진행 확정</div>
+                        
+                        <div class="bg-white rounded-3xl shadow-card p-8 md:p-10 animate-fade-in-up border border-white" style="animation-delay: 0.1s;">
+                            <div class="flex items-center justify-between mb-8 px-4 relative">
+                                <div class="absolute top-1/2 left-0 w-full h-px bg-gray-100 -z-10"></div>
+                                <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-er-dark text-white flex items-center justify-center text-sm font-bold shadow-lg">1</span></div>
+                                <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">2</span></div>
+                                <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">3</span></div>
                             </div>
-                        </div>
 
-                        <!-- 
-                           [중요] action 주소와 name="entry.XXX" 부분은 반드시 
-                           본인이 만든 구글 폼의 소스보기나 '미리 채워진 링크 받기'를 통해 확인한 값으로 변경해야 합니다.
-                           현재 들어있는 값은 예시입니다.
-                        -->
-                        <form class="space-y-6 bg-white p-6 rounded-lg border border-gray-200 shadow-sm"
-                            action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/formResponse"
-                            method="POST"
-                            target="hidden_iframe"
-                            onsubmit="submitted=true;">
-                            
-                            <div><label class="block text-sm font-medium text-gray-700">이름(신청자)</label><input type="text" name="entry.1004632782" required class="mt-1 block w-full border border-gray-300 rounded-md py-3 px-3 shadow-sm focus:ring-er-accent focus:border-er-accent"></div>
-                            <div><label class="block text-sm font-medium text-gray-700">연락처 (이메일 또는 전화번호)</label><input type="text" name="entry.1413214839" required class="mt-1 block w-full border border-gray-300 rounded-md py-3 px-3 shadow-sm focus:ring-er-accent focus:border-er-accent"></div>
-                            <div><label class="block text-sm font-medium text-gray-700">신청 분야</label><select name="entry.796863919" class="mt-1 block w-full border border-gray-300 rounded-md py-3 px-3 shadow-sm focus:ring-er-accent focus:border-er-accent bg-white"><option>개인/가정 코칭 (부부, 자녀)</option><option>교회/사역자 회복 프로그램</option><option>비즈니스/조직 워크숍</option><option>강사 양성 과정</option><option>기타 문의</option></select></div>
-                            <div><label class="block text-sm font-medium text-gray-700">문의 및 요청 내용</label><textarea name="entry.594846485" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md py-3 px-3 shadow-sm focus:ring-er-accent focus:border-er-accent"></textarea></div>
-                            <div class="bg-gray-50 p-4 rounded text-xs text-gray-500"><p class="font-bold mb-2"><i class="fas fa-info-circle"></i> 비용 안내</p><p>ER은 비영리 단체로서 정해진 상업적 요금을 청구하지 않습니다.</p></div>
-                            <button type="submit" class="w-full py-3.5 text-white rounded-md bg-er-dark hover:bg-gray-800 transition-colors font-bold shadow-md">신청서 제출하기</button>
-                        </form>
-                        <iframe name="hidden_iframe" style="display:none;" onload="if(submitted){renderSection('thankyou');submitted=false;}"></iframe>
+                            <form class="space-y-6"
+                                action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/formResponse"
+                                method="POST"
+                                target="hidden_iframe"
+                                onsubmit="submitted=true;">
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">이름 (신청자)</label>
+                                    <input type="text" name="entry.1004632782" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="성함을 입력해주세요">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">연락처</label>
+                                    <input type="text" name="entry.1413214839" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="010-0000-0000 또는 이메일">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">신청 분야</label>
+                                    <div class="relative">
+                                        <select name="entry.796863919" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
+                                            <option>개인/가정 코칭 (부부, 자녀)</option>
+                                            <option>교회/사역자 회복 프로그램</option>
+                                            <option>비즈니스/조직 워크숍</option>
+                                            <option>강사 양성 과정</option>
+                                            <option>기타 문의</option>
+                                        </select>
+                                        <div class="absolute right-4 top-3.5 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">문의 내용</label>
+                                    <textarea name="entry.594846485" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="고민이나 요청사항을 자유롭게 적어주세요."></textarea>
+                                </div>
+
+                                <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
+                                    <i class="fas fa-info-circle text-er-primary mt-0.5"></i>
+                                    <p class="text-xs text-gray-500 leading-relaxed">
+                                        ER은 비영리 목적으로 운영되며, 상담 비용은 후원금으로 대체됩니다. <br>
+                                        접수 후 24시간 이내에 담당 코치가 연락드립니다.
+                                    </p>
+                                </div>
+                                
+                                <button type="submit" class="w-full py-4 bg-er-dark text-white rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-all hover:-translate-y-1">
+                                    신청서 제출하기
+                                </button>
+                            </form>
+                            <iframe name="hidden_iframe" style="display:none;" onload="if(submitted){renderSection('thankyou');submitted=false;}"></iframe>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
         function renderThankYou() {
-            return `<div class="min-h-screen flex items-center justify-center bg-er-base px-4"><div class="bg-white rounded-2xl shadow-lg p-8 md:p-10 max-w-md w-full text-center"><div class="text-er-accent text-5xl mb-6"><i class="fas fa-check-circle"></i></div><h2 class="text-2xl font-bold text-gray-900 mb-4">신청이 접수되었습니다</h2><p class="text-gray-600 mb-8 leading-relaxed">담당 코치가 24시간 이내에<br>입력하신 연락처로 연락드릴 예정입니다.</p><button onclick="renderSection('home')" class="w-full inline-block px-6 py-3 rounded-md bg-er-dark text-white hover:bg-gray-800 transition-colors font-bold">홈으로 돌아가기</button></div></div>`;
-        }
-
-        function renderMyPage() {
             return `
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div class="flex items-center justify-between mb-8"><h2 class="text-2xl font-bold text-gray-900">마이페이지</h2><button onclick="logoutUser()" class="text-sm text-gray-500 hover:text-red-500">로그아웃</button></div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 text-center"><div class="w-20 h-20 bg-er-primary text-white rounded-full mx-auto flex items-center justify-center text-2xl mb-3">K</div><h3 class="font-bold">Kim User님</h3><p class="text-sm text-gray-500">수강생 / 4기</p></div>
-                        <div class="lg:col-span-2 space-y-6"><div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200"><h3 class="text-lg font-bold mb-4 border-b pb-2">수강 중인 과정: 강사 양성반 4기</h3><p class="text-gray-500 text-sm">현재 수강 중인 강의가 없습니다.</p></div></div>
+                <div class="min-h-screen flex items-center justify-center bg-er-base px-4">
+                    <div class="bg-white rounded-3xl shadow-card p-12 max-w-md w-full text-center animate-fade-in-up border border-white">
+                        <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-500 text-3xl mx-auto mb-6">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-3">접수가 완료되었습니다</h2>
+                        <p class="text-gray-500 mb-10 leading-relaxed text-sm">
+                            소중한 이야기를 남겨주셔서 감사합니다.<br>
+                            입력하신 연락처로 곧 연락드리겠습니다.
+                        </p>
+                        <button onclick="renderSection('home')" class="w-full py-3 rounded-xl bg-er-dark text-white hover:bg-gray-800 transition-colors font-bold shadow-md">
+                            홈으로 돌아가기
+                        </button>
                     </div>
                 </div>
             `;
         }
 
+        function renderMyPage() {
+            return `
+                <div class="max-w-4xl mx-auto px-4 py-20">
+                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
+                        <h2 class="text-2xl font-bold text-gray-900">My Page</h2>
+                        <button onclick="logoutUser()" class="text-sm text-gray-400 hover:text-red-500 transition-colors">로그아웃</button>
+                    </div>
+                    <div class="bg-white p-12 rounded-3xl shadow-soft text-center border border-gray-100">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full mx-auto flex items-center justify-center text-3xl text-gray-300 mb-4">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <p class="text-gray-500 mb-6">로그인 기능은 준비 중입니다.</p>
+                        <button onclick="renderSection('home')" class="px-6 py-2 bg-er-dark text-white rounded-full text-sm font-bold">홈으로</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Helper Functions ---
         function updateProgramView(filterType) {
             state.programFilter = filterType;
-            ['individual', 'church', 'business', 'training'].forEach(type => {
-                const btn = document.getElementById(`tab-${type}`);
-                if (type === filterType) { btn.className = "px-4 py-2 rounded-full text-sm font-medium transition-all bg-er-dark text-white shadow-lg"; } 
-                else { btn.className = "px-4 py-2 rounded-full text-sm font-medium text-gray-500 hover:bg-gray-200 transition-all"; }
+            
+            // Tab styling update
+            document.querySelectorAll('[id^="tab-"]').forEach(btn => {
+                const isActive = btn.id === `tab-${filterType}`;
+                btn.className = isActive 
+                    ? "px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 bg-white text-er-dark shadow-md"
+                    : "px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 text-gray-300 hover:text-white hover:bg-white/5";
             });
+
             const introEl = document.getElementById('program-intro');
             const cardsEl = document.getElementById('program-cards');
             
-            let introHtml = '';
-            let cardsHtml = '';
+            // Data Definition
+            const data = {
+                individual: {
+                    title: "나와 가정을 위한 회복",
+                    desc: "나의 성격 유형을 이해하고, 가장 가까운 가족과의 관계를 건강하게 세워가는 과정입니다.",
+                    cards: [
+                        { b: 'Basic', t: '자기 이해와 유형 찾기', d: '에니어그램 검사와 심층 상담을 통해 나의 고유한 성격 유형을 발견합니다.', i: 'fas fa-fingerprint' },
+                        { b: 'Relationship', t: '부부 관계 회복 코칭', d: '서로의 다름을 이해하고 갈등의 고리를 끊어 친밀함을 회복합니다.', i: 'fas fa-heart' },
+                        { b: 'Family', t: '자녀 양육 코칭', d: '자녀의 기질을 이해하고 그에 맞는 맞춤형 양육 방식을 코칭합니다.', i: 'fas fa-child' }
+                    ]
+                },
+                church: {
+                    title: "목회자와 교회를 위한 쉼",
+                    desc: "사역의 현장에서 지친 영혼을 돌보고, 소명을 재확인하는 시간입니다.",
+                    cards: [
+                        { b: 'Rest', t: '목회자 번아웃 코칭', d: '탈진한 사역자를 위한 쉼과 회복, 내면의 힘을 기르는 과정입니다.', i: 'fas fa-cross' },
+                        { b: 'Calling', t: '소명 재발견 워크숍', d: '하나님이 주신 은사와 기질을 통해 사역의 방향성을 재점검합니다.', i: 'fas fa-compass' },
+                        { b: 'Community', t: '리더십 수련회', d: '당회, 교사, 소그룹 리더들을 위한 맞춤형 수련회 프로그램을 제공합니다.', i: 'fas fa-users' }
+                    ]
+                },
+                business: {
+                    title: "건강한 조직 문화와 성과",
+                    desc: "구성원의 강점을 발견하고, 효과적인 소통과 협업을 돕습니다.",
+                    cards: [
+                        { b: 'HR', t: '강점 기반 채용/배치', d: '구성원의 성격 유형에 따른 직무 적합성을 분석하여 최적의 팀을 구성합니다.', i: 'fas fa-briefcase' },
+                        { b: 'Comm', t: '조직 내 소통/갈등 해결', d: '성격 유형별 의사소통 방식을 이해하여 갈등을 줄이고 협업을 증진합니다.', i: 'fas fa-handshake' },
+                        { b: 'Team', t: '팀 시너지 워크숍', d: '서로의 다름을 시너지로 바꾸는 체험형 팀빌딩 프로그램입니다.', i: 'fas fa-layer-group' }
+                    ]
+                },
+                training: {
+                    title: "에니어그램 전문가 양성",
+                    desc: "에니어그램의 지혜를 깊이 있게 배우고, 타인을 돕는 전문가로 성장하는 과정입니다.",
+                    cards: [
+                        { b: 'Certification', t: '전문 강사 양성반', d: '에니어그램 이론과 실제, 강의 스킬을 습득하는 8주 전문가 과정입니다.', i: 'fas fa-chalkboard' },
+                        { b: 'Study', t: '심화 스터디 그룹', d: '유형별 심층 탐구 및 임상 사례 연구를 소그룹으로 진행합니다.', i: 'fas fa-book-reader' },
+                        { b: 'Practicum', t: '인턴쉽 과정', d: '실제 상담 사례에 대한 수퍼비전과 전문가의 피드백을 받습니다.', i: 'fas fa-user-md' }
+                    ]
+                }
+            };
 
-            if (filterType === 'individual') {
-                introHtml = `<h3 class="text-xl font-bold text-er-primary mb-2">나와 가정을 위한 회복</h3><p class="text-gray-600 break-keep">나의 성격 유형을 이해하고, 가장 가까운 가족과의 관계를 건강하게 세워가는 과정입니다.</p>`;
-                cardsHtml = `${createProgramCard('기본', '자기 이해와 유형 찾기', '에니어그램 검사와 심층 상담을 통해 나의 고유한 성격 유형을 발견합니다.', 'fas fa-fingerprint')}${createProgramCard('관계', '부부 관계 회복 코칭', '서로의 다름을 이해하고 갈등의 고리를 끊어 친밀함을 회복합니다.', 'fas fa-heart')}${createProgramCard('양육', '자녀 양육 코칭', '자녀의 기질을 이해하고 그에 맞는 양육 방식을 코칭합니다.', 'fas fa-child')}`;
-            } else if (filterType === 'church') {
-                introHtml = `<h3 class="text-xl font-bold text-er-primary mb-2">목회자와 교회를 위한 쉼</h3><p class="text-gray-600 break-keep">사역의 현장에서 지친 영혼을 돌보고, 소명을 재확인하는 시간입니다.</p>`;
-                cardsHtml = `${createProgramCard('회복', '목회자/선교사 번아웃 코칭', '탈진한 사역자를 위한 쉼과 회복, 내면의 힘을 기르는 과정입니다.', 'fas fa-cross')}${createProgramCard('소명', '소명 재발견 워크숍', '하나님이 주신 은사와 기질을 통해 사역의 방향성을 재점검합니다.', 'fas fa-compass')}${createProgramCard('공동체', '교회 리더십/수련회', '당회, 교사, 소그룹 리더들을 위한 맞춤형 수련회 프로그램을 제공합니다.', 'fas fa-users')}`;
-            } else if (filterType === 'business') {
-                introHtml = `<h3 class="text-xl font-bold text-er-primary mb-2">건강한 조직 문화와 성과</h3><p class="text-gray-600 break-keep">구성원의 강점을 발견하고, 효과적인 소통과 협업을 돕습니다.</p>`;
-                cardsHtml = `${createProgramCard('HR', '강점 기반 채용/배치', '구성원의 성격 유형에 따른 직무 적합성을 분석하여 최적의 팀을 구성합니다.', 'fas fa-briefcase')}${createProgramCard('소통', '조직 내 소통/갈등 해결', '성격 유형별 의사소통 방식을 이해하여 갈등을 줄이고 협업을 증진합니다.', 'fas fa-handshake')}${createProgramCard('팀빌딩', '팀 시너지 워크숍', '서로의 다름을 시너지로 바꾸는 체험형 팀빌딩 프로그램입니다.', 'fas fa-layer-group')}`;
-            } else if (filterType === 'training') {
-                introHtml = `<h3 class="text-xl font-bold text-er-primary mb-2">에니어그램 전문가 양성</h3><p class="text-gray-600 break-keep">에니어그램의 지혜를 깊이 있게 배우고, 타인을 돕는 전문가로 성장하는 과정입니다.</p>`;
-                cardsHtml = `${createProgramCard('자격증', '전문 강사 양성반 (8주)', '에니어그램 이론과 실제, 강의 스킬을 습득하는 전문가 과정입니다.', 'fas fa-chalkboard')}${createProgramCard('심화', '심화 스터디 그룹', '유형별 심층 탐구 및 임상 사례 연구를 진행합니다.', 'fas fa-book-reader')}${createProgramCard('멘토링', '인턴쉽 (Practicum)', '상담 사례에 대한 전문가의 피드백과 지도를 받습니다.', 'fas fa-user-md')}`;
+            const selected = data[filterType];
+
+            // Render Intro
+            if(introEl) {
+                introEl.innerHTML = `
+                    <h3 class="text-xl font-bold text-er-dark mb-2">${selected.title}</h3>
+                    <p class="text-gray-500 break-keep">${selected.desc}</p>
+                `;
             }
-            introEl.innerHTML = introHtml;
-            cardsEl.innerHTML = cardsHtml;
+
+            // Render Cards
+            if(cardsEl) {
+                cardsEl.innerHTML = selected.cards.map(c => `
+                    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-card hover:-translate-y-1 transition-all group flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="px-3 py-1 rounded-full bg-er-base text-er-accent text-xs font-bold uppercase tracking-wider">${c.b}</span>
+                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white transition-colors">
+                                <i class="${c.i}"></i>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-bold text-gray-900 mb-3">${c.t}</h4>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow break-keep">${c.d}</p>
+                        <button onclick="renderSection('apply')" class="w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
+                            문의하기
+                        </button>
+                    </div>
+                `).join('');
+            }
         }
 
-        function createProgramCard(badge, title, desc, icon) {
-            return `<div class="bg-white overflow-hidden shadow-sm rounded-lg border border-gray-100 hover:shadow-md transition-shadow"><div class="px-6 py-8"><div class="flex items-center justify-between mb-4"><span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-er-base text-er-dark">${badge}</span><i class="${icon} text-2xl text-er-accent"></i></div><h4 class="text-xl font-bold text-gray-900 mb-2">${title}</h4><p class="text-gray-500 text-sm leading-relaxed break-keep">${desc}</p></div><div class="bg-gray-50 px-6 py-4"><button onclick="renderSection('apply')" class="text-sm font-medium text-er-dark hover:text-er-accent flex items-center gap-1">문의하기 <i class="fas fa-arrow-right text-xs"></i></button></div></div>`;
+        function toggleLogin() { 
+            if (state.user) { renderSection('mypage'); } 
+            else { alert('회원가입/로그인 기능은 준비 중입니다.'); } 
+        }
+        
+        function logoutUser() { 
+            state.user = null; 
+            renderSection('home'); 
         }
 
-        function toggleLogin() { if (state.user) { renderSection('mypage'); } else { alert('회원가입/로그인 기능은 추후 제공될 예정입니다.'); } }
-        function loginUser() { state.user = { name: 'Kim' }; renderSection('mypage'); }
-        function logoutUser() { state.user = null; renderSection('home'); }
-
+        // --- Chart Logic ---
         function initCharts(sectionId) {
+            Chart.defaults.font.family = "'Pretendard', sans-serif";
+            Chart.defaults.color = '#9CA3AF';
+            
             if (sectionId === 'home') {
                 const ctx = document.getElementById('heroChart').getContext('2d');
                 new Chart(ctx, {
                     type: 'polarArea',
                     data: {
                         labels: contentData.types.labels,
-                        datasets: [{ data: contentData.types.data, backgroundColor: ['#E5D0C0', '#D4C4B5', '#BFA68A', '#A89B91', '#8C8680', '#7A726D', '#635D58', '#4A4540', '#E5D0C0'], borderWidth: 1 }]
+                        datasets: [{ 
+                            data: contentData.types.data, 
+                            backgroundColor: [
+                                'rgba(217, 119, 119, 0.7)', // 1 (Redish)
+                                'rgba(229, 208, 192, 0.7)', // 2
+                                'rgba(242, 201, 76, 0.7)',  // 3 (Yellow)
+                                'rgba(187, 107, 217, 0.7)', // 4 (Purple)
+                                'rgba(86, 204, 242, 0.7)',  // 5 (Blue)
+                                'rgba(111, 207, 151, 0.7)', // 6 (Green)
+                                'rgba(39, 174, 96, 0.7)',   // 7
+                                'rgba(235, 87, 87, 0.7)',   // 8
+                                'rgba(189, 189, 189, 0.7)'  // 9
+                            ],
+                            borderWidth: 0,
+                            hoverOffset: 10
+                        }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(context) { return context.label; } } } }, scales: { r: { ticks: { display: false }, grid: { color: '#e5e5e5' } } } }
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#2C2A29',
+                                padding: 12,
+                                cornerRadius: 8,
+                                titleFont: { size: 14, weight: 'bold' },
+                                bodyFont: { size: 12 }
+                            }
+                        }, 
+                        scales: { 
+                            r: { 
+                                ticks: { display: false }, 
+                                grid: { color: '#f3f4f6' },
+                                pointLabels: { display: false } 
+                            } 
+                        } 
+                    }
                 });
             } else if (sectionId === 'community') {
                 const ctx = document.getElementById('impactChart').getContext('2d');
                 new Chart(ctx, {
                     type: 'bar',
-                    data: { labels: contentData.stats.labels, datasets: [{ label: '케이스 분포 (%)', data: contentData.stats.data, backgroundColor: '#BFA68A', borderRadius: 4 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { afterLabel: function(context) { return contentData.stats.descriptions[context.dataIndex]; } } } }, scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } } }
+                    data: { 
+                        labels: contentData.stats.labels, 
+                        datasets: [{ 
+                            label: '케이스 분포 (%)', 
+                            data: contentData.stats.data, 
+                            backgroundColor: '#BFA68A', 
+                            borderRadius: 6,
+                            barThickness: 30
+                        }] 
+                    },
+                    options: { 
+                        responsive: true, 
+                        maintainAspectRatio: false, 
+                        plugins: { legend: { display: false } }, 
+                        scales: { 
+                            y: { beginAtZero: true, grid: { display: false }, ticks: { display: false } }, 
+                            x: { grid: { display: false } } 
+                        } 
+                    }
                 });
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => { renderSection('home'); });
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => { 
+            // Add scroll listener for Navbar
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if(window.scrollY > 20) {
+                    nav.classList.add('shadow-sm', 'bg-white/90');
+                } else {
+                    nav.classList.remove('shadow-sm', 'bg-white/90');
+                }
+            });
+            
+            renderSection('home'); 
+        });
     </script>
 </body>
 </html>
