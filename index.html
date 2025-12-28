@@ -2,8 +2,9 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="ER - Enneagram For Restoration: 나를 찾고 공동체를 치유하는 회복의 여정">
+    <meta name="theme-color" content="#FDFBF7">
     <title>ER - Enneagram For Restoration</title>
     
     <!-- Fonts: Pretendard -->
@@ -21,27 +22,28 @@
                 extend: {
                     colors: {
                         er: {
-                            base: '#FDFBF7',      /* 더 따뜻하고 밝은 배경색 */
-                            surface: '#F5F5F0',   /* 카드 배경 등 */
-                            primary: '#8C8680',   /* 본문 텍스트, 중간 톤 */
-                            accent: '#BFA68A',    /* 포인트 컬러 (금색/베이지) */
-                            accentDark: '#A38B70',/* 포인트 호버 */
-                            dark: '#2C2A29',      /* 진한 제목 텍스트 (완전 블랙 아님) */
+                            base: '#FDFBF7',      /* 배경: 따뜻한 미색 */
+                            surface: '#FFFFFF',   /* 카드: 순백색 */
+                            primary: '#8C8680',   /* 본문: 회갈색 */
+                            accent: '#BFA68A',    /* 포인트: 샌드 베이지 */
+                            accentLight: '#E8DED3', /* 포인트 연한 배경 */
+                            dark: '#2C2A29',      /* 제목: 차콜 */
                             muted: '#9CA3AF',
-                            heart: '#D97777' 
                         }
                     },
                     fontFamily: {
                         sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
-                        serif: ['Times New Roman', 'serif'] /* 영문 포인트용 */
+                        serif: ['Times New Roman', 'serif']
                     },
                     boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
-                        'card': '0 10px 30px -5px rgba(0, 0, 0, 0.08)',
+                        'soft': '0 10px 40px -10px rgba(0, 0, 0, 0.05)',
+                        'card': '0 20px 40px -10px rgba(191, 166, 138, 0.15)',
+                        'glow': '0 0 20px rgba(191, 166, 138, 0.3)'
                     },
                     animation: {
                         'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
                         'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-down': 'slideDown 0.3s ease-out forwards',
                     },
                     keyframes: {
                         fadeInUp: {
@@ -51,6 +53,10 @@
                         fadeIn: {
                             '0%': { opacity: '0' },
                             '100%': { opacity: '1' },
+                        },
+                        slideDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -62,21 +68,22 @@
             font-family: 'Pretendard', sans-serif; 
             background-color: #FDFBF7;
             color: #2C2A29;
+            -webkit-tap-highlight-color: transparent;
         }
         
         /* Smooth Scrolling */
         html { scroll-behavior: smooth; }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
         .chart-container {
             position: relative;
             width: 100%;
-            height: 300px;
+            height: 300px; /* Mobile Default */
             margin: 0 auto;
         }
         @media (min-width: 768px) {
@@ -85,60 +92,80 @@
 
         /* Hero Background Pattern */
         .bg-pattern {
-            background-image: radial-gradient(#BFA68A 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.15;
+            background-image: radial-gradient(#BFA68A 0.8px, transparent 0.8px);
+            background-size: 20px 20px;
+            opacity: 0.2;
         }
+
+        /* Mobile Menu Transition */
+        #mobile-menu {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform-origin: top;
+        }
+        #mobile-menu.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scaleY(0.95);
+        }
+        #mobile-menu:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scaleY(1);
+        }
+        
+        /* Text Utils */
+        .break-keep { word-break: keep-all; }
     </style>
 </head>
 <body class="antialiased selection:bg-er-accent selection:text-white flex flex-col min-h-screen">
 
     <!-- Navigation -->
-    <nav class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-lg border-b border-er-primary/10" id="navbar">
+    <nav class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
+            <div class="flex justify-between h-16 md:h-20 items-center">
                <!-- Logo -->
                 <div class="flex items-center cursor-pointer group" onclick="renderSection('home')">
-                    <div class="w-10 h-10 bg-er-dark text-white rounded-full flex items-center justify-center font-serif font-bold text-xl mr-3 group-hover:scale-105 transition-transform duration-300">E</div>
+                    <div class="w-9 h-9 md:w-10 md:h-10 bg-er-dark text-white rounded-full flex items-center justify-center font-serif font-bold text-lg md:text-xl mr-2 md:mr-3 group-hover:scale-105 transition-transform duration-300 shadow-lg">E</div>
                     <div class="flex flex-col">
-                        <span class="text-xl font-bold text-er-dark tracking-tight leading-none">ER</span>
-                        <span class="text-[10px] uppercase tracking-widest text-er-primary font-medium mt-0.5">Enneagram for Restoration</span>
+                        <span class="text-lg md:text-xl font-bold text-er-dark tracking-tight leading-none">ER</span>
+                        <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-er-primary font-medium mt-0.5">Enneagram for Restoration</span>
                     </div>
                 </div>
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8 items-center">
-                    <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group">
+                    <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         About
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
-                    <button onclick="renderSection('programs')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group">
+                    <button onclick="renderSection('programs')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         Programs
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
-                    <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group">
+                    <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         Stories
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
-                    <button onclick="renderSection('resources')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group">
+                    <button onclick="renderSection('resources')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         Resources
-                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
                     
-                    <div class="h-4 w-px bg-gray-300 mx-2"></div>
+                    <div class="h-4 w-px bg-gray-200 mx-2"></div>
 
-                    <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-lg shadow-gray-200 hover:shadow-xl transition-all hover:-translate-y-0.5">
+                    <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
                         상담 문의
                     </button>
                     <!-- Login Placeholder -->
-                    <button onclick="toggleLogin()" class="text-gray-400 hover:text-er-dark transition-colors">
-                        <i class="far fa-user text-lg"></i>
+                    <button onclick="toggleLogin()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors">
+                        <i class="far fa-user"></i>
                     </button>
                 </div>
                 
                 <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none">
+                <div class="md:hidden flex items-center gap-4">
+                    <button onclick="renderSection('apply')" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm">문의하기</button>
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none" aria-label="메뉴 열기">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -146,54 +173,54 @@
         </div>
         
         <!-- Mobile Dropdown Menu -->
-        <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-white border-b border-gray-100 shadow-xl z-40 animate-fade-in">
-            <div class="px-4 py-6 space-y-3">
-                <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-er-dark rounded-xl transition-colors">About ER</button>
-                <button onclick="renderSection('programs')" class="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-er-dark rounded-xl transition-colors">Programs</button>
-                <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-er-dark rounded-xl transition-colors">Stories</button>
-                <button onclick="renderSection('resources')" class="block w-full text-left px-4 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-er-dark rounded-xl transition-colors">Resources</button>
-                <div class="h-px bg-gray-100 my-2"></div>
-                <button onclick="renderSection('apply')" class="block w-full text-center px-4 py-3 text-base font-bold text-white bg-er-dark hover:bg-gray-800 rounded-xl mt-2 shadow-md">상담/강의 문의하기</button>
+        <div id="mobile-menu" class="hidden absolute w-full bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl z-40 top-16 left-0">
+            <div class="px-5 py-6 space-y-2">
+                <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">About ER</button>
+                <button onclick="renderSection('programs')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Programs</button>
+                <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Stories</button>
+                <button onclick="renderSection('resources')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Resources</button>
+                <div class="h-px bg-gray-100 my-3 mx-4"></div>
+                <button onclick="toggleLogin()" class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-500 hover:text-er-dark"><i class="far fa-user mr-2"></i> 마이페이지 / 로그인</button>
             </div>
         </div>
     </nav>
 
     <!-- Main Content Area -->
-    <main id="main-content" class="flex-grow pt-20">
+    <main id="main-content" class="flex-grow pt-16 md:pt-20">
         <!-- Dynamic content injected here -->
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-er-primary/10 pt-16 pb-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
+    <footer class="bg-white border-t border-er-primary/10 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 mb-12">
                 <div class="md:col-span-5 space-y-6">
                     <a href="#" onclick="renderSection('home')" class="inline-flex items-center gap-2">
                         <div class="w-8 h-8 bg-er-dark text-white rounded-full flex items-center justify-center font-serif font-bold text-sm">E</div>
                         <span class="text-lg font-bold text-er-dark">ER</span>
                     </a>    
-                    <p class="text-sm text-gray-500 leading-7 max-w-sm">
-                        Original Design을 회복하고 공동체를 치유하는 여정.<br>
-                        기독교적 에니어그램의 통합적 접근을 통해<br>
+                    <p class="text-sm text-gray-500 leading-7 break-keep">
+                        Original Design을 회복하고 공동체를 치유하는 여정.<br class="hidden md:block">
+                        기독교적 에니어그램의 통합적 접근을 통해<br class="hidden md:block">
                         하나님이 창조하신 나의 은사와 부르심을 다시 만납니다.
                     </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-er-accent hover:text-white transition-colors"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-er-accent hover:text-white transition-colors"><i class="fab fa-youtube"></i></a>
+                    <div class="flex space-x-3">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-er-accent hover:text-white transition-all duration-300 shadow-sm"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-er-accent hover:text-white transition-all duration-300 shadow-sm"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 
                 <div class="md:col-span-3">
-                    <h4 class="text-sm font-bold text-er-dark uppercase tracking-wider mb-8">Contact</h4>
+                    <h4 class="text-sm font-bold text-er-dark uppercase tracking-wider mb-6">Contact</h4>
                     <ul class="space-y-4 text-sm text-gray-500">
-                        <li class="flex items-center gap-3"><i class="far fa-envelope text-er-accent"></i> restoration.son@gmail.com</li>
-                        <li class="flex items-center gap-3"><i class="fas fa-map-marker-alt text-er-accent"></i> Korea | USA (Non-profit)</li>
-                        <li class="flex items-center gap-3"><i class="far fa-clock text-er-accent"></i> Mon-Fri 10:00 - 17:00 (EST)</li>
+                        <li class="flex items-start gap-3"><i class="far fa-envelope text-er-accent mt-0.5"></i> restoration.son@gmail.com</li>
+                        <li class="flex items-start gap-3"><i class="fas fa-map-marker-alt text-er-accent mt-0.5"></i> Korea | USA (Non-profit)</li>
+                        <li class="flex items-start gap-3"><i class="far fa-clock text-er-accent mt-0.5"></i> Mon-Fri 10:00 - 17:00</li>
                     </ul>
                 </div>
                 
                 <div class="md:col-span-4">
-                    <h4 class="text-sm font-bold text-er-dark uppercase tracking-wider mb-1 pl-5">
+                    <h4 class="text-sm font-bold text-er-dark uppercase tracking-wider mb-6">
                         Partnership
                     </h4>
 
@@ -201,49 +228,26 @@
                         <div class="flex items-center gap-0 p-2 bg-gray- rounded-xl">
                             
                             <!-- SOIM -->
-                            <a
-                                href="https://www.soim.online/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="inline-flex items-center opacity-80 hover:opacity-100 transition"
-                            >
-                                <img
-                                    src="SOIM-Logo.png"
-                                    alt="SOIM"
-                                    class="h-25 w-auto opacity-90 hover:grayscale-0 transition-all"
-                                    onerror="this.style.display='none'"
-                                >
+                            <a href="https://www.soim.online/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center opacity-80 hover:opacity-100 transition">
+                                <img src="SOIM-Logo.png" alt="SOIM" class="h-24 w-auto opacity-90 hover:grayscale-0 transition-all" onerror="this.style.display='none'">
                             </a>
 
                             <!-- Divider -->
-                            <div class="h-6 w-px bg-gray-200"></div>
+                            <div class="h-6 w-px bg-gray-200 mx-4"></div>
 
                             <!-- IEA -->
-                                <a
-                                href="https://www.internationalenneagram.org"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="inline-flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition"
-                                >
-                                <img
-                                    src="IEA-logo.png"
-                                    alt="IEA"
-                                    class="h-14 w-14 object-contain opacity-95 hover:grayscale-0 transition-all"
-                                    onerror="this.style.display='none'"
-                                >
-                                <span class="text-[11px] tracking-widest text-gray-800 font-semibold">
-                                    IEA
-                                </span>
-                                </a>
-            
+                            <a href="https://www.internationalenneagram.org" target="_blank" rel="noopener noreferrer" class="inline-flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition">
+                                <img src="IEA-logo.png" alt="IEA" class="h-14 w-14 object-contain opacity-95 hover:grayscale-0 transition-all" onerror="this.style.display='none'">
+                                <span class="text-[11px] tracking-widest text-gray-800 font-semibold">IEA</span>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
-                <p>&copy; 2025 ER (Enneagram for Restoration). All rights reserved.</p>
-                <p class="mt-2 md:mt-0">Operating as a pilot non-profit program.</p>
+            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-4">
+                <p>&copy; 2025 ER (Enneagram for Restoration).</p>
+                <p>Operating as a pilot non-profit program.</p>
             </div>
         </div>
     </footer>
@@ -262,63 +266,56 @@
             stats: {
                 labels: ['개인/가정', '목회자', '기업/조직', '강사양성', '청소년'],
                 data: [45, 25, 15, 10, 5],
-                descriptions: [
-                    '부부 관계 회복 및 자녀 양육 코칭',
-                    '목회자 및 선교사 소명 회복',
-                    '강점 기반 팀빌딩 및 갈등 관리',
-                    '에니어그램 전문 강사 배출',
-                    '청소년 진로 및 기타 상담'
-                ]
             },
             types: {
                 labels: ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 효율적인 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 명령한 사람', '8번 강한 사람', '9번 조화로운 사람'],
                 data: [8, 9, 8, 7, 6, 8, 7, 8, 9] 
             },
             notices: [
-                        {
-                        id: 1,
-                        tag: "모집중",
-                        title: "SOIM 에니어그램 전문가반 5기 모집",
-                        date: "2025-01-15",
-                        summary: "온라인 8주 과정 강의과 1:1 멘토링",
-                        body: `
-                            <p class="text-gray-600 leading-relaxed break-keep">
-                            에니어그램을 “아는 단계”에서 끝내지 않고, 삶과 현장에 적용하는 단계까지 함께 갑니다.
-                            전문가반 5기에서는 기초 이론부터 적용까지 매주 심화 수업과 과제로 훈련하고,
-                            1:1 멘토링과 강의 피드백을 통해 실제 강의·코칭 현장에서 자신 있게 사용할 수 있도록 돕습니다.
-                            수료 후에는 (선택사항) 스터디 그룹과 코칭 실습으로 이어지며, 정식 코치 활동을 준비할 수 있습니다.
-                            </p>
+                {
+                    id: 1,
+                    tag: "모집중",
+                    title: "SOIM 에니어그램 전문가반 5기 모집",
+                    date: "2025-01-15",
+                    summary: "온라인 8주 과정 강의과 1:1 멘토링",
+                    body: `
+                        <p class="text-gray-600 leading-relaxed break-keep">
+                        에니어그램을 “아는 단계”에서 끝내지 않고, 삶과 현장에 적용하는 단계까지 함께 갑니다.
+                        전문가반 5기에서는 기초 이론부터 적용까지 매주 심화 수업과 과제로 훈련하고,
+                        1:1 멘토링과 강의 피드백을 통해 실제 강의·코칭 현장에서 자신 있게 사용할 수 있도록 돕습니다.
+                        수료 후에는 (선택사항) 스터디 그룹과 코칭 실습으로 이어지며, 정식 코치 활동을 준비할 수 있습니다.
+                        </p>
 
-                            <div class="mt-6 grid gap-3">
-                            <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                <span class="text-xs font-bold text-gray-500 w-20">기간</span>
-                                <span class="text-sm text-gray-700">8주</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                <span class="text-xs font-bold text-gray-500 w-20">대상</span>
-                                <span class="text-sm text-gray-700">에니어그램을 단순한 성격 이해를 넘어, <br> 기독교 세계관 안에서 "자기 이해와 타인 돌봄"(코칭·강의)에 <br> 실제로 적용하고자 하는 분</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                                <span class="text-xs font-bold text-gray-500 w-20">지원마감</span>
-                                <span class="text-sm text-gray-700">2025.01.15</span>
-                            </div>
-                            </div>
-                        `
-                        },
-                        {
-                        id: 2,
-                        tag: "안내",
-                        title: "홈페이지 리뉴얼 안내",
-                        date: "2024-12-20",
-                        summary: "리뉴얼 진행 중이며 일부 기능은 준비 중입니다.",
-                        body: `
-                            <p class="text-gray-600 leading-relaxed break-keep">
-                            ER 홈페이지는 더 나은 정보 제공을 위해 리뉴얼 중입니다.
-                            일부 메뉴와 기능(로그인/공지 확장 등)은 순차적으로 업데이트됩니다.
-                            </p>
-                        `
-                        }
-                    ] 
+                        <div class="mt-6 grid gap-3">
+                        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                            <span class="text-xs font-bold text-gray-500 w-20">기간</span>
+                            <span class="text-sm text-gray-700">8주</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                            <span class="text-xs font-bold text-gray-500 w-20">대상</span>
+                            <span class="text-sm text-gray-700 break-keep">에니어그램을 단순한 성격 이해를 넘어, <br> 기독교 세계관 안에서 "자기 이해와 타인 돌봄"(코칭·강의)에 <br> 실제로 적용하고자 하는 분</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                            <span class="text-xs font-bold text-gray-500 w-20">지원마감</span>
+                            <span class="text-sm text-gray-700">2025.01.15</span>
+                        </div>
+                        </div>
+                    `
+                },
+                {
+                    id: 2,
+                    tag: "안내",
+                    title: "홈페이지 리뉴얼 안내",
+                    date: "2024-12-20",
+                    summary: "리뉴얼 진행 중이며 일부 기능은 준비 중입니다.",
+                    body: `
+                        <p class="text-gray-600 leading-relaxed break-keep">
+                        ER 홈페이지는 더 나은 정보 제공을 위해 리뉴얼 중입니다.
+                        일부 메뉴와 기능(로그인/공지 확장 등)은 순차적으로 업데이트됩니다.
+                        </p>
+                    `
+                }
+            ] 
         };
 
         // --- Core Functions ---
@@ -326,11 +323,11 @@
             state.currentSection = sectionId;
             const main = document.getElementById('main-content');
             
-            // Close mobile menu if open
+            // Close mobile menu
             document.getElementById('mobile-menu').classList.add('hidden');
             
             // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'auto' }); // Smooth scroll sometimes interferes with render
 
             let html = '';
             switch(sectionId) {
@@ -339,10 +336,8 @@
                 case 'programs': html = renderPrograms(); break;
                 case 'community': html = renderCommunity(); break;
                 case 'resources': html = renderResources(); break;
-                // ✅ 추가
                 case 'notices': html = renderNotices(); break;
                 case 'notice_detail': html = renderNoticeDetail(payload); break;
-
                 case 'types_guide': html = renderTypesGuide(); break; 
                 case 'apply': html = renderApply(); break;
                 case 'mypage': html = renderMyPage(); break;
@@ -353,8 +348,8 @@
             main.innerHTML = html;
             
             // Post-render actions
-            if(sectionId === 'home') initCharts('home');
-            if(sectionId === 'community') initCharts('community');
+            if(sectionId === 'home') setTimeout(() => initCharts('home'), 100);
+            if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
             if(sectionId === 'programs') updateProgramView(state.programFilter);
         }
 
@@ -367,56 +362,63 @@
 
         function renderHome() {
             return `
-                <div class="relative overflow-hidden">
-                    <div class="absolute inset-0 bg-pattern z-0"></div>
-                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-er-accent/10 rounded-full blur-3xl z-0"></div>
-                    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-gray-200/50 rounded-full blur-3xl z-0"></div>
+                <div class="relative overflow-hidden min-h-[90vh] flex flex-col justify-center">
+                    <div class="absolute inset-0 bg-pattern z-0 pointer-events-none"></div>
+                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 md:w-96 md:h-96 bg-er-accent/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
+                    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-48 h-48 md:w-72 md:h-72 bg-gray-200/50 rounded-full blur-3xl z-0 pointer-events-none"></div>
 
-                    <div class="max-w-7xl mx-auto pt-16 pb-20 px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 py-12 md:py-20">
                         <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
                             <!-- Text Content -->
-                            <div class="text-center lg:text-left animate-fade-in-up">
-                                <span class="inline-block py-1.5 px-4 rounded-full bg-white border border-er-accent/30 text-er-dark text-xs font-bold tracking-widest uppercase mb-6 shadow-sm">
+                            <div class="text-center lg:text-left animate-fade-in-up order-2 lg:order-1">
+                                <span class="inline-block py-1.5 px-3 md:px-4 rounded-full bg-white border border-er-accent/30 text-er-dark text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4 md:mb-6 shadow-sm">
                                     Non-profit Organization
                                 </span>
-                                <h1 class="text-4xl sm:text-5xl lg:text-6xl tracking-tight font-extrabold text-er-dark mb-6 leading-tight break-keep">
+                                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight font-extrabold text-er-dark mb-4 md:mb-6 leading-tight break-keep">
                                     Original Design을<br>
-                                    <span class="text-er-accent relative whitespace-nowrap">
+                                    <span class="text-er-accent relative inline-block">
                                         발견하고 회복합니다
-                                        <svg class="absolute w-full h-3 -bottom-1 left-0 text-er-accent/20" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" /></svg>
+                                        <svg class="absolute w-full h-2 md:h-3 -bottom-0.5 md:-bottom-1 left-0 text-er-accent/20" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" /></svg>
                                     </span>
                                 </h1>
-                                <p class="mt-4 text-lg text-gray-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 break-keep">
-                                    기독교 세계관과 에니어그램의 통합적 접근을 통해<br class="hidden sm:block">
-                                    나 자신을 있는 그대로 이해하고, 가정과 공동체를<br class="hidden sm:block">
+                                <p class="mt-4 text-base md:text-lg text-gray-600 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0 break-keep">
+                                    기독교 세계관과 에니어그램의 통합적 접근을 통해
+                                    나 자신을 이해하고, 가정과 공동체를
                                     건강하게 치유하는 회복의 여정에 당신을 초대합니다.
                                 </p>
-                                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                    <button onclick="renderSection('programs')" class="px-8 py-4 bg-er-dark text-white rounded-full font-bold shadow-soft hover:shadow-card hover:-translate-y-1 transition-all">
+                                <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                                    <button onclick="renderSection('programs')" class="w-full sm:w-auto px-8 py-3.5 md:py-4 bg-er-dark text-white rounded-full font-bold shadow-soft hover:shadow-card hover:-translate-y-1 transition-all active:scale-95">
                                         프로그램 살펴보기
                                     </button>
-                                    <button onclick="renderSection('apply')" class="px-8 py-4 bg-white text-er-dark border border-gray-200 rounded-full font-bold shadow-sm hover:bg-gray-50 hover:border-er-accent transition-all">
-                                        상담/문의하기
+                                    <button onclick="renderSection('apply')" class="w-full sm:w-auto px-8 py-3.5 md:py-4 bg-white text-er-dark border border-gray-200 rounded-full font-bold shadow-sm hover:bg-gray-50 hover:border-er-accent transition-all active:scale-95">
+                                        상담 신청하기
                                     </button>
                                 </div>
-                                <div class="mt-10 flex items-center justify-center lg:justify-start gap-6 text-sm text-gray-400 font-medium">
-                                    <div class="flex items-center gap-2"><i class="fas fa-check text-er-accent"></i> 전문 자격 코치진</div>
-                                    <div class="flex items-center gap-2"><i class="fas fa-check text-er-accent"></i> 1:1 맞춤형 케어</div>
+                                <div class="mt-8 md:mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-xs md:text-sm text-gray-400 font-medium">
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-er-accent"></i> 전문 자격 코치진</div>
+                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-er-accent"></i> 1:1 맞춤형 케어</div>
                                 </div>
                             </div>
 
                             <!-- Hero Visual (Chart) -->
-                            <div class="relative lg:h-[600px] flex items-center justify-center animate-fade-in" style="animation-delay: 0.2s;">
-                                <div class="relative w-full max-w-md bg-white/60 backdrop-blur-sm rounded-3xl p-6 border border-white shadow-card">
-                                    <div class="absolute -top-4 -right-4 w-20 h-20 bg-er-accent rounded-full flex items-center justify-center text-white font-bold shadow-lg z-20 animate-bounce" style="animation-duration: 3s;">
-                                        <div class="text-center text-xs leading-tight">9가지<br>유형</div>
+                            <div class="relative order-1 lg:order-2 flex justify-center animate-fade-in mb-4 md:mb-0">
+                                <div class="relative w-full max-w-sm md:max-w-md bg-white/60 backdrop-blur-md rounded-[2rem] p-4 md:p-6 border border-white/80 shadow-card">
+                                    <!-- Floating Badge -->
+                                    <div class="absolute -top-4 -left-2 md:-top-6 md:-left-8 bg-white p-3 md:p-4 rounded-2xl shadow-lg border border-gray-50 flex items-center gap-3 animate-slide-down">
+                                        <div class="w-8 h-8 md:w-10 md:h-10 bg-er-accent rounded-full flex items-center justify-center text-white font-bold text-sm md:text-base">
+                                            <i class="fas fa-chart-pie"></i>
+                                        </div>
+                                        <div class="text-left">
+                                            <p class="text-[8px] md:text-[10px] text-gray-400 font-bold uppercase">Enneagram</p>
+                                            <p class="text-xs md:text-sm font-bold text-er-dark">9 Personality Types</p>
+                                        </div>
                                     </div>
-                                    
-                                    <div class="chart-container">
+
+                                    <div class="chart-container h-[280px] md:h-[350px]">
                                         <canvas id="heroChart"></canvas>
                                     </div>
-                                    <div class="text-center mt-4">
-                                        <p class="text-sm text-gray-500 font-medium">"에니어그램을 통해 관계가 회복되고, 팀이 살아납니다"</p>
+                                    <div class="text-center mt-2 md:mt-4">
+                                        <p class="text-xs md:text-sm text-gray-500 font-medium">"에니어그램을 통해 관계가 회복됩니다"</p>
                                     </div>
                                 </div>
                             </div>
@@ -428,174 +430,97 @@
 
         function renderAbout() {
             return `
-                <div class="py-20 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
-                    <div class="max-w-7xl mx-auto">
+                <div class="py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
+                    <div class="max-w-6xl mx-auto">
                         <!-- Vision Section -->
-                        <div class="text-center mb-28 animate-fade-in-up">
-                            <h2 class="text-xs tracking-[0.3em] text-er-accent/70 mb-5">
+                        <div class="text-center mb-16 md:mb-24 animate-fade-in-up">
+                            <h2 class="text-xs font-bold tracking-[0.3em] text-er-accent mb-4 md:mb-5">
                                 VISION & MISSION
                             </h2>
-
-                            <h3 class="max-w-4xl mx-auto text-3xl md:text-4xl font-medium text-er-dark leading-[1.6] mb-10 break-keep">
-                                나의 <span class="font-semibold text-er-accent">Original Design</span>을 알때,<br>
-                                비로소 다른 이들의 <span class="font-semibold text-er-accent">Original Design</span>이 보입니다.
+                            <h3 class="text-2xl md:text-4xl font-bold text-er-dark leading-snug mb-8 break-keep">
+                                나의 <span class="text-er-accent">Original Design</span>을 알 때,<br>
+                                비로소 타인의 <span class="text-er-accent">Original Design</span>이 보입니다.
                             </h3>
-
                             <div class="flex justify-center items-center gap-3">
-                                <span class="w-8 h-px bg-er-accent/40"></span>
-                                <span class="w-2 h-2 rounded-full bg-er-accent/50"></span>
-                                <span class="w-8 h-px bg-er-accent/40"></span>
+                                <span class="w-8 h-px bg-er-accent/30"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-er-accent/50"></span>
+                                <span class="w-8 h-px bg-er-accent/30"></span>
                             </div>
                         </div>      
 
                         <!-- Founder Profile -->
-<div class="bg-er-base/70 rounded-3xl p-8 md:p-12 shadow-soft mb-20 animate-fade-in-up border border-white/60"
-     style="animation-delay: 0.1s;">
-  <div class="flex flex-col lg:flex-row gap-12 items-center">
+                        <div class="bg-er-base/70 rounded-[2.5rem] p-8 md:p-12 shadow-soft mb-16 md:mb-20 animate-fade-in-up border border-white/60">
+                            <div class="flex flex-col lg:flex-row gap-8 md:gap-12 items-center">
+                                <!-- Left: Profile -->
+                                <div class="w-full lg:w-1/3 relative group flex flex-col items-center text-center">
+                                    <div class="relative mb-6">
+                                        <div class="w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden shadow-card bg-gray-200 ring-4 ring-white">
+                                            <img src="son-profile-picture.png" alt="Jiyoung Son" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://via.placeholder.com/300x300?text=Profile';">
+                                        </div>
+                                        <div class="absolute -inset-3 rounded-full border border-er-accent/20 pointer-events-none"></div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <p class="text-[10px] tracking-widest text-er-accent font-bold uppercase">Founder & Head Coach</p>
+                                        <h3 class="text-2xl md:text-3xl font-extrabold text-er-dark">손지영</h3>
+                                        <p class="text-sm text-gray-600 leading-relaxed mt-2 break-keep">
+                                            에니어그램과 기독교 세계관을 통합하여<br>개인과 공동체의 회복을 돕습니다.
+                                        </p>
+                                    </div>
+                                </div>
 
-    <!-- Left: Profile -->
-    <div class="w-full lg:w-1/3 relative group flex flex-col items-center text-center">
-      <!-- Photo -->
-      <div class="relative mb-6">
-        <div class="w-52 h-52 md:w-60 md:h-60 rounded-full overflow-hidden shadow-lg bg-gray-200 ring-4 ring-white">
-          <img
-            src="son-profile-picture.png"
-            alt="Jiyoung Son"
-            class="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-          >
-        </div>
-        <div class="absolute -inset-2 rounded-full border border-er-accent/25 pointer-events-none"></div>
-      </div>
+                                <!-- Right: Credentials -->
+                                <div class="w-full lg:w-2/3">
+                                    <div class="grid gap-4">
+                                        <!-- Highlight card -->
+                                        <div class="flex items-center gap-4 p-4 md:p-5 bg-white rounded-2xl border border-er-accent/20 shadow-sm">
+                                            <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0 text-lg">
+                                                <i class="fas fa-certificate"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-er-dark text-sm md:text-base break-keep">Enneagram Spectrum Advanced Certification</h4>
+                                                <p class="text-xs text-gray-500 mt-0.5">Dr. Wagner (International Enneagram Association)</p>
+                                            </div>
+                                        </div>
 
-      <!-- Name + Title -->
-      <div class="space-y-2">
-        <p class="text-[11px] tracking-[0.25em] text-er-accent font-bold uppercase">
-          Founder & Head Coach
-        </p>
-
-        <h3 class="text-3xl font-extrabold text-er-dark leading-tight">
-          손지영
-        </h3>
-
-
-        <!-- One-line tagline -->
-        <p class="text-sm text-gray-600 leading-relaxed mt-3 break-keep max-w-xs">
-          에니어그램과 기독교 세계관을 통합하여<br>
-          개인과 공동체의 회복을 돕습니다.
-        </p>
-
-        <!-- Small chips (optional but very “pro” looking) -->
-        <div class="flex flex-wrap justify-center gap-2 pt-3">
-          <span class="px-3 py-1 rounded-full bg-white/70 border border-er-primary/10 text-[11px] text-gray-600 font-semibold">
-            IEA Professional
-          </span>
-          <span class="px-3 py-1 rounded-full bg-white/70 border border-er-primary/10 text-[11px] text-gray-600 font-semibold">
-            Instructor
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right: Credentials -->
-    <div class="w-full lg:w-2/3">
-      <div class="space-y-4">
-
-        <!-- Highlight card (top credential) -->
-        <div class="flex items-start gap-4 p-5 bg-white rounded-2xl border border-er-accent/20 shadow-sm">
-          <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0">
-            <i class="fas fa-certificate"></i>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-bold text-er-dark leading-snug">
-              Enneagram Spectrum Advanced Certification
-            </h4>
-            <p class="text-sm text-gray-500 mt-1">
-              Dr. Wagner (International Enneagram Association)
-            </p>
-          </div>
-        </div>
-
-        <!-- SOIM: GLTC Instructor -->
-        <div class="flex items-start gap-4 p-5 bg-white rounded-2xl border border-er-primary/10 shadow-sm hover:shadow-md transition">
-          <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0">
-            <i class="fas fa-chalkboard-teacher"></i>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-bold text-er-dark leading-snug">
-              SOIM Global Leadership Training Course Instructor
-            </h4>
-            <p class="text-sm text-gray-500 mt-1">
-              소임 GLTC 강사
-            </p>
-          </div>
-        </div>
-
-        <!-- SOIM: Enneagram Instructor -->
-        <div class="flex items-start gap-4 p-5 bg-white rounded-2xl border border-er-primary/10 shadow-sm hover:shadow-md transition">
-          <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0">
-            <i class="fas fa-user-check"></i>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-bold text-er-dark leading-snug">
-              SOIM Enneagram Course Instructor
-            </h4>
-            <p class="text-sm text-gray-500 mt-1">
-              소임 에니어그램 전문가 양성반 강사
-            </p>
-          </div>
-        </div>
-
-        <!-- IEA Professional -->
-        <div class="flex items-start gap-4 p-5 bg-white rounded-2xl border border-er-primary/10 shadow-sm hover:shadow-md transition">
-          <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-bold text-er-dark leading-snug">
-              IEA Accredited Professional
-            </h4>
-            <p class="text-sm text-gray-500 mt-1">
-              국제 에니어그램 협회 인증 전문가
-            </p>
-          </div>
-        </div>
-
-        <!-- DTS -->
-        <div class="flex items-start gap-4 p-5 bg-white rounded-2xl border border-er-primary/10 shadow-sm hover:shadow-md transition">
-          <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0">
-            <i class="fas fa-graduation-cap"></i>
-          </div>
-          <div class="flex-1">
-            <h4 class="font-bold text-er-dark leading-snug">
-              Dallas Theological Seminary (DTS)
-            </h4>
-            <p class="text-sm text-gray-500 mt-1">
-              상담학 석사 과정 중
-            </p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
+                                        <div class="grid sm:grid-cols-2 gap-4">
+                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
+                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">SOIM GLTC Instructor</h4>
+                                                <p class="text-xs text-gray-500">소임 글로벌 리더십 트레이닝 강사</p>
+                                            </div>
+                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
+                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Enneagram Instructor</h4>
+                                                <p class="text-xs text-gray-500">소임 에니어그램 전문가 양성반 강사</p>
+                                            </div>
+                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
+                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Professional</h4>
+                                                <p class="text-xs text-gray-500">국제 에니어그램 협회 인증 전문가</p>
+                                            </div>
+                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
+                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">DTS Counseling</h4>
+                                                <p class="text-xs text-gray-500">Dallas Theological Seminary 석사 과정</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Coaches Grid -->
-                        <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
-                            <h3 class="text-2xl font-bold text-center text-er-dark mb-10">함께하는 코치진</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="animate-fade-in-up">
+                            <h3 class="text-xl md:text-2xl font-bold text-center text-er-dark mb-8">함께하는 코치진</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
                                 ${['김수잔', '서초윤', '정익훈', '정경하', '주찬미', '임효조', '최다영'].map(name => `
-                                    <div class="group bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-card hover:-translate-y-1 transition-all duration-300">
-                                        <div class="w-16 h-16 mx-auto bg-gray-50 rounded-full flex items-center justify-center text-xl font-bold text-gray-400 mb-4 group-hover:bg-er-accent group-hover:text-white transition-colors">
+                                    <div class="bg-white rounded-2xl p-5 text-center shadow-sm border border-gray-100 hover:shadow-card hover:-translate-y-1 transition-all duration-300">
+                                        <div class="w-14 h-14 mx-auto bg-gray-50 rounded-full flex items-center justify-center text-lg font-bold text-gray-400 mb-3">
                                             ${name.substring(0,1)}
                                         </div>
-                                        <h4 class="font-bold text-gray-900">${name}</h4>
-                                        <p class="text-xs text-er-accent mt-1">Coach</p>
+                                        <h4 class="font-bold text-gray-900 text-sm">${name}</h4>
+                                        <p class="text-[10px] text-er-accent mt-1 uppercase tracking-wide">Coach</p>
                                     </div>
                                 `).join('')}
-                                <div class="bg-gray-50 rounded-2xl p-6 flex flex-col items-center justify-center text-center border border-dashed border-gray-300">
-                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-gray-300 mb-3"><i class="fas fa-plus"></i></div>
-                                    <p class="text-xs text-gray-500">전문가 양성과정<br>모집 중</p>
+                                <div class="bg-gray-50 rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors" onclick="renderSection('notices')">
+                                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-300 mb-2 shadow-sm"><i class="fas fa-plus"></i></div>
+                                    <p class="text-[10px] text-gray-500 font-medium">전문가 과정<br>모집 중</p>
                                 </div>
                             </div>
                         </div>
@@ -607,19 +532,19 @@
         function renderPrograms() {
             return `
                 <div class="bg-er-base min-h-screen">
-                    <div class="bg-er-dark text-white py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-                        <div class="absolute inset-0 bg-pattern opacity-5"></div>
+                    <div class="bg-er-dark text-white py-16 px-6 relative overflow-hidden rounded-b-[3rem]">
+                        <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                         <div class="relative z-10 max-w-7xl mx-auto text-center">
-                            <h2 class="text-3xl sm:text-4xl font-bold mb-4">맞춤형 프로그램</h2>
-                            <p class="text-gray-300 text-lg max-w-2xl mx-auto">개인의 회복에서 공동체의 성장까지,<br>가장 적합한 솔루션을 제안합니다.</p>
+                            <h2 class="text-2xl md:text-4xl font-bold mb-3">맞춤형 프로그램</h2>
+                            <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인의 회복에서 공동체의 성장까지, 당신에게 가장 적합한 솔루션을 제안합니다.</p>
                             
-                            <!-- Tab Navigation -->
-                            <div class="mt-10 inline-flex flex-wrap justify-center gap-2 bg-white/10 p-1.5 rounded-full backdrop-blur-sm">
+                            <!-- Scrollable Tab Navigation -->
+                            <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
                                 ${['individual:개인/가정', 'church:사역/교회', 'business:비즈니스', 'training:강사양성'].map(item => {
                                     const [key, label] = item.split(':');
                                     const isActive = state.programFilter === key;
                                     return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
-                                        class="px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${isActive ? 'bg-white text-er-dark shadow-md' : 'text-gray-300 hover:text-white hover:bg-white/5'}">
+                                        class="whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 ${isActive ? 'bg-white text-er-dark shadow-md scale-105' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">
                                         ${label}
                                     </button>`
                                 }).join('')}
@@ -627,43 +552,43 @@
                         </div>
                     </div>
 
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20 pb-20">
-                        <div id="program-intro" class="mb-8 text-center bg-white rounded-2xl p-8 shadow-soft max-w-3xl mx-auto border border-gray-100 animate-fade-in-up">
+                    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 pb-20">
+                        <div id="program-intro" class="mb-6 text-center bg-white rounded-2xl p-6 shadow-soft max-w-2xl mx-auto border border-gray-100 animate-fade-in-up">
                             <!-- Intro text injected by JS -->
                         </div>
                         
-                        <div id="program-cards" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div id="program-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <!-- Cards injected by JS -->
                         </div>
 
                         <!-- Process Section -->
-                        <div class="mt-24">
-                            <div class="text-center mb-12">
+                        <div class="mt-20">
+                            <div class="text-center mb-10">
                                 <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Process</span>
-                                <h3 class="text-2xl font-bold text-er-dark mt-2">어떻게 진행되나요?</h3>
+                                <h3 class="text-xl md:text-2xl font-bold text-er-dark mt-2">진행 과정</h3>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8 max-w-5xl mx-auto">
-                                <div class="bg-white p-8 rounded-3xl text-center shadow-sm relative group hover:shadow-md transition-all">
-                                    <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-2xl"></i></div>
-                                    <div class="w-14 h-14 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="far fa-file-alt"></i></div>
-                                    <h4 class="font-bold text-lg mb-2">1. 신청서 작성</h4>
-                                    <p class="text-sm text-gray-500">온라인 신청서를 통해<br>현재 상황과 니즈를 파악합니다.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto">
+                                <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-sm relative group hover:shadow-card transition-all">
+                                    <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-xl"></i></div>
+                                    <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="far fa-file-alt"></i></div>
+                                    <h4 class="font-bold text-base mb-1">1. 신청서 작성</h4>
+                                    <p class="text-xs text-gray-500 break-keep">현재 상황과 니즈를 파악합니다.</p>
                                 </div>
-                                <div class="bg-white p-8 rounded-3xl text-center shadow-sm relative group hover:shadow-md transition-all">
-                                    <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-2xl"></i></div>
-                                    <div class="w-14 h-14 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="far fa-comments"></i></div>
-                                    <h4 class="font-bold text-lg mb-2">2. 사전 인터뷰</h4>
-                                    <p class="text-sm text-gray-500">코치와 1:1 상담을 통해<br>방향을 설정하고 일정을 조율합니다.</p>
+                                <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-sm relative group hover:shadow-card transition-all">
+                                    <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-xl"></i></div>
+                                    <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="far fa-comments"></i></div>
+                                    <h4 class="font-bold text-base mb-1">2. 사전 인터뷰</h4>
+                                    <p class="text-xs text-gray-500 break-keep">코치와 상담을 통해 방향을 설정합니다.</p>
                                 </div>
-                                <div class="bg-white p-8 rounded-3xl text-center shadow-sm group hover:shadow-md transition-all">
-                                    <div class="w-14 h-14 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition-transform"><i class="fas fa-chalkboard-teacher"></i></div>
-                                    <h4 class="font-bold text-lg mb-2">3. 코칭/강의 진행</h4>
-                                    <p class="text-sm text-gray-500">맞춤형 커리큘럼으로<br>회복의 여정을 시작합니다.</p>
+                                <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-sm group hover:shadow-card transition-all">
+                                    <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="fas fa-chalkboard-teacher"></i></div>
+                                    <h4 class="font-bold text-base mb-1">3. 코칭/강의</h4>
+                                    <p class="text-xs text-gray-500 break-keep">맞춤형 커리큘럼으로 진행됩니다.</p>
                                 </div>
                             </div>
-                            <div class="text-center mt-12">
-                                <button onclick="renderSection('apply')" class="bg-er-dark text-white px-10 py-4 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-1 transition-all">
-                                    지금 상담 신청하기
+                            <div class="text-center mt-10">
+                                <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
+                                    상담 신청하기
                                 </button>
                             </div>
                         </div>
@@ -674,48 +599,48 @@
 
         function renderCommunity() {
             return `
-                <div class="bg-white min-h-screen py-20">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="text-center mb-16 animate-fade-in-up">
+                <div class="bg-white min-h-screen py-16 px-4">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-12 animate-fade-in-up">
                             <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Stories</span>
-                            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mt-2">회복과 변화의 이야기</h2>
-                            <p class="mt-4 text-gray-500">100건 이상의 임상 경험이 증명하는 ER의 노하우</p>
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mt-2">회복과 변화의 이야기</h2>
+                            <p class="mt-2 text-sm text-gray-500">데이터와 후기가 증명하는 ER의 노하우</p>
                         </div>
 
-                        <div class="grid lg:grid-cols-2 gap-12 mb-20">
+                        <div class="grid lg:grid-cols-2 gap-8 mb-16">
                             <!-- Chart Section -->
-                            <div class="bg-er-base rounded-3xl p-8 shadow-inner animate-fade-in-up">
-                                <h3 class="font-bold text-lg text-gray-800 mb-6 flex items-center gap-2">
+                            <div class="bg-er-base rounded-[2rem] p-6 md:p-8 shadow-inner animate-fade-in-up">
+                                <h3 class="font-bold text-base text-gray-800 mb-6 flex items-center gap-2">
                                     <i class="fas fa-chart-pie text-er-accent"></i> 상담 케이스 분포
                                 </h3>
                                 <div class="chart-container h-64">
                                     <canvas id="impactChart"></canvas>
                                 </div>
-                                <p class="text-center text-xs text-gray-400 mt-4">* 2024년 기준 누적 데이터</p>
+                                <p class="text-center text-[10px] text-gray-400 mt-4">* 2024년 기준 누적 데이터</p>
                             </div>
 
                             <!-- Testimonials -->
-                            <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.2s;">
-                                <div class="bg-er-dark text-white p-8 rounded-3xl relative overflow-hidden">
-                                    <i class="fas fa-quote-right absolute bottom-4 right-4 text-6xl text-white/5"></i>
-                                    <h4 class="font-bold text-lg mb-3 text-er-accent">왜 효과적인가요?</h4>
-                                    <p class="text-gray-300 leading-relaxed text-sm">
-                                        단순히 성격을 분류하는 것이 아니라, <span class="text-white font-bold underline decoration-er-accent">근본적인 동기(Motivation)</span>를 파악하여 내면의 상처를 치유하기 때문입니다. 기독교적 영성은 이 과정에 깊은 안정감을 더해줍니다.
+                            <div class="space-y-4 md:space-y-6 animate-fade-in-up" style="animation-delay: 0.2s;">
+                                <div class="bg-er-dark text-white p-6 md:p-8 rounded-[2rem] relative overflow-hidden shadow-card">
+                                    <i class="fas fa-quote-right absolute bottom-4 right-4 text-5xl text-white/5"></i>
+                                    <h4 class="font-bold text-base mb-2 text-er-accent">왜 효과적인가요?</h4>
+                                    <p class="text-gray-300 leading-relaxed text-sm break-keep">
+                                        단순히 성격을 분류하는 것이 아니라, <span class="text-white font-bold underline decoration-er-accent underline-offset-2">근본적인 동기(Motivation)</span>를 파악하여 내면의 상처를 치유하기 때문입니다. 기독교적 영성은 이 과정에 깊은 안정감을 더해줍니다.
                                     </p>
                                 </div>
 
-                                <div class="bg-white border border-gray-100 p-8 rounded-3xl shadow-soft hover:shadow-card transition-all">
-                                    <div class="flex text-er-accent mb-4 text-xs">
+                                <div class="bg-white border border-gray-100 p-6 md:p-8 rounded-[2rem] shadow-soft hover:shadow-card transition-all">
+                                    <div class="flex text-er-accent mb-3 text-xs">
                                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                                     </div>
-                                    <p class="text-gray-600 italic mb-6 text-sm md:text-base leading-relaxed">
+                                    <p class="text-gray-600 italic mb-6 text-sm leading-relaxed break-keep">
                                         "남편과 매일 싸우며 이혼까지 생각했습니다. 에니어그램을 통해 남편이 저를 무시한 게 아니라, 불안해서 확인하려 했다는 걸 알게 되었어요. 이제는 서로의 언어로 대화합니다."
                                     </p>
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-er-accent to-gray-400 flex items-center justify-center text-white font-bold text-xs">JH</div>
+                                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-er-accent to-gray-400 flex items-center justify-center text-white font-bold text-[10px]">JH</div>
                                         <div>
                                             <p class="text-sm font-bold text-gray-900">30대 부부</p>
-                                            <p class="text-xs text-gray-400">가정 회복 코칭</p>
+                                            <p class="text-[10px] text-gray-400">가정 회복 코칭</p>
                                         </div>
                                     </div>
                                 </div>
@@ -723,40 +648,38 @@
                         </div>
 
                         <!-- Gallery & Notice -->
-                        <div class="grid md:grid-cols-3 gap-8 animate-fade-in-up" style="animation-delay: 0.3s;">
+                        <div class="grid md:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 0.3s;">
                             <div class="md:col-span-2">
-                                <h3 class="text-xl font-bold text-gray-900 mb-6">Activity Gallery</h3>
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <h3 class="text-lg font-bold text-gray-900 mb-4">Activity Gallery</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                                     ${[1,2,3,4].map(i => `
                                         <div class="aspect-square bg-gray-100 rounded-2xl overflow-hidden hover:opacity-90 transition-opacity cursor-pointer relative group">
-                                            <div class="absolute inset-0 bg-er-dark/20 group-hover:bg-transparent transition-all"></div>
-                                            <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">Image ${i}</div>
+                                            <div class="absolute inset-0 bg-er-dark/10 group-hover:bg-transparent transition-all"></div>
+                                            <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                                <i class="far fa-image text-2xl mb-1 opacity-50"></i>
+                                            </div>
                                         </div>
                                     `).join('')}
                                 </div>
                             </div>
                             
                             <div class="bg-gray-50 rounded-3xl p-6 border border-gray-100">
-                                <h3 class="text-lg font-bold text-gray-900 mb-4 flex justify-between items-center">
+                                <h3 class="text-base font-bold text-gray-900 mb-4 flex justify-between items-center">
                                     공지사항 
-                                   <button onclick="openNotices()" class="text-xs font-normal text-gray-400 cursor-pointer hover:text-er-dark transition-colors">
-                                    더보기 +
+                                   <button onclick="openNotices()" class="text-xs font-normal text-gray-400 cursor-pointer hover:text-er-dark transition-colors px-2 py-1">
+                                    더보기 <i class="fas fa-chevron-right text-[10px] ml-1"></i>
                                     </button>
                                 </h3>
-                                <div class="space-y-4">
-                                    <!-- 공지 1 -->
-                                    <div onclick="openNotice(1)" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer">
-                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-er-accent/10 text-er-accent mb-1">모집중</span>
-                                        <h4 class="text-sm font-bold text-gray-800 truncate">소임 에니어그램 전문과정 5기 모집</h4>
-                                        <p class="text-xs text-gray-400 mt-1">2025.01.15 마감</p>
-                                    </div>
-
-                                    <!-- 공지 2 -->
-                                    <div onclick="openNotice(2)" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer">
-                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-500 mb-1">안내</span>
-                                        <h4 class="text-sm font-bold text-gray-800 truncate">홈페이지 리뉴얼 안내</h4>
-                                        <p class="text-xs text-gray-400 mt-1">2024.12.20</p>
-                                    </div>
+                                <div class="space-y-3">
+                                    ${contentData.notices.slice(0, 2).map(n => `
+                                        <div onclick="openNotice(${n.id})" class="block bg-white p-4 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100/50">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">${n.tag}</span>
+                                                <span class="text-[10px] text-gray-400">${n.date.replaceAll('-','.')}</span>
+                                            </div>
+                                            <h4 class="text-sm font-bold text-gray-800 truncate">${n.title}</h4>
+                                        </div>
+                                    `).join('')}
                                 </div>
                             </div>
                         </div>
@@ -767,47 +690,45 @@
 
         function renderResources() {
             return `
-                <div class="bg-er-base min-h-screen py-20 px-4">
+                <div class="bg-er-base min-h-screen py-16 px-4">
                     <div class="max-w-4xl mx-auto">
-                        <div class="text-center mb-16 animate-fade-in-up">
-                            <h2 class="text-3xl font-bold text-gray-900">자료실 (Resources)</h2>
-                            <p class="mt-3 text-gray-500">회복을 위한 전문 지식과 추천 자료를 확인해보세요.</p>
+                        <div class="text-center mb-12 animate-fade-in-up">
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">자료실 (Resources)</h2>
+                            <p class="mt-2 text-sm text-gray-500">회복을 위한 전문 지식과 추천 자료</p>
                         </div>
 
                         <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.1s;">
                             
                             <!-- Hero Resource Card -->
-                            <div onclick="renderSection('types_guide')" class="group bg-white rounded-3xl p-8 shadow-soft hover:shadow-card transition-all cursor-pointer relative overflow-hidden border border-white">
-                                <div class="absolute top-0 right-0 w-64 h-64 bg-er-accent/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-er-accent/20 transition-all"></div>
+                            <div onclick="renderSection('types_guide')" class="group bg-white rounded-[2rem] p-6 md:p-8 shadow-soft hover:shadow-card transition-all cursor-pointer relative overflow-hidden border border-white">
+                                <div class="absolute top-0 right-0 w-48 h-48 bg-er-accent/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:bg-er-accent/20 transition-all"></div>
                                 
                                 <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
-                                    <div class="w-16 h-16 rounded-2xl bg-er-base flex items-center justify-center text-3xl text-er-dark shadow-inner shrink-0">
+                                    <div class="w-14 h-14 rounded-2xl bg-er-base flex items-center justify-center text-2xl text-er-dark shadow-inner shrink-0">
                                         <i class="fas fa-fingerprint"></i>
                                     </div>
                                     <div class="flex-grow">
-                                        <div class="flex items-center gap-3 mb-2">
-                                            <span class="px-2 py-1 bg-er-accent/10 text-er-accent text-[10px] font-bold rounded uppercase">Featured</span>
-                                            <h3 class="text-xl font-bold text-gray-900 group-hover:text-er-accent transition-colors">9가지 유형별 회복 가이드</h3>
+                                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                                            <span class="px-2 py-0.5 bg-er-accent/10 text-er-accent text-[9px] font-bold rounded uppercase">Featured</span>
+                                            <h3 class="text-lg md:text-xl font-bold text-gray-900 group-hover:text-er-accent transition-colors">9가지 유형별 회복 가이드</h3>
                                         </div>
-                                        <p class="text-gray-600 text-sm leading-relaxed">
-                                            단순한 성격 분류를 넘어, 애착 유형(불안형/회피형)에 따른 각 유형의 고착 상태와<br class="hidden lg:block"> 구체적인 치유(Healing) 방법을 소개합니다.
+                                        <p class="text-gray-600 text-sm leading-relaxed break-keep">
+                                            단순한 성격 분류를 넘어, 애착 유형에 따른 각 유형의 고착 상태와 구체적인 치유(Healing) 방법을 소개합니다.
                                         </p>
                                     </div>
-                                    <div class="self-end md:self-center">
-                                        <div class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all">
-                                            <i class="fas fa-arrow-right"></i>
-                                        </div>
+                                    <div class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all self-end md:self-center">
+                                        <i class="fas fa-arrow-right text-sm"></i>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="grid md:grid-cols-2 gap-6">
+                            <div class="grid md:grid-cols-2 gap-4 md:gap-6">
                                 <!-- Self Check -->
-                                <div class="bg-er-dark text-white rounded-3xl p-8 flex flex-col justify-between shadow-lg">
+                                <div class="bg-er-dark text-white rounded-[2rem] p-6 md:p-8 flex flex-col justify-between shadow-lg">
                                     <div>
-                                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-4 text-xl"><i class="fas fa-clipboard-check"></i></div>
-                                        <h3 class="text-lg font-bold mb-2">약식 자가 진단</h3>
-                                        <p class="text-gray-300 text-sm">3분 만에 알아보는 나의 중심 에너지 센터<br>(머리/가슴/장) 찾기</p>
+                                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mb-4 text-lg"><i class="fas fa-clipboard-check"></i></div>
+                                        <h3 class="text-lg font-bold mb-1">약식 자가 진단</h3>
+                                        <p class="text-gray-300 text-xs md:text-sm break-keep">3분 만에 알아보는 나의 중심 에너지 센터(머리/가슴/장) 찾기</p>
                                     </div>
                                     <button onclick="alert('로그인이 필요한 서비스입니다.')" class="mt-6 w-full py-3 bg-white text-er-dark rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors">
                                         진단 시작하기
@@ -815,21 +736,21 @@
                                 </div>
 
                                 <!-- Books -->
-                                <div class="bg-white rounded-3xl p-8 shadow-soft border border-white">
-                                    <div class="flex items-center gap-3 mb-6">
-                                        <i class="fas fa-book text-er-accent text-xl"></i>
+                                <div class="bg-white rounded-[2rem] p-6 md:p-8 shadow-soft border border-white">
+                                    <div class="flex items-center gap-2 mb-5">
+                                        <i class="fas fa-book text-er-accent text-lg"></i>
                                         <h3 class="text-lg font-bold text-gray-900">추천 도서</h3>
                                     </div>
                                     <ul class="space-y-4">
-                                        <li class="flex items-start gap-3 pb-4 border-b border-gray-50 last:border-0 last:pb-0">
-                                            <span class="text-gray-300 font-serif italic text-lg">01</span>
+                                        <li class="flex items-start gap-3 pb-3 border-b border-gray-50 last:border-0 last:pb-0">
+                                            <span class="text-gray-300 font-serif italic text-base mt-0.5">01</span>
                                             <div>
                                                 <h4 class="text-sm font-bold text-gray-800">에니어그램의 지혜</h4>
                                                 <p class="text-xs text-gray-500">Don Richard Riso &middot; 필독서</p>
                                             </div>
                                         </li>
                                         <li class="flex items-start gap-3">
-                                            <span class="text-gray-300 font-serif italic text-lg">02</span>
+                                            <span class="text-gray-300 font-serif italic text-base mt-0.5">02</span>
                                             <div>
                                                 <h4 class="text-sm font-bold text-gray-800">내면의 감옥에서 벗어나라</h4>
                                                 <p class="text-xs text-gray-500">Richard Rohr &middot; 영성/치유</p>
@@ -845,45 +766,38 @@
         }
 
         function renderNotices() {
-            const items = [...contentData.notices]
-                .sort((a,b) => (a.date < b.date ? 1 : -1));
-
+            const items = [...contentData.notices].sort((a,b) => (a.date < b.date ? 1 : -1));
             return `
-                <div class="bg-white min-h-screen py-20">
-                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="mb-10 flex items-center justify-between gap-4 animate-fade-in-up">
-                    <button onclick="renderSection('community')" class="px-4 py-2 bg-gray-50 rounded-full text-sm font-medium text-gray-600 hover:text-er-dark border border-gray-100">
-                        <i class="fas fa-arrow-left mr-1"></i> Stories로
-                    </button>
-                    <h2 class="text-2xl font-bold text-gray-900">공지사항</h2>
-                    <div class="w-24"></div>
-                    </div>
-
-                    <div class="space-y-4 animate-fade-in-up" style="animation-delay:0.1s;">
-                    ${items.map(n => `
-                        <div onclick="openNotice(${n.id})" class="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
-                        <div class="flex items-center justify-between gap-4">
-                            <div class="min-w-0">
-                            <div class="flex items-center gap-2 mb-2">
-                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">
-                                ${n.tag}
-                                </span>
-                                <span class="text-xs text-gray-400">${n.date.replaceAll('-','.')}</span>
-                            </div>
-                            <h3 class="text-base md:text-lg font-bold text-gray-900 truncate group-hover:text-er-accent transition-colors">
-                                ${n.title}
-                            </h3>
-                            <p class="text-sm text-gray-500 mt-2 break-keep">${n.summary ?? ''}</p>
-                            </div>
-
-                            <div class="shrink-0 w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all">
-                            <i class="fas fa-arrow-right"></i>
-                            </div>
+                <div class="bg-white min-h-screen py-16">
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="mb-8 flex items-center justify-between gap-4 animate-fade-in-up">
+                            <button onclick="renderSection('community')" class="px-3 py-1.5 bg-gray-50 rounded-full text-xs font-medium text-gray-600 hover:text-er-dark border border-gray-100">
+                                <i class="fas fa-arrow-left mr-1"></i> Stories로
+                            </button>
+                            <h2 class="text-xl font-bold text-gray-900">공지사항</h2>
+                            <div class="w-16"></div>
                         </div>
+
+                        <div class="space-y-3 animate-fade-in-up" style="animation-delay:0.1s;">
+                            ${items.map(n => `
+                                <div onclick="openNotice(${n.id})" class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
+                                        <div class="min-w-0">
+                                            <div class="flex items-center gap-2 mb-1.5">
+                                                <span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">${n.tag}</span>
+                                                <span class="text-[10px] text-gray-400">${n.date.replaceAll('-','.')}</span>
+                                            </div>
+                                            <h3 class="text-sm md:text-base font-bold text-gray-900 truncate group-hover:text-er-accent transition-colors">${n.title}</h3>
+                                            <p class="text-xs text-gray-500 mt-1 line-clamp-1">${n.summary ?? ''}</p>
+                                        </div>
+                                        <div class="hidden md:flex shrink-0 w-8 h-8 rounded-full border border-gray-200 items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all">
+                                            <i class="fas fa-arrow-right text-xs"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
                         </div>
-                    `).join('')}
                     </div>
-                </div>
                 </div>
             `;
         }
@@ -892,53 +806,41 @@
             const id = payload?.id;
             const n = contentData.notices.find(x => x.id === id);
 
-            if (!n) {
-                return `
-                <div class="bg-er-base min-h-screen py-20 px-4">
-                    <div class="max-w-3xl mx-auto bg-white rounded-3xl p-10 shadow-soft border border-gray-100 text-center">
-                    <p class="text-gray-600">해당 공지를 찾을 수 없습니다.</p>
-                    <button onclick="openNotices()" class="mt-6 px-6 py-3 bg-er-dark text-white rounded-full font-bold">공지 목록으로</button>
-                    </div>
-                </div>
-                `;
-            }
+            if (!n) return `<div class="p-10 text-center">공지를 찾을 수 없습니다.<br><button class="mt-4 btn" onclick="renderSection('notices')">돌아가기</button></div>`;
 
             return `
-                <div class="bg-er-base min-h-screen py-20 px-4">
-                <div class="max-w-3xl mx-auto">
-                    <div class="mb-6 flex items-center justify-between">
-                    <button onclick="openNotices()" class="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-600 hover:text-er-dark shadow-sm border border-gray-100">
-                        <i class="fas fa-arrow-left mr-1"></i> 공지 목록
-                    </button>
-                    <span class="text-xs text-gray-400">${n.date.replaceAll('-','.')}</span>
-                    </div>
-
-                    <div class="bg-white rounded-3xl shadow-card p-8 md:p-10 border border-gray-100">
-                    <div class="flex items-center gap-2 mb-4">
-                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">
-                        ${n.tag}
-                        </span>
-                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 break-keep">${n.title}</h1>
-                    </div>
-
-                    ${n.body ?? `<p class="text-gray-600 break-keep">${n.summary ?? ''}</p>`}
-
-                    <!-- ✅ C: CTA -->
-                    <div class="mt-10 p-6 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                        <div>
-                        <p class="text-sm font-bold text-er-dark">문의하거나 신청하시겠어요?</p>
-                        <p class="text-xs text-gray-500 mt-1 break-keep">상담/강의 문의 폼으로 연결됩니다.</p>
+                <div class="bg-er-base min-h-screen py-16 px-4">
+                    <div class="max-w-3xl mx-auto">
+                        <div class="mb-4 flex items-center justify-between">
+                            <button onclick="openNotices()" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm border border-gray-100">
+                                <i class="fas fa-arrow-left mr-1"></i> 목록
+                            </button>
+                            <span class="text-[10px] text-gray-400">${n.date.replaceAll('-','.')}</span>
                         </div>
-                        <button onclick="renderSection('apply')" class="px-7 py-3 bg-er-dark text-white rounded-full font-bold shadow-soft hover:bg-gray-800 transition-all">
-                        상담/문의하기
-                        </button>
+
+                        <div class="bg-white rounded-[2rem] shadow-card p-6 md:p-10 border border-gray-100 animate-fade-in-up">
+                            <div class="flex flex-wrap items-center gap-2 mb-4">
+                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">${n.tag}</span>
+                                <h1 class="text-xl md:text-2xl font-bold text-gray-900 w-full md:w-auto break-keep">${n.title}</h1>
+                            </div>
+                            <div class="h-px bg-gray-100 my-6"></div>
+                            <div class="prose prose-sm max-w-none text-gray-600">
+                                ${n.body ?? n.summary}
+                            </div>
+                            
+                            <div class="mt-10 p-5 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+                                <div>
+                                    <p class="text-sm font-bold text-er-dark">문의하거나 신청하시겠어요?</p>
+                                </div>
+                                <button onclick="renderSection('apply')" class="px-6 py-2.5 bg-er-dark text-white rounded-full text-sm font-bold shadow-soft hover:bg-gray-800 transition-all w-full md:w-auto">
+                                    상담 문의하기
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                </div>
                 </div>
             `;
         }
-
 
         function renderTypesGuide() {
             const types = [
@@ -947,41 +849,41 @@
                 { id: 3, name: "3번 성공하는 사람 (The Achiever)", color: "border-yellow-200", bg: "bg-yellow-50", desc: "성공을 통해 가치를 증명하려 합니다.", healing: "사람들의 인정말고, 내가 좋아하는거 찾기" },
                 { id: 4, name: "4번 독창적인 사람 (The Individualist)", color: "border-purple-200", bg: "bg-purple-50", desc: "독특함과 깊이를 추구합니다.", healing: "감정의 균형과 일상성 회복" },
                 { id: 5, name: "5번 지혜로운 사람 (The Investigator)", color: "border-blue-200", bg: "bg-blue-50", desc: "지식을 통해 유능함을 추구합니다.", healing: "신체 감각 깨우기와 연결" },
-                { id: 6, name: "6번 충실하고 충성된 사람 (The Loyalist)", color: "border-indigo-200", bg: "bg-indigo-50", desc: "안전을 위해 대비하고 의심합니다.", healing: "내면의 신뢰와 용기 회복" },
+                { id: 6, name: "6번 충실한 사람 (The Loyalist)", color: "border-indigo-200", bg: "bg-indigo-50", desc: "안전을 위해 대비하고 의심합니다.", healing: "내면의 신뢰와 용기 회복" },
                 { id: 7, name: "7번 명량한 사람 (The Enthusiast)", color: "border-green-200", bg: "bg-green-50", desc: "새로운 경험과 즐거움을 쫓습니다.", healing: "현재의 고요함에 머무르기" },
                 { id: 8, name: "8번 강한 사람 (The Challenger)", color: "border-pink-200", bg: "bg-pink-50", desc: "강함을 통해 통제하려 합니다.", healing: "연약함을 드러내는 용기" },
                 { id: 9, name: "9번 조화로운 사람 (The Peacemaker)", color: "border-gray-200", bg: "bg-gray-50", desc: "평화를 위해 갈등을 회피합니다.", healing: "자기 목소리 내는 연습" }
             ];
 
             return `
-                <div class="min-h-screen bg-gray-50 py-20 px-4">
+                <div class="min-h-screen bg-gray-50 py-16 px-4">
                     <div class="max-w-6xl mx-auto">
-                        <div class="mb-10 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-up">
-                            <button onclick="renderSection('resources')" class="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-600 hover:text-er-dark shadow-sm hover:shadow flex items-center gap-2 transition-all">
-                                <i class="fas fa-arrow-left"></i> 목록으로
+                        <div class="mb-8 flex items-center justify-between animate-fade-in-up">
+                            <button onclick="renderSection('resources')" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm flex items-center gap-1 transition-all">
+                                <i class="fas fa-arrow-left"></i> 뒤로
                             </button>
-                            <h2 class="text-2xl font-bold text-gray-900">9가지 유형별 회복의 길</h2>
-                            <div class="w-24 hidden md:block"></div>
+                            <h2 class="text-lg font-bold text-gray-900">9가지 유형별 회복의 길</h2>
+                            <div class="w-12"></div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in-up" style="animation-delay: 0.1s;">
                             ${types.map((t, idx) => `
-                                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-                                    <div class="h-2 w-full ${t.bg.replace('bg-', 'bg-').replace('50', '400')}"></div>
-                                    <div class="p-6">
-                                        <div class="flex items-center justify-between mb-4">
-                                            <span class="text-4xl font-serif font-bold text-gray-100 group-hover:text-er-accent/20 transition-colors absolute right-4 top-8">${t.id}</span>
-                                            <h3 class="text-lg font-bold text-gray-800 relative z-10">${t.name.split('(')[0]}</h3>
+                                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+                                    <div class="h-1.5 w-full ${t.bg.replace('bg-', 'bg-').replace('50', '400')}"></div>
+                                    <div class="p-5">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <h3 class="text-base font-bold text-gray-800 relative z-10">${t.name.split('(')[0]}</h3>
+                                            <span class="text-3xl font-serif font-bold text-gray-100 group-hover:text-er-accent/20 transition-colors">${t.id}</span>
                                         </div>
-                                        <p class="text-xs text-gray-400 font-serif italic mb-4">${t.name.split('(')[1].replace(')','')}</p>
-                                        <p class="text-gray-600 text-sm leading-relaxed mb-6 h-10">${t.desc}</p>
+                                        <p class="text-[10px] text-gray-400 font-serif italic mb-3 -mt-4">${t.name.split('(')[1].replace(')','')}</p>
+                                        <p class="text-gray-600 text-xs leading-relaxed mb-5 min-h-[2.5em] break-keep">${t.desc}</p>
                                         
-                                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 group-hover:bg-er-base transition-colors">
+                                        <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 group-hover:bg-er-base transition-colors">
                                             <div class="flex items-start gap-2">
-                                                <i class="fas fa-seedling text-er-accent mt-1 text-xs"></i>
+                                                <i class="fas fa-seedling text-er-accent mt-0.5 text-xs"></i>
                                                 <div>
-                                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Healing Path</p>
-                                                    <p class="text-sm text-gray-800 font-medium mt-0.5">${t.healing}</p>
+                                                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Healing Path</p>
+                                                    <p class="text-xs text-gray-800 font-medium mt-0.5 break-keep">${t.healing}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -990,13 +892,10 @@
                             `).join('')}
                         </div>
                         
-                        <div class="mt-16 text-center animate-fade-in-up">
-                            <div class="inline-block p-8 bg-white rounded-3xl shadow-soft">
-                                <p class="text-gray-600 mb-6">내 유형을 더 깊이 이해하고 회복하고 싶다면?</p>
-                                <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors">
-                                    전문가 상담 신청하기
-                                </button>
-                            </div>
+                        <div class="mt-12 text-center pb-10">
+                            <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors text-sm">
+                                전문가 상담 신청하기
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1077,17 +976,17 @@
 
         function renderThankYou() {
             return `
-                <div class="min-h-screen flex items-center justify-center bg-er-base px-4">
-                    <div class="bg-white rounded-3xl shadow-card p-12 max-w-md w-full text-center animate-fade-in-up border border-white">
-                        <div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-500 text-3xl mx-auto mb-6">
+                <div class="min-h-screen flex items-center justify-center bg-er-base px-6">
+                    <div class="bg-white rounded-[2rem] shadow-card p-10 max-w-sm w-full text-center animate-fade-in-up border border-white">
+                        <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center text-green-500 text-2xl mx-auto mb-6">
                             <i class="fas fa-check"></i>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-900 mb-3">접수가 완료되었습니다</h2>
-                        <p class="text-gray-500 mb-10 leading-relaxed text-sm">
+                        <h2 class="text-xl font-bold text-gray-900 mb-2">접수가 완료되었습니다</h2>
+                        <p class="text-gray-500 mb-8 leading-relaxed text-xs break-keep">
                             소중한 이야기를 남겨주셔서 감사합니다.<br>
                             입력하신 연락처로 곧 연락드리겠습니다.
                         </p>
-                        <button onclick="renderSection('home')" class="w-full py-3 rounded-xl bg-er-dark text-white hover:bg-gray-800 transition-colors font-bold shadow-md">
+                        <button onclick="renderSection('home')" class="w-full py-3 rounded-xl bg-er-dark text-white hover:bg-gray-800 transition-colors font-bold shadow-md text-sm">
                             홈으로 돌아가기
                         </button>
                     </div>
@@ -1097,53 +996,46 @@
 
         function renderMyPage() {
             return `
-                <div class="max-w-4xl mx-auto px-4 py-20">
-                    <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
-                        <h2 class="text-2xl font-bold text-gray-900">My Page</h2>
-                        <button onclick="logoutUser()" class="text-sm text-gray-400 hover:text-red-500 transition-colors">로그아웃</button>
+                <div class="max-w-md mx-auto px-4 py-20">
+                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                        <h2 class="text-xl font-bold text-gray-900">My Page</h2>
+                        <button onclick="logoutUser()" class="text-xs text-gray-400 hover:text-red-500 transition-colors">로그아웃</button>
                     </div>
-                    <div class="bg-white p-12 rounded-3xl shadow-soft text-center border border-gray-100">
-                        <div class="w-24 h-24 bg-gray-100 rounded-full mx-auto flex items-center justify-center text-3xl text-gray-300 mb-4">
+                    <div class="bg-white p-10 rounded-[2rem] shadow-soft text-center border border-gray-100">
+                        <div class="w-20 h-20 bg-gray-50 rounded-full mx-auto flex items-center justify-center text-2xl text-gray-300 mb-4">
                             <i class="fas fa-user"></i>
                         </div>
-                        <p class="text-gray-500 mb-6">로그인 기능은 준비 중입니다.</p>
-                        <button onclick="renderSection('home')" class="px-6 py-2 bg-er-dark text-white rounded-full text-sm font-bold">홈으로</button>
+                        <p class="text-gray-500 mb-6 text-sm">로그인 기능은 준비 중입니다.</p>
+                        <button onclick="renderSection('home')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">홈으로</button>
                     </div>
                 </div>
             `;
         }
 
         // --- Helper Functions ---
-        function openNotices() {
-            renderSection('notices');
-            }
-
-        function openNotice(id) {
-            renderSection('notice_detail', { id });
-            }
+        function openNotices() { renderSection('notices'); }
+        function openNotice(id) { renderSection('notice_detail', { id }); }
 
         function updateProgramView(filterType) {
             state.programFilter = filterType;
-
             
             // Tab styling update
             document.querySelectorAll('[id^="tab-"]').forEach(btn => {
                 const isActive = btn.id === `tab-${filterType}`;
                 btn.className = isActive 
-                    ? "px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 bg-white text-er-dark shadow-md"
-                    : "px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 text-gray-300 hover:text-white hover:bg-white/5";
+                    ? "whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white text-er-dark shadow-md scale-105"
+                    : "whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white/10 text-gray-300 hover:bg-white/20";
             });
 
             const introEl = document.getElementById('program-intro');
             const cardsEl = document.getElementById('program-cards');
             
-            // Data Definition
             const data = {
                 individual: {
                     title: "나와 가정을 위한 회복",
                     desc: "나의 성격 유형을 이해하고, 가장 가까운 가족과의 관계를 건강하게 세워가는 과정입니다.",
                     cards: [
-                        { b: 'Basic', t: '자기 이해와 유형 찾기', d: '에니어그램 검사와 심층 상담을 통해 나의 고유한 성격 유형을 발견합니다.', i: 'fas fa-fingerprint' },
+                        { b: 'Basic', t: '자기 이해와 유형 찾기', d: '에니어그램 검사와 상담을 통해 나의 고유한 성격 유형을 발견합니다.', i: 'fas fa-fingerprint' },
                         { b: 'Relationship', t: '부부 관계 회복 코칭', d: '서로의 다름을 이해하고 갈등의 고리를 끊어 친밀함을 회복합니다.', i: 'fas fa-heart' },
                         { b: 'Family', t: '자녀 양육 코칭', d: '자녀의 기질을 이해하고 그에 맞는 맞춤형 양육 방식을 코칭합니다.', i: 'fas fa-child' }
                     ]
@@ -1162,7 +1054,7 @@
                     desc: "구성원의 강점을 발견하고, 효과적인 소통과 협업을 돕습니다.",
                     cards: [
                         { b: 'HR', t: '강점 기반 채용/배치', d: '구성원의 성격 유형에 따른 직무 적합성을 분석하여 최적의 팀을 구성합니다.', i: 'fas fa-briefcase' },
-                        { b: 'Comm', t: '조직 내 소통/갈등 해결', d: '성격 유형별 의사소통 방식을 이해하여 갈등을 줄이고 협업을 증진합니다.', i: 'fas fa-handshake' },
+                        { b: 'Comm', t: '조직 소통/갈등 해결', d: '성격 유형별 의사소통 방식을 이해하여 갈등을 줄이고 협업을 증진합니다.', i: 'fas fa-handshake' },
                         { b: 'Team', t: '팀 시너지 워크숍', d: '서로의 다름을 시너지로 바꾸는 체험형 팀빌딩 프로그램입니다.', i: 'fas fa-layer-group' }
                     ]
                 },
@@ -1179,27 +1071,25 @@
 
             const selected = data[filterType];
 
-            // Render Intro
             if(introEl) {
                 introEl.innerHTML = `
-                    <h3 class="text-xl font-bold text-er-dark mb-2">${selected.title}</h3>
-                    <p class="text-gray-500 break-keep">${selected.desc}</p>
+                    <h3 class="text-lg font-bold text-er-dark mb-1">${selected.title}</h3>
+                    <p class="text-xs text-gray-500 break-keep">${selected.desc}</p>
                 `;
             }
 
-            // Render Cards
             if(cardsEl) {
                 cardsEl.innerHTML = selected.cards.map(c => `
-                    <div class="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-card hover:-translate-y-1 transition-all group flex flex-col h-full">
-                        <div class="flex items-center justify-between mb-6">
-                            <span class="px-3 py-1 rounded-full bg-er-base text-er-accent text-xs font-bold uppercase tracking-wider">${c.b}</span>
-                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white transition-colors">
+                    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-card transition-all group flex flex-col h-full">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-wider">${c.b}</span>
+                            <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white transition-colors text-sm">
                                 <i class="${c.i}"></i>
                             </div>
                         </div>
-                        <h4 class="text-xl font-bold text-gray-900 mb-3">${c.t}</h4>
-                        <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow break-keep">${c.d}</p>
-                        <button onclick="renderSection('apply')" class="w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
+                        <h4 class="text-base font-bold text-gray-900 mb-2">${c.t}</h4>
+                        <p class="text-gray-500 text-xs leading-relaxed mb-6 flex-grow break-keep">${c.d}</p>
+                        <button onclick="renderSection('apply')" class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
                             문의하기
                         </button>
                     </div>
@@ -1221,46 +1111,47 @@
         function initCharts(sectionId) {
             Chart.defaults.font.family = "'Pretendard', sans-serif";
             Chart.defaults.color = '#9CA3AF';
-              
-
+            
             if (sectionId === 'home') {
-                const ctx = document.getElementById('heroChart').getContext('2d');
-                new Chart(ctx, {
+                const ctx = document.getElementById('heroChart');
+                if(!ctx) return;
+                
+                new Chart(ctx.getContext('2d'), {
                     type: 'polarArea',
                     data: {
                         labels: contentData.types.labels,
                         datasets: [{ 
                             data: contentData.types.data, 
                             backgroundColor: [
-                                'rgba(217, 119, 119, 0.7)', // 1 (Redish)
-                                'rgba(229, 208, 192, 0.7)', // 2
-                                'rgba(242, 201, 76, 0.7)',  // 3 (Yellow)
-                                'rgba(187, 107, 217, 0.7)', // 4 (Purple)
-                                'rgba(86, 204, 242, 0.7)',  // 5 (Blue)
-                                'rgba(111, 207, 151, 0.7)', // 6 (Green)
-                                'rgba(39, 174, 96, 0.7)',   // 7
-                                'rgba(235, 87, 87, 0.7)',   // 8
-                                'rgba(189, 189, 189, 0.7)'  // 9
+                                'rgba(217, 119, 119, 0.8)', 
+                                'rgba(229, 208, 192, 0.8)', 
+                                'rgba(242, 201, 76, 0.8)',  
+                                'rgba(187, 107, 217, 0.8)', 
+                                'rgba(86, 204, 242, 0.8)',  
+                                'rgba(111, 207, 151, 0.8)', 
+                                'rgba(39, 174, 96, 0.8)',   
+                                'rgba(235, 87, 87, 0.8)',   
+                                'rgba(189, 189, 189, 0.8)'  
                             ],
-                            borderWidth: 0,
-                            hoverOffset: 10
+                            borderWidth: 2,
+                            borderColor: '#ffffff',
+                            hoverOffset: 4
                         }]
                     },
                     options: { 
                         responsive: true, 
                         maintainAspectRatio: false, 
+                        layout: { padding: 10 },
                         plugins: { 
                             legend: { display: false },
                             tooltip: {
-                                backgroundColor: '#2C2A29',
-                                padding: 12,
+                                backgroundColor: 'rgba(44, 42, 41, 0.9)',
+                                padding: 10,
                                 cornerRadius: 8,
-                                titleFont: { size: 14, weight: 'bold' },
-                                bodyFont: { size: 12 },
+                                titleFont: { size: 12 },
+                                bodyFont: { size: 10 },
                                 callbacks: {
-                                    // 제목(타이틀)에 label만 표시
                                     title: (items) => items[0].label,
-                                    // 본문(body)은 아예 비워서 ":8" 같은 숫자 제거
                                     label: () => ''
                                 }
                             }
@@ -1268,15 +1159,17 @@
                         scales: { 
                             r: { 
                                 ticks: { display: false }, 
-                                grid: { color: '#f3f4f6' },
+                                grid: { color: '#f3f4f6', lineWidth: 1 },
                                 pointLabels: { display: false } 
                             } 
                         } 
                     }
                 });
             } else if (sectionId === 'community') {
-                const ctx = document.getElementById('impactChart').getContext('2d');
-                new Chart(ctx, {
+                const ctx = document.getElementById('impactChart');
+                if(!ctx) return;
+
+                new Chart(ctx.getContext('2d'), {
                     type: 'bar',
                     data: { 
                         labels: contentData.stats.labels, 
@@ -1284,8 +1177,8 @@
                             label: '케이스 분포 (%)', 
                             data: contentData.stats.data, 
                             backgroundColor: '#BFA68A', 
-                            borderRadius: 6,
-                            barThickness: 30
+                            borderRadius: 4,
+                            barThickness: 20
                         }] 
                     },
                     options: { 
@@ -1294,7 +1187,7 @@
                         plugins: { legend: { display: false } }, 
                         scales: { 
                             y: { beginAtZero: true, grid: { display: false }, ticks: { display: false } }, 
-                            x: { grid: { display: false } } 
+                            x: { grid: { display: false }, ticks: { font: { size: 10 } } } 
                         } 
                     }
                 });
@@ -1303,13 +1196,14 @@
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => { 
-            // Add scroll listener for Navbar
             window.addEventListener('scroll', () => {
                 const nav = document.getElementById('navbar');
                 if(window.scrollY > 20) {
-                    nav.classList.add('shadow-sm', 'bg-white/90');
+                    nav.classList.add('shadow-sm', 'bg-white/95');
+                    nav.classList.remove('bg-white/80');
                 } else {
-                    nav.classList.remove('shadow-sm', 'bg-white/90');
+                    nav.classList.remove('shadow-sm', 'bg-white/95');
+                    nav.classList.add('bg-white/80');
                 }
             });
             
