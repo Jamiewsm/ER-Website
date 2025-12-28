@@ -7,13 +7,9 @@
     <meta name="theme-color" content="#FDFBF7">
     <title>ER - Enneagram For Restoration</title>
     
-    <!-- Fonts: Pretendard -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
-    <!-- Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -26,6 +22,7 @@
                             surface: '#FFFFFF',   /* 카드: 순백색 */
                             primary: '#8C8680',   /* 본문: 회갈색 */
                             accent: '#BFA68A',    /* 포인트: 샌드 베이지 */
+                            accentDark: '#A68D73', /* 포인트 진한색 (호버용) */
                             accentLight: '#E8DED3', /* 포인트 연한 배경 */
                             dark: '#2C2A29',      /* 제목: 차콜 */
                             muted: '#9CA3AF',
@@ -36,14 +33,15 @@
                         serif: ['Times New Roman', 'serif']
                     },
                     boxShadow: {
-                        'soft': '0 10px 40px -10px rgba(0, 0, 0, 0.05)',
+                        'soft': '0 10px 40px -10px rgba(44, 42, 41, 0.05)',
                         'card': '0 20px 40px -10px rgba(191, 166, 138, 0.15)',
-                        'glow': '0 0 20px rgba(191, 166, 138, 0.3)'
+                        'glow': '0 0 30px rgba(191, 166, 138, 0.2)'
                     },
                     animation: {
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                        'fade-in': 'fadeIn 0.5s ease-out forwards',
-                        'slide-down': 'slideDown 0.3s ease-out forwards',
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fade-in': 'fadeIn 1s ease-out forwards',
+                        'slide-down': 'slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
                         fadeInUp: {
@@ -55,8 +53,12 @@
                             '100%': { opacity: '1' },
                         },
                         slideDown: {
-                            '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
                         }
                     }
                 }
@@ -69,6 +71,7 @@
             background-color: #FDFBF7;
             color: #2C2A29;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden; /* 모바일 가로 스크롤 방지 */
         }
         
         /* Smooth Scrolling */
@@ -83,18 +86,27 @@
         .chart-container {
             position: relative;
             width: 100%;
-            height: 300px; /* Mobile Default */
+            height: 280px; /* Mobile Optimize: 높이를 조금 줄임 */
             margin: 0 auto;
         }
         @media (min-width: 768px) {
             .chart-container { height: 400px; }
         }
 
-        /* Hero Background Pattern */
+        /* Improved Background Pattern */
         .bg-pattern {
-            background-image: radial-gradient(#BFA68A 0.8px, transparent 0.8px);
-            background-size: 20px 20px;
-            opacity: 0.2;
+            background-color: #FDFBF7;
+            background-image: radial-gradient(#BFA68A 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.3;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
 
         /* Mobile Menu Transition */
@@ -113,18 +125,24 @@
             transform: scaleY(1);
         }
         
-        /* Text Utils */
         .break-keep { word-break: keep-all; }
+        
+        /* Text Highlight Animation */
+        .text-highlight {
+            background: linear-gradient(120deg, rgba(191, 166, 138, 0.2) 0%, rgba(191, 166, 138, 0.2) 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 30%;
+            background-position: 0 88%;
+            transition: background-size 0.3s ease-in;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-er-accent selection:text-white flex flex-col min-h-screen">
 
-    <!-- Navigation -->
     <nav class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 md:h-20 items-center">
-               <!-- Logo -->
-                <div class="flex items-center cursor-pointer group" onclick="renderSection('home')">
+               <div class="flex items-center cursor-pointer group" onclick="renderSection('home')">
                     <div class="w-9 h-9 md:w-10 md:h-10 bg-er-dark text-white rounded-full flex items-center justify-center font-serif font-bold text-lg md:text-xl mr-2 md:mr-3 group-hover:scale-105 transition-transform duration-300 shadow-lg">E</div>
                     <div class="flex flex-col">
                         <span class="text-lg md:text-xl font-bold text-er-dark tracking-tight leading-none">ER</span>
@@ -132,7 +150,6 @@
                     </div>
                 </div>
                 
-                <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8 items-center">
                     <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         About
@@ -156,13 +173,11 @@
                     <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
                         상담 문의
                     </button>
-                    <!-- Login Placeholder -->
                     <button onclick="toggleLogin()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors">
                         <i class="far fa-user"></i>
                     </button>
                 </div>
                 
-                <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center gap-4">
                     <button onclick="renderSection('apply')" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm">문의하기</button>
                     <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none" aria-label="메뉴 열기">
@@ -172,7 +187,6 @@
             </div>
         </div>
         
-        <!-- Mobile Dropdown Menu -->
         <div id="mobile-menu" class="hidden absolute w-full bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl z-40 top-16 left-0">
             <div class="px-5 py-6 space-y-2">
                 <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">About ER</button>
@@ -185,12 +199,9 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
     <main id="main-content" class="flex-grow pt-16 md:pt-20">
-        <!-- Dynamic content injected here -->
-    </main>
+        </main>
 
-    <!-- Footer -->
     <footer class="bg-white border-t border-er-primary/10 pt-16 pb-12">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 mb-12">
@@ -227,15 +238,12 @@
                     <div class="flex flex-col gap-4">
                         <div class="flex items-center gap-0 p-2 bg-gray- rounded-xl">
                             
-                            <!-- SOIM -->
                             <a href="https://www.soim.online/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center opacity-80 hover:opacity-100 transition">
                                 <img src="SOIM-Logo.png" alt="SOIM" class="h-24 w-auto opacity-90 hover:grayscale-0 transition-all" onerror="this.style.display='none'">
                             </a>
 
-                            <!-- Divider -->
                             <div class="h-6 w-px bg-gray-200 mx-4"></div>
 
-                            <!-- IEA -->
                             <a href="https://www.internationalenneagram.org" target="_blank" rel="noopener noreferrer" class="inline-flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition">
                                 <img src="IEA-logo.png" alt="IEA" class="h-14 w-14 object-contain opacity-95 hover:grayscale-0 transition-all" onerror="this.style.display='none'">
                                 <span class="text-[11px] tracking-widest text-gray-800 font-semibold">IEA</span>
@@ -252,7 +260,6 @@
         </div>
     </footer>
 
-    <!-- Global State & Logic -->
     <script>
         // --- State Management ---
         let submitted = false;
@@ -285,7 +292,6 @@
                         1:1 멘토링과 강의 피드백을 통해 실제 강의·코칭 현장에서 자신 있게 사용할 수 있도록 돕습니다.
                         수료 후에는 (선택사항) 스터디 그룹과 코칭 실습으로 이어지며, 정식 코치 활동을 준비할 수 있습니다.
                         </p>
-
                         <div class="mt-6 grid gap-3">
                         <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
                             <span class="text-xs font-bold text-gray-500 w-20">기간</span>
@@ -327,7 +333,7 @@
             document.getElementById('mobile-menu').classList.add('hidden');
             
             // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'auto' }); // Smooth scroll sometimes interferes with render
+            window.scrollTo({ top: 0, behavior: 'auto' }); 
 
             let html = '';
             switch(sectionId) {
@@ -360,68 +366,80 @@
 
         // --- View Components (Renderers) ---
 
+        // ✨ UPGRADED HOME DESIGN
         function renderHome() {
             return `
-                <div class="relative overflow-hidden min-h-[90vh] flex flex-col justify-center">
+                <div class="relative overflow-hidden min-h-[90vh] flex flex-col justify-center bg-er-base">
                     <div class="absolute inset-0 bg-pattern z-0 pointer-events-none"></div>
-                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 md:w-96 md:h-96 bg-er-accent/10 rounded-full blur-3xl z-0 pointer-events-none"></div>
-                    <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-48 h-48 md:w-72 md:h-72 bg-gray-200/50 rounded-full blur-3xl z-0 pointer-events-none"></div>
+                    <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-er-accent/10 rounded-full blur-[100px] z-0 pointer-events-none animate-pulse"></div>
+                    <div class="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-blue-50/60 rounded-full blur-[80px] z-0 pointer-events-none"></div>
 
-                    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 py-12 md:py-20">
-                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-                            <!-- Text Content -->
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 md:py-20">
+                        <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+                            
                             <div class="text-center lg:text-left animate-fade-in-up order-2 lg:order-1">
-                                <span class="inline-block py-1.5 px-3 md:px-4 rounded-full bg-white border border-er-accent/30 text-er-dark text-[10px] md:text-xs font-bold tracking-widest uppercase mb-4 md:mb-6 shadow-sm">
-                                    Non-profit Organization
-                                </span>
-                                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight font-extrabold text-er-dark mb-4 md:mb-6 leading-tight break-keep">
+                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/60 border border-er-accent/20 backdrop-blur-sm shadow-sm mb-6">
+                                    <span class="w-2 h-2 rounded-full bg-er-accent animate-pulse"></span>
+                                    <span class="text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-primary">Non-profit Organization</span>
+                                </div>
+
+                                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight font-extrabold text-er-dark mb-6 leading-[1.15] break-keep">
                                     Original Design을<br>
-                                    <span class="text-er-accent relative inline-block">
-                                        발견하고 회복합니다
-                                        <svg class="absolute w-full h-2 md:h-3 -bottom-0.5 md:-bottom-1 left-0 text-er-accent/20" viewBox="0 0 100 10" preserveAspectRatio="none"><path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="8" fill="none" /></svg>
-                                    </span>
+                                    <span class="text-highlight inline-block text-er-dark">발견하고 회복합니다</span>
                                 </h1>
-                                <p class="mt-4 text-base md:text-lg text-gray-600 mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0 break-keep">
-                                    기독교 세계관과 에니어그램의 통합적 접근을 통해
-                                    나 자신을 이해하고, 가정과 공동체를
+                                
+                                <p class="mt-2 text-base md:text-lg text-gray-600 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 break-keep font-medium">
+                                    기독교 세계관과 에니어그램의 통합적 접근.<br class="hidden md:block">
+                                    나 자신을 깊이 이해하고, 가정과 공동체를<br class="hidden md:block">
                                     건강하게 치유하는 회복의 여정에 당신을 초대합니다.
                                 </p>
-                                <div class="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                                    <button onclick="renderSection('programs')" class="w-full sm:w-auto px-8 py-3.5 md:py-4 bg-er-dark text-white rounded-full font-bold shadow-soft hover:shadow-card hover:-translate-y-1 transition-all active:scale-95">
-                                        프로그램 살펴보기
+                                
+                                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                    <button onclick="renderSection('programs')" class="w-full sm:w-auto px-8 py-4 bg-er-dark text-white rounded-full font-bold shadow-lg shadow-er-dark/20 hover:bg-gray-800 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                        프로그램 살펴보기 <i class="fas fa-arrow-right text-xs opacity-70"></i>
                                     </button>
-                                    <button onclick="renderSection('apply')" class="w-full sm:w-auto px-8 py-3.5 md:py-4 bg-white text-er-dark border border-gray-200 rounded-full font-bold shadow-sm hover:bg-gray-50 hover:border-er-accent transition-all active:scale-95">
+                                    <button onclick="renderSection('apply')" class="w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-sm text-er-dark border border-white/60 rounded-full font-bold shadow-sm hover:bg-white hover:border-er-accent/50 transition-all active:scale-95">
                                         상담 신청하기
                                     </button>
                                 </div>
-                                <div class="mt-8 md:mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4 md:gap-6 text-xs md:text-sm text-gray-400 font-medium">
-                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-er-accent"></i> 전문 자격 코치진</div>
-                                    <div class="flex items-center gap-2"><i class="fas fa-check-circle text-er-accent"></i> 1:1 맞춤형 케어</div>
+
+                                <div class="mt-10 md:mt-12 pt-6 border-t border-er-dark/5 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs md:text-sm text-gray-500 font-medium">
+                                    <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px]"><i class="fas fa-check"></i></div> 전문 자격 코치진</div>
+                                    <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px]"><i class="fas fa-check"></i></div> 1:1 맞춤형 케어</div>
                                 </div>
                             </div>
 
-                            <!-- Hero Visual (Chart) -->
-                            <div class="relative order-1 lg:order-2 flex justify-center animate-fade-in mb-4 md:mb-0">
-                                <div class="relative w-full max-w-sm md:max-w-md bg-white/60 backdrop-blur-md rounded-[2rem] p-4 md:p-6 border border-white/80 shadow-card">
-                                    <!-- Floating Badge -->
-                                    <div class="absolute -top-4 -left-2 md:-top-6 md:-left-8 bg-white p-3 md:p-4 rounded-2xl shadow-lg border border-gray-50 flex items-center gap-3 animate-slide-down">
-                                        <div class="w-8 h-8 md:w-10 md:h-10 bg-er-accent rounded-full flex items-center justify-center text-white font-bold text-sm md:text-base">
+                            <div class="relative order-1 lg:order-2 flex justify-center animate-fade-in mb-6 md:mb-0">
+                                <div class="relative w-full max-w-[360px] md:max-w-md glass rounded-[2.5rem] p-6 md:p-8 shadow-card hover:shadow-glow transition-shadow duration-500">
+                                    
+                                    <div class="absolute -top-5 -left-4 md:-top-6 md:-left-8 bg-white p-3 md:p-4 rounded-2xl shadow-xl border border-white/60 flex items-center gap-3 animate-float z-20">
+                                        <div class="w-10 h-10 md:w-12 md:h-12 bg-er-accent rounded-full flex items-center justify-center text-white font-bold text-lg shadow-inner">
                                             <i class="fas fa-chart-pie"></i>
                                         </div>
-                                        <div class="text-left">
-                                            <p class="text-[8px] md:text-[10px] text-gray-400 font-bold uppercase">Enneagram</p>
-                                            <p class="text-xs md:text-sm font-bold text-er-dark">9 Personality Types</p>
+                                        <div class="text-left pr-2">
+                                            <p class="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-wider">Enneagram</p>
+                                            <p class="text-sm md:text-base font-extrabold text-er-dark">9 Personality Types</p>
                                         </div>
                                     </div>
 
-                                    <div class="chart-container h-[280px] md:h-[350px]">
+                                    <div class="absolute top-4 right-4 flex gap-1.5">
+                                        <div class="w-2 h-2 rounded-full bg-red-300/50"></div>
+                                        <div class="w-2 h-2 rounded-full bg-yellow-300/50"></div>
+                                        <div class="w-2 h-2 rounded-full bg-green-300/50"></div>
+                                    </div>
+
+                                    <div class="chart-container">
                                         <canvas id="heroChart"></canvas>
                                     </div>
-                                    <div class="text-center mt-2 md:mt-4">
-                                        <p class="text-xs md:text-sm text-gray-500 font-medium">"에니어그램을 통해 관계가 회복됩니다"</p>
+                                    
+                                    <div class="text-center mt-4">
+                                        <p class="text-xs text-gray-400 font-medium tracking-wide">"데이터 기반의 자기 이해"</p>
                                     </div>
                                 </div>
+                                
+                                <div class="absolute inset-0 bg-gradient-to-tr from-er-accent/20 to-transparent rounded-full blur-3xl -z-10 transform scale-110"></div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -430,9 +448,8 @@
 
         function renderAbout() {
             return `
-                <div class="py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
+                <div class="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
                     <div class="max-w-6xl mx-auto">
-                        <!-- Vision Section -->
                         <div class="text-center mb-16 md:mb-24 animate-fade-in-up">
                             <h2 class="text-xs font-bold tracking-[0.3em] text-er-accent mb-4 md:mb-5">
                                 VISION & MISSION
@@ -448,10 +465,8 @@
                             </div>
                         </div>      
 
-                        <!-- Founder Profile -->
                         <div class="bg-er-base/70 rounded-[2.5rem] p-8 md:p-12 shadow-soft mb-16 md:mb-20 animate-fade-in-up border border-white/60">
                             <div class="flex flex-col lg:flex-row gap-8 md:gap-12 items-center">
-                                <!-- Left: Profile -->
                                 <div class="w-full lg:w-1/3 relative group flex flex-col items-center text-center">
                                     <div class="relative mb-6">
                                         <div class="w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden shadow-card bg-gray-200 ring-4 ring-white">
@@ -468,10 +483,8 @@
                                     </div>
                                 </div>
 
-                                <!-- Right: Credentials -->
                                 <div class="w-full lg:w-2/3">
                                     <div class="grid gap-4">
-                                        <!-- Highlight card -->
                                         <div class="flex items-center gap-4 p-4 md:p-5 bg-white rounded-2xl border border-er-accent/20 shadow-sm">
                                             <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0 text-lg">
                                                 <i class="fas fa-certificate"></i>
@@ -505,7 +518,6 @@
                             </div>
                         </div>
 
-                        <!-- Coaches Grid -->
                         <div class="animate-fade-in-up">
                             <h3 class="text-xl md:text-2xl font-bold text-center text-er-dark mb-8">함께하는 코치진</h3>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
@@ -538,7 +550,6 @@
                             <h2 class="text-2xl md:text-4xl font-bold mb-3">맞춤형 프로그램</h2>
                             <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인의 회복에서 공동체의 성장까지, 당신에게 가장 적합한 솔루션을 제안합니다.</p>
                             
-                            <!-- Scrollable Tab Navigation -->
                             <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
                                 ${['individual:개인/가정', 'church:사역/교회', 'business:비즈니스', 'training:강사양성'].map(item => {
                                     const [key, label] = item.split(':');
@@ -554,14 +565,11 @@
 
                     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 pb-20">
                         <div id="program-intro" class="mb-6 text-center bg-white rounded-2xl p-6 shadow-soft max-w-2xl mx-auto border border-gray-100 animate-fade-in-up">
-                            <!-- Intro text injected by JS -->
-                        </div>
+                            </div>
                         
                         <div id="program-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <!-- Cards injected by JS -->
-                        </div>
+                            </div>
 
-                        <!-- Process Section -->
                         <div class="mt-20">
                             <div class="text-center mb-10">
                                 <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Process</span>
@@ -608,7 +616,6 @@
                         </div>
 
                         <div class="grid lg:grid-cols-2 gap-8 mb-16">
-                            <!-- Chart Section -->
                             <div class="bg-er-base rounded-[2rem] p-6 md:p-8 shadow-inner animate-fade-in-up">
                                 <h3 class="font-bold text-base text-gray-800 mb-6 flex items-center gap-2">
                                     <i class="fas fa-chart-pie text-er-accent"></i> 상담 케이스 분포
@@ -619,7 +626,6 @@
                                 <p class="text-center text-[10px] text-gray-400 mt-4">* 2024년 기준 누적 데이터</p>
                             </div>
 
-                            <!-- Testimonials -->
                             <div class="space-y-4 md:space-y-6 animate-fade-in-up" style="animation-delay: 0.2s;">
                                 <div class="bg-er-dark text-white p-6 md:p-8 rounded-[2rem] relative overflow-hidden shadow-card">
                                     <i class="fas fa-quote-right absolute bottom-4 right-4 text-5xl text-white/5"></i>
@@ -647,7 +653,6 @@
                             </div>
                         </div>
 
-                        <!-- Gallery & Notice -->
                         <div class="grid md:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 0.3s;">
                             <div class="md:col-span-2">
                                 <h3 class="text-lg font-bold text-gray-900 mb-4">Activity Gallery</h3>
@@ -699,7 +704,6 @@
 
                         <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.1s;">
                             
-                            <!-- Hero Resource Card -->
                             <div onclick="renderSection('types_guide')" class="group bg-white rounded-[2rem] p-6 md:p-8 shadow-soft hover:shadow-card transition-all cursor-pointer relative overflow-hidden border border-white">
                                 <div class="absolute top-0 right-0 w-48 h-48 bg-er-accent/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:bg-er-accent/20 transition-all"></div>
                                 
@@ -723,7 +727,6 @@
                             </div>
 
                             <div class="grid md:grid-cols-2 gap-4 md:gap-6">
-                                <!-- Self Check -->
                                 <div class="bg-er-dark text-white rounded-[2rem] p-6 md:p-8 flex flex-col justify-between shadow-lg">
                                     <div>
                                         <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mb-4 text-lg"><i class="fas fa-clipboard-check"></i></div>
@@ -735,7 +738,6 @@
                                     </button>
                                 </div>
 
-                                <!-- Books -->
                                 <div class="bg-white rounded-[2rem] p-6 md:p-8 shadow-soft border border-white">
                                     <div class="flex items-center gap-2 mb-5">
                                         <i class="fas fa-book text-er-accent text-lg"></i>
