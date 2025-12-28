@@ -408,9 +408,18 @@
                             <!-- Hero Visual (Chart) -->
                             <div class="relative lg:h-[600px] flex items-center justify-center animate-fade-in" style="animation-delay: 0.2s;">
                                 <div class="relative w-full max-w-md bg-white/60 backdrop-blur-sm rounded-3xl p-6 border border-white shadow-card">
-                                    <div class="absolute -top-4 -right-4 w-20 h-20 bg-er-accent rounded-full flex items-center justify-center text-white font-bold shadow-lg z-20 animate-bounce" style="animation-duration: 3s;">
-                                        <div class="text-center text-xs leading-tight">9가지<br>유형</div>
+                                    <!-- Floating Badge -->
+                                    <div class="absolute -top-6 -left-6 md:-left-8 bg-white p-4 rounded-2xl shadow-lg border border-gray-50 flex items-center gap-3 animate-bounce" style="animation-duration: 4s;">
+                                        <div class="w-10 h-10 bg-er-accent rounded-full flex items-center justify-center text-white font-bold">
+                                            <i class="fas fa-chart-pie"></i>
+                                        </div>
+                                        <div class="text-left">
+                                            <p class="text-[10px] text-gray-400 font-bold uppercase">Enneagram</p>
+                                            <p class="text-sm font-bold text-er-dark">9 Personality Types</p>
+                                        </div>
                                     </div>
+
+
                                     <div class="chart-container">
                                         <canvas id="heroChart"></canvas>
                                     </div>
