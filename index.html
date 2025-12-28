@@ -273,12 +273,54 @@
             types: {
                 labels: ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 효율적인 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 명령한 사람', '8번 강한 사람', '9번 조화로운 사람'],
                 data: [8, 9, 8, 7, 6, 8, 7, 8, 9] 
-            }
-            
+            },
+            notices: [
+                        {
+                        id: 1,
+                        tag: "모집중",
+                        title: "에니어그램 강사과정 5기 모집",
+                        date: "2025-01-15",
+                        summary: "8주 과정 / 그룹 실습 / 수퍼비전 포함",
+                        body: `
+                            <p class="text-gray-600 leading-relaxed break-keep">
+                            에니어그램 강사과정 5기를 모집합니다. 기초 이론부터 적용까지 단계적으로 배우며,
+                            실습과 피드백을 통해 실제 강의/코칭 현장에서 활용할 수 있도록 돕습니다.
+                            </p>
+
+                            <div class="mt-6 grid gap-3">
+                            <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <span class="text-xs font-bold text-gray-500 w-20">기간</span>
+                                <span class="text-sm text-gray-700">8주</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <span class="text-xs font-bold text-gray-500 w-20">대상</span>
+                                <span class="text-sm text-gray-700">기독교 세계관 기반으로 에니어그램을 배우고 싶은 분</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                <span class="text-xs font-bold text-gray-500 w-20">마감</span>
+                                <span class="text-sm text-gray-700">2025.01.15</span>
+                            </div>
+                            </div>
+                        `
+                        },
+                        {
+                        id: 2,
+                        tag: "안내",
+                        title: "홈페이지 리뉴얼 안내",
+                        date: "2024-12-20",
+                        summary: "리뉴얼 진행 중이며 일부 기능은 준비 중입니다.",
+                        body: `
+                            <p class="text-gray-600 leading-relaxed break-keep">
+                            ER 홈페이지는 더 나은 정보 제공을 위해 리뉴얼 중입니다.
+                            일부 메뉴와 기능(로그인/공지 확장 등)은 순차적으로 업데이트됩니다.
+                            </p>
+                        `
+                        }
+                    ] 
         };
 
         // --- Core Functions ---
-        function renderSection(sectionId) {
+        function renderSection(sectionId, payload = null) {
             state.currentSection = sectionId;
             const main = document.getElementById('main-content');
             
@@ -295,6 +337,10 @@
                 case 'programs': html = renderPrograms(); break;
                 case 'community': html = renderCommunity(); break;
                 case 'resources': html = renderResources(); break;
+                // ✅ 추가
+                case 'notices': html = renderNotices(); break;
+                case 'notice_detail': html = renderNoticeDetail(payload); break;
+
                 case 'types_guide': html = renderTypesGuide(); break; 
                 case 'apply': html = renderApply(); break;
                 case 'mypage': html = renderMyPage(); break;
@@ -690,19 +736,24 @@
                             <div class="bg-gray-50 rounded-3xl p-6 border border-gray-100">
                                 <h3 class="text-lg font-bold text-gray-900 mb-4 flex justify-between items-center">
                                     공지사항 
-                                    <span class="text-xs font-normal text-gray-400 cursor-pointer">더보기 +</span>
+                                   <button onclick="openNotices()" class="text-xs font-normal text-gray-400 cursor-pointer hover:text-er-dark transition-colors">
+                                    더보기 +
+                                    </button>
                                 </h3>
                                 <div class="space-y-4">
-                                    <a href="#" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all">
+                                    <!-- 공지 1 -->
+                                    <div onclick="openNotice(1)" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer">
                                         <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-er-accent/10 text-er-accent mb-1">모집중</span>
                                         <h4 class="text-sm font-bold text-gray-800 truncate">소임 에니어그램 전문과정 5기 모집</h4>
                                         <p class="text-xs text-gray-400 mt-1">2025.01.15 마감</p>
-                                    </a>
-                                    <a href="#" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all">
+                                    </div>
+
+                                    <!-- 공지 2 -->
+                                    <div onclick="openNotice(2)" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer">
                                         <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-500 mb-1">안내</span>
                                         <h4 class="text-sm font-bold text-gray-800 truncate">홈페이지 리뉴얼 안내</h4>
                                         <p class="text-xs text-gray-400 mt-1">2024.12.20</p>
-                                    </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -789,6 +840,102 @@
                 </div>
             `;
         }
+
+        function renderNotices() {
+            const items = [...contentData.notices]
+                .sort((a,b) => (a.date < b.date ? 1 : -1));
+
+            return `
+                <div class="bg-white min-h-screen py-20">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="mb-10 flex items-center justify-between gap-4 animate-fade-in-up">
+                    <button onclick="renderSection('community')" class="px-4 py-2 bg-gray-50 rounded-full text-sm font-medium text-gray-600 hover:text-er-dark border border-gray-100">
+                        <i class="fas fa-arrow-left mr-1"></i> Stories로
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-900">공지사항</h2>
+                    <div class="w-24"></div>
+                    </div>
+
+                    <div class="space-y-4 animate-fade-in-up" style="animation-delay:0.1s;">
+                    ${items.map(n => `
+                        <div onclick="openNotice(${n.id})" class="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between gap-4">
+                            <div class="min-w-0">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">
+                                ${n.tag}
+                                </span>
+                                <span class="text-xs text-gray-400">${n.date.replaceAll('-','.')}</span>
+                            </div>
+                            <h3 class="text-base md:text-lg font-bold text-gray-900 truncate group-hover:text-er-accent transition-colors">
+                                ${n.title}
+                            </h3>
+                            <p class="text-sm text-gray-500 mt-2 break-keep">${n.summary ?? ''}</p>
+                            </div>
+
+                            <div class="shrink-0 w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all">
+                            <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                        </div>
+                    `).join('')}
+                    </div>
+                </div>
+                </div>
+            `;
+        }
+        
+        function renderNoticeDetail(payload) {
+            const id = payload?.id;
+            const n = contentData.notices.find(x => x.id === id);
+
+            if (!n) {
+                return `
+                <div class="bg-er-base min-h-screen py-20 px-4">
+                    <div class="max-w-3xl mx-auto bg-white rounded-3xl p-10 shadow-soft border border-gray-100 text-center">
+                    <p class="text-gray-600">해당 공지를 찾을 수 없습니다.</p>
+                    <button onclick="openNotices()" class="mt-6 px-6 py-3 bg-er-dark text-white rounded-full font-bold">공지 목록으로</button>
+                    </div>
+                </div>
+                `;
+            }
+
+            return `
+                <div class="bg-er-base min-h-screen py-20 px-4">
+                <div class="max-w-3xl mx-auto">
+                    <div class="mb-6 flex items-center justify-between">
+                    <button onclick="openNotices()" class="px-4 py-2 bg-white rounded-full text-sm font-medium text-gray-600 hover:text-er-dark shadow-sm border border-gray-100">
+                        <i class="fas fa-arrow-left mr-1"></i> 공지 목록
+                    </button>
+                    <span class="text-xs text-gray-400">${n.date.replaceAll('-','.')}</span>
+                    </div>
+
+                    <div class="bg-white rounded-3xl shadow-card p-8 md:p-10 border border-gray-100">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">
+                        ${n.tag}
+                        </span>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 break-keep">${n.title}</h1>
+                    </div>
+
+                    ${n.body ?? `<p class="text-gray-600 break-keep">${n.summary ?? ''}</p>`}
+
+                    <!-- ✅ C: CTA -->
+                    <div class="mt-10 p-6 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div>
+                        <p class="text-sm font-bold text-er-dark">문의하거나 신청하시겠어요?</p>
+                        <p class="text-xs text-gray-500 mt-1 break-keep">상담/강의 문의 폼으로 연결됩니다.</p>
+                        </div>
+                        <button onclick="renderSection('apply')" class="px-7 py-3 bg-er-dark text-white rounded-full font-bold shadow-soft hover:bg-gray-800 transition-all">
+                        상담/문의하기
+                        </button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            `;
+        }
+
 
         function renderTypesGuide() {
             const types = [
@@ -964,8 +1111,17 @@
         }
 
         // --- Helper Functions ---
+        function openNotices() {
+            renderSection('notices');
+            }
+
+        function openNotice(id) {
+            renderSection('notice_detail', { id });
+            }
+
         function updateProgramView(filterType) {
             state.programFilter = filterType;
+
             
             // Tab styling update
             document.querySelectorAll('[id^="tab-"]').forEach(btn => {
