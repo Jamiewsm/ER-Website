@@ -143,12 +143,14 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 md:h-20 items-center">
                <div class="flex items-center cursor-pointer group" onclick="renderSection('home')">
-                    <div class="w-9 h-9 md:w-10 md:h-10 bg-er-dark text-white rounded-full flex items-center justify-center font-serif font-bold text-lg md:text-xl mr-2 md:mr-3 group-hover:scale-105 transition-transform duration-300 shadow-lg">E</div>
-                    <div class="flex flex-col">
-                        <span class="text-lg md:text-xl font-bold text-er-dark tracking-tight leading-none">ER</span>
-                        <span class="text-[9px] md:text-[10px] uppercase tracking-widest text-er-primary font-medium mt-0.5">Enneagram for Restoration</span>
-                    </div>
-                </div>
+                    <img 
+                        src="ER-logo-header.png" 
+                        alt="ER logo"
+                        class="h-8 md:h-10 w-auto select-none group-hover:opacity-90 transition"
+                        draggable="false"
+                        onerror="this.style.display='none'"
+                    >
+               </div>
                 
                 <div class="hidden md:flex space-x-8 items-center">
                     <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
@@ -206,9 +208,14 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-12 mb-12">
                 <div class="md:col-span-5 space-y-6">
-                    <a href="#" onclick="renderSection('home')" class="inline-flex items-center gap-2">
-                        <div class="w-8 h-8 bg-er-dark text-white rounded-full flex items-center justify-center font-serif font-bold text-sm">E</div>
-                        <span class="text-lg font-bold text-er-dark">ER</span>
+                    <a href="#" onclick="renderSection('home')" class="inline-flex items-center">
+                        <img 
+                            src="ER-logo-footer.png" 
+                            alt="ER – Enneagram for Restoration"
+                            class="h-10 md:h-12 w-auto select-none opacity-90 hover:opacity-100 transition"
+                            draggable="false"
+                            onerror="this.style.display='none'"
+                        >
                     </a>    
                     <p class="text-sm text-gray-500 leading-7 break-keep">
                         Original Design을 회복하고 공동체를 치유하는 여정.<br class="hidden md:block">
