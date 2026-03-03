@@ -135,6 +135,14 @@
             background-position: 0 88%;
             transition: background-size 0.3s ease-in;
         }
+
+        .radio-btn:checked + label {
+            background-color: #2C2A29;
+            color: #FFFFFF;
+            border-color: #2C2A29;
+        }
+
+        .smooth-transition { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="antialiased selection:bg-er-accent selection:text-white flex flex-col min-h-screen">
@@ -283,8 +291,12 @@
         const state = {
             currentSection: 'home',
             user: null, 
-            programFilter: 'individual' 
+            programFilter: 'individual',
+            latestTestResult: null
         };
+
+        const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/formResponse";
+        const GOOGLE_FORM_VIEW_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform";
 
         const contentData = {
             stats: {
@@ -341,6 +353,69 @@
             ] 
         };
 
+        // 59문항 약식 에니어그램 테스트
+        const enneagramQuestions = [
+            "처음 참석하는 중요한 사교 모임에 들어설 때, 누가 있는지 살피고 내가 다른 사람들에게 어떻게 보일지 먼저 생각한다.",
+            "처음 참석하는 중요한 사교 모임에 들어설 때, 이 모임의 목적과 분위기를 파악하고 어떤 일이 일어날지 예측하며 안전하게 머물 방법을 찾는다.",
+            "처음 참석하는 중요한 사교 모임에 들어설 때, 이 공간의 힘의 균형이나 분위기를 즉각적으로 느끼고 나의 존재감을 본능적으로 파악하려 한다.",
+            "예상치 못한 문제가 갑자기 발생했을 때, 이 일이 다른 사람들과의 관계에 어떤 영향을 미칠지 먼저 걱정한다.",
+            "예상치 못한 문제가 갑자기 발생했을 때, 먼저 '왜 이런 일이 일어났을까?'를 분석하고 최악의 시나리오를 대비한다.",
+            "예상치 못한 문제가 갑자기 발생했을 때, 즉시 '무엇을 해야 하는가?'를 생각하며 상황을 통제하고 문제를 행동으로 해결하려 한다.",
+            "공개적인 자리에서 누군가 내 의견을 부당하게 비판하면, 즉시 그 사람에게 정면으로 맞서 나의 힘과 입장을 분명히 보여주려 한다.",
+            "공개적인 자리에서 누군가 내 의견을 부당하게 비판하면, 갈등을 피하기 위해 일단 상황을 무마하거나 자리를 벗어나고 싶어 한다.",
+            "공개적인 자리에서 누군가 내 의견을 부당하게 비판하면, 속으로 분노가 치밀지만 억누르고 무엇이 옳고 그른지 따져 상황을 바로잡으려 한다.",
+            "팀 프로젝트에서 나의 기여도를 평가받을 때, 팀원들을 돕고 관계를 돈독히 한 나의 헌신이 인정받기를 기대한다.",
+            "팀 프로젝트에서 나의 기여도를 평가받을 때, 가장 효율적인 방법으로 최고의 결과를 내어 나의 가치를 증명하는 데 집중한다.",
+            "팀 프로젝트에서 나의 기여도를 평가받을 때, 나의 독창적인 관점을 표현하고 남들과는 다른 나만의 의미 있는 기여를 하는 것에 집중한다.",
+            "낯설고 정보가 부족한 나라로 여행할 때, 여행에 필요한 모든 정보를 수집하고 완벽히 이해함으로써 불안을 줄이려 한다.",
+            "낯설고 정보가 부족한 나라로 여행할 때, 최악의 시나리오를 떠올리고 대비책을 세우며 신뢰하는 사람에게 조언을 구한다.",
+            "낯설고 정보가 부족한 나라로 여행할 때, 재미있고 신나는 활동들을 상상하며 여러 개의 긍정적인 계획을 세워둔다.",
+            "새로운 카페에 들어갈 때, 음료 맛보다 먼저 의자가 편안한지 실내 온도가 적당한지를 살핀다.",
+            "파티나 모임에 가면, 여러 사람과 얕게 어울리기보다 단 한 사람과 구석에서 깊은 대화를 나누는 것에 더 큰 만족을 느낀다.",
+            "중요한 결정을 내리기 전에, '이것이 내가 속한 공동체나 팀에 어떤 영향을 미칠까?'를 먼저 고려한다.",
+            "여행을 떠나기 전, 혹시 빠뜨린 물건은 없는지, 계획에 차질은 없는지 몇 번이고 확인해야만 마음이 놓인다.",
+            "연인이나 배우자의 잘못된 습관을 보면 그냥 넘어가지 못하고 어떻게든 더 나은 사람으로 만들어주어야 직성이 풀린다.",
+            "그룹 프로젝트를 할 때 규칙이나 절차를 무시하는 팀원이 있으면, 팀의 성과보다 그 잘못된 방식 자체에 더 신경이 쓰인다.",
+            "원치 않는 일을 해야 할 때, 직접 거절하기보다 아프다거나 다른 일이 있는 것처럼 행동하여 상황을 피하려 한다.",
+            "마음에 드는 한 사람이 생기면, 그 사람의 관심사가 무엇이든 함께 공유하고 모든 것을 맞춰주며 어떻게든 내 사람으로 만들고 싶다.",
+            "어떤 모임에서든 중심적인 인물이 되어, 모든 사람의 이름과 필요를 기억하고 연결해주는 마당발 역할을 하고 싶다.",
+            "화려하게 주목받기보다는, 맡은 일을 빈틈없이 완벽하게 해내 믿을 수 있는 사람이라는 평판을 얻고 싶다.",
+            "단순히 일을 잘하는 것을 넘어, 내가 원하는 상대에게 가장 매력적이고 이상적인 파트너로 보이고 싶다.",
+            "어떤 옷을 입고, 어떤 차를 타고, 어디에 사는지가 나의 성공을 보여주는 중요한 상징이라고 생각한다.",
+            "힘든 내색을 하지 않기 때문에, 주변 사람들은 종종 내가 얼마나 깊은 고통을 참고 있는지 전혀 눈치채지 못한다.",
+            "사랑하는 사람이 나를 완벽하게 이해해주지 않으면, 그를 밀어내고 상처를 주면서까지 나의 특별한 고통을 알아주기를 바란다.",
+            "다른 사람들 앞에 서면, 나의 결점이나 부족함이 금방 드러날 것 같아 늘 수치심과 불안을 느낀다.",
+            "누군가 나의 사적인 공간(방, 책상)에 허락 없이 들어오면, 내 영역이 침범당한 것 같아 극도의 불쾌감을 느낀다.",
+            "평소에는 과묵하고 내향적이지만, 깊이 신뢰하는 단 한 사람 앞에서는 나의 모든 비밀과 내면세계를 털어놓고 싶다.",
+            "사적인 대화에는 서툴지만, 내 전문 분야에 대한 발표나 토론에서는 누구보다 자신감 있게 내 의견을 펼친다.",
+            "새로운 사람을 만날 때, 그가 정말 믿을 만한 사람인지 오랜 시간 지켜보고 나서야 마음을 연다.",
+            "위험하거나 금지된 일에 도전하며, 두려움을 정복하는 것에서 짜릿한 쾌감과 자신감을 얻는다.",
+            "불확실한 상황에서 내가 무엇을 해야만 하는지 명확한 지침을 받기를 원하며, 그 지침에 따라 정확하게 행동하려 한다.",
+            "추상적인 이상보다, 맛있는 음식, 편안한 여행, 좋은 환경 같은 구체적이고 감각적인 만족을 더 중요하게 생각한다.",
+            "연인을 만날 때, 그 사람과 함께라면 지금보다 더 멋지고 본질적인 세계로 나아갈 수 있을 것이라는 강한 기대를 품는다.",
+            "나 자신의 욕망을 절제하는 모습을 보임으로써, 다른 사람들로부터 도덕적으로 우월하다는 인정을 받으려 한다.",
+            "내 욕구가 즉시 채워지지 않으면 참지 못하고, 그것을 방해하는 것이 있다면 직접 나서서 해결해야 직성이 풀린다.",
+            "무대나 모임의 중심이 되어, 모든 사람의 시선과 관심을 독차지해야만 직성이 풀린다.",
+            "강압적인 리더가 되기보다, 팀원들을 멘토링하고 그들의 성장을 도우며 신뢰를 쌓는 방식의 리더십을 선호한다.",
+            "중요한 일을 결정해야 할 때, 스트레스를 피하기 위해 사소하고 급하지 않은 다른 일에 몰두하며 결정을 미룬다.",
+            "관계의 평화를 지키기 위해, 내 의견이나 불만을 표현하기보다 침묵하고 상대방에게 동의하는 쪽을 택한다.",
+            "갈등 상황에서 내 의견을 주장하기보다, 그룹의 화합을 위해 내 의견을 조율하거나 양보하는 쪽을 먼저 선택한다.",
+            "나의 분노는 내 영역을 지키고 나의 의지를 관철하기 위한 도구이다.",
+            "권위나 규칙에 도전함으로써 그것이 신뢰할 만한지 시험한다.",
+            "화가 나도 평화를 위해 꾹 참거나 다른 일로 잊어버린다.",
+            "종종 내 안의 결핍감이나 슬픔에 깊이 빠져든다.",
+            "갈등을 피할 수 있다면 나의 주장을 쉽게 포기한다.",
+            "충분히 알고 이해하기 전까지는 행동하기를 주저한다.",
+            "갈등을 중재하고 모두가 만족하는 합의점을 찾는 역할을 한다.",
+            "나의 도움에 대해 다른 사람들이 고마워하기를 기대한다.",
+            "고통스럽거나 지루한 상황에 갇히는 것을 두려워한다.",
+            "스스로에게 엄격하며, 고통을 감수하면서까지 목표를 추구한다.",
+            "나의 본능적인 충동이나 감정을 통제하여 좋은 사람이 되려고 한다.",
+            "현재의 불편함보다 미래의 즐거운 계획을 생각하는 것을 선호한다.",
+            "내가 옳다고 믿는 기준을 다른 사람들도 따르기를 원한다.",
+            "나의 분노를 직접적이고 솔직하게 표현하여 나의 의지를 보여준다."
+        ];
+
         // --- Core Functions ---
         function renderSection(sectionId, payload = null) {
             state.currentSection = sectionId;
@@ -359,10 +434,11 @@
                 case 'programs': html = renderPrograms(); break;
                 case 'community': html = renderCommunity(); break;
                 case 'resources': html = renderResources(); break;
+                case 'test': html = renderTest(); break;
                 case 'notices': html = renderNotices(); break;
                 case 'notice_detail': html = renderNoticeDetail(payload); break;
                 case 'types_guide': html = renderTypesGuide(); break; 
-                case 'apply': html = renderApply(); break;
+                case 'apply': html = renderApply(payload); break;
                 case 'mypage': html = renderMyPage(); break;
                 case 'thankyou': html = renderThankYou(); break;
                 default: html = renderHome();
@@ -374,6 +450,7 @@
             if(sectionId === 'home') setTimeout(() => initCharts('home'), 100);
             if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
             if(sectionId === 'programs') updateProgramView(state.programFilter);
+            if(sectionId === 'test') initTest();
         }
 
         function toggleMobileMenu() {
@@ -747,10 +824,10 @@
                                 <div class="bg-er-dark text-white rounded-[2rem] p-6 md:p-8 flex flex-col justify-between shadow-lg">
                                     <div>
                                         <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mb-4 text-lg"><i class="fas fa-clipboard-check"></i></div>
-                                        <h3 class="text-lg font-bold mb-1">약식 자가 진단</h3>
-                                        <p class="text-gray-300 text-xs md:text-sm break-keep">3분 만에 알아보는 나의 중심 에너지 센터(머리/가슴/장) 찾기</p>
+                                        <h3 class="text-lg font-bold mb-1">약식 에니어그램 테스트</h3>
+                                        <p class="text-gray-300 text-xs md:text-sm break-keep">약 3분 점검으로 현재 나의 핵심 동기와 관계 패턴을 간단히 확인해 보세요.</p>
                                     </div>
-                                    <button onclick="alert('로그인이 필요한 서비스입니다.')" class="mt-6 w-full py-3 bg-white text-er-dark rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors">
+                                    <button onclick="renderSection('test')" class="mt-6 w-full py-3 bg-white text-er-dark rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors">
                                         진단 시작하기
                                     </button>
                                 </div>
@@ -777,6 +854,83 @@
                                         </li>
                                     </ul>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTest() {
+            return `
+                <div id="survey-view" class="max-w-3xl mx-auto pt-12 px-4 sm:px-6 pb-20">
+                    <div class="text-center mb-12 animate-fade-in-up">
+                        <span class="inline-flex px-3 py-1 rounded-full bg-er-accent/15 text-er-accent text-[10px] font-bold uppercase tracking-widest mb-4">Enneagram Lite</span>
+                        <h2 class="text-2xl md:text-3xl font-bold text-er-dark mb-4">약식 에니어그램 테스트</h2>
+                        <p class="text-gray-600 text-sm md:text-base leading-relaxed break-keep">
+                            본 테스트는 행동 이면의 동기와 본능 경향을 다면적으로 점검합니다.<br>
+                            가장 편안했던 시기의 본인을 떠올리며 응답해 주세요.
+                        </p>
+                        <p class="mt-3 text-xs text-gray-400">데이터는 저장되지 않으며, 결과는 즉시 화면에서 확인됩니다.</p>
+                    </div>
+
+                    <form id="enneagram-form" class="space-y-8">
+                        <div id="questions-container" class="space-y-6"></div>
+
+                        <div class="pt-8 border-t border-gray-200 text-center">
+                            <p id="validation-msg" class="text-red-500 font-medium mb-4 hidden">모든 문항에 응답해 주세요.</p>
+                            <button type="button" onclick="submitSurvey()" class="bg-er-dark hover:bg-gray-800 text-white font-bold py-4 px-10 rounded-full shadow-lg smooth-transition transform hover:scale-105">
+                                진단 결과 보기
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="result-view" class="max-w-2xl mx-auto pt-12 px-4 pb-20 hidden">
+                    <div class="bg-white rounded-3xl shadow-card overflow-hidden border border-gray-100">
+                        <div class="bg-er-dark px-6 md:px-8 py-10 text-center text-white">
+                            <h2 class="text-base md:text-lg font-medium opacity-90 mb-2">당신의 약식 진단 결과</h2>
+                            <div id="res-final" class="text-3xl md:text-5xl font-bold mb-3 tracking-tight"></div>
+                            <p id="res-instincts" class="text-base md:text-xl font-medium opacity-90 text-er-accent"></p>
+                        </div>
+                        
+                        <div class="p-6 md:p-8 space-y-5">
+                            <div class="grid grid-cols-2 gap-3 md:gap-4">
+                                <div class="bg-er-base p-4 md:p-6 rounded-2xl border border-gray-100 text-center">
+                                    <p class="text-xs md:text-sm text-gray-500 mb-1">기본 유형 (Core)</p>
+                                    <p id="res-core" class="text-2xl md:text-3xl font-bold text-gray-800"></p>
+                                </div>
+                                <div class="bg-er-base p-4 md:p-6 rounded-2xl border border-gray-100 text-center">
+                                    <p class="text-xs md:text-sm text-gray-500 mb-1">발현된 날개 (Wing)</p>
+                                    <p id="res-wing" class="text-2xl md:text-3xl font-bold text-gray-800"></p>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200">
+                                <h3 class="font-bold text-er-dark mb-2">분석 로그</h3>
+                                <p id="res-log" class="text-gray-600 text-sm leading-relaxed break-keep"></p>
+                            </div>
+
+                            <div class="bg-er-accent/10 rounded-2xl border border-er-accent/30 p-5">
+                                <h3 class="font-bold text-er-dark mb-2">정식 타이핑 세션 (무료)</h3>
+                                <p class="text-sm text-gray-700 leading-relaxed break-keep">
+                                    더 자세하게 나와 내 주위 사람들을 이해하고 싶다면,
+                                    정식 타이핑 세션 신청서를 작성해 주세요.
+                                </p>
+                                <div class="mt-4 flex flex-col sm:flex-row gap-3">
+                                    <button type="button" onclick="renderSection('apply', { source: 'test' })" class="flex-1 bg-er-dark text-white py-3 px-5 rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors">
+                                        정식 타이핑 신청하기
+                                    </button>
+                                    <a href="${GOOGLE_FORM_VIEW_URL}" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-white border border-gray-300 text-gray-700 py-3 px-5 rounded-xl text-sm font-bold hover:bg-gray-50 transition-colors">
+                                        구글폼 바로 열기
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="text-center pt-2">
+                                <button type="button" onclick="renderSection('test')" class="text-gray-500 hover:text-er-accent font-medium underline transition-colors text-sm">
+                                    테스트 다시하기
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -921,7 +1075,12 @@
             `;
         }
 
-        function renderApply() {
+        function renderApply(payload = null) {
+            const fromTest = payload?.source === 'test';
+            const testSummary = state.latestTestResult
+                ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 본능 ${state.latestTestResult.instinctSummary}`
+                : "";
+
             return `
                 <div class="bg-er-base min-h-screen py-20 px-4">
                     <div class="max-w-2xl mx-auto">
@@ -931,6 +1090,13 @@
                         </div>
                         
                         <div class="bg-white rounded-3xl shadow-card p-8 md:p-10 animate-fade-in-up border border-white" style="animation-delay: 0.1s;">
+                            ${fromTest ? `
+                                <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
+                                    <p class="text-sm font-bold text-er-dark mb-1">약식 테스트 후속 신청</p>
+                                    <p class="text-xs text-gray-600 break-keep">정식 타이핑 세션(무료)으로 더 깊은 자기 이해와 관계 이해를 도와드립니다.</p>
+                                </div>
+                            ` : ""}
+
                             <div class="flex items-center justify-between mb-8 px-4 relative">
                                 <div class="absolute top-1/2 left-0 w-full h-px bg-gray-100 -z-10"></div>
                                 <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-er-dark text-white flex items-center justify-center text-sm font-bold shadow-lg">1</span></div>
@@ -939,7 +1105,7 @@
                             </div>
 
                             <form class="space-y-6"
-                                action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/formResponse"
+                                action="${GOOGLE_FORM_ACTION_URL}"
                                 method="POST"
                                 target="hidden_iframe"
                                 onsubmit="submitted=true;">
@@ -958,6 +1124,7 @@
                                     <label class="block text-sm font-bold text-gray-700 mb-2">신청 분야</label>
                                     <div class="relative">
                                         <select name="entry.796863919" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
+                                            ${fromTest ? '<option selected>정식 타이핑 세션 (무료)</option>' : ""}
                                             <option>개인/가정 코칭 (부부, 자녀)</option>
                                             <option>교회/사역자 회복 프로그램</option>
                                             <option>비즈니스/조직 워크숍</option>
@@ -970,7 +1137,7 @@
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">문의 내용</label>
-                                    <textarea name="entry.594846485" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="고민이나 요청사항을 자유롭게 적어주세요."></textarea>
+                                    <textarea name="entry.594846485" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="고민이나 요청사항을 자유롭게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n정식 타이핑 세션(무료) 신청합니다.` : ""}</textarea>
                                 </div>
 
                                 <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
@@ -1124,6 +1291,200 @@
         function logoutUser() { 
             state.user = null; 
             renderSection('home'); 
+        }
+
+        // --- Enneagram Test Logic ---
+        function initTest() {
+            const container = document.getElementById('questions-container');
+            if (!container) return;
+
+            container.innerHTML = "";
+            enneagramQuestions.forEach((question, index) => {
+                container.insertAdjacentHTML("beforeend", `
+                    <div class="bg-white p-5 sm:p-7 rounded-2xl shadow-sm border border-gray-100" id="q-block-${index}">
+                        <p class="text-base sm:text-lg font-medium text-gray-800 mb-5 break-keep">
+                            <span class="text-er-accent font-bold mr-2">${index + 1}.</span>${question}
+                        </p>
+                        <div class="flex justify-between items-center gap-2 sm:px-2">
+                            <span class="text-[10px] sm:text-xs text-gray-400 font-bold whitespace-nowrap">전혀 아니다</span>
+                            <div class="flex space-x-1.5 sm:space-x-3">
+                                ${[1, 2, 3, 4, 5].map((val) => `
+                                    <div class="relative">
+                                        <input type="radio" name="q${index}" value="${val}" id="q${index}-${val}" class="peer sr-only radio-btn">
+                                        <label for="q${index}-${val}" class="w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-500 cursor-pointer peer-hover:border-er-accent smooth-transition font-medium bg-white text-sm sm:text-base">
+                                            ${val}
+                                        </label>
+                                    </div>
+                                `).join("")}
+                            </div>
+                            <span class="text-[10px] sm:text-xs text-gray-400 font-bold whitespace-nowrap">매우 그렇다</span>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function submitSurvey() {
+            const scores = [];
+            let isComplete = true;
+
+            for (let i = 0; i < enneagramQuestions.length; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const block = document.getElementById(`q-block-${i}`);
+
+                if (selected) {
+                    scores.push(parseInt(selected.value, 10));
+                    block.classList.remove("border-red-300", "bg-red-50");
+                } else {
+                    isComplete = false;
+                    block.classList.add("border-red-300", "bg-red-50");
+                }
+            }
+
+            if (!isComplete) {
+                document.getElementById("validation-msg").classList.remove("hidden");
+                const firstMissed = document.querySelector(".border-red-300");
+                if (firstMissed) firstMissed.scrollIntoView({ behavior: "smooth", block: "center" });
+                return;
+            }
+
+            document.getElementById("validation-msg").classList.add("hidden");
+
+            // 1단계: 코어 및 본능 기초 연산
+            const tHeart = scores[0] + scores[3];
+            const tHead = scores[1] + scores[4];
+            const tGut = scores[2] + scores[5];
+
+            const coreBase = {
+                1: tGut + scores[8],
+                2: tHeart + scores[9],
+                3: tHeart + scores[10],
+                4: tHeart + scores[11],
+                5: tHead + scores[12],
+                6: tHead + scores[13],
+                7: tHead + scores[14],
+                8: tGut + scores[6],
+                9: tGut + scores[7]
+            };
+
+            const instBase = { sp: scores[15], sx: scores[16], so: scores[17] };
+
+            // 2단계: 하위 유형 데이터 통합
+            const typeData = [];
+            let totalSp = instBase.sp;
+            let totalSx = instBase.sx;
+            let totalSo = instBase.so;
+
+            for (let i = 1; i <= 9; i++) {
+                const subStartIdx = 18 + ((i - 1) * 3);
+                const spScore = scores[subStartIdx];
+                const sxScore = scores[subStartIdx + 1];
+                const soScore = scores[subStartIdx + 2];
+
+                totalSp += spScore;
+                totalSx += sxScore;
+                totalSo += soScore;
+
+                const totalWeight = coreBase[i] + spScore + sxScore + soScore;
+                typeData.push({ id: i, totalWeight, avg: totalWeight / 4 });
+            }
+
+            typeData.sort((a, b) => b.totalWeight - a.totalWeight);
+            const primaryType = typeData[0].id;
+
+            const instincts = [
+                { name: "자기보존", code: "sp", score: totalSp },
+                { name: "성적(일대일)", code: "sx", score: totalSx },
+                { name: "사회적", code: "so", score: totalSo }
+            ].sort((a, b) => b.score - a.score);
+
+            const bestInstinctCode = instincts[0].code;
+
+            // 3단계: 교차 검증
+            let finalType = primaryType;
+            let logMsg = "교차 검증 결과, 1차 도출 코어와 심층 무의식적 동기가 일치합니다.";
+
+            if (primaryType === 8 || primaryType === 6) {
+                if (scores[46] > scores[45]) {
+                    finalType = 6;
+                    logMsg = "방어적 태도 분석: 8번이 아닌 역유형 6번의 동기(불안 통제)로 판별되었습니다.";
+                } else if (scores[45] > scores[46]) {
+                    finalType = 8;
+                    logMsg = "방어적 태도 분석: 6번이 아닌 8번의 순수 통제 욕구로 판별되었습니다.";
+                }
+            } else if (primaryType === 9 || primaryType === 4) {
+                if (scores[48] > scores[47]) {
+                    finalType = 4;
+                    logMsg = "내향성 분석: 9번의 회피가 아닌 4번의 자아 몰입 동기로 판별되었습니다.";
+                }
+            } else if (primaryType === 9 || primaryType === 5) {
+                if (scores[50] > scores[49]) {
+                    finalType = 5;
+                    logMsg = "은둔 성향 분석: 9번의 평화 유지가 아닌 5번의 자원 보존 동기로 판별되었습니다.";
+                }
+            } else if (primaryType === 9 || primaryType === 2 || primaryType === 7) {
+                const maxVal = Math.max(scores[51], scores[52], scores[53]);
+                if (maxVal === scores[51]) {
+                    finalType = 9;
+                } else if (maxVal === scores[52]) {
+                    finalType = 2;
+                    logMsg = "관계 형성 분석: 2번의 인정 동기가 우세하게 나타났습니다.";
+                } else if (maxVal === scores[53]) {
+                    finalType = 7;
+                    logMsg = "관계 형성 분석: 7번의 즐거움 추구 동기가 우세하게 나타났습니다.";
+                }
+            } else if (primaryType === 4 || primaryType === 1 || primaryType === 7) {
+                const maxVal2 = Math.max(scores[54], scores[55], scores[56]);
+                if (maxVal2 === scores[54]) {
+                    finalType = 4;
+                } else if (maxVal2 === scores[55]) {
+                    finalType = 1;
+                    logMsg = "고통 대처 분석: 1번의 개선 동기가 우세하게 나타났습니다.";
+                } else if (maxVal2 === scores[56]) {
+                    finalType = 7;
+                    logMsg = "고통 대처 분석: 7번의 회피/재해석 동기가 우세하게 나타났습니다.";
+                }
+            } else if (primaryType === 1 || primaryType === 8) {
+                if (scores[57] > scores[58]) {
+                    finalType = 1;
+                    logMsg = "통제력 분석: 8번이 아닌 성적 1번의 타인 개혁 의지로 판별되었습니다.";
+                } else if (scores[58] > scores[57]) {
+                    finalType = 8;
+                    logMsg = "통제력 분석: 1번이 아닌 8번 본연의 생존 통제 욕구로 판별되었습니다.";
+                }
+            }
+
+            // 4단계: 날개 연산
+            const leftWing = (finalType === 1) ? 9 : finalType - 1;
+            const rightWing = (finalType === 9) ? 1 : finalType + 1;
+
+            const lData = typeData.find((t) => t.id === leftWing);
+            const rData = typeData.find((t) => t.id === rightWing);
+
+            let wingNum = "없음";
+            let wingResultFormat = `${finalType} (순수유형)`;
+
+            if (lData.avg > 2.0 || rData.avg > 2.0) {
+                wingNum = (lData.avg >= rData.avg) ? leftWing : rightWing;
+                wingResultFormat = `${finalType}w${wingNum}`;
+            }
+
+            document.getElementById("survey-view").classList.add("hidden");
+            document.getElementById("result-view").classList.remove("hidden");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            document.getElementById("res-final").innerText = `${bestInstinctCode} ${wingResultFormat}`;
+            document.getElementById("res-instincts").innerText = `1위 ${instincts[0].name} / 2위 ${instincts[1].name}`;
+            document.getElementById("res-core").innerText = `${finalType}번`;
+            document.getElementById("res-wing").innerText = (wingNum === "없음") ? "활성화되지 않음" : `${wingNum}번 날개`;
+            document.getElementById("res-log").innerText = logMsg;
+
+            state.latestTestResult = {
+                finalLabel: `${bestInstinctCode} ${wingResultFormat}`,
+                coreType: finalType,
+                wingLabel: wingNum === "없음" ? "활성화되지 않음" : `${wingNum}번`,
+                instinctSummary: `${instincts[0].name} > ${instincts[1].name}`
+            };
         }
 
         // --- Chart Logic ---
