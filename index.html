@@ -906,6 +906,12 @@
                                 </div>
                             </div>
 
+                            <div class="bg-er-base p-5 rounded-2xl border border-gray-100">
+                                <h3 class="font-bold text-er-dark mb-2">하위유형 상위 결과</h3>
+                                <p id="res-subtype-top1" class="text-sm text-gray-700 font-medium"></p>
+                                <p id="res-subtype-top2" class="text-sm text-gray-600 mt-1"></p>
+                            </div>
+
                             <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200">
                                 <h3 class="font-bold text-er-dark mb-2">분석 로그</h3>
                                 <p id="res-log" class="text-gray-600 text-sm leading-relaxed break-keep"></p>
@@ -1078,7 +1084,7 @@
         function renderApply(payload = null) {
             const fromTest = payload?.source === 'test';
             const testSummary = state.latestTestResult
-                ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 본능 ${state.latestTestResult.instinctSummary}`
+                ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 하위유형 ${state.latestTestResult.subtypeSummary}, 본능 ${state.latestTestResult.instinctSummary}`
                 : "";
 
             return `
@@ -1398,8 +1404,6 @@
                 { name: "사회적", code: "so", score: totalSo }
             ].sort((a, b) => b.score - a.score);
 
-            const bestInstinctCode = instincts[0].code;
-
             // 3단계: 교차 검증
             let finalType = primaryType;
             let logMsg = "교차 검증 결과, 1차 도출 코어와 심층 무의식적 동기가 일치합니다.";
@@ -1469,20 +1473,35 @@
                 wingResultFormat = `${finalType}w${wingNum}`;
             }
 
+            // 최종 코어 기준 하위유형(sp/sx/so) 상위 2개
+            const finalSubtypeStartIdx = 18 + ((finalType - 1) * 3);
+            const finalSubtypeRanking = [
+                { code: "sp", name: "자기보존", score: scores[finalSubtypeStartIdx] + instBase.sp },
+                { code: "sx", name: "성적(일대일)", score: scores[finalSubtypeStartIdx + 1] + instBase.sx },
+                { code: "so", name: "사회적", score: scores[finalSubtypeStartIdx + 2] + instBase.so }
+            ].sort((a, b) => b.score - a.score);
+
+            const subtypeTop1 = `${finalType}번 ${finalSubtypeRanking[0].name} (${finalSubtypeRanking[0].code})`;
+            const subtypeTop2 = `${finalType}번 ${finalSubtypeRanking[1].name} (${finalSubtypeRanking[1].code})`;
+            const primarySubtypeCode = finalSubtypeRanking[0].code;
+
             document.getElementById("survey-view").classList.add("hidden");
             document.getElementById("result-view").classList.remove("hidden");
             window.scrollTo({ top: 0, behavior: "smooth" });
 
-            document.getElementById("res-final").innerText = `${bestInstinctCode} ${wingResultFormat}`;
+            document.getElementById("res-final").innerText = `${primarySubtypeCode} ${wingResultFormat}`;
             document.getElementById("res-instincts").innerText = `1위 ${instincts[0].name} / 2위 ${instincts[1].name}`;
             document.getElementById("res-core").innerText = `${finalType}번`;
             document.getElementById("res-wing").innerText = (wingNum === "없음") ? "활성화되지 않음" : `${wingNum}번 날개`;
+            document.getElementById("res-subtype-top1").innerText = `1순위: ${subtypeTop1}`;
+            document.getElementById("res-subtype-top2").innerText = `2순위: ${subtypeTop2}`;
             document.getElementById("res-log").innerText = logMsg;
 
             state.latestTestResult = {
-                finalLabel: `${bestInstinctCode} ${wingResultFormat}`,
+                finalLabel: `${primarySubtypeCode} ${wingResultFormat}`,
                 coreType: finalType,
                 wingLabel: wingNum === "없음" ? "활성화되지 않음" : `${wingNum}번`,
+                subtypeSummary: `${subtypeTop1} > ${subtypeTop2}`,
                 instinctSummary: `${instincts[0].name} > ${instincts[1].name}`
             };
         }
