@@ -104,7 +104,7 @@
                     <!-- Low Confidence CTA -->
                     <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
                         <p class="text-sm text-red-800 mb-3">결과의 <strong>확신도가 '낮음'</strong>으로 측정되었습니다. 여러 유형의 점수가 비슷하게 경합하고 있어 방어기제가 작동했거나 객관화가 덜 되었을 확률이 높습니다.</p>
-                        <a href="#" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full transition">전문가 1:1 타이핑 세션 신청하기</a>
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full transition">전문가 1:1 타이핑 세션 신청하기</a>
                     </div>
 
                     <div class="text-center pt-6 border-t border-gray-100">
@@ -288,15 +288,29 @@
                                          .sort((a, b) => b.score - a.score);
             
             let topScore = sortedCandidates[0].score;
-            
-            // Dynamic Candidate Selection: Includes anyone within 75% of the top score, guarantees at least 3 candidates.
-            let candidateTypes = sortedCandidates.filter(c => c.score >= topScore * 0.75).map(c => c.type);
+
+            // Dynamic Candidate Selection:
+            // 1) 상위 점수군(70%) 포함
+            // 2) 1위의 인접 유형(wing 후보) 자동 포함
+            // 3) 최소 3개, 최대 5개로 제한
+            const topType = sortedCandidates[0].type;
+            const adjacentTypes = [topType === 1 ? 9 : topType - 1, topType === 9 ? 1 : topType + 1];
+
+            let candidateTypes = sortedCandidates
+                .filter(c => c.score >= topScore * 0.70)
+                .map(c => c.type);
+
+            candidateTypes = [...new Set([...candidateTypes, topType, ...adjacentTypes])];
+
             if (candidateTypes.length < 3) {
-                candidateTypes = sortedCandidates.slice(0, 3).map(c => c.type);
+                candidateTypes = [...new Set([...candidateTypes, ...sortedCandidates.slice(0, 3).map(c => c.type)])];
             }
-            
-            // De-duplicate (safety measure)
-            topCandidates = [...new Set(candidateTypes)];
+
+            // 점수순 유지 + 과도한 2단계 문항 방지를 위해 최대 5개 제한
+            topCandidates = sortedCandidates
+                .map(c => c.type)
+                .filter(type => candidateTypes.includes(type))
+                .slice(0, 5);
 
             // Build Phase 2 Questions for the dynamically selected candidates
             phase2QuestionsData = [];
@@ -385,7 +399,7 @@
                 bestInstinctName = `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (공동 1위)`;
             }
 
-            // Calculate Wing (Relative Threshold)
+            // Calculate Wing (Phase1 기반 점수로 분리 판정)
             let coreDisplay = coreType + "번";
             let wingNum = "없음";
             let wingStr = coreType + " (순수유형)";
@@ -396,17 +410,37 @@
                 wingStr = "판별 보류 (코어 경합)";
                 wingNum = "코어 확정 후 판별 가능";
             } else {
+                // Phase1 기반 유형 점수 재구성 (triad + core behavior)
+                let phase1TypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
+                const t2 = phase1Responses.t2 || 0;
+                const t5 = phase1Responses.t5 || 0;
+                const t8 = phase1Responses.t8 || 0;
+
+                phase1TypeScores[2] += t2; phase1TypeScores[3] += t2; phase1TypeScores[4] += t2;
+                phase1TypeScores[5] += t5; phase1TypeScores[6] += t5; phase1TypeScores[7] += t5;
+                phase1TypeScores[8] += t8; phase1TypeScores[9] += t8; phase1TypeScores[1] += t8;
+
+                for (let i = 1; i <= 9; i++) {
+                    phase1TypeScores[i] += (phase1Responses[`c${i}`] || 0) * 1.5;
+                }
+
                 let leftW = coreType === 1 ? 9 : coreType - 1;
                 let rightW = coreType === 9 ? 1 : coreType + 1;
                 
-                let leftScore = finalTypeScores[leftW];
-                let rightScore = finalTypeScores[rightW];
+                let leftScore = phase1TypeScores[leftW];
+                let rightScore = phase1TypeScores[rightW];
+                let corePhase1Score = phase1TypeScores[coreType];
 
                 let higherWing = leftScore >= rightScore ? leftW : rightW;
                 let higherWingScore = Math.max(leftScore, rightScore);
 
-                // Wing activation requires at least 50% of the core's energy to prevent over-classification
-                if (higherWingScore > 0 && higherWingScore >= maxScore * 0.50) {
+                // 좌우 wing 점수가 동일하면 임의 판정하지 않음
+                if (leftScore === rightScore) {
+                    wingNum = "없음";
+                    wingStr = coreType + " (순수유형)";
+                }
+                // wing 활성화 조건: core의 85% 이상일 때만 판정
+                else if (higherWingScore > 0 && higherWingScore >= corePhase1Score * 0.85) {
                     wingNum = higherWing;
                     wingStr = coreType + "w" + wingNum;
                 }
