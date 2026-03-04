@@ -2,1619 +2,453 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="ER - Enneagram For Restoration: 나를 찾고 공동체를 치유하는 회복의 여정">
-    <meta name="theme-color" content="#FDFBF7">
-    <title>ER - Enneagram For Restoration</title>
-    
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>적응형 에니어그램 심층 인터뷰</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        er: {
-                            base: '#FDFBF7',      /* 배경: 따뜻한 미색 */
-                            surface: '#FFFFFF',   /* 카드: 순백색 */
-                            primary: '#8C8680',   /* 본문: 회갈색 */
-                            accent: '#BFA68A',    /* 포인트: 샌드 베이지 */
-                            accentDark: '#A68D73', /* 포인트 진한색 (호버용) */
-                            accentLight: '#E8DED3', /* 포인트 연한 배경 */
-                            dark: '#2C2A29',      /* 제목: 차콜 */
-                            muted: '#9CA3AF',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
-                        serif: ['Times New Roman', 'serif']
-                    },
-                    boxShadow: {
-                        'soft': '0 10px 40px -10px rgba(44, 42, 41, 0.05)',
-                        'card': '0 20px 40px -10px rgba(191, 166, 138, 0.15)',
-                        'glow': '0 0 30px rgba(191, 166, 138, 0.2)'
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'fade-in': 'fadeIn 1s ease-out forwards',
-                        'slide-down': 'slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'float': 'float 6s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideDown: {
-                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: 'Pretendard', sans-serif; 
-            background-color: #FDFBF7;
-            color: #2C2A29;
-            -webkit-tap-highlight-color: transparent;
-            overflow-x: hidden; /* 모바일 가로 스크롤 방지 */
-        }
-        
-        /* Smooth Scrolling */
-        html { scroll-behavior: smooth; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 280px; /* Mobile Optimize: 높이를 조금 줄임 */
-            margin: 0 auto;
-        }
-        @media (min-width: 768px) {
-            .chart-container { height: 400px; }
-        }
-
-        /* Improved Background Pattern */
-        .bg-pattern {
-            background-color: #FDFBF7;
-            background-image: radial-gradient(#BFA68A 0.5px, transparent 0.5px);
-            background-size: 24px 24px;
-            opacity: 0.3;
-        }
-
-        /* Glassmorphism Utilities */
-        .glass {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-
-        /* Mobile Menu Transition */
-        #mobile-menu {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-            transform-origin: top;
-        }
-        #mobile-menu.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scaleY(0.95);
-        }
-        #mobile-menu:not(.hidden) {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scaleY(1);
-        }
-        
-        .break-keep { word-break: keep-all; }
-        
-        /* Text Highlight Animation */
-        .text-highlight {
-            background: linear-gradient(120deg, rgba(191, 166, 138, 0.2) 0%, rgba(191, 166, 138, 0.2) 100%);
-            background-repeat: no-repeat;
-            background-size: 100% 30%;
-            background-position: 0 88%;
-            transition: background-size 0.3s ease-in;
-        }
-
-        .radio-btn:checked + label {
-            background-color: #2C2A29;
-            color: #FFFFFF;
-            border-color: #2C2A29;
-        }
-
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .radio-btn:checked + label { background-color: #4a4540; color: white; border-color: #4a4540; transform: scale(1.05); }
         .smooth-transition { transition: all 0.3s ease; }
+        .fade-in { animation: fadeIn 0.5s forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="antialiased selection:bg-er-accent selection:text-white flex flex-col min-h-screen">
+<body class="min-h-screen pb-20">
 
-    <nav class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 md:h-20 items-center">
-               <div class="flex items-center cursor-pointer group" onclick="renderSection('home')">
-                    <img 
-                        src="ER-logo-header.png" 
-                        alt="ER logo"
-                        class="h-7 md:h-10 w-auto select-none group-hover:opacity-90 transition"
-                        draggable="false"
-                        onerror="this.style.display='none'"
-                    >
-               </div>
-                
-                <div class="hidden md:flex space-x-8 items-center">
-                    <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        About
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
-                    <button onclick="renderSection('programs')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        Programs
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
-                    <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        Stories
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
-                    <button onclick="renderSection('resources')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        Resources
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
-                    
-                    <div class="h-4 w-px bg-gray-200 mx-2"></div>
-
-                    <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
-                        상담 문의
-                    </button>
-                    <button onclick="toggleLogin()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors">
-                        <i class="far fa-user"></i>
-                    </button>
-                </div>
-                
-                <div class="md:hidden flex items-center gap-4">
-                    <button onclick="renderSection('apply')" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm">문의하기</button>
-                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none" aria-label="메뉴 열기">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
+    <div class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
         
-        <div id="mobile-menu" class="hidden absolute w-full bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl z-40 top-16 left-0">
-            <div class="px-5 py-6 space-y-2">
-                <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">About ER</button>
-                <button onclick="renderSection('programs')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Programs</button>
-                <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Stories</button>
-                <button onclick="renderSection('resources')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Resources</button>
-                <div class="h-px bg-gray-100 my-3 mx-4"></div>
-                <button onclick="toggleLogin()" class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-500 hover:text-er-dark"><i class="far fa-user mr-2"></i> 마이페이지 / 로그인</button>
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest shadow-sm">Narrative Interview</span>
+            <h1 class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
+            <p class="mt-4 text-gray-600 leading-relaxed text-sm">
+                행동(열매)의 이면에 숨겨진 근원적 동기(뿌리)를 탐색합니다.<br>
+                1차 응답을 분석하여 유력한 후보 유형을 좁히고, <span class="font-bold text-[#bfa68a]">맞춤형 심층 질문</span>을 통해 진짜 나를 찾아갑니다.
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="progress-container" class="mb-8">
+            <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
+                <span id="step-label">1단계: 기초 성향 및 하위 본능 파악</span>
+                <span id="step-counter">1 / 2</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                <div id="progress-bar" class="bg-[#8c8680] h-1.5 rounded-full smooth-transition" style="width: 50%;"></div>
             </div>
         </div>
-    </nav>
 
-    <main id="main-content" class="flex-grow pt-16 md:pt-20">
-        </main>
+        <!-- Phase 1: Core Filter -->
+        <form id="phase1-form" class="space-y-10 fade-in">
+            <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center shadow-sm">
+                <p class="font-semibold text-gray-700">1부: 일상적 태도 및 관계 패턴</p>
+                <p class="text-sm text-gray-500 mt-1">극단적인 상황이 아닌, 편안한 상태에서의 본인 모습을 떠올리며 평가해 주세요.</p>
+            </div>
+            <div id="phase1-container" class="space-y-6"></div>
+            <div class="text-center pt-6">
+                <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm">모든 문항에 빠짐없이 응답해 주십시오.</p>
+                <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
+                    분석 및 2단계 진입
+                </button>
+            </div>
+        </form>
 
-    <footer class="bg-white border-t border-er-primary/10 pt-6 md:pt-8 pb-12">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-6 mb-12">
-                <div class="md:col-span-4 space-y-2">
-                    <a href="#" onclick="renderSection('home')" class="inline-flex items-center">
-                        <img 
-                            src="ER-logo-footer.png" 
-                            alt="ER – Enneagram for Restoration"
-                            class="h-14 sm:h-17 md:h-20 w-auto select-none opacity-90 hover:opacity-100 transition"
-                            draggable="false"
-                            onerror="this.style.display='none'"
-                        >
-                    </a>
-                        
-                    <p class="text-sm text-gray-500 leading-7 break-keep -mt-1">
-                        Original Design을 회복하고 공동체를 치유하는 여정.<br class="hidden md:block">
-                        기독교적 에니어그램의 통합적 접근을 통해<br class="hidden md:block">
-                        하나님이 창조하신 나의 은사와 부르심을 다시 만납니다.
-                    </p>
-                    <div class="flex space-x-3">
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-er-accent hover:text-white transition-all duration-300 shadow-sm"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-er-accent hover:text-white transition-all duration-300 shadow-sm"><i class="fab fa-youtube"></i></a>
-                    </div>
+        <!-- Phase 2: Adaptive Interview (Hidden initially) -->
+        <form id="phase2-form" class="space-y-10 hidden fade-in">
+            <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center shadow-sm relative overflow-hidden">
+                <p class="font-bold text-[#4a4540] text-lg">1차 알고리즘 분석 완료</p>
+                <p class="text-sm text-gray-600 mt-2">
+                    회원님의 1차 응답을 바탕으로 <strong>유력한 후보 유형들</strong>이 도출되었습니다.<br>
+                    이 유형들을 최종적으로 구별하기 위한 심층 동기 질문을 드립니다.
+                </p>
+            </div>
+            <div id="phase2-container" class="space-y-6"></div>
+            <div class="text-center pt-6">
+                <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm">모든 문항에 빠짐없이 응답해 주십시오.</p>
+                <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
+                    최종 결과 확인하기
+                </button>
+            </div>
+        </form>
+
+        <!-- Result View (Hidden initially) -->
+        <div id="result-view" class="hidden fade-in">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+                <div class="bg-[#4a4540] px-8 py-10 text-center text-white relative">
+                    <h2 class="text-sm font-medium opacity-80 uppercase tracking-widest mb-3">Your Original Design</h2>
+                    <div id="res-final" class="text-5xl font-bold mb-4 tracking-tight text-[#bfa68a]"></div>
+                    <p id="res-instincts" class="text-lg font-medium opacity-90"></p>
+                    
+                    <!-- Confidence Badge -->
+                    <div id="confidence-badge" class="absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold border border-white/30"></div>
                 </div>
                 
-                <div class="md:col-span-3">
-                    <h4 class="text-sm font-bold text-er-dark uppercase tracking-wider mb-6">Contact</h4>
-                    <ul class="space-y-4 text-sm text-gray-500">
-                        <li class="flex items-center gap-3">
-                            <i class="far fa-envelope text-er-accent w-4 text-center shrink-0"></i>
-                            <span class="break-all leading-snug">restoration.son@gmail.com</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fas fa-map-marker-alt text-er-accent w-4 text-center shrink-0"></i>
-                            <span class="leading-snug">Korea | USA (Non-profit)</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="far fa-clock text-er-accent w-4 text-center shrink-0"></i>
-                            <span class="leading-snug">Mon–Fri 10:00 – 17:00</span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="md:col-span-4">
-                    <h4 class="text-sm font-bold text-er-dark uppercase tracking-wider mb-6">
-                        Partnership
-                    </h4>
-
-                    <div class="flex flex-col gap-4">
-                        <div class="flex items-center gap-0 p-2 bg-gray- rounded-xl">
-                            
-                            <a href="https://www.soim.online/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center opacity-80 hover:opacity-100 transition">
-                                <img src="SOIM-Logo.png" alt="SOIM" class="h-24 w-auto opacity-90 hover:grayscale-0 transition-all" onerror="this.style.display='none'">
-                            </a>
-
-                            <div class="h-6 w-px bg-gray-200 mx-4"></div>
-
-                            <a href="https://www.internationalenneagram.org" target="_blank" rel="noopener noreferrer" class="inline-flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition">
-                                <img src="IEA-logo.png" alt="IEA" class="h-14 w-14 object-contain opacity-95 hover:grayscale-0 transition-all" onerror="this.style.display='none'">
-                                <span class="text-[11px] tracking-widest text-gray-800 font-semibold">IEA</span>
-                            </a>
+                <div class="p-8 space-y-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+                            <p class="text-xs text-gray-400 font-bold uppercase mb-1">Core Type</p>
+                            <p id="res-core" class="text-2xl font-bold text-gray-800"></p>
+                        </div>
+                        <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+                            <p class="text-xs text-gray-400 font-bold uppercase mb-1">Wing</p>
+                            <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
                         </div>
                     </div>
+
+                    <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
+                        <h3 class="font-bold text-[#4a4540] mb-2 text-sm"><i class="fas fa-chart-pie mr-2"></i>분석 리포트</h3>
+                        <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
+                    </div>
+
+                    <!-- Low Confidence CTA -->
+                    <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
+                        <p class="text-sm text-red-800 mb-3">결과의 <strong>확신도가 '낮음'</strong>으로 측정되었습니다. 여러 유형의 점수가 비슷하게 경합하고 있어 방어기제가 작동했거나 객관화가 덜 되었을 확률이 높습니다.</p>
+                        <a href="#" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full transition">전문가 1:1 타이핑 세션 신청하기</a>
+                    </div>
+
+                    <div class="text-center pt-6 border-t border-gray-100">
+                        <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">
+                            처음부터 다시하기
+                        </button>
+                    </div>
                 </div>
             </div>
-            
-            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-4">
-                <p>&copy; 2025 ER (Enneagram for Restoration).</p>
-                <p>Operating as a pilot non-profit program.</p>
-            </div>
         </div>
-    </footer>
+
+    </div>
 
     <script>
-        // --- State Management ---
-        let submitted = false;
-        const state = {
-            currentSection: 'home',
-            user: null, 
-            programFilter: 'individual',
-            latestTestResult: null
-        };
+        // Data Models
+        let phase1Responses = {};
+        let phase2Responses = {};
+        let topCandidates = [];
 
-        const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/formResponse";
-        const GOOGLE_FORM_VIEW_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform";
+        // ==========================================
+        // Phase 1 Questions (Triad + Core + Instincts)
+        // ==========================================
+        const phase1Questions = [
+            // Center (Triad)
+            { id: 't2', type: 2, q: "새로운 모임에 가면 '내가 이 사람들에게 어떻게 비춰질까, 어떻게 관계를 맺을까'를 자연스럽게 의식하게 되는 것 같다." },
+            { id: 't5', type: 5, q: "새로운 모임에 가면 '이 모임의 목적은 뭐지? 분위기가 안전한가?' 하고 상황을 먼저 파악하려는 경향이 있다." },
+            { id: 't8', type: 8, q: "새로운 모임에 가면 '이 공간의 주도권은 누구에게 있나, 내 자리는 어디인가' 하는 공기(흐름)를 본능적으로 느끼곤 한다." },
+            
+            // Core Behavioral Traits (Softer Tone)
+            { id: 'c1', type: 1, q: "가까운 사람들로부터 '스스로에게 기준이 높다'거나 '원칙을 중요시한다'는 이야기를 가끔 듣는 편이다." },
+            { id: 'c2', type: 2, q: "누군가 도움이 필요해 보일 때 먼저 다가가며, 나의 호의가 당연하게 여겨질 때 겉으론 티를 안 내도 속으로 서운할 때가 있다." },
+            { id: 'c3', type: 3, q: "어떤 일을 할 때 과정도 중요하지만, 결국 눈에 보이는 성과나 결과물로 나의 가치를 증명하고 싶어 하는 마음이 꽤 큰 것 같다." },
+            { id: 'c4', type: 4, q: "남들과 똑같아지거나 평범해지는 것을 별로 좋아하지 않으며, 때때로 나만의 감정이나 결핍감에 깊이 빠져들곤 한다." },
+            { id: 'c5', type: 5, q: "에너지가 한정되어 있다고 느껴져서, 사람들과 어울리기보다 혼자만의 조용한 공간에서 충전하는 시간이 반드시 필요하다." },
+            { id: 'c6', type: 6, q: "돌다리도 두드려보고 건너는 편이며, 확실한 지침이나 믿을 만한 대상이 없을 때 은근히 불안감을 느끼곤 한다." },
+            { id: 'c7', type: 7, q: "무겁고 우울한 분위기를 견디기 어려워하며, 즐겁고 긍정적인 계획들을 상상하는 것으로 스트레스를 피하려는 경향이 있다." },
+            { id: 'c8', type: 8, q: "불의를 보거나 누군가 나를 부당하게 통제하려 할 때 강하게 반발하며, 차라리 내가 상황을 주도하는 편이 편하다." },
+            { id: 'c9', type: 9, q: "갈등이 생기는 상황을 본능적으로 피하고 싶어 하며, 웬만하면 '좋은 게 좋은 거지' 하고 내 의견을 양보할 때가 많다." },
 
-        const contentData = {
-            stats: {
-                labels: ['개인/가정', '목회자', '기업/조직', '강사양성', '청소년'],
-                data: [45, 25, 15, 10, 5],
-            },
-            types: {
-                labels: ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 효율적인 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 명령한 사람', '8번 강한 사람', '9번 조화로운 사람'],
-                data: [8, 9, 8, 7, 6, 8, 7, 8, 9] 
-            },
-            notices: [
-                {
-                    id: 1,
-                    tag: "모집중",
-                    title: "SOIM 에니어그램 전문가반 5기 모집",
-                    date: "2025-01-15",
-                    summary: "온라인 8주 과정 강의과 1:1 멘토링",
-                    body: `
-                        <p class="text-gray-600 leading-relaxed break-keep">
-                        에니어그램을 “아는 단계”에서 끝내지 않고, 삶과 현장에 적용하는 단계까지 함께 갑니다.
-                        전문가반 5기에서는 기초 이론부터 적용까지 매주 심화 수업과 과제로 훈련하고,
-                        1:1 멘토링과 강의 피드백을 통해 실제 강의·코칭 현장에서 자신 있게 사용할 수 있도록 돕습니다.
-                        수료 후에는 (선택사항) 스터디 그룹과 코칭 실습으로 이어지며, 정식 코치 활동을 준비할 수 있습니다.
-                        </p>
-                        <div class="mt-6 grid gap-3">
-                        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                            <span class="text-xs font-bold text-gray-500 w-20">기간</span>
-                            <span class="text-sm text-gray-700">8주</span>
-                        </div>
-                        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                            <span class="text-xs font-bold text-gray-500 w-20">대상</span>
-                            <span class="text-sm text-gray-700 break-keep">에니어그램을 단순한 성격 이해를 넘어, <br> 기독교 세계관 안에서 "자기 이해와 타인 돌봄"(코칭·강의)에 <br> 실제로 적용하고자 하는 분</span>
-                        </div>
-                        <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                            <span class="text-xs font-bold text-gray-500 w-20">지원마감</span>
-                            <span class="text-sm text-gray-700">2025.01.15</span>
-                        </div>
-                        </div>
-                    `
-                },
-                {
-                    id: 2,
-                    tag: "안내",
-                    title: "홈페이지 리뉴얼 안내",
-                    date: "2024-12-20",
-                    summary: "리뉴얼 진행 중이며 일부 기능은 준비 중입니다.",
-                    body: `
-                        <p class="text-gray-600 leading-relaxed break-keep">
-                        ER 홈페이지는 더 나은 정보 제공을 위해 리뉴얼 중입니다.
-                        일부 메뉴와 기능(로그인/공지 확장 등)은 순차적으로 업데이트됩니다.
-                        </p>
-                    `
-                }
-            ] 
-        };
-
-        // 59문항 약식 에니어그램 테스트
-        const enneagramQuestions = [
-            "처음 참석하는 중요한 사교 모임에 들어설 때, 누가 있는지 살피고 내가 다른 사람들에게 어떻게 보일지 먼저 생각한다.",
-            "처음 참석하는 중요한 사교 모임에 들어설 때, 이 모임의 목적과 분위기를 파악하고 어떤 일이 일어날지 예측하며 안전하게 머물 방법을 찾는다.",
-            "처음 참석하는 중요한 사교 모임에 들어설 때, 이 공간의 힘의 균형이나 분위기를 즉각적으로 느끼고 나의 존재감을 본능적으로 파악하려 한다.",
-            "예상치 못한 문제가 갑자기 발생했을 때, 이 일이 다른 사람들과의 관계에 어떤 영향을 미칠지 먼저 걱정한다.",
-            "예상치 못한 문제가 갑자기 발생했을 때, 먼저 '왜 이런 일이 일어났을까?'를 분석하고 최악의 시나리오를 대비한다.",
-            "예상치 못한 문제가 갑자기 발생했을 때, 즉시 '무엇을 해야 하는가?'를 생각하며 상황을 통제하고 문제를 행동으로 해결하려 한다.",
-            "공개적인 자리에서 누군가 내 의견을 부당하게 비판하면, 즉시 그 사람에게 정면으로 맞서 나의 힘과 입장을 분명히 보여주려 한다.",
-            "공개적인 자리에서 누군가 내 의견을 부당하게 비판하면, 갈등을 피하기 위해 일단 상황을 무마하거나 자리를 벗어나고 싶어 한다.",
-            "공개적인 자리에서 누군가 내 의견을 부당하게 비판하면, 속으로 분노가 치밀지만 억누르고 무엇이 옳고 그른지 따져 상황을 바로잡으려 한다.",
-            "팀 프로젝트에서 나의 기여도를 평가받을 때, 팀원들을 돕고 관계를 돈독히 한 나의 헌신이 인정받기를 기대한다.",
-            "팀 프로젝트에서 나의 기여도를 평가받을 때, 가장 효율적인 방법으로 최고의 결과를 내어 나의 가치를 증명하는 데 집중한다.",
-            "팀 프로젝트에서 나의 기여도를 평가받을 때, 나의 독창적인 관점을 표현하고 남들과는 다른 나만의 의미 있는 기여를 하는 것에 집중한다.",
-            "낯설고 정보가 부족한 나라로 여행할 때, 여행에 필요한 모든 정보를 수집하고 완벽히 이해함으로써 불안을 줄이려 한다.",
-            "낯설고 정보가 부족한 나라로 여행할 때, 최악의 시나리오를 떠올리고 대비책을 세우며 신뢰하는 사람에게 조언을 구한다.",
-            "낯설고 정보가 부족한 나라로 여행할 때, 재미있고 신나는 활동들을 상상하며 여러 개의 긍정적인 계획을 세워둔다.",
-            "새로운 카페에 들어갈 때, 음료 맛보다 먼저 의자가 편안한지 실내 온도가 적당한지를 살핀다.",
-            "파티나 모임에 가면, 여러 사람과 얕게 어울리기보다 단 한 사람과 구석에서 깊은 대화를 나누는 것에 더 큰 만족을 느낀다.",
-            "중요한 결정을 내리기 전에, '이것이 내가 속한 공동체나 팀에 어떤 영향을 미칠까?'를 먼저 고려한다.",
-            "여행을 떠나기 전, 혹시 빠뜨린 물건은 없는지, 계획에 차질은 없는지 몇 번이고 확인해야만 마음이 놓인다.",
-            "연인이나 배우자의 잘못된 습관을 보면 그냥 넘어가지 못하고 어떻게든 더 나은 사람으로 만들어주어야 직성이 풀린다.",
-            "그룹 프로젝트를 할 때 규칙이나 절차를 무시하는 팀원이 있으면, 팀의 성과보다 그 잘못된 방식 자체에 더 신경이 쓰인다.",
-            "원치 않는 일을 해야 할 때, 직접 거절하기보다 아프다거나 다른 일이 있는 것처럼 행동하여 상황을 피하려 한다.",
-            "마음에 드는 한 사람이 생기면, 그 사람의 관심사가 무엇이든 함께 공유하고 모든 것을 맞춰주며 어떻게든 내 사람으로 만들고 싶다.",
-            "어떤 모임에서든 중심적인 인물이 되어, 모든 사람의 이름과 필요를 기억하고 연결해주는 마당발 역할을 하고 싶다.",
-            "화려하게 주목받기보다는, 맡은 일을 빈틈없이 완벽하게 해내 믿을 수 있는 사람이라는 평판을 얻고 싶다.",
-            "단순히 일을 잘하는 것을 넘어, 내가 원하는 상대에게 가장 매력적이고 이상적인 파트너로 보이고 싶다.",
-            "어떤 옷을 입고, 어떤 차를 타고, 어디에 사는지가 나의 성공을 보여주는 중요한 상징이라고 생각한다.",
-            "힘든 내색을 하지 않기 때문에, 주변 사람들은 종종 내가 얼마나 깊은 고통을 참고 있는지 전혀 눈치채지 못한다.",
-            "사랑하는 사람이 나를 완벽하게 이해해주지 않으면, 그를 밀어내고 상처를 주면서까지 나의 특별한 고통을 알아주기를 바란다.",
-            "다른 사람들 앞에 서면, 나의 결점이나 부족함이 금방 드러날 것 같아 늘 수치심과 불안을 느낀다.",
-            "누군가 나의 사적인 공간(방, 책상)에 허락 없이 들어오면, 내 영역이 침범당한 것 같아 극도의 불쾌감을 느낀다.",
-            "평소에는 과묵하고 내향적이지만, 깊이 신뢰하는 단 한 사람 앞에서는 나의 모든 비밀과 내면세계를 털어놓고 싶다.",
-            "사적인 대화에는 서툴지만, 내 전문 분야에 대한 발표나 토론에서는 누구보다 자신감 있게 내 의견을 펼친다.",
-            "새로운 사람을 만날 때, 그가 정말 믿을 만한 사람인지 오랜 시간 지켜보고 나서야 마음을 연다.",
-            "위험하거나 금지된 일에 도전하며, 두려움을 정복하는 것에서 짜릿한 쾌감과 자신감을 얻는다.",
-            "불확실한 상황에서 내가 무엇을 해야만 하는지 명확한 지침을 받기를 원하며, 그 지침에 따라 정확하게 행동하려 한다.",
-            "추상적인 이상보다, 맛있는 음식, 편안한 여행, 좋은 환경 같은 구체적이고 감각적인 만족을 더 중요하게 생각한다.",
-            "연인을 만날 때, 그 사람과 함께라면 지금보다 더 멋지고 본질적인 세계로 나아갈 수 있을 것이라는 강한 기대를 품는다.",
-            "나 자신의 욕망을 절제하는 모습을 보임으로써, 다른 사람들로부터 도덕적으로 우월하다는 인정을 받으려 한다.",
-            "내 욕구가 즉시 채워지지 않으면 참지 못하고, 그것을 방해하는 것이 있다면 직접 나서서 해결해야 직성이 풀린다.",
-            "무대나 모임의 중심이 되어, 모든 사람의 시선과 관심을 독차지해야만 직성이 풀린다.",
-            "강압적인 리더가 되기보다, 팀원들을 멘토링하고 그들의 성장을 도우며 신뢰를 쌓는 방식의 리더십을 선호한다.",
-            "중요한 일을 결정해야 할 때, 스트레스를 피하기 위해 사소하고 급하지 않은 다른 일에 몰두하며 결정을 미룬다.",
-            "관계의 평화를 지키기 위해, 내 의견이나 불만을 표현하기보다 침묵하고 상대방에게 동의하는 쪽을 택한다.",
-            "갈등 상황에서 내 의견을 주장하기보다, 그룹의 화합을 위해 내 의견을 조율하거나 양보하는 쪽을 먼저 선택한다.",
-            "나의 분노는 내 영역을 지키고 나의 의지를 관철하기 위한 도구이다.",
-            "권위나 규칙에 도전함으로써 그것이 신뢰할 만한지 시험한다.",
-            "화가 나도 평화를 위해 꾹 참거나 다른 일로 잊어버린다.",
-            "종종 내 안의 결핍감이나 슬픔에 깊이 빠져든다.",
-            "갈등을 피할 수 있다면 나의 주장을 쉽게 포기한다.",
-            "충분히 알고 이해하기 전까지는 행동하기를 주저한다.",
-            "갈등을 중재하고 모두가 만족하는 합의점을 찾는 역할을 한다.",
-            "나의 도움에 대해 다른 사람들이 고마워하기를 기대한다.",
-            "고통스럽거나 지루한 상황에 갇히는 것을 두려워한다.",
-            "스스로에게 엄격하며, 고통을 감수하면서까지 목표를 추구한다.",
-            "나의 본능적인 충동이나 감정을 통제하여 좋은 사람이 되려고 한다.",
-            "현재의 불편함보다 미래의 즐거운 계획을 생각하는 것을 선호한다.",
-            "내가 옳다고 믿는 기준을 다른 사람들도 따르기를 원한다.",
-            "나의 분노를 직접적이고 솔직하게 표현하여 나의 의지를 보여준다."
+            // Instincts (3 per instinct)
+            { id: 'i_sp_1', inst: 'sp', q: "어딜 가든 온도, 조명, 식사, 수면 등 나의 신체적 안락함과 환경적 요소가 꽤 중요하게 느껴진다." },
+            { id: 'i_sp_2', inst: 'sp', q: "나의 시간, 에너지, 자원(돈 등)이 불필요하게 낭비되거나 예측 불가능하게 소모되는 것에 예민한 편이다." },
+            { id: 'i_sp_3', inst: 'sp', q: "재정적인 안정과 독립적인 생활 기반을 확보하는 것이 삶에서 우선순위가 높은 편이다." },
+            
+            { id: 'i_sx_1', inst: 'sx', q: "여러 사람과 얕게 어울리는 것보다, 나와 코드가 맞는 단 한 사람과 깊고 강렬하게 교감할 때 에너지를 얻는다." },
+            { id: 'i_sx_2', inst: 'sx', q: "무언가(사람, 취미, 관심사)에 한 번 꽂히면 주변을 잊을 만큼 모든 열정을 쏟아붓는 편이다." },
+            { id: 'i_sx_3', inst: 'sx', q: "평범하고 일상적인 대화보다는, 서로의 깊은 내면이나 비밀스러운 이야기를 나누는 것을 훨씬 선호한다." },
+            
+            { id: 'i_so_1', inst: 'so', q: "중요한 결정을 내릴 때, '이것이 내가 속한 공동체나 가족에게 어떤 영향을 미칠까'를 먼저 고려하는 편이다." },
+            { id: 'i_so_2', inst: 'so', q: "내가 속한 그룹 안에서 나의 역할이나 위치가 무엇인지 확인하고 소속감을 느끼는 것이 중요하다." },
+            { id: 'i_so_3', inst: 'so', q: "사회적 이슈나 단체의 흐름에 관심이 많으며, 사람들과 함께 협력하여 무언가를 이루어내는 것에 가치를 느낀다." }
         ];
 
-        // --- Core Functions ---
-        function renderSection(sectionId, payload = null) {
-            state.currentSection = sectionId;
-            const main = document.getElementById('main-content');
-            
-            // Close mobile menu
-            document.getElementById('mobile-menu').classList.add('hidden');
-            
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'auto' }); 
+        // ==========================================
+        // Phase 2 Deep Motivation Dictionary
+        // ==========================================
+        const deepMotivations = {
+            1: [
+                { id: 'd1_1', type: 1, q: "내 안에는 끊임없이 나를 평가하고 채찍질하는 '엄격한 비평가'가 살고 있는 것만 같다." },
+                { id: 'd1_2', type: 1, q: "나는 속으로 '이건 이렇게 해야 해'라는 정답을 정해놓고, 나 자신이나 타인이 그 기준에 미치지 못할 때 자주 답답함을 느낀다." }
+            ],
+            2: [
+                { id: 'd2_1', type: 2, q: "내가 누군가에게 꼭 필요한 존재가 됨으로써, 그들이 나를 떠나지 않고 인정해 주기를 바라는 깊은 마음이 있다." },
+                { id: 'd2_2', type: 2, q: "다른 사람의 필요나 기분은 기가 막히게 잘 알면서도, 막상 '내가 진짜 원하는 것'이 무엇인지 물으면 대답하기 어려울 때가 많다." }
+            ],
+            3: [
+                { id: 'd3_1', type: 3, q: "실패하거나 무능력한 사람으로 비춰지는 것이 내게는 견디기 힘든 두려움 중 하나이다." },
+                { id: 'd3_2', type: 3, q: "나는 나의 있는 그대로의 모습보다, 내가 성취한 결과나 유능한 이미지로 사람들에게 인정받고 싶어 하는 욕구가 깊은 곳에 자리잡고 있다." }
+            ],
+            4: [
+                { id: 'd4_1', type: 4, q: "사람들에게 온전히 이해받지 못한다는 묘한 소외감을 종종 느끼며, 나의 슬픔이나 결핍마저도 나만의 특별함이라고 여기는 경향이 있다." },
+                { id: 'd4_2', type: 4, q: "무미건조하고 평범한 일상보다는, 감정이 깊이 요동치고 의미가 담긴 상황에서 비로소 내가 살아있음을 강하게 느끼곤 한다." }
+            ],
+            5: [
+                { id: 'd5_1', type: 5, q: "나는 세상이나 사람들과 직접 부딪히기보다, 한 발짝 떨어져서 적당한 거리를 두고 관찰자 모드로 있을 때 가장 안전하다고 느낀다." },
+                { id: 'd5_2', type: 5, q: "누군가 나에게 갑작스러운 감정적 반응을 요구하거나 내 지적 영역을 침범하면, 무의식적으로 에너지를 차단하고 물러서게 된다." }
+            ],
+            6: [
+                { id: 'd6_1', type: 6, q: "나는 나를 지켜줄 수 있는 확실한 신념이나 든든한 동맹을 찾기 전까지는, 세상이 꽤 위험한 곳이라고 무의식중에 느끼는 것 같다." },
+                { id: 'd6_2', type: 6, q: "권위자나 시스템에 순응하여 안전을 보장받고 싶으면서도, 동시에 그들이 정말 믿을 만한지 끊임없이 의심하고 테스트하려는 모순된 마음이 있다." }
+            ],
+            7: [
+                { id: 'd7_1', type: 7, q: "부정적인 감정이나 고통스러운 현실에 직면하는 것이 두려워, 나도 모르게 새롭고 흥미로운 계획들로 주의를 돌리려 한다." },
+                { id: 'd7_2', type: 7, q: "어떤 한 가지에 얽매이거나 제한당하는 것을 극도로 답답해하며, 항상 다양한 가능성과 선택지를 열어두어야 안심이 된다." }
+            ],
+            8: [
+                { id: 'd8_1', type: 8, q: "나는 다른 사람에게 약점을 잡히거나 통제당하는 것을 본능적으로 거부하며, 차라리 내가 강해져서 상황을 주도하는 쪽을 택한다." },
+                { id: 'd8_2', type: 8, q: "갈등 상황에서 물러서기보다는 내 힘을 온전히 드러내어 부딪히는 것이 오히려 진실에 가깝고 개운하다고 느낀다." }
+            ],
+            9: [
+                { id: 'd9_1', type: 9, q: "나는 나와 타인, 혹은 환경과의 '연결감'이 끊어지는 것을 두려워하며, 내 안의 평화를 유지하기 위해 종종 내 진짜 분노나 욕구를 억누르곤 한다." },
+                { id: 'd9_2', type: 9, q: "중요한 갈등 상황이나 결정을 마주할 때, 직면하는 스트레스를 피하기 위해 덜 중요한 사소한 일들에 몰두하며 에너지를 분산시키는 패턴이 있다." }
+            ]
+        };
 
-            let html = '';
-            switch(sectionId) {
-                case 'home': html = renderHome(); break;
-                case 'about': html = renderAbout(); break;
-                case 'programs': html = renderPrograms(); break;
-                case 'community': html = renderCommunity(); break;
-                case 'resources': html = renderResources(); break;
-                case 'test': html = renderTest(); break;
-                case 'notices': html = renderNotices(); break;
-                case 'notice_detail': html = renderNoticeDetail(payload); break;
-                case 'types_guide': html = renderTypesGuide(); break; 
-                case 'apply': html = renderApply(payload); break;
-                case 'mypage': html = renderMyPage(); break;
-                case 'thankyou': html = renderThankYou(); break;
-                default: html = renderHome();
-            }
-
-            main.innerHTML = html;
-            
-            // Post-render actions
-            if(sectionId === 'home') setTimeout(() => initCharts('home'), 100);
-            if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
-            if(sectionId === 'programs') updateProgramView(state.programFilter);
-            if(sectionId === 'test') initTest();
-        }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        // --- View Components (Renderers) ---
-
-        // ✨ UPGRADED HOME DESIGN
-        function renderHome() {
-            return `
-                <div class="relative overflow-hidden min-h-[90vh] flex flex-col justify-center bg-er-base">
-                    <div class="absolute inset-0 bg-pattern z-0 pointer-events-none"></div>
-                    <div class="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-er-accent/10 rounded-full blur-[100px] z-0 pointer-events-none animate-pulse"></div>
-                    <div class="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-blue-50/60 rounded-full blur-[80px] z-0 pointer-events-none"></div>
-
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 md:py-20">
-                        <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-                            
-                            <div class="text-center lg:text-left animate-fade-in-up order-2 lg:order-1">
-                                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/60 border border-er-accent/20 backdrop-blur-sm shadow-sm mb-6">
-                                    <span class="w-2 h-2 rounded-full bg-er-accent animate-pulse"></span>
-                                    <span class="text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-primary">Non-profit Organization</span>
-                                </div>
-
-                                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight font-extrabold text-er-dark mb-6 leading-[1.15] break-keep">
-                                    Original Design을<br>
-                                    <span class="text-highlight inline-block text-er-dark">발견하고 회복합니다</span>
-                                </h1>
-                                
-                                <p class="mt-2 text-base md:text-lg text-gray-600 mb-10 leading-relaxed max-w-xl mx-auto lg:mx-0 break-keep font-medium">
-                                    기독교 세계관과 에니어그램의 통합적 접근.<br class="hidden md:block">
-                                    나 자신을 깊이 이해하고, 가정과 공동체를<br class="hidden md:block">
-                                    건강하게 치유하는 회복의 여정에 당신을 초대합니다.
-                                </p>
-                                
-                                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                    <button onclick="renderSection('programs')" class="w-full sm:w-auto px-8 py-4 bg-er-dark text-white rounded-full font-bold shadow-lg shadow-er-dark/20 hover:bg-gray-800 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
-                                        프로그램 살펴보기 <i class="fas fa-arrow-right text-xs opacity-70"></i>
-                                    </button>
-                                    <button onclick="renderSection('apply')" class="w-full sm:w-auto px-8 py-4 bg-white/80 backdrop-blur-sm text-er-dark border border-white/60 rounded-full font-bold shadow-sm hover:bg-white hover:border-er-accent/50 transition-all active:scale-95">
-                                        상담 신청하기
-                                    </button>
-                                </div>
-
-                                <div class="mt-10 md:mt-12 pt-6 border-t border-er-dark/5 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs md:text-sm text-gray-500 font-medium">
-                                    <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px]"><i class="fas fa-check"></i></div> 전문 자격 코치진</div>
-                                    <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px]"><i class="fas fa-check"></i></div> 1:1 맞춤형 케어</div>
-                                </div>
-                            </div>
-
-                            <div class="relative order-1 lg:order-2 flex justify-center animate-fade-in mb-6 md:mb-0">
-                                <div class="relative w-full max-w-[360px] md:max-w-md glass rounded-[2.5rem] p-6 md:p-8 shadow-card hover:shadow-glow transition-shadow duration-500">
-                                    
-                                    <div class="absolute -top-5 -left-4 md:-top-6 md:-left-8 bg-white p-3 md:p-4 rounded-2xl shadow-xl border border-white/60 flex items-center gap-3 animate-float z-20">
-                                        <div class="w-10 h-10 md:w-12 md:h-12 bg-er-accent rounded-full flex items-center justify-center text-white font-bold text-lg shadow-inner">
-                                            <i class="fas fa-chart-pie"></i>
-                                        </div>
-                                        <div class="text-left pr-2">
-                                            <p class="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-wider">Enneagram</p>
-                                            <p class="text-sm md:text-base font-extrabold text-er-dark">9 Personality Types</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="absolute top-4 right-4 flex gap-1.5">
-                                        <div class="w-2 h-2 rounded-full bg-red-300/50"></div>
-                                        <div class="w-2 h-2 rounded-full bg-yellow-300/50"></div>
-                                        <div class="w-2 h-2 rounded-full bg-green-300/50"></div>
-                                    </div>
-
-                                    <div class="chart-container">
-                                        <canvas id="heroChart"></canvas>
-                                    </div>
-                                    
-                                    <div class="text-center mt-4">
-                                        <p class="text-x text-gray-400 font-medium tracking-wide"> 자기욕구이해. 갈등해결. 적성발견. 소통개선 </p>
-                                    </div>
-                                </div>
-                                
-                                <div class="absolute inset-0 bg-gradient-to-tr from-er-accent/20 to-transparent rounded-full blur-3xl -z-10 transform scale-110"></div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderAbout() {
-            return `
-                <div class="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden">
-                    <div class="max-w-6xl mx-auto">
-                        <div class="text-center mb-16 md:mb-24 animate-fade-in-up">
-                            <h2 class="text-xs font-bold tracking-[0.3em] text-er-accent mb-4 md:mb-5">
-                                VISION & MISSION
-                            </h2>
-                            <h3 class="text-2xl md:text-4xl font-bold text-er-dark leading-snug mb-8 break-keep">
-                                나의 <span class="text-er-accent">Original Design</span>을 알 때,<br>
-                                비로소 타인의 <span class="text-er-accent">Original Design</span>이 보입니다.
-                            </h3>
-                            <div class="flex justify-center items-center gap-3">
-                                <span class="w-8 h-px bg-er-accent/30"></span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-er-accent/50"></span>
-                                <span class="w-8 h-px bg-er-accent/30"></span>
-                            </div>
-                        </div>      
-
-                        <div class="bg-er-base/70 rounded-[2.5rem] p-8 md:p-12 shadow-soft mb-16 md:mb-20 animate-fade-in-up border border-white/60">
-                            <div class="flex flex-col lg:flex-row gap-8 md:gap-12 items-center">
-                                <div class="w-full lg:w-1/3 relative group flex flex-col items-center text-center">
-                                    <div class="relative mb-6">
-                                        <div class="w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden shadow-card bg-gray-200 ring-4 ring-white">
-                                            <img src="son-profile-picture.png" alt="Jiyoung Son" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://via.placeholder.com/300x300?text=Profile';">
-                                        </div>
-                                        <div class="absolute -inset-3 rounded-full border border-er-accent/20 pointer-events-none"></div>
-                                    </div>
-                                    <div class="space-y-2">
-                                        <p class="text-[10px] tracking-widest text-er-accent font-bold uppercase">Founder & Head Coach</p>
-                                        <h3 class="text-2xl md:text-3xl font-extrabold text-er-dark">손지영</h3>
-                                        <p class="text-sm text-gray-600 leading-relaxed mt-2 break-keep">
-                                            에니어그램과 기독교 세계관을 통합하여<br>개인과 공동체의 회복을 돕습니다.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="w-full lg:w-2/3">
-                                    <div class="grid gap-4">
-                                        <div class="flex items-center gap-4 p-4 md:p-5 bg-white rounded-2xl border border-er-accent/20 shadow-sm">
-                                            <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0 text-lg">
-                                                <i class="fas fa-certificate"></i>
-                                            </div>
-                                            <div>
-                                                <h4 class="font-bold text-er-dark text-sm md:text-base break-keep">Enneagram Spectrum Advanced Certification</h4>
-                                                <p class="text-xs text-gray-500 mt-0.5">Dr. Wagner (International Enneagram Association)</p>
-                                            </div>
-                                        </div>
-
-                                        <div class="grid sm:grid-cols-2 gap-4">
-                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
-                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">SOIM GLTC Instructor</h4>
-                                                <p class="text-xs text-gray-500">소임 글로벌 리더십 트레이닝 강사</p>
-                                            </div>
-                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
-                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Enneagram Instructor</h4>
-                                                <p class="text-xs text-gray-500">소임 에니어그램 전문가 양성반 강사</p>
-                                            </div>
-                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
-                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Professional</h4>
-                                                <p class="text-xs text-gray-500">국제 에니어그램 협회 인증 전문가</p>
-                                            </div>
-                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
-                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">DTS Counseling</h4>
-                                                <p class="text-xs text-gray-500">Dallas Theological Seminary 석사 과정</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="animate-fade-in-up">
-                            <h3 class="text-xl md:text-2xl font-bold text-center text-er-dark mb-8">함께하는 코치진</h3>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-                                ${['김수잔', '서초윤', '정익훈', '정경하', '주찬미', '임효조', '최다영'].map(name => `
-                                    <div class="bg-white rounded-2xl p-5 text-center shadow-sm border border-gray-100 hover:shadow-card hover:-translate-y-1 transition-all duration-300">
-                                        <div class="w-14 h-14 mx-auto bg-gray-50 rounded-full flex items-center justify-center text-lg font-bold text-gray-400 mb-3">
-                                            ${name.substring(0,1)}
-                                        </div>
-                                        <h4 class="font-bold text-gray-900 text-sm">${name}</h4>
-                                        <p class="text-[10px] text-er-accent mt-1 uppercase tracking-wide">Coach</p>
-                                    </div>
-                                `).join('')}
-                                <div class="bg-gray-50 rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors" onclick="renderSection('notices')">
-                                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-300 mb-2 shadow-sm"><i class="fas fa-plus"></i></div>
-                                    <p class="text-[10px] text-gray-500 font-medium">전문가 과정<br>모집 중</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderPrograms() {
-            return `
-                <div class="bg-er-base min-h-screen">
-                    <div class="bg-er-dark text-white py-16 px-6 relative overflow-hidden rounded-b-[3rem]">
-                        <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
-                        <div class="relative z-10 max-w-7xl mx-auto text-center">
-                            <h2 class="text-2xl md:text-4xl font-bold mb-3">맞춤형 프로그램</h2>
-                            <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인의 회복에서 공동체의 성장까지, 당신에게 가장 적합한 솔루션을 제안합니다.</p>
-                            
-                            <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
-                                ${['individual:개인/가정', 'church:사역/교회', 'business:비즈니스', 'training:강사양성'].map(item => {
-                                    const [key, label] = item.split(':');
-                                    const isActive = state.programFilter === key;
-                                    return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
-                                        class="whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 ${isActive ? 'bg-white text-er-dark shadow-md scale-105' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">
-                                        ${label}
-                                    </button>`
-                                }).join('')}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 pb-20">
-                        <div id="program-intro" class="mb-6 text-center bg-white rounded-2xl p-6 shadow-soft max-w-2xl mx-auto border border-gray-100 animate-fade-in-up">
-                            </div>
-                        
-                        <div id="program-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            </div>
-
-                        <div class="mt-20">
-                            <div class="text-center mb-10">
-                                <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Process</span>
-                                <h3 class="text-xl md:text-2xl font-bold text-er-dark mt-2">진행 과정</h3>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto">
-                                <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-sm relative group hover:shadow-card transition-all">
-                                    <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-xl"></i></div>
-                                    <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="far fa-file-alt"></i></div>
-                                    <h4 class="font-bold text-base mb-1">1. 신청서 작성</h4>
-                                    <p class="text-xs text-gray-500 break-keep">현재 상황과 니즈를 파악합니다.</p>
-                                </div>
-                                <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-sm relative group hover:shadow-card transition-all">
-                                    <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-xl"></i></div>
-                                    <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="far fa-comments"></i></div>
-                                    <h4 class="font-bold text-base mb-1">2. 사전 인터뷰</h4>
-                                    <p class="text-xs text-gray-500 break-keep">코치와 상담을 통해 방향을 설정합니다.</p>
-                                </div>
-                                <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-sm group hover:shadow-card transition-all">
-                                    <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="fas fa-chalkboard-teacher"></i></div>
-                                    <h4 class="font-bold text-base mb-1">3. 코칭/강의</h4>
-                                    <p class="text-xs text-gray-500 break-keep">맞춤형 커리큘럼으로 진행됩니다.</p>
-                                </div>
-                            </div>
-                            <div class="text-center mt-10">
-                                <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
-                                    상담 신청하기
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderCommunity() {
-            return `
-                <div class="bg-white min-h-screen py-16 px-4">
-                    <div class="max-w-6xl mx-auto">
-                        <div class="text-center mb-12 animate-fade-in-up">
-                            <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Stories</span>
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mt-2">회복과 변화의 이야기</h2>
-                            <p class="mt-2 text-sm text-gray-500">데이터와 후기가 증명하는 ER의 노하우</p>
-                        </div>
-
-                        <div class="grid lg:grid-cols-2 gap-8 mb-16">
-                            <div class="bg-er-base rounded-[2rem] p-6 md:p-8 shadow-inner animate-fade-in-up">
-                                <h3 class="font-bold text-base text-gray-800 mb-6 flex items-center gap-2">
-                                    <i class="fas fa-chart-pie text-er-accent"></i> 상담 케이스 분포
-                                </h3>
-                                <div class="chart-container h-64">
-                                    <canvas id="impactChart"></canvas>
-                                </div>
-                                <p class="text-center text-[10px] text-gray-400 mt-4">* 2024년 기준 누적 데이터</p>
-                            </div>
-
-                            <div class="space-y-4 md:space-y-6 animate-fade-in-up" style="animation-delay: 0.2s;">
-                                <div class="bg-er-dark text-white p-6 md:p-8 rounded-[2rem] relative overflow-hidden shadow-card">
-                                    <i class="fas fa-quote-right absolute bottom-4 right-4 text-5xl text-white/5"></i>
-                                    <h4 class="font-bold text-base mb-2 text-er-accent">왜 효과적인가요?</h4>
-                                    <p class="text-gray-300 leading-relaxed text-sm break-keep">
-                                        단순히 성격을 분류하는 것이 아니라, <span class="text-white font-bold underline decoration-er-accent underline-offset-2">근본적인 동기(Motivation)</span>를 파악하여 내면의 상처를 치유하기 때문입니다. 기독교적 영성은 이 과정에 깊은 안정감을 더해줍니다.
-                                    </p>
-                                </div>
-
-                                <div class="bg-white border border-gray-100 p-6 md:p-8 rounded-[2rem] shadow-soft hover:shadow-card transition-all">
-                                    <div class="flex text-er-accent mb-3 text-xs">
-                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                    </div>
-                                    <p class="text-gray-600 italic mb-6 text-sm leading-relaxed break-keep">
-                                        "남편과 매일 싸우며 이혼까지 생각했습니다. 에니어그램을 통해 남편이 저를 무시한 게 아니라, 불안해서 확인하려 했다는 걸 알게 되었어요. 이제는 서로의 언어로 대화합니다."
-                                    </p>
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-er-accent to-gray-400 flex items-center justify-center text-white font-bold text-[10px]">JH</div>
-                                        <div>
-                                            <p class="text-sm font-bold text-gray-900">30대 부부</p>
-                                            <p class="text-[10px] text-gray-400">가정 회복 코칭</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="grid md:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 0.3s;">
-                            <div class="md:col-span-2">
-                                <h3 class="text-lg font-bold text-gray-900 mb-4">Activity Gallery</h3>
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    ${[1,2,3,4].map(i => `
-                                        <div class="aspect-square bg-gray-100 rounded-2xl overflow-hidden hover:opacity-90 transition-opacity cursor-pointer relative group">
-                                            <div class="absolute inset-0 bg-er-dark/10 group-hover:bg-transparent transition-all"></div>
-                                            <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                                                <i class="far fa-image text-2xl mb-1 opacity-50"></i>
-                                            </div>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            
-                            <div class="bg-gray-50 rounded-3xl p-6 border border-gray-100">
-                                <h3 class="text-base font-bold text-gray-900 mb-4 flex justify-between items-center">
-                                    공지사항 
-                                   <button onclick="openNotices()" class="text-xs font-normal text-gray-400 cursor-pointer hover:text-er-dark transition-colors px-2 py-1">
-                                    더보기 <i class="fas fa-chevron-right text-[10px] ml-1"></i>
-                                    </button>
-                                </h3>
-                                <div class="space-y-3">
-                                    ${contentData.notices.slice(0, 2).map(n => `
-                                        <div onclick="openNotice(${n.id})" class="block bg-white p-4 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100/50">
-                                            <div class="flex items-center gap-2 mb-1">
-                                                <span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">${n.tag}</span>
-                                                <span class="text-[10px] text-gray-400">${n.date.replaceAll('-','.')}</span>
-                                            </div>
-                                            <h4 class="text-sm font-bold text-gray-800 truncate">${n.title}</h4>
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderResources() {
-            return `
-                <div class="bg-er-base min-h-screen py-16 px-4">
-                    <div class="max-w-4xl mx-auto">
-                        <div class="text-center mb-12 animate-fade-in-up">
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900">자료실 (Resources)</h2>
-                            <p class="mt-2 text-sm text-gray-500">회복을 위한 전문 지식과 추천 자료</p>
-                        </div>
-
-                        <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.1s;">
-                            
-                            <div onclick="renderSection('types_guide')" class="group bg-white rounded-[2rem] p-6 md:p-8 shadow-soft hover:shadow-card transition-all cursor-pointer relative overflow-hidden border border-white">
-                                <div class="absolute top-0 right-0 w-48 h-48 bg-er-accent/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:bg-er-accent/20 transition-all"></div>
-                                
-                                <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
-                                    <div class="w-14 h-14 rounded-2xl bg-er-base flex items-center justify-center text-2xl text-er-dark shadow-inner shrink-0">
-                                        <i class="fas fa-fingerprint"></i>
-                                    </div>
-                                    <div class="flex-grow">
-                                        <div class="flex flex-wrap items-center gap-2 mb-2">
-                                            <span class="px-2 py-0.5 bg-er-accent/10 text-er-accent text-[9px] font-bold rounded uppercase">Featured</span>
-                                            <h3 class="text-lg md:text-xl font-bold text-gray-900 group-hover:text-er-accent transition-colors">9가지 유형별 회복 가이드</h3>
-                                        </div>
-                                        <p class="text-gray-600 text-sm leading-relaxed break-keep">
-                                            단순한 성격 분류를 넘어, 애착 유형에 따른 각 유형의 고착 상태와 구체적인 치유(Healing) 방법을 소개합니다.
-                                        </p>
-                                    </div>
-                                    <div class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all self-end md:self-center">
-                                        <i class="fas fa-arrow-right text-sm"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="grid md:grid-cols-2 gap-4 md:gap-6">
-                                <div class="bg-er-dark text-white rounded-[2rem] p-6 md:p-8 flex flex-col justify-between shadow-lg">
-                                    <div>
-                                        <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mb-4 text-lg"><i class="fas fa-clipboard-check"></i></div>
-                                        <h3 class="text-lg font-bold mb-1">약식 에니어그램 테스트</h3>
-                                        <p class="text-gray-300 text-xs md:text-sm break-keep">약식 점검으로 현재 나의 핵심 동기와 관계 패턴을 간단히 확인해 보세요.</p>
-                                    </div>
-                                    <button onclick="renderSection('test')" class="mt-6 w-full py-3 bg-white text-er-dark rounded-xl font-bold text-sm hover:bg-gray-100 transition-colors">
-                                        진단 시작하기
-                                    </button>
-                                </div>
-
-                                <div class="bg-white rounded-[2rem] p-6 md:p-8 shadow-soft border border-white">
-                                    <div class="flex items-center gap-2 mb-5">
-                                        <i class="fas fa-book text-er-accent text-lg"></i>
-                                        <h3 class="text-lg font-bold text-gray-900">추천 도서</h3>
-                                    </div>
-                                    <ul class="space-y-4">
-                                        <li class="flex items-start gap-3 pb-3 border-b border-gray-50 last:border-0 last:pb-0">
-                                            <span class="text-gray-300 font-serif italic text-base mt-0.5">01</span>
-                                            <div>
-                                                <h4 class="text-sm font-bold text-gray-800">에니어그램의 지혜</h4>
-                                                <p class="text-xs text-gray-500">Don Richard Riso &middot; 필독서</p>
-                                            </div>
-                                        </li>
-                                        <li class="flex items-start gap-3">
-                                            <span class="text-gray-300 font-serif italic text-base mt-0.5">02</span>
-                                            <div>
-                                                <h4 class="text-sm font-bold text-gray-800">내면의 감옥에서 벗어나라</h4>
-                                                <p class="text-xs text-gray-500">Richard Rohr &middot; 영성/치유</p>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderTest() {
-            return `
-                <div id="survey-view" class="max-w-3xl mx-auto pt-12 px-4 sm:px-6 pb-20">
-                    <div class="text-center mb-12 animate-fade-in-up">
-                        <span class="inline-flex px-3 py-1 rounded-full bg-er-accent/15 text-er-accent text-[10px] font-bold uppercase tracking-widest mb-4">Enneagram Lite</span>
-                        <h2 class="text-2xl md:text-3xl font-bold text-er-dark mb-4">약식 에니어그램 테스트</h2>
-                        <p class="text-gray-600 text-sm md:text-base leading-relaxed break-keep">
-                            본 테스트는 행동 이면의 동기와 본능 경향을 다면적으로 점검합니다.<br>
-                            가장 편안했던 시기의 본인을 떠올리며 응답해 주세요.
-                        </p>
-                        <p class="mt-3 text-xs text-gray-400">데이터는 저장되지 않으며, 결과는 즉시 화면에서 확인됩니다.</p>
-                    </div>
-
-                    <form id="enneagram-form" class="space-y-8">
-                        <div id="questions-container" class="space-y-6"></div>
-
-                        <div class="pt-8 border-t border-gray-200 text-center">
-                            <p id="validation-msg" class="text-red-500 font-medium mb-4 hidden">모든 문항에 응답해 주세요.</p>
-                            <button type="button" onclick="submitSurvey()" class="bg-er-dark hover:bg-gray-800 text-white font-bold py-4 px-10 rounded-full shadow-lg smooth-transition transform hover:scale-105">
-                                진단 결과 보기
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div id="result-view" class="max-w-2xl mx-auto pt-12 px-4 pb-20 hidden">
-                    <div class="bg-white rounded-3xl shadow-card overflow-hidden border border-gray-100">
-                        <div class="bg-er-dark px-6 md:px-8 py-10 text-center text-white">
-                            <h2 class="text-base md:text-lg font-medium opacity-90 mb-2">당신의 약식 진단 결과</h2>
-                            <div id="res-final" class="text-3xl md:text-5xl font-bold mb-3 tracking-tight"></div>
-                            <p id="res-instincts" class="text-base md:text-xl font-medium opacity-90 text-er-accent"></p>
-                        </div>
-                        
-                        <div class="p-6 md:p-8 space-y-5">
-                            <div class="grid grid-cols-2 gap-3 md:gap-4">
-                                <div class="bg-er-base p-4 md:p-6 rounded-2xl border border-gray-100 text-center">
-                                    <p class="text-xs md:text-sm text-gray-500 mb-1">기본 유형 (Core)</p>
-                                    <p id="res-core" class="text-2xl md:text-3xl font-bold text-gray-800"></p>
-                                </div>
-                                <div class="bg-er-base p-4 md:p-6 rounded-2xl border border-gray-100 text-center">
-                                    <p class="text-xs md:text-sm text-gray-500 mb-1">발현된 날개 (Wing)</p>
-                                    <p id="res-wing" class="text-2xl md:text-3xl font-bold text-gray-800"></p>
-                                </div>
-                            </div>
-
-                            <div class="bg-er-base p-5 rounded-2xl border border-gray-100">
-                                <h3 class="font-bold text-er-dark mb-2">하위유형 상위 결과</h3>
-                                <p id="res-subtype-top1" class="text-sm text-gray-700 font-medium"></p>
-                                <p id="res-subtype-top2" class="text-sm text-gray-600 mt-1"></p>
-                            </div>
-
-                            <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200">
-                                <h3 class="font-bold text-er-dark mb-2">분석 로그</h3>
-                                <p id="res-log" class="text-gray-600 text-sm leading-relaxed break-keep"></p>
-                            </div>
-
-                            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
-                                <p class="text-sm text-amber-900 leading-relaxed break-keep">
-                                    ※ 모든 비면접형(읽고 쓰는) 자기보고식 테스트는 정확도에 한계가 있을 수 있습니다.
-                                    더 정확한 이해를 원하시면 무료 타이핑 세션을 신청해 주세요.
-                                </p>
-                            </div>
-
-                            <div class="bg-er-accent/10 rounded-2xl border border-er-accent/30 p-5">
-                                <h3 class="font-bold text-er-dark mb-2">정식 타이핑 세션 (무료)</h3>
-                                <p class="text-sm text-gray-700 leading-relaxed break-keep">
-                                    더 자세하게 나와 내 주위 사람들을 이해하고 싶다면,
-                                    정식 타이핑 세션 신청서를 작성해 주세요.
-                                </p>
-                                <div class="mt-4 flex flex-col sm:flex-row gap-3">
-                                    <button type="button" onclick="renderSection('apply', { source: 'test' })" class="flex-1 bg-er-dark text-white py-3 px-5 rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors">
-                                        정식 타이핑 신청하기
-                                    </button>
-                                    <a href="${GOOGLE_FORM_VIEW_URL}" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-white border border-gray-300 text-gray-700 py-3 px-5 rounded-xl text-sm font-bold hover:bg-gray-50 transition-colors">
-                                        구글폼 바로 열기
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="text-center pt-2">
-                                <button type="button" onclick="renderSection('test')" class="text-gray-500 hover:text-er-accent font-medium underline transition-colors text-sm">
-                                    테스트 다시하기
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderNotices() {
-            const items = [...contentData.notices].sort((a,b) => (a.date < b.date ? 1 : -1));
-            return `
-                <div class="bg-white min-h-screen py-16">
-                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div class="mb-8 flex items-center justify-between gap-4 animate-fade-in-up">
-                            <button onclick="renderSection('community')" class="px-3 py-1.5 bg-gray-50 rounded-full text-xs font-medium text-gray-600 hover:text-er-dark border border-gray-100">
-                                <i class="fas fa-arrow-left mr-1"></i> Stories로
-                            </button>
-                            <h2 class="text-xl font-bold text-gray-900">공지사항</h2>
-                            <div class="w-16"></div>
-                        </div>
-
-                        <div class="space-y-3 animate-fade-in-up" style="animation-delay:0.1s;">
-                            ${items.map(n => `
-                                <div onclick="openNotice(${n.id})" class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
-                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
-                                        <div class="min-w-0">
-                                            <div class="flex items-center gap-2 mb-1.5">
-                                                <span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">${n.tag}</span>
-                                                <span class="text-[10px] text-gray-400">${n.date.replaceAll('-','.')}</span>
-                                            </div>
-                                            <h3 class="text-sm md:text-base font-bold text-gray-900 truncate group-hover:text-er-accent transition-colors">${n.title}</h3>
-                                            <p class="text-xs text-gray-500 mt-1 line-clamp-1">${n.summary ?? ''}</p>
-                                        </div>
-                                        <div class="hidden md:flex shrink-0 w-8 h-8 rounded-full border border-gray-200 items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all">
-                                            <i class="fas fa-arrow-right text-xs"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+        // ==========================================
+        // Functions
+        // ==========================================
         
-        function renderNoticeDetail(payload) {
-            const id = payload?.id;
-            const n = contentData.notices.find(x => x.id === id);
-
-            if (!n) return `<div class="p-10 text-center">공지를 찾을 수 없습니다.<br><button class="mt-4 btn" onclick="renderSection('notices')">돌아가기</button></div>`;
-
-            return `
-                <div class="bg-er-base min-h-screen py-16 px-4">
-                    <div class="max-w-3xl mx-auto">
-                        <div class="mb-4 flex items-center justify-between">
-                            <button onclick="openNotices()" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm border border-gray-100">
-                                <i class="fas fa-arrow-left mr-1"></i> 목록
-                            </button>
-                            <span class="text-[10px] text-gray-400">${n.date.replaceAll('-','.')}</span>
-                        </div>
-
-                        <div class="bg-white rounded-[2rem] shadow-card p-6 md:p-10 border border-gray-100 animate-fade-in-up">
-                            <div class="flex flex-wrap items-center gap-2 mb-4">
-                                <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">${n.tag}</span>
-                                <h1 class="text-xl md:text-2xl font-bold text-gray-900 w-full md:w-auto break-keep">${n.title}</h1>
-                            </div>
-                            <div class="h-px bg-gray-100 my-6"></div>
-                            <div class="prose prose-sm max-w-none text-gray-600">
-                                ${n.body ?? n.summary}
-                            </div>
-                            
-                            <div class="mt-10 p-5 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-                                <div>
-                                    <p class="text-sm font-bold text-er-dark">문의하거나 신청하시겠어요?</p>
-                                </div>
-                                <button onclick="renderSection('apply')" class="px-6 py-2.5 bg-er-dark text-white rounded-full text-sm font-bold shadow-soft hover:bg-gray-800 transition-all w-full md:w-auto">
-                                    상담 문의하기
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderTypesGuide() {
-            const types = [
-                { id: 1, name: "1번 올바른 사람 (The Reformer)", color: "border-red-200", bg: "bg-red-50", desc: "올바름을 추구하며 실수를 두려워합니다.", healing: "불완전함을 수용하는 연습, 괜찮아!" },
-                { id: 2, name: "2번 아낌없이 주는 사람 (The Helper)", color: "border-orange-200", bg: "bg-orange-50", desc: "사랑받기 위해 타인을 돕습니다.", healing: "내면의 욕구를 돌보는 연습" },
-                { id: 3, name: "3번 성공하는 사람 (The Achiever)", color: "border-yellow-200", bg: "bg-yellow-50", desc: "성공을 통해 가치를 증명하려 합니다.", healing: "사람들의 인정말고, 내가 좋아하는거 찾기" },
-                { id: 4, name: "4번 독창적인 사람 (The Individualist)", color: "border-purple-200", bg: "bg-purple-50", desc: "독특함과 깊이를 추구합니다.", healing: "감정의 균형과 일상성 회복" },
-                { id: 5, name: "5번 지혜로운 사람 (The Investigator)", color: "border-blue-200", bg: "bg-blue-50", desc: "지식을 통해 유능함을 추구합니다.", healing: "신체 감각 깨우기와 연결" },
-                { id: 6, name: "6번 충실한 사람 (The Loyalist)", color: "border-indigo-200", bg: "bg-indigo-50", desc: "안전을 위해 대비하고 의심합니다.", healing: "내면의 신뢰와 용기 회복" },
-                { id: 7, name: "7번 명량한 사람 (The Enthusiast)", color: "border-green-200", bg: "bg-green-50", desc: "새로운 경험과 즐거움을 쫓습니다.", healing: "현재의 고요함에 머무르기" },
-                { id: 8, name: "8번 강한 사람 (The Challenger)", color: "border-pink-200", bg: "bg-pink-50", desc: "강함을 통해 통제하려 합니다.", healing: "연약함을 드러내는 용기" },
-                { id: 9, name: "9번 조화로운 사람 (The Peacemaker)", color: "border-gray-200", bg: "bg-gray-50", desc: "평화를 위해 갈등을 회피합니다.", healing: "자기 목소리 내는 연습" }
-            ];
-
-            return `
-                <div class="min-h-screen bg-gray-50 py-16 px-4">
-                    <div class="max-w-6xl mx-auto">
-                        <div class="mb-8 flex items-center justify-between animate-fade-in-up">
-                            <button onclick="renderSection('resources')" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm flex items-center gap-1 transition-all">
-                                <i class="fas fa-arrow-left"></i> 뒤로
-                            </button>
-                            <h2 class="text-lg font-bold text-gray-900">9가지 유형별 회복의 길</h2>
-                            <div class="w-12"></div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in-up" style="animation-delay: 0.1s;">
-                            ${types.map((t, idx) => `
-                                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group">
-                                    <div class="h-1.5 w-full ${t.bg.replace('bg-', 'bg-').replace('50', '400')}"></div>
-                                    <div class="p-5">
-                                        <div class="flex items-center justify-between mb-3">
-                                            <h3 class="text-base font-bold text-gray-800 relative z-10">${t.name.split('(')[0]}</h3>
-                                            <span class="text-3xl font-serif font-bold text-gray-100 group-hover:text-er-accent/20 transition-colors">${t.id}</span>
-                                        </div>
-                                        <p class="text-[10px] text-gray-400 font-serif italic mb-3 -mt-4">${t.name.split('(')[1].replace(')','')}</p>
-                                        <p class="text-gray-600 text-xs leading-relaxed mb-5 min-h-[2.5em] break-keep">${t.desc}</p>
-                                        
-                                        <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 group-hover:bg-er-base transition-colors">
-                                            <div class="flex items-start gap-2">
-                                                <i class="fas fa-seedling text-er-accent mt-0.5 text-xs"></i>
-                                                <div>
-                                                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Healing Path</p>
-                                                    <p class="text-xs text-gray-800 font-medium mt-0.5 break-keep">${t.healing}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        
-                        <div class="mt-12 text-center pb-10">
-                            <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors text-sm">
-                                전문가 상담 신청하기
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderApply(payload = null) {
-            const fromTest = payload?.source === 'test';
-            const testSummary = state.latestTestResult
-                ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 하위유형 ${state.latestTestResult.subtypeSummary}, 본능 ${state.latestTestResult.instinctSummary}`
-                : "";
-
-            return `
-                <div class="bg-er-base min-h-screen py-20 px-4">
-                    <div class="max-w-2xl mx-auto">
-                        <div class="text-center mb-10 animate-fade-in-up">
-                            <h2 class="text-3xl font-bold text-gray-900">상담 및 강의 신청</h2>
-                            <p class="mt-3 text-gray-500 text-sm">작성해주신 내용은 철저히 비밀이 보장됩니다.</p>
-                        </div>
-                        
-                        <div class="bg-white rounded-3xl shadow-card p-8 md:p-10 animate-fade-in-up border border-white" style="animation-delay: 0.1s;">
-                            ${fromTest ? `
-                                <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
-                                    <p class="text-sm font-bold text-er-dark mb-1">약식 테스트 후속 신청</p>
-                                    <p class="text-xs text-gray-600 break-keep">정식 타이핑 세션(무료)으로 더 깊은 자기 이해와 관계 이해를 도와드립니다.</p>
-                                </div>
-                            ` : ""}
-
-                            <div class="flex items-center justify-between mb-8 px-4 relative">
-                                <div class="absolute top-1/2 left-0 w-full h-px bg-gray-100 -z-10"></div>
-                                <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-er-dark text-white flex items-center justify-center text-sm font-bold shadow-lg">1</span></div>
-                                <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">2</span></div>
-                                <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">3</span></div>
-                            </div>
-
-                            <form class="space-y-6"
-                                action="${GOOGLE_FORM_ACTION_URL}"
-                                method="POST"
-                                target="hidden_iframe"
-                                onsubmit="submitted=true;">
-                                
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">이름 (신청자)</label>
-                                    <input type="text" name="entry.1004632782" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="성함을 입력해주세요">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">연락처</label>
-                                    <input type="text" name="entry.1413214839" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="010-0000-0000 또는 이메일">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">신청 분야</label>
+        function renderQuestions(containerId, questions, prefix) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            questions.forEach((item, index) => {
+                const html = `
+                    <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
+                        <p class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${item.q}</p>
+                        <div class="flex justify-between items-center sm:px-2">
+                            <span class="text-xs text-gray-400 font-medium">전혀 아니다</span>
+                            <div class="flex space-x-2 sm:space-x-4">
+                                ${[1, 2, 3, 4, 5].map(val => `
                                     <div class="relative">
-                                        <select name="entry.796863919" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
-                                            ${fromTest ? '<option selected>정식 타이핑 세션 (무료)</option>' : ""}
-                                            <option>개인/가정 코칭 (부부, 자녀)</option>
-                                            <option>교회/사역자 회복 프로그램</option>
-                                            <option>비즈니스/조직 워크숍</option>
-                                            <option>강사 양성 과정</option>
-                                            <option>기타 문의</option>
-                                        </select>
-                                        <div class="absolute right-4 top-3.5 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></div>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">문의 내용</label>
-                                    <textarea name="entry.594846485" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="고민이나 요청사항을 자유롭게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n정식 타이핑 세션(무료) 신청합니다.` : ""}</textarea>
-                                </div>
-
-                                <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
-                                    <i class="fas fa-info-circle text-er-primary mt-0.5"></i>
-                                    <p class="text-xs text-gray-500 leading-relaxed">
-                                        ER은 비영리 사역으로 운영됩니다.
-                                        코칭과 상담은 후원 여부와 관계없이 진행되며,
-                                        후원은 사역을 응원하는 자발적인 선택입니다. 접수 후 24시간 이내에 담당 코치가 연락드립니다.
-                                    </p>
-                                </div>
-                                
-                                <button type="submit" class="w-full py-4 bg-er-dark text-white rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-all hover:-translate-y-1">
-                                    신청서 제출하기
-                                </button>
-                            </form>
-                            <iframe name="hidden_iframe" style="display:none;" onload="if(submitted){renderSection('thankyou');submitted=false;}"></iframe>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderThankYou() {
-            return `
-                <div class="min-h-screen flex items-center justify-center bg-er-base px-6">
-                    <div class="bg-white rounded-[2rem] shadow-card p-10 max-w-sm w-full text-center animate-fade-in-up border border-white">
-                        <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center text-green-500 text-2xl mx-auto mb-6">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <h2 class="text-xl font-bold text-gray-900 mb-2">접수가 완료되었습니다</h2>
-                        <p class="text-gray-500 mb-8 leading-relaxed text-xs break-keep">
-                            소중한 이야기를 남겨주셔서 감사합니다.<br>
-                            입력하신 연락처로 곧 연락드리겠습니다.
-                        </p>
-                        <button onclick="renderSection('home')" class="w-full py-3 rounded-xl bg-er-dark text-white hover:bg-gray-800 transition-colors font-bold shadow-md text-sm">
-                            홈으로 돌아가기
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderMyPage() {
-            return `
-                <div class="max-w-md mx-auto px-4 py-20">
-                    <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                        <h2 class="text-xl font-bold text-gray-900">My Page</h2>
-                        <button onclick="logoutUser()" class="text-xs text-gray-400 hover:text-red-500 transition-colors">로그아웃</button>
-                    </div>
-                    <div class="bg-white p-10 rounded-[2rem] shadow-soft text-center border border-gray-100">
-                        <div class="w-20 h-20 bg-gray-50 rounded-full mx-auto flex items-center justify-center text-2xl text-gray-300 mb-4">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <p class="text-gray-500 mb-6 text-sm">로그인 기능은 준비 중입니다.</p>
-                        <button onclick="renderSection('home')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">홈으로</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // --- Helper Functions ---
-        function openNotices() { renderSection('notices'); }
-        function openNotice(id) { renderSection('notice_detail', { id }); }
-
-        function updateProgramView(filterType) {
-            state.programFilter = filterType;
-            
-            // Tab styling update
-            document.querySelectorAll('[id^="tab-"]').forEach(btn => {
-                const isActive = btn.id === `tab-${filterType}`;
-                btn.className = isActive 
-                    ? "whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white text-er-dark shadow-md scale-105"
-                    : "whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white/10 text-gray-300 hover:bg-white/20";
-            });
-
-            const introEl = document.getElementById('program-intro');
-            const cardsEl = document.getElementById('program-cards');
-            
-            const data = {
-                individual: {
-                    title: "나와 가정을 위한 회복",
-                    desc: "나의 성격 유형을 이해하고, 가장 가까운 가족과의 관계를 건강하게 세워가는 과정입니다.",
-                    cards: [
-                        { b: 'Basic', t: '자기 이해와 유형 찾기', d: '에니어그램 검사와 상담을 통해 나의 고유한 성격 유형을 발견합니다.', i: 'fas fa-fingerprint' },
-                        { b: 'Relationship', t: '부부 관계 회복 코칭', d: '서로의 다름을 이해하고 갈등의 고리를 끊어 친밀함을 회복합니다.', i: 'fas fa-heart' },
-                        { b: 'Family', t: '자녀 양육 코칭', d: '자녀의 기질을 이해하고 그에 맞는 맞춤형 양육 방식을 코칭합니다.', i: 'fas fa-child' }
-                    ]
-                },
-                church: {
-                    title: "목회자와 교회를 위한 쉼",
-                    desc: "사역의 현장에서 지친 영혼을 돌보고, 소명을 재확인하는 시간입니다.",
-                    cards: [
-                        { b: 'Rest', t: '목회자 번아웃 코칭', d: '탈진한 사역자를 위한 쉼과 회복, 내면의 힘을 기르는 과정입니다.', i: 'fas fa-cross' },
-                        { b: 'Calling', t: '소명 재발견 워크숍', d: '하나님이 주신 은사와 기질을 통해 사역의 방향성을 재점검합니다.', i: 'fas fa-compass' },
-                        { b: 'Community', t: '리더십 수련회', d: '당회, 교사, 소그룹 리더들을 위한 맞춤형 수련회 프로그램을 제공합니다.', i: 'fas fa-users' }
-                    ]
-                },
-                business: {
-                    title: "건강한 조직 문화와 성과",
-                    desc: "구성원의 강점을 발견하고, 효과적인 소통과 협업을 돕습니다.",
-                    cards: [
-                        { b: 'HR', t: '강점 기반 채용/배치', d: '구성원의 성격 유형에 따른 직무 적합성을 분석하여 최적의 팀을 구성합니다.', i: 'fas fa-briefcase' },
-                        { b: 'Comm', t: '조직 소통/갈등 해결', d: '성격 유형별 의사소통 방식을 이해하여 갈등을 줄이고 협업을 증진합니다.', i: 'fas fa-handshake' },
-                        { b: 'Team', t: '팀 시너지 워크숍', d: '서로의 다름을 시너지로 바꾸는 체험형 팀빌딩 프로그램입니다.', i: 'fas fa-layer-group' }
-                    ]
-                },
-                training: {
-                    title: "에니어그램 전문가 양성",
-                    desc: "에니어그램의 지혜를 깊이 있게 배우고, 타인을 돕는 전문가로 성장하는 과정입니다.",
-                    cards: [
-                        { b: 'Certification', t: '전문 강사 양성반', d: '에니어그램 이론과 실제, 강의 스킬을 습득하는 8주 전문가 과정입니다.', i: 'fas fa-chalkboard' },
-                        { b: 'Study', t: '심화 스터디 그룹', d: '유형별 심층 탐구 및 임상 사례 연구를 소그룹으로 진행합니다.', i: 'fas fa-book-reader' },
-                        { b: 'Practicum', t: '인턴쉽 과정', d: '실제 상담 사례에 대한 수퍼비전과 전문가의 피드백을 받습니다.', i: 'fas fa-user-md' }
-                    ]
-                }
-            };
-
-            const selected = data[filterType];
-
-            if(introEl) {
-                introEl.innerHTML = `
-                    <h3 class="text-lg font-bold text-er-dark mb-1">${selected.title}</h3>
-                    <p class="text-xs text-gray-500 break-keep">${selected.desc}</p>
-                `;
-            }
-
-            if(cardsEl) {
-                cardsEl.innerHTML = selected.cards.map(c => `
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-card transition-all group flex flex-col h-full">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-wider">${c.b}</span>
-                            <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white transition-colors text-sm">
-                                <i class="${c.i}"></i>
-                            </div>
-                        </div>
-                        <h4 class="text-base font-bold text-gray-900 mb-2">${c.t}</h4>
-                        <p class="text-gray-500 text-xs leading-relaxed mb-6 flex-grow break-keep">${c.d}</p>
-                        <button onclick="renderSection('apply')" class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
-                            문의하기
-                        </button>
-                    </div>
-                `).join('');
-            }
-        }
-
-        function toggleLogin() { 
-            if (state.user) { renderSection('mypage'); } 
-            else { alert('회원가입/로그인 기능은 준비 중입니다.'); } 
-        }
-        
-        function logoutUser() { 
-            state.user = null; 
-            renderSection('home'); 
-        }
-
-        // --- Enneagram Test Logic ---
-        function initTest() {
-            const container = document.getElementById('questions-container');
-            if (!container) return;
-
-            container.innerHTML = "";
-            enneagramQuestions.forEach((question, index) => {
-                container.insertAdjacentHTML("beforeend", `
-                    <div class="bg-white p-5 sm:p-7 rounded-2xl shadow-sm border border-gray-100" id="q-block-${index}">
-                        <p class="text-base sm:text-lg font-medium text-gray-800 mb-5 break-keep">
-                            <span class="text-er-accent font-bold mr-2">${index + 1}.</span>${question}
-                        </p>
-                        <div class="flex justify-between items-center gap-2 sm:px-2">
-                            <span class="text-[10px] sm:text-xs text-gray-400 font-bold whitespace-nowrap">전혀 아니다</span>
-                            <div class="flex space-x-1.5 sm:space-x-3">
-                                ${[1, 2, 3, 4, 5].map((val) => `
-                                    <div class="relative">
-                                        <input type="radio" name="q${index}" value="${val}" id="q${index}-${val}" class="peer sr-only radio-btn">
-                                        <label for="q${index}-${val}" class="w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-500 cursor-pointer peer-hover:border-er-accent smooth-transition font-medium bg-white text-sm sm:text-base">
+                                        <input type="radio" name="${item.id}" value="${val}" id="${item.id}-${val}" class="peer sr-only radio-btn">
+                                        <label for="${item.id}-${val}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer peer-hover:border-[#bfa68a] hover:bg-gray-50 smooth-transition font-semibold text-sm bg-white">
                                             ${val}
                                         </label>
                                     </div>
-                                `).join("")}
+                                `).join('')}
                             </div>
-                            <span class="text-[10px] sm:text-xs text-gray-400 font-bold whitespace-nowrap">매우 그렇다</span>
+                            <span class="text-xs text-gray-400 font-medium">매우 그렇다</span>
                         </div>
                     </div>
-                `);
+                `;
+                container.innerHTML += html;
             });
         }
 
-        function submitSurvey() {
-            const scores = [];
-            let isComplete = true;
+        function validateForm(questions, prefix, errorMsgId) {
+            let isValid = true;
+            let firstErrorElement = null;
 
-            for (let i = 0; i < enneagramQuestions.length; i++) {
-                const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                const block = document.getElementById(`q-block-${i}`);
-
-                if (selected) {
-                    scores.push(parseInt(selected.value, 10));
-                    block.classList.remove("border-red-300", "bg-red-50");
+            questions.forEach(item => {
+                const block = document.getElementById(`${prefix}-block-${item.id}`);
+                if (!document.querySelector(`input[name="${item.id}"]:checked`)) {
+                    isValid = false;
+                    block.classList.add('border-red-300', 'bg-red-50');
+                    if (!firstErrorElement) firstErrorElement = block;
                 } else {
-                    isComplete = false;
-                    block.classList.add("border-red-300", "bg-red-50");
-                }
-            }
-
-            if (!isComplete) {
-                document.getElementById("validation-msg").classList.remove("hidden");
-                const firstMissed = document.querySelector(".border-red-300");
-                if (firstMissed) firstMissed.scrollIntoView({ behavior: "smooth", block: "center" });
-                return;
-            }
-
-            document.getElementById("validation-msg").classList.add("hidden");
-
-            // 1단계: 코어 및 본능 기초 연산
-            const tHeart = scores[0] + scores[3];
-            const tHead = scores[1] + scores[4];
-            const tGut = scores[2] + scores[5];
-
-            const coreBase = {
-                1: tGut + scores[8],
-                2: tHeart + scores[9],
-                3: tHeart + scores[10],
-                4: tHeart + scores[11],
-                5: tHead + scores[12],
-                6: tHead + scores[13],
-                7: tHead + scores[14],
-                8: tGut + scores[6],
-                9: tGut + scores[7]
-            };
-
-            const instBase = { sp: scores[15], sx: scores[16], so: scores[17] };
-
-            // 2단계: 하위 유형 데이터 통합
-            const typeData = [];
-            let totalSp = instBase.sp;
-            let totalSx = instBase.sx;
-            let totalSo = instBase.so;
-
-            for (let i = 1; i <= 9; i++) {
-                const subStartIdx = 18 + ((i - 1) * 3);
-                const spScore = scores[subStartIdx];
-                const sxScore = scores[subStartIdx + 1];
-                const soScore = scores[subStartIdx + 2];
-
-                totalSp += spScore;
-                totalSx += sxScore;
-                totalSo += soScore;
-
-                const totalWeight = coreBase[i] + spScore + sxScore + soScore;
-                typeData.push({ id: i, totalWeight, avg: totalWeight / 4 });
-            }
-
-            typeData.sort((a, b) => b.totalWeight - a.totalWeight);
-            const primaryType = typeData[0].id;
-
-            const instincts = [
-                { name: "자기보존", code: "sp", score: totalSp },
-                { name: "성적(일대일)", code: "sx", score: totalSx },
-                { name: "사회적", code: "so", score: totalSo }
-            ].sort((a, b) => b.score - a.score);
-
-            // 3단계: 교차 검증
-            let finalType = primaryType;
-            let logMsg = "교차 검증 결과, 1차 도출 코어와 심층 무의식적 동기가 일치합니다.";
-
-            if (primaryType === 8 || primaryType === 6) {
-                if (scores[46] > scores[45]) {
-                    finalType = 6;
-                    logMsg = "방어적 태도 분석: 8번이 아닌 역유형 6번의 동기(불안 통제)로 판별되었습니다.";
-                } else if (scores[45] > scores[46]) {
-                    finalType = 8;
-                    logMsg = "방어적 태도 분석: 6번이 아닌 8번의 순수 통제 욕구로 판별되었습니다.";
-                }
-            } else if (primaryType === 9 || primaryType === 4) {
-                if (scores[48] > scores[47]) {
-                    finalType = 4;
-                    logMsg = "내향성 분석: 9번의 회피가 아닌 4번의 자아 몰입 동기로 판별되었습니다.";
-                }
-            } else if (primaryType === 9 || primaryType === 5) {
-                if (scores[50] > scores[49]) {
-                    finalType = 5;
-                    logMsg = "은둔 성향 분석: 9번의 평화 유지가 아닌 5번의 자원 보존 동기로 판별되었습니다.";
-                }
-            } else if (primaryType === 9 || primaryType === 2 || primaryType === 7) {
-                const maxVal = Math.max(scores[51], scores[52], scores[53]);
-                if (maxVal === scores[51]) {
-                    finalType = 9;
-                } else if (maxVal === scores[52]) {
-                    finalType = 2;
-                    logMsg = "관계 형성 분석: 2번의 인정 동기가 우세하게 나타났습니다.";
-                } else if (maxVal === scores[53]) {
-                    finalType = 7;
-                    logMsg = "관계 형성 분석: 7번의 즐거움 추구 동기가 우세하게 나타났습니다.";
-                }
-            } else if (primaryType === 4 || primaryType === 1 || primaryType === 7) {
-                const maxVal2 = Math.max(scores[54], scores[55], scores[56]);
-                if (maxVal2 === scores[54]) {
-                    finalType = 4;
-                } else if (maxVal2 === scores[55]) {
-                    finalType = 1;
-                    logMsg = "고통 대처 분석: 1번의 개선 동기가 우세하게 나타났습니다.";
-                } else if (maxVal2 === scores[56]) {
-                    finalType = 7;
-                    logMsg = "고통 대처 분석: 7번의 회피/재해석 동기가 우세하게 나타났습니다.";
-                }
-            } else if (primaryType === 1 || primaryType === 8) {
-                if (scores[57] > scores[58]) {
-                    finalType = 1;
-                    logMsg = "통제력 분석: 8번이 아닌 성적 1번의 타인 개혁 의지로 판별되었습니다.";
-                } else if (scores[58] > scores[57]) {
-                    finalType = 8;
-                    logMsg = "통제력 분석: 1번이 아닌 8번 본연의 생존 통제 욕구로 판별되었습니다.";
-                }
-            }
-
-            // 4단계: 날개 연산
-            const leftWing = (finalType === 1) ? 9 : finalType - 1;
-            const rightWing = (finalType === 9) ? 1 : finalType + 1;
-
-            const lData = typeData.find((t) => t.id === leftWing);
-            const rData = typeData.find((t) => t.id === rightWing);
-
-            let wingNum = "없음";
-            let wingResultFormat = `${finalType} (순수유형)`;
-
-            if (lData.avg > 2.0 || rData.avg > 2.0) {
-                wingNum = (lData.avg >= rData.avg) ? leftWing : rightWing;
-                wingResultFormat = `${finalType}w${wingNum}`;
-            }
-
-            // 최종 코어 기준 하위유형(sp/sx/so) 상위 2개
-            const finalSubtypeStartIdx = 18 + ((finalType - 1) * 3);
-            const finalSubtypeRanking = [
-                { code: "sp", name: "자기보존", score: scores[finalSubtypeStartIdx] + instBase.sp },
-                { code: "sx", name: "성적(일대일)", score: scores[finalSubtypeStartIdx + 1] + instBase.sx },
-                { code: "so", name: "사회적", score: scores[finalSubtypeStartIdx + 2] + instBase.so }
-            ].sort((a, b) => b.score - a.score);
-
-            const subtypeTop1 = `${finalType}번 ${finalSubtypeRanking[0].name} (${finalSubtypeRanking[0].code})`;
-            const subtypeTop2 = `${finalType}번 ${finalSubtypeRanking[1].name} (${finalSubtypeRanking[1].code})`;
-            const primarySubtypeCode = finalSubtypeRanking[0].code;
-
-            document.getElementById("survey-view").classList.add("hidden");
-            document.getElementById("result-view").classList.remove("hidden");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-
-            document.getElementById("res-final").innerText = `${primarySubtypeCode} ${wingResultFormat}`;
-            document.getElementById("res-instincts").innerText = `1위 ${instincts[0].name} / 2위 ${instincts[1].name}`;
-            document.getElementById("res-core").innerText = `${finalType}번`;
-            document.getElementById("res-wing").innerText = (wingNum === "없음") ? "활성화되지 않음" : `${wingNum}번 날개`;
-            document.getElementById("res-subtype-top1").innerText = `1순위: ${subtypeTop1}`;
-            document.getElementById("res-subtype-top2").innerText = `2순위: ${subtypeTop2}`;
-            document.getElementById("res-log").innerText = logMsg;
-
-            state.latestTestResult = {
-                finalLabel: `${primarySubtypeCode} ${wingResultFormat}`,
-                coreType: finalType,
-                wingLabel: wingNum === "없음" ? "활성화되지 않음" : `${wingNum}번`,
-                subtypeSummary: `${subtypeTop1} > ${subtypeTop2}`,
-                instinctSummary: `${instincts[0].name} > ${instincts[1].name}`
-            };
-        }
-
-        // --- Chart Logic ---
-        function initCharts(sectionId) {
-            Chart.defaults.font.family = "'Pretendard', sans-serif";
-            Chart.defaults.color = '#9CA3AF';
-            
-            if (sectionId === 'home') {
-                const ctx = document.getElementById('heroChart');
-                if(!ctx) return;
-                
-                new Chart(ctx.getContext('2d'), {
-                    type: 'polarArea',
-                    data: {
-                        labels: contentData.types.labels,
-                        datasets: [{ 
-                            data: contentData.types.data, 
-                            backgroundColor: [
-                                'rgba(217, 119, 119, 0.8)', 
-                                'rgba(229, 208, 192, 0.8)', 
-                                'rgba(242, 201, 76, 0.8)',  
-                                'rgba(187, 107, 217, 0.8)', 
-                                'rgba(86, 204, 242, 0.8)',  
-                                'rgba(111, 207, 151, 0.8)', 
-                                'rgba(39, 174, 96, 0.8)',   
-                                'rgba(235, 87, 87, 0.8)',   
-                                'rgba(189, 189, 189, 0.8)'  
-                            ],
-                            borderWidth: 2,
-                            borderColor: '#ffffff',
-                            hoverOffset: 4
-                        }]
-                    },
-                    options: { 
-                        responsive: true, 
-                        maintainAspectRatio: false, 
-                        layout: { padding: 10 },
-                        plugins: { 
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: 'rgba(44, 42, 41, 0.9)',
-                                padding: 10,
-                                cornerRadius: 8,
-                                titleFont: { size: 12 },
-                                bodyFont: { size: 10 },
-                                callbacks: {
-                                    title: (items) => items[0].label,
-                                    label: () => ''
-                                }
-                            }
-                        }, 
-                        scales: { 
-                            r: { 
-                                ticks: { display: false }, 
-                                grid: { color: '#f3f4f6', lineWidth: 1 },
-                                pointLabels: { display: false } 
-                            } 
-                        } 
-                    }
-                });
-            } else if (sectionId === 'community') {
-                const ctx = document.getElementById('impactChart');
-                if(!ctx) return;
-
-                new Chart(ctx.getContext('2d'), {
-                    type: 'bar',
-                    data: { 
-                        labels: contentData.stats.labels, 
-                        datasets: [{ 
-                            label: '케이스 분포 (%)', 
-                            data: contentData.stats.data, 
-                            backgroundColor: '#BFA68A', 
-                            borderRadius: 4,
-                            barThickness: 20
-                        }] 
-                    },
-                    options: { 
-                        responsive: true, 
-                        maintainAspectRatio: false, 
-                        plugins: { legend: { display: false } }, 
-                        scales: { 
-                            y: { beginAtZero: true, grid: { display: false }, ticks: { display: false } }, 
-                            x: { grid: { display: false }, ticks: { font: { size: 10 } } } 
-                        } 
-                    }
-                });
-            }
-        }
-
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => { 
-            window.addEventListener('scroll', () => {
-                const nav = document.getElementById('navbar');
-                if(window.scrollY > 20) {
-                    nav.classList.add('shadow-sm', 'bg-white/95');
-                    nav.classList.remove('bg-white/80');
-                } else {
-                    nav.classList.remove('shadow-sm', 'bg-white/95');
-                    nav.classList.add('bg-white/80');
+                    block.classList.remove('border-red-300', 'bg-red-50');
                 }
             });
-            
-            renderSection('home'); 
+
+            const errorMsg = document.getElementById(errorMsgId);
+            if (!isValid) {
+                if(errorMsg) errorMsg.classList.remove('hidden');
+                if(firstErrorElement) firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                if(errorMsg) errorMsg.classList.add('hidden');
+            }
+            return isValid;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuestions('phase1-container', phase1Questions, 'p1');
         });
+
+        let phase2QuestionsData = [];
+
+        function submitPhase1() {
+            if (!validateForm(phase1Questions, 'p1', 'validation-msg-1')) return;
+
+            // Collect Phase 1 Scores
+            let centerScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
+            
+            phase1Questions.forEach(item => {
+                let score = parseInt(document.querySelector(`input[name="${item.id}"]:checked`).value);
+                phase1Responses[item.id] = score;
+
+                // Allocate Center/Triad scores to corresponding types
+                if(item.id === 't2') { centerScores[2]+=score; centerScores[3]+=score; centerScores[4]+=score; }
+                if(item.id === 't5') { centerScores[5]+=score; centerScores[6]+=score; centerScores[7]+=score; }
+                if(item.id === 't8') { centerScores[8]+=score; centerScores[9]+=score; centerScores[1]+=score; }
+                
+                // Add specific core behavioral scores
+                if(item.id.startsWith('c')) {
+                    centerScores[item.type] += score * 1.5; // Core behavior carries slightly more weight in P1
+                }
+            });
+
+            // Find Candidates based on Phase 1 weighted sum
+            let sortedCandidates = Object.keys(centerScores).map(k => ({ type: parseInt(k), score: centerScores[k] }))
+                                         .sort((a, b) => b.score - a.score);
+            
+            let topScore = sortedCandidates[0].score;
+            
+            // Dynamic Candidate Selection: Includes anyone within 75% of the top score, guarantees at least 3 candidates.
+            let candidateTypes = sortedCandidates.filter(c => c.score >= topScore * 0.75).map(c => c.type);
+            if (candidateTypes.length < 3) {
+                candidateTypes = sortedCandidates.slice(0, 3).map(c => c.type);
+            }
+            
+            // De-duplicate (safety measure)
+            topCandidates = [...new Set(candidateTypes)];
+
+            // Build Phase 2 Questions for the dynamically selected candidates
+            phase2QuestionsData = [];
+            topCandidates.forEach(type => {
+                if (deepMotivations[type]) {
+                    phase2QuestionsData = phase2QuestionsData.concat(deepMotivations[type]);
+                }
+            });
+
+            // Transition UI
+            document.getElementById('phase1-form').classList.add('hidden');
+            document.getElementById('phase2-form').classList.remove('hidden');
+            document.getElementById('progress-bar').style.width = '100%';
+            document.getElementById('step-label').innerText = "2단계: 동기 교차 검증 (심층 인터뷰)";
+            document.getElementById('step-counter').innerText = "2 / 2";
+            
+            renderQuestions('phase2-container', phase2QuestionsData, 'p2');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function submitPhase2() {
+            if (!validateForm(phase2QuestionsData, 'p2', 'validation-msg-2')) return;
+
+            // Collect Phase 2 Scores & Aggregate
+            let finalTypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
+            
+            // 1. Re-apply Phase 1 Triad scores (1.0 weight) - 버려졌던 데이터 복구!
+            phase1Questions.filter(q => q.id.startsWith('t')).forEach(q => {
+                let score = phase1Responses[q.id];
+                if(q.id === 't2') { finalTypeScores[2]+=score; finalTypeScores[3]+=score; finalTypeScores[4]+=score; }
+                if(q.id === 't5') { finalTypeScores[5]+=score; finalTypeScores[6]+=score; finalTypeScores[7]+=score; }
+                if(q.id === 't8') { finalTypeScores[8]+=score; finalTypeScores[9]+=score; finalTypeScores[1]+=score; }
+            });
+
+            // 2. Re-apply Phase 1 specific core scores (1.5 weight)
+            phase1Questions.filter(q => q.id.startsWith('c')).forEach(q => {
+                finalTypeScores[q.type] += phase1Responses[q.id] * 1.5; 
+            });
+
+            // 3. Apply Phase 2 deep motivation scores (Higher weight x2.0 due to Root vs Fruit philosophy)
+            phase2QuestionsData.forEach(q => {
+                let val = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value);
+                finalTypeScores[q.type] += val * 2.0;
+            });
+
+            // Calculate final ranking
+            let rankedTypes = Object.keys(finalTypeScores)
+                                    .map(t => ({ type: parseInt(t), score: finalTypeScores[t] }))
+                                    .sort((a, b) => b.score - a.score);
+
+            let coreType = rankedTypes[0].type;
+            let secondPlace = rankedTypes[1];
+            
+            // Confidence Calculation (Relative Margin)
+            let maxScore = rankedTypes[0].score;
+            let secScore = rankedTypes[1].score;
+            let diffRatio = maxScore > 0 ? (maxScore - secScore) / maxScore : 0;
+            
+            let confidence = '낮음';
+            if (diffRatio >= 0.20) confidence = '높음';
+            else if (diffRatio >= 0.08) confidence = '보통';
+
+            // Special Tie Handling Bias Prevention (동점 처리 방식 개선)
+            let isTie = (maxScore === secScore);
+            if (isTie) {
+                confidence = '낮음';
+            }
+
+            // Calculate Instincts & handle Instinct Ties
+            let instSum = { sp: 0, sx: 0, so: 0 };
+            let instNames = { sp: '자기보존', sx: '성적(일대일)', so: '사회적' };
+            phase1Questions.filter(q => q.id.startsWith('i_')).forEach(q => {
+                instSum[q.inst] += phase1Responses[q.id];
+            });
+
+            let rankedInstincts = Object.keys(instSum)
+                                        .map(k => ({ code: k, name: instNames[k], score: instSum[k] }))
+                                        .sort((a, b) => b.score - a.score);
+            
+            let bestInstinctCode = rankedInstincts[0].code;
+            let bestInstinctName = rankedInstincts[0].name;
+
+            // 본능 동점 처리
+            if (rankedInstincts[0].score === rankedInstincts[1].score) {
+                bestInstinctCode = `${rankedInstincts[0].code}/${rankedInstincts[1].code}`;
+                bestInstinctName = `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (공동 1위)`;
+            }
+
+            // Calculate Wing (Relative Threshold)
+            let coreDisplay = coreType + "번";
+            let wingNum = "없음";
+            let wingStr = coreType + " (순수유형)";
+
+            if (isTie) {
+                // 코어 동점일 경우 윙 판별 보류
+                coreDisplay = `${coreType}번 / ${secondPlace.type}번 (경합)`;
+                wingStr = "판별 보류 (코어 경합)";
+                wingNum = "코어 확정 후 판별 가능";
+            } else {
+                let leftW = coreType === 1 ? 9 : coreType - 1;
+                let rightW = coreType === 9 ? 1 : coreType + 1;
+                
+                let leftScore = finalTypeScores[leftW];
+                let rightScore = finalTypeScores[rightW];
+
+                let higherWing = leftScore >= rightScore ? leftW : rightW;
+                let higherWingScore = Math.max(leftScore, rightScore);
+
+                // Wing activation requires at least 50% of the core's energy to prevent over-classification
+                if (higherWingScore > 0 && higherWingScore >= maxScore * 0.50) {
+                    wingNum = higherWing;
+                    wingStr = coreType + "w" + wingNum;
+                }
+            }
+
+            // Transition UI
+            document.getElementById('phase2-form').classList.add('hidden');
+            document.getElementById('progress-container').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Display Results
+            document.getElementById('res-final').innerText = `${bestInstinctCode} ${wingStr}`;
+            document.getElementById('res-instincts').innerText = `제 1본능: ${bestInstinctName}`;
+            document.getElementById('res-core').innerText = coreDisplay;
+            document.getElementById('res-wing').innerText = wingNum === "없음" ? "활성화 안됨" : (isTie ? wingNum : wingNum + "번 날개");
+            
+            const badge = document.getElementById('confidence-badge');
+            if(confidence === '높음') { 
+                badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white border border-green-400 shadow-sm'; 
+                badge.innerText = '신뢰도: 높음'; 
+            }
+            else if(confidence === '보통') { 
+                badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white border border-yellow-400 shadow-sm'; 
+                badge.innerText = '신뢰도: 보통'; 
+            }
+            else { 
+                badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white border border-red-400 shadow-sm'; 
+                badge.innerText = '신뢰도: 낮음'; 
+                document.getElementById('cta-consulting').classList.remove('hidden');
+            }
+
+            let logMsg = "";
+            if (isTie) {
+                logMsg = `전체 문항 가중치 병합 결과, <strong>${coreType}번</strong>과 <strong>${secondPlace.type}번</strong>이 완벽한 동점(경합)으로 나타났습니다. 행동과 동기 점수가 팽팽하게 맞서고 있으므로, 전문가의 심층 타이핑 세션을 강력히 권장합니다.`;
+            } else {
+                logMsg = `전체 문항에 대한 가중치 병합 결과, 귀하의 행동과 동기를 가장 강력하게 설명하는 중심 축은 <strong>${coreType}번 유형</strong>으로 판별되었습니다.<br>
+                2순위 경합 유형은 ${secondPlace.type}번이었으며, 1순위와의 심층 동기 점수 격차는 <strong>${(diffRatio * 100).toFixed(1)}%</strong> 입니다.`;
+            }
+            
+            document.getElementById('res-log').innerHTML = logMsg;
+        }
     </script>
 </body>
 </html>
