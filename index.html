@@ -506,7 +506,7 @@
             i_sp_3: "Financial stability and a solid independent foundation are high priorities for me.",
             i_sx_1: "I prefer deep, intense connection with one person over broad, shallow socializing.",
             i_sx_2: "When I become interested in something or someone, I can go all-in with strong focus and intensity.",
-            i_sx_3: "Rather than surface-level conversation, I prefer dense conversations that reveal deeper values and inner thinking.",
+            i_sx_3: "Rather than surface-level conversation, I prefer deeper, more meaningful conversations that reveal values and inner perspective.",
             i_so_1: "In groups, I naturally track influence, social dynamics, and how the atmosphere is shifting.",
             i_so_2: "I feel more at ease when my role and contribution in a group are clear, and belonging matters to me.",
             i_so_3: "I often find greater meaning in contributing to the wider community than in personal comfort or one-to-one concerns.",
@@ -523,9 +523,9 @@
             d6_1: "I prefer clarity and predictability, and I often detect hidden risks or underlying intentions earlier than others.",
             d6_2: "I can seek security through trusted structures while also testing whether those structures are truly reliable.",
             d7_1: "When emotions are heavy or reality feels constricting, I tend to shift toward lighter possibilities and mental reframing.",
-            d7_2: "Being boxed into one option feels restrictive; I feel better when multiple possibilities remain open.",
+            d7_2: "Being limited to one option feels constricting; I feel more at ease when multiple possibilities remain open.",
             d8_1: "I instinctively guard against losing control of my life through dependence, weakness, or being overpowered.",
-            d8_2: "At times it may look like I want approval, but more deeply I want my impact and strength to be respected.",
+            d8_2: "At times it may look like I want approval, but at a deeper level I want my impact and personal power to be respected.",
             d9_1: "To preserve inner peace and connection, I may suppress my real wants or anger without fully noticing it.",
             d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks."
         };
@@ -557,18 +557,18 @@
                 stressDir: "비통합(스트레스) 방향"
             },
             en: {
-                title: "Adaptive Enneagram Deep Interview",
-                subtitle: "This assessment explores the core motivations beneath visible behavior.<br>Based on your first-round responses, it narrows likely type candidates and uses <span class=\"font-bold text-[#bfa68a]\">targeted follow-up questions</span> to identify your core pattern.",
+                title: "Adaptive Enneagram Typing Assessment",
+                subtitle: "This assessment explores the core motivations beneath your observable behavior.<br>Using your first-round responses, it narrows likely type candidates and applies <span class=\"font-bold text-[#bfa68a]\">targeted follow-up questions</span> for a more precise typing result.",
                 step1: "Step 1: Baseline Pattern & Instinct",
                 phase1Title: "Part 1: Everyday Relational and Behavioral Patterns",
-                phase1Desc: "Answer based on your usual, relaxed state rather than extreme situations.",
+                phase1Desc: "Please answer based on your usual, settled state rather than unusually stressful situations.",
                 required: "Please answer every question before continuing.",
                 next: "Analyze and Continue to Step 2",
                 phase2Title: "Phase 1 Analysis Complete",
-                phase2Desc: "Based on your first-round responses, we identified <strong>top candidate types</strong>.<br>Now we use deeper motivational items to distinguish them more precisely.",
+                phase2Desc: "Based on your first-round responses, we identified <strong>top candidate types</strong>.<br>Next, we use deeper motivation items to differentiate them more accurately.",
                 submit: "View Final Result",
                 report: "Analysis Summary",
-                lowConf: "Your result shows <strong>low confidence</strong>. Scores are tightly clustered, which may indicate active defense patterns or mixed-state self-reporting.",
+                lowConf: "Your result is currently marked <strong>low confidence</strong>. Scores are tightly clustered, which can happen when multiple patterns are active at the same time.",
                 cta: "Book a Free 1:1 Typing Session",
                 restart: "Start Over",
                 notAtAll: "Not at all",
@@ -577,7 +577,7 @@
                 wing: "Wing",
                 arrows: "Stress & Growth",
                 instinctsPrefix: "Primary instinct: ",
-                tieArrows: "Available after core type is resolved.",
+                tieArrows: "Available once core type is clarified.",
                 growthDir: "Growth direction",
                 stressDir: "Stress direction"
             }
@@ -1931,12 +1931,14 @@
 
             if (rankedInstincts[0].score === rankedInstincts[1].score) {
                 bestInstinctCode = `${rankedInstincts[0].code}/${rankedInstincts[1].code}`;
-                bestInstinctName = `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (공동 1위)`;
+                bestInstinctName = adaptiveLang === 'en'
+                    ? `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (tied for first)`
+                    : `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (공동 1위)`;
             }
 
             let coreDisplay = adaptiveLang === 'en' ? `Type ${coreType}` : `${coreType}번`;
             let wingNum = '없음';
-            let wingStr = adaptiveLang === 'en' ? `${coreType} (pure core)` : `${coreType} (순수유형)`;
+            let wingStr = adaptiveLang === 'en' ? `${coreType} (core-dominant)` : `${coreType} (순수유형)`;
 
             if (isTie) {
                 coreDisplay = adaptiveLang === 'en'
@@ -1970,7 +1972,7 @@
 
                 if (leftScore === rightScore) {
                     wingNum = '없음';
-                    wingStr = adaptiveLang === 'en' ? `${coreType} (pure core)` : `${coreType} (순수유형)`;
+                    wingStr = adaptiveLang === 'en' ? `${coreType} (core-dominant)` : `${coreType} (순수유형)`;
                 } else if (higherWingScore > 0 && higherWingScore >= corePhase1Score * 0.85) {
                     wingNum = higherWing;
                     wingStr = `${coreType}w${wingNum}`;
@@ -1986,7 +1988,7 @@
             document.getElementById('res-instincts').innerText = `${adaptiveText('instinctsPrefix')}${bestInstinctName}`;
             document.getElementById('res-core').innerText = coreDisplay;
             document.getElementById('res-wing').innerText = wingNum === '없음'
-                ? (adaptiveLang === 'en' ? 'Not activated' : '활성화 안됨')
+                ? (adaptiveLang === 'en' ? 'No clear wing activation' : '활성화 안됨')
                 : (isTie ? wingNum : (adaptiveLang === 'en' ? `Wing ${wingNum}` : `${wingNum}번 날개`));
             if (!isTie) {
                 document.getElementById('res-arrows').innerHTML = `
@@ -2013,24 +2015,24 @@
             let logMsg = '';
             if (isTie) {
                 logMsg = adaptiveLang === 'en'
-                    ? `Your weighted scores produced a complete tie between <strong>Type ${coreType}</strong> and <strong>Type ${secondPlace.type}</strong>. A live typing interview is strongly recommended.`
+                    ? `Your weighted scores produced a complete tie between <strong>Type ${coreType}</strong> and <strong>Type ${secondPlace.type}</strong>. A live typing interview is strongly recommended for clarification.`
                     : `전체 문항 가중치 병합 결과, <strong>${coreType}번</strong>과 <strong>${secondPlace.type}번</strong>이 완벽한 동점(경합)으로 나타났습니다. 행동과 동기 점수가 팽팽하게 맞서고 있으므로, 전문가의 심층 타이핑 세션을 강력히 권장합니다.`;
             } else {
                 logMsg = adaptiveLang === 'en'
-                    ? `Based on weighted integration of behavior and motivation, your central pattern is <strong>Type ${coreType}</strong>.<br>The runner-up is Type ${secondPlace.type}, with a margin of <strong>${(diffRatio * 100).toFixed(1)}%</strong>.`
+                    ? `Based on weighted integration of behavior and motivation, your primary pattern is <strong>Type ${coreType}</strong>.<br>The runner-up is Type ${secondPlace.type}, with a score margin of <strong>${(diffRatio * 100).toFixed(1)}%</strong>.`
                     : `전체 문항에 대한 가중치 병합 결과, 귀하의 행동과 동기를 가장 강력하게 설명하는 중심 축은 <strong>${coreType}번 유형</strong>으로 판별되었습니다.<br>2순위 경합 유형은 ${secondPlace.type}번이었으며, 1순위와의 심층 동기 점수 격차는 <strong>${(diffRatio * 100).toFixed(1)}%</strong> 입니다.`;
                 if (secondPlace.type === stressDir) {
                     logMsg += adaptiveLang === 'en'
-                        ? `<br><br><span class="text-red-600 text-sm">Type ${stressDir} as runner-up may reflect your current stress-direction pattern.</span>`
+                        ? `<br><br><span class="text-red-600 text-sm">Type ${stressDir} as a runner-up may reflect stress-direction activation right now.</span>`
                         : `<br><br><span class="text-red-600 text-sm">2순위 ${stressDir}번은 현재 스트레스 방향(비통합) 영향일 수 있습니다.</span>`;
                 } else if (secondPlace.type === growthDir) {
                     logMsg += adaptiveLang === 'en'
-                        ? `<br><br><span class="text-blue-600 text-sm">Type ${growthDir} as runner-up may reflect your current growth-direction pattern.</span>`
+                        ? `<br><br><span class="text-blue-600 text-sm">Type ${growthDir} as a runner-up may reflect growth-direction development right now.</span>`
                         : `<br><br><span class="text-blue-600 text-sm">2순위 ${growthDir}번은 현재 성장 방향(통합) 영향일 수 있습니다.</span>`;
                 }
                 if (adjustedSO) {
                     logMsg += adaptiveLang === 'en'
-                        ? `<br><br><span class="text-[#bfa68a] text-xs">* For Type ${coreType}, a -2.5 correction was applied to Social-instinct scoring to reduce possible over-selection bias on socially weighted items.</span>`
+                        ? `<br><br><span class="text-[#bfa68a] text-xs">* For core Types 3/6/9, a -2.5 correction was applied to Social-instinct scoring to reduce possible over-selection bias on socially weighted items.</span>`
                         : `<br><br><span class="text-[#bfa68a] text-xs">* ${coreType}번은 사회성 관련 문항에서 과대표집이 발생할 수 있어, 사회적 본능(SO)에 -2.5 보정치가 적용되었습니다.</span>`;
                 }
             }
