@@ -10,6 +10,8 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
@@ -151,6 +153,11 @@
     </style>
 </head>
 <body class="antialiased selection:bg-er-accent selection:text-white flex flex-col min-h-screen">
+    <script>
+        // Supabase public config (replace with your project values)
+        window.__ER_SUPABASE_URL = "https://osdynbadhtfgoxilgmpy.supabase.co";
+        window.__ER_SUPABASE_ANON_KEY = "sb_publishable_6nGgC4tWri28HiI-w2H1Pg_E9_KIcHe";
+    </script>
 
     <nav class="fixed w-full top-0 z-50 transition-all duration-300 bg-white/80 backdrop-blur-md border-b border-gray-100" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -188,7 +195,7 @@
                     <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
                         상담 문의
                     </button>
-                    <button onclick="toggleLogin()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors">
+                    <button id="desktop-auth-btn" onclick="toggleLogin()" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors" aria-label="로그인 또는 마이페이지">
                         <i class="far fa-user"></i>
                     </button>
                 </div>
@@ -209,13 +216,53 @@
                 <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Stories</button>
                 <button onclick="renderSection('resources')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Resources</button>
                 <div class="h-px bg-gray-100 my-3 mx-4"></div>
-                <button onclick="toggleLogin()" class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-500 hover:text-er-dark"><i class="far fa-user mr-2"></i> 마이페이지 / 로그인</button>
+                <button id="mobile-auth-btn" onclick="toggleLogin()" class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-500 hover:text-er-dark"><i class="far fa-user mr-2"></i> 마이페이지 / 로그인</button>
             </div>
         </div>
     </nav>
 
     <main id="main-content" class="flex-grow pt-16 md:pt-20">
         </main>
+
+    <div id="auth-modal" class="hidden fixed inset-0 z-[70] bg-black/50 backdrop-blur-[1px] px-4">
+        <div class="min-h-full flex items-center justify-center">
+            <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-white p-6 md:p-8 relative">
+                <button type="button" onclick="closeAuthModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100" aria-label="로그인 창 닫기">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+
+                <h3 class="text-xl font-bold text-er-dark mb-1">로그인 / 회원가입</h3>
+                <p class="text-xs text-gray-500 mb-6">Supabase 인증으로 안전하게 로그인합니다.</p>
+
+                <form id="auth-form" class="space-y-4" onsubmit="event.preventDefault();">
+                    <div>
+                        <label for="auth-email" class="block text-sm font-bold text-gray-700 mb-2">이메일</label>
+                        <input id="auth-email" type="email" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="you@example.com" required>
+                    </div>
+                    <div>
+                        <label for="auth-password" class="block text-sm font-bold text-gray-700 mb-2">비밀번호</label>
+                        <input id="auth-password" type="password" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" minlength="6" placeholder="6자 이상 입력" required>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <button id="auth-login-btn" type="button" onclick="handleEmailAuth('login')" class="py-3 rounded-xl bg-er-dark text-white text-sm font-bold hover:bg-gray-800 transition-colors">로그인</button>
+                        <button id="auth-signup-btn" type="button" onclick="handleEmailAuth('signup')" class="py-3 rounded-xl bg-er-accent text-white text-sm font-bold hover:bg-er-accentDark transition-colors">회원가입</button>
+                    </div>
+                </form>
+
+                <div class="flex items-center gap-2 py-4">
+                    <div class="h-px flex-1 bg-gray-100"></div>
+                    <span class="text-[11px] text-gray-400">또는</span>
+                    <div class="h-px flex-1 bg-gray-100"></div>
+                </div>
+
+                <button id="auth-google-btn" type="button" onclick="handleGoogleLogin()" class="w-full py-3 rounded-xl border border-gray-200 text-gray-700 text-sm font-bold hover:bg-gray-50 transition-colors">
+                    <i class="fab fa-google mr-2"></i>Google로 계속하기
+                </button>
+                <p id="auth-message" class="mt-4 text-xs hidden"></p>
+            </div>
+        </div>
+    </div>
 
     <footer class="bg-white border-t border-er-primary/10 pt-6 md:pt-8 pb-12">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -292,16 +339,19 @@
 
     <script>
         // --- State Management ---
-        let submitted = false;
+        let supabaseClient = null;
         const state = {
             currentSection: 'home',
             user: null, 
             programFilter: 'individual',
             latestTestResult: null
         };
-
-        const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/formResponse";
-        const GOOGLE_FORM_VIEW_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform";
+        const SUPABASE_CONFIG = {
+            url: window.__ER_SUPABASE_URL || "",
+            anonKey: window.__ER_SUPABASE_ANON_KEY || ""
+        };
+        const TURNSTILE_SITE_KEY = "0x4AAAAAACmAr1w7-5BNiCHZ";
+        let applyTurnstileWidgetId = null;
 
         const contentData = {
             stats: {
@@ -362,17 +412,29 @@
         let adaptivePhase1Responses = {};
         let adaptiveTopCandidates = [];
         let adaptivePhase2QuestionsData = [];
+        let adaptiveLang = 'ko';
+        const adaptiveArrowLines = {
+            1: { stress: 4, growth: 7 },
+            2: { stress: 8, growth: 4 },
+            3: { stress: 9, growth: 6 },
+            4: { stress: 2, growth: 1 },
+            5: { stress: 7, growth: 8 },
+            6: { stress: 3, growth: 9 },
+            7: { stress: 1, growth: 5 },
+            8: { stress: 5, growth: 2 },
+            9: { stress: 6, growth: 3 }
+        };
 
         const adaptivePhase1Questions = [
-            { id: 't2', type: 2, q: "새로운 모임에 가면 '내가 이 사람들에게 어떻게 비춰질까, 어떻게 관계를 맺을까'를 자연스럽게 의식하게 되는 것 같다." },
-            { id: 't5', type: 5, q: "새로운 모임에 가면 '이 모임의 목적은 뭐지? 분위기가 안전한가?' 하고 상황을 먼저 파악하려는 경향이 있다." },
+            { id: 't2', type: 2, q: "새로운 모임에 가면 '사람들이 나를 어떻게 생각할까, 저 사람에게 무엇이 필요할까' 등 관계적인 부분에 자연스럽게 신경이 쓰이는 편이다." },
+            { id: 't5', type: 5, q: "새로운 상황이나 모임에서는 내가 충분한 정보나 예측을 통해 '대비가 되어 있는지'가 중요하며, 상황 파악이 안 된 상태에서는 은근한 불편함을 느낀다." },
             { id: 't8', type: 8, q: "새로운 모임에 가면 '이 공간의 주도권은 누구에게 있나, 내 자리는 어디인가' 하는 공기(흐름)를 본능적으로 느끼곤 한다." },
             { id: 'c1', type: 1, q: "가까운 사람들로부터 '스스로에게 기준이 높다'거나 '원칙을 중요시한다'는 이야기를 가끔 듣는 편이다." },
             { id: 'c2', type: 2, q: "누군가 도움이 필요해 보일 때 먼저 다가가며, 나의 호의가 당연하게 여겨질 때 겉으론 티를 안 내도 속으로 서운할 때가 있다." },
             { id: 'c3', type: 3, q: "어떤 일을 할 때 과정도 중요하지만, 결국 눈에 보이는 성과나 결과물로 나의 가치를 증명하고 싶어 하는 마음이 꽤 큰 것 같다." },
             { id: 'c4', type: 4, q: "남들과 똑같아지거나 평범해지는 것을 별로 좋아하지 않으며, 때때로 나만의 감정이나 결핍감에 깊이 빠져들곤 한다." },
             { id: 'c5', type: 5, q: "에너지가 한정되어 있다고 느껴져서, 사람들과 어울리기보다 혼자만의 조용한 공간에서 충전하는 시간이 반드시 필요하다." },
-            { id: 'c6', type: 6, q: "돌다리도 두드려보고 건너는 편이며, 확실한 지침이나 믿을 만한 대상이 없을 때 은근히 불안감을 느끼곤 한다." },
+            { id: 'c6', type: 6, q: "돌다리도 두드려보고 건너는 편이며, 예측하지 못한 변수나 충분히 대비되지 않은 상황에 맞닥뜨릴 때 은근히 스트레스를 받는다." },
             { id: 'c7', type: 7, q: "무겁고 우울한 분위기를 견디기 어려워하며, 즐겁고 긍정적인 계획들을 상상하는 것으로 스트레스를 피하려는 경향이 있다." },
             { id: 'c8', type: 8, q: "불의를 보거나 누군가 나를 부당하게 통제하려 할 때 강하게 반발하며, 차라리 내가 상황을 주도하는 편이 편하다." },
             { id: 'c9', type: 9, q: "갈등이 생기는 상황을 본능적으로 피하고 싶어 하며, 웬만하면 '좋은 게 좋은 거지' 하고 내 의견을 양보할 때가 많다." },
@@ -381,15 +443,15 @@
             { id: 'i_sp_3', inst: 'sp', q: "재정적인 안정과 독립적인 생활 기반을 확보하는 것이 삶에서 우선순위가 높은 편이다." },
             { id: 'i_sx_1', inst: 'sx', q: "여러 사람과 얕게 어울리는 것보다, 나와 코드가 맞는 단 한 사람과 깊고 강렬하게 교감할 때 에너지를 얻는다." },
             { id: 'i_sx_2', inst: 'sx', q: "무언가(사람, 취미, 관심사)에 한 번 꽂히면 주변을 잊을 만큼 모든 열정을 쏟아붓는 편이다." },
-            { id: 'i_sx_3', inst: 'sx', q: "평범하고 일상적인 대화보다는, 서로의 깊은 내면이나 비밀스러운 이야기를 나누는 것을 훨씬 선호한다." },
-            { id: 'i_so_1', inst: 'so', q: "중요한 결정을 내릴 때, '이것이 내가 속한 공동체나 가족에게 어떤 영향을 미칠까'를 먼저 고려하는 편이다." },
-            { id: 'i_so_2', inst: 'so', q: "내가 속한 그룹 안에서 나의 역할이나 위치가 무엇인지 확인하고 소속감을 느끼는 것이 중요하다." },
-            { id: 'i_so_3', inst: 'so', q: "사회적 이슈나 단체의 흐름에 관심이 많으며, 사람들과 함께 협력하여 무언가를 이루어내는 것에 가치를 느낀다." }
+            { id: 'i_sx_3', inst: 'sx', q: "표면적이고 일상적인 대화보다는, 서로의 깊은 생각이나 가치관을 온전히 알 수 있는 밀도 높은 대화를 훨씬 선호한다." },
+            { id: 'i_so_1', inst: 'so', q: "내가 속한 조직이나 무리 안에서 '누가 영향력이 있고, 분위기가 어떻게 흘러가는지' 사회적 역학 관계를 본능적으로 살피게 된다." },
+            { id: 'i_so_2', inst: 'so', q: "어떤 그룹에 가든 나의 '명확한 역할과 기여도'가 있어야 편안하며, 무리 안에서의 소속감을 중요하게 생각한다." },
+            { id: 'i_so_3', inst: 'so', q: "나 개인의 안위나 1:1 관계보다, 공동체 전체를 위한 일이나 사회적 흐름에 참여할 때 더 큰 삶의 의미를 느낀다." }
         ];
 
         const adaptiveDeepMotivations = {
             1: [
-                { id: 'd1_1', type: 1, q: "내 안에는 끊임없이 나를 평가하고 채찍질하는 '엄격한 비평가'가 살고 있는 것만 같다." },
+                { id: 'd1_1', type: 1, q: "무언가를 할 때 '이것이 최선인가? 더 제대로 해야 하지 않나?'라며 스스로의 행동을 점검하고 기준을 맞추려는 내면의 목소리가 자주 들리는 편이다." },
                 { id: 'd1_2', type: 1, q: "나는 속으로 '이건 이렇게 해야 해'라는 정답을 정해놓고, 나 자신이나 타인이 그 기준에 미치지 못할 때 자주 답답함을 느낀다." }
             ],
             2: [
@@ -413,18 +475,127 @@
                 { id: 'd6_2', type: 6, q: "권위자나 시스템에 순응하여 안전을 보장받고 싶으면서도, 동시에 그들이 정말 믿을 만한지 끊임없이 의심하고 테스트하려는 모순된 마음이 있다." }
             ],
             7: [
-                { id: 'd7_1', type: 7, q: "부정적인 감정이나 고통스러운 현실에 직면하는 것이 두려워, 나도 모르게 새롭고 흥미로운 계획들로 주의를 돌리려 한다." },
-                { id: 'd7_2', type: 7, q: "어떤 한 가지에 얽매이거나 제한당하는 것을 극도로 답답해하며, 항상 다양한 가능성과 선택지를 열어두어야 안심이 된다." }
+                { id: 'd7_1', type: 7, q: "부정적인 감정이나 복잡하고 불편한 현실에 직면하는 것이 피곤하게 느껴져서, 나도 모르게 분위기를 환기하거나 흥미로운 다른 일들로 주의를 돌리려는 패턴이 있다." },
+                { id: 'd7_2', type: 7, q: "어떤 한 가지에 얽매이거나 제한당하는 것을 꽤 답답해하며, 항상 다양한 가능성과 선택지를 열어두어야 마음이 편하다." }
             ],
             8: [
                 { id: 'd8_1', type: 8, q: "나는 다른 사람에게 약점을 잡히거나 통제당하는 것을 본능적으로 거부하며, 차라리 내가 강해져서 상황을 주도하는 쪽을 택한다." },
-                { id: 'd8_2', type: 8, q: "갈등 상황에서 물러서기보다는 내 힘을 온전히 드러내어 부딪히는 것이 오히려 진실에 가깝고 개운하다고 느낀다." }
+                { id: 'd8_2', type: 8, q: "때때로 사람들에게 인정을 갈구하는 것처럼 보일 때도 있지만, 그 본질은 칭찬 자체보다 '내가 영향력 있는 사람임'을 존중받고 싶기 때문이다." }
             ],
             9: [
                 { id: 'd9_1', type: 9, q: "나는 나와 타인, 혹은 환경과의 '연결감'이 끊어지는 것을 두려워하며, 내 안의 평화를 유지하기 위해 종종 내 진짜 분노나 욕구를 억누르곤 한다." },
                 { id: 'd9_2', type: 9, q: "중요한 갈등 상황이나 결정을 마주할 때, 직면하는 스트레스를 피하기 위해 덜 중요한 사소한 일들에 몰두하며 에너지를 분산시키는 패턴이 있다." }
             ]
         };
+
+        const adaptiveQuestionEn = {
+            t2: "In new social settings, I naturally pay attention to relational cues like “How might people see me?” or “What does this person need?”",
+            t5: "In unfamiliar situations, I feel better when I have enough information and can predict what is happening; when I cannot read the situation, I feel subtly uncomfortable.",
+            t8: "When I enter a space, I instinctively read the power dynamics and where my influence or position might be.",
+            c1: "People close to me often say I hold myself to high standards and care deeply about doing things the right way.",
+            c2: "When someone seems to need help, I tend to step in first; if my care is taken for granted, I may feel quietly hurt.",
+            c3: "Process matters, but I feel most at ease when I can prove my value through visible results or achievement.",
+            c4: "I dislike feeling ordinary, and at times I get deeply absorbed in my own sense of longing or emotional depth.",
+            c5: "My energy drains quickly in prolonged social interaction, so I need solitude to process information and recharge.",
+            c6: "I prefer to prepare thoroughly, and unexpected variables or underprepared situations create noticeable stress for me.",
+            c7: "Heavy or gloomy atmospheres are hard for me to sustain; when things feel stuck, I look for fresh, positive possibilities.",
+            c8: "When I sense unfairness or someone overreaching into my authority, I push back strongly and prefer to take the lead.",
+            c9: "I instinctively avoid conflict and tension, and I often smooth things over rather than push my own agenda.",
+            i_sp_1: "Physical comfort matters to me: temperature, lighting, food, sleep, and the practical environment.",
+            i_sp_2: "I am sensitive to wasted time, energy, or resources, especially when things feel inefficient or unpredictable.",
+            i_sp_3: "Financial stability and a solid independent foundation are high priorities for me.",
+            i_sx_1: "I prefer deep, intense connection with one person over broad, shallow socializing.",
+            i_sx_2: "When I become interested in something or someone, I can go all-in with strong focus and intensity.",
+            i_sx_3: "Rather than surface-level conversation, I prefer dense conversations that reveal deeper values and inner thinking.",
+            i_so_1: "In groups, I naturally track influence, social dynamics, and how the atmosphere is shifting.",
+            i_so_2: "I feel more at ease when my role and contribution in a group are clear, and belonging matters to me.",
+            i_so_3: "I often find greater meaning in contributing to the wider community than in personal comfort or one-to-one concerns.",
+            d1_1: "I often hear an inner voice that asks, “Is this the best way? Could this be done more properly?” and pushes me to improve.",
+            d1_2: "I tend to hold an internal “right way,” and I feel frustration when I or others fall short of that standard.",
+            d2_1: "At a deeper level, I want to be seen as needed and valuable through being there for others.",
+            d2_2: "I can read other people’s needs well, but it is often harder to name what I truly want.",
+            d3_1: "I sometimes feel pressure that without achievement or recognition, my value might diminish.",
+            d3_2: "The thought of being seen as ineffective or failing creates strong internal stress for me.",
+            d4_1: "I often feel a subtle sense of being misunderstood, and sometimes even my sadness feels like part of what makes me uniquely me.",
+            d4_2: "I feel most alive in moments with emotional depth and meaning rather than in flat, ordinary routines.",
+            d5_1: "I feel safer when I can step back, observe, and understand before engaging directly.",
+            d5_2: "When people demand immediate emotional responses or intrude into my mental space, I tend to withdraw to protect my energy.",
+            d6_1: "I prefer clarity and predictability, and I often detect hidden risks or underlying intentions earlier than others.",
+            d6_2: "I can seek security through trusted structures while also testing whether those structures are truly reliable.",
+            d7_1: "When emotions are heavy or reality feels constricting, I tend to shift toward lighter possibilities and mental reframing.",
+            d7_2: "Being boxed into one option feels restrictive; I feel better when multiple possibilities remain open.",
+            d8_1: "I instinctively guard against losing control of my life through dependence, weakness, or being overpowered.",
+            d8_2: "At times it may look like I want approval, but more deeply I want my impact and strength to be respected.",
+            d9_1: "To preserve inner peace and connection, I may suppress my real wants or anger without fully noticing it.",
+            d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks."
+        };
+
+        const adaptiveUi = {
+            ko: {
+                title: "적응형 에니어그램 심층 진단",
+                subtitle: "행동(열매)의 이면에 숨겨진 근원적 동기(뿌리)를 탐색합니다.<br>1차 응답을 분석하여 유력한 후보 유형을 좁히고, <span class=\"font-bold text-[#bfa68a]\">맞춤형 심층 질문</span>을 통해 진짜 나를 찾아갑니다.",
+                step1: "1단계: 기초 성향 및 하위 본능 파악",
+                phase1Title: "1부: 일상적 태도 및 관계 패턴",
+                phase1Desc: "극단적인 상황이 아닌, 편안한 상태에서의 본인 모습을 떠올리며 평가해 주세요.",
+                required: "모든 문항에 빠짐없이 응답해 주십시오.",
+                next: "분석 및 2단계 진입",
+                phase2Title: "1차 알고리즘 분석 완료",
+                phase2Desc: "회원님의 1차 응답을 바탕으로 <strong>유력한 후보 유형들</strong>이 도출되었습니다.<br>이 유형들을 최종적으로 구별하기 위한 심층 동기 질문을 드립니다.",
+                submit: "최종 결과 확인하기",
+                report: "분석 리포트",
+                lowConf: "결과의 <strong>확신도가 '낮음'</strong>으로 측정되었습니다. 여러 유형의 점수가 비슷하게 경합하고 있어 방어기제가 작동했거나 객관화가 덜 되었을 확률이 높습니다.",
+                cta: "전문가 1:1 타이핑 세션 신청하기",
+                restart: "처음부터 다시하기",
+                notAtAll: "전혀 아니다",
+                very: "매우 그렇다",
+                core: "Core Type",
+                wing: "Wing",
+                arrows: "Stress & Growth",
+                instinctsPrefix: "제 1본능: ",
+                tieArrows: "코어 유형 확정 후 확인 가능합니다.",
+                growthDir: "통합(건강) 방향",
+                stressDir: "비통합(스트레스) 방향"
+            },
+            en: {
+                title: "Adaptive Enneagram Deep Interview",
+                subtitle: "This assessment explores the core motivations beneath visible behavior.<br>Based on your first-round responses, it narrows likely type candidates and uses <span class=\"font-bold text-[#bfa68a]\">targeted follow-up questions</span> to identify your core pattern.",
+                step1: "Step 1: Baseline Pattern & Instinct",
+                phase1Title: "Part 1: Everyday Relational and Behavioral Patterns",
+                phase1Desc: "Answer based on your usual, relaxed state rather than extreme situations.",
+                required: "Please answer every question before continuing.",
+                next: "Analyze and Continue to Step 2",
+                phase2Title: "Phase 1 Analysis Complete",
+                phase2Desc: "Based on your first-round responses, we identified <strong>top candidate types</strong>.<br>Now we use deeper motivational items to distinguish them more precisely.",
+                submit: "View Final Result",
+                report: "Analysis Summary",
+                lowConf: "Your result shows <strong>low confidence</strong>. Scores are tightly clustered, which may indicate active defense patterns or mixed-state self-reporting.",
+                cta: "Book a Free 1:1 Typing Session",
+                restart: "Start Over",
+                notAtAll: "Not at all",
+                very: "Very true",
+                core: "Core Type",
+                wing: "Wing",
+                arrows: "Stress & Growth",
+                instinctsPrefix: "Primary instinct: ",
+                tieArrows: "Available after core type is resolved.",
+                growthDir: "Growth direction",
+                stressDir: "Stress direction"
+            }
+        };
+
+        function adaptiveText(key) {
+            return adaptiveUi[adaptiveLang][key];
+        }
+
+        function adaptiveQuestionText(item) {
+            if (adaptiveLang === 'en' && adaptiveQuestionEn[item.id]) return adaptiveQuestionEn[item.id];
+            return item.q;
+        }
+
+        function setAdaptiveTestLanguage(lang) {
+            adaptiveLang = lang === 'en' ? 'en' : 'ko';
+            renderSection('test');
+        }
 
         // --- Core Functions ---
         function renderSection(sectionId, payload = null) {
@@ -461,6 +632,7 @@
             if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
             if(sectionId === 'programs') updateProgramView(state.programFilter);
             if(sectionId === 'test') initAdaptiveTest();
+            if(sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 0);
         }
 
         function toggleMobileMenu() {
@@ -872,20 +1044,26 @@
         }
 
         function renderTest() {
+            const isEn = adaptiveLang === 'en';
             return `
                 <div class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
+                    <div class="flex justify-end mb-4">
+                        <div class="inline-flex rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold">
+                            <button type="button" onclick="setAdaptiveTestLanguage('ko')" class="px-3 py-1 rounded-full ${!isEn ? 'bg-er-dark text-white' : 'text-gray-500 hover:text-er-dark'}">한국어</button>
+                            <button type="button" onclick="setAdaptiveTestLanguage('en')" class="px-3 py-1 rounded-full ${isEn ? 'bg-er-dark text-white' : 'text-gray-500 hover:text-er-dark'}">English</button>
+                        </div>
+                    </div>
                     <div class="text-center mb-10">
                         <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest shadow-sm">Narrative Interview</span>
-                        <h1 class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
+                        <h1 class="text-3xl font-extrabold text-gray-900 mt-2">${adaptiveText('title')}</h1>
                         <p class="mt-4 text-gray-600 leading-relaxed text-sm">
-                            행동(열매)의 이면에 숨겨진 근원적 동기(뿌리)를 탐색합니다.<br>
-                            1차 응답을 분석하여 유력한 후보 유형을 좁히고, <span class="font-bold text-[#bfa68a]">맞춤형 심층 질문</span>을 통해 진짜 나를 찾아갑니다.
+                            ${adaptiveText('subtitle')}
                         </p>
                     </div>
 
                     <div id="progress-container" class="mb-8">
                         <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
-                            <span id="step-label">1단계: 기초 성향 및 하위 본능 파악</span>
+                            <span id="step-label">${adaptiveText('step1')}</span>
                             <span id="step-counter">1 / 2</span>
                         </div>
                         <div class="w-full bg-gray-200 rounded-full h-1.5">
@@ -895,31 +1073,30 @@
 
                     <form id="phase1-form" class="space-y-10 fade-in">
                         <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center shadow-sm">
-                            <p class="font-semibold text-gray-700">1부: 일상적 태도 및 관계 패턴</p>
-                            <p class="text-sm text-gray-500 mt-1">극단적인 상황이 아닌, 편안한 상태에서의 본인 모습을 떠올리며 평가해 주세요.</p>
+                            <p class="font-semibold text-gray-700">${adaptiveText('phase1Title')}</p>
+                            <p class="text-sm text-gray-500 mt-1">${adaptiveText('phase1Desc')}</p>
                         </div>
                         <div id="phase1-container" class="space-y-6"></div>
                         <div class="text-center pt-6">
-                            <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm">모든 문항에 빠짐없이 응답해 주십시오.</p>
+                            <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
                             <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
-                                분석 및 2단계 진입
+                                ${adaptiveText('next')}
                             </button>
                         </div>
                     </form>
 
                     <form id="phase2-form" class="space-y-10 hidden fade-in">
                         <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center shadow-sm relative overflow-hidden">
-                            <p class="font-bold text-[#4a4540] text-lg">1차 알고리즘 분석 완료</p>
+                            <p class="font-bold text-[#4a4540] text-lg">${adaptiveText('phase2Title')}</p>
                             <p class="text-sm text-gray-600 mt-2">
-                                회원님의 1차 응답을 바탕으로 <strong>유력한 후보 유형들</strong>이 도출되었습니다.<br>
-                                이 유형들을 최종적으로 구별하기 위한 심층 동기 질문을 드립니다.
+                                ${adaptiveText('phase2Desc')}
                             </p>
                         </div>
                         <div id="phase2-container" class="space-y-6"></div>
                         <div class="text-center pt-6">
-                            <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm">모든 문항에 빠짐없이 응답해 주십시오.</p>
+                            <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
                             <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
-                                최종 결과 확인하기
+                                ${adaptiveText('submit')}
                             </button>
                         </div>
                     </form>
@@ -936,28 +1113,32 @@
                             <div class="p-8 space-y-6">
                                 <div class="grid grid-cols-2 gap-4">
                                     <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
-                                        <p class="text-xs text-gray-400 font-bold uppercase mb-1">Core Type</p>
+                                        <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('core')}</p>
                                         <p id="res-core" class="text-2xl font-bold text-gray-800"></p>
                                     </div>
                                     <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
-                                        <p class="text-xs text-gray-400 font-bold uppercase mb-1">Wing</p>
+                                        <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('wing')}</p>
                                         <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
+                                    </div>
+                                    <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100 col-span-2">
+                                        <p class="text-xs text-gray-400 font-bold uppercase mb-1"><i class="fas fa-arrows-alt-h mr-1"></i>${adaptiveText('arrows')}</p>
+                                        <p id="res-arrows" class="text-[15px] font-medium text-gray-700 mt-2 leading-relaxed"></p>
                                     </div>
                                 </div>
 
                                 <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
-                                    <h3 class="font-bold text-[#4a4540] mb-2 text-sm"><i class="fas fa-chart-pie mr-2"></i>분석 리포트</h3>
+                                    <h3 class="font-bold text-[#4a4540] mb-2 text-sm"><i class="fas fa-chart-pie mr-2"></i>${adaptiveText('report')}</h3>
                                     <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
                                 </div>
 
                                 <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
-                                    <p class="text-sm text-red-800 mb-3">결과의 <strong>확신도가 '낮음'</strong>으로 측정되었습니다. 여러 유형의 점수가 비슷하게 경합하고 있어 방어기제가 작동했거나 객관화가 덜 되었을 확률이 높습니다.</p>
-                                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full transition">전문가 1:1 타이핑 세션 신청하기</a>
+                                    <p class="text-sm text-red-800 mb-3">${adaptiveText('lowConf')}</p>
+                                    <button type="button" onclick="renderSection('apply', { source: 'test' })" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full transition">${adaptiveText('cta')}</button>
                                 </div>
 
                                 <div class="text-center pt-6 border-t border-gray-100">
                                     <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">
-                                        처음부터 다시하기
+                                        ${adaptiveText('restart')}
                                     </button>
                                 </div>
                             </div>
@@ -1132,26 +1313,22 @@
                                 <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">3</span></div>
                             </div>
 
-                            <form class="space-y-6"
-                                action="${GOOGLE_FORM_ACTION_URL}"
-                                method="POST"
-                                target="hidden_iframe"
-                                onsubmit="submitted=true;">
+                            <form id="apply-form" class="space-y-6" onsubmit="handleApplySubmit(event, ${fromTest ? `'test'` : `'website'`})">
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">이름 (신청자)</label>
-                                    <input type="text" name="entry.1004632782" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="성함을 입력해주세요">
+                                    <input type="text" name="name" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="성함을 입력해주세요">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">연락처</label>
-                                    <input type="text" name="entry.1413214839" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="010-0000-0000 또는 이메일">
+                                    <input type="text" name="contact" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="010-0000-0000 또는 이메일">
                                 </div>
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">신청 분야</label>
                                     <div class="relative">
-                                        <select name="entry.796863919" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
+                                        <select name="category" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
                                             ${fromTest ? '<option selected>정식 타이핑 세션 (무료)</option>' : ""}
                                             <option>개인/가정 코칭 (부부, 자녀)</option>
                                             <option>교회/사역자 회복 프로그램</option>
@@ -1165,7 +1342,7 @@
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">문의 내용</label>
-                                    <textarea name="entry.594846485" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="고민이나 요청사항을 자유롭게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n정식 타이핑 세션(무료) 신청합니다.` : ""}</textarea>
+                                    <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="고민이나 요청사항을 자유롭게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n정식 타이핑 세션(무료) 신청합니다.` : ""}</textarea>
                                 </div>
 
                                 <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
@@ -1176,12 +1353,17 @@
                                         후원은 사역을 응원하는 자발적인 선택입니다. 접수 후 24시간 이내에 담당 코치가 연락드립니다.
                                     </p>
                                 </div>
+
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <p class="text-xs text-gray-500 mb-2">보안 확인</p>
+                                    <div id="apply-turnstile-widget" class="min-h-[65px]"></div>
+                                    <input type="hidden" name="turnstile_token" id="apply-turnstile-token" value="">
+                                </div>
                                 
-                                <button type="submit" class="w-full py-4 bg-er-dark text-white rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-all hover:-translate-y-1">
+                                <button id="apply-submit-btn" type="submit" class="w-full py-4 bg-er-dark text-white rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-all hover:-translate-y-1">
                                     신청서 제출하기
                                 </button>
                             </form>
-                            <iframe name="hidden_iframe" style="display:none;" onload="if(submitted){renderSection('thankyou');submitted=false;}"></iframe>
                         </div>
                     </div>
                 </div>
@@ -1209,17 +1391,33 @@
         }
 
         function renderMyPage() {
+            if (!state.user) {
+                return `
+                    <div class="max-w-md mx-auto px-4 py-20">
+                        <div class="bg-white p-10 rounded-[2rem] shadow-soft text-center border border-gray-100">
+                            <div class="w-20 h-20 bg-gray-50 rounded-full mx-auto flex items-center justify-center text-2xl text-gray-300 mb-4">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <p class="text-gray-500 mb-6 text-sm">로그인 후 마이페이지를 확인할 수 있습니다.</p>
+                            <button onclick="toggleLogin()" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">로그인하기</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const userEmail = state.user.email || '-';
             return `
                 <div class="max-w-md mx-auto px-4 py-20">
                     <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
                         <h2 class="text-xl font-bold text-gray-900">My Page</h2>
-                        <button onclick="logoutUser()" class="text-xs text-gray-400 hover:text-red-500 transition-colors">로그아웃</button>
+                        <button onclick="handleLogout()" class="text-xs text-gray-400 hover:text-red-500 transition-colors">로그아웃</button>
                     </div>
                     <div class="bg-white p-10 rounded-[2rem] shadow-soft text-center border border-gray-100">
                         <div class="w-20 h-20 bg-gray-50 rounded-full mx-auto flex items-center justify-center text-2xl text-gray-300 mb-4">
                             <i class="fas fa-user"></i>
                         </div>
-                        <p class="text-gray-500 mb-6 text-sm">로그인 기능은 준비 중입니다.</p>
+                        <p class="text-gray-800 mb-1 text-sm font-semibold">${userEmail}</p>
+                        <p class="text-gray-500 mb-6 text-sm">인증된 계정으로 로그인되어 있습니다.</p>
                         <button onclick="renderSection('home')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">홈으로</button>
                     </div>
                 </div>
@@ -1311,16 +1509,236 @@
             }
         }
 
-        function toggleLogin() { 
-            if (state.user) { renderSection('mypage'); } 
-            else { alert('회원가입/로그인 기능은 준비 중입니다.'); } 
-        }
-        
-        function logoutUser() { 
-            state.user = null; 
-            renderSection('home'); 
+        function isSupabaseConfigured() {
+            return Boolean(SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey);
         }
 
+        function updateAuthButtons() {
+            const desktopBtn = document.getElementById('desktop-auth-btn');
+            const mobileBtn = document.getElementById('mobile-auth-btn');
+            const mobileLabel = state.user ? '마이페이지' : '마이페이지 / 로그인';
+            if (mobileBtn) {
+                mobileBtn.innerHTML = `<i class="far fa-user mr-2"></i> ${mobileLabel}`;
+            }
+            if (desktopBtn) {
+                const iconClass = state.user ? 'fas fa-user-check' : 'far fa-user';
+                desktopBtn.innerHTML = `<i class="${iconClass}"></i>`;
+                desktopBtn.classList.toggle('text-er-dark', Boolean(state.user));
+            }
+        }
+
+        function setAuthMessage(message, isError = false) {
+            const messageEl = document.getElementById('auth-message');
+            if (!messageEl) return;
+            if (!message) {
+                messageEl.className = 'mt-4 text-xs hidden';
+                messageEl.textContent = '';
+                return;
+            }
+            messageEl.className = `mt-4 text-xs ${isError ? 'text-red-500' : 'text-green-600'}`;
+            messageEl.textContent = message;
+        }
+
+        function setAuthButtonsDisabled(disabled) {
+            ['auth-login-btn', 'auth-signup-btn', 'auth-google-btn'].forEach((id) => {
+                const btn = document.getElementById(id);
+                if (btn) btn.disabled = disabled;
+            });
+        }
+
+        function openAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            if (!modal) return;
+            setAuthMessage('');
+            modal.classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('auth-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+        }
+
+        async function initializeSupabase() {
+            if (!isSupabaseConfigured()) {
+                updateAuthButtons();
+                return;
+            }
+            if (!window.supabase || !window.supabase.createClient) return;
+
+            supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+            const sessionRes = await supabaseClient.auth.getSession();
+            state.user = sessionRes?.data?.session?.user || null;
+            updateAuthButtons();
+
+            supabaseClient.auth.onAuthStateChange((_event, session) => {
+                state.user = session?.user || null;
+                updateAuthButtons();
+                if (state.currentSection === 'mypage') {
+                    renderSection('mypage');
+                }
+            });
+        }
+
+        async function handleEmailAuth(mode) {
+            if (!supabaseClient) return;
+            const emailEl = document.getElementById('auth-email');
+            const passwordEl = document.getElementById('auth-password');
+            const email = emailEl?.value?.trim();
+            const password = passwordEl?.value;
+            if (!email || !password) {
+                setAuthMessage('이메일과 비밀번호를 입력해 주세요.', true);
+                return;
+            }
+
+            setAuthButtonsDisabled(true);
+            setAuthMessage('');
+            let result;
+
+            if (mode === 'signup') {
+                result = await supabaseClient.auth.signUp({ email, password });
+            } else {
+                result = await supabaseClient.auth.signInWithPassword({ email, password });
+            }
+
+            setAuthButtonsDisabled(false);
+            if (result.error) {
+                setAuthMessage(result.error.message, true);
+                return;
+            }
+
+            if (mode === 'signup' && !result.data?.session) {
+                setAuthMessage('회원가입 완료. 이메일 인증 후 로그인해 주세요.');
+                return;
+            }
+
+            closeAuthModal();
+            renderSection('mypage');
+        }
+
+        async function handleGoogleLogin() {
+            if (!supabaseClient) return;
+            setAuthButtonsDisabled(true);
+            const { error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin }
+            });
+            setAuthButtonsDisabled(false);
+            if (error) setAuthMessage(error.message, true);
+        }
+
+        async function handleLogout() {
+            if (!supabaseClient) {
+                state.user = null;
+                updateAuthButtons();
+                renderSection('home');
+                return;
+            }
+            await supabaseClient.auth.signOut();
+            state.user = null;
+            updateAuthButtons();
+            renderSection('home');
+        }
+
+        function initApplyTurnstile() {
+            const container = document.getElementById('apply-turnstile-widget');
+            const tokenInput = document.getElementById('apply-turnstile-token');
+            if (!container || !tokenInput || !window.turnstile) return;
+
+            tokenInput.value = '';
+            if (applyTurnstileWidgetId !== null) {
+                try {
+                    window.turnstile.remove(applyTurnstileWidgetId);
+                } catch (_e) {}
+                applyTurnstileWidgetId = null;
+            }
+
+            applyTurnstileWidgetId = window.turnstile.render('#apply-turnstile-widget', {
+                sitekey: TURNSTILE_SITE_KEY,
+                theme: 'light',
+                callback: (token) => { tokenInput.value = token; },
+                'expired-callback': () => { tokenInput.value = ''; },
+                'error-callback': () => { tokenInput.value = ''; }
+            });
+        }
+
+        async function handleApplySubmit(event, source = 'website') {
+            event.preventDefault();
+            if (!SUPABASE_CONFIG.url) {
+                alert('제출 기능 초기화에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+                return;
+            }
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const name = (formData.get('name') || '').toString().trim();
+            const contact = (formData.get('contact') || '').toString().trim();
+            const category = (formData.get('category') || '').toString().trim();
+            const message = (formData.get('message') || '').toString().trim();
+            const turnstileToken = (formData.get('turnstile_token') || '').toString().trim();
+            const submitBtn = document.getElementById('apply-submit-btn');
+            if (!name || !contact || !category) {
+                alert('이름, 연락처, 신청 분야를 확인해 주세요.');
+                return;
+            }
+            if (!turnstileToken) {
+                alert('보안 확인을 완료해 주세요.');
+                return;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = '제출 중...';
+            }
+
+            const payload = {
+                name,
+                contact,
+                category,
+                message,
+                source,
+                user_id: state.user?.id || null,
+                turnstile_token: turnstileToken
+            };
+            try {
+                const response = await fetch(`${SUPABASE_CONFIG.url}/functions/v1/submit-application`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || `HTTP ${response.status}`);
+                }
+
+                renderSection('thankyou');
+            } catch (error) {
+                const message = error instanceof Error ? error.message : String(error);
+                alert(`제출에 실패했습니다: ${message}`);
+                if (window.turnstile && applyTurnstileWidgetId !== null) {
+                    window.turnstile.reset(applyTurnstileWidgetId);
+                }
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '신청서 제출하기';
+                }
+            }
+        }
+
+        function toggleLogin() { 
+            if (!isSupabaseConfigured()) {
+                alert('Supabase 설정이 필요합니다. index.html의 __ER_SUPABASE_URL / __ER_SUPABASE_ANON_KEY를 먼저 설정해 주세요.');
+                return;
+            }
+            if (state.user) {
+                renderSection('mypage');
+            } else {
+                openAuthModal();
+            }
+        }
+        
         // --- Adaptive Test Logic ---
         function renderAdaptiveQuestions(containerId, questions, prefix) {
             const container = document.getElementById(containerId);
@@ -1328,11 +1746,12 @@
 
             container.innerHTML = '';
             questions.forEach((item) => {
+                const qText = adaptiveQuestionText(item);
                 const html = `
                     <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
-                        <p class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${item.q}</p>
+                        <p class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${qText}</p>
                         <div class="flex justify-between items-center sm:px-2">
-                            <span class="text-xs text-gray-400 font-medium">전혀 아니다</span>
+                            <span class="text-xs text-gray-400 font-medium">${adaptiveText('notAtAll')}</span>
                             <div class="flex space-x-2 sm:space-x-4">
                                 ${[1, 2, 3, 4, 5].map((val) => `
                                     <div class="relative">
@@ -1343,7 +1762,7 @@
                                     </div>
                                 `).join('')}
                             </div>
-                            <span class="text-xs text-gray-400 font-medium">매우 그렇다</span>
+                            <span class="text-xs text-gray-400 font-medium">${adaptiveText('very')}</span>
                         </div>
                     </div>
                 `;
@@ -1438,7 +1857,9 @@
             document.getElementById('phase1-form').classList.add('hidden');
             document.getElementById('phase2-form').classList.remove('hidden');
             document.getElementById('progress-bar').style.width = '100%';
-            document.getElementById('step-label').innerText = '2단계: 동기 교차 검증 (심층 인터뷰)';
+            document.getElementById('step-label').innerText = adaptiveLang === 'en'
+                ? 'Step 2: Motivational Cross-Validation'
+                : '2단계: 동기 교차 검증 (심층 인터뷰)';
             document.getElementById('step-counter').innerText = '2 / 2';
 
             renderAdaptiveQuestions('phase2-container', adaptivePhase2QuestionsData, 'p2');
@@ -1472,6 +1893,8 @@
 
             const coreType = rankedTypes[0].type;
             const secondPlace = rankedTypes[1];
+            const stressDir = adaptiveArrowLines[coreType].stress;
+            const growthDir = adaptiveArrowLines[coreType].growth;
 
             const maxScore = rankedTypes[0].score;
             const secScore = rankedTypes[1].score;
@@ -1485,11 +1908,19 @@
             if (isTie) confidence = '낮음';
 
             const instSum = { sp: 0, sx: 0, so: 0 };
-            const instNames = { sp: '자기보존', sx: '성적(일대일)', so: '사회적' };
+            const instNames = adaptiveLang === 'en'
+                ? { sp: 'Self-Preservation', sx: 'One-to-One', so: 'Social' }
+                : { sp: '자기보존', sx: '성적(일대일)', so: '사회적' };
 
             adaptivePhase1Questions.filter((q) => q.id.startsWith('i_')).forEach((q) => {
                 instSum[q.inst] += adaptivePhase1Responses[q.id];
             });
+
+            let adjustedSO = false;
+            if ([3, 6, 9].includes(coreType)) {
+                instSum.so -= 2.5;
+                adjustedSO = true;
+            }
 
             const rankedInstincts = Object.keys(instSum)
                 .map((k) => ({ code: k, name: instNames[k], score: instSum[k] }))
@@ -1503,14 +1934,16 @@
                 bestInstinctName = `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (공동 1위)`;
             }
 
-            let coreDisplay = `${coreType}번`;
+            let coreDisplay = adaptiveLang === 'en' ? `Type ${coreType}` : `${coreType}번`;
             let wingNum = '없음';
-            let wingStr = `${coreType} (순수유형)`;
+            let wingStr = adaptiveLang === 'en' ? `${coreType} (pure core)` : `${coreType} (순수유형)`;
 
             if (isTie) {
-                coreDisplay = `${coreType}번 / ${secondPlace.type}번 (경합)`;
-                wingStr = '판별 보류 (코어 경합)';
-                wingNum = '코어 확정 후 판별 가능';
+                coreDisplay = adaptiveLang === 'en'
+                    ? `Type ${coreType} / Type ${secondPlace.type} (tie)`
+                    : `${coreType}번 / ${secondPlace.type}번 (경합)`;
+                wingStr = adaptiveLang === 'en' ? 'pending (core tie)' : '판별 보류 (코어 경합)';
+                wingNum = adaptiveLang === 'en' ? 'available after core is resolved' : '코어 확정 후 판별 가능';
             } else {
                 let phase1TypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
                 const t2 = adaptivePhase1Responses.t2 || 0;
@@ -1537,7 +1970,7 @@
 
                 if (leftScore === rightScore) {
                     wingNum = '없음';
-                    wingStr = `${coreType} (순수유형)`;
+                    wingStr = adaptiveLang === 'en' ? `${coreType} (pure core)` : `${coreType} (순수유형)`;
                 } else if (higherWingScore > 0 && higherWingScore >= corePhase1Score * 0.85) {
                     wingNum = higherWing;
                     wingStr = `${coreType}w${wingNum}`;
@@ -1550,28 +1983,56 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             document.getElementById('res-final').innerText = `${bestInstinctCode} ${wingStr}`;
-            document.getElementById('res-instincts').innerText = `제 1본능: ${bestInstinctName}`;
+            document.getElementById('res-instincts').innerText = `${adaptiveText('instinctsPrefix')}${bestInstinctName}`;
             document.getElementById('res-core').innerText = coreDisplay;
-            document.getElementById('res-wing').innerText = wingNum === '없음' ? '활성화 안됨' : (isTie ? wingNum : `${wingNum}번 날개`);
+            document.getElementById('res-wing').innerText = wingNum === '없음'
+                ? (adaptiveLang === 'en' ? 'Not activated' : '활성화 안됨')
+                : (isTie ? wingNum : (adaptiveLang === 'en' ? `Wing ${wingNum}` : `${wingNum}번 날개`));
+            if (!isTie) {
+                document.getElementById('res-arrows').innerHTML = `
+                    <span class="text-blue-600 font-bold">${adaptiveText('growthDir')}: ${growthDir}${adaptiveLang === 'en' ? '' : '번'}</span><br>
+                    <span class="text-red-500 font-bold">${adaptiveText('stressDir')}: ${stressDir}${adaptiveLang === 'en' ? '' : '번'}</span>
+                `;
+            } else {
+                document.getElementById('res-arrows').innerText = adaptiveText('tieArrows');
+            }
 
             const badge = document.getElementById('confidence-badge');
             if (confidence === '높음') {
                 badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white border border-green-400 shadow-sm';
-                badge.innerText = '신뢰도: 높음';
+                badge.innerText = adaptiveLang === 'en' ? 'Confidence: High' : '신뢰도: 높음';
             } else if (confidence === '보통') {
                 badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white border border-yellow-400 shadow-sm';
-                badge.innerText = '신뢰도: 보통';
+                badge.innerText = adaptiveLang === 'en' ? 'Confidence: Medium' : '신뢰도: 보통';
             } else {
                 badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white border border-red-400 shadow-sm';
-                badge.innerText = '신뢰도: 낮음';
+                badge.innerText = adaptiveLang === 'en' ? 'Confidence: Low' : '신뢰도: 낮음';
                 document.getElementById('cta-consulting').classList.remove('hidden');
             }
 
             let logMsg = '';
             if (isTie) {
-                logMsg = `전체 문항 가중치 병합 결과, <strong>${coreType}번</strong>과 <strong>${secondPlace.type}번</strong>이 완벽한 동점(경합)으로 나타났습니다. 행동과 동기 점수가 팽팽하게 맞서고 있으므로, 전문가의 심층 타이핑 세션을 강력히 권장합니다.`;
+                logMsg = adaptiveLang === 'en'
+                    ? `Your weighted scores produced a complete tie between <strong>Type ${coreType}</strong> and <strong>Type ${secondPlace.type}</strong>. A live typing interview is strongly recommended.`
+                    : `전체 문항 가중치 병합 결과, <strong>${coreType}번</strong>과 <strong>${secondPlace.type}번</strong>이 완벽한 동점(경합)으로 나타났습니다. 행동과 동기 점수가 팽팽하게 맞서고 있으므로, 전문가의 심층 타이핑 세션을 강력히 권장합니다.`;
             } else {
-                logMsg = `전체 문항에 대한 가중치 병합 결과, 귀하의 행동과 동기를 가장 강력하게 설명하는 중심 축은 <strong>${coreType}번 유형</strong>으로 판별되었습니다.<br>2순위 경합 유형은 ${secondPlace.type}번이었으며, 1순위와의 심층 동기 점수 격차는 <strong>${(diffRatio * 100).toFixed(1)}%</strong> 입니다.`;
+                logMsg = adaptiveLang === 'en'
+                    ? `Based on weighted integration of behavior and motivation, your central pattern is <strong>Type ${coreType}</strong>.<br>The runner-up is Type ${secondPlace.type}, with a margin of <strong>${(diffRatio * 100).toFixed(1)}%</strong>.`
+                    : `전체 문항에 대한 가중치 병합 결과, 귀하의 행동과 동기를 가장 강력하게 설명하는 중심 축은 <strong>${coreType}번 유형</strong>으로 판별되었습니다.<br>2순위 경합 유형은 ${secondPlace.type}번이었으며, 1순위와의 심층 동기 점수 격차는 <strong>${(diffRatio * 100).toFixed(1)}%</strong> 입니다.`;
+                if (secondPlace.type === stressDir) {
+                    logMsg += adaptiveLang === 'en'
+                        ? `<br><br><span class="text-red-600 text-sm">Type ${stressDir} as runner-up may reflect your current stress-direction pattern.</span>`
+                        : `<br><br><span class="text-red-600 text-sm">2순위 ${stressDir}번은 현재 스트레스 방향(비통합) 영향일 수 있습니다.</span>`;
+                } else if (secondPlace.type === growthDir) {
+                    logMsg += adaptiveLang === 'en'
+                        ? `<br><br><span class="text-blue-600 text-sm">Type ${growthDir} as runner-up may reflect your current growth-direction pattern.</span>`
+                        : `<br><br><span class="text-blue-600 text-sm">2순위 ${growthDir}번은 현재 성장 방향(통합) 영향일 수 있습니다.</span>`;
+                }
+                if (adjustedSO) {
+                    logMsg += adaptiveLang === 'en'
+                        ? `<br><br><span class="text-[#bfa68a] text-xs">* For Type ${coreType}, a -2.5 correction was applied to Social-instinct scoring to reduce possible over-selection bias on socially weighted items.</span>`
+                        : `<br><br><span class="text-[#bfa68a] text-xs">* ${coreType}번은 사회성 관련 문항에서 과대표집이 발생할 수 있어, 사회적 본능(SO)에 -2.5 보정치가 적용되었습니다.</span>`;
+                }
             }
 
             document.getElementById('res-log').innerHTML = logMsg;
@@ -1664,7 +2125,7 @@
         }
 
         // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => { 
+        document.addEventListener('DOMContentLoaded', async () => { 
             window.addEventListener('scroll', () => {
                 const nav = document.getElementById('navbar');
                 if(window.scrollY > 20) {
@@ -1675,7 +2136,14 @@
                     nav.classList.add('bg-white/80');
                 }
             });
+            const authModal = document.getElementById('auth-modal');
+            if (authModal) {
+                authModal.addEventListener('click', (event) => {
+                    if (event.target === authModal) closeAuthModal();
+                });
+            }
             
+            await initializeSupabase();
             renderSection('home'); 
         });
     </script>
