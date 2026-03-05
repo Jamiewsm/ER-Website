@@ -1767,6 +1767,22 @@
             return value.slice(idx + 1).toLowerCase();
         }
 
+        function buildSafeStorageFileName(originalName) {
+            const raw = String(originalName || 'file');
+            const dotIndex = raw.lastIndexOf('.');
+            const base = dotIndex >= 0 ? raw.slice(0, dotIndex) : raw;
+            const ext = dotIndex >= 0 ? raw.slice(dotIndex + 1).toLowerCase() : '';
+
+            const safeBase = base
+                .normalize('NFKD')
+                .replace(/[^\w.-]+/g, '_')
+                .replace(/_+/g, '_')
+                .replace(/^[_\-.]+|[_\-.]+$/g, '') || 'file';
+
+            const safeExt = ext.replace(/[^a-z0-9]+/g, '');
+            return safeExt ? `${safeBase}.${safeExt}` : safeBase;
+        }
+
         function validateUploadFile(file) {
             if (!file) return { ok: false, reason: '파일이 없습니다.' };
             const ext = getFileExtension(file.name);
@@ -2160,7 +2176,7 @@
                     alert(`${file.name}\n${check.reason}`);
                     continue;
                 }
-                const safeName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                const safeName = `${Date.now()}_${buildSafeStorageFileName(file.name)}`;
                 const storagePath = `${task.id}/${safeName}`;
                 const uploadRes = await supabaseClient.storage.from('coach-task-files').upload(storagePath, file, {
                     upsert: false,
@@ -2217,7 +2233,7 @@
                 return;
             }
 
-            const safeName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+            const safeName = `${Date.now()}_${buildSafeStorageFileName(file.name)}`;
             const storagePath = `${category}/${safeName}`;
             const uploadRes = await supabaseClient.storage.from('coach-materials').upload(storagePath, file, {
                 upsert: false,
