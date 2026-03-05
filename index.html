@@ -345,6 +345,7 @@
             user: null, 
             isCoach: false,
             coachProfile: null,
+            coachCalendarMonth: null,
             programFilter: 'individual',
             latestTestResult: null
         };
@@ -1564,6 +1565,17 @@
                             <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
                             <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
                         </div>
+                        <div class="bg-white rounded-3xl border border-gray-100 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-er-dark">월간 일정 캘린더</h3>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="changeCoachCalendarMonth(-1)" class="w-8 h-8 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"><i class="fas fa-chevron-left text-xs"></i></button>
+                                    <p id="coach-calendar-month-label" class="text-sm font-semibold text-gray-700 min-w-[88px] text-center">-</p>
+                                    <button onclick="changeCoachCalendarMonth(1)" class="w-8 h-8 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"><i class="fas fa-chevron-right text-xs"></i></button>
+                                </div>
+                            </div>
+                            <div id="coach-calendar-grid" class="text-sm text-gray-500">불러오는 중...</div>
+                        </div>
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <div class="bg-white rounded-3xl border border-gray-100 p-6">
                                 <div class="flex items-center justify-between mb-4">
@@ -1679,24 +1691,36 @@
                                 <button onclick="loadCoachSchedules()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
                             </div>
                         </div>
-                        <form onsubmit="submitCoachSchedule(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
-                            <h3 class="text-base font-bold text-er-dark">일정 등록</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input name="title" required maxlength="120" placeholder="일정 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                <select name="schedule_type" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                    <option value="study">스터디</option>
-                                    <option value="training">트레이닝</option>
-                                </select>
-                                <input name="start_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                <input name="end_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                <input name="location" placeholder="장소 / 온라인 링크" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm md:col-span-2">
-                            </div>
-                            <textarea name="notes" rows="2" placeholder="메모" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
-                            <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">일정 저장</button>
-                        </form>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
-                            <h3 class="text-base font-bold text-er-dark mb-4">다가오는 일정</h3>
+                            <div class="flex items-center justify-between gap-3 mb-4">
+                                <h3 class="text-base font-bold text-er-dark">다가오는 일정</h3>
+                                <button onclick="openScheduleModal()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">일정등록</button>
+                            </div>
                             <div id="coach-schedules-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="coach-schedule-modal" class="hidden fixed inset-0 z-[80] bg-black/50 px-4">
+                    <div class="min-h-full flex items-center justify-center">
+                        <div class="w-full max-w-2xl bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-2xl relative">
+                            <button type="button" onclick="closeScheduleModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100" aria-label="닫기">
+                                <i class="fas fa-times text-sm"></i>
+                            </button>
+                            <h3 class="text-base font-bold text-er-dark mb-4">일정 등록</h3>
+                            <form onsubmit="submitCoachSchedule(event)" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input name="title" required maxlength="120" placeholder="일정 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <select name="schedule_type" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                        <option value="study">스터디</option>
+                                        <option value="training">트레이닝</option>
+                                    </select>
+                                    <input name="start_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <input name="end_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <input name="location" placeholder="장소 / 온라인 링크" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm md:col-span-2">
+                                </div>
+                                <textarea name="notes" rows="2" placeholder="메모" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
+                                <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">일정 저장</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1752,6 +1776,69 @@
             if (!sizeBytes || sizeBytes < 1) return '-';
             if (sizeBytes < 1024 * 1024) return `${Math.round(sizeBytes / 1024)}KB`;
             return `${(sizeBytes / (1024 * 1024)).toFixed(1)}MB`;
+        }
+
+        function getCoachCalendarMonthStart() {
+            const now = new Date();
+            if (!state.coachCalendarMonth) {
+                return new Date(now.getFullYear(), now.getMonth(), 1);
+            }
+            const month = new Date(state.coachCalendarMonth);
+            if (Number.isNaN(month.getTime())) return new Date(now.getFullYear(), now.getMonth(), 1);
+            return new Date(month.getFullYear(), month.getMonth(), 1);
+        }
+
+        function changeCoachCalendarMonth(offset) {
+            const month = getCoachCalendarMonthStart();
+            month.setMonth(month.getMonth() + Number(offset || 0));
+            state.coachCalendarMonth = month.toISOString();
+            loadCoachPortalDashboard();
+        }
+
+        function renderCoachCalendar(monthStart, schedules) {
+            const labelEl = document.getElementById('coach-calendar-month-label');
+            const gridEl = document.getElementById('coach-calendar-grid');
+            if (!gridEl) return;
+            if (labelEl) {
+                labelEl.textContent = `${monthStart.getFullYear()}.${String(monthStart.getMonth() + 1).padStart(2, '0')}`;
+            }
+
+            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+            const monthIndex = monthStart.getMonth();
+            const firstWeekday = new Date(monthStart.getFullYear(), monthStart.getMonth(), 1).getDay();
+            const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+            const counts = {};
+
+            (schedules || []).forEach((item) => {
+                const d = new Date(item.start_at);
+                if (Number.isNaN(d.getTime())) return;
+                if (d.getMonth() !== monthIndex || d.getFullYear() !== monthStart.getFullYear()) return;
+                const key = d.getDate();
+                counts[key] = (counts[key] || 0) + 1;
+            });
+
+            let cells = '';
+            for (let i = 0; i < 42; i += 1) {
+                const day = i - firstWeekday + 1;
+                if (day < 1 || day > daysInMonth) {
+                    cells += `<div class="h-16 rounded-xl border border-transparent bg-gray-50/50"></div>`;
+                    continue;
+                }
+                const c = counts[day] || 0;
+                cells += `
+                    <button type="button" onclick="renderSection('coach_schedule')" class="h-16 rounded-xl border border-gray-100 bg-white hover:bg-gray-50 text-left p-2 flex flex-col justify-between">
+                        <span class="text-xs font-semibold text-gray-700">${day}</span>
+                        ${c ? `<span class="text-[10px] px-1.5 py-0.5 rounded-full bg-er-accentLight text-er-dark font-bold self-start">${c}건</span>` : '<span class="text-[10px] text-gray-300">-</span>'}
+                    </button>
+                `;
+            }
+
+            gridEl.innerHTML = `
+                <div class="grid grid-cols-7 gap-2 mb-2">
+                    ${dayNames.map((d) => `<div class="text-center text-xs font-bold text-gray-400">${d}</div>`).join('')}
+                </div>
+                <div class="grid grid-cols-7 gap-2">${cells}</div>
+            `;
         }
 
         const ALLOWED_UPLOAD_EXTENSIONS = new Set([
@@ -1830,14 +1917,24 @@
 
         async function loadCoachPortalDashboard() {
             if (!ensureCoachAccess() || !supabaseClient) return;
+            const monthStart = getCoachCalendarMonthStart();
+            state.coachCalendarMonth = monthStart.toISOString();
+            const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 1);
             const [taskRes, scheduleRes, materialRes] = await Promise.all([
                 supabaseClient.from('coach_tasks').select('id, title, due_at, status').order('created_at', { ascending: false }).limit(5),
                 supabaseClient.from('coach_schedules').select('id, title, start_at, end_at, schedule_type').gte('end_at', new Date().toISOString()).order('start_at', { ascending: true }).limit(5),
                 supabaseClient.from('coach_materials').select('id').limit(1000)
             ]);
+            const { data: calendarSchedules } = await supabaseClient
+                .from('coach_schedules')
+                .select('id, title, start_at, end_at, schedule_type')
+                .gte('start_at', monthStart.toISOString())
+                .lt('start_at', monthEnd.toISOString())
+                .order('start_at', { ascending: true });
             const tasks = taskRes.data || [];
             const schedules = scheduleRes.data || [];
             const materialCount = materialRes.data ? materialRes.data.length : 0;
+            renderCoachCalendar(monthStart, calendarSchedules || []);
 
             const summaryEl = document.getElementById('coach-portal-summary');
             if (summaryEl) {
@@ -2184,6 +2281,18 @@
             }
         }
 
+        function openScheduleModal() {
+            const modal = document.getElementById('coach-schedule-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+        }
+
+        function closeScheduleModal() {
+            const modal = document.getElementById('coach-schedule-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+        }
+
         async function submitCoachTask(event) {
             event.preventDefault();
             if (!ensureCoachAccess() || !supabaseClient) return;
@@ -2378,6 +2487,7 @@
             }
 
             event.target.reset();
+            closeScheduleModal();
             await loadCoachSchedules();
             alert('일정이 등록되었습니다.');
         }
@@ -3462,6 +3572,12 @@
                     if (event.target === authModal) closeAuthModal();
                 });
             }
+            document.addEventListener('click', (event) => {
+                const modal = document.getElementById('coach-schedule-modal');
+                if (modal && !modal.classList.contains('hidden') && event.target === modal) {
+                    closeScheduleModal();
+                }
+            });
             
             await initializeSupabase();
             renderSection('home'); 
