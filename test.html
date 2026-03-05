@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ER Test Sandbox</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #0f172a; }
+    .radio-btn:checked + label { background-color: #4a4540; color: white; border-color: #4a4540; transform: scale(1.05); }
+    .smooth-transition { transition: all 0.3s ease; }
+    .fade-in { animation: fadeIn 0.5s forwards; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-20">
+  <main id="app"></main>
+
+  <script>
+    let adaptivePhase1Responses = {};
+    let adaptiveTopCandidates = [];
+    let adaptivePhase2QuestionsData = [];
+    let adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: null };
+    let adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: null };
+    let adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: null };
+    let adaptiveLang = 'ko';
+
+    const adaptiveArrowLines = {
+      1: { stress: 4, growth: 7 },
+      2: { stress: 8, growth: 4 },
+      3: { stress: 9, growth: 6 },
+      4: { stress: 2, growth: 1 },
+      5: { stress: 7, growth: 8 },
+      6: { stress: 3, growth: 9 },
+      7: { stress: 1, growth: 5 },
+      8: { stress: 5, growth: 2 },
+      9: { stress: 6, growth: 3 }
+    };
+
+    const adaptivePhase1Questions = [
+      { id: 't2', type: 2, q: "새로운 모임에 가면 '사람들이 나를 어떻게 생각할까, 저 사람에게 무엇이 필요할까' 등 관계적인 부분에 자연스럽게 신경이 쓰이는 편이다." },
+      { id: 't5', type: 5, q: "새로운 상황이나 모임에서는 내가 충분한 정보나 예측을 통해 '대비가 되어 있는지'가 중요하며, 상황 파악이 안 된 상태에서는 은근한 불편함을 느낀다." },
+      { id: 't8', type: 8, q: "새로운 모임에 가면 '이 공간의 주도권은 누구에게 있나, 내 자리는 어디인가' 하는 공기(흐름)를 본능적으로 느끼곤 한다." },
+      { id: 'c1', type: 1, q: "가까운 사람들로부터 '스스로에게 기준이 높다'거나 '원칙을 중요시한다'는 이야기를 가끔 듣는 편이다." },
+      { id: 'c2', type: 2, q: "누군가 도움이 필요해 보일 때 먼저 다가가며, 나의 호의가 당연하게 여겨질 때 겉으론 티를 안 내도 속으로 서운할 때가 있다." },
+      { id: 'c3', type: 3, q: "어떤 일을 할 때 과정도 중요하지만, 결국 눈에 보이는 성과나 결과물로 나의 가치를 증명하고 싶어 하는 마음이 꽤 큰 것 같다." },
+      { id: 'c4', type: 4, q: "남들과 똑같아지거나 평범해지는 것을 별로 좋아하지 않으며, 때때로 나만의 감정이나 결핍감에 깊이 빠져들곤 한다." },
+      { id: 'c5', type: 5, q: "에너지가 한정되어 있다고 느껴져서, 사람들과 어울리기보다 혼자만의 조용한 공간에서 충전하는 시간이 반드시 필요하다." },
+      { id: 'c6', type: 6, q: "돌다리도 두드려보고 건너는 편이며, 예측하지 못한 변수나 충분히 대비되지 않은 상황에 맞닥뜨릴 때 은근히 스트레스를 받는다." },
+      { id: 'c7', type: 7, q: "무겁고 우울한 분위기를 견디기 어려워하며, 즐겁고 긍정적인 계획들을 상상하는 것으로 스트레스를 피하려는 경향이 있다." },
+      { id: 'c8', type: 8, q: "불의를 보거나 누군가 나를 부당하게 통제하려 할 때 강하게 반발하며, 차라리 내가 상황을 주도하는 편이 편하다." },
+      { id: 'c9', type: 9, q: "갈등이 생기는 상황을 본능적으로 피하고 싶어 하며, 웬만하면 '좋은 게 좋은 거지' 하고 내 의견을 양보할 때가 많다." },
+      { id: 'i_sp_1', inst: 'sp', q: "어딜 가든 온도, 조명, 식사, 수면 등 나의 신체적 안락함과 환경적 요소가 꽤 중요하게 느껴진다." },
+      { id: 'i_sp_2', inst: 'sp', q: "나의 시간, 에너지, 자원(돈 등)이 불필요하게 낭비되거나 예측 불가능하게 소모되는 것에 예민한 편이다." },
+      { id: 'i_sp_3', inst: 'sp', q: "재정적인 안정과 독립적인 생활 기반을 확보하는 것이 삶에서 우선순위가 높은 편이다." },
+      { id: 'i_sx_1', inst: 'sx', q: "여러 사람과 얕게 어울리는 것보다, 나와 코드가 맞는 단 한 사람과 깊고 강렬하게 교감할 때 에너지를 얻는다." },
+      { id: 'i_sx_2', inst: 'sx', q: "무언가(사람, 취미, 관심사)에 한 번 꽂히면 주변을 잊을 만큼 모든 열정을 쏟아붓는 편이다." },
+      { id: 'i_sx_3', inst: 'sx', q: "표면적이고 일상적인 대화보다는, 서로의 깊은 생각이나 가치관을 온전히 알 수 있는 밀도 높은 대화를 훨씬 선호한다." },
+      { id: 'i_so_1', inst: 'so', q: "내가 속한 조직이나 무리 안에서 '누가 영향력이 있고, 분위기가 어떻게 흘러가는지' 사회적 역학 관계를 본능적으로 살피게 된다." },
+      { id: 'i_so_2', inst: 'so', q: "어떤 그룹에 가든 나의 '명확한 역할과 기여도'가 있어야 편안하며, 무리 안에서의 소속감을 중요하게 생각한다." },
+      { id: 'i_so_3', inst: 'so', q: "나 개인의 안위나 1:1 관계보다, 공동체 전체를 위한 일이나 사회적 흐름에 참여할 때 더 큰 삶의 의미를 느낀다." }
+    ];
+
+    const adaptiveDeepMotivations = {
+      1: [
+        { id: 'd1_1', type: 1, q: "무언가를 할 때 '이것이 최선인가? 더 제대로 해야 하지 않나?'라며 스스로의 행동을 점검하고 기준을 맞추려는 내면의 목소리가 자주 들리는 편이다." },
+        { id: 'd1_2', type: 1, q: "나는 속으로 '이건 이렇게 해야 해'라는 정답을 정해놓고, 나 자신이나 타인이 그 기준에 미치지 못할 때 자주 답답함을 느낀다." }
+      ],
+      2: [
+        { id: 'd2_1', type: 2, q: "내가 누군가에게 꼭 필요한 존재가 됨으로써, 그들이 나를 떠나지 않고 인정해 주기를 바라는 깊은 마음이 있다." },
+        { id: 'd2_2', type: 2, q: "다른 사람의 필요나 기분은 기가 막히게 잘 알면서도, 막상 '내가 진짜 원하는 것'이 무엇인지 물으면 대답하기 어려울 때가 많다." }
+      ],
+      3: [
+        { id: 'd3_1', type: 3, q: "실패하거나 무능력한 사람으로 비춰지는 것이 내게는 견디기 힘든 두려움 중 하나이다." },
+        { id: 'd3_2', type: 3, q: "나는 나의 있는 그대로의 모습보다, 내가 성취한 결과나 유능한 이미지로 사람들에게 인정받고 싶어 하는 욕구가 깊은 곳에 자리잡고 있다." }
+      ],
+      4: [
+        { id: 'd4_1', type: 4, q: "사람들에게 온전히 이해받지 못한다는 묘한 소외감을 종종 느끼며, 나의 슬픔이나 결핍마저도 나만의 특별함이라고 여기는 경향이 있다." },
+        { id: 'd4_2', type: 4, q: "무미건조하고 평범한 일상보다는, 감정이 깊이 요동치고 의미가 담긴 상황에서 비로소 내가 살아있음을 강하게 느끼곤 한다." }
+      ],
+      5: [
+        { id: 'd5_1', type: 5, q: "나는 세상이나 사람들과 직접 부딪히기보다, 한 발짝 떨어져서 적당한 거리를 두고 관찰자 모드로 있을 때 가장 안전하다고 느낀다." },
+        { id: 'd5_2', type: 5, q: "누군가 나에게 갑작스러운 감정적 반응을 요구하거나 내 지적 영역을 침범하면, 무의식적으로 에너지를 차단하고 물러서게 된다." }
+      ],
+      6: [
+        { id: 'd6_1', type: 6, q: "나는 나를 지켜줄 수 있는 확실한 신념이나 든든한 동맹을 찾기 전까지는, 세상이 꽤 위험한 곳이라고 무의식중에 느끼는 것 같다." },
+        { id: 'd6_2', type: 6, q: "권위자나 시스템에 순응하여 안전을 보장받고 싶으면서도, 동시에 그들이 정말 믿을 만한지 끊임없이 의심하고 테스트하려는 모순된 마음이 있다." }
+      ],
+      7: [
+        { id: 'd7_1', type: 7, q: "부정적인 감정이나 복잡하고 불편한 현실에 직면하는 것이 피곤하게 느껴져서, 나도 모르게 분위기를 환기하거나 흥미로운 다른 일들로 주의를 돌리려는 패턴이 있다." },
+        { id: 'd7_2', type: 7, q: "어떤 한 가지에 얽매이거나 제한당하는 것을 꽤 답답해하며, 항상 다양한 가능성과 선택지를 열어두어야 마음이 편하다." }
+      ],
+      8: [
+        { id: 'd8_1', type: 8, q: "나는 다른 사람에게 약점을 잡히거나 통제당하는 것을 본능적으로 거부하며, 차라리 내가 강해져서 상황을 주도하는 쪽을 택한다." },
+        { id: 'd8_2', type: 8, q: "때때로 사람들에게 인정을 갈구하는 것처럼 보일 때도 있지만, 그 본질은 칭찬 자체보다 '내가 영향력 있는 사람임'을 존중받고 싶기 때문이다." }
+      ],
+      9: [
+        { id: 'd9_1', type: 9, q: "나는 나와 타인, 혹은 환경과의 '연결감'이 끊어지는 것을 두려워하며, 내 안의 평화를 유지하기 위해 종종 내 진짜 분노나 욕구를 억누르곤 한다." },
+        { id: 'd9_2', type: 9, q: "중요한 갈등 상황이나 결정을 마주할 때, 직면하는 스트레스를 피하기 위해 덜 중요한 사소한 일들에 몰두하며 에너지를 분산시키는 패턴이 있다." }
+      ]
+    };
+
+    const adaptiveTieBreaker36 = [
+      { id: 'tb_3_6_1', type: 3, q: "내가 유능하게 일을 처리하고 성과를 내는 것은, 궁극적으로 '사람들의 인정과 사랑받을 만한 존재가 되기 위함'에 더 가깝다." },
+      { id: 'tb_3_6_2', type: 6, q: "내가 열심히 일하고 대비하는 것은, 궁극적으로 '예측 불가능한 상황에서 나를 보호하고 안전한 지지 기반을 확보하기 위함'에 더 가깝다." }
+    ];
+    const adaptiveTieBreaker31 = [
+      { id: 'tb_3_1_1', type: 3, q: "내가 목표를 성취하려는 가장 큰 이유는, 결과를 통해 나의 유능함과 가치를 인정받기 위해서인 경우가 많다." },
+      { id: 'tb_3_1_2', type: 1, q: "내가 목표를 끝까지 밀어붙이는 가장 큰 이유는, 올바른 기준에 맞게 바로잡고 완성해야 마음이 편해지기 때문이다." }
+    ];
+    const adaptiveTieBreaker3SX = [
+      { id: 'tb_3_sx_1', type: 3, q: "내가 기어코 목표를 달성하려는 가장 큰 이유는, 그것을 해냈을 때 사람들에게 가치 있는 사람으로 인정받고 나의 유능함을 증명할 수 있기 때문이다." },
+      { id: 'tb_3_sx_2', q: "내가 무언가에 무섭게 몰두하여 끝을 보려는 가장 큰 이유는, 타인의 인정보다는 그 과정에서 느끼는 강렬한 몰입감과 성취해냈다는 내적 쾌감이 더 크기 때문이다." }
+    ];
+
+    const adaptiveQuestionEn = {
+      t2: "In new social settings, I naturally pay attention to relational cues like \"How might people see me?\" or \"What does this person need?\"",
+      t5: "In unfamiliar situations, I feel better when I have enough information and can predict what is happening; when I cannot read the situation, I feel subtly uncomfortable.",
+      t8: "When I enter a space, I instinctively read the power dynamics and where my influence or position might be.",
+      c1: "People close to me often say I hold myself to high standards and care deeply about doing things the right way.",
+      c2: "When someone seems to need help, I tend to step in first; if my care is taken for granted, I may feel quietly hurt.",
+      c3: "Process matters, but I feel most at ease when I can prove my value through visible results or achievement.",
+      c4: "I dislike feeling ordinary, and at times I get deeply absorbed in my own sense of longing or emotional depth.",
+      c5: "My energy drains quickly in prolonged social interaction, so I need solitude to process information and recharge.",
+      c6: "I prefer to prepare thoroughly, and unexpected variables or underprepared situations create noticeable stress for me.",
+      c7: "Heavy or gloomy atmospheres are hard for me to sustain; when things feel stuck, I look for fresh, positive possibilities.",
+      c8: "When I sense unfairness or someone overreaching into my authority, I push back strongly and prefer to take the lead.",
+      c9: "I instinctively avoid conflict and tension, and I often smooth things over rather than push my own agenda.",
+      i_sp_1: "Physical comfort matters to me: temperature, lighting, food, sleep, and the practical environment.",
+      i_sp_2: "I am sensitive to wasted time, energy, or resources, especially when things feel inefficient or unpredictable.",
+      i_sp_3: "Financial stability and a solid independent foundation are high priorities for me.",
+      i_sx_1: "I prefer deep, intense connection with one person over broad, shallow socializing.",
+      i_sx_2: "When I become interested in something or someone, I can go all-in with strong focus and intensity.",
+      i_sx_3: "Rather than surface-level conversation, I prefer deeper, more meaningful conversations that reveal values and inner perspective.",
+      i_so_1: "In groups, I naturally track influence, social dynamics, and how the atmosphere is shifting.",
+      i_so_2: "I feel more at ease when my role and contribution in a group are clear, and belonging matters to me.",
+      i_so_3: "I often find greater meaning in contributing to the wider community than in personal comfort or one-to-one concerns.",
+      d1_1: "I often hear an inner voice that asks, \"Is this the best way? Could this be done more properly?\" and pushes me to improve.",
+      d1_2: "I tend to hold an internal \"right way,\" and I feel frustration when I or others fall short of that standard.",
+      d2_1: "At a deeper level, I want to be seen as needed and valuable through being there for others.",
+      d2_2: "I can read other people's needs well, but it is often harder to name what I truly want.",
+      d3_1: "I sometimes feel pressure that without achievement or recognition, my value might diminish.",
+      d3_2: "The thought of being seen as ineffective or failing creates strong internal stress for me.",
+      d4_1: "I often feel a subtle sense of being misunderstood, and sometimes even my sadness feels like part of what makes me uniquely me.",
+      d4_2: "I feel most alive in moments with emotional depth and meaning rather than in flat, ordinary routines.",
+      d5_1: "I feel safer when I can step back, observe, and understand before engaging directly.",
+      d5_2: "When people demand immediate emotional responses or intrude into my mental space, I tend to withdraw to protect my energy.",
+      d6_1: "I prefer clarity and predictability, and I often detect hidden risks or underlying intentions earlier than others.",
+      d6_2: "I can seek security through trusted structures while also testing whether those structures are truly reliable.",
+      d7_1: "When emotions are heavy or reality feels constricting, I tend to shift toward lighter possibilities and mental reframing.",
+      d7_2: "Being limited to one option feels constricting; I feel more at ease when multiple possibilities remain open.",
+      d8_1: "I instinctively guard against losing control of my life through dependence, weakness, or being overpowered.",
+      d8_2: "At times it may look like I want approval, but at a deeper level I want my impact and personal power to be respected.",
+      d9_1: "To preserve inner peace and connection, I may suppress my real wants or anger without fully noticing it.",
+      d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks.",
+      tb_3_6_1: "When I work hard and perform well, it is primarily about being seen as competent and worthy in other people's eyes.",
+      tb_3_6_2: "When I work hard and prepare thoroughly, it is primarily about staying safe and having a reliable base in unpredictable situations.",
+      tb_3_1_1: "My strongest drive to achieve is often to prove my competence and be recognized for my value.",
+      tb_3_1_2: "My strongest drive to achieve is often to correct, refine, and complete things according to an internal standard.",
+      tb_3_sx_1: "When I push to achieve, the core motivation is often proving my competence and being recognized as valuable.",
+      tb_3_sx_2: "When I push intensely toward a goal, the deeper reward is immersion, intensity, and the internal satisfaction of completion more than external recognition."
+    };
+
+    const adaptiveUi = {
+      ko: {
+        title: "적응형 에니어그램 심층 진단",
+        subtitle: "행동(열매)의 이면에 숨겨진 근원적 동기(뿌리)를 탐색합니다.<br>1차 응답을 분석하여 유력한 후보 유형을 좁히고, <span class=\"font-bold text-[#bfa68a]\">맞춤형 심층 질문</span>을 통해 진짜 나를 찾아갑니다.",
+        step1: "1단계: 기초 성향 및 하위 본능 파악",
+        phase1Title: "1부: 일상적 태도 및 관계 패턴",
+        phase1Desc: "극단적인 상황이 아닌, 편안한 상태에서의 본인 모습을 떠올리며 평가해 주세요.",
+        required: "모든 문항에 빠짐없이 응답해 주십시오.",
+        next: "분석 및 2단계 진입",
+        phase2Title: "1차 알고리즘 분석 완료",
+        phase2Desc: "회원님의 1차 응답을 바탕으로 <strong>유력한 후보 유형들</strong>이 도출되었습니다.<br>이 유형들을 최종적으로 구별하기 위한 심층 동기 질문을 드립니다.",
+        submit: "최종 결과 확인하기",
+        report: "분석 리포트",
+        lowConf: "결과의 <strong>확신도가 '낮음'</strong>으로 측정되었습니다. 여러 유형의 점수가 비슷하게 경합하고 있어 방어기제가 작동했거나 객관화가 덜 되었을 확률이 높습니다.",
+        cta: "전문가 1:1 타이핑 세션 신청하기",
+        restart: "처음부터 다시하기",
+        notAtAll: "전혀 아니다",
+        very: "매우 그렇다",
+        core: "Core Type",
+        wing: "Wing",
+        arrows: "Stress & Growth",
+        instinctsPrefix: "제 1본능: ",
+        tieArrows: "코어 유형 확정 후 확인 가능합니다.",
+        growthDir: "통합(건강) 방향",
+        stressDir: "비통합(스트레스) 방향"
+      },
+      en: {
+        title: "Adaptive Enneagram Typing Assessment",
+        subtitle: "This assessment explores the core motivations beneath your observable behavior.<br>Using your first-round responses, it narrows likely type candidates and applies <span class=\"font-bold text-[#bfa68a]\">targeted follow-up questions</span> for a more precise typing result.",
+        step1: "Step 1: Baseline Pattern & Instinct",
+        phase1Title: "Part 1: Everyday Relational and Behavioral Patterns",
+        phase1Desc: "Please answer based on your usual, settled state rather than unusually stressful situations.",
+        required: "Please answer every question before continuing.",
+        next: "Analyze and Continue to Step 2",
+        phase2Title: "Phase 1 Analysis Complete",
+        phase2Desc: "Based on your first-round responses, we identified <strong>top candidate types</strong>.<br>Next, we use deeper motivation items to differentiate them more accurately.",
+        submit: "View Final Result",
+        report: "Analysis Summary",
+        lowConf: "Your result is currently marked <strong>low confidence</strong>. Scores are tightly clustered, which can happen when multiple patterns are active at the same time.",
+        cta: "Book a Free 1:1 Typing Session",
+        restart: "Start Over",
+        notAtAll: "Not at all",
+        very: "Very true",
+        core: "Core Type",
+        wing: "Wing",
+        arrows: "Stress & Growth",
+        instinctsPrefix: "Primary instinct: ",
+        tieArrows: "Available once core type is clarified.",
+        growthDir: "Growth direction",
+        stressDir: "Stress direction"
+      }
+    };
+
+    function adaptiveText(key) { return adaptiveUi[adaptiveLang][key]; }
+    function adaptiveQuestionText(item) {
+      if (adaptiveLang === 'en' && adaptiveQuestionEn[item.id]) return adaptiveQuestionEn[item.id];
+      return item.q;
+    }
+
+    function setAdaptiveTestLanguage(lang) {
+      adaptiveLang = lang === 'en' ? 'en' : 'ko';
+      renderTestPage();
+      initAdaptiveTest();
+    }
+
+    function renderTestPage() {
+      const isEn = adaptiveLang === 'en';
+      document.getElementById('app').innerHTML = `
+        <div class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
+          <div class="flex justify-end mb-4">
+            <div class="inline-flex rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold">
+              <button type="button" onclick="setAdaptiveTestLanguage('ko')" class="px-3 py-1 rounded-full ${!isEn ? 'bg-[#4a4540] text-white' : 'text-gray-500 hover:text-[#4a4540]'}">한국어</button>
+              <button type="button" onclick="setAdaptiveTestLanguage('en')" class="px-3 py-1 rounded-full ${isEn ? 'bg-[#4a4540] text-white' : 'text-gray-500 hover:text-[#4a4540]'}">English</button>
+            </div>
+          </div>
+
+          <div class="text-center mb-10">
+            <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest shadow-sm">Narrative Interview</span>
+            <h1 class="text-3xl font-extrabold text-gray-900 mt-2">${adaptiveText('title')}</h1>
+            <p class="mt-4 text-gray-600 leading-relaxed text-sm">${adaptiveText('subtitle')}</p>
+          </div>
+
+          <div id="progress-container" class="mb-8">
+            <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
+              <span id="step-label">${adaptiveText('step1')}</span>
+              <span id="step-counter">1 / 2</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-1.5">
+              <div id="progress-bar" class="bg-[#8c8680] h-1.5 rounded-full smooth-transition" style="width: 50%;"></div>
+            </div>
+          </div>
+
+          <form id="phase1-form" class="space-y-10 fade-in">
+            <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center shadow-sm">
+              <p class="font-semibold text-gray-700">${adaptiveText('phase1Title')}</p>
+              <p class="text-sm text-gray-500 mt-1">${adaptiveText('phase1Desc')}</p>
+            </div>
+            <div id="phase1-container" class="space-y-6"></div>
+            <div class="text-center pt-6">
+              <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
+              <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
+                ${adaptiveText('next')}
+              </button>
+            </div>
+          </form>
+
+          <form id="phase2-form" class="space-y-10 hidden fade-in">
+            <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center shadow-sm relative overflow-hidden">
+              <p class="font-bold text-[#4a4540] text-lg">${adaptiveText('phase2Title')}</p>
+              <p class="text-sm text-gray-600 mt-2">${adaptiveText('phase2Desc')}</p>
+            </div>
+            <div id="phase2-container" class="space-y-6"></div>
+            <div class="text-center pt-6">
+              <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
+              <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
+                ${adaptiveText('submit')}
+              </button>
+            </div>
+          </form>
+
+          <div id="result-view" class="hidden fade-in">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+              <div class="bg-[#4a4540] px-8 py-10 text-center text-white relative">
+                <h2 class="text-sm font-medium opacity-80 uppercase tracking-widest mb-3">Your Original Design</h2>
+                <div id="res-final" class="text-5xl font-bold mb-4 tracking-tight text-[#bfa68a]"></div>
+                <p id="res-instincts" class="text-lg font-medium opacity-90"></p>
+                <div id="confidence-badge" class="absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold border border-white/30"></div>
+              </div>
+
+              <div class="p-8 space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('core')}</p>
+                    <p id="res-core" class="text-2xl font-bold text-gray-800"></p>
+                  </div>
+                  <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('wing')}</p>
+                    <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
+                  </div>
+                  <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100 col-span-2">
+                    <p class="text-xs text-gray-400 font-bold uppercase mb-1"><i class="fas fa-arrows-alt-h mr-1"></i>${adaptiveText('arrows')}</p>
+                    <p id="res-arrows" class="text-[15px] font-medium text-gray-700 mt-2 leading-relaxed"></p>
+                  </div>
+                </div>
+
+                <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
+                  <h3 class="font-bold text-[#4a4540] mb-2 text-sm"><i class="fas fa-chart-pie mr-2"></i>${adaptiveText('report')}</h3>
+                  <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
+                </div>
+
+                <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
+                  <p class="text-sm text-red-800 mb-3">${adaptiveText('lowConf')}</p>
+                  <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full transition">${adaptiveText('cta')}</a>
+                </div>
+
+                <div class="text-center pt-6 border-t border-gray-100">
+                  <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">${adaptiveText('restart')}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAdaptiveQuestions(containerId, questions, prefix) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      questions.forEach((item) => {
+        const qText = adaptiveQuestionText(item);
+        const html = `
+          <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
+            <p class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${qText}</p>
+            <div class="flex justify-between items-center sm:px-2">
+              <span class="text-xs text-gray-400 font-medium">${adaptiveText('notAtAll')}</span>
+              <div class="flex space-x-2 sm:space-x-4">
+                ${[1,2,3,4,5].map((val) => `
+                  <div class="relative">
+                    <input type="radio" name="${item.id}" value="${val}" id="${item.id}-${val}" class="peer sr-only radio-btn">
+                    <label for="${item.id}-${val}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer peer-hover:border-[#bfa68a] hover:bg-gray-50 smooth-transition font-semibold text-sm bg-white">${val}</label>
+                  </div>
+                `).join('')}
+              </div>
+              <span class="text-xs text-gray-400 font-medium">${adaptiveText('very')}</span>
+            </div>
+          </div>
+        `;
+        container.innerHTML += html;
+      });
+    }
+
+    function validateAdaptiveForm(questions, prefix, errorMsgId) {
+      let isValid = true;
+      let firstErrorElement = null;
+      questions.forEach((item) => {
+        const block = document.getElementById(`${prefix}-block-${item.id}`);
+        if (!document.querySelector(`input[name="${item.id}"]:checked`)) {
+          isValid = false;
+          if (block) {
+            block.classList.add('border-red-300', 'bg-red-50');
+            if (!firstErrorElement) firstErrorElement = block;
+          }
+        } else if (block) {
+          block.classList.remove('border-red-300', 'bg-red-50');
+        }
+      });
+      const errorMsg = document.getElementById(errorMsgId);
+      if (!isValid) {
+        if (errorMsg) errorMsg.classList.remove('hidden');
+        if (firstErrorElement) firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (errorMsg) {
+        errorMsg.classList.add('hidden');
+      }
+      return isValid;
+    }
+
+    function initAdaptiveTest() {
+      adaptivePhase1Responses = {};
+      adaptiveTopCandidates = [];
+      adaptivePhase2QuestionsData = [];
+      adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: null };
+      adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: null };
+      adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: null };
+      renderAdaptiveQuestions('phase1-container', adaptivePhase1Questions, 'p1');
+    }
+
+    function submitPhase1() {
+      if (!validateAdaptiveForm(adaptivePhase1Questions, 'p1', 'validation-msg-1')) return;
+
+      let centerScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
+
+      adaptivePhase1Questions.forEach((item) => {
+        const selected = document.querySelector(`input[name="${item.id}"]:checked`);
+        const score = parseInt(selected.value, 10);
+        adaptivePhase1Responses[item.id] = score;
+        if (item.id === 't2') { centerScores[2] += score; centerScores[3] += score; centerScores[4] += score; }
+        if (item.id === 't5') { centerScores[5] += score; centerScores[6] += score; centerScores[7] += score; }
+        if (item.id === 't8') { centerScores[8] += score; centerScores[9] += score; centerScores[1] += score; }
+        if (item.id.startsWith('c')) centerScores[item.type] += score * 1.5;
+      });
+
+      const sortedCandidates = Object.keys(centerScores)
+        .map((k) => ({ type: parseInt(k, 10), score: centerScores[k] }))
+        .sort((a, b) => b.score - a.score);
+
+      const topScore = sortedCandidates[0].score;
+      const topType = sortedCandidates[0].type;
+      const adjacentTypes = [topType === 1 ? 9 : topType - 1, topType === 9 ? 1 : topType + 1];
+
+      let candidateTypes = sortedCandidates.filter((c) => c.score >= topScore * 0.70).map((c) => c.type);
+      candidateTypes = [...new Set([...candidateTypes, topType, ...adjacentTypes])];
+      if (candidateTypes.length < 3) {
+        candidateTypes = [...new Set([...candidateTypes, ...sortedCandidates.slice(0, 3).map((c) => c.type)])];
+      }
+
+      adaptiveTopCandidates = sortedCandidates.map((c) => c.type).filter((type) => candidateTypes.includes(type)).slice(0, 5);
+      adaptivePhase2QuestionsData = [];
+      adaptiveTopCandidates.forEach((type) => {
+        if (adaptiveDeepMotivations[type]) adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveDeepMotivations[type]);
+      });
+
+      const score3 = centerScores[3];
+      const score6 = centerScores[6];
+      const top3Types = sortedCandidates.slice(0, 3).map((c) => c.type);
+      const hasBothCandidates36 = adaptiveTopCandidates.includes(3) && adaptiveTopCandidates.includes(6);
+      const margin36 = Math.max(score3, score6) > 0 ? Math.abs(score3 - score6) / Math.max(score3, score6) : 1;
+      const shouldEnable36 = hasBothCandidates36 && ((top3Types.includes(3) && top3Types.includes(6)) || margin36 <= 0.08);
+      if (shouldEnable36) {
+        adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker36);
+        let w = 2.0; if (margin36 <= 0.03) w = 2.5; else if (margin36 <= 0.08) w = 2.25;
+        adaptiveTieBreakerMeta = { enabled: true, weight: w, margin: margin36 };
+      } else {
+        adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: margin36 };
+      }
+
+      const score1 = centerScores[1];
+      const hasBothCandidates31 = adaptiveTopCandidates.includes(3) && adaptiveTopCandidates.includes(1);
+      const margin31 = Math.max(score3, score1) > 0 ? Math.abs(score3 - score1) / Math.max(score3, score1) : 1;
+      const shouldEnable31 = hasBothCandidates31 && ((top3Types.includes(3) && top3Types.includes(1)) || margin31 <= 0.10);
+      if (shouldEnable31) {
+        adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker31);
+        let w = 2.0; if (margin31 <= 0.04) w = 2.5; else if (margin31 <= 0.10) w = 2.25;
+        adaptiveTieBreaker31Meta = { enabled: true, weight: w, margin: margin31 };
+      } else {
+        adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: margin31 };
+      }
+
+      const sxSum = (adaptivePhase1Responses.i_sx_1 || 0) + (adaptivePhase1Responses.i_sx_2 || 0) + (adaptivePhase1Responses.i_sx_3 || 0);
+      const spSum = (adaptivePhase1Responses.i_sp_1 || 0) + (adaptivePhase1Responses.i_sp_2 || 0) + (adaptivePhase1Responses.i_sp_3 || 0);
+      const soSum = (adaptivePhase1Responses.i_so_1 || 0) + (adaptivePhase1Responses.i_so_2 || 0) + (adaptivePhase1Responses.i_so_3 || 0);
+      const sxTopOrNearTop = sxSum >= Math.max(spSum, soSum) - 1;
+      const margin3ToTop = topScore > 0 ? (topScore - score3) / topScore : 1;
+      const shouldEnable3SX = adaptiveTopCandidates.includes(3) && sxTopOrNearTop && (sortedCandidates[0].type === 3 || margin3ToTop <= 0.10);
+      if (shouldEnable3SX) {
+        adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker3SX);
+        let w = 2.0; if (margin3ToTop <= 0.03) w = 2.5; else if (margin3ToTop <= 0.10) w = 2.25;
+        adaptiveTieBreaker3SXMeta = { enabled: true, weight: w, margin: margin3ToTop };
+      } else {
+        adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: margin3ToTop };
+      }
+
+      document.getElementById('phase1-form').classList.add('hidden');
+      document.getElementById('phase2-form').classList.remove('hidden');
+      document.getElementById('progress-bar').style.width = '100%';
+      document.getElementById('step-label').innerText = adaptiveLang === 'en' ? 'Step 2: Motivational Cross-Validation' : '2단계: 동기 교차 검증 (심층 인터뷰)';
+      document.getElementById('step-counter').innerText = '2 / 2';
+
+      renderAdaptiveQuestions('phase2-container', adaptivePhase2QuestionsData, 'p2');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function submitPhase2() {
+      if (!validateAdaptiveForm(adaptivePhase2QuestionsData, 'p2', 'validation-msg-2')) return;
+
+      let finalTypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
+      let tb3sxCore = null;
+      let tb3sxInstinct = null;
+
+      adaptivePhase1Questions.filter((q) => q.id.startsWith('t')).forEach((q) => {
+        const score = adaptivePhase1Responses[q.id];
+        if (q.id === 't2') { finalTypeScores[2] += score; finalTypeScores[3] += score; finalTypeScores[4] += score; }
+        if (q.id === 't5') { finalTypeScores[5] += score; finalTypeScores[6] += score; finalTypeScores[7] += score; }
+        if (q.id === 't8') { finalTypeScores[8] += score; finalTypeScores[9] += score; finalTypeScores[1] += score; }
+      });
+      adaptivePhase1Questions.filter((q) => q.id.startsWith('c')).forEach((q) => {
+        finalTypeScores[q.type] += adaptivePhase1Responses[q.id] * 1.5;
+      });
+
+      adaptivePhase2QuestionsData.forEach((q) => {
+        const val = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value, 10);
+        if (q.id.startsWith('tb_3_6_') && adaptiveTieBreakerMeta.enabled) finalTypeScores[q.type] += val * adaptiveTieBreakerMeta.weight;
+        else if (q.id.startsWith('tb_3_1_') && adaptiveTieBreaker31Meta.enabled) finalTypeScores[q.type] += val * adaptiveTieBreaker31Meta.weight;
+        else if (q.id === 'tb_3_sx_1') {
+          tb3sxCore = val;
+          if (adaptiveTieBreaker3SXMeta.enabled) finalTypeScores[3] += val * adaptiveTieBreaker3SXMeta.weight;
+        } else if (q.id === 'tb_3_sx_2') {
+          tb3sxInstinct = val;
+        } else finalTypeScores[q.type] += val * 2.0;
+      });
+
+      let threeVsSxDampApplied = 0;
+      let threeVsSxBoostApplied = 0;
+      if (adaptiveTieBreaker3SXMeta.enabled && tb3sxCore !== null && tb3sxInstinct !== null) {
+        const delta3sx = tb3sxInstinct - tb3sxCore;
+        if (delta3sx > 0) {
+          const damp = delta3sx * 0.9;
+          finalTypeScores[3] -= damp;
+          threeVsSxDampApplied = damp;
+          threeVsSxBoostApplied = delta3sx * 0.8;
+        }
+      }
+
+      const rankedTypes = Object.keys(finalTypeScores).map((t) => ({ type: parseInt(t, 10), score: finalTypeScores[t] })).sort((a, b) => b.score - a.score);
+      const coreType = rankedTypes[0].type;
+      const secondPlace = rankedTypes[1];
+      const stressDir = adaptiveArrowLines[coreType].stress;
+      const growthDir = adaptiveArrowLines[coreType].growth;
+      const maxScore = rankedTypes[0].score;
+      const secScore = rankedTypes[1].score;
+      const diffRatio = maxScore > 0 ? (maxScore - secScore) / maxScore : 0;
+
+      let confidence = '낮음';
+      if (diffRatio >= 0.20) confidence = '높음';
+      else if (diffRatio >= 0.08) confidence = '보통';
+      const isTie = maxScore === secScore;
+      if (isTie) confidence = '낮음';
+
+      const instSum = { sp: 0, sx: 0, so: 0 };
+      const instNames = adaptiveLang === 'en' ? { sp: 'Self-Preservation', sx: 'One-to-One', so: 'Social' } : { sp: '자기보존', sx: '성적(일대일)', so: '사회적' };
+      adaptivePhase1Questions.filter((q) => q.id.startsWith('i_')).forEach((q) => { instSum[q.inst] += adaptivePhase1Responses[q.id]; });
+      if (threeVsSxBoostApplied > 0) instSum.sx += threeVsSxBoostApplied;
+
+      let adjustedSO = false;
+      if ([3,6,9].includes(coreType)) {
+        instSum.so -= 2.5;
+        adjustedSO = true;
+      }
+
+      const rankedInstincts = Object.keys(instSum).map((k) => ({ code: k, name: instNames[k], score: instSum[k] })).sort((a,b) => b.score - a.score);
+      let bestInstinctCode = rankedInstincts[0].code;
+      let bestInstinctName = rankedInstincts[0].name;
+      if (rankedInstincts[0].score === rankedInstincts[1].score) {
+        bestInstinctCode = `${rankedInstincts[0].code}/${rankedInstincts[1].code}`;
+        bestInstinctName = adaptiveLang === 'en' ? `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (tied for first)` : `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (공동 1위)`;
+      }
+
+      let coreDisplay = adaptiveLang === 'en' ? `Type ${coreType}` : `${coreType}번`;
+      let wingNum = '없음';
+      let wingStr = adaptiveLang === 'en' ? `${coreType} (core-dominant)` : `${coreType} (순수유형)`;
+      if (isTie) {
+        coreDisplay = adaptiveLang === 'en' ? `Type ${coreType} / Type ${secondPlace.type} (tie)` : `${coreType}번 / ${secondPlace.type}번 (경합)`;
+        wingStr = adaptiveLang === 'en' ? 'pending (core tie)' : '판별 보류 (코어 경합)';
+        wingNum = adaptiveLang === 'en' ? 'available after core is resolved' : '코어 확정 후 판별 가능';
+      } else {
+        let phase1TypeScores = { 1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0 };
+        const t2 = adaptivePhase1Responses.t2 || 0;
+        const t5 = adaptivePhase1Responses.t5 || 0;
+        const t8 = adaptivePhase1Responses.t8 || 0;
+        phase1TypeScores[2] += t2; phase1TypeScores[3] += t2; phase1TypeScores[4] += t2;
+        phase1TypeScores[5] += t5; phase1TypeScores[6] += t5; phase1TypeScores[7] += t5;
+        phase1TypeScores[8] += t8; phase1TypeScores[9] += t8; phase1TypeScores[1] += t8;
+        for (let i=1;i<=9;i++) phase1TypeScores[i] += (adaptivePhase1Responses[`c${i}`] || 0) * 1.5;
+
+        const leftW = coreType === 1 ? 9 : coreType - 1;
+        const rightW = coreType === 9 ? 1 : coreType + 1;
+        const leftScore = phase1TypeScores[leftW];
+        const rightScore = phase1TypeScores[rightW];
+        const corePhase1Score = phase1TypeScores[coreType];
+        const higherWing = leftScore >= rightScore ? leftW : rightW;
+        const higherWingScore = Math.max(leftScore, rightScore);
+
+        if (leftScore === rightScore) {
+          wingNum = '없음';
+          wingStr = adaptiveLang === 'en' ? `${coreType} (core-dominant)` : `${coreType} (순수유형)`;
+        } else if (higherWingScore > 0 && higherWingScore >= corePhase1Score * 0.85) {
+          wingNum = higherWing;
+          wingStr = `${coreType}w${wingNum}`;
+        }
+      }
+
+      document.getElementById('phase2-form').classList.add('hidden');
+      document.getElementById('progress-container').classList.add('hidden');
+      document.getElementById('result-view').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      document.getElementById('res-final').innerText = `${bestInstinctCode} ${wingStr}`;
+      document.getElementById('res-instincts').innerText = `${adaptiveText('instinctsPrefix')}${bestInstinctName}`;
+      document.getElementById('res-core').innerText = coreDisplay;
+      document.getElementById('res-wing').innerText = wingNum === '없음' ? (adaptiveLang === 'en' ? 'No clear wing activation' : '활성화 안됨') : (isTie ? wingNum : (adaptiveLang === 'en' ? `Wing ${wingNum}` : `${wingNum}번 날개`));
+      if (!isTie) {
+        document.getElementById('res-arrows').innerHTML = `<span class="text-blue-600 font-bold">${adaptiveText('growthDir')}: ${growthDir}${adaptiveLang === 'en' ? '' : '번'}</span><br><span class="text-red-500 font-bold">${adaptiveText('stressDir')}: ${stressDir}${adaptiveLang === 'en' ? '' : '번'}</span>`;
+      } else {
+        document.getElementById('res-arrows').innerText = adaptiveText('tieArrows');
+      }
+
+      const badge = document.getElementById('confidence-badge');
+      if (confidence === '높음') {
+        badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white border border-green-400 shadow-sm';
+        badge.innerText = adaptiveLang === 'en' ? 'Confidence: High' : '신뢰도: 높음';
+      } else if (confidence === '보통') {
+        badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white border border-yellow-400 shadow-sm';
+        badge.innerText = adaptiveLang === 'en' ? 'Confidence: Medium' : '신뢰도: 보통';
+      } else {
+        badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white border border-red-400 shadow-sm';
+        badge.innerText = adaptiveLang === 'en' ? 'Confidence: Low' : '신뢰도: 낮음';
+        document.getElementById('cta-consulting').classList.remove('hidden');
+      }
+
+      let logMsg = '';
+      if (isTie) {
+        logMsg = adaptiveLang === 'en'
+          ? `Your weighted scores produced a complete tie between <strong>Type ${coreType}</strong> and <strong>Type ${secondPlace.type}</strong>. A live typing interview is strongly recommended for clarification.`
+          : `전체 문항 가중치 병합 결과, <strong>${coreType}번</strong>과 <strong>${secondPlace.type}번</strong>이 완벽한 동점(경합)으로 나타났습니다. 행동과 동기 점수가 팽팽하게 맞서고 있으므로, 전문가의 심층 타이핑 세션을 강력히 권장합니다.`;
+      } else {
+        logMsg = adaptiveLang === 'en'
+          ? `Based on weighted integration of behavior and motivation, your primary pattern is <strong>Type ${coreType}</strong>.<br>The runner-up is Type ${secondPlace.type}, with a score margin of <strong>${(diffRatio * 100).toFixed(1)}%</strong>.`
+          : `전체 문항에 대한 가중치 병합 결과, 귀하의 행동과 동기를 가장 강력하게 설명하는 중심 축은 <strong>${coreType}번 유형</strong>으로 판별되었습니다.<br>2순위 경합 유형은 ${secondPlace.type}번이었으며, 1순위와의 심층 동기 점수 격차는 <strong>${(diffRatio * 100).toFixed(1)}%</strong> 입니다.`;
+
+        if (secondPlace.type === stressDir) {
+          logMsg += adaptiveLang === 'en'
+            ? `<br><br><span class="text-red-600 text-sm">Type ${stressDir} as a runner-up may reflect stress-direction activation right now.</span>`
+            : `<br><br><span class="text-red-600 text-sm">2순위 ${stressDir}번은 현재 스트레스 방향(비통합) 영향일 수 있습니다.</span>`;
+        } else if (secondPlace.type === growthDir) {
+          logMsg += adaptiveLang === 'en'
+            ? `<br><br><span class="text-blue-600 text-sm">Type ${growthDir} as a runner-up may reflect growth-direction development right now.</span>`
+            : `<br><br><span class="text-blue-600 text-sm">2순위 ${growthDir}번은 현재 성장 방향(통합) 영향일 수 있습니다.</span>`;
+        }
+
+        if (adjustedSO) {
+          logMsg += adaptiveLang === 'en'
+            ? `<br><br><span class="text-[#bfa68a] text-xs">* For core Types 3/6/9, a -2.5 correction was applied to Social-instinct scoring to reduce possible over-selection bias on socially weighted items.</span>`
+            : `<br><br><span class="text-[#bfa68a] text-xs">* ${coreType}번은 사회성 관련 문항에서 과대표집이 발생할 수 있어, 사회적 본능(SO)에 -2.5 보정치가 적용되었습니다.</span>`;
+        }
+
+        if (adaptiveTieBreakerMeta.enabled) {
+          const marginPct = ((adaptiveTieBreakerMeta.margin ?? 0) * 100).toFixed(1);
+          logMsg += adaptiveLang === 'en'
+            ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 6 tie-breaker was activated (base margin ${marginPct}%, weight x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`
+            : `<br><br><span class="text-[#4a4540] text-xs">* 3번/6번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct}%, 가중치 x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`;
+        }
+
+        if (adaptiveTieBreaker31Meta.enabled) {
+          const marginPct31 = ((adaptiveTieBreaker31Meta.margin ?? 0) * 100).toFixed(1);
+          logMsg += adaptiveLang === 'en'
+            ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 1 tie-breaker was activated (base margin ${marginPct31}%, weight x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`
+            : `<br><br><span class="text-[#4a4540] text-xs">* 3번/1번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct31}%, 가중치 x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`;
+        }
+
+        if (adaptiveTieBreaker3SXMeta.enabled) {
+          const marginPct3sx = ((adaptiveTieBreaker3SXMeta.margin ?? 0) * 100).toFixed(1);
+          const dampTxt = threeVsSxDampApplied > 0 ? threeVsSxDampApplied.toFixed(2) : '0.00';
+          logMsg += adaptiveLang === 'en'
+            ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs SX tie-breaker was activated (3-to-top margin ${marginPct3sx}%, weight x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, Type 3 damp ${dampTxt}).</span>`
+            : `<br><br><span class="text-[#4a4540] text-xs">* 3번/SX 혼동 보정 타이브레이커가 적용되었습니다 (3번-상위점수 차 ${marginPct3sx}%, 가중치 x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, 3번 감쇠 ${dampTxt}).</span>`;
+        }
+      }
+
+      document.getElementById('res-log').innerHTML = logMsg;
+    }
+
+    renderTestPage();
+    initAdaptiveTest();
+  </script>
+</body>
+</html>
