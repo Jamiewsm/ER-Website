@@ -132,10 +132,11 @@ ALTER TABLE public.coach_task_files ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.coach_materials ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "coaches can view profiles" ON public.coach_profiles;
-CREATE POLICY "coaches can view profiles"
+DROP POLICY IF EXISTS "users can view own profile" ON public.coach_profiles;
+CREATE POLICY "users can view own profile"
 ON public.coach_profiles
 FOR SELECT
-USING (public.is_active_coach(auth.uid()));
+USING (auth.uid() = user_id);
 
 DROP POLICY IF EXISTS "head coach can manage profiles" ON public.coach_profiles;
 CREATE POLICY "head coach can manage profiles"

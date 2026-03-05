@@ -4,6 +4,7 @@
 
 with coach_seed as (
   select * from (values
+    ('campus.12000@gmail.com', '관리자', 'head_coach'::coach_role, true),
     ('restoration.son@gmail.com', '손지영', 'head_coach'::coach_role, true),
     ('coach1@example.com', '김수잔', 'coach'::coach_role, true),
     ('coach2@example.com', '서초윤', 'coach'::coach_role, true),
@@ -39,6 +40,7 @@ do update set
 -- Check which emails were not found in auth.users
 with coach_seed as (
   select * from (values
+    ('campus.12000@gmail.com'),
     ('restoration.son@gmail.com'),
     ('coach1@example.com'),
     ('coach2@example.com'),
