@@ -413,6 +413,8 @@
         let adaptiveTopCandidates = [];
         let adaptivePhase2QuestionsData = [];
         let adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: null };
+        let adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: null };
+        let adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: null };
         let adaptiveLang = 'ko';
         const adaptiveArrowLines = {
             1: { stress: 4, growth: 7 },
@@ -493,6 +495,14 @@
             { id: 'tb_3_6_1', type: 3, q: "내가 유능하게 일을 처리하고 성과를 내는 것은, 궁극적으로 '사람들의 인정과 사랑받을 만한 존재가 되기 위함'에 더 가깝다." },
             { id: 'tb_3_6_2', type: 6, q: "내가 열심히 일하고 대비하는 것은, 궁극적으로 '예측 불가능한 상황에서 나를 보호하고 안전한 지지 기반을 확보하기 위함'에 더 가깝다." }
         ];
+        const adaptiveTieBreaker31 = [
+            { id: 'tb_3_1_1', type: 3, q: "내가 목표를 성취하려는 가장 큰 이유는, 결과를 통해 나의 유능함과 가치를 인정받기 위해서인 경우가 많다." },
+            { id: 'tb_3_1_2', type: 1, q: "내가 목표를 끝까지 밀어붙이는 가장 큰 이유는, 올바른 기준에 맞게 바로잡고 완성해야 마음이 편해지기 때문이다." }
+        ];
+        const adaptiveTieBreaker3SX = [
+            { id: 'tb_3_sx_1', type: 3, q: "내가 기어코 목표를 달성하려는 가장 큰 이유는, 그것을 해냈을 때 사람들에게 가치 있는 사람으로 인정받고 나의 유능함을 증명할 수 있기 때문이다." },
+            { id: 'tb_3_sx_2', q: "내가 무언가에 무섭게 몰두하여 끝을 보려는 가장 큰 이유는, 타인의 인정보다는 그 과정에서 느끼는 강렬한 몰입감과 성취해냈다는 내적 쾌감이 더 크기 때문이다." }
+        ];
 
         const adaptiveQuestionEn = {
             t2: "In new social settings, I naturally pay attention to relational cues like “How might people see me?” or “What does this person need?”",
@@ -535,7 +545,11 @@
             d9_1: "To preserve inner peace and connection, I may suppress my real wants or anger without fully noticing it.",
             d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks.",
             tb_3_6_1: "When I work hard and perform well, it is primarily about being seen as competent and worthy in other people's eyes.",
-            tb_3_6_2: "When I work hard and prepare thoroughly, it is primarily about staying safe and having a reliable base in unpredictable situations."
+            tb_3_6_2: "When I work hard and prepare thoroughly, it is primarily about staying safe and having a reliable base in unpredictable situations.",
+            tb_3_1_1: "My strongest drive to achieve is often to prove my competence and be recognized for my value.",
+            tb_3_1_2: "My strongest drive to achieve is often to correct, refine, and complete things according to an internal standard.",
+            tb_3_sx_1: "When I push to achieve, the core motivation is often proving my competence and being recognized as valuable.",
+            tb_3_sx_2: "When I push intensely toward a goal, the deeper reward is immersion, intensity, and the internal satisfaction of completion more than external recognition."
         };
 
         const adaptiveUi = {
@@ -1811,6 +1825,8 @@
             adaptiveTopCandidates = [];
             adaptivePhase2QuestionsData = [];
             adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: null };
+            adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: null };
+            adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: null };
             renderAdaptiveQuestions('phase1-container', adaptivePhase1Questions, 'p1');
         }
 
@@ -1884,6 +1900,43 @@
                 adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: margin36 };
             }
 
+            // 3/1 혼동 보정: top3 동시 포함 또는 점수 근접(<=10%)일 때 발동
+            const score1 = centerScores[1];
+            const max31 = Math.max(score3, score1);
+            const margin31 = max31 > 0 ? Math.abs(score3 - score1) / max31 : 1;
+            const hasBoth31Top3 = top3Types.includes(3) && top3Types.includes(1);
+            const hasBoth31Candidates = adaptiveTopCandidates.includes(3) && adaptiveTopCandidates.includes(1);
+            const shouldEnable31TieBreaker = hasBoth31Candidates && (hasBoth31Top3 || margin31 <= 0.10);
+            if (shouldEnable31TieBreaker) {
+                adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker31);
+                let tb31Weight = 2.0;
+                if (margin31 <= 0.04) tb31Weight = 2.5;
+                else if (margin31 <= 0.10) tb31Weight = 2.25;
+                adaptiveTieBreaker31Meta = { enabled: true, weight: tb31Weight, margin: margin31 };
+            } else {
+                adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: margin31 };
+            }
+
+            // 3/SX 혼동 보정: 3번 후보 + SX 상위 + 3번 점수가 상위권일 때 발동
+            const sxSum = (adaptivePhase1Responses.i_sx_1 || 0) + (adaptivePhase1Responses.i_sx_2 || 0) + (adaptivePhase1Responses.i_sx_3 || 0);
+            const spSum = (adaptivePhase1Responses.i_sp_1 || 0) + (adaptivePhase1Responses.i_sp_2 || 0) + (adaptivePhase1Responses.i_sp_3 || 0);
+            const soSum = (adaptivePhase1Responses.i_so_1 || 0) + (adaptivePhase1Responses.i_so_2 || 0) + (adaptivePhase1Responses.i_so_3 || 0);
+            const sxTopOrNearTop = sxSum >= Math.max(spSum, soSum) - 1;
+            const margin3ToTop = topScore > 0 ? (topScore - score3) / topScore : 1;
+            const shouldEnable3SXTieBreaker =
+                adaptiveTopCandidates.includes(3) &&
+                sxTopOrNearTop &&
+                (sortedCandidates[0].type === 3 || margin3ToTop <= 0.10);
+            if (shouldEnable3SXTieBreaker) {
+                adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker3SX);
+                let tb3SXWeight = 2.0;
+                if (margin3ToTop <= 0.03) tb3SXWeight = 2.5;
+                else if (margin3ToTop <= 0.10) tb3SXWeight = 2.25;
+                adaptiveTieBreaker3SXMeta = { enabled: true, weight: tb3SXWeight, margin: margin3ToTop };
+            } else {
+                adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: margin3ToTop };
+            }
+
             document.getElementById('phase1-form').classList.add('hidden');
             document.getElementById('phase2-form').classList.remove('hidden');
             document.getElementById('progress-bar').style.width = '100%';
@@ -1900,6 +1953,8 @@
             if (!validateAdaptiveForm(adaptivePhase2QuestionsData, 'p2', 'validation-msg-2')) return;
 
             let finalTypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
+            let tb3sxCore = null;
+            let tb3sxInstinct = null;
 
             adaptivePhase1Questions.filter((q) => q.id.startsWith('t')).forEach((q) => {
                 const score = adaptivePhase1Responses[q.id];
@@ -1916,10 +1971,36 @@
                 const val = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value, 10);
                 if (q.id.startsWith('tb_3_6_') && adaptiveTieBreakerMeta.enabled) {
                     finalTypeScores[q.type] += val * adaptiveTieBreakerMeta.weight;
+                } else if (q.id.startsWith('tb_3_1_') && adaptiveTieBreaker31Meta.enabled) {
+                    finalTypeScores[q.type] += val * adaptiveTieBreaker31Meta.weight;
+                } else if (q.id === 'tb_3_sx_1') {
+                    tb3sxCore = val;
+                    if (adaptiveTieBreaker3SXMeta.enabled) {
+                        finalTypeScores[3] += val * adaptiveTieBreaker3SXMeta.weight;
+                    }
+                } else if (q.id === 'tb_3_sx_2') {
+                    tb3sxInstinct = val;
                 } else {
                     finalTypeScores[q.type] += val * 2.0;
                 }
             });
+
+            // 3 vs SX 보정: 인정보다 몰입/내적쾌감 동기가 높을 때 3번 점수를 미세 감쇠
+            let threeVsSxDampApplied = 0;
+            let threeVsSxBoostApplied = 0;
+            if (
+                adaptiveTieBreaker3SXMeta.enabled &&
+                tb3sxCore !== null &&
+                tb3sxInstinct !== null
+            ) {
+                const delta3sx = tb3sxInstinct - tb3sxCore;
+                if (delta3sx > 0) {
+                    const damp = delta3sx * 0.9; // 과보정 방지를 위한 완만한 감쇠
+                    finalTypeScores[3] -= damp;
+                    threeVsSxDampApplied = damp;
+                    threeVsSxBoostApplied = delta3sx * 0.8; // 본능 산출 시 sx 보정 반영
+                }
+            }
 
             const rankedTypes = Object.keys(finalTypeScores)
                 .map((t) => ({ type: parseInt(t, 10), score: finalTypeScores[t] }))
@@ -1949,6 +2030,10 @@
             adaptivePhase1Questions.filter((q) => q.id.startsWith('i_')).forEach((q) => {
                 instSum[q.inst] += adaptivePhase1Responses[q.id];
             });
+
+            if (threeVsSxBoostApplied > 0) {
+                instSum.sx += threeVsSxBoostApplied;
+            }
 
             let adjustedSO = false;
             if ([3, 6, 9].includes(coreType)) {
@@ -2074,6 +2159,19 @@
                     logMsg += adaptiveLang === 'en'
                         ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 6 tie-breaker was activated (base margin ${marginPct}%, weight x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`
                         : `<br><br><span class="text-[#4a4540] text-xs">* 3번/6번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct}%, 가중치 x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`;
+                }
+                if (adaptiveTieBreaker31Meta.enabled) {
+                    const marginPct31 = ((adaptiveTieBreaker31Meta.margin ?? 0) * 100).toFixed(1);
+                    logMsg += adaptiveLang === 'en'
+                        ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 1 tie-breaker was activated (base margin ${marginPct31}%, weight x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`
+                        : `<br><br><span class="text-[#4a4540] text-xs">* 3번/1번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct31}%, 가중치 x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`;
+                }
+                if (adaptiveTieBreaker3SXMeta.enabled) {
+                    const marginPct3sx = ((adaptiveTieBreaker3SXMeta.margin ?? 0) * 100).toFixed(1);
+                    const dampTxt = threeVsSxDampApplied > 0 ? threeVsSxDampApplied.toFixed(2) : '0.00';
+                    logMsg += adaptiveLang === 'en'
+                        ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs SX tie-breaker was activated (3-to-top margin ${marginPct3sx}%, weight x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, Type 3 damp ${dampTxt}).</span>`
+                        : `<br><br><span class="text-[#4a4540] text-xs">* 3번/SX 혼동 보정 타이브레이커가 적용되었습니다 (3번-상위점수 차 ${marginPct3sx}%, 가중치 x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, 3번 감쇠 ${dampTxt}).</span>`;
                 }
             }
 
