@@ -139,25 +139,25 @@ FOR SELECT
 USING (auth.uid() = user_id);
 
 DROP POLICY IF EXISTS "head coach can manage profiles" ON public.coach_profiles;
-CREATE POLICY "head coach can manage profiles"
+DROP POLICY IF EXISTS "head coach can insert profiles" ON public.coach_profiles;
+DROP POLICY IF EXISTS "head coach can update profiles" ON public.coach_profiles;
+DROP POLICY IF EXISTS "head coach can delete profiles" ON public.coach_profiles;
+
+CREATE POLICY "head coach can insert profiles"
 ON public.coach_profiles
-FOR ALL
-USING (
-  exists (
-    select 1 from public.coach_profiles cp
-    where cp.user_id = auth.uid()
-      and cp.role = 'head_coach'
-      and cp.is_active = true
-  )
-)
-WITH CHECK (
-  exists (
-    select 1 from public.coach_profiles cp
-    where cp.user_id = auth.uid()
-      and cp.role = 'head_coach'
-      and cp.is_active = true
-  )
-);
+FOR INSERT
+WITH CHECK (lower(auth.jwt() ->> 'email') in ('campus.12000@gmail.com', 'restoration.son@gmail.com'));
+
+CREATE POLICY "head coach can update profiles"
+ON public.coach_profiles
+FOR UPDATE
+USING (lower(auth.jwt() ->> 'email') in ('campus.12000@gmail.com', 'restoration.son@gmail.com'))
+WITH CHECK (lower(auth.jwt() ->> 'email') in ('campus.12000@gmail.com', 'restoration.son@gmail.com'));
+
+CREATE POLICY "head coach can delete profiles"
+ON public.coach_profiles
+FOR DELETE
+USING (lower(auth.jwt() ->> 'email') in ('campus.12000@gmail.com', 'restoration.son@gmail.com'));
 
 DROP POLICY IF EXISTS "coaches can read schedules" ON public.coach_schedules;
 CREATE POLICY "coaches can read schedules"
