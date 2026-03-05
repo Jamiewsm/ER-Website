@@ -263,9 +263,10 @@ VALUES (
     'application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation',
     'application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/haansofthwp','application/x-hwp','application/haansofthwpx','application/x-hwpx',
     'text/plain','text/csv','application/zip','application/x-zip-compressed',
     'image/png','image/jpeg','image/webp','image/gif',
-    'video/mp4','video/quicktime','audio/mpeg','audio/wav','audio/x-m4a'
+    'video/mp4','video/quicktime','audio/mpeg','audio/wav','audio/x-m4a','audio/mp4','audio/aac'
   ]::text[]
 )
 ON CONFLICT (id) DO UPDATE SET
@@ -283,9 +284,10 @@ VALUES (
     'application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/vnd.ms-powerpoint','application/vnd.openxmlformats-officedocument.presentationml.presentation',
     'application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/haansofthwp','application/x-hwp','application/haansofthwpx','application/x-hwpx',
     'text/plain','text/csv','application/zip','application/x-zip-compressed',
     'image/png','image/jpeg','image/webp','image/gif',
-    'video/mp4','video/quicktime','audio/mpeg','audio/wav','audio/x-m4a'
+    'video/mp4','video/quicktime','audio/mpeg','audio/wav','audio/x-m4a','audio/mp4','audio/aac'
   ]::text[]
 )
 ON CONFLICT (id) DO UPDATE SET
