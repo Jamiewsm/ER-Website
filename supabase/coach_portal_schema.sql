@@ -260,22 +260,6 @@ DROP POLICY IF EXISTS "head coach can insert profiles" ON public.coach_profiles;
 DROP POLICY IF EXISTS "head coach can update profiles" ON public.coach_profiles;
 DROP POLICY IF EXISTS "head coach can delete profiles" ON public.coach_profiles;
 
-CREATE POLICY "head coach can insert profiles"
-ON public.coach_profiles
-FOR INSERT
-WITH CHECK (lower(auth.jwt() ->> 'email') in ('campus.12000@gmail.com', 'restoration.son@gmail.com'));
-
-CREATE POLICY "head coach can update profiles"
-ON public.coach_profiles
-FOR UPDATE
-USING (lower(auth.jwt() ->> 'email') in ('campus.12000@gmail.com', 'restoration.son@gmail.com'))
-WITH CHECK (lower(auth.jwt() ->> 'email') in ('campus.12000@gmail.com', 'restoration.son@gmail.com'));
-
-CREATE POLICY "head coach can delete profiles"
-ON public.coach_profiles
-FOR DELETE
-USING (lower(auth.jwt() ->> 'email') in ('campus.12000@gmail.com', 'restoration.son@gmail.com'));
-
 revoke all on function public.require_head_coach() from public;
 revoke all on function public.admin_list_coach_candidates() from public;
 revoke all on function public.admin_upsert_coach_profile(uuid, text, coach_role, boolean) from public;
