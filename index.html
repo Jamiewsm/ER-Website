@@ -343,6 +343,8 @@
         const state = {
             currentSection: 'home',
             user: null, 
+            isCoach: false,
+            coachProfile: null,
             programFilter: 'individual',
             latestTestResult: null
         };
@@ -703,6 +705,10 @@
                 case 'types_guide': html = renderTypesGuide(); break; 
                 case 'apply': html = renderApply(payload); break;
                 case 'mypage': html = renderMyPage(); break;
+                case 'coach_portal': html = renderCoachPortal(); break;
+                case 'coach_tasks': html = renderCoachTasks(); break;
+                case 'coach_materials': html = renderCoachMaterials(); break;
+                case 'coach_schedule': html = renderCoachSchedule(); break;
                 case 'thankyou': html = renderThankYou(); break;
                 default: html = renderHome();
             }
@@ -715,6 +721,10 @@
             if(sectionId === 'programs') updateProgramView(state.programFilter);
             if(sectionId === 'test') initAdaptiveTest();
             if(sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 0);
+            if(sectionId === 'coach_portal') setTimeout(() => loadCoachPortalDashboard(), 0);
+            if(sectionId === 'coach_tasks') setTimeout(() => loadCoachTasks(), 0);
+            if(sectionId === 'coach_materials') setTimeout(() => loadCoachMaterials(), 0);
+            if(sectionId === 'coach_schedule') setTimeout(() => loadCoachSchedules(), 0);
         }
 
         function toggleMobileMenu() {
@@ -1489,6 +1499,9 @@
             }
 
             const userEmail = state.user.email || '-';
+            const coachBadge = state.isCoach
+                ? `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-700 border border-green-100"><i class="fas fa-check-circle"></i> 코치 계정</span>`
+                : `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold bg-gray-50 text-gray-600 border border-gray-100">일반 계정</span>`;
             return `
                 <div class="max-w-md mx-auto px-4 py-20">
                     <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
@@ -1500,8 +1513,185 @@
                             <i class="fas fa-user"></i>
                         </div>
                         <p class="text-gray-800 mb-1 text-sm font-semibold">${userEmail}</p>
-                        <p class="text-gray-500 mb-6 text-sm">인증된 계정으로 로그인되어 있습니다.</p>
-                        <button onclick="renderSection('home')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">홈으로</button>
+                        <p class="text-gray-500 mb-3 text-sm">인증된 계정으로 로그인되어 있습니다.</p>
+                        <div class="mb-6">${coachBadge}</div>
+                        <div class="flex flex-col gap-2">
+                            ${state.isCoach ? `<button onclick="renderSection('coach_portal')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">Coach Portal</button>` : ''}
+                            <button onclick="renderSection('home')" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">홈으로</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCoachAccessDenied(message = '코치 계정만 접근할 수 있습니다.') {
+            return `
+                <div class="max-w-xl mx-auto px-4 py-20">
+                    <div class="bg-white p-10 rounded-[2rem] shadow-soft border border-gray-100 text-center">
+                        <div class="w-16 h-16 bg-red-50 rounded-full mx-auto flex items-center justify-center text-red-400 mb-4">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-er-dark mb-2">접근 권한이 없습니다</h3>
+                        <p class="text-sm text-gray-500 mb-6 break-keep">${message}</p>
+                        <button onclick="renderSection('mypage')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">마이페이지로</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCoachPortal() {
+            if (!state.user) return renderCoachAccessDenied('로그인 후 코치 포털을 사용할 수 있습니다.');
+            if (!state.isCoach) return renderCoachAccessDenied();
+            return `
+                <div class="bg-er-base min-h-screen py-10 md:py-14 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-6xl mx-auto space-y-6">
+                        <div class="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-soft">
+                            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div>
+                                    <p class="text-xs tracking-[0.2em] text-er-accent font-bold uppercase">Coach Portal</p>
+                                    <h2 class="text-2xl md:text-3xl font-bold text-er-dark mt-1">코치 전용 대시보드</h2>
+                                    <p class="text-sm text-gray-500 mt-2">${state.coachProfile?.display_name || state.user.email || ''}님, 이번 주 일정을 확인하고 과제를 관리하세요.</p>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <button onclick="renderSection('coach_tasks')" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">과제 관리</button>
+                                    <button onclick="renderSection('coach_materials')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">자료실</button>
+                                    <button onclick="renderSection('coach_schedule')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">주간 일정</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="coach-portal-summary" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
+                            <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
+                            <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="bg-white rounded-3xl border border-gray-100 p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-bold text-er-dark">최근 과제</h3>
+                                    <button onclick="renderSection('coach_tasks')" class="text-xs text-er-accent font-bold">전체 보기</button>
+                                </div>
+                                <div id="coach-portal-tasks" class="space-y-2 text-sm text-gray-500">불러오는 중...</div>
+                            </div>
+                            <div class="bg-white rounded-3xl border border-gray-100 p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-bold text-er-dark">이번 주 일정</h3>
+                                    <button onclick="renderSection('coach_schedule')" class="text-xs text-er-accent font-bold">전체 보기</button>
+                                </div>
+                                <div id="coach-portal-schedules" class="space-y-2 text-sm text-gray-500">불러오는 중...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCoachTasks() {
+            if (!state.user) return renderCoachAccessDenied('로그인 후 과제 관리 기능을 사용할 수 있습니다.');
+            if (!state.isCoach) return renderCoachAccessDenied();
+            return `
+                <div class="bg-white min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-6xl mx-auto space-y-6">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h2 class="text-2xl font-bold text-er-dark">과제 관리</h2>
+                            <div class="flex gap-2">
+                                <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
+                                <button onclick="loadCoachTasks()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
+                            </div>
+                        </div>
+                        <form onsubmit="submitCoachTask(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
+                            <h3 class="text-base font-bold text-er-dark">새 과제 등록</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input name="title" required maxlength="120" placeholder="과제 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                <input name="due_at" type="datetime-local" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                <input name="week_label" placeholder="주차 (예: 2026-W10)" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                <select name="status" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <option value="published">게시</option>
+                                    <option value="draft">임시저장</option>
+                                    <option value="archived">보관</option>
+                                </select>
+                            </div>
+                            <textarea name="description" rows="3" placeholder="과제 설명" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
+                            <input name="files" type="file" multiple class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
+                            <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">과제 저장</button>
+                        </form>
+                        <div class="bg-white border border-gray-100 rounded-3xl p-6">
+                            <h3 class="text-base font-bold text-er-dark mb-4">과제 목록</h3>
+                            <div id="coach-tasks-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCoachMaterials() {
+            if (!state.user) return renderCoachAccessDenied('로그인 후 자료실 기능을 사용할 수 있습니다.');
+            if (!state.isCoach) return renderCoachAccessDenied();
+            return `
+                <div class="bg-white min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-6xl mx-auto space-y-6">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h2 class="text-2xl font-bold text-er-dark">코치 자료실</h2>
+                            <div class="flex gap-2">
+                                <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
+                                <button onclick="loadCoachMaterials()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
+                            </div>
+                        </div>
+                        <form onsubmit="submitCoachMaterial(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
+                            <h3 class="text-base font-bold text-er-dark">자료 업로드</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input name="title" required maxlength="120" placeholder="자료 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                <select name="category" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <option value="general">일반</option>
+                                    <option value="study">스터디</option>
+                                    <option value="training">트레이닝</option>
+                                    <option value="reference">참고자료</option>
+                                </select>
+                            </div>
+                            <textarea name="description" rows="3" placeholder="자료 설명" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
+                            <input name="file" type="file" required class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
+                            <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">자료 업로드</button>
+                        </form>
+                        <div class="bg-white border border-gray-100 rounded-3xl p-6">
+                            <h3 class="text-base font-bold text-er-dark mb-4">자료 목록</h3>
+                            <div id="coach-materials-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCoachSchedule() {
+            if (!state.user) return renderCoachAccessDenied('로그인 후 일정 관리 기능을 사용할 수 있습니다.');
+            if (!state.isCoach) return renderCoachAccessDenied();
+            return `
+                <div class="bg-white min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-6xl mx-auto space-y-6">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h2 class="text-2xl font-bold text-er-dark">주간 일정</h2>
+                            <div class="flex gap-2">
+                                <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
+                                <button onclick="loadCoachSchedules()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
+                            </div>
+                        </div>
+                        <form onsubmit="submitCoachSchedule(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
+                            <h3 class="text-base font-bold text-er-dark">일정 등록</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input name="title" required maxlength="120" placeholder="일정 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                <select name="schedule_type" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <option value="study">스터디</option>
+                                    <option value="training">트레이닝</option>
+                                </select>
+                                <input name="start_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                <input name="end_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                <input name="location" placeholder="장소 / 온라인 링크" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm md:col-span-2">
+                            </div>
+                            <textarea name="notes" rows="2" placeholder="메모" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
+                            <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">일정 저장</button>
+                        </form>
+                        <div class="bg-white border border-gray-100 rounded-3xl p-6">
+                            <h3 class="text-base font-bold text-er-dark mb-4">다가오는 일정</h3>
+                            <div id="coach-schedules-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1510,6 +1700,363 @@
         // --- Helper Functions ---
         function openNotices() { renderSection('notices'); }
         function openNotice(id) { renderSection('notice_detail', { id }); }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#39;');
+        }
+
+        function formatDateTime(value) {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '-';
+            return new Intl.DateTimeFormat('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+
+        function toIsoOrNull(localValue) {
+            if (!localValue) return null;
+            const date = new Date(localValue);
+            return Number.isNaN(date.getTime()) ? null : date.toISOString();
+        }
+
+        function getFileSizeLabel(sizeBytes) {
+            if (!sizeBytes || sizeBytes < 1) return '-';
+            if (sizeBytes < 1024 * 1024) return `${Math.round(sizeBytes / 1024)}KB`;
+            return `${(sizeBytes / (1024 * 1024)).toFixed(1)}MB`;
+        }
+
+        async function loadCoachProfile() {
+            state.isCoach = false;
+            state.coachProfile = null;
+            if (!supabaseClient || !state.user?.id) {
+                updateAuthButtons();
+                return;
+            }
+            const { data, error } = await supabaseClient
+                .from('coach_profiles')
+                .select('user_id, display_name, role, is_active')
+                .eq('user_id', state.user.id)
+                .maybeSingle();
+
+            if (!error && data && data.is_active) {
+                state.isCoach = true;
+                state.coachProfile = data;
+            }
+            updateAuthButtons();
+        }
+
+        function ensureCoachAccess() {
+            if (!state.user) {
+                openAuthModal();
+                return false;
+            }
+            if (!state.isCoach) {
+                renderSection('mypage');
+                return false;
+            }
+            return true;
+        }
+
+        async function loadCoachPortalDashboard() {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const [taskRes, scheduleRes, materialRes] = await Promise.all([
+                supabaseClient.from('coach_tasks').select('id, title, due_at, status').order('created_at', { ascending: false }).limit(5),
+                supabaseClient.from('coach_schedules').select('id, title, start_at, end_at, schedule_type').gte('end_at', new Date().toISOString()).order('start_at', { ascending: true }).limit(5),
+                supabaseClient.from('coach_materials').select('id').limit(1000)
+            ]);
+            const tasks = taskRes.data || [];
+            const schedules = scheduleRes.data || [];
+            const materialCount = materialRes.data ? materialRes.data.length : 0;
+
+            const summaryEl = document.getElementById('coach-portal-summary');
+            if (summaryEl) {
+                summaryEl.innerHTML = `
+                    <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                        <p class="text-xs text-gray-400">최근 과제</p>
+                        <p class="text-3xl font-bold text-er-dark mt-2">${tasks.length}</p>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                        <p class="text-xs text-gray-400">다가오는 일정</p>
+                        <p class="text-3xl font-bold text-er-dark mt-2">${schedules.length}</p>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                        <p class="text-xs text-gray-400">공유 자료 수</p>
+                        <p class="text-3xl font-bold text-er-dark mt-2">${materialCount}</p>
+                    </div>
+                `;
+            }
+
+            const tasksEl = document.getElementById('coach-portal-tasks');
+            if (tasksEl) {
+                tasksEl.innerHTML = tasks.length
+                    ? tasks.map((task) => `
+                        <div class="p-3 border border-gray-100 rounded-xl">
+                            <p class="font-semibold text-gray-800">${escapeHtml(task.title)}</p>
+                            <p class="text-xs text-gray-500 mt-1">마감: ${formatDateTime(task.due_at)} · 상태: ${escapeHtml(task.status)}</p>
+                        </div>
+                    `).join('')
+                    : '<p class="text-sm text-gray-500">등록된 과제가 없습니다.</p>';
+            }
+
+            const schedulesEl = document.getElementById('coach-portal-schedules');
+            if (schedulesEl) {
+                schedulesEl.innerHTML = schedules.length
+                    ? schedules.map((item) => `
+                        <div class="p-3 border border-gray-100 rounded-xl">
+                            <p class="font-semibold text-gray-800">${escapeHtml(item.title)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${formatDateTime(item.start_at)} - ${formatDateTime(item.end_at)} (${escapeHtml(item.schedule_type)})</p>
+                        </div>
+                    `).join('')
+                    : '<p class="text-sm text-gray-500">다가오는 일정이 없습니다.</p>';
+            }
+        }
+
+        async function loadCoachTasks() {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const listEl = document.getElementById('coach-tasks-list');
+            if (listEl) listEl.innerHTML = '불러오는 중...';
+
+            const { data: tasks, error } = await supabaseClient
+                .from('coach_tasks')
+                .select('id, title, description, due_at, week_label, status, created_at, coach_task_files(id)')
+                .order('created_at', { ascending: false })
+                .limit(30);
+
+            if (error) {
+                if (listEl) listEl.innerHTML = `<p class="text-red-500 text-xs">과제 로딩 실패: ${escapeHtml(error.message)}</p>`;
+                return;
+            }
+
+            if (listEl) {
+                listEl.innerHTML = (tasks || []).length
+                    ? tasks.map((task) => `
+                        <div class="border border-gray-100 rounded-2xl p-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <h4 class="font-bold text-gray-900">${escapeHtml(task.title)}</h4>
+                                <span class="text-[11px] px-2 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-600">${escapeHtml(task.status || '-')}</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2 break-keep">${escapeHtml(task.description || '-')}</p>
+                            <p class="text-xs text-gray-400 mt-2">주차: ${escapeHtml(task.week_label || '-')} · 마감: ${formatDateTime(task.due_at)} · 첨부: ${(task.coach_task_files || []).length}개</p>
+                        </div>
+                    `).join('')
+                    : '<p class="text-sm text-gray-500">등록된 과제가 없습니다.</p>';
+            }
+        }
+
+        async function loadCoachMaterials() {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const listEl = document.getElementById('coach-materials-list');
+            if (listEl) listEl.innerHTML = '불러오는 중...';
+
+            const { data, error } = await supabaseClient
+                .from('coach_materials')
+                .select('id, title, category, description, original_name, size_bytes, storage_path, created_at')
+                .order('created_at', { ascending: false })
+                .limit(40);
+
+            if (error) {
+                if (listEl) listEl.innerHTML = `<p class="text-red-500 text-xs">자료 로딩 실패: ${escapeHtml(error.message)}</p>`;
+                return;
+            }
+
+            if (listEl) {
+                listEl.innerHTML = (data || []).length
+                    ? data.map((item) => `
+                        <div class="border border-gray-100 rounded-2xl p-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">${escapeHtml(item.title)}</h4>
+                                    <p class="text-xs text-gray-400 mt-1">${escapeHtml(item.category)} · ${escapeHtml(item.original_name || '')} · ${getFileSizeLabel(item.size_bytes)}</p>
+                                </div>
+                                <button onclick="downloadCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">다운로드</button>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2 break-keep">${escapeHtml(item.description || '-')}</p>
+                        </div>
+                    `).join('')
+                    : '<p class="text-sm text-gray-500">업로드된 자료가 없습니다.</p>';
+            }
+        }
+
+        async function loadCoachSchedules() {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const listEl = document.getElementById('coach-schedules-list');
+            if (listEl) listEl.innerHTML = '불러오는 중...';
+
+            const { data, error } = await supabaseClient
+                .from('coach_schedules')
+                .select('id, title, schedule_type, start_at, end_at, location, notes')
+                .gte('end_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+                .order('start_at', { ascending: true })
+                .limit(60);
+
+            if (error) {
+                if (listEl) listEl.innerHTML = `<p class="text-red-500 text-xs">일정 로딩 실패: ${escapeHtml(error.message)}</p>`;
+                return;
+            }
+
+            if (listEl) {
+                listEl.innerHTML = (data || []).length
+                    ? data.map((item) => `
+                        <div class="border border-gray-100 rounded-2xl p-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <h4 class="font-bold text-gray-900">${escapeHtml(item.title)}</h4>
+                                <span class="text-[11px] px-2 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-600">${escapeHtml(item.schedule_type)}</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">${formatDateTime(item.start_at)} - ${formatDateTime(item.end_at)}</p>
+                            <p class="text-xs text-gray-400 mt-1">${escapeHtml(item.location || '-')}</p>
+                            <p class="text-xs text-gray-400 mt-1 break-keep">${escapeHtml(item.notes || '')}</p>
+                        </div>
+                    `).join('')
+                    : '<p class="text-sm text-gray-500">등록된 일정이 없습니다.</p>';
+            }
+        }
+
+        async function submitCoachTask(event) {
+            event.preventDefault();
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const form = event.target;
+            const formData = new FormData(form);
+            const title = String(formData.get('title') || '').trim();
+            const description = String(formData.get('description') || '').trim();
+            const due_at = toIsoOrNull(String(formData.get('due_at') || '').trim());
+            const week_label = String(formData.get('week_label') || '').trim();
+            const status = String(formData.get('status') || 'published');
+            const files = form.querySelector('input[name="files"]')?.files || [];
+
+            const { data: task, error: taskError } = await supabaseClient
+                .from('coach_tasks')
+                .insert([{ title, description, due_at, week_label, status, created_by: state.user.id }])
+                .select('id')
+                .single();
+
+            if (taskError || !task?.id) {
+                alert(`과제 저장 실패: ${taskError?.message || 'unknown error'}`);
+                return;
+            }
+
+            for (const file of files) {
+                const safeName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                const storagePath = `${task.id}/${safeName}`;
+                const uploadRes = await supabaseClient.storage.from('coach-task-files').upload(storagePath, file, { upsert: false });
+                if (uploadRes.error) {
+                    alert(`파일 업로드 실패(${file.name}): ${uploadRes.error.message}`);
+                    continue;
+                }
+                await supabaseClient.from('coach_task_files').insert([{
+                    task_id: task.id,
+                    storage_path: storagePath,
+                    original_name: file.name,
+                    mime_type: file.type || null,
+                    size_bytes: file.size || null,
+                    uploaded_by: state.user.id
+                }]);
+            }
+
+            form.reset();
+            await loadCoachTasks();
+            alert('과제가 저장되었습니다.');
+        }
+
+        async function submitCoachMaterial(event) {
+            event.preventDefault();
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const form = event.target;
+            const formData = new FormData(form);
+            const title = String(formData.get('title') || '').trim();
+            const description = String(formData.get('description') || '').trim();
+            const category = String(formData.get('category') || 'general');
+            const file = form.querySelector('input[name="file"]')?.files?.[0];
+            if (!file) {
+                alert('업로드할 파일을 선택해 주세요.');
+                return;
+            }
+
+            const safeName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+            const storagePath = `${category}/${safeName}`;
+            const uploadRes = await supabaseClient.storage.from('coach-materials').upload(storagePath, file, { upsert: false });
+            if (uploadRes.error) {
+                alert(`자료 업로드 실패: ${uploadRes.error.message}`);
+                return;
+            }
+
+            const { error } = await supabaseClient.from('coach_materials').insert([{
+                title,
+                description,
+                category,
+                storage_path: storagePath,
+                original_name: file.name,
+                mime_type: file.type || null,
+                size_bytes: file.size || null,
+                uploaded_by: state.user.id
+            }]);
+
+            if (error) {
+                alert(`자료 메타데이터 저장 실패: ${error.message}`);
+                return;
+            }
+
+            form.reset();
+            await loadCoachMaterials();
+            alert('자료가 업로드되었습니다.');
+        }
+
+        async function submitCoachSchedule(event) {
+            event.preventDefault();
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const formData = new FormData(event.target);
+            const title = String(formData.get('title') || '').trim();
+            const schedule_type = String(formData.get('schedule_type') || 'study');
+            const start_at = toIsoOrNull(String(formData.get('start_at') || '').trim());
+            const end_at = toIsoOrNull(String(formData.get('end_at') || '').trim());
+            const location = String(formData.get('location') || '').trim();
+            const notes = String(formData.get('notes') || '').trim();
+
+            if (!start_at || !end_at) {
+                alert('일정 시작/종료 시간을 확인해 주세요.');
+                return;
+            }
+
+            const { error } = await supabaseClient.from('coach_schedules').insert([{
+                title,
+                schedule_type,
+                start_at,
+                end_at,
+                location,
+                notes,
+                created_by: state.user.id
+            }]);
+
+            if (error) {
+                alert(`일정 저장 실패: ${error.message}`);
+                return;
+            }
+
+            event.target.reset();
+            await loadCoachSchedules();
+            alert('일정이 등록되었습니다.');
+        }
+
+        async function downloadCoachMaterial(encodedStoragePath) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const path = decodeURIComponent(String(encodedStoragePath || ''));
+            if (!path) return;
+            const { data, error } = await supabaseClient.storage.from('coach-materials').createSignedUrl(path, 60);
+            if (error || !data?.signedUrl) {
+                alert(`다운로드 링크 생성 실패: ${error?.message || 'unknown error'}`);
+                return;
+            }
+            window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
+        }
 
         function updateProgramView(filterType) {
             state.programFilter = filterType;
@@ -1599,7 +2146,7 @@
         function updateAuthButtons() {
             const desktopBtn = document.getElementById('desktop-auth-btn');
             const mobileBtn = document.getElementById('mobile-auth-btn');
-            const mobileLabel = state.user ? '마이페이지' : '마이페이지 / 로그인';
+            const mobileLabel = !state.user ? '마이페이지 / 로그인' : (state.isCoach ? '코치 포털' : '마이페이지');
             if (mobileBtn) {
                 mobileBtn.innerHTML = `<i class="far fa-user mr-2"></i> ${mobileLabel}`;
             }
@@ -1652,12 +2199,14 @@
             supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
             const sessionRes = await supabaseClient.auth.getSession();
             state.user = sessionRes?.data?.session?.user || null;
+            await loadCoachProfile();
             updateAuthButtons();
 
-            supabaseClient.auth.onAuthStateChange((_event, session) => {
+            supabaseClient.auth.onAuthStateChange(async (_event, session) => {
                 state.user = session?.user || null;
+                await loadCoachProfile();
                 updateAuthButtons();
-                if (state.currentSection === 'mypage') {
+                if (state.currentSection === 'mypage' || state.currentSection.startsWith('coach_')) {
                     renderSection('mypage');
                 }
             });
@@ -1695,8 +2244,9 @@
                 return;
             }
 
+            await loadCoachProfile();
             closeAuthModal();
-            renderSection('mypage');
+            renderSection(state.isCoach ? 'coach_portal' : 'mypage');
         }
 
         async function handleGoogleLogin() {
@@ -1713,12 +2263,16 @@
         async function handleLogout() {
             if (!supabaseClient) {
                 state.user = null;
+                state.isCoach = false;
+                state.coachProfile = null;
                 updateAuthButtons();
                 renderSection('home');
                 return;
             }
             await supabaseClient.auth.signOut();
             state.user = null;
+            state.isCoach = false;
+            state.coachProfile = null;
             updateAuthButtons();
             renderSection('home');
         }
@@ -1816,7 +2370,7 @@
                 return;
             }
             if (state.user) {
-                renderSection('mypage');
+                renderSection(state.isCoach ? 'coach_portal' : 'mypage');
             } else {
                 openAuthModal();
             }
