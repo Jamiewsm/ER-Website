@@ -429,27 +429,30 @@
         };
 
         const adaptivePhase1Questions = [
-            { id: 't2', type: 2, q: "새로운 모임에 가면 '사람들이 나를 어떻게 생각할까, 저 사람에게 무엇이 필요할까' 등 관계적인 부분에 자연스럽게 신경이 쓰이는 편이다." },
-            { id: 't5', type: 5, q: "새로운 상황이나 모임에서는 내가 충분한 정보나 예측을 통해 '대비가 되어 있는지'가 중요하며, 상황 파악이 안 된 상태에서는 은근한 불편함을 느낀다." },
-            { id: 't8', type: 8, q: "새로운 모임에 가면 '이 공간의 주도권은 누구에게 있나, 내 자리는 어디인가' 하는 공기(흐름)를 본능적으로 느끼곤 한다." },
-            { id: 'c1', type: 1, q: "가까운 사람들로부터 '스스로에게 기준이 높다'거나 '원칙을 중요시한다'는 이야기를 가끔 듣는 편이다." },
-            { id: 'c2', type: 2, q: "누군가 도움이 필요해 보일 때 먼저 다가가며, 나의 호의가 당연하게 여겨질 때 겉으론 티를 안 내도 속으로 서운할 때가 있다." },
-            { id: 'c3', type: 3, q: "어떤 일을 할 때 과정도 중요하지만, 결국 눈에 보이는 성과나 결과물로 나의 가치를 증명하고 싶어 하는 마음이 꽤 큰 것 같다." },
-            { id: 'c4', type: 4, q: "남들과 똑같아지거나 평범해지는 것을 별로 좋아하지 않으며, 때때로 나만의 감정이나 결핍감에 깊이 빠져들곤 한다." },
-            { id: 'c5', type: 5, q: "에너지가 한정되어 있다고 느껴져서, 사람들과 어울리기보다 혼자만의 조용한 공간에서 충전하는 시간이 반드시 필요하다." },
-            { id: 'c6', type: 6, q: "돌다리도 두드려보고 건너는 편이며, 예측하지 못한 변수나 충분히 대비되지 않은 상황에 맞닥뜨릴 때 은근히 스트레스를 받는다." },
-            { id: 'c7', type: 7, q: "무겁고 우울한 분위기를 견디기 어려워하며, 즐겁고 긍정적인 계획들을 상상하는 것으로 스트레스를 피하려는 경향이 있다." },
-            { id: 'c8', type: 8, q: "불의를 보거나 누군가 나를 부당하게 통제하려 할 때 강하게 반발하며, 차라리 내가 상황을 주도하는 편이 편하다." },
-            { id: 'c9', type: 9, q: "갈등이 생기는 상황을 본능적으로 피하고 싶어 하며, 웬만하면 '좋은 게 좋은 거지' 하고 내 의견을 양보할 때가 많다." },
-            { id: 'i_sp_1', inst: 'sp', q: "어딜 가든 온도, 조명, 식사, 수면 등 나의 신체적 안락함과 환경적 요소가 꽤 중요하게 느껴진다." },
-            { id: 'i_sp_2', inst: 'sp', q: "나의 시간, 에너지, 자원(돈 등)이 불필요하게 낭비되거나 예측 불가능하게 소모되는 것에 예민한 편이다." },
-            { id: 'i_sp_3', inst: 'sp', q: "재정적인 안정과 독립적인 생활 기반을 확보하는 것이 삶에서 우선순위가 높은 편이다." },
-            { id: 'i_sx_1', inst: 'sx', q: "여러 사람과 얕게 어울리는 것보다, 나와 코드가 맞는 단 한 사람과 깊고 강렬하게 교감할 때 에너지를 얻는다." },
-            { id: 'i_sx_2', inst: 'sx', q: "무언가(사람, 취미, 관심사)에 한 번 꽂히면 주변을 잊을 만큼 모든 열정을 쏟아붓는 편이다." },
-            { id: 'i_sx_3', inst: 'sx', q: "표면적이고 일상적인 대화보다는, 서로의 깊은 생각이나 가치관을 온전히 알 수 있는 밀도 높은 대화를 훨씬 선호한다." },
-            { id: 'i_so_1', inst: 'so', q: "내가 속한 조직이나 무리 안에서 '누가 영향력이 있고, 분위기가 어떻게 흘러가는지' 사회적 역학 관계를 본능적으로 살피게 된다." },
-            { id: 'i_so_2', inst: 'so', q: "어떤 그룹에 가든 나의 '명확한 역할과 기여도'가 있어야 편안하며, 무리 안에서의 소속감을 중요하게 생각한다." },
-            { id: 'i_so_3', inst: 'so', q: "나 개인의 안위나 1:1 관계보다, 공동체 전체를 위한 일이나 사회적 흐름에 참여할 때 더 큰 삶의 의미를 느낀다." }
+            { id: 't2', type: 2, q: "관계가 어색해지거나 평가받는 느낌이 들면, 나는 내 진짜 감정보다 상대가 원하는 모습으로 조율하고, 그 대가로 내 욕구가 뒤로 밀린다." },
+            { id: 't5', type: 5, q: "불확실한 상황에서 나는 먼저 머릿속 시뮬레이션과 정보 정리에 들어가고, 그 대가로 즉각적인 참여와 감정 교류가 줄어든다." },
+            { id: 't8', type: 8, q: "통제당하거나 밀린다고 느끼면 나는 즉시 경계선을 세우고 주도권을 잡으려 하며, 그 대가로 관계 긴장이 커질 때가 있다." },
+            { id: 'c1', type: 1, q: "무언가가 어긋나 보이면 나는 바로잡아야 마음이 놓이고, 그 대가로 나와 타인 모두에게 엄격해질 때가 있다." },
+            { id: 'c2', type: 2, q: "관계가 멀어질까 불안할 때 나는 먼저 돕고 챙기며 연결을 붙잡고, 그 대가로 서운함을 표현하지 못하고 쌓아두곤 한다." },
+            { id: 'c3', type: 3, q: "가치가 흔들릴 때 나는 성과와 이미지 최적화로 신뢰를 확보하려 하고, 그 대가로 감정·피로 신호를 무시할 때가 있다." },
+            { id: 'c4', type: 4, q: "비슷해 보이거나 평범해질 때 나는 나만의 의미와 감정 깊이를 더 찾고, 그 대가로 현재의 만족이 늦어진다." },
+            { id: 'c5', type: 5, q: "요구가 많아지면 나는 거리를 두고 에너지를 보존하며, 그 대가로 관계가 차갑게 느껴질 수 있다." },
+            { id: 'c6', type: 6, q: "위험 신호를 느끼면 나는 확인·재확인과 대안 시나리오를 늘리고, 그 대가로 결정 속도가 느려질 때가 있다." },
+            { id: 'c7', type: 7, q: "답답함이나 불편한 감정이 올라오면 나는 가능한 선택지를 늘리고 분위기를 전환하며, 그 대가로 어려운 감정 직면이 미뤄진다." },
+            { id: 'c8', type: 8, q: "힘의 불균형을 감지하면 나는 정면으로 개입해 판을 주도하려 하고, 그 대가로 타인이 압박을 느끼기도 한다." },
+            { id: 'c9', type: 9, q: "갈등 조짐이 보이면 나는 평화를 위해 내 우선순위를 뒤로 미루고, 그 대가로 중요한 결정을 지연시킬 때가 있다." },
+            { id: 'f_2_3', format: 'ab', leftType: 2, rightType: 3, weight: 2.2, q: "압박 상황에서 더 자동으로 나오는 쪽을 고르세요.", a: "A. 먼저 상대를 챙겨 관계를 붙잡는다.", b: "B. 먼저 성과와 유능함을 증명한다." },
+            { id: 'f_3_6', format: 'ab', leftType: 3, rightType: 6, weight: 2.2, q: "불안할 때 더 자동으로 나오는 쪽을 고르세요.", a: "A. 결과를 내서 인정받는 쪽으로 몰입한다.", b: "B. 리스크를 점검하고 대비를 강화한다." },
+            { id: 'f_6_8', format: 'ab', leftType: 6, rightType: 8, weight: 2.2, q: "위협을 느낄 때 더 자동으로 나오는 쪽을 고르세요.", a: "A. 확인·협의·안전장치부터 만든다.", b: "B. 바로 개입해 힘의 균형을 바꾼다." },
+            { id: 'f_1_9', format: 'ab', leftType: 1, rightType: 9, weight: 2.2, q: "갈등 직전 더 자동으로 나오는 쪽을 고르세요.", a: "A. 기준을 분명히 하고 바로잡는다.", b: "B. 마찰을 줄이고 흐름을 유지한다." },
+            { id: 'f_5_7', format: 'ab', leftType: 5, rightType: 7, weight: 2.2, q: "에너지가 떨어질 때 더 자동으로 나오는 쪽을 고르세요.", a: "A. 물러나 분석하고 최소 반응한다.", b: "B. 전환점과 새로운 자극을 찾는다." },
+            { id: 'f_2_8', format: 'ab', leftType: 2, rightType: 8, weight: 2.2, q: "관계가 흔들릴 때 더 자동으로 나오는 쪽을 고르세요.", a: "A. 더 도우며 연결을 붙잡는다.", b: "B. 선을 긋고 주도권을 회수한다." },
+            { id: 'i_sp_1', inst: 'sp', q: "나는 안전, 재정, 생활 리듬(수면/식사/체력)을 먼저 정비해야 관계와 일이 안정된다고 느낀다." },
+            { id: 'i_sp_2', inst: 'sp', q: "시간·돈·에너지 낭비가 생기면 마음이 크게 흔들리고, 효율 회복이 우선순위가 된다." },
+            { id: 'i_sx_1', inst: 'sx', q: "넓은 네트워킹보다 강한 1:1 몰입 관계나 대상이 있을 때 삶의 에너지가 급격히 올라간다." },
+            { id: 'i_sx_2', inst: 'sx', q: "중요하다고 느낀 대상에는 단기간에 강하게 몰입하고, 강도 높은 연결을 원한다." },
+            { id: 'i_so_1', inst: 'so', q: "집단 안에서 영향력 구조, 역할, 소속의 위치를 빠르게 읽고 그 흐름에 맞춰 움직인다." },
+            { id: 'i_so_2', inst: 'so', q: "개인 만족보다 공동체 기여·평판·역할의 지속성이 더 중요하다고 느낄 때가 많다." }
         ];
 
         const adaptiveDeepMotivations = {
@@ -458,12 +461,12 @@
                 { id: 'd1_2', type: 1, q: "나는 속으로 '이건 이렇게 해야 해'라는 정답을 정해놓고, 나 자신이나 타인이 그 기준에 미치지 못할 때 자주 답답함을 느낀다." }
             ],
             2: [
-                { id: 'd2_1', type: 2, q: "내가 누군가에게 꼭 필요한 존재가 됨으로써, 그들이 나를 떠나지 않고 인정해 주기를 바라는 깊은 마음이 있다." },
-                { id: 'd2_2', type: 2, q: "다른 사람의 필요나 기분은 기가 막히게 잘 알면서도, 막상 '내가 진짜 원하는 것'이 무엇인지 물으면 대답하기 어려울 때가 많다." }
+                { id: 'd2_1', type: 2, q: "관계 불안을 느끼면 나는 먼저 도움·배려를 제공해 유대를 묶으려 하고, 그 대가로 거절·요청을 직접 말하지 못하는 편이다." },
+                { id: 'd2_2', type: 2, q: "상대 필요를 읽는 속도는 빠르지만, 내 필요를 분명히 말하는 순간 미묘한 수치심이나 미안함이 올라온다." }
             ],
             3: [
-                { id: 'd3_1', type: 3, q: "실패하거나 무능력한 사람으로 비춰지는 것이 내게는 견디기 힘든 두려움 중 하나이다." },
-                { id: 'd3_2', type: 3, q: "나는 나의 있는 그대로의 모습보다, 내가 성취한 결과나 유능한 이미지로 사람들에게 인정받고 싶어 하는 욕구가 깊은 곳에 자리잡고 있다." }
+                { id: 'd3_1', type: 3, q: "압박이 오면 나는 즉시 목표·성과 지표 중심으로 재정렬하고, 그 대가로 내 감정 상태나 관계 피로를 뒤로 미루는 편이다." },
+                { id: 'd3_2', type: 3, q: "나는 존재 자체보다 '유능한 결과물'로 평가받을 때 안전하다고 느끼며, 효율과 이미지 관리를 자동으로 최적화한다." }
             ],
             4: [
                 { id: 'd4_1', type: 4, q: "사람들에게 온전히 이해받지 못한다는 묘한 소외감을 종종 느끼며, 나의 슬픔이나 결핍마저도 나만의 특별함이라고 여기는 경향이 있다." },
@@ -474,16 +477,16 @@
                 { id: 'd5_2', type: 5, q: "누군가 나에게 갑작스러운 감정적 반응을 요구하거나 내 지적 영역을 침범하면, 무의식적으로 에너지를 차단하고 물러서게 된다." }
             ],
             6: [
-                { id: 'd6_1', type: 6, q: "나는 나를 지켜줄 수 있는 확실한 신념이나 든든한 동맹을 찾기 전까지는, 세상이 꽤 위험한 곳이라고 무의식중에 느끼는 것 같다." },
-                { id: 'd6_2', type: 6, q: "권위자나 시스템에 순응하여 안전을 보장받고 싶으면서도, 동시에 그들이 정말 믿을 만한지 끊임없이 의심하고 테스트하려는 모순된 마음이 있다." }
+                { id: 'd6_1', type: 6, q: "애매함이 커질수록 나는 위험 시나리오를 늘려 점검하고, 그 대가로 확신 전까지 행동이 늦어질 때가 있다." },
+                { id: 'd6_2', type: 6, q: "권위를 따르며 안전을 얻고 싶지만, 동시에 허점을 찾기 위해 질문·검증을 반복하는 이중 반응이 있다." }
             ],
             7: [
                 { id: 'd7_1', type: 7, q: "부정적인 감정이나 복잡하고 불편한 현실에 직면하는 것이 피곤하게 느껴져서, 나도 모르게 분위기를 환기하거나 흥미로운 다른 일들로 주의를 돌리려는 패턴이 있다." },
                 { id: 'd7_2', type: 7, q: "어떤 한 가지에 얽매이거나 제한당하는 것을 꽤 답답해하며, 항상 다양한 가능성과 선택지를 열어두어야 마음이 편하다." }
             ],
             8: [
-                { id: 'd8_1', type: 8, q: "나는 다른 사람에게 약점을 잡히거나 통제당하는 것을 본능적으로 거부하며, 차라리 내가 강해져서 상황을 주도하는 쪽을 택한다." },
-                { id: 'd8_2', type: 8, q: "때때로 사람들에게 인정을 갈구하는 것처럼 보일 때도 있지만, 그 본질은 칭찬 자체보다 '내가 영향력 있는 사람임'을 존중받고 싶기 때문이다." }
+                { id: 'd8_1', type: 8, q: "힘의 역학에서 밀린다고 느끼면 나는 즉시 압력을 올리거나 판을 재구성하며, 그 대가로 충돌 강도가 높아질 수 있다." },
+                { id: 'd8_2', type: 8, q: "내가 원하는 것은 호감 자체보다 약해 보이지 않는 존중과 영향력이며, 필요시 직접적 표현을 주저하지 않는다." }
             ],
             9: [
                 { id: 'd9_1', type: 9, q: "나는 나와 타인, 혹은 환경과의 '연결감'이 끊어지는 것을 두려워하며, 내 안의 평화를 유지하기 위해 종종 내 진짜 분노나 욕구를 억누르곤 한다." },
@@ -505,43 +508,46 @@
         ];
 
         const adaptiveQuestionEn = {
-            t2: "In new social settings, I naturally pay attention to relational cues like “How might people see me?” or “What does this person need?”",
-            t5: "In unfamiliar situations, I feel better when I have enough information and can predict what is happening; when I cannot read the situation, I feel subtly uncomfortable.",
-            t8: "When I enter a space, I instinctively read the power dynamics and where my influence or position might be.",
-            c1: "People close to me often say I hold myself to high standards and care deeply about doing things the right way.",
-            c2: "When someone seems to need help, I tend to step in first; if my care is taken for granted, I may feel quietly hurt.",
-            c3: "Process matters, but I feel most at ease when I can prove my value through visible results or achievement.",
+            t2: "When I sense relational tension or evaluation, I adapt to the image others want from me, and my own needs get pushed back.",
+            t5: "When uncertainty rises, I move into analysis and mental simulation first, and spontaneous engagement tends to decrease.",
+            t8: "When I feel controlled or cornered, I set firm boundaries and reclaim control, even if tension rises.",
+            c1: "When things feel off, I feel compelled to correct and improve them, and I can become strict with myself and others.",
+            c2: "When relationship security feels shaky, I help first to keep the bond, and my own needs may go unspoken.",
+            c3: "Under pressure, I optimize for outcomes and image, often at the cost of emotional awareness or rest.",
             c4: "I dislike feeling ordinary, and at times I get deeply absorbed in my own sense of longing or emotional depth.",
             c5: "My energy drains quickly in prolonged social interaction, so I need solitude to process information and recharge.",
-            c6: "I prefer to prepare thoroughly, and unexpected variables or underprepared situations create noticeable stress for me.",
+            c6: "When risk appears, I run scenarios and verify repeatedly, and this can slow decision speed.",
             c7: "Heavy or gloomy atmospheres are hard for me to sustain; when things feel stuck, I look for fresh, positive possibilities.",
-            c8: "When I sense unfairness or someone overreaching into my authority, I push back strongly and prefer to take the lead.",
+            c8: "When power imbalance appears, I step in directly to reset the field, even if conflict intensity increases.",
             c9: "I instinctively avoid conflict and tension, and I often smooth things over rather than push my own agenda.",
-            i_sp_1: "Physical comfort matters to me: temperature, lighting, food, sleep, and the practical environment.",
-            i_sp_2: "I am sensitive to wasted time, energy, or resources, especially when things feel inefficient or unpredictable.",
-            i_sp_3: "Financial stability and a solid independent foundation are high priorities for me.",
-            i_sx_1: "I prefer deep, intense connection with one person over broad, shallow socializing.",
-            i_sx_2: "When I become interested in something or someone, I can go all-in with strong focus and intensity.",
-            i_sx_3: "Rather than surface-level conversation, I prefer deeper, more meaningful conversations that reveal values and inner perspective.",
-            i_so_1: "In groups, I naturally track influence, social dynamics, and how the atmosphere is shifting.",
-            i_so_2: "I feel more at ease when my role and contribution in a group are clear, and belonging matters to me.",
-            i_so_3: "I often find greater meaning in contributing to the wider community than in personal comfort or one-to-one concerns.",
+            f_2_3: "In pressure, which comes out first: bond-maintaining support, or performance proof?",
+            f_3_6: "In anxiety, which comes out first: achievement focus, or risk verification?",
+            f_6_8: "Under threat, which comes out first: safety planning, or direct control?",
+            f_1_9: "Near conflict, which comes out first: correction by principle, or preserving harmony?",
+            f_5_7: "When drained, which comes out first: retreat and analyze, or reframe and pivot?",
+            f_2_8: "When relationship stability shakes, which comes out first: give more care, or draw harder boundaries?",
+            i_sp_1: "Stability in body, rhythm, and resources is my first anchor for life and relationships.",
+            i_sp_2: "Waste of time, money, or energy unsettles me quickly, and restoring order becomes priority.",
+            i_sx_1: "A deep one-to-one bond energizes me more than broad social exchange.",
+            i_sx_2: "When something matters, I focus with high intensity and seek strong emotional charge.",
+            i_so_1: "In groups, I quickly read role, status, and influence flow.",
+            i_so_2: "Long-term contribution, social role, and belonging often outweigh private comfort.",
             d1_1: "I often hear an inner voice that asks, “Is this the best way? Could this be done more properly?” and pushes me to improve.",
             d1_2: "I tend to hold an internal “right way,” and I feel frustration when I or others fall short of that standard.",
-            d2_1: "At a deeper level, I want to be seen as needed and valuable through being there for others.",
-            d2_2: "I can read other people’s needs well, but it is often harder to name what I truly want.",
-            d3_1: "I sometimes feel pressure that without achievement or recognition, my value might diminish.",
-            d3_2: "The thought of being seen as ineffective or failing creates strong internal stress for me.",
+            d2_1: "When attachment anxiety appears, I secure connection by helping first, while direct requests from me get delayed.",
+            d2_2: "I read others' needs fast, but stating my own need can trigger subtle shame or guilt.",
+            d3_1: "Under pressure, I immediately switch to outcome and KPI mode, often suppressing emotional signals.",
+            d3_2: "I feel safer being valued through visible competence than through raw presence alone.",
             d4_1: "I often feel a subtle sense of being misunderstood, and sometimes even my sadness feels like part of what makes me uniquely me.",
             d4_2: "I feel most alive in moments with emotional depth and meaning rather than in flat, ordinary routines.",
             d5_1: "I feel safer when I can step back, observe, and understand before engaging directly.",
             d5_2: "When people demand immediate emotional responses or intrude into my mental space, I tend to withdraw to protect my energy.",
-            d6_1: "I prefer clarity and predictability, and I often detect hidden risks or underlying intentions earlier than others.",
-            d6_2: "I can seek security through trusted structures while also testing whether those structures are truly reliable.",
+            d6_1: "As ambiguity increases, I expand risk scenarios and verification, which can delay movement.",
+            d6_2: "I seek security through systems, while simultaneously stress-testing those systems for hidden weaknesses.",
             d7_1: "When emotions are heavy or reality feels constricting, I tend to shift toward lighter possibilities and mental reframing.",
             d7_2: "Being limited to one option feels constricting; I feel more at ease when multiple possibilities remain open.",
-            d8_1: "I instinctively guard against losing control of my life through dependence, weakness, or being overpowered.",
-            d8_2: "At times it may look like I want approval, but at a deeper level I want my impact and personal power to be respected.",
+            d8_1: "When power tilts against me, I escalate pressure and reset control, even at relational cost.",
+            d8_2: "What I seek is less approval and more respect for impact, boundary, and authority.",
             d9_1: "To preserve inner peace and connection, I may suppress my real wants or anger without fully noticing it.",
             d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks.",
             tb_3_6_1: "When I work hard and perform well, it is primarily about being seen as competent and worthy in other people's eyes.",
@@ -576,7 +582,12 @@
                 instinctsPrefix: "제 1본능: ",
                 tieArrows: "코어 유형 확정 후 확인 가능합니다.",
                 growthDir: "통합(건강) 방향",
-                stressDir: "비통합(스트레스) 방향"
+                stressDir: "비통합(스트레스) 방향",
+                forcedA: "A 선택",
+                forcedB: "B 선택",
+                top3Title: "상위 3유형 확률 및 근거",
+                top3Evidence: "근거 문항",
+                top3Percent: "추정 확률"
             },
             en: {
                 title: "Adaptive Enneagram Typing Assessment",
@@ -601,7 +612,12 @@
                 instinctsPrefix: "Primary instinct: ",
                 tieArrows: "Available once core type is clarified.",
                 growthDir: "Growth direction",
-                stressDir: "Stress direction"
+                stressDir: "Stress direction",
+                forcedA: "Choose A",
+                forcedB: "Choose B",
+                top3Title: "Top 3 Type Probabilities & Evidence",
+                top3Evidence: "Evidence items",
+                top3Percent: "Estimated probability"
             }
         };
 
@@ -1151,6 +1167,10 @@
                                 <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
                                     <h3 class="font-bold text-[#4a4540] mb-2 text-sm"><i class="fas fa-chart-pie mr-2"></i>${adaptiveText('report')}</h3>
                                     <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
+                                </div>
+                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                    <h3 class="font-bold text-[#4a4540] mb-3 text-sm"><i class="fas fa-layer-group mr-2"></i>${adaptiveText('top3Title')}</h3>
+                                    <div id="res-top3" class="space-y-3 text-sm text-gray-700"></div>
                                 </div>
 
                                 <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
@@ -1769,25 +1789,47 @@
             container.innerHTML = '';
             questions.forEach((item) => {
                 const qText = adaptiveQuestionText(item);
-                const html = `
-                    <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
-                        <p class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${qText}</p>
-                        <div class="flex justify-between items-center sm:px-2">
-                            <span class="text-xs text-gray-400 font-medium">${adaptiveText('notAtAll')}</span>
-                            <div class="flex space-x-2 sm:space-x-4">
-                                ${[1, 2, 3, 4, 5].map((val) => `
-                                    <div class="relative">
-                                        <input type="radio" name="${item.id}" value="${val}" id="${item.id}-${val}" class="peer sr-only radio-btn">
-                                        <label for="${item.id}-${val}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer peer-hover:border-[#bfa68a] hover:bg-gray-50 smooth-transition font-semibold text-sm bg-white">
-                                            ${val}
-                                        </label>
+                const html = item.format === 'ab'
+                    ? `
+                        <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
+                            <p class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${qText}</p>
+                            <div class="grid gap-3">
+                                <label class="block cursor-pointer">
+                                    <input type="radio" name="${item.id}" value="A" class="sr-only peer">
+                                    <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] smooth-transition">
+                                        <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${adaptiveText('forcedA')}</span>
+                                        <div>${item.a}</div>
                                     </div>
-                                `).join('')}
+                                </label>
+                                <label class="block cursor-pointer">
+                                    <input type="radio" name="${item.id}" value="B" class="sr-only peer">
+                                    <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] smooth-transition">
+                                        <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${adaptiveText('forcedB')}</span>
+                                        <div>${item.b}</div>
+                                    </div>
+                                </label>
                             </div>
-                            <span class="text-xs text-gray-400 font-medium">${adaptiveText('very')}</span>
                         </div>
-                    </div>
-                `;
+                    `
+                    : `
+                        <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
+                            <p class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${qText}</p>
+                            <div class="flex justify-between items-center sm:px-2">
+                                <span class="text-xs text-gray-400 font-medium">${adaptiveText('notAtAll')}</span>
+                                <div class="flex space-x-2 sm:space-x-4">
+                                    ${[1, 2, 3, 4, 5].map((val) => `
+                                        <div class="relative">
+                                            <input type="radio" name="${item.id}" value="${val}" id="${item.id}-${val}" class="peer sr-only radio-btn">
+                                            <label for="${item.id}-${val}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer peer-hover:border-[#bfa68a] hover:bg-gray-50 smooth-transition font-semibold text-sm bg-white">
+                                                ${val}
+                                            </label>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <span class="text-xs text-gray-400 font-medium">${adaptiveText('very')}</span>
+                            </div>
+                        </div>
+                    `;
                 container.innerHTML += html;
             });
         }
@@ -1837,8 +1879,17 @@
 
             adaptivePhase1Questions.forEach((item) => {
                 const selected = document.querySelector(`input[name="${item.id}"]:checked`);
-                const score = parseInt(selected.value, 10);
-                adaptivePhase1Responses[item.id] = score;
+                if (!selected) return;
+                const rawValue = selected.value;
+                adaptivePhase1Responses[item.id] = rawValue;
+
+                if (item.format === 'ab') {
+                    const chosenType = rawValue === 'A' ? item.leftType : item.rightType;
+                    centerScores[chosenType] += item.weight || 2.0;
+                    return;
+                }
+
+                const score = parseInt(rawValue, 10);
 
                 if (item.id === 't2') { centerScores[2] += score; centerScores[3] += score; centerScores[4] += score; }
                 if (item.id === 't5') { centerScores[5] += score; centerScores[6] += score; centerScores[7] += score; }
@@ -1918,9 +1969,14 @@
             }
 
             // 3/SX 혼동 보정: 3번 후보 + SX 상위 + 3번 점수가 상위권일 때 발동
-            const sxSum = (adaptivePhase1Responses.i_sx_1 || 0) + (adaptivePhase1Responses.i_sx_2 || 0) + (adaptivePhase1Responses.i_sx_3 || 0);
-            const spSum = (adaptivePhase1Responses.i_sp_1 || 0) + (adaptivePhase1Responses.i_sp_2 || 0) + (adaptivePhase1Responses.i_sp_3 || 0);
-            const soSum = (adaptivePhase1Responses.i_so_1 || 0) + (adaptivePhase1Responses.i_so_2 || 0) + (adaptivePhase1Responses.i_so_3 || 0);
+            const instinctSums = { sp: 0, sx: 0, so: 0 };
+            adaptivePhase1Questions.filter((q) => q.inst).forEach((q) => {
+                const score = parseInt(adaptivePhase1Responses[q.id] || '0', 10);
+                instinctSums[q.inst] += score;
+            });
+            const sxSum = instinctSums.sx;
+            const spSum = instinctSums.sp;
+            const soSum = instinctSums.so;
             const sxTopOrNearTop = sxSum >= Math.max(spSum, soSum) - 1;
             const margin3ToTop = topScore > 0 ? (topScore - score3) / topScore : 1;
             const shouldEnable3SXTieBreaker =
@@ -1955,34 +2011,70 @@
             let finalTypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
             let tb3sxCore = null;
             let tb3sxInstinct = null;
-
-            adaptivePhase1Questions.filter((q) => q.id.startsWith('t')).forEach((q) => {
-                const score = adaptivePhase1Responses[q.id];
-                if (q.id === 't2') { finalTypeScores[2] += score; finalTypeScores[3] += score; finalTypeScores[4] += score; }
-                if (q.id === 't5') { finalTypeScores[5] += score; finalTypeScores[6] += score; finalTypeScores[7] += score; }
-                if (q.id === 't8') { finalTypeScores[8] += score; finalTypeScores[9] += score; finalTypeScores[1] += score; }
+            const typeEvidence = { 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[] };
+            const questionLookup = {};
+            [...adaptivePhase1Questions, ...adaptivePhase2QuestionsData].forEach((q) => {
+                questionLookup[q.id] = adaptiveQuestionText(q);
             });
+            const addTypeScore = (type, points, qid, customText = null) => {
+                finalTypeScores[type] += points;
+                typeEvidence[type].push({
+                    id: qid,
+                    points,
+                    text: customText || questionLookup[qid] || qid
+                });
+            };
 
-            adaptivePhase1Questions.filter((q) => q.id.startsWith('c')).forEach((q) => {
-                finalTypeScores[q.type] += adaptivePhase1Responses[q.id] * 1.5;
+            adaptivePhase1Questions.forEach((q) => {
+                if (q.format === 'ab') {
+                    const choice = adaptivePhase1Responses[q.id];
+                    const chosenType = choice === 'A' ? q.leftType : q.rightType;
+                    const label = choice === 'A' ? q.a : q.b;
+                    addTypeScore(chosenType, q.weight || 2.0, q.id, label);
+                    return;
+                }
+
+                const score = parseInt(adaptivePhase1Responses[q.id] || '0', 10);
+                if (q.id === 't2') {
+                    addTypeScore(2, score, q.id);
+                    addTypeScore(3, score, q.id);
+                    addTypeScore(4, score, q.id);
+                }
+                if (q.id === 't5') {
+                    addTypeScore(5, score, q.id);
+                    addTypeScore(6, score, q.id);
+                    addTypeScore(7, score, q.id);
+                }
+                if (q.id === 't8') {
+                    addTypeScore(8, score, q.id);
+                    addTypeScore(9, score, q.id);
+                    addTypeScore(1, score, q.id);
+                }
+                if (q.id.startsWith('c')) {
+                    addTypeScore(q.type, score * 1.5, q.id);
+                }
             });
 
             adaptivePhase2QuestionsData.forEach((q) => {
                 const val = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value, 10);
-                if (q.id.startsWith('tb_3_6_') && adaptiveTieBreakerMeta.enabled) {
-                    finalTypeScores[q.type] += val * adaptiveTieBreakerMeta.weight;
-                } else if (q.id.startsWith('tb_3_1_') && adaptiveTieBreaker31Meta.enabled) {
-                    finalTypeScores[q.type] += val * adaptiveTieBreaker31Meta.weight;
-                } else if (q.id === 'tb_3_sx_1') {
-                    tb3sxCore = val;
-                    if (adaptiveTieBreaker3SXMeta.enabled) {
-                        finalTypeScores[3] += val * adaptiveTieBreaker3SXMeta.weight;
-                    }
-                } else if (q.id === 'tb_3_sx_2') {
+                if (q.id === 'tb_3_sx_2') {
                     tb3sxInstinct = val;
-                } else {
-                    finalTypeScores[q.type] += val * 2.0;
+                    return;
                 }
+
+                let weight = q.weight || 2.0;
+                if (q.id.startsWith('tb_3_6_') && adaptiveTieBreakerMeta.enabled) {
+                    weight = adaptiveTieBreakerMeta.weight;
+                } else if (q.id.startsWith('tb_3_1_') && adaptiveTieBreaker31Meta.enabled) {
+                    weight = adaptiveTieBreaker31Meta.weight;
+                } else if (q.id === 'tb_3_sx_1' && adaptiveTieBreaker3SXMeta.enabled) {
+                    weight = adaptiveTieBreaker3SXMeta.weight;
+                    tb3sxCore = val;
+                } else if (q.id.startsWith('tb_')) {
+                    return;
+                }
+
+                addTypeScore(q.type, val * weight, q.id);
             });
 
             // 3 vs SX 보정: 인정보다 몰입/내적쾌감 동기가 높을 때 3번 점수를 미세 감쇠
@@ -2027,8 +2119,8 @@
                 ? { sp: 'Self-Preservation', sx: 'One-to-One', so: 'Social' }
                 : { sp: '자기보존', sx: '성적(일대일)', so: '사회적' };
 
-            adaptivePhase1Questions.filter((q) => q.id.startsWith('i_')).forEach((q) => {
-                instSum[q.inst] += adaptivePhase1Responses[q.id];
+            adaptivePhase1Questions.filter((q) => q.inst).forEach((q) => {
+                instSum[q.inst] += parseInt(adaptivePhase1Responses[q.id] || '0', 10);
             });
 
             if (threeVsSxBoostApplied > 0) {
@@ -2067,16 +2159,21 @@
                 wingNum = adaptiveLang === 'en' ? 'available after core is resolved' : '코어 확정 후 판별 가능';
             } else {
                 let phase1TypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
-                const t2 = adaptivePhase1Responses.t2 || 0;
-                const t5 = adaptivePhase1Responses.t5 || 0;
-                const t8 = adaptivePhase1Responses.t8 || 0;
+                const t2 = parseInt(adaptivePhase1Responses.t2 || '0', 10);
+                const t5 = parseInt(adaptivePhase1Responses.t5 || '0', 10);
+                const t8 = parseInt(adaptivePhase1Responses.t8 || '0', 10);
 
                 phase1TypeScores[2] += t2; phase1TypeScores[3] += t2; phase1TypeScores[4] += t2;
                 phase1TypeScores[5] += t5; phase1TypeScores[6] += t5; phase1TypeScores[7] += t5;
                 phase1TypeScores[8] += t8; phase1TypeScores[9] += t8; phase1TypeScores[1] += t8;
 
                 for (let i = 1; i <= 9; i++) {
-                    phase1TypeScores[i] += (adaptivePhase1Responses[`c${i}`] || 0) * 1.5;
+                    phase1TypeScores[i] += parseInt(adaptivePhase1Responses[`c${i}`] || '0', 10) * 1.5;
+                }
+                adaptivePhase1Questions.filter((q) => q.format === 'ab').forEach((q) => {
+                    const choice = adaptivePhase1Responses[q.id];
+                    const chosenType = choice === 'A' ? q.leftType : q.rightType;
+                    phase1TypeScores[chosenType] += (q.weight || 2.0);
                 }
 
                 const leftW = coreType === 1 ? 9 : coreType - 1;
@@ -2101,6 +2198,7 @@
             document.getElementById('phase2-form').classList.add('hidden');
             document.getElementById('progress-container').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('cta-consulting').classList.add('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             document.getElementById('res-final').innerText = `${bestInstinctCode} ${wingStr}`;
@@ -2117,6 +2215,29 @@
             } else {
                 document.getElementById('res-arrows').innerText = adaptiveText('tieArrows');
             }
+
+            const top3 = rankedTypes.slice(0, 3);
+            const top3Total = top3.reduce((sum, item) => sum + item.score, 0);
+            const top3Html = top3.map((item, idx) => {
+                const prob = top3Total > 0 ? ((item.score / top3Total) * 100).toFixed(1) : '0.0';
+                const evidences = typeEvidence[item.type]
+                    .sort((a, b) => b.points - a.points)
+                    .slice(0, 3)
+                    .map((ev) => `<li class="text-xs text-gray-600 leading-relaxed">• ${ev.text}</li>`)
+                    .join('');
+                return `
+                    <div class="rounded-xl border border-gray-200 bg-white p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="font-semibold text-gray-800">${idx + 1}. ${adaptiveLang === 'en' ? `Type ${item.type}` : `${item.type}번`}</p>
+                            <p class="text-xs font-bold text-er-dark">${adaptiveText('top3Percent')}: ${prob}%</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-1">${adaptiveText('top3Evidence')}</p>
+                        <ul class="space-y-1">${evidences}</ul>
+                    </div>
+                `;
+            }).join('');
+            const top3Container = document.getElementById('res-top3');
+            if (top3Container) top3Container.innerHTML = top3Html;
 
             const badge = document.getElementById('confidence-badge');
             if (confidence === '높음') {
