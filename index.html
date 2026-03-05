@@ -1769,14 +1769,79 @@
             }).format(date);
         }
 
+        function getDateKeyInZone(value, timeZone) {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '';
+            return new Intl.DateTimeFormat('en-CA', {
+                timeZone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).format(date);
+        }
+
+        function formatDateLabelInZone(value, timeZone, locale = 'ko-KR') {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '-';
+            return new Intl.DateTimeFormat(locale, {
+                timeZone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                weekday: 'short'
+            }).format(date);
+        }
+
+        function formatTimeLabelInZone(value, timeZone, locale = 'ko-KR') {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '-';
+            return new Intl.DateTimeFormat(locale, {
+                timeZone,
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            }).format(date);
+        }
+
+        function getKoreanTimePartsInZone(value, timeZone) {
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return null;
+            const parts = new Intl.DateTimeFormat('ko-KR', {
+                timeZone,
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            }).formatToParts(date);
+            const dayPeriod = parts.find((p) => p.type === 'dayPeriod')?.value || '';
+            const hour = parts.find((p) => p.type === 'hour')?.value || '';
+            const minute = parts.find((p) => p.type === 'minute')?.value || '';
+            return { dayPeriod, hour, minute };
+        }
+
+        function formatZoneRange(startAt, endAt, zoneName, timeZone) {
+            const startKey = getDateKeyInZone(startAt, timeZone);
+            const endKey = getDateKeyInZone(endAt, timeZone);
+            const startDate = formatDateLabelInZone(startAt, timeZone, 'ko-KR');
+            const endDate = formatDateLabelInZone(endAt, timeZone, 'ko-KR');
+            const startParts = getKoreanTimePartsInZone(startAt, timeZone);
+            const endParts = getKoreanTimePartsInZone(endAt, timeZone);
+            if (!startParts || !endParts) return `${zoneName}: -`;
+
+            const startFullTime = `${startParts.dayPeriod} ${startParts.hour}:${startParts.minute}`;
+            const endFullTime = `${endParts.dayPeriod} ${endParts.hour}:${endParts.minute}`;
+            const endShortTime = `${endParts.hour}:${endParts.minute}`;
+
+            if (startKey && startKey === endKey) {
+                const endTime = startParts.dayPeriod === endParts.dayPeriod ? endShortTime : endFullTime;
+                return `${zoneName}: ${startDate} ${startFullTime} - ${endTime}`;
+            }
+            return `${zoneName}: ${startDate} ${startFullTime} - ${endDate} ${endFullTime}`;
+        }
+
         function formatScheduleDualRange(startAt, endAt) {
-            const krStart = formatDateTimeInZone(startAt, 'Asia/Seoul', 'ko-KR');
-            const krEnd = formatDateTimeInZone(endAt, 'Asia/Seoul', 'ko-KR');
-            const ctStart = formatDateTimeInZone(startAt, 'America/Chicago', 'en-US');
-            const ctEnd = formatDateTimeInZone(endAt, 'America/Chicago', 'en-US');
             return {
-                kr: `한국(KST): ${krStart} - ${krEnd}`,
-                ct: `미국 중부(CT, Dallas): ${ctStart} - ${ctEnd}`
+                kr: formatZoneRange(startAt, endAt, '한국', 'Asia/Seoul'),
+                ct: formatZoneRange(startAt, endAt, '달라스', 'America/Chicago')
             };
         }
 
