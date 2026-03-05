@@ -1598,8 +1598,12 @@
                                 <button onclick="loadCoachTasks()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
                             </div>
                         </div>
-                        <form onsubmit="submitCoachTask(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
-                            <h3 class="text-base font-bold text-er-dark">새 과제 등록</h3>
+                        <form id="coach-task-form" onsubmit="submitCoachTask(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
+                            <div class="flex items-center justify-between gap-3">
+                                <h3 id="coach-task-form-title" class="text-base font-bold text-er-dark">새 과제 등록</h3>
+                                <button type="button" id="coach-task-cancel-btn" onclick="resetCoachTaskForm()" class="hidden px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">수정 취소</button>
+                            </div>
+                            <input type="hidden" name="task_id" value="">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <input name="title" required maxlength="120" placeholder="과제 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
                                 <input name="due_at" type="datetime-local" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
@@ -1612,11 +1616,12 @@
                             </div>
                             <textarea name="description" rows="3" placeholder="과제 설명" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
                             <input name="files" type="file" multiple class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
-                            <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">과제 저장</button>
+                            <button id="coach-task-submit-btn" type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">과제 저장</button>
                         </form>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
                             <h3 class="text-base font-bold text-er-dark mb-4">과제 목록</h3>
                             <div id="coach-tasks-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                            <div id="coach-task-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
                         </div>
                     </div>
                 </div>
@@ -1727,6 +1732,19 @@
             if (!localValue) return null;
             const date = new Date(localValue);
             return Number.isNaN(date.getTime()) ? null : date.toISOString();
+        }
+
+        function toLocalDatetimeInputValue(value) {
+            if (!value) return '';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '';
+            const pad = (n) => String(n).padStart(2, '0');
+            const year = date.getFullYear();
+            const month = pad(date.getMonth() + 1);
+            const day = pad(date.getDate());
+            const hours = pad(date.getHours());
+            const minutes = pad(date.getMinutes());
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
         }
 
         function getFileSizeLabel(sizeBytes) {
@@ -1847,10 +1865,111 @@
                             </div>
                             <p class="text-xs text-gray-500 mt-2 break-keep">${escapeHtml(task.description || '-')}</p>
                             <p class="text-xs text-gray-400 mt-2">주차: ${escapeHtml(task.week_label || '-')} · 마감: ${formatDateTime(task.due_at)} · 첨부: ${(task.coach_task_files || []).length}개</p>
+                            <div class="mt-3 flex gap-2">
+                                <button onclick="viewCoachTaskDetail('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">상세 보기</button>
+                                <button onclick="editCoachTask('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold bg-er-dark text-white">수정</button>
+                            </div>
                         </div>
                     `).join('')
                     : '<p class="text-sm text-gray-500">등록된 과제가 없습니다.</p>';
             }
+        }
+
+        async function viewCoachTaskDetail(taskId) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const detailEl = document.getElementById('coach-task-detail');
+            if (!detailEl) return;
+            detailEl.classList.remove('hidden');
+            detailEl.innerHTML = '불러오는 중...';
+
+            const { data: task, error } = await supabaseClient
+                .from('coach_tasks')
+                .select('id, title, description, due_at, week_label, status, created_at')
+                .eq('id', taskId)
+                .maybeSingle();
+
+            if (error || !task) {
+                detailEl.innerHTML = `<p class="text-xs text-red-500">과제 상세 로딩 실패: ${escapeHtml(error?.message || 'not found')}</p>`;
+                return;
+            }
+
+            const { data: files } = await supabaseClient
+                .from('coach_task_files')
+                .select('id, original_name, size_bytes, storage_path, created_at')
+                .eq('task_id', taskId)
+                .order('created_at', { ascending: false });
+
+            detailEl.innerHTML = `
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <h4 class="text-base font-bold text-gray-900">${escapeHtml(task.title)}</h4>
+                        <p class="text-xs text-gray-500 mt-1">상태: ${escapeHtml(task.status || '-')} · 주차: ${escapeHtml(task.week_label || '-')}</p>
+                        <p class="text-xs text-gray-500 mt-1">마감: ${formatDateTime(task.due_at)} · 등록: ${formatDateTime(task.created_at)}</p>
+                    </div>
+                    <button onclick="editCoachTask('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold bg-er-dark text-white">이 과제 수정</button>
+                </div>
+                <div class="mt-4 p-3 rounded-xl border border-gray-100 bg-white text-sm text-gray-700 break-keep">${escapeHtml(task.description || '-')}</div>
+                <div class="mt-4">
+                    <h5 class="text-sm font-bold text-gray-800 mb-2">첨부파일</h5>
+                    <div class="space-y-2">
+                        ${(files || []).length ? files.map((file) => `
+                            <div class="flex items-center justify-between gap-2 p-2.5 rounded-xl border border-gray-100 bg-white">
+                                <div class="min-w-0">
+                                    <p class="text-xs font-semibold text-gray-800 truncate">${escapeHtml(file.original_name || '-')}</p>
+                                    <p class="text-[11px] text-gray-500">${getFileSizeLabel(file.size_bytes)} · ${formatDateTime(file.created_at)}</p>
+                                </div>
+                                <button onclick="downloadCoachTaskFile('${encodeURIComponent(file.storage_path || '')}')" class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">다운로드</button>
+                            </div>
+                        `).join('') : '<p class="text-xs text-gray-500">첨부파일이 없습니다.</p>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function editCoachTask(taskId) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const { data: task, error } = await supabaseClient
+                .from('coach_tasks')
+                .select('id, title, description, due_at, week_label, status')
+                .eq('id', taskId)
+                .maybeSingle();
+
+            if (error || !task) {
+                alert(`수정 데이터 로딩 실패: ${error?.message || 'not found'}`);
+                return;
+            }
+
+            const form = document.getElementById('coach-task-form');
+            if (!form) return;
+            form.querySelector('input[name="task_id"]').value = task.id;
+            form.querySelector('input[name="title"]').value = task.title || '';
+            form.querySelector('input[name="due_at"]').value = toLocalDatetimeInputValue(task.due_at);
+            form.querySelector('input[name="week_label"]').value = task.week_label || '';
+            form.querySelector('select[name="status"]').value = task.status || 'published';
+            form.querySelector('textarea[name="description"]').value = task.description || '';
+
+            const titleEl = document.getElementById('coach-task-form-title');
+            if (titleEl) titleEl.textContent = '과제 수정';
+            const submitBtn = document.getElementById('coach-task-submit-btn');
+            if (submitBtn) submitBtn.textContent = '과제 수정 저장';
+            const cancelBtn = document.getElementById('coach-task-cancel-btn');
+            if (cancelBtn) cancelBtn.classList.remove('hidden');
+
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            await viewCoachTaskDetail(task.id);
+        }
+
+        function resetCoachTaskForm() {
+            const form = document.getElementById('coach-task-form');
+            if (!form) return;
+            form.reset();
+            form.querySelector('input[name="task_id"]').value = '';
+            const titleEl = document.getElementById('coach-task-form-title');
+            if (titleEl) titleEl.textContent = '새 과제 등록';
+            const submitBtn = document.getElementById('coach-task-submit-btn');
+            if (submitBtn) submitBtn.textContent = '과제 저장';
+            const cancelBtn = document.getElementById('coach-task-cancel-btn');
+            if (cancelBtn) cancelBtn.classList.add('hidden');
         }
 
         async function loadCoachMaterials() {
@@ -1926,6 +2045,7 @@
             if (!ensureCoachAccess() || !supabaseClient) return;
             const form = event.target;
             const formData = new FormData(form);
+            const taskId = String(formData.get('task_id') || '').trim();
             const title = String(formData.get('title') || '').trim();
             const description = String(formData.get('description') || '').trim();
             const due_at = toIsoOrNull(String(formData.get('due_at') || '').trim());
@@ -1933,11 +2053,26 @@
             const status = String(formData.get('status') || 'published');
             const files = form.querySelector('input[name="files"]')?.files || [];
 
-            const { data: task, error: taskError } = await supabaseClient
-                .from('coach_tasks')
-                .insert([{ title, description, due_at, week_label, status, created_by: state.user.id }])
-                .select('id')
-                .single();
+            let task = null;
+            let taskError = null;
+            if (taskId) {
+                const updateRes = await supabaseClient
+                    .from('coach_tasks')
+                    .update({ title, description, due_at, week_label, status })
+                    .eq('id', taskId)
+                    .select('id')
+                    .single();
+                task = updateRes.data;
+                taskError = updateRes.error;
+            } else {
+                const insertRes = await supabaseClient
+                    .from('coach_tasks')
+                    .insert([{ title, description, due_at, week_label, status, created_by: state.user.id }])
+                    .select('id')
+                    .single();
+                task = insertRes.data;
+                taskError = insertRes.error;
+            }
 
             if (taskError || !task?.id) {
                 alert(`과제 저장 실패: ${taskError?.message || 'unknown error'}`);
@@ -1962,9 +2097,22 @@
                 }]);
             }
 
-            form.reset();
+            resetCoachTaskForm();
             await loadCoachTasks();
-            alert('과제가 저장되었습니다.');
+            await viewCoachTaskDetail(task.id);
+            alert(taskId ? '과제가 수정되었습니다.' : '과제가 저장되었습니다.');
+        }
+
+        async function downloadCoachTaskFile(encodedStoragePath) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const path = decodeURIComponent(String(encodedStoragePath || ''));
+            if (!path) return;
+            const { data, error } = await supabaseClient.storage.from('coach-task-files').createSignedUrl(path, 60);
+            if (error || !data?.signedUrl) {
+                alert(`다운로드 링크 생성 실패: ${error?.message || 'unknown error'}`);
+                return;
+            }
+            window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
         }
 
         async function submitCoachMaterial(event) {
