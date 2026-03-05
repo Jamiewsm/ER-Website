@@ -412,6 +412,7 @@
         let adaptivePhase1Responses = {};
         let adaptiveTopCandidates = [];
         let adaptivePhase2QuestionsData = [];
+        let adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: null };
         let adaptiveLang = 'ko';
         const adaptiveArrowLines = {
             1: { stress: 4, growth: 7 },
@@ -488,6 +489,11 @@
             ]
         };
 
+        const adaptiveTieBreaker36 = [
+            { id: 'tb_3_6_1', type: 3, q: "내가 유능하게 일을 처리하고 성과를 내는 것은, 궁극적으로 '사람들의 인정과 사랑받을 만한 존재가 되기 위함'에 더 가깝다." },
+            { id: 'tb_3_6_2', type: 6, q: "내가 열심히 일하고 대비하는 것은, 궁극적으로 '예측 불가능한 상황에서 나를 보호하고 안전한 지지 기반을 확보하기 위함'에 더 가깝다." }
+        ];
+
         const adaptiveQuestionEn = {
             t2: "In new social settings, I naturally pay attention to relational cues like “How might people see me?” or “What does this person need?”",
             t5: "In unfamiliar situations, I feel better when I have enough information and can predict what is happening; when I cannot read the situation, I feel subtly uncomfortable.",
@@ -527,7 +533,9 @@
             d8_1: "I instinctively guard against losing control of my life through dependence, weakness, or being overpowered.",
             d8_2: "At times it may look like I want approval, but at a deeper level I want my impact and personal power to be respected.",
             d9_1: "To preserve inner peace and connection, I may suppress my real wants or anger without fully noticing it.",
-            d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks."
+            d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks.",
+            tb_3_6_1: "When I work hard and perform well, it is primarily about being seen as competent and worthy in other people's eyes.",
+            tb_3_6_2: "When I work hard and prepare thoroughly, it is primarily about staying safe and having a reliable base in unpredictable situations."
         };
 
         const adaptiveUi = {
@@ -1802,6 +1810,7 @@
             adaptivePhase1Responses = {};
             adaptiveTopCandidates = [];
             adaptivePhase2QuestionsData = [];
+            adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: null };
             renderAdaptiveQuestions('phase1-container', adaptivePhase1Questions, 'p1');
         }
 
@@ -1854,6 +1863,27 @@
                 }
             });
 
+            // 3/6 혼동 보정: top3 동시 포함 또는 점수 근접(<=8%)일 때만 타이브레이커 발동
+            const score3 = centerScores[3];
+            const score6 = centerScores[6];
+            const max36 = Math.max(score3, score6);
+            const margin36 = max36 > 0 ? Math.abs(score3 - score6) / max36 : 1;
+            const top3Types = sortedCandidates.slice(0, 3).map((c) => c.type);
+            const hasBothTop3 = top3Types.includes(3) && top3Types.includes(6);
+            const hasBothCandidates = adaptiveTopCandidates.includes(3) && adaptiveTopCandidates.includes(6);
+            const shouldEnableTieBreaker = hasBothCandidates && (hasBothTop3 || margin36 <= 0.08);
+
+            if (shouldEnableTieBreaker) {
+                adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker36);
+                // 근접할수록 가중치 상향 (2.0~2.5)
+                let tbWeight = 2.0;
+                if (margin36 <= 0.03) tbWeight = 2.5;
+                else if (margin36 <= 0.08) tbWeight = 2.25;
+                adaptiveTieBreakerMeta = { enabled: true, weight: tbWeight, margin: margin36 };
+            } else {
+                adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: margin36 };
+            }
+
             document.getElementById('phase1-form').classList.add('hidden');
             document.getElementById('phase2-form').classList.remove('hidden');
             document.getElementById('progress-bar').style.width = '100%';
@@ -1884,7 +1914,11 @@
 
             adaptivePhase2QuestionsData.forEach((q) => {
                 const val = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value, 10);
-                finalTypeScores[q.type] += val * 2.0;
+                if (q.id.startsWith('tb_3_6_') && adaptiveTieBreakerMeta.enabled) {
+                    finalTypeScores[q.type] += val * adaptiveTieBreakerMeta.weight;
+                } else {
+                    finalTypeScores[q.type] += val * 2.0;
+                }
             });
 
             const rankedTypes = Object.keys(finalTypeScores)
@@ -2034,6 +2068,12 @@
                     logMsg += adaptiveLang === 'en'
                         ? `<br><br><span class="text-[#bfa68a] text-xs">* For core Types 3/6/9, a -2.5 correction was applied to Social-instinct scoring to reduce possible over-selection bias on socially weighted items.</span>`
                         : `<br><br><span class="text-[#bfa68a] text-xs">* ${coreType}번은 사회성 관련 문항에서 과대표집이 발생할 수 있어, 사회적 본능(SO)에 -2.5 보정치가 적용되었습니다.</span>`;
+                }
+                if (adaptiveTieBreakerMeta.enabled) {
+                    const marginPct = ((adaptiveTieBreakerMeta.margin ?? 0) * 100).toFixed(1);
+                    logMsg += adaptiveLang === 'en'
+                        ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 6 tie-breaker was activated (base margin ${marginPct}%, weight x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`
+                        : `<br><br><span class="text-[#4a4540] text-xs">* 3번/6번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct}%, 가중치 x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`;
                 }
             }
 
