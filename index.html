@@ -1105,109 +1105,15 @@
         }
 
         function renderTest() {
-            const isEn = adaptiveLang === 'en';
             return `
-                <div class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
-                    <div class="flex justify-end mb-4">
-                        <div class="inline-flex rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold">
-                            <button type="button" onclick="setAdaptiveTestLanguage('ko')" class="px-3 py-1 rounded-full ${!isEn ? 'bg-er-dark text-white' : 'text-gray-500 hover:text-er-dark'}">한국어</button>
-                            <button type="button" onclick="setAdaptiveTestLanguage('en')" class="px-3 py-1 rounded-full ${isEn ? 'bg-er-dark text-white' : 'text-gray-500 hover:text-er-dark'}">English</button>
-                        </div>
-                    </div>
-                    <div class="text-center mb-10">
-                        <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest shadow-sm">Narrative Interview</span>
-                        <h1 class="text-3xl font-extrabold text-gray-900 mt-2">${adaptiveText('title')}</h1>
-                        <p class="mt-4 text-gray-600 leading-relaxed text-sm">
-                            ${adaptiveText('subtitle')}
-                        </p>
-                    </div>
-
-                    <div id="progress-container" class="mb-8">
-                        <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
-                            <span id="step-label">${adaptiveText('step1')}</span>
-                            <span id="step-counter">1 / 2</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-1.5">
-                            <div id="progress-bar" class="bg-[#8c8680] h-1.5 rounded-full smooth-transition" style="width: 50%;"></div>
-                        </div>
-                    </div>
-
-                    <form id="phase1-form" class="space-y-10 fade-in">
-                        <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center shadow-sm">
-                            <p class="font-semibold text-gray-700">${adaptiveText('phase1Title')}</p>
-                            <p class="text-sm text-gray-500 mt-1">${adaptiveText('phase1Desc')}</p>
-                        </div>
-                        <div id="phase1-container" class="space-y-6"></div>
-                        <div class="text-center pt-6">
-                            <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
-                            <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
-                                ${adaptiveText('next')}
-                            </button>
-                        </div>
-                    </form>
-
-                    <form id="phase2-form" class="space-y-10 hidden fade-in">
-                        <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center shadow-sm relative overflow-hidden">
-                            <p class="font-bold text-[#4a4540] text-lg">${adaptiveText('phase2Title')}</p>
-                            <p class="text-sm text-gray-600 mt-2">
-                                ${adaptiveText('phase2Desc')}
-                            </p>
-                        </div>
-                        <div id="phase2-container" class="space-y-6"></div>
-                        <div class="text-center pt-6">
-                            <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
-                            <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
-                                ${adaptiveText('submit')}
-                            </button>
-                        </div>
-                    </form>
-
-                    <div id="result-view" class="hidden fade-in">
-                        <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-                            <div class="bg-[#4a4540] px-8 py-10 text-center text-white relative">
-                                <h2 class="text-sm font-medium opacity-80 uppercase tracking-widest mb-3">Your Original Design</h2>
-                                <div id="res-final" class="text-5xl font-bold mb-4 tracking-tight text-[#bfa68a]"></div>
-                                <p id="res-instincts" class="text-lg font-medium opacity-90"></p>
-                                <div id="confidence-badge" class="absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold border border-white/30"></div>
-                            </div>
-                            
-                            <div class="p-8 space-y-6">
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
-                                        <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('core')}</p>
-                                        <p id="res-core" class="text-2xl font-bold text-gray-800"></p>
-                                    </div>
-                                    <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
-                                        <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('wing')}</p>
-                                        <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
-                                    </div>
-                                    <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100 col-span-2">
-                                        <p class="text-xs text-gray-400 font-bold uppercase mb-1"><i class="fas fa-arrows-alt-h mr-1"></i>${adaptiveText('arrows')}</p>
-                                        <p id="res-arrows" class="text-[15px] font-medium text-gray-700 mt-2 leading-relaxed"></p>
-                                    </div>
-                                </div>
-
-                                <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
-                                    <h3 class="font-bold text-[#4a4540] mb-2 text-sm"><i class="fas fa-chart-pie mr-2"></i>${adaptiveText('report')}</h3>
-                                    <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
-                                </div>
-                                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                                    <h3 class="font-bold text-[#4a4540] mb-3 text-sm"><i class="fas fa-layer-group mr-2"></i>${adaptiveText('top3Title')}</h3>
-                                    <div id="res-top3" class="space-y-3 text-sm text-gray-700"></div>
-                                </div>
-
-                                <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
-                                    <p class="text-sm text-red-800 mb-3">${adaptiveText('lowConf')}</p>
-                                    <button type="button" onclick="renderSection('apply', { source: 'test' })" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full transition">${adaptiveText('cta')}</button>
-                                </div>
-
-                                <div class="text-center pt-6 border-t border-gray-100">
-                                    <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">
-                                        ${adaptiveText('restart')}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+                    <div class="bg-white rounded-3xl border border-gray-100 shadow-soft overflow-hidden">
+                        <iframe
+                            src="test.html"
+                            title="적응형 에니어그램 심층 진단"
+                            class="w-full min-h-[2200px] md:min-h-[2400px]"
+                            loading="lazy"
+                        ></iframe>
                     </div>
                 </div>
             `;

@@ -1,674 +1,604 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ER Test Sandbox</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ER Enneagram Test</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
-    body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #0f172a; }
-    .radio-btn:checked + label { background-color: #4a4540; color: white; border-color: #4a4540; transform: scale(1.05); }
-    .smooth-transition { transition: all 0.3s ease; }
-    .fade-in { animation: fadeIn 0.5s forwards; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    body { font-family: 'Pretendard', sans-serif; background:#f8fafc; color:#111827; }
+    .radio-btn:checked + label { background:#4a4540; color:#fff; border-color:#4a4540; transform:scale(1.05); }
+    .radio-btn:focus-visible + label { outline: 2px solid #bfa68a; outline-offset: 2px; }
+    .smooth { transition: all .25s ease; }
   </style>
 </head>
 <body class="min-h-screen pb-20">
-  <main id="app"></main>
+  <main class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
+    <header class="text-center mb-10">
+      <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
+      <h1 class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
+      <p class="mt-4 text-gray-600 leading-relaxed text-sm">행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.</p>
+      <p class="text-xs text-gray-400 mt-4">* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.</p>
+    </header>
 
-  <script>
-    let adaptivePhase1Responses = {};
-    let adaptiveTopCandidates = [];
-    let adaptivePhase2QuestionsData = [];
-    let adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: null };
-    let adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: null };
-    let adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: null };
-    let adaptiveLang = 'ko';
+    <div id="progress-container" class="mb-8" aria-live="polite">
+      <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
+        <span id="step-label">1단계: 기초 성향 및 본능 파악</span>
+        <span id="step-counter">1 / 2</span>
+      </div>
+      <div id="progress-track" class="w-full bg-gray-200 rounded-full h-1.5" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+        <div id="progress-bar" class="bg-[#8c8680] h-1.5 rounded-full smooth" style="width:50%"></div>
+      </div>
+    </div>
 
-    const adaptiveArrowLines = {
-      1: { stress: 4, growth: 7 },
-      2: { stress: 8, growth: 4 },
-      3: { stress: 9, growth: 6 },
-      4: { stress: 2, growth: 1 },
-      5: { stress: 7, growth: 8 },
-      6: { stress: 3, growth: 9 },
-      7: { stress: 1, growth: 5 },
-      8: { stress: 5, growth: 2 },
-      9: { stress: 6, growth: 3 }
-    };
+    <form id="phase1-form" class="space-y-10" novalidate>
+      <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center">
+        <p class="font-semibold text-gray-700">1부: 일상적 자동반응 패턴</p>
+        <p class="text-sm text-gray-500 mt-1">불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.</p>
+      </div>
+      <div id="phase1-container" class="space-y-6"></div>
+      <div class="text-center pt-6">
+        <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
+        <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">2단계로 이동</button>
+      </div>
+    </form>
 
-    const adaptivePhase1Questions = [
-      { id: 't2', type: 2, q: "새로운 모임에 가면 '사람들이 나를 어떻게 생각할까, 저 사람에게 무엇이 필요할까' 등 관계적인 부분에 자연스럽게 신경이 쓰이는 편이다." },
-      { id: 't5', type: 5, q: "새로운 상황이나 모임에서는 내가 충분한 정보나 예측을 통해 '대비가 되어 있는지'가 중요하며, 상황 파악이 안 된 상태에서는 은근한 불편함을 느낀다." },
-      { id: 't8', type: 8, q: "새로운 모임에 가면 '이 공간의 주도권은 누구에게 있나, 내 자리는 어디인가' 하는 공기(흐름)를 본능적으로 느끼곤 한다." },
-      { id: 'c1', type: 1, q: "가까운 사람들로부터 '스스로에게 기준이 높다'거나 '원칙을 중요시한다'는 이야기를 가끔 듣는 편이다." },
-      { id: 'c2', type: 2, q: "누군가 도움이 필요해 보일 때 먼저 다가가며, 나의 호의가 당연하게 여겨질 때 겉으론 티를 안 내도 속으로 서운할 때가 있다." },
-      { id: 'c3', type: 3, q: "어떤 일을 할 때 과정도 중요하지만, 결국 눈에 보이는 성과나 결과물로 나의 가치를 증명하고 싶어 하는 마음이 꽤 큰 것 같다." },
-      { id: 'c4', type: 4, q: "남들과 똑같아지거나 평범해지는 것을 별로 좋아하지 않으며, 때때로 나만의 감정이나 결핍감에 깊이 빠져들곤 한다." },
-      { id: 'c5', type: 5, q: "에너지가 한정되어 있다고 느껴져서, 사람들과 어울리기보다 혼자만의 조용한 공간에서 충전하는 시간이 반드시 필요하다." },
-      { id: 'c6', type: 6, q: "돌다리도 두드려보고 건너는 편이며, 예측하지 못한 변수나 충분히 대비되지 않은 상황에 맞닥뜨릴 때 은근히 스트레스를 받는다." },
-      { id: 'c7', type: 7, q: "무겁고 우울한 분위기를 견디기 어려워하며, 즐겁고 긍정적인 계획들을 상상하는 것으로 스트레스를 피하려는 경향이 있다." },
-      { id: 'c8', type: 8, q: "불의를 보거나 누군가 나를 부당하게 통제하려 할 때 강하게 반발하며, 차라리 내가 상황을 주도하는 편이 편하다." },
-      { id: 'c9', type: 9, q: "갈등이 생기는 상황을 본능적으로 피하고 싶어 하며, 웬만하면 '좋은 게 좋은 거지' 하고 내 의견을 양보할 때가 많다." },
-      { id: 'i_sp_1', inst: 'sp', q: "어딜 가든 온도, 조명, 식사, 수면 등 나의 신체적 안락함과 환경적 요소가 꽤 중요하게 느껴진다." },
-      { id: 'i_sp_2', inst: 'sp', q: "나의 시간, 에너지, 자원(돈 등)이 불필요하게 낭비되거나 예측 불가능하게 소모되는 것에 예민한 편이다." },
-      { id: 'i_sp_3', inst: 'sp', q: "재정적인 안정과 독립적인 생활 기반을 확보하는 것이 삶에서 우선순위가 높은 편이다." },
-      { id: 'i_sx_1', inst: 'sx', q: "여러 사람과 얕게 어울리는 것보다, 나와 코드가 맞는 단 한 사람과 깊고 강렬하게 교감할 때 에너지를 얻는다." },
-      { id: 'i_sx_2', inst: 'sx', q: "무언가(사람, 취미, 관심사)에 한 번 꽂히면 주변을 잊을 만큼 모든 열정을 쏟아붓는 편이다." },
-      { id: 'i_sx_3', inst: 'sx', q: "표면적이고 일상적인 대화보다는, 서로의 깊은 생각이나 가치관을 온전히 알 수 있는 밀도 높은 대화를 훨씬 선호한다." },
-      { id: 'i_so_1', inst: 'so', q: "내가 속한 조직이나 무리 안에서 '누가 영향력이 있고, 분위기가 어떻게 흘러가는지' 사회적 역학 관계를 본능적으로 살피게 된다." },
-      { id: 'i_so_2', inst: 'so', q: "어떤 그룹에 가든 나의 '명확한 역할과 기여도'가 있어야 편안하며, 무리 안에서의 소속감을 중요하게 생각한다." },
-      { id: 'i_so_3', inst: 'so', q: "나 개인의 안위나 1:1 관계보다, 공동체 전체를 위한 일이나 사회적 흐름에 참여할 때 더 큰 삶의 의미를 느낀다." }
-    ];
+    <form id="phase2-form" class="space-y-10 hidden" novalidate>
+      <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center">
+        <p class="font-bold text-[#4a4540] text-lg">1차 분석 완료</p>
+        <p class="text-sm text-gray-600 mt-2">후보 유형 경합을 줄이기 위한 심층 질문입니다.</p>
+      </div>
+      <div id="phase2-container" class="space-y-6"></div>
+      <div class="text-center pt-6">
+        <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
+        <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg">결과 보기</button>
+      </div>
+    </form>
 
-    const adaptiveDeepMotivations = {
-      1: [
-        { id: 'd1_1', type: 1, q: "무언가를 할 때 '이것이 최선인가? 더 제대로 해야 하지 않나?'라며 스스로의 행동을 점검하고 기준을 맞추려는 내면의 목소리가 자주 들리는 편이다." },
-        { id: 'd1_2', type: 1, q: "나는 속으로 '이건 이렇게 해야 해'라는 정답을 정해놓고, 나 자신이나 타인이 그 기준에 미치지 못할 때 자주 답답함을 느낀다." }
-      ],
-      2: [
-        { id: 'd2_1', type: 2, q: "내가 누군가에게 꼭 필요한 존재가 됨으로써, 그들이 나를 떠나지 않고 인정해 주기를 바라는 깊은 마음이 있다." },
-        { id: 'd2_2', type: 2, q: "다른 사람의 필요나 기분은 기가 막히게 잘 알면서도, 막상 '내가 진짜 원하는 것'이 무엇인지 물으면 대답하기 어려울 때가 많다." }
-      ],
-      3: [
-        { id: 'd3_1', type: 3, q: "실패하거나 무능력한 사람으로 비춰지는 것이 내게는 견디기 힘든 두려움 중 하나이다." },
-        { id: 'd3_2', type: 3, q: "나는 나의 있는 그대로의 모습보다, 내가 성취한 결과나 유능한 이미지로 사람들에게 인정받고 싶어 하는 욕구가 깊은 곳에 자리잡고 있다." }
-      ],
-      4: [
-        { id: 'd4_1', type: 4, q: "사람들에게 온전히 이해받지 못한다는 묘한 소외감을 종종 느끼며, 나의 슬픔이나 결핍마저도 나만의 특별함이라고 여기는 경향이 있다." },
-        { id: 'd4_2', type: 4, q: "무미건조하고 평범한 일상보다는, 감정이 깊이 요동치고 의미가 담긴 상황에서 비로소 내가 살아있음을 강하게 느끼곤 한다." }
-      ],
-      5: [
-        { id: 'd5_1', type: 5, q: "나는 세상이나 사람들과 직접 부딪히기보다, 한 발짝 떨어져서 적당한 거리를 두고 관찰자 모드로 있을 때 가장 안전하다고 느낀다." },
-        { id: 'd5_2', type: 5, q: "누군가 나에게 갑작스러운 감정적 반응을 요구하거나 내 지적 영역을 침범하면, 무의식적으로 에너지를 차단하고 물러서게 된다." }
-      ],
-      6: [
-        { id: 'd6_1', type: 6, q: "나는 나를 지켜줄 수 있는 확실한 신념이나 든든한 동맹을 찾기 전까지는, 세상이 꽤 위험한 곳이라고 무의식중에 느끼는 것 같다." },
-        { id: 'd6_2', type: 6, q: "권위자나 시스템에 순응하여 안전을 보장받고 싶으면서도, 동시에 그들이 정말 믿을 만한지 끊임없이 의심하고 테스트하려는 모순된 마음이 있다." }
-      ],
-      7: [
-        { id: 'd7_1', type: 7, q: "부정적인 감정이나 복잡하고 불편한 현실에 직면하는 것이 피곤하게 느껴져서, 나도 모르게 분위기를 환기하거나 흥미로운 다른 일들로 주의를 돌리려는 패턴이 있다." },
-        { id: 'd7_2', type: 7, q: "어떤 한 가지에 얽매이거나 제한당하는 것을 꽤 답답해하며, 항상 다양한 가능성과 선택지를 열어두어야 마음이 편하다." }
-      ],
-      8: [
-        { id: 'd8_1', type: 8, q: "나는 다른 사람에게 약점을 잡히거나 통제당하는 것을 본능적으로 거부하며, 차라리 내가 강해져서 상황을 주도하는 쪽을 택한다." },
-        { id: 'd8_2', type: 8, q: "때때로 사람들에게 인정을 갈구하는 것처럼 보일 때도 있지만, 그 본질은 칭찬 자체보다 '내가 영향력 있는 사람임'을 존중받고 싶기 때문이다." }
-      ],
-      9: [
-        { id: 'd9_1', type: 9, q: "나는 나와 타인, 혹은 환경과의 '연결감'이 끊어지는 것을 두려워하며, 내 안의 평화를 유지하기 위해 종종 내 진짜 분노나 욕구를 억누르곤 한다." },
-        { id: 'd9_2', type: 9, q: "중요한 갈등 상황이나 결정을 마주할 때, 직면하는 스트레스를 피하기 위해 덜 중요한 사소한 일들에 몰두하며 에너지를 분산시키는 패턴이 있다." }
-      ]
-    };
+    <section id="result-view" class="hidden">
+      <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+        <div class="bg-[#4a4540] px-8 py-10 text-center text-white relative">
+          <h2 class="text-sm font-medium opacity-80 uppercase tracking-widest mb-3">Your Original Design</h2>
+          <div id="res-final" class="text-5xl font-bold mb-4 tracking-tight text-[#bfa68a]"></div>
+          <p id="res-instincts" class="text-lg font-medium opacity-90"></p>
+          <div id="confidence-badge" class="absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold border border-white/30"></div>
+        </div>
 
-    const adaptiveTieBreaker36 = [
-      { id: 'tb_3_6_1', type: 3, q: "내가 유능하게 일을 처리하고 성과를 내는 것은, 궁극적으로 '사람들의 인정과 사랑받을 만한 존재가 되기 위함'에 더 가깝다." },
-      { id: 'tb_3_6_2', type: 6, q: "내가 열심히 일하고 대비하는 것은, 궁극적으로 '예측 불가능한 상황에서 나를 보호하고 안전한 지지 기반을 확보하기 위함'에 더 가깝다." }
-    ];
-    const adaptiveTieBreaker31 = [
-      { id: 'tb_3_1_1', type: 3, q: "내가 목표를 성취하려는 가장 큰 이유는, 결과를 통해 나의 유능함과 가치를 인정받기 위해서인 경우가 많다." },
-      { id: 'tb_3_1_2', type: 1, q: "내가 목표를 끝까지 밀어붙이는 가장 큰 이유는, 올바른 기준에 맞게 바로잡고 완성해야 마음이 편해지기 때문이다." }
-    ];
-    const adaptiveTieBreaker3SX = [
-      { id: 'tb_3_sx_1', type: 3, q: "내가 기어코 목표를 달성하려는 가장 큰 이유는, 그것을 해냈을 때 사람들에게 가치 있는 사람으로 인정받고 나의 유능함을 증명할 수 있기 때문이다." },
-      { id: 'tb_3_sx_2', q: "내가 무언가에 무섭게 몰두하여 끝을 보려는 가장 큰 이유는, 타인의 인정보다는 그 과정에서 느끼는 강렬한 몰입감과 성취해냈다는 내적 쾌감이 더 크기 때문이다." }
-    ];
-
-    const adaptiveQuestionEn = {
-      t2: "In new social settings, I naturally pay attention to relational cues like \"How might people see me?\" or \"What does this person need?\"",
-      t5: "In unfamiliar situations, I feel better when I have enough information and can predict what is happening; when I cannot read the situation, I feel subtly uncomfortable.",
-      t8: "When I enter a space, I instinctively read the power dynamics and where my influence or position might be.",
-      c1: "People close to me often say I hold myself to high standards and care deeply about doing things the right way.",
-      c2: "When someone seems to need help, I tend to step in first; if my care is taken for granted, I may feel quietly hurt.",
-      c3: "Process matters, but I feel most at ease when I can prove my value through visible results or achievement.",
-      c4: "I dislike feeling ordinary, and at times I get deeply absorbed in my own sense of longing or emotional depth.",
-      c5: "My energy drains quickly in prolonged social interaction, so I need solitude to process information and recharge.",
-      c6: "I prefer to prepare thoroughly, and unexpected variables or underprepared situations create noticeable stress for me.",
-      c7: "Heavy or gloomy atmospheres are hard for me to sustain; when things feel stuck, I look for fresh, positive possibilities.",
-      c8: "When I sense unfairness or someone overreaching into my authority, I push back strongly and prefer to take the lead.",
-      c9: "I instinctively avoid conflict and tension, and I often smooth things over rather than push my own agenda.",
-      i_sp_1: "Physical comfort matters to me: temperature, lighting, food, sleep, and the practical environment.",
-      i_sp_2: "I am sensitive to wasted time, energy, or resources, especially when things feel inefficient or unpredictable.",
-      i_sp_3: "Financial stability and a solid independent foundation are high priorities for me.",
-      i_sx_1: "I prefer deep, intense connection with one person over broad, shallow socializing.",
-      i_sx_2: "When I become interested in something or someone, I can go all-in with strong focus and intensity.",
-      i_sx_3: "Rather than surface-level conversation, I prefer deeper, more meaningful conversations that reveal values and inner perspective.",
-      i_so_1: "In groups, I naturally track influence, social dynamics, and how the atmosphere is shifting.",
-      i_so_2: "I feel more at ease when my role and contribution in a group are clear, and belonging matters to me.",
-      i_so_3: "I often find greater meaning in contributing to the wider community than in personal comfort or one-to-one concerns.",
-      d1_1: "I often hear an inner voice that asks, \"Is this the best way? Could this be done more properly?\" and pushes me to improve.",
-      d1_2: "I tend to hold an internal \"right way,\" and I feel frustration when I or others fall short of that standard.",
-      d2_1: "At a deeper level, I want to be seen as needed and valuable through being there for others.",
-      d2_2: "I can read other people's needs well, but it is often harder to name what I truly want.",
-      d3_1: "I sometimes feel pressure that without achievement or recognition, my value might diminish.",
-      d3_2: "The thought of being seen as ineffective or failing creates strong internal stress for me.",
-      d4_1: "I often feel a subtle sense of being misunderstood, and sometimes even my sadness feels like part of what makes me uniquely me.",
-      d4_2: "I feel most alive in moments with emotional depth and meaning rather than in flat, ordinary routines.",
-      d5_1: "I feel safer when I can step back, observe, and understand before engaging directly.",
-      d5_2: "When people demand immediate emotional responses or intrude into my mental space, I tend to withdraw to protect my energy.",
-      d6_1: "I prefer clarity and predictability, and I often detect hidden risks or underlying intentions earlier than others.",
-      d6_2: "I can seek security through trusted structures while also testing whether those structures are truly reliable.",
-      d7_1: "When emotions are heavy or reality feels constricting, I tend to shift toward lighter possibilities and mental reframing.",
-      d7_2: "Being limited to one option feels constricting; I feel more at ease when multiple possibilities remain open.",
-      d8_1: "I instinctively guard against losing control of my life through dependence, weakness, or being overpowered.",
-      d8_2: "At times it may look like I want approval, but at a deeper level I want my impact and personal power to be respected.",
-      d9_1: "To preserve inner peace and connection, I may suppress my real wants or anger without fully noticing it.",
-      d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks.",
-      tb_3_6_1: "When I work hard and perform well, it is primarily about being seen as competent and worthy in other people's eyes.",
-      tb_3_6_2: "When I work hard and prepare thoroughly, it is primarily about staying safe and having a reliable base in unpredictable situations.",
-      tb_3_1_1: "My strongest drive to achieve is often to prove my competence and be recognized for my value.",
-      tb_3_1_2: "My strongest drive to achieve is often to correct, refine, and complete things according to an internal standard.",
-      tb_3_sx_1: "When I push to achieve, the core motivation is often proving my competence and being recognized as valuable.",
-      tb_3_sx_2: "When I push intensely toward a goal, the deeper reward is immersion, intensity, and the internal satisfaction of completion more than external recognition."
-    };
-
-    const adaptiveUi = {
-      ko: {
-        title: "적응형 에니어그램 심층 진단",
-        subtitle: "행동(열매)의 이면에 숨겨진 근원적 동기(뿌리)를 탐색합니다.<br>1차 응답을 분석하여 유력한 후보 유형을 좁히고, <span class=\"font-bold text-[#bfa68a]\">맞춤형 심층 질문</span>을 통해 진짜 나를 찾아갑니다.",
-        step1: "1단계: 기초 성향 및 하위 본능 파악",
-        phase1Title: "1부: 일상적 태도 및 관계 패턴",
-        phase1Desc: "극단적인 상황이 아닌, 편안한 상태에서의 본인 모습을 떠올리며 평가해 주세요.",
-        required: "모든 문항에 빠짐없이 응답해 주십시오.",
-        next: "분석 및 2단계 진입",
-        phase2Title: "1차 알고리즘 분석 완료",
-        phase2Desc: "회원님의 1차 응답을 바탕으로 <strong>유력한 후보 유형들</strong>이 도출되었습니다.<br>이 유형들을 최종적으로 구별하기 위한 심층 동기 질문을 드립니다.",
-        submit: "최종 결과 확인하기",
-        report: "분석 리포트",
-        lowConf: "결과의 <strong>확신도가 '낮음'</strong>으로 측정되었습니다. 여러 유형의 점수가 비슷하게 경합하고 있어 방어기제가 작동했거나 객관화가 덜 되었을 확률이 높습니다.",
-        cta: "전문가 1:1 타이핑 세션 신청하기",
-        restart: "처음부터 다시하기",
-        notAtAll: "전혀 아니다",
-        very: "매우 그렇다",
-        core: "Core Type",
-        wing: "Wing",
-        arrows: "Stress & Growth",
-        instinctsPrefix: "제 1본능: ",
-        tieArrows: "코어 유형 확정 후 확인 가능합니다.",
-        growthDir: "통합(건강) 방향",
-        stressDir: "비통합(스트레스) 방향"
-      },
-      en: {
-        title: "Adaptive Enneagram Typing Assessment",
-        subtitle: "This assessment explores the core motivations beneath your observable behavior.<br>Using your first-round responses, it narrows likely type candidates and applies <span class=\"font-bold text-[#bfa68a]\">targeted follow-up questions</span> for a more precise typing result.",
-        step1: "Step 1: Baseline Pattern & Instinct",
-        phase1Title: "Part 1: Everyday Relational and Behavioral Patterns",
-        phase1Desc: "Please answer based on your usual, settled state rather than unusually stressful situations.",
-        required: "Please answer every question before continuing.",
-        next: "Analyze and Continue to Step 2",
-        phase2Title: "Phase 1 Analysis Complete",
-        phase2Desc: "Based on your first-round responses, we identified <strong>top candidate types</strong>.<br>Next, we use deeper motivation items to differentiate them more accurately.",
-        submit: "View Final Result",
-        report: "Analysis Summary",
-        lowConf: "Your result is currently marked <strong>low confidence</strong>. Scores are tightly clustered, which can happen when multiple patterns are active at the same time.",
-        cta: "Book a Free 1:1 Typing Session",
-        restart: "Start Over",
-        notAtAll: "Not at all",
-        very: "Very true",
-        core: "Core Type",
-        wing: "Wing",
-        arrows: "Stress & Growth",
-        instinctsPrefix: "Primary instinct: ",
-        tieArrows: "Available once core type is clarified.",
-        growthDir: "Growth direction",
-        stressDir: "Stress direction"
-      }
-    };
-
-    function adaptiveText(key) { return adaptiveUi[adaptiveLang][key]; }
-    function adaptiveQuestionText(item) {
-      if (adaptiveLang === 'en' && adaptiveQuestionEn[item.id]) return adaptiveQuestionEn[item.id];
-      return item.q;
-    }
-
-    function setAdaptiveTestLanguage(lang) {
-      adaptiveLang = lang === 'en' ? 'en' : 'ko';
-      renderTestPage();
-      initAdaptiveTest();
-    }
-
-    function renderTestPage() {
-      const isEn = adaptiveLang === 'en';
-      document.getElementById('app').innerHTML = `
-        <div class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
-          <div class="flex justify-end mb-4">
-            <div class="inline-flex rounded-full border border-gray-200 bg-white p-1 text-xs font-semibold">
-              <button type="button" onclick="setAdaptiveTestLanguage('ko')" class="px-3 py-1 rounded-full ${!isEn ? 'bg-[#4a4540] text-white' : 'text-gray-500 hover:text-[#4a4540]'}">한국어</button>
-              <button type="button" onclick="setAdaptiveTestLanguage('en')" class="px-3 py-1 rounded-full ${isEn ? 'bg-[#4a4540] text-white' : 'text-gray-500 hover:text-[#4a4540]'}">English</button>
+        <div class="p-8 space-y-6">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+              <p class="text-xs text-gray-400 font-bold uppercase mb-1">Core Type</p>
+              <p id="res-core" class="text-2xl font-bold text-gray-800"></p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+              <p class="text-xs text-gray-400 font-bold uppercase mb-1">Wing</p>
+              <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100 col-span-2">
+              <p class="text-xs text-gray-400 font-bold uppercase mb-1">Stress & Growth</p>
+              <p id="res-arrows" class="text-[15px] font-medium text-gray-700 mt-2 leading-relaxed"></p>
             </div>
           </div>
 
-          <div class="text-center mb-10">
-            <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest shadow-sm">Narrative Interview</span>
-            <h1 class="text-3xl font-extrabold text-gray-900 mt-2">${adaptiveText('title')}</h1>
-            <p class="mt-4 text-gray-600 leading-relaxed text-sm">${adaptiveText('subtitle')}</p>
+          <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
+            <h3 class="font-bold text-[#4a4540] mb-2 text-sm">분석 리포트</h3>
+            <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
           </div>
 
-          <div id="progress-container" class="mb-8">
-            <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
-              <span id="step-label">${adaptiveText('step1')}</span>
-              <span id="step-counter">1 / 2</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-1.5">
-              <div id="progress-bar" class="bg-[#8c8680] h-1.5 rounded-full smooth-transition" style="width: 50%;"></div>
-            </div>
+          <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+            <h3 class="font-bold text-[#4a4540] mb-3 text-sm">상위 3유형 상대 점유율 및 근거</h3>
+            <div id="res-top3" class="space-y-3 text-sm text-gray-700"></div>
           </div>
 
-          <form id="phase1-form" class="space-y-10 fade-in">
-            <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center shadow-sm">
-              <p class="font-semibold text-gray-700">${adaptiveText('phase1Title')}</p>
-              <p class="text-sm text-gray-500 mt-1">${adaptiveText('phase1Desc')}</p>
-            </div>
-            <div id="phase1-container" class="space-y-6"></div>
-            <div class="text-center pt-6">
-              <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
-              <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
-                ${adaptiveText('next')}
-              </button>
-            </div>
-          </form>
+          <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
+            <p class="text-sm text-red-800 mb-3">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.</p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full">무료 1:1 세션 신청</a>
+          </div>
 
-          <form id="phase2-form" class="space-y-10 hidden fade-in">
-            <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center shadow-sm relative overflow-hidden">
-              <p class="font-bold text-[#4a4540] text-lg">${adaptiveText('phase2Title')}</p>
-              <p class="text-sm text-gray-600 mt-2">${adaptiveText('phase2Desc')}</p>
-            </div>
-            <div id="phase2-container" class="space-y-6"></div>
-            <div class="text-center pt-6">
-              <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
-              <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg smooth-transition">
-                ${adaptiveText('submit')}
-              </button>
-            </div>
-          </form>
-
-          <div id="result-view" class="hidden fade-in">
-            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-              <div class="bg-[#4a4540] px-8 py-10 text-center text-white relative">
-                <h2 class="text-sm font-medium opacity-80 uppercase tracking-widest mb-3">Your Original Design</h2>
-                <div id="res-final" class="text-5xl font-bold mb-4 tracking-tight text-[#bfa68a]"></div>
-                <p id="res-instincts" class="text-lg font-medium opacity-90"></p>
-                <div id="confidence-badge" class="absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold border border-white/30"></div>
-              </div>
-
-              <div class="p-8 space-y-6">
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
-                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('core')}</p>
-                    <p id="res-core" class="text-2xl font-bold text-gray-800"></p>
-                  </div>
-                  <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
-                    <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('wing')}</p>
-                    <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
-                  </div>
-                  <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100 col-span-2">
-                    <p class="text-xs text-gray-400 font-bold uppercase mb-1"><i class="fas fa-arrows-alt-h mr-1"></i>${adaptiveText('arrows')}</p>
-                    <p id="res-arrows" class="text-[15px] font-medium text-gray-700 mt-2 leading-relaxed"></p>
-                  </div>
-                </div>
-
-                <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
-                  <h3 class="font-bold text-[#4a4540] mb-2 text-sm"><i class="fas fa-chart-pie mr-2"></i>${adaptiveText('report')}</h3>
-                  <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
-                </div>
-
-                <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
-                  <p class="text-sm text-red-800 mb-3">${adaptiveText('lowConf')}</p>
-                  <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full transition">${adaptiveText('cta')}</a>
-                </div>
-
-                <div class="text-center pt-6 border-t border-gray-100">
-                  <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">${adaptiveText('restart')}</button>
-                </div>
-              </div>
-            </div>
+          <div class="text-center pt-6 border-t border-gray-100">
+            <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">처음부터 다시하기</button>
+            <p class="text-xs text-gray-400 mt-4">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
           </div>
         </div>
-      `;
-    }
+      </div>
+    </section>
+  </main>
 
-    function renderAdaptiveQuestions(containerId, questions, prefix) {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      container.innerHTML = '';
-      questions.forEach((item) => {
-        const qText = adaptiveQuestionText(item);
-        const html = `
-          <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
-            <p class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${qText}</p>
-            <div class="flex justify-between items-center sm:px-2">
-              <span class="text-xs text-gray-400 font-medium">${adaptiveText('notAtAll')}</span>
-              <div class="flex space-x-2 sm:space-x-4">
-                ${[1,2,3,4,5].map((val) => `
-                  <div class="relative">
-                    <input type="radio" name="${item.id}" value="${val}" id="${item.id}-${val}" class="peer sr-only radio-btn">
-                    <label for="${item.id}-${val}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer peer-hover:border-[#bfa68a] hover:bg-gray-50 smooth-transition font-semibold text-sm bg-white">${val}</label>
-                  </div>
-                `).join('')}
+<script>
+const arrowLines = {1:{stress:4,growth:7},2:{stress:8,growth:4},3:{stress:9,growth:6},4:{stress:2,growth:1},5:{stress:7,growth:8},6:{stress:3,growth:9},7:{stress:1,growth:5},8:{stress:5,growth:2},9:{stress:6,growth:3}};
+
+const TEST_CONFIG = {
+  weights: {
+    phase1Core: 1.5,
+    phase1Binary: 1.8,
+    phase2Base: 2.0,
+    tieBreaker: {
+      default: 1.8,
+      near: 1.95,
+      close: 2.1,
+      type71Default: 2.0,
+      type71Close: 2.2,
+      type78Default: 2.0,
+      type78Close: 2.2,
+      wing7: 2.0
+    }
+  },
+  thresholds: {
+    candidateRatio: 0.70,
+    minCandidates: 3,
+    maxCandidates: 5,
+    tie36Margin: 0.08,
+    tie31Margin: 0.10,
+    tie71Margin: 0.12,
+    tie78Margin: 0.12,
+    tie3sxMargin: 0.10,
+    tieCloseBand: 0.03,
+    tieNearBand31: 0.04,
+    tieNearBand718: 0.05,
+    tie3sxNearTopInstinctGap: 1,
+    confidenceHigh: 0.20,
+    confidenceMedium: 0.08,
+    coreReserveDiff: 0.04,
+    stressCorrectionStart: 5,
+    stressCorrectionMargin: 6.0,
+    wingActivationRatio: 0.85
+  },
+  corrections: {
+    sxDampFactor: 0.45,
+    sxDampMaxCoreRatio: 0.06,
+    sxBoostFactor: 0.35,
+    sxBoostCap: 1.5,
+    stressType1Damp: 1.0,
+    stressType7Boost: 0.6,
+    soPenaltyHighLead: 2,
+    soPenaltyLowLead: 1,
+    soPenaltyHigh: 2.0,
+    soPenaltyLow: 1.0
+  }
+};
+
+const testState = {
+  phase1Responses: {},
+  phase2Questions: [],
+  tie: {
+    t36: {enabled:false,weight:0,margin:null},
+    t31: {enabled:false,weight:0,margin:null},
+    t3sx: {enabled:false,weight:0,margin:null},
+    t71: {enabled:false,weight:0,margin:null},
+    t78: {enabled:false,weight:0,margin:null},
+    t7wing: {enabled:false,weight:0,margin:null}
+  }
+};
+
+const q1 = [
+  { id:'t2', type:2, q:'사람들과 함께 있을 때, 내 진짜 감정보다 "어떻게 보일지"를 더 신경 쓰는 편이다.' },
+  { id:'t5', type:5, q:'상황을 바로 반응하기보다 먼저 분석해서 불확실성을 줄이려는 편이다.' },
+  { id:'t8', type:8, q:'내 영역이나 결정권이 침해된다고 느끼면 즉시 경계선을 세우고 주도권을 회수하려는 편이다.' },
+  { id:'c1', type:1, q:'무언가 어긋나 보이면 바로잡아야 마음이 놓이고, 기준을 지키려는 압박이 강해진다.' },
+  { id:'c2', type:2, q:'관계가 멀어질까 불안할 때 먼저 돕고 챙기며 연결을 붙잡고, 서운함은 안으로 쌓는 편이다.' },
+  { id:'c3', type:3, q:'결과와 성취로 내 가치를 증명해야 안심이 되고, 감정이나 피로 신호를 뒤로 미루는 편이다.' },
+  { id:'c4', type:4, q:'평범함보다 나만의 의미와 깊이를 찾고 싶고, 이해받지 못한다는 감정에 오래 머무를 때가 있다.' },
+  { id:'c5', type:5, q:'요구가 많아지면 물러나 에너지를 보존하고, 관찰자 모드로 전환할 때 심리적으로 편하다.' },
+  { id:'c6', type:6, q:'애매한 상황에서 위험 신호를 먼저 찾고 확인·재확인을 하느라 결정 속도가 느려질 때가 있다.' },
+  { id:'c7', type:7, q:'답답하거나 불편한 감정이 올라오면 선택지를 늘리고 분위기를 전환해 숨통을 트는 편이다.' },
+  { id:'c8', type:8, q:'힘의 불균형을 감지하면 정면으로 개입해 판을 바꾸려 하고, 통제당하는 상황을 강하게 경계한다.' },
+  { id:'c9', type:9, q:'갈등 조짐이 보이면 평화를 위해 내 우선순위를 뒤로 미루고, 중요한 결정을 미루는 편이다.' },
+  { id:'f_2_3', format:'ab', leftType:2,rightType:3,weight:2.2,q:'압박 상황에서 더 자동으로 나오는 쪽을 고르세요.',a:'먼저 상대를 챙겨 관계를 붙잡는다.',b:'먼저 성과와 유능함을 증명한다.' },
+  { id:'f_3_6', format:'ab', leftType:3,rightType:6,weight:2.2,q:'불안할 때 더 자동으로 나오는 쪽을 고르세요.',a:'결과를 내서 인정받는 쪽으로 몰입한다.',b:'리스크를 점검하고 대비를 강화한다.' },
+  { id:'f_6_8', format:'ab', leftType:6,rightType:8,weight:2.2,q:'위협을 느낄 때 더 자동으로 나오는 쪽을 고르세요.',a:'확인·협의·안전장치부터 만든다.',b:'바로 개입해 힘의 균형을 바꾼다.' },
+  { id:'f_1_9', format:'ab', leftType:1,rightType:9,weight:2.2,q:'갈등 직전 더 자동으로 나오는 쪽을 고르세요.',a:'기준을 분명히 하고 바로잡는다.',b:'마찰을 줄이고 흐름을 유지한다.' },
+  { id:'f_5_7', format:'ab', leftType:5,rightType:7,weight:2.2,q:'에너지가 떨어질 때 더 자동으로 나오는 쪽을 고르세요.',a:'물러나 분석하고 최소 반응한다.',b:'전환점과 새로운 자극을 찾는다.' },
+  { id:'f_2_8', format:'ab', leftType:2,rightType:8,weight:2.2,q:'관계가 흔들릴 때 더 자동으로 나오는 쪽을 고르세요.',a:'더 도우며 연결을 붙잡는다.',b:'선을 긋고 주도권을 회수한다.' },
+  { id:'state_2w', q:'최근 2주 기준으로, 내 일상은 전반적으로 얼마나 압박/스트레스 상태였나요? (1=매우 안정, 6=매우 높은 압박)' },
+  { id:'i_sp_1', inst:'sp', q:'나는 안전, 재정, 생활 리듬(수면/식사/체력)을 먼저 정비해야 관계와 일이 안정된다고 느낀다.' },
+  { id:'i_sp_2', inst:'sp', q:'시간·돈·에너지 낭비가 생기면 마음이 크게 흔들리고, 효율 회복이 우선순위가 된다.' },
+  { id:'i_sp_3', inst:'sp', q:'재정적 안정과 독립적인 생활 기반을 확보하는 일이 삶에서 높은 우선순위를 가진다.' },
+  { id:'i_sx_1', inst:'sx', q:'넓은 네트워킹보다 강한 1:1 몰입 관계나 대상이 있을 때 삶의 에너지가 급격히 올라간다.' },
+  { id:'i_sx_2', inst:'sx', q:'중요하다고 느낀 대상에는 단기간에 강하게 몰입하고, 강도 높은 연결을 원한다.' },
+  { id:'i_sx_3', inst:'sx', q:'가벼운 대화보다 가치관과 내면을 깊게 다루는 밀도 높은 대화를 더 선호한다.' },
+  { id:'i_so_1', inst:'so', q:'집단 안에서 영향력 구조, 역할, 소속의 위치를 빠르게 읽고 그 흐름에 맞춰 움직인다.' },
+  { id:'i_so_2', inst:'so', q:'개인 만족보다 공동체 기여·평판·역할의 지속성이 더 중요하다고 느낄 때가 많다.' },
+  { id:'i_so_3', inst:'so', q:'내 개인의 이익보다 공동체 전체의 흐름과 의미에 참여할 때 더 보람을 느낀다.' }
+];
+
+const deep = {
+  1:[{id:'d1_1',type:1,q:'무언가를 할 때 "더 제대로 해야 하지 않나?"라는 내면의 점검 목소리가 자주 올라온다.'},{id:'d1_2',type:1,q:'정답 기준을 세워두고, 그 기준에 못 미치면 답답함이나 짜증이 쉽게 커진다.'}],
+  2:[{id:'d2_1',type:2,q:'도움이 필요한 사람에게 먼저 다가가는 건 익숙하지만, 내가 먼저 도움을 요청하는 건 어렵게 느껴진다.'},{id:'d2_2',type:2,q:'상대의 필요는 잘 읽지만, "내가 진짜 원하는 것"을 말할 때 망설이게 된다.'}],
+  3:[{id:'d3_1',type:3,q:'압박이 오면 감정보다 목표·성과 중심으로 재정렬하고, 결과로 신뢰를 확보하려 한다.'},{id:'d3_2',type:3,q:'있는 그대로의 나보다 유능한 결과물로 평가받을 때 더 안전하다고 느낀다.'}],
+  4:[{id:'d4_1',type:4,q:'사람들에게 온전히 이해받지 못한다는 감정을 자주 느끼고, 그 감정이 정체성 일부처럼 느껴진다.'},{id:'d4_2',type:4,q:'무미건조한 일상보다 감정적 의미가 깊은 순간에서 더 강하게 살아있음을 느낀다.'}],
+  5:[{id:'d5_1',type:5,q:'직접 부딪히기보다 한 걸음 물러나 관찰할 때 심리적으로 더 안전하다고 느낀다.'},{id:'d5_2',type:5,q:'갑작스러운 감정 요구나 침범이 오면 에너지를 차단하고 물러서는 반응이 자동으로 나온다.'}],
+  6:[{id:'d6_1',type:6,q:'결정 전에 보이지 않는 위험과 변수부터 점검하고, 확신이 들 때까지 행동을 유보하는 편이다.'},{id:'d6_2',type:6,q:'권위를 따르며 안전을 얻고 싶지만, 동시에 정말 믿을 수 있는지 계속 검증하게 된다.'}],
+  7:[{id:'d7_1',type:7,q:'불편한 감정이나 현실 직면이 어려울 때 분위기 전환과 가능성 탐색으로 빠르게 이동한다.'},{id:'d7_2',type:7,q:'하나에 묶이거나 제한되면 답답해지고, 선택지를 열어둘 때 마음이 편하다.'}],
+  8:[{id:'d8_1',type:8,q:'타인에게 주도권을 빼앗기거나 무력해지는 상황을 본능적으로 경계한다.'},{id:'d8_2',type:8,q:'호감보다 영향력과 경계가 존중받는 것이 나에게 더 중요하다.'}],
+  9:[{id:'d9_1',type:9,q:'연결감이 깨질까 두려워 내 욕구나 분노를 눌러 평화를 유지하려는 경향이 있다.'},{id:'d9_2',type:9,q:'중요한 갈등이나 결정을 앞두면 사소한 일에 몰두하며 에너지를 분산시키기도 한다.'}]
+};
+
+const tb36 = [{id:'tb_3_6_1',type:3,q:'성과 동기의 핵심은 인정/가치 입증이다.'},{id:'tb_3_6_2',type:6,q:'성과 동기의 핵심은 안전 확보/리스크 대비다.'}];
+const tb31 = [{id:'tb_3_1_1',type:3,q:'목표 성취의 핵심은 유능함 입증과 인정이다.'},{id:'tb_3_1_2',type:1,q:'목표 성취의 핵심은 올바름과 완성도다.'}];
+const tb3sx = [{id:'tb_3_sx_1',type:3,q:'목표 달성 동기의 핵심은 인정/가치 증명이다.'},{id:'tb_3_sx_2',q:'목표 몰입 동기의 핵심은 강렬한 몰입감과 내적 쾌감이다.'}];
+const tb71 = [{id:'tb_7_1_1',type:7,q:'압박이 커질수록 기준 강화보다 선택지 확장과 전환으로 숨통을 트는 편이다.'},{id:'tb_7_1_2',type:1,q:'압박이 커질수록 선택지 확장보다 기준 강화·오류 수정 쪽으로 가는 편이다.'}];
+const tb78 = [{id:'tb_7_8_1',type:7,q:'막힘을 뚫을 때 전환·아이디어·속도 중심으로 접근하는 편이다.'},{id:'tb_7_8_2',type:8,q:'막힘을 뚫을 때 직접 개입·압박·주도권 회수로 접근하는 편이다.'}];
+const tb7wing = [{id:'tb_7w_1',wing:6,q:'리스크 점검·안전장치·구조를 더 선호하는 편이다.'},{id:'tb_7w_2',wing:8,q:'독립성·강한 추진·직접 돌파를 더 선호하는 편이다.'}];
+
+function renderQuestions(containerId, items, prefix) {
+  const root = document.getElementById(containerId);
+  root.innerHTML = '';
+  items.forEach((item) => {
+    const legendId = `${prefix}-legend-${item.id}`;
+    const hintId = `${prefix}-hint-${item.id}`;
+    if (item.format === 'ab') {
+      root.innerHTML += `
+        <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
+          <fieldset id="${prefix}-fieldset-${item.id}" aria-labelledby="${legendId}" aria-describedby="${hintId}">
+            <legend id="${legendId}" class="text-[15px] sm:text-base font-medium text-gray-800 mb-2 leading-relaxed">${item.q}</legend>
+            <p id="${hintId}" class="text-xs text-gray-400 mb-5">키보드 사용 시 Tab으로 이동하고 Space/Enter로 선택할 수 있습니다.</p>
+            <div class="grid gap-3">
+            <label class="block cursor-pointer">
+              <input type="radio" name="${item.id}" value="A" class="sr-only peer" required>
+              <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth">
+                <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">A 선택</span>
+                <div>${item.a}</div>
               </div>
-              <span class="text-xs text-gray-400 font-medium">${adaptiveText('very')}</span>
+            </label>
+            <label class="block cursor-pointer">
+              <input type="radio" name="${item.id}" value="B" class="sr-only peer" required>
+              <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth">
+                <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">B 선택</span>
+                <div>${item.b}</div>
+              </div>
+            </label>
             </div>
+          </fieldset>
+        </div>`;
+      return;
+    }
+
+    root.innerHTML += `
+      <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
+        <fieldset id="${prefix}-fieldset-${item.id}" aria-labelledby="${legendId}" aria-describedby="${hintId}">
+        <legend id="${legendId}" class="text-[15px] sm:text-base font-medium text-gray-800 mb-5 leading-relaxed">${item.q}</legend>
+        <div id="${hintId}" class="flex justify-between items-center sm:px-2">
+          <span class="text-xs text-gray-400 font-medium">거의 아니다</span>
+          <div class="flex space-x-2 sm:space-x-4">
+            ${[1,2,3,4,5,6].map((v) => `
+              <div class="relative">
+                <input type="radio" name="${item.id}" value="${v}" id="${item.id}-${v}" class="peer sr-only radio-btn">
+                <label for="${item.id}-${v}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer hover:bg-gray-50 peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth font-semibold text-sm bg-white">${v}</label>
+              </div>`).join('')}
           </div>
-        `;
-        container.innerHTML += html;
-      });
+          <span class="text-xs text-gray-400 font-medium">거의 항상 그렇다</span>
+        </div>
+        <div class="mt-4 text-center">
+          <input type="radio" name="${item.id}" value="U" id="${item.id}-U" class="peer sr-only">
+          <label for="${item.id}-U" class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 text-xs text-gray-500 cursor-pointer hover:bg-gray-50 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-checked:text-[#4a4540] peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth">잘 모르겠다 / 상황 따라 다름 (비채점)</label>
+        </div>
+        </fieldset>
+      </div>`;
+  });
+}
+
+function toScore(raw) {
+  if (raw === 'U' || raw === undefined || raw === null) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
+}
+
+function validate(items, prefix, msgId) {
+  let ok = true;
+  let first = null;
+  items.forEach((item) => {
+    const block = document.getElementById(`${prefix}-block-${item.id}`);
+    const fieldset = document.getElementById(`${prefix}-fieldset-${item.id}`);
+    if (!document.querySelector(`input[name="${item.id}"]:checked`)) {
+      ok = false;
+      block.classList.add('border-red-300','bg-red-50');
+      if (fieldset) fieldset.setAttribute('aria-invalid', 'true');
+      if (!first) first = block;
+    } else {
+      block.classList.remove('border-red-300','bg-red-50');
+      if (fieldset) fieldset.removeAttribute('aria-invalid');
+    }
+  });
+  const msg = document.getElementById(msgId);
+  msg.setAttribute('role', 'alert');
+  msg.setAttribute('aria-live', 'polite');
+  msg.classList.toggle('hidden', ok);
+  if (!ok && first) {
+    first.scrollIntoView({behavior:'smooth', block:'center'});
+    const firstInput = first.querySelector('input[type="radio"]');
+    if (firstInput) firstInput.focus();
+  }
+  return ok;
+}
+
+function setProgress(percent) {
+  const bar = document.getElementById('progress-bar');
+  const track = document.getElementById('progress-track');
+  if (bar) bar.style.width = `${percent}%`;
+  if (track) track.setAttribute('aria-valuenow', String(percent));
+}
+
+function submitPhase1() {
+  if (!validate(q1, 'p1', 'validation-msg-1')) return;
+  const center = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+
+  q1.forEach((item) => {
+    const sel = document.querySelector(`input[name="${item.id}"]:checked`);
+    const raw = sel.value;
+    testState.phase1Responses[item.id] = raw;
+
+    if (item.format === 'ab') {
+      const t = raw === 'A' ? item.leftType : item.rightType;
+      center[t] += TEST_CONFIG.weights.phase1Binary;
+      return;
     }
 
-    function validateAdaptiveForm(questions, prefix, errorMsgId) {
-      let isValid = true;
-      let firstErrorElement = null;
-      questions.forEach((item) => {
-        const block = document.getElementById(`${prefix}-block-${item.id}`);
-        if (!document.querySelector(`input[name="${item.id}"]:checked`)) {
-          isValid = false;
-          if (block) {
-            block.classList.add('border-red-300', 'bg-red-50');
-            if (!firstErrorElement) firstErrorElement = block;
-          }
-        } else if (block) {
-          block.classList.remove('border-red-300', 'bg-red-50');
-        }
-      });
-      const errorMsg = document.getElementById(errorMsgId);
-      if (!isValid) {
-        if (errorMsg) errorMsg.classList.remove('hidden');
-        if (firstErrorElement) firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else if (errorMsg) {
-        errorMsg.classList.add('hidden');
-      }
-      return isValid;
+    const score = toScore(raw);
+    if (score === null) return;
+    if (item.id === 't2') { center[2]+=score; center[3]+=score; center[4]+=score; }
+    if (item.id === 't5') { center[5]+=score; center[6]+=score; center[7]+=score; }
+    if (item.id === 't8') { center[8]+=score; center[9]+=score; center[1]+=score; }
+    if (item.id.startsWith('c')) center[item.type] += score * TEST_CONFIG.weights.phase1Core;
+  });
+
+  const ranked = Object.keys(center).map((k)=>({type:parseInt(k,10), score:center[k]})).sort((a,b)=>b.score-a.score);
+  const top = ranked[0].score;
+  const topType = ranked[0].type;
+  let cands = ranked.filter((x)=>x.score>=top*TEST_CONFIG.thresholds.candidateRatio).map((x)=>x.type);
+  cands = [...new Set([...cands, topType, topType===1?9:topType-1, topType===9?1:topType+1])];
+  if (cands.length < TEST_CONFIG.thresholds.minCandidates) {
+    cands = [...new Set([...cands, ...ranked.slice(0, TEST_CONFIG.thresholds.minCandidates).map((x)=>x.type)])];
+  }
+  const topTypes = ranked.map((x)=>x.type).filter((t)=>cands.includes(t)).slice(0, TEST_CONFIG.thresholds.maxCandidates);
+
+  testState.phase2Questions = [];
+  topTypes.forEach((t)=>{ if (deep[t]) testState.phase2Questions = testState.phase2Questions.concat(deep[t]); });
+
+  const top3 = ranked.slice(0,3).map((x)=>x.type);
+  const s3 = center[3], s6 = center[6], s1 = center[1], s7 = center[7], s8 = center[8];
+
+  const m36 = Math.max(s3,s6)>0 ? Math.abs(s3-s6)/Math.max(s3,s6) : 1;
+  const e36 = topTypes.includes(3)&&topTypes.includes(6)&&((top3.includes(3)&&top3.includes(6))||m36<=TEST_CONFIG.thresholds.tie36Margin);
+  testState.tie.t36 = {
+    enabled:e36,
+    weight:m36<=TEST_CONFIG.thresholds.tieCloseBand?TEST_CONFIG.weights.tieBreaker.close:(m36<=TEST_CONFIG.thresholds.tie36Margin?TEST_CONFIG.weights.tieBreaker.near:TEST_CONFIG.weights.tieBreaker.default),
+    margin:m36
+  };
+  if (e36) testState.phase2Questions = testState.phase2Questions.concat(tb36);
+
+  const m31 = Math.max(s3,s1)>0 ? Math.abs(s3-s1)/Math.max(s3,s1) : 1;
+  const e31 = topTypes.includes(3)&&topTypes.includes(1)&&((top3.includes(3)&&top3.includes(1))||m31<=TEST_CONFIG.thresholds.tie31Margin);
+  testState.tie.t31 = {
+    enabled:e31,
+    weight:m31<=TEST_CONFIG.thresholds.tieNearBand31?TEST_CONFIG.weights.tieBreaker.close:(m31<=TEST_CONFIG.thresholds.tie31Margin?TEST_CONFIG.weights.tieBreaker.near:TEST_CONFIG.weights.tieBreaker.default),
+    margin:m31
+  };
+  if (e31) testState.phase2Questions = testState.phase2Questions.concat(tb31);
+
+  const inst = {sp:0,sx:0,so:0};
+  q1.filter((q)=>q.inst).forEach((q)=>{
+    const score = toScore(testState.phase1Responses[q.id]);
+    if (score !== null) inst[q.inst] += score;
+  });
+  const m3top = top>0 ? (top-s3)/top : 1;
+  const e3sx = topTypes.includes(3) &&
+    inst.sx >= Math.max(inst.sp, inst.so)-TEST_CONFIG.thresholds.tie3sxNearTopInstinctGap &&
+    (ranked[0].type===3 || m3top<=TEST_CONFIG.thresholds.tie3sxMargin);
+  testState.tie.t3sx = {
+    enabled:e3sx,
+    weight:m3top<=TEST_CONFIG.thresholds.tieCloseBand?TEST_CONFIG.weights.tieBreaker.close:(m3top<=TEST_CONFIG.thresholds.tie3sxMargin?TEST_CONFIG.weights.tieBreaker.near:TEST_CONFIG.weights.tieBreaker.default),
+    margin:m3top
+  };
+  if (e3sx) testState.phase2Questions = testState.phase2Questions.concat(tb3sx);
+
+  const m71 = Math.max(s7,s1)>0 ? Math.abs(s7-s1)/Math.max(s7,s1) : 1;
+  const e71 = topTypes.includes(7)&&topTypes.includes(1)&&((top3.includes(7)&&top3.includes(1))||m71<=TEST_CONFIG.thresholds.tie71Margin);
+  testState.tie.t71 = {enabled:e71, weight:m71<=TEST_CONFIG.thresholds.tieNearBand718?TEST_CONFIG.weights.tieBreaker.type71Close:TEST_CONFIG.weights.tieBreaker.type71Default, margin:m71};
+  if (e71) testState.phase2Questions = testState.phase2Questions.concat(tb71);
+
+  const m78 = Math.max(s7,s8)>0 ? Math.abs(s7-s8)/Math.max(s7,s8) : 1;
+  const e78 = topTypes.includes(7)&&topTypes.includes(8)&&((top3.includes(7)&&top3.includes(8))||m78<=TEST_CONFIG.thresholds.tie78Margin);
+  testState.tie.t78 = {enabled:e78, weight:m78<=TEST_CONFIG.thresholds.tieNearBand718?TEST_CONFIG.weights.tieBreaker.type78Close:TEST_CONFIG.weights.tieBreaker.type78Default, margin:m78};
+  if (e78) testState.phase2Questions = testState.phase2Questions.concat(tb78);
+
+  testState.tie.t7wing = {enabled: topTypes.includes(7) || ranked[0].type===7, weight:TEST_CONFIG.weights.tieBreaker.wing7, margin:null};
+  if (testState.tie.t7wing.enabled) testState.phase2Questions = testState.phase2Questions.concat(tb7wing);
+
+  document.getElementById('phase1-form').classList.add('hidden');
+  document.getElementById('phase2-form').classList.remove('hidden');
+  setProgress(100);
+  document.getElementById('step-label').innerText = '2단계: 동기 교차 검증';
+  document.getElementById('step-counter').innerText = '2 / 2';
+  renderQuestions('phase2-container', testState.phase2Questions, 'p2');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function submitPhase2() {
+  if (!validate(testState.phase2Questions, 'p2', 'validation-msg-2')) return;
+
+  const final = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  const evidence = {1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[]};
+  const questionText = {};
+  [...q1, ...testState.phase2Questions].forEach((q)=>{ questionText[q.id] = q.q; });
+  const addScore = (type, points, qid, txt=null) => {
+    final[type] += points;
+    evidence[type].push({points, text: txt || questionText[qid] || qid});
+  };
+
+  let tb3sxCore = null, tb3sxInstinct = null, tb7w6 = 0, tb7w8 = 0;
+  const stressRaw = toScore(testState.phase1Responses.state_2w);
+  const recentStress = stressRaw === null ? 3 : stressRaw;
+
+  q1.forEach((q) => {
+    if (q.format === 'ab') {
+      const choice = testState.phase1Responses[q.id];
+      const chosen = choice === 'A' ? q.leftType : q.rightType;
+      addScore(chosen, TEST_CONFIG.weights.phase1Binary, q.id, choice === 'A' ? q.a : q.b);
+      return;
     }
+    const score = toScore(testState.phase1Responses[q.id]);
+    if (score === null) return;
+    if (q.id === 't2') { addScore(2, score, q.id); addScore(3, score, q.id); addScore(4, score, q.id); }
+    if (q.id === 't5') { addScore(5, score, q.id); addScore(6, score, q.id); addScore(7, score, q.id); }
+    if (q.id === 't8') { addScore(8, score, q.id); addScore(9, score, q.id); addScore(1, score, q.id); }
+    if (q.id.startsWith('c')) addScore(q.type, score * TEST_CONFIG.weights.phase1Core, q.id);
+  });
 
-    function initAdaptiveTest() {
-      adaptivePhase1Responses = {};
-      adaptiveTopCandidates = [];
-      adaptivePhase2QuestionsData = [];
-      adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: null };
-      adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: null };
-      adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: null };
-      renderAdaptiveQuestions('phase1-container', adaptivePhase1Questions, 'p1');
+  testState.phase2Questions.forEach((q) => {
+    const val = toScore(document.querySelector(`input[name="${q.id}"]:checked`).value);
+    if (val === null) return;
+    if (q.id === 'tb_3_sx_2') { tb3sxInstinct = val; return; }
+    if (q.id === 'tb_7w_1') { tb7w6 = val; return; }
+    if (q.id === 'tb_7w_2') { tb7w8 = val; return; }
+
+    let w = q.weight || TEST_CONFIG.weights.phase2Base;
+    if (q.id.startsWith('tb_3_6_') && testState.tie.t36.enabled) w = testState.tie.t36.weight;
+    else if (q.id.startsWith('tb_3_1_') && testState.tie.t31.enabled) w = testState.tie.t31.weight;
+    else if (q.id.startsWith('tb_7_1_') && testState.tie.t71.enabled) w = testState.tie.t71.weight;
+    else if (q.id.startsWith('tb_7_8_') && testState.tie.t78.enabled) w = testState.tie.t78.weight;
+    else if (q.id === 'tb_3_sx_1' && testState.tie.t3sx.enabled) { w = testState.tie.t3sx.weight; tb3sxCore = val; }
+    else if (q.id.startsWith('tb_')) return;
+
+    addScore(q.type, val * w, q.id);
+  });
+
+  let sxDamp = 0, sxBoost = 0;
+  if (testState.tie.t3sx.enabled && tb3sxCore !== null && tb3sxInstinct !== null) {
+    const d = tb3sxInstinct - tb3sxCore;
+    if (d > 0) {
+      // Stabilize: cap 3-type damping so a single tie-breaker cannot over-flip the core.
+      sxDamp = Math.min(d * TEST_CONFIG.corrections.sxDampFactor, final[3] * TEST_CONFIG.corrections.sxDampMaxCoreRatio);
+      final[3] = Math.max(0, final[3] - sxDamp);
+      sxBoost = Math.min(d * TEST_CONFIG.corrections.sxBoostFactor, TEST_CONFIG.corrections.sxBoostCap);
     }
+  }
 
-    function submitPhase1() {
-      if (!validateAdaptiveForm(adaptivePhase1Questions, 'p1', 'validation-msg-1')) return;
-
-      let centerScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
-
-      adaptivePhase1Questions.forEach((item) => {
-        const selected = document.querySelector(`input[name="${item.id}"]:checked`);
-        const score = parseInt(selected.value, 10);
-        adaptivePhase1Responses[item.id] = score;
-        if (item.id === 't2') { centerScores[2] += score; centerScores[3] += score; centerScores[4] += score; }
-        if (item.id === 't5') { centerScores[5] += score; centerScores[6] += score; centerScores[7] += score; }
-        if (item.id === 't8') { centerScores[8] += score; centerScores[9] += score; centerScores[1] += score; }
-        if (item.id.startsWith('c')) centerScores[item.type] += score * 1.5;
-      });
-
-      const sortedCandidates = Object.keys(centerScores)
-        .map((k) => ({ type: parseInt(k, 10), score: centerScores[k] }))
-        .sort((a, b) => b.score - a.score);
-
-      const topScore = sortedCandidates[0].score;
-      const topType = sortedCandidates[0].type;
-      const adjacentTypes = [topType === 1 ? 9 : topType - 1, topType === 9 ? 1 : topType + 1];
-
-      let candidateTypes = sortedCandidates.filter((c) => c.score >= topScore * 0.70).map((c) => c.type);
-      candidateTypes = [...new Set([...candidateTypes, topType, ...adjacentTypes])];
-      if (candidateTypes.length < 3) {
-        candidateTypes = [...new Set([...candidateTypes, ...sortedCandidates.slice(0, 3).map((c) => c.type)])];
-      }
-
-      adaptiveTopCandidates = sortedCandidates.map((c) => c.type).filter((type) => candidateTypes.includes(type)).slice(0, 5);
-      adaptivePhase2QuestionsData = [];
-      adaptiveTopCandidates.forEach((type) => {
-        if (adaptiveDeepMotivations[type]) adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveDeepMotivations[type]);
-      });
-
-      const score3 = centerScores[3];
-      const score6 = centerScores[6];
-      const top3Types = sortedCandidates.slice(0, 3).map((c) => c.type);
-      const hasBothCandidates36 = adaptiveTopCandidates.includes(3) && adaptiveTopCandidates.includes(6);
-      const margin36 = Math.max(score3, score6) > 0 ? Math.abs(score3 - score6) / Math.max(score3, score6) : 1;
-      const shouldEnable36 = hasBothCandidates36 && ((top3Types.includes(3) && top3Types.includes(6)) || margin36 <= 0.08);
-      if (shouldEnable36) {
-        adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker36);
-        let w = 2.0; if (margin36 <= 0.03) w = 2.5; else if (margin36 <= 0.08) w = 2.25;
-        adaptiveTieBreakerMeta = { enabled: true, weight: w, margin: margin36 };
-      } else {
-        adaptiveTieBreakerMeta = { enabled: false, weight: 0, margin: margin36 };
-      }
-
-      const score1 = centerScores[1];
-      const hasBothCandidates31 = adaptiveTopCandidates.includes(3) && adaptiveTopCandidates.includes(1);
-      const margin31 = Math.max(score3, score1) > 0 ? Math.abs(score3 - score1) / Math.max(score3, score1) : 1;
-      const shouldEnable31 = hasBothCandidates31 && ((top3Types.includes(3) && top3Types.includes(1)) || margin31 <= 0.10);
-      if (shouldEnable31) {
-        adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker31);
-        let w = 2.0; if (margin31 <= 0.04) w = 2.5; else if (margin31 <= 0.10) w = 2.25;
-        adaptiveTieBreaker31Meta = { enabled: true, weight: w, margin: margin31 };
-      } else {
-        adaptiveTieBreaker31Meta = { enabled: false, weight: 0, margin: margin31 };
-      }
-
-      const sxSum = (adaptivePhase1Responses.i_sx_1 || 0) + (adaptivePhase1Responses.i_sx_2 || 0) + (adaptivePhase1Responses.i_sx_3 || 0);
-      const spSum = (adaptivePhase1Responses.i_sp_1 || 0) + (adaptivePhase1Responses.i_sp_2 || 0) + (adaptivePhase1Responses.i_sp_3 || 0);
-      const soSum = (adaptivePhase1Responses.i_so_1 || 0) + (adaptivePhase1Responses.i_so_2 || 0) + (adaptivePhase1Responses.i_so_3 || 0);
-      const sxTopOrNearTop = sxSum >= Math.max(spSum, soSum) - 1;
-      const margin3ToTop = topScore > 0 ? (topScore - score3) / topScore : 1;
-      const shouldEnable3SX = adaptiveTopCandidates.includes(3) && sxTopOrNearTop && (sortedCandidates[0].type === 3 || margin3ToTop <= 0.10);
-      if (shouldEnable3SX) {
-        adaptivePhase2QuestionsData = adaptivePhase2QuestionsData.concat(adaptiveTieBreaker3SX);
-        let w = 2.0; if (margin3ToTop <= 0.03) w = 2.5; else if (margin3ToTop <= 0.10) w = 2.25;
-        adaptiveTieBreaker3SXMeta = { enabled: true, weight: w, margin: margin3ToTop };
-      } else {
-        adaptiveTieBreaker3SXMeta = { enabled: false, weight: 0, margin: margin3ToTop };
-      }
-
-      document.getElementById('phase1-form').classList.add('hidden');
-      document.getElementById('phase2-form').classList.remove('hidden');
-      document.getElementById('progress-bar').style.width = '100%';
-      document.getElementById('step-label').innerText = adaptiveLang === 'en' ? 'Step 2: Motivational Cross-Validation' : '2단계: 동기 교차 검증 (심층 인터뷰)';
-      document.getElementById('step-counter').innerText = '2 / 2';
-
-      renderAdaptiveQuestions('phase2-container', adaptivePhase2QuestionsData, 'p2');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (recentStress >= TEST_CONFIG.thresholds.stressCorrectionStart && final[7] > 0 && final[1] > 0) {
+    const stressScale = recentStress - (TEST_CONFIG.thresholds.stressCorrectionStart - 1);
+    const margin = Math.abs(final[7] - final[1]);
+    if (margin <= TEST_CONFIG.thresholds.stressCorrectionMargin) {
+      final[1] = Math.max(0, final[1] - (TEST_CONFIG.corrections.stressType1Damp * stressScale));
+      final[7] += (TEST_CONFIG.corrections.stressType7Boost * stressScale);
     }
+  }
 
-    function submitPhase2() {
-      if (!validateAdaptiveForm(adaptivePhase2QuestionsData, 'p2', 'validation-msg-2')) return;
+  const ranked = Object.keys(final).map((k)=>({type:parseInt(k,10), score:final[k]})).sort((a,b)=>b.score-a.score);
+  const core = ranked[0].type;
+  const second = ranked[1];
+  const max = ranked[0].score;
+  const sec = ranked[1].score;
+  const diff = max > 0 ? (max-sec)/max : 0;
 
-      let finalTypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
-      let tb3sxCore = null;
-      let tb3sxInstinct = null;
+  let confidence = '낮음';
+  if (diff >= TEST_CONFIG.thresholds.confidenceHigh) confidence = '높음';
+  else if (diff >= TEST_CONFIG.thresholds.confidenceMedium) confidence = '보통';
+  if (max === sec) confidence = '낮음';
 
-      adaptivePhase1Questions.filter((q) => q.id.startsWith('t')).forEach((q) => {
-        const score = adaptivePhase1Responses[q.id];
-        if (q.id === 't2') { finalTypeScores[2] += score; finalTypeScores[3] += score; finalTypeScores[4] += score; }
-        if (q.id === 't5') { finalTypeScores[5] += score; finalTypeScores[6] += score; finalTypeScores[7] += score; }
-        if (q.id === 't8') { finalTypeScores[8] += score; finalTypeScores[9] += score; finalTypeScores[1] += score; }
-      });
-      adaptivePhase1Questions.filter((q) => q.id.startsWith('c')).forEach((q) => {
-        finalTypeScores[q.type] += adaptivePhase1Responses[q.id] * 1.5;
-      });
+  // Stabilize: reserve core only for ties or near-ties.
+  const coreResolved = max !== sec && diff >= TEST_CONFIG.thresholds.coreReserveDiff;
 
-      adaptivePhase2QuestionsData.forEach((q) => {
-        const val = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value, 10);
-        if (q.id.startsWith('tb_3_6_') && adaptiveTieBreakerMeta.enabled) finalTypeScores[q.type] += val * adaptiveTieBreakerMeta.weight;
-        else if (q.id.startsWith('tb_3_1_') && adaptiveTieBreaker31Meta.enabled) finalTypeScores[q.type] += val * adaptiveTieBreaker31Meta.weight;
-        else if (q.id === 'tb_3_sx_1') {
-          tb3sxCore = val;
-          if (adaptiveTieBreaker3SXMeta.enabled) finalTypeScores[3] += val * adaptiveTieBreaker3SXMeta.weight;
-        } else if (q.id === 'tb_3_sx_2') {
-          tb3sxInstinct = val;
-        } else finalTypeScores[q.type] += val * 2.0;
-      });
+  const inst = {sp:0,sx:0,so:0};
+  const instName = {sp:'자기보존', sx:'성적(일대일)', so:'사회적'};
+  q1.filter((q)=>q.inst).forEach((q)=>{
+    const score = toScore(testState.phase1Responses[q.id]);
+    if (score !== null) inst[q.inst] += score;
+  });
+  if (sxBoost > 0) inst.sx += sxBoost;
+  let soPenalty = 0;
+  if ([3,6,9].includes(core)) {
+    const nonSoMax = Math.max(inst.sp, inst.sx);
+    const soLead = inst.so - nonSoMax;
+    // Stabilize: apply SO correction only when SO is meaningfully overrepresented.
+    if (soLead >= TEST_CONFIG.corrections.soPenaltyHighLead) soPenalty = TEST_CONFIG.corrections.soPenaltyHigh;
+    else if (soLead >= TEST_CONFIG.corrections.soPenaltyLowLead) soPenalty = TEST_CONFIG.corrections.soPenaltyLow;
+    if (soPenalty > 0) inst.so -= soPenalty;
+  }
 
-      let threeVsSxDampApplied = 0;
-      let threeVsSxBoostApplied = 0;
-      if (adaptiveTieBreaker3SXMeta.enabled && tb3sxCore !== null && tb3sxInstinct !== null) {
-        const delta3sx = tb3sxInstinct - tb3sxCore;
-        if (delta3sx > 0) {
-          const damp = delta3sx * 0.9;
-          finalTypeScores[3] -= damp;
-          threeVsSxDampApplied = damp;
-          threeVsSxBoostApplied = delta3sx * 0.8;
-        }
+  const instRank = Object.keys(inst).map((k)=>({code:k,name:instName[k],score:inst[k]})).sort((a,b)=>b.score-a.score);
+  let instinctCode = instRank[0].code;
+  let instinctLabel = instRank[0].name;
+  if (instRank[0].score === instRank[1].score) {
+    instinctCode = `${instRank[0].code}/${instRank[1].code}`;
+    instinctLabel = `${instRank[0].name} & ${instRank[1].name} (공동 1위)`;
+  }
+
+  let wing = '활성화 안됨';
+  let wingCode = `${core} (순수유형)`;
+  let coreDisplay = `${core}번`;
+
+  if (!coreResolved) {
+    coreDisplay = `${core}번 / ${second.type}번 (코어 보류)`;
+    wing = '코어 확정 후 판별 가능';
+    wingCode = '판별 보류 (코어 보류)';
+  } else {
+    const ps = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+    const t2 = toScore(testState.phase1Responses.t2) || 0;
+    const t5 = toScore(testState.phase1Responses.t5) || 0;
+    const t8 = toScore(testState.phase1Responses.t8) || 0;
+    ps[2]+=t2; ps[3]+=t2; ps[4]+=t2; ps[5]+=t5; ps[6]+=t5; ps[7]+=t5; ps[8]+=t8; ps[9]+=t8; ps[1]+=t8;
+    for (let i=1;i<=9;i++) ps[i]+=(toScore(testState.phase1Responses[`c${i}`]) || 0)*TEST_CONFIG.weights.phase1Core;
+    q1.filter((q)=>q.format==='ab').forEach((q)=>{ const c = testState.phase1Responses[q.id]; const t = c==='A'?q.leftType:q.rightType; ps[t]+=TEST_CONFIG.weights.phase1Binary; });
+    if (core === 7 && testState.tie.t7wing.enabled) { ps[6] += tb7w6 * testState.tie.t7wing.weight; ps[8] += tb7w8 * testState.tie.t7wing.weight; }
+
+    const l = core===1?9:core-1, r = core===9?1:core+1;
+    const ls = ps[l], rs = ps[r], cs = ps[core];
+    if (ls !== rs) {
+      const w = ls >= rs ? l : r;
+      const ws = Math.max(ls, rs);
+      if (ws > 0 && ws >= cs * TEST_CONFIG.thresholds.wingActivationRatio) {
+        wing = `${w}번 날개`;
+        wingCode = `${core}w${w}`;
       }
-
-      const rankedTypes = Object.keys(finalTypeScores).map((t) => ({ type: parseInt(t, 10), score: finalTypeScores[t] })).sort((a, b) => b.score - a.score);
-      const coreType = rankedTypes[0].type;
-      const secondPlace = rankedTypes[1];
-      const stressDir = adaptiveArrowLines[coreType].stress;
-      const growthDir = adaptiveArrowLines[coreType].growth;
-      const maxScore = rankedTypes[0].score;
-      const secScore = rankedTypes[1].score;
-      const diffRatio = maxScore > 0 ? (maxScore - secScore) / maxScore : 0;
-
-      let confidence = '낮음';
-      if (diffRatio >= 0.20) confidence = '높음';
-      else if (diffRatio >= 0.08) confidence = '보통';
-      const isTie = maxScore === secScore;
-      if (isTie) confidence = '낮음';
-
-      const instSum = { sp: 0, sx: 0, so: 0 };
-      const instNames = adaptiveLang === 'en' ? { sp: 'Self-Preservation', sx: 'One-to-One', so: 'Social' } : { sp: '자기보존', sx: '성적(일대일)', so: '사회적' };
-      adaptivePhase1Questions.filter((q) => q.id.startsWith('i_')).forEach((q) => { instSum[q.inst] += adaptivePhase1Responses[q.id]; });
-      if (threeVsSxBoostApplied > 0) instSum.sx += threeVsSxBoostApplied;
-
-      let adjustedSO = false;
-      if ([3,6,9].includes(coreType)) {
-        instSum.so -= 2.5;
-        adjustedSO = true;
-      }
-
-      const rankedInstincts = Object.keys(instSum).map((k) => ({ code: k, name: instNames[k], score: instSum[k] })).sort((a,b) => b.score - a.score);
-      let bestInstinctCode = rankedInstincts[0].code;
-      let bestInstinctName = rankedInstincts[0].name;
-      if (rankedInstincts[0].score === rankedInstincts[1].score) {
-        bestInstinctCode = `${rankedInstincts[0].code}/${rankedInstincts[1].code}`;
-        bestInstinctName = adaptiveLang === 'en' ? `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (tied for first)` : `${rankedInstincts[0].name} & ${rankedInstincts[1].name} (공동 1위)`;
-      }
-
-      let coreDisplay = adaptiveLang === 'en' ? `Type ${coreType}` : `${coreType}번`;
-      let wingNum = '없음';
-      let wingStr = adaptiveLang === 'en' ? `${coreType} (core-dominant)` : `${coreType} (순수유형)`;
-      if (isTie) {
-        coreDisplay = adaptiveLang === 'en' ? `Type ${coreType} / Type ${secondPlace.type} (tie)` : `${coreType}번 / ${secondPlace.type}번 (경합)`;
-        wingStr = adaptiveLang === 'en' ? 'pending (core tie)' : '판별 보류 (코어 경합)';
-        wingNum = adaptiveLang === 'en' ? 'available after core is resolved' : '코어 확정 후 판별 가능';
-      } else {
-        let phase1TypeScores = { 1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0 };
-        const t2 = adaptivePhase1Responses.t2 || 0;
-        const t5 = adaptivePhase1Responses.t5 || 0;
-        const t8 = adaptivePhase1Responses.t8 || 0;
-        phase1TypeScores[2] += t2; phase1TypeScores[3] += t2; phase1TypeScores[4] += t2;
-        phase1TypeScores[5] += t5; phase1TypeScores[6] += t5; phase1TypeScores[7] += t5;
-        phase1TypeScores[8] += t8; phase1TypeScores[9] += t8; phase1TypeScores[1] += t8;
-        for (let i=1;i<=9;i++) phase1TypeScores[i] += (adaptivePhase1Responses[`c${i}`] || 0) * 1.5;
-
-        const leftW = coreType === 1 ? 9 : coreType - 1;
-        const rightW = coreType === 9 ? 1 : coreType + 1;
-        const leftScore = phase1TypeScores[leftW];
-        const rightScore = phase1TypeScores[rightW];
-        const corePhase1Score = phase1TypeScores[coreType];
-        const higherWing = leftScore >= rightScore ? leftW : rightW;
-        const higherWingScore = Math.max(leftScore, rightScore);
-
-        if (leftScore === rightScore) {
-          wingNum = '없음';
-          wingStr = adaptiveLang === 'en' ? `${coreType} (core-dominant)` : `${coreType} (순수유형)`;
-        } else if (higherWingScore > 0 && higherWingScore >= corePhase1Score * 0.85) {
-          wingNum = higherWing;
-          wingStr = `${coreType}w${wingNum}`;
-        }
-      }
-
-      document.getElementById('phase2-form').classList.add('hidden');
-      document.getElementById('progress-container').classList.add('hidden');
-      document.getElementById('result-view').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      document.getElementById('res-final').innerText = `${bestInstinctCode} ${wingStr}`;
-      document.getElementById('res-instincts').innerText = `${adaptiveText('instinctsPrefix')}${bestInstinctName}`;
-      document.getElementById('res-core').innerText = coreDisplay;
-      document.getElementById('res-wing').innerText = wingNum === '없음' ? (adaptiveLang === 'en' ? 'No clear wing activation' : '활성화 안됨') : (isTie ? wingNum : (adaptiveLang === 'en' ? `Wing ${wingNum}` : `${wingNum}번 날개`));
-      if (!isTie) {
-        document.getElementById('res-arrows').innerHTML = `<span class="text-blue-600 font-bold">${adaptiveText('growthDir')}: ${growthDir}${adaptiveLang === 'en' ? '' : '번'}</span><br><span class="text-red-500 font-bold">${adaptiveText('stressDir')}: ${stressDir}${adaptiveLang === 'en' ? '' : '번'}</span>`;
-      } else {
-        document.getElementById('res-arrows').innerText = adaptiveText('tieArrows');
-      }
-
-      const badge = document.getElementById('confidence-badge');
-      if (confidence === '높음') {
-        badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white border border-green-400 shadow-sm';
-        badge.innerText = adaptiveLang === 'en' ? 'Confidence: High' : '신뢰도: 높음';
-      } else if (confidence === '보통') {
-        badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white border border-yellow-400 shadow-sm';
-        badge.innerText = adaptiveLang === 'en' ? 'Confidence: Medium' : '신뢰도: 보통';
-      } else {
-        badge.className = 'absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white border border-red-400 shadow-sm';
-        badge.innerText = adaptiveLang === 'en' ? 'Confidence: Low' : '신뢰도: 낮음';
-        document.getElementById('cta-consulting').classList.remove('hidden');
-      }
-
-      let logMsg = '';
-      if (isTie) {
-        logMsg = adaptiveLang === 'en'
-          ? `Your weighted scores produced a complete tie between <strong>Type ${coreType}</strong> and <strong>Type ${secondPlace.type}</strong>. A live typing interview is strongly recommended for clarification.`
-          : `전체 문항 가중치 병합 결과, <strong>${coreType}번</strong>과 <strong>${secondPlace.type}번</strong>이 완벽한 동점(경합)으로 나타났습니다. 행동과 동기 점수가 팽팽하게 맞서고 있으므로, 전문가의 심층 타이핑 세션을 강력히 권장합니다.`;
-      } else {
-        logMsg = adaptiveLang === 'en'
-          ? `Based on weighted integration of behavior and motivation, your primary pattern is <strong>Type ${coreType}</strong>.<br>The runner-up is Type ${secondPlace.type}, with a score margin of <strong>${(diffRatio * 100).toFixed(1)}%</strong>.`
-          : `전체 문항에 대한 가중치 병합 결과, 귀하의 행동과 동기를 가장 강력하게 설명하는 중심 축은 <strong>${coreType}번 유형</strong>으로 판별되었습니다.<br>2순위 경합 유형은 ${secondPlace.type}번이었으며, 1순위와의 심층 동기 점수 격차는 <strong>${(diffRatio * 100).toFixed(1)}%</strong> 입니다.`;
-
-        if (secondPlace.type === stressDir) {
-          logMsg += adaptiveLang === 'en'
-            ? `<br><br><span class="text-red-600 text-sm">Type ${stressDir} as a runner-up may reflect stress-direction activation right now.</span>`
-            : `<br><br><span class="text-red-600 text-sm">2순위 ${stressDir}번은 현재 스트레스 방향(비통합) 영향일 수 있습니다.</span>`;
-        } else if (secondPlace.type === growthDir) {
-          logMsg += adaptiveLang === 'en'
-            ? `<br><br><span class="text-blue-600 text-sm">Type ${growthDir} as a runner-up may reflect growth-direction development right now.</span>`
-            : `<br><br><span class="text-blue-600 text-sm">2순위 ${growthDir}번은 현재 성장 방향(통합) 영향일 수 있습니다.</span>`;
-        }
-
-        if (adjustedSO) {
-          logMsg += adaptiveLang === 'en'
-            ? `<br><br><span class="text-[#bfa68a] text-xs">* For core Types 3/6/9, a -2.5 correction was applied to Social-instinct scoring to reduce possible over-selection bias on socially weighted items.</span>`
-            : `<br><br><span class="text-[#bfa68a] text-xs">* ${coreType}번은 사회성 관련 문항에서 과대표집이 발생할 수 있어, 사회적 본능(SO)에 -2.5 보정치가 적용되었습니다.</span>`;
-        }
-
-        if (adaptiveTieBreakerMeta.enabled) {
-          const marginPct = ((adaptiveTieBreakerMeta.margin ?? 0) * 100).toFixed(1);
-          logMsg += adaptiveLang === 'en'
-            ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 6 tie-breaker was activated (base margin ${marginPct}%, weight x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`
-            : `<br><br><span class="text-[#4a4540] text-xs">* 3번/6번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct}%, 가중치 x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`;
-        }
-
-        if (adaptiveTieBreaker31Meta.enabled) {
-          const marginPct31 = ((adaptiveTieBreaker31Meta.margin ?? 0) * 100).toFixed(1);
-          logMsg += adaptiveLang === 'en'
-            ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 1 tie-breaker was activated (base margin ${marginPct31}%, weight x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`
-            : `<br><br><span class="text-[#4a4540] text-xs">* 3번/1번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct31}%, 가중치 x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`;
-        }
-
-        if (adaptiveTieBreaker3SXMeta.enabled) {
-          const marginPct3sx = ((adaptiveTieBreaker3SXMeta.margin ?? 0) * 100).toFixed(1);
-          const dampTxt = threeVsSxDampApplied > 0 ? threeVsSxDampApplied.toFixed(2) : '0.00';
-          logMsg += adaptiveLang === 'en'
-            ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs SX tie-breaker was activated (3-to-top margin ${marginPct3sx}%, weight x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, Type 3 damp ${dampTxt}).</span>`
-            : `<br><br><span class="text-[#4a4540] text-xs">* 3번/SX 혼동 보정 타이브레이커가 적용되었습니다 (3번-상위점수 차 ${marginPct3sx}%, 가중치 x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, 3번 감쇠 ${dampTxt}).</span>`;
-        }
-      }
-
-      document.getElementById('res-log').innerHTML = logMsg;
     }
+  }
 
-    renderTestPage();
-    initAdaptiveTest();
-  </script>
+  document.getElementById('phase2-form').classList.add('hidden');
+  document.getElementById('progress-container').classList.add('hidden');
+  document.getElementById('result-view').classList.remove('hidden');
+  document.getElementById('cta-consulting').classList.add('hidden');
+
+  document.getElementById('res-final').innerText = `${instinctCode} ${wingCode}`;
+  document.getElementById('res-instincts').innerText = `제 1본능: ${instinctLabel}`;
+  document.getElementById('res-core').innerText = coreDisplay;
+  document.getElementById('res-wing').innerText = wing;
+  document.getElementById('res-arrows').innerHTML = coreResolved
+    ? `<span class="text-blue-600 font-bold">통합(건강) 방향: ${arrowLines[core].growth}번</span><br><span class="text-red-500 font-bold">비통합(스트레스) 방향: ${arrowLines[core].stress}번</span>`
+    : '코어 확정 후 확인 가능합니다.';
+
+  const badge = document.getElementById('confidence-badge');
+  if (confidence === '높음') { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white'; badge.innerText='신뢰도: 높음'; }
+  else if (confidence === '보통') { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white'; badge.innerText='신뢰도: 보통'; }
+  else { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white'; badge.innerText='신뢰도: 낮음'; document.getElementById('cta-consulting').classList.remove('hidden'); }
+
+  let log = '';
+  if (!coreResolved) {
+    log = `현재는 <strong>${core}번</strong>과 <strong>${second.type}번</strong>이 매우 근접하여 코어를 보류로 표시합니다.`;
+  } else {
+    log = `가중치 병합 결과 중심 축은 <strong>${core}번</strong>, 2순위는 <strong>${second.type}번</strong>, 점수 격차는 <strong>${(diff*100).toFixed(1)}%</strong> 입니다.`;
+    if (second.type === arrowLines[core].stress) log += `<br><br><span class="text-red-600 text-sm">2순위 ${second.type}번은 현재 스트레스 방향 영향일 수 있습니다.</span>`;
+    if (second.type === arrowLines[core].growth) log += `<br><br><span class="text-blue-600 text-sm">2순위 ${second.type}번은 현재 성장 방향 영향일 수 있습니다.</span>`;
+    if (testState.tie.t71.enabled) log += `<br><br><span class="text-xs">* 전환형/기준형 경합 타이브레이커 적용</span>`;
+    if (testState.tie.t78.enabled) log += `<br><br><span class="text-xs">* 전환형/돌파형 경합 타이브레이커 적용</span>`;
+    if (testState.tie.t7wing.enabled && core===7) log += `<br><br><span class="text-xs">* 전환형 하위패턴 보정 적용</span>`;
+    if (soPenalty > 0) log += `<br><br><span class="text-xs">* 사회적 본능 과대표집 보정 적용 (-${soPenalty.toFixed(1)})</span>`;
+    if (recentStress >= TEST_CONFIG.thresholds.stressCorrectionStart) log += `<br><br><span class="text-xs">* 최근 2주 스트레스 보정 적용</span>`;
+  }
+  document.getElementById('res-log').innerHTML = log;
+
+  const top3 = ranked.slice(0,3);
+  const total = top3.reduce((s,x)=>s+x.score,0);
+  document.getElementById('res-top3').innerHTML = top3.map((x,i)=>{
+    const p = total>0 ? ((x.score/total)*100).toFixed(1) : '0.0';
+    const ev = evidence[x.type].sort((a,b)=>b.points-a.points).slice(0,3).map((e)=>`<li class="text-xs text-gray-600 leading-relaxed">• ${e.text}</li>`).join('');
+    return `<div class="rounded-xl border border-gray-200 bg-white p-4"><div class="flex items-center justify-between mb-2"><p class="font-semibold text-gray-800">${i+1}. ${x.type}번</p><p class="text-xs font-bold text-[#4a4540]">상대 점유율: ${p}%</p></div><p class="text-xs text-gray-500 mb-1">근거 문항</p><ul class="space-y-1">${ev}</ul></div>`;
+  }).join('');
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+renderQuestions('phase1-container', q1, 'p1');
+setProgress(50);
+</script>
 </body>
 </html>
