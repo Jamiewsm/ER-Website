@@ -454,7 +454,7 @@
             { id: 'f_1_9', format: 'ab', leftType: 1, rightType: 9, weight: 2.2, q: "갈등 직전 더 자동으로 나오는 쪽을 고르세요.", a: "A. 기준을 분명히 하고 바로잡는다.", b: "B. 마찰을 줄이고 흐름을 유지한다." },
             { id: 'f_5_7', format: 'ab', leftType: 5, rightType: 7, weight: 2.2, q: "에너지가 떨어질 때 더 자동으로 나오는 쪽을 고르세요.", a: "A. 물러나 분석하고 최소 반응한다.", b: "B. 전환점과 새로운 자극을 찾는다." },
             { id: 'f_2_8', format: 'ab', leftType: 2, rightType: 8, weight: 2.2, q: "관계가 흔들릴 때 더 자동으로 나오는 쪽을 고르세요.", a: "A. 더 도우며 연결을 붙잡는다.", b: "B. 선을 긋고 주도권을 회수한다." },
-            { id: 'state_2w', q: "최근 2주 기준으로, 내 일상은 전반적으로 얼마나 압박/스트레스 상태였나요? (1=매우 안정, 5=매우 높은 압박)" },
+            { id: 'state_2w', q: "최근 2주 기준으로, 내 일상은 전반적으로 얼마나 압박/스트레스 상태였나요? (1=매우 안정, 6=매우 높은 압박)" },
             { id: 'i_sp_1', inst: 'sp', q: "나는 안전, 재정, 생활 리듬(수면/식사/체력)을 먼저 정비해야 관계와 일이 안정된다고 느낀다." },
             { id: 'i_sp_2', inst: 'sp', q: "시간·돈·에너지 낭비가 생기면 마음이 크게 흔들리고, 효율 회복이 우선순위가 된다." },
             { id: 'i_sx_1', inst: 'sx', q: "넓은 네트워킹보다 강한 1:1 몰입 관계나 대상이 있을 때 삶의 에너지가 급격히 올라간다." },
@@ -546,7 +546,7 @@
             f_1_9: "Right before conflict, which response tends to come first?",
             f_5_7: "When your energy is low, which recovery pattern appears first?",
             f_2_8: "When a relationship feels unstable, which reaction is more automatic?",
-            state_2w: "Over the last two weeks, how much pressure or stress have you been under overall? (1 = very stable, 5 = very high pressure)",
+            state_2w: "Over the last two weeks, how much overall pressure or stress have you been under? (1 = very stable, 6 = very high pressure)",
             i_sp_1: "I feel most stable when basics like safety, money, sleep, and physical rhythm are in order.",
             i_sp_2: "Waste of time, money, or energy unsettles me quickly, and restoring order becomes urgent.",
             i_sx_1: "A deep one-on-one bond energizes me more than broad social connection.",
@@ -626,7 +626,8 @@
                 forcedB: "B 선택",
                 top3Title: "상위 3유형 확률 및 근거",
                 top3Evidence: "근거 문항",
-                top3Percent: "추정 확률"
+                top3Percent: "추정 확률",
+                unsure: "잘 모르겠다 / 상황 따라 다름 (비채점)"
             },
             en: {
                 title: "Adaptive Enneagram Typing Assessment",
@@ -656,7 +657,8 @@
                 forcedB: "Choose B",
                 top3Title: "Top 3 Type Probabilities & Evidence",
                 top3Evidence: "Evidence items",
-                top3Percent: "Estimated probability"
+                top3Percent: "Estimated probability",
+                unsure: "Not sure / depends on the situation (unscored)"
             }
         };
 
@@ -676,6 +678,12 @@
                 if (adaptiveQuestionEn[key]) return adaptiveQuestionEn[key];
             }
             return value;
+        }
+
+        function adaptiveToScore(rawValue) {
+            if (rawValue === 'U' || rawValue === undefined || rawValue === null) return null;
+            const numeric = Number(rawValue);
+            return Number.isFinite(numeric) ? numeric : null;
         }
 
         function setAdaptiveTestLanguage(lang) {
@@ -3132,7 +3140,7 @@
                             <div class="flex justify-between items-center sm:px-2">
                                 <span class="text-xs text-gray-400 font-medium">${adaptiveText('notAtAll')}</span>
                                 <div class="flex space-x-2 sm:space-x-4">
-                                    ${[1, 2, 3, 4, 5].map((val) => `
+                                    ${[1, 2, 3, 4, 5, 6].map((val) => `
                                         <div class="relative">
                                             <input type="radio" name="${item.id}" value="${val}" id="${item.id}-${val}" class="peer sr-only radio-btn">
                                             <label for="${item.id}-${val}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer peer-hover:border-[#bfa68a] hover:bg-gray-50 smooth-transition font-semibold text-sm bg-white">
@@ -3142,6 +3150,12 @@
                                     `).join('')}
                                 </div>
                                 <span class="text-xs text-gray-400 font-medium">${adaptiveText('very')}</span>
+                            </div>
+                            <div class="mt-4 text-center">
+                                <input type="radio" name="${item.id}" value="U" id="${item.id}-U" class="peer sr-only">
+                                <label for="${item.id}-U" class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 text-xs text-gray-500 cursor-pointer hover:bg-gray-50 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-checked:text-[#4a4540] smooth-transition">
+                                    ${adaptiveText('unsure')}
+                                </label>
                             </div>
                         </div>
                     `;
@@ -3209,7 +3223,8 @@
                     return;
                 }
 
-                const score = parseInt(rawValue, 10);
+                const score = adaptiveToScore(rawValue);
+                if (score === null) return;
 
                 if (item.id === 't2') { centerScores[2] += score; centerScores[3] += score; centerScores[4] += score; }
                 if (item.id === 't5') { centerScores[5] += score; centerScores[6] += score; centerScores[7] += score; }
@@ -3291,8 +3306,8 @@
             // 3/SX 혼동 보정: 3번 후보 + SX 상위 + 3번 점수가 상위권일 때 발동
             const instinctSums = { sp: 0, sx: 0, so: 0 };
             adaptivePhase1Questions.filter((q) => q.inst).forEach((q) => {
-                const score = parseInt(adaptivePhase1Responses[q.id] || '0', 10);
-                instinctSums[q.inst] += score;
+                const score = adaptiveToScore(adaptivePhase1Responses[q.id]);
+                if (score !== null) instinctSums[q.inst] += score;
             });
             const sxSum = instinctSums.sx;
             const spSum = instinctSums.sp;
@@ -3370,7 +3385,7 @@
             let tb3sxInstinct = null;
             let tb7w6 = 0;
             let tb7w8 = 0;
-            const recentStress = parseInt(adaptivePhase1Responses.state_2w || '3', 10);
+            const recentStress = adaptiveToScore(adaptivePhase1Responses.state_2w) ?? 3;
             const typeEvidence = { 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[] };
             const questionLookup = {};
             [...adaptivePhase1Questions, ...adaptivePhase2QuestionsData].forEach((q) => {
@@ -3394,7 +3409,8 @@
                     return;
                 }
 
-                const score = parseInt(adaptivePhase1Responses[q.id] || '0', 10);
+                const score = adaptiveToScore(adaptivePhase1Responses[q.id]);
+                if (score === null) return;
                 if (q.id === 't2') {
                     addTypeScore(2, score, q.id);
                     addTypeScore(3, score, q.id);
@@ -3416,19 +3432,23 @@
             });
 
             adaptivePhase2QuestionsData.forEach((q) => {
-                const val = parseInt(document.querySelector(`input[name="${q.id}"]:checked`).value, 10);
+                const val = adaptiveToScore(document.querySelector(`input[name="${q.id}"]:checked`).value);
                 if (q.id === 'tb_3_sx_2') {
+                    if (val === null) return;
                     tb3sxInstinct = val;
                     return;
                 }
                 if (q.id === 'tb_7w_1') {
+                    if (val === null) return;
                     tb7w6 = val;
                     return;
                 }
                 if (q.id === 'tb_7w_2') {
+                    if (val === null) return;
                     tb7w8 = val;
                     return;
                 }
+                if (val === null) return;
 
                 let weight = q.weight || 2.0;
                 if (q.id.startsWith('tb_3_6_') && adaptiveTieBreakerMeta.enabled) {
@@ -3505,7 +3525,8 @@
                 : { sp: '자기보존', sx: '성적(일대일)', so: '사회적' };
 
             adaptivePhase1Questions.filter((q) => q.inst).forEach((q) => {
-                instSum[q.inst] += parseInt(adaptivePhase1Responses[q.id] || '0', 10);
+                const score = adaptiveToScore(adaptivePhase1Responses[q.id]);
+                if (score !== null) instSum[q.inst] += score;
             });
 
             if (threeVsSxBoostApplied > 0) {
@@ -3546,16 +3567,16 @@
                 wingNum = adaptiveLang === 'en' ? 'available after core is resolved' : '코어 확정 후 판별 가능';
             } else {
                 let phase1TypeScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0 };
-                const t2 = parseInt(adaptivePhase1Responses.t2 || '0', 10);
-                const t5 = parseInt(adaptivePhase1Responses.t5 || '0', 10);
-                const t8 = parseInt(adaptivePhase1Responses.t8 || '0', 10);
+                const t2 = adaptiveToScore(adaptivePhase1Responses.t2) || 0;
+                const t5 = adaptiveToScore(adaptivePhase1Responses.t5) || 0;
+                const t8 = adaptiveToScore(adaptivePhase1Responses.t8) || 0;
 
                 phase1TypeScores[2] += t2; phase1TypeScores[3] += t2; phase1TypeScores[4] += t2;
                 phase1TypeScores[5] += t5; phase1TypeScores[6] += t5; phase1TypeScores[7] += t5;
                 phase1TypeScores[8] += t8; phase1TypeScores[9] += t8; phase1TypeScores[1] += t8;
 
                 for (let i = 1; i <= 9; i++) {
-                    phase1TypeScores[i] += parseInt(adaptivePhase1Responses[`c${i}`] || '0', 10) * 1.5;
+                    phase1TypeScores[i] += (adaptiveToScore(adaptivePhase1Responses[`c${i}`]) || 0) * 1.5;
                 }
                 adaptivePhase1Questions.filter((q) => q.format === 'ab').forEach((q) => {
                     const choice = adaptivePhase1Responses[q.id];
