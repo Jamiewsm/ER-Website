@@ -2337,6 +2337,11 @@
                 return;
             }
 
+            const detailEl = document.getElementById('coach-material-detail');
+            if (detailEl) {
+                detailEl.classList.add('hidden');
+                detailEl.innerHTML = '';
+            }
             await loadCoachMaterials();
             alert('자료가 삭제되었습니다.');
         }
