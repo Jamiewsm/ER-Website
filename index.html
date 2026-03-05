@@ -1753,6 +1753,33 @@
             }).format(date);
         }
 
+        function formatDateTimeInZone(value, timeZone, locale = 'ko-KR') {
+            if (!value) return '-';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return '-';
+            return new Intl.DateTimeFormat(locale, {
+                timeZone,
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                weekday: 'short',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }).format(date);
+        }
+
+        function formatScheduleDualRange(startAt, endAt) {
+            const krStart = formatDateTimeInZone(startAt, 'Asia/Seoul', 'ko-KR');
+            const krEnd = formatDateTimeInZone(endAt, 'Asia/Seoul', 'ko-KR');
+            const ctStart = formatDateTimeInZone(startAt, 'America/Chicago', 'en-US');
+            const ctEnd = formatDateTimeInZone(endAt, 'America/Chicago', 'en-US');
+            return {
+                kr: `한국(KST): ${krStart} - ${krEnd}`,
+                ct: `미국 중부(CT, Dallas): ${ctStart} - ${ctEnd}`
+            };
+        }
+
         function toIsoOrNull(localValue) {
             if (!localValue) return null;
             const date = new Date(localValue);
@@ -1969,12 +1996,17 @@
             const schedulesEl = document.getElementById('coach-portal-schedules');
             if (schedulesEl) {
                 schedulesEl.innerHTML = schedules.length
-                    ? schedules.map((item) => `
+                    ? schedules.map((item) => {
+                        const dual = formatScheduleDualRange(item.start_at, item.end_at);
+                        return `
                         <button type="button" onclick="renderSection('coach_schedule')" class="w-full text-left p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                             <p class="font-semibold text-gray-800">${escapeHtml(item.title)}</p>
-                            <p class="text-xs text-gray-500 mt-1">${formatDateTime(item.start_at)} - ${formatDateTime(item.end_at)} (${escapeHtml(item.schedule_type)})</p>
+                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(item.schedule_type)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(dual.kr)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(dual.ct)}</p>
                         </button>
-                    `).join('')
+                    `;
+                    }).join('')
                     : '<p class="text-sm text-gray-500">다가오는 일정이 없습니다.</p>';
             }
         }
@@ -2263,7 +2295,9 @@
 
             if (listEl) {
                 listEl.innerHTML = (data || []).length
-                    ? data.map((item) => `
+                    ? data.map((item) => {
+                        const dual = formatScheduleDualRange(item.start_at, item.end_at);
+                        return `
                         <div class="border border-gray-100 rounded-2xl p-4">
                             <div class="flex flex-wrap items-center justify-between gap-2">
                                 <h4 class="font-bold text-gray-900">${escapeHtml(item.title)}</h4>
@@ -2272,11 +2306,13 @@
                                     <button onclick="deleteCoachSchedule('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
                                 </div>
                             </div>
-                            <p class="text-xs text-gray-500 mt-2">${formatDateTime(item.start_at)} - ${formatDateTime(item.end_at)}</p>
+                            <p class="text-xs text-gray-500 mt-2">${escapeHtml(dual.kr)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(dual.ct)}</p>
                             <p class="text-xs text-gray-400 mt-1">${escapeHtml(item.location || '-')}</p>
                             <p class="text-xs text-gray-400 mt-1 break-keep">${escapeHtml(item.notes || '')}</p>
                         </div>
-                    `).join('')
+                    `;
+                    }).join('')
                     : '<p class="text-sm text-gray-500">등록된 일정이 없습니다.</p>';
             }
         }
