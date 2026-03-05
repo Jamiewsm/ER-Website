@@ -524,61 +524,73 @@
         ];
 
         const adaptiveQuestionEn = {
-            t2: "When I sense relational tension or evaluation, I adapt to the image others want from me, and my own needs get pushed back.",
-            t5: "When uncertainty rises, I move into analysis and mental simulation first, and spontaneous engagement tends to decrease.",
-            t8: "When I feel controlled or cornered, I set firm boundaries and reclaim control, even if tension rises.",
-            c1: "When things feel off, I feel compelled to correct and improve them, and I can become strict with myself and others.",
-            c2: "When relationship security feels shaky, I help first to keep the bond, and my own needs may go unspoken.",
-            c3: "Under pressure, I optimize for outcomes and image, often at the cost of emotional awareness or rest.",
-            c4: "I dislike feeling ordinary, and at times I get deeply absorbed in my own sense of longing or emotional depth.",
-            c5: "My energy drains quickly in prolonged social interaction, so I need solitude to process information and recharge.",
-            c6: "When risk appears, I run scenarios and verify repeatedly, and this can slow decision speed.",
-            c7: "Heavy or gloomy atmospheres are hard for me to sustain; when things feel stuck, I look for fresh, positive possibilities.",
-            c8: "When power imbalance appears, I step in directly to reset the field, even if conflict intensity increases.",
-            c9: "I instinctively avoid conflict and tension, and I often smooth things over rather than push my own agenda.",
-            f_2_3: "In pressure, which comes out first: bond-maintaining support, or performance proof?",
-            f_3_6: "In anxiety, which comes out first: achievement focus, or risk verification?",
-            f_6_8: "Under threat, which comes out first: safety planning, or direct control?",
-            f_1_9: "Near conflict, which comes out first: correction by principle, or preserving harmony?",
-            f_5_7: "When drained, which comes out first: retreat and analyze, or reframe and pivot?",
-            f_2_8: "When relationship stability shakes, which comes out first: give more care, or draw harder boundaries?",
-            state_2w: "Over the past two weeks, how pressured or stressed have you generally been? (1=very stable, 5=very high pressure)",
-            i_sp_1: "Stability in body, rhythm, and resources is my first anchor for life and relationships.",
-            i_sp_2: "Waste of time, money, or energy unsettles me quickly, and restoring order becomes priority.",
-            i_sx_1: "A deep one-to-one bond energizes me more than broad social exchange.",
-            i_sx_2: "When something matters, I focus with high intensity and seek strong emotional charge.",
-            i_so_1: "In groups, I quickly read role, status, and influence flow.",
-            i_so_2: "Long-term contribution, social role, and belonging often outweigh private comfort.",
-            d1_1: "I often hear an inner voice that asks, “Is this the best way? Could this be done more properly?” and pushes me to improve.",
-            d1_2: "I tend to hold an internal “right way,” and I feel frustration when I or others fall short of that standard.",
-            d2_1: "When attachment anxiety appears, I secure connection by helping first, while direct requests from me get delayed.",
-            d2_2: "I read others' needs fast, but stating my own need can trigger subtle shame or guilt.",
-            d3_1: "Under pressure, I immediately switch to outcome and KPI mode, often suppressing emotional signals.",
-            d3_2: "I feel safer being valued through visible competence than through raw presence alone.",
-            d4_1: "I often feel a subtle sense of being misunderstood, and sometimes even my sadness feels like part of what makes me uniquely me.",
-            d4_2: "I feel most alive in moments with emotional depth and meaning rather than in flat, ordinary routines.",
-            d5_1: "I feel safer when I can step back, observe, and understand before engaging directly.",
-            d5_2: "When people demand immediate emotional responses or intrude into my mental space, I tend to withdraw to protect my energy.",
-            d6_1: "As ambiguity increases, I expand risk scenarios and verification, which can delay movement.",
-            d6_2: "I seek security through systems, while simultaneously stress-testing those systems for hidden weaknesses.",
-            d7_1: "When emotions are heavy or reality feels constricting, I tend to shift toward lighter possibilities and mental reframing.",
-            d7_2: "Being limited to one option feels constricting; I feel more at ease when multiple possibilities remain open.",
-            d8_1: "When power tilts against me, I escalate pressure and reset control, even at relational cost.",
-            d8_2: "What I seek is less approval and more respect for impact, boundary, and authority.",
-            d9_1: "To preserve inner peace and connection, I may suppress my real wants or anger without fully noticing it.",
-            d9_2: "In major conflict or decision points, I may diffuse tension by focusing on less urgent tasks.",
-            tb_3_6_1: "When I work hard and perform well, it is primarily about being seen as competent and worthy in other people's eyes.",
-            tb_3_6_2: "When I work hard and prepare thoroughly, it is primarily about staying safe and having a reliable base in unpredictable situations.",
-            tb_3_1_1: "My strongest drive to achieve is often to prove my competence and be recognized for my value.",
-            tb_3_1_2: "My strongest drive to achieve is often to correct, refine, and complete things according to an internal standard.",
-            tb_3_sx_1: "When I push to achieve, the core motivation is often proving my competence and being recognized as valuable.",
-            tb_3_sx_2: "When I push intensely toward a goal, the deeper reward is immersion, intensity, and the internal satisfaction of completion more than external recognition.",
-            tb_7_1_1: "Under pressure, I more often expand options and seek possibility than tighten standards.",
-            tb_7_1_2: "Under pressure, I more often tighten standards and correct errors than expand options.",
-            tb_7_8_1: "When blocked, I tend to break through via reframing, alternatives, and speed (7).",
-            tb_7_8_2: "When blocked, I tend to break through via direct force, confrontation, and control reset (8).",
-            tb_7w_1: "In my 7-pattern, I gravitate toward risk checks, safety planning, and trusted structure (7w6).",
-            tb_7w_2: "In my 7-pattern, I gravitate toward independence, assertive momentum, and direct push-through (7w8)."
+            t2: "When I feel evaluated in relationships, I adjust to how I want to be seen, and my own needs get pushed to the background.",
+            t5: "In uncertain situations, I go into analysis first, and immediate emotional engagement tends to drop.",
+            t8: "When I feel controlled or overpowered, I quickly draw a line and move to regain control, even if tension rises.",
+            c1: "When something feels off, I feel driven to fix it and get it right, and I can become strict with myself and others.",
+            c2: "When connection feels shaky, I tend to secure the bond by helping first, while my own needs stay unspoken.",
+            c3: "When my sense of worth feels threatened, I shift into performance and image mode to restore credibility.",
+            c4: "When life feels too ordinary, I look for emotional depth and personal meaning, even if it delays contentment.",
+            c5: "When demands pile up, I pull back to conserve energy, and that distance can make me seem emotionally unavailable.",
+            c6: "When risk is in the air, I double-check assumptions and run contingency scenarios, which can slow decisions.",
+            c7: "When discomfort rises, I instinctively open up options and pivot toward possibility, often delaying direct emotional contact.",
+            c8: "When I sense a power imbalance, I step in directly to reset control, even if the intensity escalates.",
+            c9: "When conflict starts building, I tend to prioritize peace over preference and postpone hard decisions.",
+            f_2_3: "Under pressure, which pattern shows up first for you?",
+            f_3_6: "When anxiety rises, which pattern comes online first?",
+            f_6_8: "When you feel threatened, which response is more automatic?",
+            f_1_9: "Right before conflict, which response tends to come first?",
+            f_5_7: "When your energy is low, which recovery pattern appears first?",
+            f_2_8: "When a relationship feels unstable, which reaction is more automatic?",
+            state_2w: "Over the last two weeks, how much pressure or stress have you been under overall? (1 = very stable, 5 = very high pressure)",
+            i_sp_1: "I feel most stable when basics like safety, money, sleep, and physical rhythm are in order.",
+            i_sp_2: "Waste of time, money, or energy unsettles me quickly, and restoring order becomes urgent.",
+            i_sx_1: "A deep one-on-one bond energizes me more than broad social connection.",
+            i_sx_2: "When something matters to me, I lock in with strong intensity and focus.",
+            i_so_1: "In groups, I quickly track status, role, and influence dynamics.",
+            i_so_2: "Contribution, role continuity, and belonging often matter more to me than private comfort.",
+            d1_1: "I often hear an inner pressure asking, “Is this the best version? Can this be done more correctly?”",
+            d1_2: "I carry a strong internal standard, and I feel tension when I or others fall short of it.",
+            d2_1: "When relational anxiety rises, I secure attachment by giving first, while delaying direct requests for what I need.",
+            d2_2: "I read others' needs quickly, but naming my own can trigger subtle shame or guilt.",
+            d3_1: "Under pressure, I reorganize around goals and measurable outcomes, often sidelining emotional signals.",
+            d3_2: "I feel safer being valued for visible competence than for simply being who I am.",
+            d4_1: "I often feel fundamentally misunderstood, and even painful emotions can feel tied to my identity.",
+            d4_2: "I feel most alive in emotionally meaningful moments, not in flat, routine flow.",
+            d5_1: "I feel safest when I can step back, observe, and understand before engaging.",
+            d5_2: "When emotional demands are sudden or intrusive, I instinctively withdraw to protect my energy.",
+            d6_1: "As ambiguity increases, I expand risk checks and verification, which can delay action.",
+            d6_2: "I seek safety through systems and authority while also testing them for hidden weakness.",
+            d7_1: "When reality feels heavy, I move toward reframing, options, and lighter momentum.",
+            d7_2: "Too much limitation feels suffocating; I relax when multiple paths remain open.",
+            d8_1: "When I feel overpowered, I increase pressure and move to reclaim control, even at relational cost.",
+            d8_2: "What I need most is not approval but respect for my impact, boundaries, and agency.",
+            d9_1: "To preserve peace and connection, I can mute my real anger or desires without fully noticing.",
+            d9_2: "At major conflict or decision points, I may diffuse tension by shifting into less urgent tasks.",
+            tb_3_6_1: "When I push for performance, the core motive is proving competence and securing recognition.",
+            tb_3_6_2: "When I push for preparation, the core motive is building safety and a reliable base.",
+            tb_3_1_1: "My strongest achievement drive is usually about proving value through results.",
+            tb_3_1_2: "My strongest achievement drive is usually about getting things right by principle.",
+            tb_3_sx_1: "When I push to achieve, the core motive is to be seen as competent and valuable.",
+            tb_3_sx_2: "When I push intensely, the deeper reward is immersion and internal charge more than recognition.",
+            tb_7_1_1: "Under pressure, I more often expand options and chase possibility.",
+            tb_7_1_2: "Under pressure, I more often tighten standards and correct what is wrong.",
+            tb_7_8_1: "When blocked, I break through by reframing, alternatives, and momentum (7).",
+            tb_7_8_2: "When blocked, I break through through direct force, confrontation, and control reset (8).",
+            tb_7w_1: "In a 7 pattern, I lean toward risk checks, safety planning, and trusted structure (7w6).",
+            tb_7w_2: "In a 7 pattern, I lean toward independence, assertive drive, and direct push-through (7w8).",
+            f_2_3_a: "A. I first support the other person to preserve connection.",
+            f_2_3_b: "B. I first prove competence through visible performance.",
+            f_3_6_a: "A. I immerse in delivering results to secure recognition.",
+            f_3_6_b: "B. I strengthen risk checks and safety preparation first.",
+            f_6_8_a: "A. I start with verification, alignment, and safeguards.",
+            f_6_8_b: "B. I intervene directly to reset the power balance.",
+            f_1_9_a: "A. I clarify standards and correct what is off.",
+            f_1_9_b: "B. I reduce friction and preserve relational flow.",
+            f_5_7_a: "A. I step back, analyze, and minimize stimulation.",
+            f_5_7_b: "B. I look for pivots and fresh stimulating options.",
+            f_2_8_a: "A. I offer more care to hold the connection.",
+            f_2_8_b: "B. I draw firmer boundaries and reclaim control."
         };
 
         const adaptiveUi = {
@@ -651,6 +663,15 @@
         function adaptiveQuestionText(item) {
             if (adaptiveLang === 'en' && adaptiveQuestionEn[item.id]) return adaptiveQuestionEn[item.id];
             return item.q;
+        }
+
+        function adaptiveOptionText(item, side) {
+            const value = side === 'a' ? item.a : item.b;
+            if (adaptiveLang === 'en') {
+                const key = `${item.id}_${side}`;
+                if (adaptiveQuestionEn[key]) return adaptiveQuestionEn[key];
+            }
+            return value;
         }
 
         function setAdaptiveTestLanguage(lang) {
@@ -1105,16 +1126,107 @@
         }
 
         function renderTest() {
+            const isKo = adaptiveLang !== 'en';
             return `
                 <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+                    <div class="mb-4 flex items-center justify-end gap-2">
+                        <button
+                            onclick="setAdaptiveTestLanguage('ko')"
+                            class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${isKo ? 'bg-er-dark text-white border-er-dark' : 'bg-white text-gray-600 border-gray-200 hover:border-er-accent hover:text-er-dark'}"
+                        >한국어 테스트</button>
+                        <button
+                            onclick="setAdaptiveTestLanguage('en')"
+                            class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${!isKo ? 'bg-er-dark text-white border-er-dark' : 'bg-white text-gray-600 border-gray-200 hover:border-er-accent hover:text-er-dark'}"
+                        >English Test</button>
+                    </div>
+                    ${isKo ? `
                     <div class="bg-white rounded-3xl border border-gray-100 shadow-soft overflow-hidden">
                         <iframe
-                            src="test.html"
+                            src="test.html?v=20260305-motive-v2"
                             title="적응형 에니어그램 심층 진단"
-                            class="w-full min-h-[2200px] md:min-h-[2400px]"
+                            class="w-full min-h-[2500px] md:min-h-[2800px]"
                             loading="lazy"
                         ></iframe>
                     </div>
+                    ` : `
+                    <div class="bg-white rounded-3xl border border-gray-100 shadow-soft p-4 sm:p-6 md:p-8">
+                        <div id="progress-container" class="mb-8" aria-live="polite">
+                            <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
+                                <span id="step-label">${adaptiveText('step1')}</span>
+                                <span id="step-counter">1 / 2</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                                <div id="progress-bar" class="h-1.5 rounded-full smooth-transition bg-er-accent" style="width: 50%;"></div>
+                            </div>
+                        </div>
+
+                        <form id="phase1-form" class="space-y-10">
+                            <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center">
+                                <p class="font-semibold text-gray-700">${adaptiveText('phase1Title')}</p>
+                                <p class="text-sm text-gray-500 mt-1">${adaptiveText('phase1Desc')}</p>
+                            </div>
+                            <div id="phase1-container" class="space-y-6"></div>
+                            <div class="text-center pt-6">
+                                <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
+                                <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-8 rounded-full shadow-lg smooth-transition">${adaptiveText('next')}</button>
+                            </div>
+                        </form>
+
+                        <form id="phase2-form" class="space-y-10 hidden">
+                            <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center">
+                                <p class="font-bold text-[#4a4540] text-lg">${adaptiveText('phase2Title')}</p>
+                                <p class="text-sm text-gray-600 mt-2">${adaptiveText('phase2Desc')}</p>
+                            </div>
+                            <div id="phase2-container" class="space-y-6"></div>
+                            <div class="text-center pt-6">
+                                <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm">${adaptiveText('required')}</p>
+                                <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-10 rounded-full shadow-lg smooth-transition">${adaptiveText('submit')}</button>
+                            </div>
+                        </form>
+
+                        <div id="result-view" class="hidden">
+                            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+                                <div class="bg-[#4a4540] px-8 py-10 text-center text-white relative">
+                                    <h2 class="text-sm font-medium opacity-80 uppercase tracking-widest mb-3">Your Original Design</h2>
+                                    <div id="res-final" class="text-4xl sm:text-5xl font-bold mb-4 tracking-tight text-[#bfa68a]"></div>
+                                    <p id="res-instincts" class="text-lg font-medium opacity-90"></p>
+                                    <div id="confidence-badge" class="absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold border border-white/30"></div>
+                                </div>
+                                <div class="p-6 sm:p-8 space-y-6 bg-gray-50">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="bg-white p-6 rounded-2xl text-center border border-gray-100 col-span-2 sm:col-span-1 shadow-sm">
+                                            <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('core')}</p>
+                                            <p id="res-core" class="text-2xl font-bold text-gray-800"></p>
+                                        </div>
+                                        <div class="bg-white p-6 rounded-2xl text-center border border-gray-100 col-span-2 sm:col-span-1 shadow-sm">
+                                            <p class="text-xs text-gray-400 font-bold uppercase mb-1">${adaptiveText('wing')}</p>
+                                            <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
+                                        </div>
+                                        <div class="bg-white p-6 rounded-2xl text-center border border-gray-100 col-span-2 shadow-sm">
+                                            <p class="text-xs text-gray-400 font-bold uppercase mb-2">${adaptiveText('arrows')}</p>
+                                            <p id="res-arrows" class="text-[15px] font-medium text-gray-700 leading-relaxed"></p>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                                        <h3 class="font-bold text-gray-800 mb-2 text-sm">${adaptiveText('top3Title')}</h3>
+                                        <div id="res-top3" class="space-y-4"></div>
+                                    </div>
+                                    <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
+                                        <h3 class="font-bold text-[#4a4540] mb-2 text-sm">${adaptiveText('report')}</h3>
+                                        <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
+                                    </div>
+                                    <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-6 rounded-xl text-center shadow-sm">
+                                        <p class="text-sm text-red-800 mb-3 leading-relaxed">${adaptiveText('lowConf')}</p>
+                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-6 py-3 rounded-full transition shadow">${adaptiveText('cta')}</a>
+                                    </div>
+                                    <div class="text-center pt-6 border-t border-gray-200">
+                                        <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">${adaptiveText('restart')}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `}
                 </div>
             `;
         }
@@ -1718,6 +1830,8 @@
             container.innerHTML = '';
             questions.forEach((item) => {
                 const qText = adaptiveQuestionText(item);
+                const aText = item.format === 'ab' ? adaptiveOptionText(item, 'a') : '';
+                const bText = item.format === 'ab' ? adaptiveOptionText(item, 'b') : '';
                 const html = item.format === 'ab'
                     ? `
                         <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
@@ -1727,14 +1841,14 @@
                                     <input type="radio" name="${item.id}" value="A" class="sr-only peer">
                                     <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] smooth-transition">
                                         <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${adaptiveText('forcedA')}</span>
-                                        <div>${item.a}</div>
+                                        <div>${aText}</div>
                                     </div>
                                 </label>
                                 <label class="block cursor-pointer">
                                     <input type="radio" name="${item.id}" value="B" class="sr-only peer">
                                     <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] smooth-transition">
                                         <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${adaptiveText('forcedB')}</span>
-                                        <div>${item.b}</div>
+                                        <div>${bText}</div>
                                     </div>
                                 </label>
                             </div>
@@ -1792,6 +1906,8 @@
         }
 
         function initAdaptiveTest() {
+            const phase1Container = document.getElementById('phase1-container');
+            if (!phase1Container) return;
             adaptivePhase1Responses = {};
             adaptiveTopCandidates = [];
             adaptivePhase2QuestionsData = [];
