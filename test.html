@@ -6,6 +6,8 @@
   <title>ER Enneagram Test</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body { font-family: 'Pretendard', sans-serif; background:#f8fafc; color:#111827; }
     .radio-btn:checked + label { background:#4a4540; color:#fff; border-color:#4a4540; transform:scale(1.05); }
@@ -109,6 +111,7 @@
           </div>
 
           <div class="text-center pt-6 border-t border-gray-100">
+            <button id="download-pdf-btn" onclick="downloadResultPdf()" class="mr-3 text-sm text-[#4a4540] hover:text-black font-semibold underline">결과 PDF 다운로드</button>
             <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">처음부터 다시하기</button>
             <p class="text-xs text-gray-400 mt-4">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
           </div>
@@ -355,6 +358,67 @@ function setProgress(percent) {
   const track = document.getElementById('progress-track');
   if (bar) bar.style.width = `${percent}%`;
   if (track) track.setAttribute('aria-valuenow', String(percent));
+}
+
+async function downloadResultPdf() {
+  const target = document.getElementById('result-view');
+  const btn = document.getElementById('download-pdf-btn');
+  if (!target || target.classList.contains('hidden')) return;
+
+  if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
+    alert('PDF 라이브러리를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.');
+    return;
+  }
+
+  const prev = btn ? btn.innerText : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerText = 'PDF 생성 중...';
+    btn.classList.add('opacity-60', 'cursor-not-allowed');
+  }
+
+  try {
+    const canvas = await window.html2canvas(target, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#f8fafc',
+      windowWidth: target.scrollWidth
+    });
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST');
+      heightLeft -= pageHeight;
+    }
+
+    const title = (document.getElementById('res-final')?.innerText || 'result').replace(/\s+/g, '_');
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    pdf.save(`enneagram_${title}_${y}${m}${d}.pdf`);
+  } catch (_err) {
+    alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerText = prev || '결과 PDF 다운로드';
+      btn.classList.remove('opacity-60', 'cursor-not-allowed');
+    }
+  }
 }
 
 function scrollToTopSmart() {
