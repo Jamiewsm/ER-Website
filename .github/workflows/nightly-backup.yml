@@ -1,0 +1,61 @@
+name: Nightly Backup
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * *"
+
+jobs:
+  backup:
+    if: ${{ vars.BACKUP_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+
+    env:
+      BACKUP_ROOT: backup-output
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      BACKUP_BUCKETS: ${{ vars.BACKUP_BUCKETS }}
+      S3_BACKUP_BUCKET: ${{ vars.S3_BACKUP_BUCKET }}
+      S3_BACKUP_PREFIX: ${{ vars.S3_BACKUP_PREFIX }}
+      S3_BACKUP_REGION: ${{ vars.S3_BACKUP_REGION }}
+      S3_ENDPOINT_URL: ${{ vars.S3_ENDPOINT_URL }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Run database backup
+        run: bash scripts/backup_database.sh
+
+      - name: Run storage backup
+        run: python3 scripts/backup_supabase_storage.py
+
+      - name: Create backup archive
+        run: |
+          tar -C "$BACKUP_ROOT" -czf "backup-${GITHUB_RUN_ID}.tar.gz" .
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-backup-${{ github.run_id }}
+          path: |
+            backup-output/
+            backup-${{ github.run_id }}.tar.gz
+          retention-days: 7
+
+      - name: Upload backup bundle to S3-compatible storage
+        if: ${{ env.S3_BACKUP_BUCKET != '' && env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' }}
+        run: bash scripts/upload_backup_bundle.sh "backup-${GITHUB_RUN_ID}.tar.gz"
