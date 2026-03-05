@@ -1799,18 +1799,18 @@
             const summaryEl = document.getElementById('coach-portal-summary');
             if (summaryEl) {
                 summaryEl.innerHTML = `
-                    <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                    <button type="button" onclick="renderSection('coach_tasks')" class="text-left bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-soft transition-shadow">
                         <p class="text-xs text-gray-400">최근 과제</p>
                         <p class="text-3xl font-bold text-er-dark mt-2">${tasks.length}</p>
-                    </div>
-                    <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                    </button>
+                    <button type="button" onclick="renderSection('coach_schedule')" class="text-left bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-soft transition-shadow">
                         <p class="text-xs text-gray-400">다가오는 일정</p>
                         <p class="text-3xl font-bold text-er-dark mt-2">${schedules.length}</p>
-                    </div>
-                    <div class="bg-white rounded-2xl border border-gray-100 p-5">
+                    </button>
+                    <button type="button" onclick="renderSection('coach_materials')" class="text-left bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-soft transition-shadow">
                         <p class="text-xs text-gray-400">공유 자료 수</p>
                         <p class="text-3xl font-bold text-er-dark mt-2">${materialCount}</p>
-                    </div>
+                    </button>
                 `;
             }
 
@@ -1818,10 +1818,10 @@
             if (tasksEl) {
                 tasksEl.innerHTML = tasks.length
                     ? tasks.map((task) => `
-                        <div class="p-3 border border-gray-100 rounded-xl">
+                        <button type="button" onclick="openCoachTaskFromDashboard('${task.id}')" class="w-full text-left p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                             <p class="font-semibold text-gray-800">${escapeHtml(task.title)}</p>
                             <p class="text-xs text-gray-500 mt-1">마감: ${formatDateTime(task.due_at)} · 상태: ${escapeHtml(task.status)}</p>
-                        </div>
+                        </button>
                     `).join('')
                     : '<p class="text-sm text-gray-500">등록된 과제가 없습니다.</p>';
             }
@@ -1830,13 +1830,18 @@
             if (schedulesEl) {
                 schedulesEl.innerHTML = schedules.length
                     ? schedules.map((item) => `
-                        <div class="p-3 border border-gray-100 rounded-xl">
+                        <button type="button" onclick="renderSection('coach_schedule')" class="w-full text-left p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                             <p class="font-semibold text-gray-800">${escapeHtml(item.title)}</p>
                             <p class="text-xs text-gray-500 mt-1">${formatDateTime(item.start_at)} - ${formatDateTime(item.end_at)} (${escapeHtml(item.schedule_type)})</p>
-                        </div>
+                        </button>
                     `).join('')
                     : '<p class="text-sm text-gray-500">다가오는 일정이 없습니다.</p>';
             }
+        }
+
+        function openCoachTaskFromDashboard(taskId) {
+            renderSection('coach_tasks');
+            setTimeout(() => viewCoachTaskDetail(taskId), 120);
         }
 
         async function loadCoachTasks() {
@@ -1868,6 +1873,7 @@
                             <div class="mt-3 flex gap-2">
                                 <button onclick="viewCoachTaskDetail('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">상세 보기</button>
                                 <button onclick="editCoachTask('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold bg-er-dark text-white">수정</button>
+                                <button onclick="deleteCoachTask('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
                             </div>
                         </div>
                     `).join('')
@@ -1906,7 +1912,10 @@
                         <p class="text-xs text-gray-500 mt-1">상태: ${escapeHtml(task.status || '-')} · 주차: ${escapeHtml(task.week_label || '-')}</p>
                         <p class="text-xs text-gray-500 mt-1">마감: ${formatDateTime(task.due_at)} · 등록: ${formatDateTime(task.created_at)}</p>
                     </div>
-                    <button onclick="editCoachTask('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold bg-er-dark text-white">이 과제 수정</button>
+                    <div class="flex gap-2">
+                        <button onclick="editCoachTask('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold bg-er-dark text-white">이 과제 수정</button>
+                        <button onclick="deleteCoachTask('${task.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
+                    </div>
                 </div>
                 <div class="mt-4 p-3 rounded-xl border border-gray-100 bg-white text-sm text-gray-700 break-keep">${escapeHtml(task.description || '-')}</div>
                 <div class="mt-4">
@@ -1972,6 +1981,40 @@
             if (cancelBtn) cancelBtn.classList.add('hidden');
         }
 
+        async function deleteCoachTask(taskId) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            if (!confirm('이 과제를 삭제할까요? 첨부파일도 함께 삭제됩니다.')) return;
+
+            const { data: files } = await supabaseClient
+                .from('coach_task_files')
+                .select('storage_path')
+                .eq('task_id', taskId);
+
+            const paths = (files || []).map((f) => f.storage_path).filter(Boolean);
+            if (paths.length) {
+                await supabaseClient.storage.from('coach-task-files').remove(paths);
+            }
+
+            const { error } = await supabaseClient
+                .from('coach_tasks')
+                .delete()
+                .eq('id', taskId);
+
+            if (error) {
+                alert(`과제 삭제 실패: ${error.message}`);
+                return;
+            }
+
+            const detailEl = document.getElementById('coach-task-detail');
+            if (detailEl) {
+                detailEl.classList.add('hidden');
+                detailEl.innerHTML = '';
+            }
+            resetCoachTaskForm();
+            await loadCoachTasks();
+            alert('과제가 삭제되었습니다.');
+        }
+
         async function loadCoachMaterials() {
             if (!ensureCoachAccess() || !supabaseClient) return;
             const listEl = document.getElementById('coach-materials-list');
@@ -1997,7 +2040,10 @@
                                     <h4 class="font-bold text-gray-900">${escapeHtml(item.title)}</h4>
                                     <p class="text-xs text-gray-400 mt-1">${escapeHtml(item.category)} · ${escapeHtml(item.original_name || '')} · ${getFileSizeLabel(item.size_bytes)}</p>
                                 </div>
-                                <button onclick="downloadCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">다운로드</button>
+                                <div class="flex gap-2">
+                                    <button onclick="downloadCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">다운로드</button>
+                                    <button onclick="deleteCoachMaterial('${item.id}','${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
+                                </div>
                             </div>
                             <p class="text-xs text-gray-500 mt-2 break-keep">${escapeHtml(item.description || '-')}</p>
                         </div>
@@ -2029,7 +2075,10 @@
                         <div class="border border-gray-100 rounded-2xl p-4">
                             <div class="flex flex-wrap items-center justify-between gap-2">
                                 <h4 class="font-bold text-gray-900">${escapeHtml(item.title)}</h4>
-                                <span class="text-[11px] px-2 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-600">${escapeHtml(item.schedule_type)}</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[11px] px-2 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-600">${escapeHtml(item.schedule_type)}</span>
+                                    <button onclick="deleteCoachSchedule('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
+                                </div>
                             </div>
                             <p class="text-xs text-gray-500 mt-2">${formatDateTime(item.start_at)} - ${formatDateTime(item.end_at)}</p>
                             <p class="text-xs text-gray-400 mt-1">${escapeHtml(item.location || '-')}</p>
@@ -2158,6 +2207,29 @@
             alert('자료가 업로드되었습니다.');
         }
 
+        async function deleteCoachMaterial(materialId, encodedStoragePath) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            if (!confirm('이 자료를 삭제할까요?')) return;
+
+            const storagePath = decodeURIComponent(String(encodedStoragePath || ''));
+            if (storagePath) {
+                await supabaseClient.storage.from('coach-materials').remove([storagePath]);
+            }
+
+            const { error } = await supabaseClient
+                .from('coach_materials')
+                .delete()
+                .eq('id', materialId);
+
+            if (error) {
+                alert(`자료 삭제 실패: ${error.message}`);
+                return;
+            }
+
+            await loadCoachMaterials();
+            alert('자료가 삭제되었습니다.');
+        }
+
         async function submitCoachSchedule(event) {
             event.preventDefault();
             if (!ensureCoachAccess() || !supabaseClient) return;
@@ -2192,6 +2264,24 @@
             event.target.reset();
             await loadCoachSchedules();
             alert('일정이 등록되었습니다.');
+        }
+
+        async function deleteCoachSchedule(scheduleId) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            if (!confirm('이 일정을 삭제할까요?')) return;
+
+            const { error } = await supabaseClient
+                .from('coach_schedules')
+                .delete()
+                .eq('id', scheduleId);
+
+            if (error) {
+                alert(`일정 삭제 실패: ${error.message}`);
+                return;
+            }
+
+            await loadCoachSchedules();
+            alert('일정이 삭제되었습니다.');
         }
 
         async function downloadCoachMaterial(encodedStoragePath) {
