@@ -84,6 +84,20 @@ create table if not exists public.coach_materials (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.coach_session_notes (
+  id uuid primary key default gen_random_uuid(),
+  schedule_id uuid not null references public.coach_schedules(id) on delete cascade,
+  title text not null,
+  note_body text not null,
+  attachment_path text,
+  attachment_name text,
+  attachment_mime_type text,
+  attachment_size_bytes bigint,
+  uploaded_by uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
 create or replace function public.set_updated_at()
 returns trigger language plpgsql as $$
 begin
@@ -242,11 +256,17 @@ CREATE TRIGGER trg_coach_materials_updated_at
 BEFORE UPDATE ON public.coach_materials
 FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
+DROP TRIGGER IF EXISTS trg_coach_session_notes_updated_at ON public.coach_session_notes;
+CREATE TRIGGER trg_coach_session_notes_updated_at
+BEFORE UPDATE ON public.coach_session_notes
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
 ALTER TABLE public.coach_profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.coach_schedules ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.coach_tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.coach_task_files ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.coach_materials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.coach_session_notes ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "coaches can view profiles" ON public.coach_profiles;
 DROP POLICY IF EXISTS "users can view own profile" ON public.coach_profiles;
@@ -362,6 +382,31 @@ ON public.coach_materials
 FOR DELETE
 USING (public.is_active_coach(auth.uid()));
 
+DROP POLICY IF EXISTS "coaches can read session notes" ON public.coach_session_notes;
+CREATE POLICY "coaches can read session notes"
+ON public.coach_session_notes
+FOR SELECT
+USING (public.is_active_coach(auth.uid()));
+
+DROP POLICY IF EXISTS "coaches can write session notes" ON public.coach_session_notes;
+CREATE POLICY "coaches can write session notes"
+ON public.coach_session_notes
+FOR INSERT
+WITH CHECK (public.is_active_coach(auth.uid()) and uploaded_by = auth.uid());
+
+DROP POLICY IF EXISTS "coaches can update session notes" ON public.coach_session_notes;
+CREATE POLICY "coaches can update session notes"
+ON public.coach_session_notes
+FOR UPDATE
+USING (public.is_active_coach(auth.uid()))
+WITH CHECK (public.is_active_coach(auth.uid()));
+
+DROP POLICY IF EXISTS "coaches can delete session notes" ON public.coach_session_notes;
+CREATE POLICY "coaches can delete session notes"
+ON public.coach_session_notes
+FOR DELETE
+USING (public.is_active_coach(auth.uid()));
+
 -- Storage buckets (private)
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
@@ -396,6 +441,24 @@ VALUES (
     'application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'application/haansofthwp','application/x-hwp','application/haansofthwpx','application/x-hwpx',
     'text/plain','text/csv','application/zip','application/x-zip-compressed',
+    'image/png','image/jpeg','image/webp','image/gif',
+    'video/mp4','video/quicktime','audio/mpeg','audio/wav','audio/x-m4a','audio/mp4','audio/aac'
+  ]::text[]
+)
+ON CONFLICT (id) DO UPDATE SET
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'coach-session-notes',
+  'coach-session-notes',
+  false,
+  104857600,
+  ARRAY[
+    'application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'text/plain','text/csv',
     'image/png','image/jpeg','image/webp','image/gif',
     'video/mp4','video/quicktime','audio/mpeg','audio/wav','audio/x-m4a','audio/mp4','audio/aac'
   ]::text[]
@@ -458,5 +521,32 @@ ON storage.objects
 FOR DELETE
 USING (
   bucket_id = 'coach-materials'
+  AND public.is_active_coach(auth.uid())
+);
+
+DROP POLICY IF EXISTS "coach session notes read" ON storage.objects;
+CREATE POLICY "coach session notes read"
+ON storage.objects
+FOR SELECT
+USING (
+  bucket_id = 'coach-session-notes'
+  AND public.is_active_coach(auth.uid())
+);
+
+DROP POLICY IF EXISTS "coach session notes write" ON storage.objects;
+CREATE POLICY "coach session notes write"
+ON storage.objects
+FOR INSERT
+WITH CHECK (
+  bucket_id = 'coach-session-notes'
+  AND public.is_active_coach(auth.uid())
+);
+
+DROP POLICY IF EXISTS "coach session notes delete" ON storage.objects;
+CREATE POLICY "coach session notes delete"
+ON storage.objects
+FOR DELETE
+USING (
+  bucket_id = 'coach-session-notes'
   AND public.is_active_coach(auth.uid())
 );

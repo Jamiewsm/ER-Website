@@ -712,6 +712,7 @@
                 case 'coach_tasks': html = renderCoachTasks(); break;
                 case 'coach_materials': html = renderCoachMaterials(); break;
                 case 'coach_schedule': html = renderCoachSchedule(); break;
+                case 'coach_notes': html = renderCoachNotes(); break;
                 case 'thankyou': html = renderThankYou(); break;
                 default: html = renderHome();
             }
@@ -729,6 +730,7 @@
             if(sectionId === 'coach_tasks') setTimeout(() => loadCoachTasks(), 0);
             if(sectionId === 'coach_materials') setTimeout(() => loadCoachMaterials(), 0);
             if(sectionId === 'coach_schedule') setTimeout(() => loadCoachSchedules(), 0);
+            if(sectionId === 'coach_notes') setTimeout(() => loadCoachNotes(), 0);
         }
 
         function toggleMobileMenu() {
@@ -1562,12 +1564,14 @@
                                 <div class="flex flex-wrap gap-2">
                                     ${adminButton}
                                     <button onclick="renderSection('coach_tasks')" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">보고서 관리</button>
+                                    <button onclick="renderSection('coach_notes')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">세션 노트</button>
                                     <button onclick="renderSection('coach_materials')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">자료실</button>
                                     <button onclick="renderSection('coach_schedule')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">주간 일정</button>
                                 </div>
                             </div>
                         </div>
-                        <div id="coach-portal-summary" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div id="coach-portal-summary" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
                             <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
                             <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
                             <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
@@ -1583,7 +1587,7 @@
                             </div>
                             <div id="coach-calendar-grid" class="text-sm text-gray-500">불러오는 중...</div>
                         </div>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div class="bg-white rounded-3xl border border-gray-100 p-6">
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="font-bold text-er-dark">최근 보고서</h3>
@@ -1597,6 +1601,13 @@
                                     <button onclick="renderSection('coach_schedule')" class="text-xs text-er-accent font-bold">전체 보기</button>
                                 </div>
                                 <div id="coach-portal-schedules" class="space-y-2 text-sm text-gray-500">불러오는 중...</div>
+                            </div>
+                            <div class="bg-white rounded-3xl border border-gray-100 p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-bold text-er-dark">최근 세션 노트</h3>
+                                    <button onclick="renderSection('coach_notes')" class="text-xs text-er-accent font-bold">전체 보기</button>
+                                </div>
+                                <div id="coach-portal-notes" class="space-y-2 text-sm text-gray-500">불러오는 중...</div>
                             </div>
                         </div>
                     </div>
@@ -1755,6 +1766,41 @@
                                 <textarea name="notes" rows="2" placeholder="메모" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
                                 <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">일정 저장</button>
                             </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCoachNotes() {
+            if (!state.user) return renderCoachAccessDenied('로그인 후 세션 노트 기능을 사용할 수 있습니다.');
+            if (!state.isCoach) return renderCoachAccessDenied();
+            return `
+                <div class="bg-white min-h-screen py-10 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-6xl mx-auto space-y-6">
+                        <div class="flex flex-wrap items-center justify-between gap-3">
+                            <h2 class="text-2xl font-bold text-er-dark">세션 노트</h2>
+                            <div class="flex gap-2">
+                                <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
+                                <button onclick="loadCoachNotes()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
+                            </div>
+                        </div>
+                        <form id="coach-note-form" onsubmit="submitCoachNote(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
+                            <h3 class="text-base font-bold text-er-dark">세션 노트 업로드</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <select name="schedule_id" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <option value="">일정을 선택해 주세요</option>
+                                </select>
+                                <input name="title" required maxlength="120" placeholder="노트 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                            </div>
+                            <textarea name="note_body" rows="4" required placeholder="세션 메모 / follow-up / 요약" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
+                            <input name="file" type="file" accept=".pdf,.doc,.docx,.txt,.csv,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
+                            <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">노트 저장</button>
+                        </form>
+                        <div class="bg-white border border-gray-100 rounded-3xl p-6">
+                            <h3 class="text-base font-bold text-er-dark mb-4">노트 목록</h3>
+                            <div id="coach-notes-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                            <div id="coach-note-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
                         </div>
                     </div>
                 </div>
@@ -2050,10 +2096,11 @@
             const monthStart = getCoachCalendarMonthStart();
             state.coachCalendarMonth = monthStart.toISOString();
             const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 1);
-            const [taskRes, scheduleRes, materialRes] = await Promise.all([
+            const [taskRes, scheduleRes, materialRes, noteRes] = await Promise.all([
                 supabaseClient.from('coach_tasks').select('id, title, due_at, status').order('created_at', { ascending: false }).limit(5),
                 supabaseClient.from('coach_schedules').select('id, title, start_at, end_at, schedule_type').gte('end_at', new Date().toISOString()).order('start_at', { ascending: true }).limit(5),
-                supabaseClient.from('coach_materials').select('id').limit(1000)
+                supabaseClient.from('coach_materials').select('id').limit(1000),
+                supabaseClient.from('coach_session_notes').select('id, schedule_id, title, note_body, attachment_name, created_at').order('created_at', { ascending: false }).limit(5)
             ]);
             const { data: calendarSchedules } = await supabaseClient
                 .from('coach_schedules')
@@ -2064,6 +2111,7 @@
             const tasks = taskRes.data || [];
             const schedules = scheduleRes.data || [];
             const materialCount = materialRes.data ? materialRes.data.length : 0;
+            const notes = noteRes.data || [];
             renderCoachCalendar(monthStart, calendarSchedules || []);
 
             const summaryEl = document.getElementById('coach-portal-summary');
@@ -2080,6 +2128,10 @@
                     <button type="button" onclick="renderSection('coach_materials')" class="text-left bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-soft transition-shadow">
                         <p class="text-xs text-gray-400">공유 자료 수</p>
                         <p class="text-3xl font-bold text-er-dark mt-2">${materialCount}</p>
+                    </button>
+                    <button type="button" onclick="renderSection('coach_notes')" class="text-left bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-soft transition-shadow">
+                        <p class="text-xs text-gray-400">최근 세션 노트</p>
+                        <p class="text-3xl font-bold text-er-dark mt-2">${notes.length}</p>
                     </button>
                 `;
             }
@@ -2111,6 +2163,19 @@
                     `;
                     }).join('')
                     : '<p class="text-sm text-gray-500">다가오는 일정이 없습니다.</p>';
+            }
+
+            const notesEl = document.getElementById('coach-portal-notes');
+            if (notesEl) {
+                notesEl.innerHTML = notes.length
+                    ? notes.map((note) => `
+                        <button type="button" onclick="viewCoachNoteDetail('${note.id}', true)" class="w-full text-left p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
+                            <p class="font-semibold text-gray-800">${escapeHtml(note.title)}</p>
+                            <p class="text-xs text-gray-500 mt-1 line-clamp-2 break-keep">${escapeHtml(note.note_body || '')}</p>
+                            <p class="text-xs text-gray-500 mt-1">등록: ${formatDateTime(note.created_at)}${note.attachment_name ? ` · 첨부: ${escapeHtml(note.attachment_name)}` : ''}</p>
+                        </button>
+                    `).join('')
+                    : '<p class="text-sm text-gray-500">등록된 세션 노트가 없습니다.</p>';
             }
         }
 
@@ -2220,6 +2285,210 @@
         function openCoachTaskFromDashboard(taskId) {
             renderSection('coach_tasks');
             setTimeout(() => viewCoachTaskDetail(taskId), 120);
+        }
+
+        async function populateCoachNoteScheduleOptions(selectedScheduleId = '') {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const selectEl = document.querySelector('#coach-note-form select[name="schedule_id"]');
+            if (!selectEl) return;
+
+            const { data, error } = await supabaseClient
+                .from('coach_schedules')
+                .select('id, title, start_at, end_at')
+                .order('start_at', { ascending: false })
+                .limit(100);
+
+            if (error) {
+                selectEl.innerHTML = '<option value="">일정 로딩 실패</option>';
+                return;
+            }
+
+            const options = (data || []).map((item) => {
+                const selected = String(selectedScheduleId) === String(item.id) ? 'selected' : '';
+                return `<option value="${item.id}" ${selected}>${escapeHtml(item.title)} · ${escapeHtml(formatDateTime(item.start_at))}</option>`;
+            }).join('');
+
+            selectEl.innerHTML = `<option value="">일정을 선택해 주세요</option>${options}`;
+            if (!selectedScheduleId && data?.length) {
+                selectEl.value = data[0].id;
+            }
+        }
+
+        async function loadCoachNotes() {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const listEl = document.getElementById('coach-notes-list');
+            if (listEl) listEl.innerHTML = '불러오는 중...';
+            await populateCoachNoteScheduleOptions();
+
+            const { data: notes, error } = await supabaseClient
+                .from('coach_session_notes')
+                .select('id, schedule_id, title, note_body, attachment_path, attachment_name, attachment_size_bytes, created_at, uploaded_by')
+                .order('created_at', { ascending: false })
+                .limit(50);
+
+            if (error) {
+                if (listEl) listEl.innerHTML = `<p class="text-red-500 text-xs">세션 노트 로딩 실패: ${escapeHtml(error.message)}</p>`;
+                return;
+            }
+
+            const scheduleIds = [...new Set((notes || []).map((item) => item.schedule_id).filter(Boolean))];
+            let scheduleMap = {};
+            if (scheduleIds.length) {
+                const { data: schedules } = await supabaseClient
+                    .from('coach_schedules')
+                    .select('id, title, start_at, end_at')
+                    .in('id', scheduleIds);
+                scheduleMap = Object.fromEntries((schedules || []).map((item) => [item.id, item]));
+            }
+
+            if (listEl) {
+                listEl.innerHTML = (notes || []).length
+                    ? notes.map((note) => {
+                        const schedule = scheduleMap[note.schedule_id];
+                        return `
+                            <div class="border border-gray-100 rounded-2xl p-4">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <div>
+                                        <button type="button" onclick="viewCoachNoteDetail('${note.id}')" class="text-left font-bold text-gray-900 hover:text-er-accent transition-colors">${escapeHtml(note.title)}</button>
+                                        <p class="text-xs text-gray-400 mt-1">${escapeHtml(schedule?.title || '연결된 일정 없음')} · ${formatDateTime(note.created_at)}</p>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="viewCoachNoteDetail('${note.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">보기</button>
+                                        ${note.attachment_path ? `<button onclick="downloadCoachNoteAttachment('${encodeURIComponent(note.attachment_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">첨부 다운로드</button>` : ''}
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2 break-keep">${escapeHtml(note.note_body || '')}</p>
+                            </div>
+                        `;
+                    }).join('')
+                    : '<p class="text-sm text-gray-500">등록된 세션 노트가 없습니다.</p>';
+            }
+        }
+
+        async function viewCoachNoteDetail(noteId, fromDashboard = false) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            if (fromDashboard && state.currentSection !== 'coach_notes') {
+                renderSection('coach_notes');
+                setTimeout(() => viewCoachNoteDetail(noteId, false), 120);
+                return;
+            }
+
+            const detailEl = document.getElementById('coach-note-detail');
+            if (!detailEl) return;
+            detailEl.classList.remove('hidden');
+            detailEl.innerHTML = '불러오는 중...';
+
+            const { data: note, error } = await supabaseClient
+                .from('coach_session_notes')
+                .select('id, schedule_id, title, note_body, attachment_path, attachment_name, attachment_size_bytes, created_at')
+                .eq('id', noteId)
+                .maybeSingle();
+
+            if (error || !note) {
+                detailEl.innerHTML = `<p class="text-xs text-red-500">세션 노트 상세 로딩 실패: ${escapeHtml(error?.message || 'not found')}</p>`;
+                return;
+            }
+
+            const { data: schedule } = await supabaseClient
+                .from('coach_schedules')
+                .select('id, title, start_at, end_at, location')
+                .eq('id', note.schedule_id)
+                .maybeSingle();
+
+            detailEl.innerHTML = `
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <h4 class="text-base font-bold text-gray-900">${escapeHtml(note.title)}</h4>
+                        <p class="text-xs text-gray-500 mt-1">등록: ${formatDateTime(note.created_at)}</p>
+                        <p class="text-xs text-gray-500 mt-1">일정: ${escapeHtml(schedule?.title || '연결된 일정 없음')}</p>
+                        <p class="text-xs text-gray-400 mt-1">${schedule ? `${escapeHtml(formatDateTime(schedule.start_at))}${schedule.location ? ` · ${escapeHtml(schedule.location)}` : ''}` : ''}</p>
+                    </div>
+                    ${note.attachment_path ? `<button onclick="downloadCoachNoteAttachment('${encodeURIComponent(note.attachment_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">첨부 다운로드</button>` : ''}
+                </div>
+                <div class="mt-4 p-3 rounded-xl border border-gray-100 bg-white text-sm text-gray-700 break-keep">${escapeHtml(note.note_body || '-')}</div>
+                ${note.attachment_name ? `<p class="mt-4 text-xs text-gray-500">첨부: ${escapeHtml(note.attachment_name)} · ${getFileSizeLabel(note.attachment_size_bytes)}</p>` : '<p class="mt-4 text-xs text-gray-500">첨부파일이 없습니다.</p>'}
+            `;
+        }
+
+        async function submitCoachNote(event) {
+            event.preventDefault();
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const form = event.target;
+            const formData = new FormData(form);
+            const schedule_id = String(formData.get('schedule_id') || '').trim();
+            const title = String(formData.get('title') || '').trim();
+            const note_body = String(formData.get('note_body') || '').trim();
+            const file = form.querySelector('input[name="file"]')?.files?.[0];
+
+            if (!schedule_id || !title || !note_body) {
+                alert('일정, 제목, 노트 내용을 모두 입력해 주세요.');
+                return;
+            }
+
+            let attachment_path = null;
+            let attachment_name = null;
+            let attachment_mime_type = null;
+            let attachment_size_bytes = null;
+
+            if (file) {
+                const check = validateUploadFile(file);
+                if (!check.ok) {
+                    alert(check.reason);
+                    return;
+                }
+                const safeName = `${Date.now()}_${buildSafeStorageFileName(file.name)}`;
+                const storagePath = `${schedule_id}/${safeName}`;
+                const uploadRes = await supabaseClient.storage.from('coach-session-notes').upload(storagePath, file, {
+                    upsert: false,
+                    contentType: file.type || undefined
+                });
+                if (uploadRes.error) {
+                    alert(`첨부 업로드 실패: ${uploadRes.error.message}`);
+                    return;
+                }
+                attachment_path = storagePath;
+                attachment_name = file.name;
+                attachment_mime_type = file.type || null;
+                attachment_size_bytes = file.size || null;
+            }
+
+            const { data: inserted, error } = await supabaseClient
+                .from('coach_session_notes')
+                .insert([{
+                    schedule_id,
+                    title,
+                    note_body,
+                    attachment_path,
+                    attachment_name,
+                    attachment_mime_type,
+                    attachment_size_bytes,
+                    uploaded_by: state.user.id
+                }])
+                .select('id')
+                .single();
+
+            if (error || !inserted?.id) {
+                alert(`세션 노트 저장 실패: ${error?.message || 'unknown error'}`);
+                return;
+            }
+
+            form.reset();
+            await populateCoachNoteScheduleOptions();
+            await loadCoachNotes();
+            await viewCoachNoteDetail(inserted.id);
+            alert('세션 노트가 저장되었습니다.');
+        }
+
+        async function downloadCoachNoteAttachment(encodedStoragePath) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const path = decodeURIComponent(String(encodedStoragePath || ''));
+            if (!path) return;
+            const { data, error } = await supabaseClient.storage.from('coach-session-notes').createSignedUrl(path, 60);
+            if (error || !data?.signedUrl) {
+                alert(`첨부 다운로드 링크 생성 실패: ${error?.message || 'unknown error'}`);
+                return;
+            }
+            window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
         }
 
         async function loadCoachTasks() {
