@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.er.coachportal.webapp.check</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/Joeyswoo/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Visual Studio Code/ER-Website/ops/launchd/coachportal-webapp-check.sh</string>
+    <string>https://4232e867.coach-portal-webapp.pages.dev</string>
+  </array>
+
+  <key>StartInterval</key>
+  <integer>600</integer>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/Joeyswoo/Library/Logs/coachportal-webapp-check/stdout.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/Joeyswoo/Library/Logs/coachportal-webapp-check/stderr.log</string>
+</dict>
+</plist>

@@ -360,6 +360,7 @@
             url: window.__ER_SUPABASE_URL || "",
             anonKey: window.__ER_SUPABASE_ANON_KEY || ""
         };
+        const COACH_APP_URL = "https://4232e867.coach-portal-webapp.pages.dev";
         const TURNSTILE_SITE_KEY = "0x4AAAAAACmAr1w7-5BNiCHZ";
         let applyTurnstileWidgetId = null;
 
@@ -1596,6 +1597,7 @@
                         <div class="mb-6">${coachBadge}</div>
                         <div class="flex flex-col gap-2">
                             ${state.isCoach ? `<button onclick="renderSection('coach_portal')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">Coach Portal</button>` : ''}
+                            ${state.isCoach ? `<button onclick="openCoachApp()" class="px-6 py-2 bg-white text-er-dark rounded-full text-xs font-bold border border-er-accent/30">Coach App</button>` : ''}
                             <button onclick="renderSection('home')" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">홈으로</button>
                         </div>
                     </div>
@@ -1636,6 +1638,7 @@
                                 </div>
                                 <div class="flex flex-wrap gap-2">
                                     ${adminButton}
+                                    <button onclick="openCoachApp()" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-er-accent/30 text-er-dark">Coach App</button>
                                     <button onclick="renderSection('coach_tasks')" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">보고서 관리</button>
                                     <button onclick="renderSection('coach_notes')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">세션 노트</button>
                                     <button onclick="renderSection('coach_materials')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">자료실</button>
@@ -1892,6 +1895,7 @@
         // --- Helper Functions ---
         function openNotices() { renderSection('notices'); }
         function openNotice(id) { renderSection('notice_detail', { id }); }
+        function openCoachApp() { window.open(COACH_APP_URL, '_blank', 'noopener,noreferrer'); }
 
         function escapeHtml(value) {
             return String(value || '')
