@@ -342,11 +342,17 @@
         let supabaseClient = null;
         const state = {
             currentSection: 'home',
+            currentPayload: null,
             user: null, 
             isCoach: false,
             coachProfile: null,
             coachAdminUsers: [],
             coachCalendarMonth: null,
+            coachListCounts: {
+                tasks: 0,
+                materials: 0,
+                notes: 0
+            },
             programFilter: 'individual',
             latestTestResult: null
         };
@@ -684,8 +690,74 @@
         }
 
         // --- Core Functions ---
-        function renderSection(sectionId, payload = null) {
+        function parseSectionHash() {
+            const rawHash = window.location.hash.replace(/^#/, '').trim();
+            if (!rawHash) return { sectionId: 'home', payload: null };
+
+            const [rawSectionId, rawQuery = ''] = rawHash.split('?');
+            const params = new URLSearchParams(rawQuery);
+            const payload = {};
+            params.forEach((value, key) => {
+                payload[key] = value;
+            });
+
+            return {
+                sectionId: rawSectionId || 'home',
+                payload: Object.keys(payload).length ? payload : null
+            };
+        }
+
+        function buildSectionHash(sectionId, payload = null) {
+            const params = new URLSearchParams();
+            if (payload && typeof payload === 'object') {
+                Object.entries(payload).forEach(([key, value]) => {
+                    if (value !== undefined && value !== null && value !== '') params.set(key, String(value));
+                });
+            }
+            const query = params.toString();
+            return `#${sectionId || 'home'}${query ? `?${query}` : ''}`;
+        }
+
+        function syncSectionHash(sectionId, payload = null, replaceHash = false) {
+            const nextHash = buildSectionHash(sectionId, payload);
+            if (window.location.hash === nextHash) return;
+            if (replaceHash) {
+                history.replaceState(null, '', nextHash);
+            } else {
+                window.location.hash = nextHash;
+            }
+        }
+
+        function getCoachComposerMeta(kind) {
+            const map = {
+                task: { openText: '보고서 등록', closeText: '등록 창 닫기' },
+                material: { openText: '자료 업로드', closeText: '업로드 창 닫기' },
+                note: { openText: '세션 노트 업로드', closeText: '업로드 창 닫기' }
+            };
+            return map[kind] || { openText: '업로드', closeText: '닫기' };
+        }
+
+        function setCoachComposerVisibility(kind, visible) {
+            const composer = document.getElementById(`coach-${kind}-composer`);
+            const button = document.getElementById(`coach-${kind}-toggle-btn`);
+            if (!composer || !button) return;
+
+            composer.classList.toggle('hidden', !visible);
+            const meta = getCoachComposerMeta(kind);
+            button.textContent = visible ? meta.closeText : meta.openText;
+        }
+
+        function toggleCoachComposer(kind, forceVisible = null) {
+            const composer = document.getElementById(`coach-${kind}-composer`);
+            if (!composer) return;
+            const nextVisible = typeof forceVisible === 'boolean' ? forceVisible : composer.classList.contains('hidden');
+            setCoachComposerVisibility(kind, nextVisible);
+        }
+
+        function renderSection(sectionId, payload = null, options = {}) {
+            const { syncHash = true, replaceHash = false } = options;
             state.currentSection = sectionId;
+            state.currentPayload = payload;
             const main = document.getElementById('main-content');
             
             // Close mobile menu
@@ -718,6 +790,7 @@
             }
 
             main.innerHTML = html;
+            if (syncHash) syncSectionHash(sectionId, payload, replaceHash);
             
             // Post-render actions
             if(sectionId === 'home') setTimeout(() => initCharts('home'), 100);
@@ -1652,33 +1725,36 @@
                             <h2 class="text-2xl font-bold text-er-dark">보고서 관리</h2>
                             <div class="flex gap-2">
                                 <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
+                                <button id="coach-task-toggle-btn" onclick="toggleCoachComposer('task')" class="px-4 py-2 rounded-full text-xs font-bold border border-er-dark text-er-dark bg-white">보고서 등록</button>
                                 <button onclick="loadCoachTasks()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
                             </div>
                         </div>
-                        <form id="coach-task-form" onsubmit="submitCoachTask(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
-                            <div class="flex items-center justify-between gap-3">
-                                <h3 id="coach-task-form-title" class="text-base font-bold text-er-dark">새 보고서 등록</h3>
-                                <button type="button" id="coach-task-cancel-btn" onclick="resetCoachTaskForm()" class="hidden px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">수정 취소</button>
-                            </div>
-                            <input type="hidden" name="task_id" value="">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input name="title" required maxlength="120" placeholder="보고서 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                <input name="due_at" type="datetime-local" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                <input name="week_label" placeholder="주차 (예: 2026-W10)" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                <select name="status" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                    <option value="published">게시</option>
-                                    <option value="draft">임시저장</option>
-                                    <option value="archived">보관</option>
-                                </select>
-                            </div>
-                            <textarea name="description" rows="3" placeholder="보고서 설명" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
-                            <input name="files" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.hwp,.hwpx,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
-                            <button id="coach-task-submit-btn" type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">보고서 저장</button>
-                        </form>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
                             <h3 class="text-base font-bold text-er-dark mb-4">보고서 목록</h3>
                             <div id="coach-tasks-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
                             <div id="coach-task-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
+                        </div>
+                        <div id="coach-task-composer" class="hidden bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
+                            <form id="coach-task-form" onsubmit="submitCoachTask(event)" class="space-y-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <h3 id="coach-task-form-title" class="text-base font-bold text-er-dark">새 보고서 등록</h3>
+                                    <button type="button" id="coach-task-cancel-btn" onclick="resetCoachTaskForm()" class="hidden px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">수정 취소</button>
+                                </div>
+                                <input type="hidden" name="task_id" value="">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input name="title" required maxlength="120" placeholder="보고서 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <input name="due_at" type="datetime-local" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <input name="week_label" placeholder="주차 (예: 2026-W10)" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <select name="status" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                        <option value="published">게시</option>
+                                        <option value="draft">임시저장</option>
+                                        <option value="archived">보관</option>
+                                    </select>
+                                </div>
+                                <textarea name="description" rows="3" placeholder="보고서 설명" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
+                                <input name="files" type="file" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.hwp,.hwpx,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
+                                <button id="coach-task-submit-btn" type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">보고서 저장</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1695,28 +1771,31 @@
                             <h2 class="text-2xl font-bold text-er-dark">코치 자료실</h2>
                             <div class="flex gap-2">
                                 <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
+                                <button id="coach-material-toggle-btn" onclick="toggleCoachComposer('material')" class="px-4 py-2 rounded-full text-xs font-bold border border-er-dark text-er-dark bg-white">자료 업로드</button>
                                 <button onclick="loadCoachMaterials()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
                             </div>
                         </div>
-                        <form onsubmit="submitCoachMaterial(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
-                            <h3 class="text-base font-bold text-er-dark">자료 업로드</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input name="title" required maxlength="120" placeholder="자료 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                <select name="category" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                    <option value="general">일반</option>
-                                    <option value="study">스터디</option>
-                                    <option value="training">트레이닝</option>
-                                    <option value="reference">참고자료</option>
-                                </select>
-                            </div>
-                            <textarea name="description" rows="3" placeholder="자료 설명" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
-                            <input name="file" type="file" required accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.hwp,.hwpx,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
-                            <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">자료 업로드</button>
-                        </form>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
                             <h3 class="text-base font-bold text-er-dark mb-4">자료 목록</h3>
                             <div id="coach-materials-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
                             <div id="coach-material-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
+                        </div>
+                        <div id="coach-material-composer" class="hidden bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
+                            <form onsubmit="submitCoachMaterial(event)" class="space-y-4">
+                                <h3 class="text-base font-bold text-er-dark">자료 업로드</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input name="title" required maxlength="120" placeholder="자료 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <select name="category" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                        <option value="general">일반</option>
+                                        <option value="study">스터디</option>
+                                        <option value="training">트레이닝</option>
+                                        <option value="reference">참고자료</option>
+                                    </select>
+                                </div>
+                                <textarea name="description" rows="3" placeholder="자료 설명" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
+                                <input name="file" type="file" required accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.hwp,.hwpx,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
+                                <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">자료 업로드</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -1782,25 +1861,28 @@
                             <h2 class="text-2xl font-bold text-er-dark">세션 노트</h2>
                             <div class="flex gap-2">
                                 <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
+                                <button id="coach-note-toggle-btn" onclick="toggleCoachComposer('note')" class="px-4 py-2 rounded-full text-xs font-bold border border-er-dark text-er-dark bg-white">세션 노트 업로드</button>
                                 <button onclick="loadCoachNotes()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
                             </div>
                         </div>
-                        <form id="coach-note-form" onsubmit="submitCoachNote(event)" class="bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
-                            <h3 class="text-base font-bold text-er-dark">세션 노트 업로드</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <select name="schedule_id" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                    <option value="">일정을 선택해 주세요</option>
-                                </select>
-                                <input name="title" required maxlength="120" placeholder="노트 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                            </div>
-                            <textarea name="note_body" rows="4" required placeholder="세션 메모 / follow-up / 요약" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
-                            <input name="file" type="file" accept=".pdf,.doc,.docx,.txt,.csv,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
-                            <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">노트 저장</button>
-                        </form>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
                             <h3 class="text-base font-bold text-er-dark mb-4">노트 목록</h3>
                             <div id="coach-notes-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
                             <div id="coach-note-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
+                        </div>
+                        <div id="coach-note-composer" class="hidden bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
+                            <form id="coach-note-form" onsubmit="submitCoachNote(event)" class="space-y-4">
+                                <h3 class="text-base font-bold text-er-dark">세션 노트 업로드</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <select name="schedule_id" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                        <option value="">일정을 선택해 주세요</option>
+                                    </select>
+                                    <input name="title" required maxlength="120" placeholder="노트 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                </div>
+                                <textarea name="note_body" rows="4" required placeholder="세션 메모 / follow-up / 요약" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
+                                <input name="file" type="file" accept=".pdf,.doc,.docx,.txt,.csv,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
+                                <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">노트 저장</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -2342,6 +2424,7 @@
             }
 
             if (listEl) {
+                state.coachListCounts.notes = (notes || []).length;
                 listEl.innerHTML = (notes || []).length
                     ? notes.map((note) => {
                         const schedule = scheduleMap[note.schedule_id];
@@ -2363,6 +2446,8 @@
                     }).join('')
                     : '<p class="text-sm text-gray-500">등록된 세션 노트가 없습니다.</p>';
             }
+
+            setCoachComposerVisibility('note', !(notes || []).length);
         }
 
         async function viewCoachNoteDetail(noteId, fromDashboard = false) {
@@ -2475,6 +2560,7 @@
             form.reset();
             await populateCoachNoteScheduleOptions();
             await loadCoachNotes();
+            setCoachComposerVisibility('note', state.coachListCounts.notes === 0);
             await viewCoachNoteDetail(inserted.id);
             alert('세션 노트가 저장되었습니다.');
         }
@@ -2508,6 +2594,7 @@
             }
 
             if (listEl) {
+                state.coachListCounts.tasks = (tasks || []).length;
                 listEl.innerHTML = (tasks || []).length
                     ? tasks.map((task) => `
                         <div class="border border-gray-100 rounded-2xl p-4">
@@ -2526,6 +2613,8 @@
                     `).join('')
                     : '<p class="text-sm text-gray-500">등록된 보고서가 없습니다.</p>';
             }
+
+            setCoachComposerVisibility('task', !(tasks || []).length);
         }
 
         async function viewCoachTaskDetail(taskId) {
@@ -2597,6 +2686,7 @@
 
             const form = document.getElementById('coach-task-form');
             if (!form) return;
+            setCoachComposerVisibility('task', true);
             form.querySelector('input[name="task_id"]').value = task.id;
             form.querySelector('input[name="title"]').value = task.title || '';
             form.querySelector('input[name="due_at"]').value = toLocalDatetimeInputValue(task.due_at);
@@ -2626,6 +2716,7 @@
             if (submitBtn) submitBtn.textContent = '보고서 저장';
             const cancelBtn = document.getElementById('coach-task-cancel-btn');
             if (cancelBtn) cancelBtn.classList.add('hidden');
+            setCoachComposerVisibility('task', state.coachListCounts.tasks === 0);
         }
 
         async function deleteCoachTask(taskId) {
@@ -2679,6 +2770,7 @@
             }
 
             if (listEl) {
+                state.coachListCounts.materials = (data || []).length;
                 listEl.innerHTML = (data || []).length
                     ? data.map((item) => `
                         <div class="border border-gray-100 rounded-2xl p-4">
@@ -2698,6 +2790,8 @@
                     `).join('')
                     : '<p class="text-sm text-gray-500">업로드된 자료가 없습니다.</p>';
             }
+
+            setCoachComposerVisibility('material', !(data || []).length);
         }
 
         async function viewCoachMaterialDetail(materialId) {
@@ -2871,6 +2965,7 @@
 
             resetCoachTaskForm();
             await loadCoachTasks();
+            setCoachComposerVisibility('task', !taskId && state.coachListCounts.tasks === 0);
             await viewCoachTaskDetail(task.id);
             alert(taskId ? '보고서가 수정되었습니다.' : '보고서가 저장되었습니다.');
         }
@@ -2935,6 +3030,7 @@
 
             form.reset();
             await loadCoachMaterials();
+            setCoachComposerVisibility('material', state.coachListCounts.materials === 0);
             alert('자료가 업로드되었습니다.');
         }
 
@@ -3194,7 +3290,7 @@
                 await loadCoachProfile();
                 updateAuthButtons();
                 if (state.currentSection === 'mypage' || state.currentSection.startsWith('coach_')) {
-                    renderSection('mypage');
+                    renderSection(state.currentSection, state.currentPayload, { syncHash: false });
                 }
             });
         }
@@ -3241,7 +3337,7 @@
             setAuthButtonsDisabled(true);
             const { error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'google',
-                options: { redirectTo: window.location.origin }
+                options: { redirectTo: `${window.location.origin}${window.location.pathname}${window.location.hash || ''}` }
             });
             setAuthButtonsDisabled(false);
             if (error) setAuthMessage(error.message, true);
@@ -4090,8 +4186,17 @@
                 }
             });
             
+            window.addEventListener('hashchange', () => {
+                const route = parseSectionHash();
+                const nextPayload = JSON.stringify(route.payload || null);
+                const currentPayload = JSON.stringify(state.currentPayload || null);
+                if (state.currentSection === route.sectionId && nextPayload === currentPayload) return;
+                renderSection(route.sectionId, route.payload, { syncHash: false });
+            });
+
             await initializeSupabase();
-            renderSection('home'); 
+            const initialRoute = parseSectionHash();
+            renderSection(initialRoute.sectionId, initialRoute.payload, { syncHash: false });
         });
     </script>
 </body>
