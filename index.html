@@ -20,14 +20,14 @@
                 extend: {
                     colors: {
                         er: {
-                            base: '#F5E6D3',      /* 배경: 카라멜 베이지 */
-                            surface: '#FFF9F2',   /* 카드: 크림 아이보리 */
-                            primary: '#7B6756',   /* 본문: 웜 토프 */
-                            accent: '#B98D67',    /* 포인트: 카라멜 브라운 */
-                            accentDark: '#9E7450', /* 포인트 진한색 */
-                            accentLight: '#EAD8C6', /* 포인트 연한 배경 */
+                            base: '#F7EEE4',      /* 배경: 한 톤 더 밝은 카라멜 베이지 */
+                            surface: '#FFFBF6',   /* 카드: 따뜻한 크림 아이보리 */
+                            primary: '#7D6A5B',   /* 본문: 웜 토프 */
+                            accent: '#B89170',    /* 포인트: 카라멜 브라운 */
+                            accentDark: '#9D7657', /* 포인트 진한색 */
+                            accentLight: '#EEE2D5', /* 포인트 연한 배경 */
                             dark: '#3E362E',      /* 제목: 차콜 브라운 */
-                            muted: '#A89786',
+                            muted: '#AA9889',
                         }
                     },
                     fontFamily: {
@@ -35,9 +35,9 @@
                         serif: ['Times New Roman', 'serif']
                     },
                     boxShadow: {
-                        'soft': '0 24px 50px -24px rgba(88, 68, 49, 0.20)',
-                        'card': '0 30px 60px -28px rgba(120, 88, 58, 0.26)',
-                        'glow': '0 0 34px rgba(185, 141, 103, 0.22)'
+                        'soft': '0 22px 44px -24px rgba(110, 84, 60, 0.16)',
+                        'card': '0 28px 54px -28px rgba(126, 94, 67, 0.22)',
+                        'glow': '0 0 30px rgba(184, 145, 112, 0.18)'
                     },
                     animation: {
                         'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
@@ -70,7 +70,7 @@
     <style>
         body { 
             font-family: 'Pretendard', sans-serif; 
-            background-color: #F5E6D3;
+            background-color: #F7EEE4;
             color: #3E362E;
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden; /* 모바일 가로 스크롤 방지 */
@@ -97,18 +97,18 @@
 
         /* Improved Background Pattern */
         .bg-pattern {
-            background-color: #F5E6D3;
-            background-image: radial-gradient(#C8A586 0.5px, transparent 0.5px);
+            background-color: #F7EEE4;
+            background-image: radial-gradient(#D1B295 0.5px, transparent 0.5px);
             background-size: 24px 24px;
-            opacity: 0.22;
+            opacity: 0.18;
         }
 
         /* Glassmorphism Utilities */
         .glass {
-            background: rgba(255, 249, 242, 0.72);
+            background: rgba(255, 251, 246, 0.78);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 248, 241, 0.52);
+            border: 1px solid rgba(255, 250, 245, 0.6);
         }
 
         /* Mobile Menu Transition */
@@ -131,7 +131,7 @@
         
         /* Text Highlight Animation */
         .text-highlight {
-            background: linear-gradient(120deg, rgba(185, 141, 103, 0.24) 0%, rgba(185, 141, 103, 0.24) 100%);
+            background: linear-gradient(120deg, rgba(184, 145, 112, 0.2) 0%, rgba(184, 145, 112, 0.2) 100%);
             background-repeat: no-repeat;
             background-size: 100% 30%;
             background-position: 0 88%;
@@ -148,12 +148,12 @@
         .fade-in { animation: fadeIn 0.5s forwards; }
         .floating-card {
             transition: all 0.3s ease;
-            border-color: rgba(255, 249, 242, 0.45) !important;
-            box-shadow: 0 26px 54px -28px rgba(101, 74, 52, 0.24);
+            border-color: rgba(255, 251, 246, 0.55) !important;
+            box-shadow: 0 24px 48px -28px rgba(112, 84, 59, 0.18);
         }
         .floating-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 32px 60px -26px rgba(101, 74, 52, 0.28);
+            box-shadow: 0 28px 56px -24px rgba(112, 84, 59, 0.22);
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
