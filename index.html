@@ -190,6 +190,10 @@
                         회복 프로그램
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
+                    <button onclick="renderSection('resources')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
+                        자료실
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                    </button>
                     <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         함께한 이야기
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
@@ -231,6 +235,7 @@
             <div class="px-5 py-6 space-y-2">
                 <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">ER 소개</button>
                 <button onclick="renderSection('programs')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">회복 프로그램</button>
+                <button onclick="renderSection('resources')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">자료실</button>
                 <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">함께한 이야기</button>
                 <button onclick="renderSection('support')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">동역과 후원</button>
                 <div class="h-px bg-gray-100 my-3 mx-4"></div>
@@ -363,6 +368,7 @@
             <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-4">
                 <p>&copy; 2025 ER (Enneagram for Restoration).</p>
                 <div class="flex flex-wrap items-center justify-center gap-3">
+                    <button type="button" onclick="renderSection('resources')" class="hover:text-er-dark transition-colors">자료실</button>
                     <button type="button" onclick="renderSection('community')" class="hover:text-er-dark transition-colors">함께한 이야기</button>
                     <button type="button" onclick="renderSection('support')" class="hover:text-er-dark transition-colors">동역과 후원</button>
                     <button type="button" onclick="renderSection('privacy')" class="hover:text-er-dark transition-colors">Privacy</button>
