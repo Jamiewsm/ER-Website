@@ -185,8 +185,8 @@
                         Impact
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
-                    <button onclick="renderSection('resources')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        Resources
+                    <button onclick="renderSection('support')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
+                        Support ER
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
                     
@@ -223,7 +223,7 @@
                 <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">About ER</button>
                 <button onclick="renderSection('programs')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Programs</button>
                 <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Impact</button>
-                <button onclick="renderSection('resources')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Resources</button>
+                <button onclick="renderSection('support')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Support ER</button>
                 <div class="h-px bg-gray-100 my-3 mx-4"></div>
                 <button id="mobile-auth-btn" onclick="toggleLogin()" class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-500 hover:text-er-dark"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
             </div>
@@ -353,7 +353,12 @@
             
             <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-4">
                 <p>&copy; 2025 ER (Enneagram for Restoration).</p>
-                <p>Operating as a pilot non-profit program.</p>
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <button type="button" onclick="renderSection('community')" class="hover:text-er-dark transition-colors">Impact</button>
+                    <button type="button" onclick="renderSection('support')" class="hover:text-er-dark transition-colors">Support ER</button>
+                    <button type="button" onclick="renderSection('privacy')" class="hover:text-er-dark transition-colors">Privacy</button>
+                    <button type="button" onclick="renderSection('terms')" class="hover:text-er-dark transition-colors">Terms</button>
+                </div>
             </div>
         </div>
     </footer>
@@ -438,6 +443,69 @@
                     `
                 }
             ] 
+        };
+
+        const publicTestimonials = {
+            impactThemes: [
+                {
+                    title: '자기 이해의 회복',
+                    summary: '유형을 맞히는 수준을 넘어, 하나님이 주신 기질과 나의 반복 패턴을 더 깊이 이해하게 되었다는 후기가 반복되었습니다.',
+                    source: '서울 · 휴스턴 · 카자흐스탄 후기'
+                },
+                {
+                    title: '부부와 가족 관계의 변화',
+                    summary: '배우자와 자녀를 더 잘 이해하게 되었고, 갈등과 오해를 줄이는 실제 언어를 배웠다는 반응이 많았습니다.',
+                    source: '보스턴 · 중앙아시아 · 아프리카 사역 후기'
+                },
+                {
+                    title: '사역자와 선교사의 돌봄',
+                    summary: '사역과 육아, 선교 현장의 분주함 속에서 자신을 성찰하고 하나님 안에서 위로와 회복을 경험했다는 간증이 이어졌습니다.',
+                    source: '샌안토니오 · 아프리카 후기'
+                },
+                {
+                    title: '강의와 멘토링의 깊이',
+                    summary: '단순 검사가 아니라 강의, 숙제, 멘토링, 상담을 통해 삶에 적용되는 이해와 치유를 경험했다는 평가가 많았습니다.',
+                    source: '부산 · 달라스 · 캘리포니아 후기'
+                }
+            ],
+            stories: [
+                {
+                    tag: '선교·사역',
+                    quote: '사역과 육아로 분주한 삶 속에서 나 자신을 성찰하는 시간을 따로 내기 어려웠지만, 8주 동안 하나님이 저를 위로하고 격려하시는 따뜻한 손길을 느꼈습니다.',
+                    person: '김00',
+                    meta: '샌안토니오 · 사역자'
+                },
+                {
+                    tag: '가정 회복',
+                    quote: '이해되지 않던 배우자를 더 쉽게 이해하게 되었고, 갈등과 오해를 줄이기 위해 어떻게 말하고 반응해야 하는지 실제적인 방향을 얻게 되었습니다.',
+                    person: '강00',
+                    meta: '아프리카 · 선교 현장'
+                },
+                {
+                    tag: '자기 이해',
+                    quote: '오랜 시간 궁금했던 나의 유형과 기질을 더 분명히 이해하게 되었고, 나를 정죄하기보다 받아들이며 건강한 방향으로 나아갈 수 있겠다는 소망이 생겼습니다.',
+                    person: '이00',
+                    meta: '서울 · 개인 상담'
+                },
+                {
+                    tag: '부부·공동체',
+                    quote: '아내와 함께 상담을 받으며 서로를 더 존중하고 세워 줄 수 있는 언어를 배웠고, 공동체 안에서도 이해의 폭이 넓어질 수 있겠다는 확신이 생겼습니다.',
+                    person: '조00',
+                    meta: '보스턴 · 가정과 공동체'
+                },
+                {
+                    tag: '상담 깊이',
+                    quote: '분석지 해석에 머물지 않고 실제 인생 이야기를 나누며 근원적인 정체성을 함께 찾아가는 전인격적 상담이라는 인상을 받았습니다.',
+                    person: '배00',
+                    meta: '부산 · 상담 후기'
+                },
+                {
+                    tag: '자기 수용',
+                    quote: '스스로를 객관적으로 보게 되었고, 유익하지 않은 생각과 습관을 알아차리며 소명의 언어를 돌아보는 데 실제 도움이 되었습니다.',
+                    person: '이00',
+                    meta: '서울 · 강의/상담 후기'
+                }
+            ]
         };
 
         // Adaptive Test State/Data
@@ -795,6 +863,9 @@
                 case 'programs': html = renderPrograms(); break;
                 case 'community': html = renderCommunity(); break;
                 case 'resources': html = renderResources(); break;
+                case 'support': html = renderSupport(); break;
+                case 'privacy': html = renderPrivacy(); break;
+                case 'terms': html = renderTerms(); break;
                 case 'test': html = renderTest(); break;
                 case 'notices': html = renderNotices(); break;
                 case 'notice_detail': html = renderNoticeDetail(payload); break;
@@ -982,7 +1053,7 @@
                             <div class="text-center mb-10">
                                 <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Impact</span>
                                 <h2 class="text-2xl md:text-4xl font-bold text-er-dark mt-3 break-keep">회복이 남긴 변화</h2>
-                                <p class="mt-3 text-sm md:text-base text-gray-500 max-w-2xl mx-auto break-keep">공개 사이트에서는 프로그램의 성격과 사역 방향을 투명하게 설명하고, 축적된 사례와 분포를 기반으로 신뢰를 보여줍니다.</p>
+                                <p class="mt-3 text-sm md:text-base text-gray-500 max-w-2xl mx-auto break-keep">실제 후기에 반복해서 나타난 변화의 방향과 프로그램 분포를 함께 보여 드립니다.</p>
                             </div>
                             <div class="grid gap-5 md:grid-cols-4 mb-8">
                                 ${[
@@ -1008,16 +1079,21 @@
                                     </div>
                                 </div>
                                 <div class="bg-er-dark text-white rounded-[2rem] p-6 md:p-8 shadow-card">
-                                    <span class="inline-flex px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold uppercase tracking-[0.2em] text-er-accent">Operating Principle</span>
-                                    <h3 class="text-2xl font-bold mt-5 mb-4 break-keep">후원 여부와 무관하게, 필요한 회복을 우선합니다.</h3>
-                                    <p class="text-sm leading-relaxed text-gray-300 break-keep mb-5">
-                                        ER은 공익적 목적을 가진 비영리 사역으로서, 참여자에게 필요한 회복 자원과 연결을 제공하는 것을 우선합니다.
-                                        후원과 협력은 이 사역이 더 넓게 이어지도록 돕는 참여 방식입니다.
-                                    </p>
-                                    <div class="space-y-3 text-sm text-gray-200">
-                                        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-er-accent mt-0.5"></i><span>개인·가정·교회 상황에 맞는 회복 동행</span></div>
-                                        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-er-accent mt-0.5"></i><span>파트너십과 협력 기반의 프로그램 운영</span></div>
-                                        <div class="flex items-start gap-3"><i class="fas fa-check-circle text-er-accent mt-0.5"></i><span>공개 사이트는 방문자와 후원자를 위한 정보 허브</span></div>
+                                    <span class="inline-flex px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold uppercase tracking-[0.2em] text-er-accent">From Testimonials</span>
+                                    <h3 class="text-2xl font-bold mt-5 mb-4 break-keep">후기에서 반복된 변화</h3>
+                                    <div class="space-y-4">
+                                        ${publicTestimonials.impactThemes.map((item) => `
+                                            <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                                <div class="flex items-start gap-3">
+                                                    <i class="fas fa-check-circle text-er-accent mt-0.5"></i>
+                                                    <div>
+                                                        <h4 class="text-sm font-bold text-white mb-1">${item.title}</h4>
+                                                        <p class="text-sm leading-relaxed text-gray-300 break-keep">${item.summary}</p>
+                                                        <p class="mt-2 text-[11px] uppercase tracking-[0.18em] text-gray-400">${item.source}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        `).join('')}
                                     </div>
                                 </div>
                             </div>
@@ -1029,37 +1105,24 @@
                             <div class="text-center mb-10">
                                 <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Stories</span>
                                 <h2 class="text-2xl md:text-4xl font-bold text-er-dark mt-3 break-keep">사례와 이야기</h2>
-                                <p class="mt-3 text-sm md:text-base text-gray-500 max-w-2xl mx-auto break-keep">성과를 과장하기보다, 삶의 현장에서 어떤 변화가 시작되는지 솔직하게 보여줍니다.</p>
+                                <p class="mt-3 text-sm md:text-base text-gray-500 max-w-2xl mx-auto break-keep">이미지 캡처 대신 실제 후기를 짧게 정리해, 어떤 변화가 일어났는지 읽기 쉽게 보여드립니다.</p>
                             </div>
-                            <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                                <div class="bg-white rounded-[2rem] p-7 md:p-8 border border-gray-100 shadow-soft">
-                                    <div class="flex text-er-accent mb-4 text-xs">
-                                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                                    </div>
-                                    <p class="text-gray-600 italic text-sm md:text-base leading-relaxed break-keep mb-6">
-                                        "남편과 매일 싸우며 이혼까지 생각했습니다. 에니어그램을 통해 서로가 상대를 공격한 것이 아니라,
-                                        각자의 두려움과 방어 방식으로 반응했다는 걸 알게 되면서 대화가 달라졌습니다."
-                                    </p>
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-er-accent to-gray-400 flex items-center justify-center text-white font-bold text-[11px]">JH</div>
-                                        <div>
-                                            <p class="text-sm font-bold text-gray-900">30대 부부</p>
-                                            <p class="text-[11px] text-gray-400">가정 회복 코칭 참여자</p>
+                            <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                                ${publicTestimonials.stories.map((item) => `
+                                    <div class="bg-white rounded-[2rem] p-6 md:p-7 border border-gray-100 shadow-soft">
+                                        <div class="flex items-center justify-between gap-3 mb-4">
+                                            <span class="inline-flex px-3 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-[0.2em]">${item.tag}</span>
+                                            <div class="flex text-er-accent text-[10px]">
+                                                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <p class="text-gray-600 italic text-sm leading-relaxed break-keep mb-6">"${item.quote}"</p>
+                                        <div class="pt-4 border-t border-gray-100">
+                                            <p class="text-sm font-bold text-gray-900">${item.person}</p>
+                                            <p class="text-[11px] text-gray-400 uppercase tracking-[0.18em]">${item.meta}</p>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="grid gap-4">
-                                    ${[
-                                        ['사역자 사례', '지속적인 소진과 방향 상실을 겪던 사역자가 자신의 패턴을 이해하고, 회복 루틴과 공동체 지원 구조를 다시 세웠습니다.'],
-                                        ['교육 현장 사례', '강사 양성과 스터디 과정에서 자기 이해가 깊어질수록, 타인을 더 안전하게 돕는 언어와 태도를 훈련하게 됩니다.'],
-                                        ['협력 사례', '기관과 교회는 프로그램을 단발성 행사보다 관계 회복과 리더십 지원의 흐름으로 연결할 수 있습니다.']
-                                    ].map(([title, body]) => `
-                                        <div class="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-soft">
-                                            <h3 class="text-base font-bold text-er-dark mb-2">${title}</h3>
-                                            <p class="text-sm text-gray-500 leading-relaxed break-keep">${body}</p>
-                                        </div>
-                                    `).join('')}
-                                </div>
+                                `).join('')}
                             </div>
                         </div>
                     </section>
@@ -1207,44 +1270,38 @@
 
                                 <div class="space-y-4">
                                     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 md:p-6">
-                                        <p class="text-[10px] tracking-widest text-er-accent font-bold uppercase mb-3">Founder / Vision Lead</p>
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-20 h-20 rounded-full overflow-hidden shadow-card bg-gray-200 ring-4 ring-white shrink-0">
-                                                <img src="son-profile-picture.png" alt="Jiyoung Son" class="w-full h-full object-cover object-top" onerror="this.src='https://via.placeholder.com/300x300?text=Profile';">
+                                        <p class="text-[10px] tracking-widest text-er-accent font-bold uppercase mb-3">How We Work</p>
+                                        <div class="space-y-3 text-sm text-gray-600">
+                                            <div class="flex items-start gap-3">
+                                                <i class="fas fa-check-circle text-er-accent mt-0.5"></i>
+                                                <span class="break-keep">공개 사이트는 사역 목적, 참여 대상, 후원과 협력 경로를 설명하는 정보 공간입니다.</span>
                                             </div>
-                                            <div>
-                                                <h3 class="text-xl font-extrabold text-er-dark">손지영</h3>
-                                                <p class="text-sm text-gray-600 break-keep mt-1">에니어그램과 기독교 세계관을 통합하여 개인과 공동체의 회복을 돕는 사역을 이끌고 있습니다.</p>
+                                            <div class="flex items-start gap-3">
+                                                <i class="fas fa-check-circle text-er-accent mt-0.5"></i>
+                                                <span class="break-keep">로그인과 포털은 기존 참여자와 코치를 위한 보조 경로로 유지합니다.</span>
+                                            </div>
+                                            <div class="flex items-start gap-3">
+                                                <i class="fas fa-check-circle text-er-accent mt-0.5"></i>
+                                                <span class="break-keep">파트너 교회, 기관, 코치 네트워크와 함께 지역과 공동체에 맞는 프로그램을 연결합니다.</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="grid gap-4">
-                                        <div class="flex items-center gap-4 p-4 md:p-5 bg-white rounded-2xl border border-er-accent/20 shadow-sm">
-                                            <div class="w-10 h-10 rounded-full bg-er-base flex items-center justify-center text-er-accent shrink-0 text-lg">
-                                                <i class="fas fa-certificate"></i>
-                                            </div>
-                                            <div>
-                                                <h4 class="font-bold text-er-dark text-sm md:text-base break-keep">Enneagram Spectrum Advanced Certification</h4>
-                                                <p class="text-xs text-gray-500 mt-0.5">Dr. Wagner (International Enneagram Association)</p>
-                                            </div>
+                                    <div class="grid sm:grid-cols-2 gap-4">
+                                        <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Partner Ministries</h4>
+                                            <p class="text-xs text-gray-500 break-keep">교회와 기관이 지역의 회복 과제를 함께 다루도록 연결합니다.</p>
                                         </div>
-                                        <div class="grid sm:grid-cols-2 gap-4">
-                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
-                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">SOIM GLTC Instructor</h4>
-                                                <p class="text-xs text-gray-500">소임 글로벌 리더십 트레이닝 강사</p>
-                                            </div>
-                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
-                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Enneagram Instructor</h4>
-                                                <p class="text-xs text-gray-500">소임 에니어그램 전문가 양성반 강사</p>
-                                            </div>
-                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
-                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Professional</h4>
-                                                <p class="text-xs text-gray-500">국제 에니어그램 협회 인증 전문가</p>
-                                            </div>
-                                            <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
-                                                <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">DTS Counseling</h4>
-                                                <p class="text-xs text-gray-500">Dallas Theological Seminary 석사 과정</p>
-                                            </div>
+                                        <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Qualified Collaborators</h4>
+                                            <p class="text-xs text-gray-500 break-keep">검증된 코치와 교육 협력자가 프로그램을 함께 설계합니다.</p>
+                                        </div>
+                                        <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Support-Based Operations</h4>
+                                            <p class="text-xs text-gray-500 break-keep">후원과 협력이 더 많은 개인과 공동체에게 회복 기회를 넓힙니다.</p>
+                                        </div>
+                                        <div class="p-4 bg-white rounded-2xl border border-er-primary/5 shadow-sm">
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Public Trust</h4>
+                                            <p class="text-xs text-gray-500 break-keep">사역의 목적과 방향을 공개적으로 설명해 신뢰를 쌓습니다.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -1261,12 +1318,53 @@
                                             ${name.substring(0,1)}
                                         </div>
                                         <h4 class="font-bold text-gray-900 text-sm">${name}</h4>
-                                        <p class="text-[10px] text-er-accent mt-1 uppercase tracking-wide">Coach</p>
+                                        <p class="text-[10px] text-er-accent mt-1 uppercase tracking-wide">Collaborator</p>
                                     </div>
                                 `).join('')}
                                 <div class="bg-gray-50 rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors" onclick="renderSection('notices')">
                                     <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-300 mb-2 shadow-sm"><i class="fas fa-plus"></i></div>
                                     <p class="text-[10px] text-gray-500 font-medium">전문가 과정<br>모집 중</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-soft border border-gray-100 animate-fade-in-up">
+                            <div class="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] items-center">
+                                <div class="relative group flex flex-col items-center text-center">
+                                    <div class="relative mb-4">
+                                        <div class="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden shadow-card bg-gray-200 ring-4 ring-white">
+                                            <img src="son-profile-picture.png" alt="Jiyoung Son" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://via.placeholder.com/300x300?text=Profile';">
+                                        </div>
+                                        <div class="absolute -inset-3 rounded-full border border-er-accent/20 pointer-events-none"></div>
+                                    </div>
+                                    <p class="text-[10px] tracking-widest text-er-accent font-bold uppercase">Founder</p>
+                                    <h3 class="text-2xl font-extrabold text-er-dark mt-2">손지영</h3>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-xl md:text-2xl font-bold text-er-dark mb-4 break-keep">설립자 소개</h3>
+                                    <p class="text-sm md:text-base text-gray-500 leading-relaxed break-keep mb-5">
+                                        손지영 Founder는 에니어그램과 기독교 세계관을 통합하여 개인과 공동체의 회복을 돕는 비전을 품고 ER을 시작했습니다.
+                                        공개 사이트에서는 설립자 개인보다 단체의 미션과 공공적 목적을 우선하고, 설립자는 그 비전의 출발점을 설명하는 짧은 소개로 남깁니다.
+                                    </p>
+                                    <div class="grid sm:grid-cols-2 gap-4">
+                                        <div class="p-4 bg-er-base rounded-2xl border border-er-primary/5 shadow-sm">
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Enneagram Spectrum Advanced Certification</h4>
+                                            <p class="text-xs text-gray-500">Dr. Wagner (International Enneagram Association)</p>
+                                        </div>
+                                        <div class="p-4 bg-er-base rounded-2xl border border-er-primary/5 shadow-sm">
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Professional</h4>
+                                            <p class="text-xs text-gray-500">국제 에니어그램 협회 인증 전문가</p>
+                                        </div>
+                                        <div class="p-4 bg-er-base rounded-2xl border border-er-primary/5 shadow-sm">
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">SOIM GLTC Instructor</h4>
+                                            <p class="text-xs text-gray-500">소임 글로벌 리더십 트레이닝 강사</p>
+                                        </div>
+                                        <div class="p-4 bg-er-base rounded-2xl border border-er-primary/5 shadow-sm">
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">DTS Counseling</h4>
+                                            <p class="text-xs text-gray-500">Dallas Theological Seminary 석사 과정</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1424,6 +1522,114 @@
                                     `).join('')}
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSupport() {
+            return `
+                <div class="bg-er-base min-h-screen py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-12 animate-fade-in-up">
+                            <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Support ER</span>
+                            <h2 class="text-3xl md:text-5xl font-bold text-er-dark mt-3 break-keep">후원과 협력으로 회복의 접점을 넓힙니다</h2>
+                            <p class="mt-4 text-sm md:text-base text-gray-500 max-w-3xl mx-auto break-keep">
+                                ER은 목회자와 선교사를 비롯해 회복이 필요한 개인과 공동체를 섬겨 왔습니다.
+                                후원은 접근성을 넓히고, 협력은 더 많은 현장에 회복의 기회를 연결합니다.
+                            </p>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-5 mb-10 animate-fade-in-up">
+                            ${[
+                                ['300명+', '지금까지 섬긴 인원'],
+                                ['350회+', '누적 세션 수'],
+                                ['10곳', '협력 교회·기관'],
+                                ['7명', '함께하는 코치'],
+                                ['20명+', '훈련 참가자'],
+                            ].map(([value, label]) => `
+                                <div class="rounded-[2rem] bg-white border border-gray-100 p-6 text-center shadow-soft">
+                                    <div class="text-2xl md:text-3xl font-extrabold text-er-dark">${value}</div>
+                                    <div class="mt-2 text-xs md:text-sm text-gray-500 break-keep">${label}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="grid gap-6 lg:grid-cols-[1fr_1fr] animate-fade-in-up">
+                            <div class="rounded-[2rem] bg-white border border-gray-100 p-7 shadow-soft">
+                                <h3 class="text-xl font-bold text-er-dark mb-4">함께하는 방법</h3>
+                                <div class="grid gap-4">
+                                    ${[
+                                        ['정기 후원', '프로그램 운영, 자료 개발, 필요한 참여자 연결을 지속적으로 돕습니다.'],
+                                        ['교회·기관 협력', '회복 프로그램, 워크숍, 훈련 과정을 함께 기획하고 운영할 수 있습니다.'],
+                                        ['기도와 소개', '필요한 개인과 공동체를 연결하고 사역 소식을 나누는 방식으로 함께할 수 있습니다.'],
+                                    ].map(([title, body]) => `
+                                        <div class="rounded-2xl bg-er-base/60 border border-er-accent/10 p-5">
+                                            <h4 class="font-bold text-er-dark mb-2">${title}</h4>
+                                            <p class="text-sm text-gray-600 break-keep">${body}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div class="rounded-[2rem] bg-er-dark text-white p-7 shadow-card">
+                                <h3 class="text-xl font-bold mb-4">후원 우선순위</h3>
+                                <div class="space-y-4 text-sm text-gray-200">
+                                    <div class="rounded-2xl bg-white/10 border border-white/10 p-4">1. 목회자·선교사와 회복이 시급한 대상의 접근성 지원</div>
+                                    <div class="rounded-2xl bg-white/10 border border-white/10 p-4">2. 상담·교육·훈련 프로그램 운영과 자료 정비</div>
+                                    <div class="rounded-2xl bg-white/10 border border-white/10 p-4">3. 협력 공동체와 코치 훈련 네트워크 확장</div>
+                                </div>
+                                <button onclick="renderSection('apply', { source: 'support' })" class="mt-6 w-full rounded-full bg-white py-3 text-sm font-bold text-er-dark hover:bg-er-accentLight transition-colors">
+                                    후원·협력 문의하기
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 rounded-[2rem] bg-white border border-gray-100 p-7 shadow-soft animate-fade-in-up">
+                            <h3 class="text-xl font-bold text-er-dark mb-4">운영 원칙</h3>
+                            <div class="grid gap-4 md:grid-cols-3 text-sm text-gray-600">
+                                <div class="rounded-2xl bg-gray-50 p-5 border border-gray-100">후원 여부와 관계없이 먼저 필요를 듣고 연결합니다.</div>
+                                <div class="rounded-2xl bg-gray-50 p-5 border border-gray-100">협력 요청은 목적과 대상에 맞게 개별 설계합니다.</div>
+                                <div class="rounded-2xl bg-gray-50 p-5 border border-gray-100">공개 사이트는 안내 창구, 운영 포털은 내부 도구로 분리합니다.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPrivacy() {
+            return `
+                <div class="bg-white min-h-screen py-16 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="mb-10">
+                            <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Privacy</span>
+                            <h2 class="text-3xl md:text-4xl font-bold text-er-dark mt-3">개인정보 안내</h2>
+                            <p class="mt-3 text-sm text-gray-500 break-keep">공개 사이트 신청과 로그인 과정에서 수집되는 기본 정보를 어떻게 다루는지 요약합니다.</p>
+                        </div>
+                        <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
+                            <div class="rounded-2xl bg-er-base/60 border border-gray-100 p-6">ER은 신청서, 로그인, 문의 과정에서 이름, 연락처, 이메일, 제출 메시지와 같은 최소한의 정보를 수집합니다.</div>
+                            <div class="rounded-2xl bg-er-base/60 border border-gray-100 p-6">수집된 정보는 상담 안내, 협력 응답, 운영상 필요한 계정 확인 목적에만 사용합니다.</div>
+                            <div class="rounded-2xl bg-er-base/60 border border-gray-100 p-6">법적 보관 의무가 없는 한, 운영 목적이 종료된 정보는 정리 대상이 됩니다. 자세한 정책은 추후 별도 문서로 고도화할 예정입니다.</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTerms() {
+            return `
+                <div class="bg-er-base min-h-screen py-16 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="mb-10">
+                            <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Terms</span>
+                            <h2 class="text-3xl md:text-4xl font-bold text-er-dark mt-3">이용 안내</h2>
+                            <p class="mt-3 text-sm text-gray-500 break-keep">공개 사이트와 운영 포털 이용에 대한 기본 원칙을 요약합니다.</p>
+                        </div>
+                        <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
+                            <div class="rounded-2xl bg-white border border-gray-100 p-6 shadow-soft">공개 사이트의 정보는 ER 사역과 참여 방법을 소개하기 위한 목적입니다.</div>
+                            <div class="rounded-2xl bg-white border border-gray-100 p-6 shadow-soft">운영 포털과 코치 앱은 승인된 코치 및 기존 참여자를 위한 내부 기능이며, 일반 방문자는 공개 안내와 문의 경로를 우선 사용합니다.</div>
+                            <div class="rounded-2xl bg-white border border-gray-100 p-6 shadow-soft">프로그램 일정, 구성, 제공 방식은 대상과 협력 구조에 따라 조정될 수 있습니다.</div>
                         </div>
                     </div>
                 </div>
@@ -3554,7 +3760,7 @@
             const coachBtn = document.getElementById('desktop-account-coach-btn');
             const coachAppBtn = document.getElementById('desktop-account-app-btn');
             const mobileBtn = document.getElementById('mobile-auth-btn');
-            const mobileLabel = !state.user ? '마이페이지 / 로그인' : (state.isCoach ? '코치 포털' : '마이페이지');
+            const mobileLabel = !state.user ? '기존 참여자 로그인' : (state.isCoach ? '코치 포털' : '마이페이지');
             if (mobileBtn) {
                 mobileBtn.innerHTML = `<i class="far fa-user mr-2"></i> ${mobileLabel}`;
             }
@@ -4478,6 +4684,34 @@
         function initCharts(sectionId) {
             Chart.defaults.font.family = "'Pretendard', sans-serif";
             Chart.defaults.color = '#9CA3AF';
+
+            const renderImpactChart = () => {
+                const impactCtx = document.getElementById('impactChart');
+                if (!impactCtx) return;
+
+                new Chart(impactCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: contentData.stats.labels,
+                        datasets: [{
+                            label: '케이스 분포 (%)',
+                            data: contentData.stats.data,
+                            backgroundColor: '#BFA68A',
+                            borderRadius: 4,
+                            barThickness: 20
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { display: false }, ticks: { display: false } },
+                            x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+                        }
+                    }
+                });
+            };
             
             if (sectionId === 'home') {
                 const ctx = document.getElementById('heroChart');
@@ -4532,32 +4766,9 @@
                         } 
                     }
                 });
+                renderImpactChart();
             } else if (sectionId === 'community') {
-                const ctx = document.getElementById('impactChart');
-                if(!ctx) return;
-
-                new Chart(ctx.getContext('2d'), {
-                    type: 'bar',
-                    data: { 
-                        labels: contentData.stats.labels, 
-                        datasets: [{ 
-                            label: '케이스 분포 (%)', 
-                            data: contentData.stats.data, 
-                            backgroundColor: '#BFA68A', 
-                            borderRadius: 4,
-                            barThickness: 20
-                        }] 
-                    },
-                    options: { 
-                        responsive: true, 
-                        maintainAspectRatio: false, 
-                        plugins: { legend: { display: false } }, 
-                        scales: { 
-                            y: { beginAtZero: true, grid: { display: false }, ticks: { display: false } }, 
-                            x: { grid: { display: false }, ticks: { font: { size: 10 } } } 
-                        } 
-                    }
-                });
+                renderImpactChart();
             }
         }
 
