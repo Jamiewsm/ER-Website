@@ -36,7 +36,16 @@ create table if not exists public.coach_profiles (
 create table if not exists public.coach_schedules (
   id uuid primary key default gen_random_uuid(),
   title text not null,
-  schedule_type text not null check (schedule_type in ('study', 'training')),
+  schedule_type text not null check (
+    schedule_type in (
+      'study',
+      'training',
+      'study_track',
+      'spiritual_formation_track',
+      'coaching_track',
+      'practicum_track'
+    )
+  ),
   start_at timestamptz not null,
   end_at timestamptz not null,
   location text,

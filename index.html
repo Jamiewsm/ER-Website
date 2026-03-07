@@ -1790,8 +1790,10 @@
                                     <input name="title" required maxlength="120" placeholder="자료 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
                                     <select name="category" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
                                         <option value="general">일반</option>
-                                        <option value="study">스터디</option>
-                                        <option value="training">트레이닝</option>
+                                        <option value="study_track">Study 트랙</option>
+                                        <option value="spiritual_formation_track">Spiritual Formation 트랙</option>
+                                        <option value="coaching_track">Coaching 트랙</option>
+                                        <option value="practicum_track">Practicum 트랙</option>
                                         <option value="reference">참고자료</option>
                                     </select>
                                 </div>
@@ -1838,8 +1840,10 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <input name="title" required maxlength="120" placeholder="일정 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
                                     <select name="schedule_type" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                        <option value="study">스터디</option>
-                                        <option value="training">트레이닝</option>
+                                        <option value="study_track">Study 트랙</option>
+                                        <option value="spiritual_formation_track">Spiritual Formation 트랙</option>
+                                        <option value="coaching_track">Coaching 트랙</option>
+                                        <option value="practicum_track">Practicum 트랙</option>
                                     </select>
                                     <input name="start_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
                                     <input name="end_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
@@ -2009,6 +2013,18 @@
                 kr: formatZoneRange(startAt, endAt, '한국', 'Asia/Seoul'),
                 ct: formatZoneRange(startAt, endAt, '달라스', 'America/Chicago')
             };
+        }
+
+        function formatCoachScheduleTypeLabel(value) {
+            const labels = {
+                study: 'Study 트랙',
+                training: 'Coaching 트랙',
+                study_track: 'Study 트랙',
+                spiritual_formation_track: 'Spiritual Formation 트랙',
+                coaching_track: 'Coaching 트랙',
+                practicum_track: 'Practicum 트랙'
+            };
+            return labels[String(value || '').trim()] || String(value || '일정');
         }
 
         function toIsoOrNull(localValue) {
@@ -2242,7 +2258,7 @@
                         return `
                         <button type="button" onclick="renderSection('coach_schedule')" class="w-full text-left p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors">
                             <p class="font-semibold text-gray-800">${escapeHtml(item.title)}</p>
-                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(item.schedule_type)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(formatCoachScheduleTypeLabel(item.schedule_type))}</p>
                             <p class="text-xs text-gray-500 mt-1">${escapeHtml(dual.kr)}</p>
                             <p class="text-xs text-gray-500 mt-1">${escapeHtml(dual.ct)}</p>
                         </button>
@@ -2875,7 +2891,7 @@
                             <div class="flex flex-wrap items-center justify-between gap-2">
                                 <h4 class="font-bold text-gray-900">${escapeHtml(item.title)}</h4>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-[11px] px-2 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-600">${escapeHtml(item.schedule_type)}</span>
+                                    <span class="text-[11px] px-2 py-1 rounded-full bg-gray-50 border border-gray-200 text-gray-600">${escapeHtml(formatCoachScheduleTypeLabel(item.schedule_type))}</span>
                                     <button onclick="deleteCoachSchedule('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
                                 </div>
                             </div>
@@ -3071,7 +3087,7 @@
             if (!ensureCoachAccess() || !supabaseClient) return;
             const formData = new FormData(event.target);
             const title = String(formData.get('title') || '').trim();
-            const schedule_type = String(formData.get('schedule_type') || 'study');
+            const schedule_type = String(formData.get('schedule_type') || 'study_track');
             const start_at = toIsoOrNull(String(formData.get('start_at') || '').trim());
             const end_at = toIsoOrNull(String(formData.get('end_at') || '').trim());
             const location = String(formData.get('location') || '').trim();
