@@ -1869,7 +1869,7 @@
         }
         
         function renderNoticeDetail(payload) {
-            const id = payload?.id;
+            const id = Number(payload?.id);
             const n = contentData.notices.find(x => x.id === id);
 
             if (!n) return `<div class="p-10 text-center">공지를 찾을 수 없습니다.<br><button class="mt-4 btn" onclick="renderSection('notices')">돌아가기</button></div>`;
