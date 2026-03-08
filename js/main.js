@@ -1786,6 +1786,23 @@
             }).format(date);
         }
 
+        function normalizeExternalLink(value) {
+            const raw = String(value || '').trim();
+            if (!raw) return '';
+            if (/^https?:\/\//i.test(raw) || /^zoommtg:\/\//i.test(raw)) return raw;
+            if (/^www\./i.test(raw)) return `https://${raw}`;
+            if (/^(?:[\w-]+\.)*zoom\.us\/\S+/i.test(raw)) return `https://${raw}`;
+            return '';
+        }
+
+        function renderScheduleLocation(location) {
+            const raw = String(location || '').trim();
+            if (!raw) return '-';
+            const href = normalizeExternalLink(raw);
+            if (!href) return escapeHtml(raw);
+            return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="text-er-accent underline underline-offset-2 break-all hover:text-er-accentDark transition-colors">${escapeHtml(raw)}</a>`;
+        }
+
         function formatDateTimeInZone(value, timeZone, locale = 'ko-KR') {
             if (!value) return '-';
             const date = new Date(value);
@@ -2346,13 +2363,16 @@
                 .eq('id', note.schedule_id)
                 .maybeSingle();
 
+            const scheduleStartLabel = schedule ? escapeHtml(formatDateTime(schedule.start_at)) : '';
+            const scheduleLocationLabel = schedule && schedule.location ? ` · ${renderScheduleLocation(schedule.location)}` : '';
+
             detailEl.innerHTML = `
                 <div class="flex items-start justify-between gap-3">
                     <div>
                         <h4 class="text-base font-bold text-gray-900">${escapeHtml(note.title)}</h4>
                         <p class="text-xs text-gray-500 mt-1">등록: ${formatDateTime(note.created_at)}</p>
                         <p class="text-xs text-gray-500 mt-1">일정: ${escapeHtml(schedule?.title || '연결된 일정 없음')}</p>
-                        <p class="text-xs text-gray-400 mt-1">${schedule ? `${escapeHtml(formatDateTime(schedule.start_at))}${schedule.location ? ` · ${escapeHtml(schedule.location)}` : ''}` : ''}</p>
+                        <p class="text-xs text-gray-400 mt-1">${schedule ? `${scheduleStartLabel}${scheduleLocationLabel}` : ''}</p>
                     </div>
                     <div class="flex gap-2">
                         ${note.attachment_path ? `<button onclick="downloadCoachNoteAttachment('${encodeURIComponent(note.attachment_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">첨부 다운로드</button>` : ''}
@@ -2836,7 +2856,7 @@
                             </div>
                             <p class="text-xs text-gray-500 mt-2">${escapeHtml(dual.kr)}</p>
                             <p class="text-xs text-gray-500 mt-1">${escapeHtml(dual.ct)}</p>
-                            <p class="text-xs text-gray-400 mt-1">${escapeHtml(item.location || '-')}</p>
+                            <p class="text-xs text-gray-400 mt-1">${renderScheduleLocation(item.location)}</p>
                             <p class="text-xs text-gray-400 mt-1 break-keep">${escapeHtml(item.notes || '')}</p>
                         </div>
                     `;
