@@ -1,0 +1,4 @@
+body { font-family: 'Pretendard', sans-serif; background:#f8fafc; color:#111827; }
+.radio-btn:checked + label { background:#4a4540; color:#fff; border-color:#4a4540; transform:scale(1.05); }
+.radio-btn:focus-visible + label { outline: 2px solid #bfa68a; outline-offset: 2px; }
+.smooth { transition: all .25s ease; }
