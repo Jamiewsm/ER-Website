@@ -29,8 +29,13 @@ function openMyAccount() {
   if (typeof renderSection === 'function') renderSection('mypage');
 }
 
-function openCoachPortalFromMenu() {
+async function openCoachPortalFromMenu() {
   if (typeof closeDesktopAccountMenu === 'function') closeDesktopAccountMenu();
+  if (window.state && window.state.user && typeof loadCoachProfile === 'function') {
+    try {
+      await loadCoachProfile();
+    } catch (_) {}
+  }
   if (typeof renderSection === 'function') renderSection('coach_portal');
 }
 
