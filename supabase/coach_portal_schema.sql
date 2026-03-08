@@ -382,14 +382,14 @@ DROP POLICY IF EXISTS "coaches can update materials" ON public.coach_materials;
 CREATE POLICY "coaches can update materials"
 ON public.coach_materials
 FOR UPDATE
-USING (public.is_active_coach(auth.uid()))
-WITH CHECK (public.is_active_coach(auth.uid()));
+USING (public.is_active_coach(auth.uid()) and uploaded_by = auth.uid())
+WITH CHECK (public.is_active_coach(auth.uid()) and uploaded_by = auth.uid());
 
 DROP POLICY IF EXISTS "coaches can delete materials" ON public.coach_materials;
 CREATE POLICY "coaches can delete materials"
 ON public.coach_materials
 FOR DELETE
-USING (public.is_active_coach(auth.uid()));
+USING (public.is_active_coach(auth.uid()) and uploaded_by = auth.uid());
 
 DROP POLICY IF EXISTS "coaches can read session notes" ON public.coach_session_notes;
 CREATE POLICY "coaches can read session notes"
