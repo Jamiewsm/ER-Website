@@ -1,0 +1,7 @@
+.git/
+.wrangler/
+ops/
+docs/
+supabase/
+**/.DS_Store
+*.md
