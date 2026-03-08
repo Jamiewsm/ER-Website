@@ -872,6 +872,25 @@
                                 </button>
                             </div>
                         </div>
+
+                        <div class="mt-16 rounded-[2rem] bg-white border border-white/40 p-6 md:p-8 shadow-soft animate-fade-in-up">
+                            <div class="flex items-center justify-between gap-3 mb-4">
+                                <h3 class="text-lg font-bold text-er-dark">프로그램 자료</h3>
+                                <span class="text-[11px] text-gray-400">Teaching Materials</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                ${[
+                                    ['워크북 자료', '개인/그룹 진행 시 바로 활용할 수 있는 실습 시트와 안내 자료'],
+                                    ['강의 슬라이드', '교회·기관 대상 프로그램에 사용하는 핵심 강의 자료 모음'],
+                                    ['진행 가이드', '회기별 운영 순서와 질문 프롬프트를 담은 코치용 가이드']
+                                ].map(([title, desc]) => `
+                                    <div class="rounded-2xl border border-gray-100 bg-er-base/50 p-5">
+                                        <h4 class="text-sm font-bold text-er-dark">${title}</h4>
+                                        <p class="mt-2 text-xs text-gray-500 break-keep">${desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1163,6 +1182,20 @@
                             loading="lazy"
                         ></iframe>
                     </div>
+
+                    <div class="mt-8 grid md:grid-cols-2 gap-4">
+                        <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
+                            <h3 class="text-sm font-bold text-er-dark mb-2">진단 안내 자료</h3>
+                            <p class="text-xs text-gray-500 break-keep">테스트 전후 해석 방법과 정식 타이핑 세션 연결 흐름을 한눈에 확인할 수 있습니다.</p>
+                        </div>
+                        <div class="bg-er-base rounded-2xl border border-white/40 p-5 shadow-soft">
+                            <h3 class="text-sm font-bold text-er-dark mb-2">추천 읽을거리</h3>
+                            <ul class="space-y-1 text-xs text-gray-600">
+                                <li>에니어그램의 지혜 (Don Richard Riso)</li>
+                                <li>내면의 감옥에서 벗어나라 (Richard Rohr)</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -1260,11 +1293,15 @@
                 <div class="min-h-screen bg-gray-50 py-16 px-4">
                     <div class="max-w-6xl mx-auto">
                         <div class="mb-8 flex items-center justify-between animate-fade-in-up">
-                            <button onclick="renderSection('resources')" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm flex items-center gap-1 transition-all">
-                                <i class="fas fa-arrow-left"></i> 뒤로
+                            <button onclick="renderSection('test')" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm flex items-center gap-1 transition-all">
+                                <i class="fas fa-arrow-left"></i> 진단 테스트로
                             </button>
                             <h2 class="text-lg font-bold text-gray-900">9가지 유형별 회복의 길</h2>
                             <div class="w-12"></div>
+                        </div>
+
+                        <div class="mb-6 rounded-2xl bg-white border border-gray-100 p-4 text-sm text-gray-600 break-keep animate-fade-in-up">
+                            각 유형은 단순한 성격 분류가 아니라 회복의 방향을 안내하는 지도입니다. 유형별 설명과 회복 경로를 참고해 현재의 패턴을 점검해 보세요.
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in-up" style="animation-delay: 0.1s;">
