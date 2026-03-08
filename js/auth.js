@@ -212,13 +212,18 @@ async function handleLogout() {
   if (typeof renderSection === 'function') renderSection('home');
 }
 
-function toggleLogin() {
+async function toggleLogin() {
   if (!isSupabaseConfigured()) {
     alert('Supabase 설정이 필요합니다. index.html의 __ER_SUPABASE_URL / __ER_SUPABASE_ANON_KEY를 먼저 설정해 주세요.');
     return;
   }
   closeDesktopAccountMenu();
   if (window.state && window.state.user) {
+    if (typeof loadCoachProfile === 'function') {
+      try {
+        await loadCoachProfile();
+      } catch (_) {}
+    }
     if (typeof renderSection === 'function') renderSection(window.state.isCoach ? 'coach_portal' : 'mypage');
   } else {
     openAuthModal();
