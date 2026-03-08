@@ -2301,6 +2301,9 @@
                                     <div class="flex gap-2">
                                         <button onclick="viewCoachNoteDetail('${note.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">보기</button>
                                         ${note.attachment_path ? `<button onclick="downloadCoachNoteAttachment('${encodeURIComponent(note.attachment_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">첨부 다운로드</button>` : ''}
+                                        ${state.user && (note.uploaded_by === state.user.id || isHeadCoach())
+                                            ? `<button onclick="deleteCoachNote('${note.id}','${encodeURIComponent(note.attachment_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>`
+                                            : ''}
                                     </div>
                                 </div>
                                 <p class="text-xs text-gray-500 mt-2 break-keep">${escapeHtml(note.note_body || '')}</p>
@@ -2328,7 +2331,7 @@
 
             const { data: note, error } = await supabaseClient
                 .from('coach_session_notes')
-                .select('id, schedule_id, title, note_body, attachment_path, attachment_name, attachment_size_bytes, created_at')
+                .select('id, schedule_id, title, note_body, attachment_path, attachment_name, attachment_size_bytes, created_at, uploaded_by')
                 .eq('id', noteId)
                 .maybeSingle();
 
@@ -2351,7 +2354,10 @@
                         <p class="text-xs text-gray-500 mt-1">일정: ${escapeHtml(schedule?.title || '연결된 일정 없음')}</p>
                         <p class="text-xs text-gray-400 mt-1">${schedule ? `${escapeHtml(formatDateTime(schedule.start_at))}${schedule.location ? ` · ${escapeHtml(schedule.location)}` : ''}` : ''}</p>
                     </div>
-                    ${note.attachment_path ? `<button onclick="downloadCoachNoteAttachment('${encodeURIComponent(note.attachment_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">첨부 다운로드</button>` : ''}
+                    <div class="flex gap-2">
+                        ${note.attachment_path ? `<button onclick="downloadCoachNoteAttachment('${encodeURIComponent(note.attachment_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">첨부 다운로드</button>` : ''}
+                        ${state.user && (note.uploaded_by === state.user.id || isHeadCoach()) ? `<button onclick="deleteCoachNote('${note.id}','${encodeURIComponent(note.attachment_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>` : ''}
+                    </div>
                 </div>
                 <div class="mt-4 p-3 rounded-xl border border-gray-100 bg-white text-sm text-gray-700 break-keep">${escapeHtml(note.note_body || '-')}</div>
                 ${note.attachment_name ? `<p class="mt-4 text-xs text-gray-500">첨부: ${escapeHtml(note.attachment_name)} · ${getFileSizeLabel(note.attachment_size_bytes)}</p>` : '<p class="mt-4 text-xs text-gray-500">첨부파일이 없습니다.</p>'}
@@ -2438,6 +2444,47 @@
                 return;
             }
             window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
+        }
+
+        async function deleteCoachNote(noteId, encodedAttachmentPath) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            if (!confirm('이 세션 노트를 삭제할까요?')) return;
+
+            const { data: existing, error: existingError } = await supabaseClient
+                .from('coach_session_notes')
+                .select('id, uploaded_by, attachment_path')
+                .eq('id', noteId)
+                .maybeSingle();
+            if (existingError || !existing) {
+                alert(`세션 노트 조회 실패: ${existingError?.message || 'not found'}`);
+                return;
+            }
+            if (!state.user || (existing.uploaded_by !== state.user.id && !isHeadCoach())) {
+                alert('업로드한 본인 또는 관리자만 삭제할 수 있습니다.');
+                return;
+            }
+
+            const attachmentPath = decodeURIComponent(String(encodedAttachmentPath || existing.attachment_path || ''));
+            if (attachmentPath) {
+                await supabaseClient.storage.from('coach-session-notes').remove([attachmentPath]);
+            }
+
+            const { error } = await supabaseClient
+                .from('coach_session_notes')
+                .delete()
+                .eq('id', noteId);
+            if (error) {
+                alert(`세션 노트 삭제 실패: ${error.message}`);
+                return;
+            }
+
+            const detailEl = document.getElementById('coach-note-detail');
+            if (detailEl) {
+                detailEl.classList.add('hidden');
+                detailEl.innerHTML = '';
+            }
+            await loadCoachNotes();
+            alert('세션 노트가 삭제되었습니다.');
         }
 
         async function loadCoachTasks() {

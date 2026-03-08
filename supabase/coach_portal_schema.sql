@@ -446,7 +446,13 @@ DROP POLICY IF EXISTS "coaches can delete session notes" ON public.coach_session
 CREATE POLICY "coaches can delete session notes"
 ON public.coach_session_notes
 FOR DELETE
-USING (public.is_active_coach(auth.uid()));
+USING (
+  public.is_active_coach(auth.uid())
+  and (
+    uploaded_by = auth.uid()
+    or public.is_head_coach(auth.uid())
+  )
+);
 
 -- Storage buckets (private)
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
