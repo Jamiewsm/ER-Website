@@ -128,6 +128,20 @@ as $$
   );
 $$;
 
+create or replace function public.is_head_coach(_uid uuid)
+returns boolean
+language sql
+stable
+as $$
+  select exists (
+    select 1
+    from public.coach_profiles cp
+    where cp.user_id = _uid
+      and cp.role = 'head_coach'
+      and cp.is_active = true
+  );
+$$;
+
 create or replace function public.require_head_coach()
 returns void
 language plpgsql
@@ -382,14 +396,32 @@ DROP POLICY IF EXISTS "coaches can update materials" ON public.coach_materials;
 CREATE POLICY "coaches can update materials"
 ON public.coach_materials
 FOR UPDATE
-USING (public.is_active_coach(auth.uid()) and uploaded_by = auth.uid())
-WITH CHECK (public.is_active_coach(auth.uid()) and uploaded_by = auth.uid());
+USING (
+  public.is_active_coach(auth.uid())
+  and (
+    uploaded_by = auth.uid()
+    or public.is_head_coach(auth.uid())
+  )
+)
+WITH CHECK (
+  public.is_active_coach(auth.uid())
+  and (
+    uploaded_by = auth.uid()
+    or public.is_head_coach(auth.uid())
+  )
+);
 
 DROP POLICY IF EXISTS "coaches can delete materials" ON public.coach_materials;
 CREATE POLICY "coaches can delete materials"
 ON public.coach_materials
 FOR DELETE
-USING (public.is_active_coach(auth.uid()) and uploaded_by = auth.uid());
+USING (
+  public.is_active_coach(auth.uid())
+  and (
+    uploaded_by = auth.uid()
+    or public.is_head_coach(auth.uid())
+  )
+);
 
 DROP POLICY IF EXISTS "coaches can read session notes" ON public.coach_session_notes;
 CREATE POLICY "coaches can read session notes"

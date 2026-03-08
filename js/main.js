@@ -2645,7 +2645,7 @@
                                 <div class="flex gap-2">
                                     <button onclick="viewCoachMaterialDetail('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">보기</button>
                                     <button onclick="downloadCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">다운로드</button>
-                                    ${state.user && item.uploaded_by === state.user.id
+                                    ${state.user && (item.uploaded_by === state.user.id || isHeadCoach())
                                         ? `<button onclick="startEditCoachMaterial('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/40">수정</button>
                                            <button onclick="deleteCoachMaterial('${item.id}','${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>`
                                         : ''}
@@ -2695,7 +2695,7 @@
                 previewHtml = `<audio src="${signedUrl}" controls class="w-full"></audio>`;
             }
 
-            const isOwner = Boolean(state.user && item.uploaded_by === state.user.id);
+            const canManage = Boolean(state.user && (item.uploaded_by === state.user.id || isHeadCoach()));
             detailEl.innerHTML = `
                 <div class="flex items-start justify-between gap-3">
                     <div>
@@ -2705,7 +2705,7 @@
                     <div class="flex gap-2">
                         <button onclick="openCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">새 창 보기</button>
                         <button onclick="downloadCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">다운로드</button>
-                        ${isOwner ? `<button onclick="startEditCoachMaterial('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/40">수정</button>` : ''}
+                        ${canManage ? `<button onclick="startEditCoachMaterial('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/40">수정</button>` : ''}
                     </div>
                 </div>
                 <div class="mt-4 p-3 rounded-xl border border-gray-100 bg-white text-sm text-gray-700 break-keep">${escapeHtml(item.description || '-')}</div>
@@ -2739,8 +2739,8 @@
                 alert(`자료 조회 실패: ${error?.message || 'not found'}`);
                 return;
             }
-            if (!state.user || item.uploaded_by !== state.user.id) {
-                alert('업로드한 본인만 수정할 수 있습니다.');
+            if (!state.user || (item.uploaded_by !== state.user.id && !isHeadCoach())) {
+                alert('업로드한 본인 또는 관리자만 수정할 수 있습니다.');
                 return;
             }
             form.material_id.value = item.id;
@@ -2926,8 +2926,8 @@
                     alert(`수정 대상 조회 실패: ${existingError?.message || 'not found'}`);
                     return;
                 }
-                if (!state.user || existing.uploaded_by !== state.user.id) {
-                    alert('업로드한 본인만 수정할 수 있습니다.');
+                if (!state.user || (existing.uploaded_by !== state.user.id && !isHeadCoach())) {
+                    alert('업로드한 본인 또는 관리자만 수정할 수 있습니다.');
                     return;
                 }
 
@@ -2962,8 +2962,7 @@
                         mime_type: nextMimeType,
                         size_bytes: nextSizeBytes
                     })
-                    .eq('id', materialId)
-                    .eq('uploaded_by', state.user.id);
+                    .eq('id', materialId);
                 if (error) {
                     alert(`자료 수정 실패: ${error.message}`);
                     return;
@@ -3022,8 +3021,7 @@
             const { error } = await supabaseClient
                 .from('coach_materials')
                 .delete()
-                .eq('id', materialId)
-                .eq('uploaded_by', state.user.id);
+                .eq('id', materialId);
 
             if (error) {
                 alert(`자료 삭제 실패: ${error.message}`);
