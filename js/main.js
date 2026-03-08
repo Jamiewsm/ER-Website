@@ -1643,8 +1643,12 @@
                             <div id="coach-material-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
                         </div>
                         <div id="coach-material-composer" class="hidden bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
-                            <form onsubmit="submitCoachMaterial(event)" class="space-y-4">
-                                <h3 class="text-base font-bold text-er-dark">자료 업로드</h3>
+                            <form id="coach-material-form" onsubmit="submitCoachMaterial(event)" class="space-y-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <h3 id="coach-material-form-title" class="text-base font-bold text-er-dark">자료 업로드</h3>
+                                    <button type="button" id="coach-material-cancel-btn" onclick="resetCoachMaterialForm()" class="hidden px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">수정 취소</button>
+                                </div>
+                                <input type="hidden" name="material_id" value="">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <input name="title" required maxlength="120" placeholder="자료 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
                                     <select name="category" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
@@ -1657,8 +1661,8 @@
                                     </select>
                                 </div>
                                 <textarea name="description" rows="3" placeholder="자료 설명" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
-                                <input name="file" type="file" required accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.hwp,.hwpx,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
-                                <button type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">자료 업로드</button>
+                                <input name="file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv,.zip,.hwp,.hwpx,.png,.jpg,.jpeg,.webp,.gif,.mp4,.mov,.mp3,.wav,.m4a" class="w-full rounded-xl border border-dashed border-gray-300 bg-white px-4 py-3 text-xs">
+                                <button id="coach-material-submit-btn" type="submit" class="px-6 py-2 rounded-full text-xs font-bold bg-er-dark text-white">자료 업로드</button>
                             </form>
                         </div>
                     </div>
@@ -2619,7 +2623,7 @@
 
             const { data, error } = await supabaseClient
                 .from('coach_materials')
-                .select('id, title, category, description, original_name, size_bytes, storage_path, created_at')
+                .select('id, title, category, description, original_name, size_bytes, storage_path, created_at, uploaded_by')
                 .order('created_at', { ascending: false })
                 .limit(40);
 
@@ -2641,7 +2645,10 @@
                                 <div class="flex gap-2">
                                     <button onclick="viewCoachMaterialDetail('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">보기</button>
                                     <button onclick="downloadCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">다운로드</button>
-                                    <button onclick="deleteCoachMaterial('${item.id}','${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
+                                    ${state.user && item.uploaded_by === state.user.id
+                                        ? `<button onclick="startEditCoachMaterial('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/40">수정</button>
+                                           <button onclick="deleteCoachMaterial('${item.id}','${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>`
+                                        : ''}
                                 </div>
                             </div>
                             <p class="text-xs text-gray-500 mt-2 break-keep">${escapeHtml(item.description || '-')}</p>
@@ -2662,7 +2669,7 @@
 
             const { data: item, error } = await supabaseClient
                 .from('coach_materials')
-                .select('id, title, category, description, original_name, size_bytes, storage_path, created_at')
+                .select('id, title, category, description, original_name, size_bytes, storage_path, created_at, uploaded_by')
                 .eq('id', materialId)
                 .maybeSingle();
 
@@ -2688,6 +2695,7 @@
                 previewHtml = `<audio src="${signedUrl}" controls class="w-full"></audio>`;
             }
 
+            const isOwner = Boolean(state.user && item.uploaded_by === state.user.id);
             detailEl.innerHTML = `
                 <div class="flex items-start justify-between gap-3">
                     <div>
@@ -2697,11 +2705,56 @@
                     <div class="flex gap-2">
                         <button onclick="openCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">새 창 보기</button>
                         <button onclick="downloadCoachMaterial('${encodeURIComponent(item.storage_path || '')}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">다운로드</button>
+                        ${isOwner ? `<button onclick="startEditCoachMaterial('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/40">수정</button>` : ''}
                     </div>
                 </div>
                 <div class="mt-4 p-3 rounded-xl border border-gray-100 bg-white text-sm text-gray-700 break-keep">${escapeHtml(item.description || '-')}</div>
                 <div class="mt-4">${signedError ? `<p class="text-xs text-red-500">미리보기 링크 생성 실패: ${escapeHtml(signedError.message)}</p>` : previewHtml}</div>
             `;
+        }
+
+        function resetCoachMaterialForm() {
+            const form = document.getElementById('coach-material-form');
+            if (!form) return;
+            form.reset();
+            form.material_id.value = '';
+            const titleEl = document.getElementById('coach-material-form-title');
+            const submitEl = document.getElementById('coach-material-submit-btn');
+            const cancelEl = document.getElementById('coach-material-cancel-btn');
+            if (titleEl) titleEl.textContent = '자료 업로드';
+            if (submitEl) submitEl.textContent = '자료 업로드';
+            if (cancelEl) cancelEl.classList.add('hidden');
+        }
+
+        async function startEditCoachMaterial(materialId) {
+            if (!ensureCoachAccess() || !supabaseClient) return;
+            const form = document.getElementById('coach-material-form');
+            if (!form) return;
+            const { data: item, error } = await supabaseClient
+                .from('coach_materials')
+                .select('id, title, category, description, uploaded_by')
+                .eq('id', materialId)
+                .maybeSingle();
+            if (error || !item) {
+                alert(`자료 조회 실패: ${error?.message || 'not found'}`);
+                return;
+            }
+            if (!state.user || item.uploaded_by !== state.user.id) {
+                alert('업로드한 본인만 수정할 수 있습니다.');
+                return;
+            }
+            form.material_id.value = item.id;
+            form.title.value = item.title || '';
+            form.category.value = item.category || 'general';
+            form.description.value = item.description || '';
+            const titleEl = document.getElementById('coach-material-form-title');
+            const submitEl = document.getElementById('coach-material-submit-btn');
+            const cancelEl = document.getElementById('coach-material-cancel-btn');
+            if (titleEl) titleEl.textContent = '자료 수정';
+            if (submitEl) submitEl.textContent = '자료 수정 저장';
+            if (cancelEl) cancelEl.classList.remove('hidden');
+            setCoachComposerVisibility('material', true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function loadCoachSchedules() {
@@ -2846,17 +2899,82 @@
             if (!ensureCoachAccess() || !supabaseClient) return;
             const form = event.target;
             const formData = new FormData(form);
+            const materialId = String(formData.get('material_id') || '').trim();
             const title = String(formData.get('title') || '').trim();
             const description = String(formData.get('description') || '').trim();
             const category = String(formData.get('category') || 'general');
             const file = form.querySelector('input[name="file"]')?.files?.[0];
-            if (!file) {
+            if (!materialId && !file) {
                 alert('업로드할 파일을 선택해 주세요.');
                 return;
             }
-            const check = validateUploadFile(file);
-            if (!check.ok) {
-                alert(check.reason);
+            if (file) {
+                const check = validateUploadFile(file);
+                if (!check.ok) {
+                    alert(check.reason);
+                    return;
+                }
+            }
+
+            if (materialId) {
+                const { data: existing, error: existingError } = await supabaseClient
+                    .from('coach_materials')
+                    .select('id, uploaded_by, storage_path, original_name, mime_type, size_bytes')
+                    .eq('id', materialId)
+                    .maybeSingle();
+                if (existingError || !existing) {
+                    alert(`수정 대상 조회 실패: ${existingError?.message || 'not found'}`);
+                    return;
+                }
+                if (!state.user || existing.uploaded_by !== state.user.id) {
+                    alert('업로드한 본인만 수정할 수 있습니다.');
+                    return;
+                }
+
+                let nextStoragePath = existing.storage_path;
+                let nextOriginalName = existing.original_name;
+                let nextMimeType = existing.mime_type;
+                let nextSizeBytes = existing.size_bytes;
+                if (file) {
+                    const safeName = `${Date.now()}_${buildSafeStorageFileName(file.name)}`;
+                    nextStoragePath = `${category}/${safeName}`;
+                    const uploadRes = await supabaseClient.storage.from('coach-materials').upload(nextStoragePath, file, {
+                        upsert: false,
+                        contentType: file.type || undefined
+                    });
+                    if (uploadRes.error) {
+                        alert(`자료 업로드 실패: ${uploadRes.error.message}`);
+                        return;
+                    }
+                    nextOriginalName = file.name;
+                    nextMimeType = file.type || null;
+                    nextSizeBytes = file.size || null;
+                }
+
+                const { error } = await supabaseClient
+                    .from('coach_materials')
+                    .update({
+                        title,
+                        description,
+                        category,
+                        storage_path: nextStoragePath,
+                        original_name: nextOriginalName,
+                        mime_type: nextMimeType,
+                        size_bytes: nextSizeBytes
+                    })
+                    .eq('id', materialId)
+                    .eq('uploaded_by', state.user.id);
+                if (error) {
+                    alert(`자료 수정 실패: ${error.message}`);
+                    return;
+                }
+                if (file && existing.storage_path && existing.storage_path !== nextStoragePath) {
+                    await supabaseClient.storage.from('coach-materials').remove([existing.storage_path]);
+                }
+                resetCoachMaterialForm();
+                await loadCoachMaterials();
+                setCoachComposerVisibility('material', state.coachListCounts.materials === 0);
+                alert('자료가 수정되었습니다.');
                 return;
             }
 
@@ -2881,13 +2999,12 @@
                 size_bytes: file.size || null,
                 uploaded_by: state.user.id
             }]);
-
             if (error) {
                 alert(`자료 메타데이터 저장 실패: ${error.message}`);
                 return;
             }
 
-            form.reset();
+            resetCoachMaterialForm();
             await loadCoachMaterials();
             setCoachComposerVisibility('material', state.coachListCounts.materials === 0);
             alert('자료가 업로드되었습니다.');
@@ -2905,7 +3022,8 @@
             const { error } = await supabaseClient
                 .from('coach_materials')
                 .delete()
-                .eq('id', materialId);
+                .eq('id', materialId)
+                .eq('uploaded_by', state.user.id);
 
             if (error) {
                 alert(`자료 삭제 실패: ${error.message}`);
