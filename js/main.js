@@ -1231,8 +1231,16 @@
         }
         function formatNoticeBody(body, bodyIsHtml) {
             if (bodyIsHtml) return body || '';
-            const normalized = String(body || '').replace(/\r\n/g, '\n').trim();
+            let normalized = String(body || '').replace(/\r\n/g, '\n').trim();
             if (!normalized) return '';
+            const compressed = !normalized.includes('\n') && normalized.length > 220;
+            if (compressed) {
+                normalized = normalized
+                    .replace(/([.!?])\s*/g, '$1\n')
+                    .replace(/(?:\s|^)(기간)(?=[0-9가-힣])/g, '\n$1: ')
+                    .replace(/(?:\s|^)(대상)(?=[0-9가-힣])/g, '\n$1: ')
+                    .replace(/(?:\s|^)(지원마감)(?=[0-9가-힣])/g, '\n$1: ');
+            }
             return normalized
                 .split(/\n{2,}/)
                 .map((paragraph) => `<p class="mb-4 last:mb-0">${escapeHtml(paragraph).replace(/\n/g, '<br>')}</p>`)
@@ -1247,10 +1255,13 @@
             const temp = document.createElement('div');
             const htmlWithBreaks = String(value || '')
                 .replace(/<\s*br\s*\/?>/gi, '\n')
+                .replace(/<\s*\/(span|strong|em|b|i)\s*>/gi, ' ')
                 .replace(/<\s*\/(p|div|li|h1|h2|h3|h4|h5|h6)\s*>/gi, '\n');
             temp.innerHTML = htmlWithBreaks;
             return (temp.textContent || temp.innerText || '')
                 .replace(/\r\n/g, '\n')
+                .replace(/[ \t]+\n/g, '\n')
+                .replace(/\n[ \t]+/g, '\n')
                 .replace(/\n{3,}/g, '\n\n')
                 .trim();
         }
