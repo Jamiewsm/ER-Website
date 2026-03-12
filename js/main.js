@@ -8,6 +8,8 @@
             user: null, 
             isCoach: false,
             coachProfile: null,
+            notices: [],
+            noticesLoaded: false,
             coachAdminUsers: [],
             coachCalendarMonth: null,
             coachListCounts: {
@@ -32,6 +34,16 @@
             },
             notices: (ER.contentData && ER.contentData.notices) ? ER.contentData.notices : []
         };
+        const NOTICE_ADMIN_EMAIL = 'campus.12000@gmail.com';
+        state.notices = (contentData.notices || []).map((item) => ({
+            id: item.id,
+            tag: item.tag || '안내',
+            title: item.title || '',
+            summary: item.summary || '',
+            body: item.body || '',
+            body_is_html: true,
+            published_at: item.date || ''
+        }));
 
         
 
@@ -333,6 +345,14 @@
             if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
             if(sectionId === 'programs') updateProgramView(state.programFilter);
             if(sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 0);
+            if((sectionId === 'home' || sectionId === 'notices' || sectionId === 'notice_detail') && !state.noticesLoaded) {
+                setTimeout(async () => {
+                    await loadNotices();
+                    if (state.currentSection === sectionId) {
+                        renderSection(sectionId, payload, { syncHash: false });
+                    }
+                }, 0);
+            }
             if(sectionId === 'coach_portal') setTimeout(() => loadCoachPortalDashboard(), 0);
             if(sectionId === 'coach_admin') setTimeout(() => loadCoachAdminUsers(), 0);
             if(sectionId === 'coach_tasks') setTimeout(() => loadCoachTasks(), 0);
@@ -643,11 +663,11 @@
                                 </button>
                             </div>
                             <div class="grid gap-5 md:grid-cols-2">
-                                ${contentData.notices.slice(0, 2).map(n => `
-                                    <div onclick="openNotice(${n.id})" class="bg-er-base rounded-[2rem] p-6 border border-white/40 shadow-soft floating-card cursor-pointer">
+                                ${state.notices.slice(0, 2).map(n => `
+                                    <div onclick="openNotice('${n.id}')" class="bg-er-base rounded-[2rem] p-6 border border-white/40 shadow-soft floating-card cursor-pointer">
                                         <div class="flex items-center gap-2 mb-3">
                                             <span class="inline-block px-2 py-1 rounded-full text-[10px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-white text-gray-500'}">${n.tag}</span>
-                                            <span class="text-[11px] text-gray-400">${n.date.replaceAll('-','.')}</span>
+                                            <span class="text-[11px] text-gray-400">${(n.published_at || '').replaceAll('-','.')}</span>
                                         </div>
                                         <h3 class="text-lg font-bold text-er-dark mb-2 break-keep">${n.title}</h3>
                                         <p class="text-sm text-gray-500 break-keep">${n.summary}</p>
@@ -1199,8 +1219,132 @@
                 </div>
             `;
         }
+        function formatNoticeBody(body, bodyIsHtml) {
+            if (bodyIsHtml) return body || '';
+            return escapeHtml(body || '').replace(/\n/g, '<br>');
+        }
+
+        async function loadNotices(force = false) {
+            if (!force && state.noticesLoaded) return;
+            const client = window.supabaseClient;
+            if (!client) {
+                state.noticesLoaded = true;
+                return;
+            }
+            const { data, error } = await client
+                .from('public_notices')
+                .select('id, tag, title, summary, body, body_is_html, published_at')
+                .order('published_at', { ascending: false })
+                .order('created_at', { ascending: false });
+            if (!error && Array.isArray(data) && data.length) {
+                state.notices = data;
+            }
+            state.noticesLoaded = true;
+        }
+
+        async function reloadNoticesView(payload) {
+            await loadNotices(true);
+            renderSection(state.currentSection === 'notice_detail' ? 'notice_detail' : 'notices', payload, { syncHash: false });
+        }
+
+        async function createNotice() {
+            if (!canManageNotices()) return;
+            const title = prompt('공지 제목을 입력해 주세요.');
+            if (!title) return;
+            const tag = (prompt('태그를 입력해 주세요. (예: 안내, 모집중)', '안내') || '안내').trim() || '안내';
+            const summary = (prompt('요약 문구를 입력해 주세요.', '') || '').trim();
+            const body = (prompt('본문을 입력해 주세요.', summary) || '').trim();
+            if (!body) {
+                alert('본문은 비워둘 수 없습니다.');
+                return;
+            }
+            const publishedAt = (prompt('게시일을 입력해 주세요. (YYYY-MM-DD)', new Date().toISOString().slice(0, 10)) || '').trim();
+            const client = window.supabaseClient;
+            if (!client) {
+                alert('Supabase 연결이 필요합니다.');
+                return;
+            }
+            const { error } = await client.from('public_notices').insert([{
+                tag,
+                title: title.trim(),
+                summary,
+                body,
+                body_is_html: false,
+                published_at: publishedAt || new Date().toISOString().slice(0, 10),
+                created_by: state.user?.id || null
+            }]);
+            if (error) {
+                alert(`공지 생성 실패: ${error.message}`);
+                return;
+            }
+            await reloadNoticesView();
+        }
+
+        async function editNotice(id) {
+            if (!canManageNotices()) return;
+            const notice = state.notices.find((x) => String(x.id) === String(id));
+            if (!notice) return;
+            const title = prompt('공지 제목을 수정해 주세요.', notice.title || '');
+            if (!title) return;
+            const tag = (prompt('태그를 수정해 주세요.', notice.tag || '안내') || '').trim() || '안내';
+            const summary = (prompt('요약 문구를 수정해 주세요.', notice.summary || '') || '').trim();
+            const initialBody = notice.body || '';
+            const body = (prompt('본문을 수정해 주세요.', initialBody) || '').trim();
+            if (!body) {
+                alert('본문은 비워둘 수 없습니다.');
+                return;
+            }
+            const publishedAt = (prompt('게시일을 입력해 주세요. (YYYY-MM-DD)', notice.published_at || '') || '').trim();
+            const client = window.supabaseClient;
+            if (!client) {
+                alert('Supabase 연결이 필요합니다.');
+                return;
+            }
+            const { error } = await client
+                .from('public_notices')
+                .update({
+                    tag,
+                    title: title.trim(),
+                    summary,
+                    body,
+                    body_is_html: false,
+                    published_at: publishedAt || notice.published_at
+                })
+                .eq('id', notice.id);
+            if (error) {
+                alert(`공지 수정 실패: ${error.message}`);
+                return;
+            }
+            await reloadNoticesView({ id: notice.id });
+        }
+
+        async function deleteNotice(id) {
+            if (!canManageNotices()) return;
+            const notice = state.notices.find((x) => String(x.id) === String(id));
+            if (!notice) return;
+            if (!confirm(`"${notice.title}" 공지를 삭제할까요?`)) return;
+            const client = window.supabaseClient;
+            if (!client) {
+                alert('Supabase 연결이 필요합니다.');
+                return;
+            }
+            const { error } = await client.from('public_notices').delete().eq('id', notice.id);
+            if (error) {
+                alert(`공지 삭제 실패: ${error.message}`);
+                return;
+            }
+            await reloadNoticesView();
+        }
+
         function renderNotices() {
-            const items = [...contentData.notices].sort((a,b) => (a.date < b.date ? 1 : -1));
+            const items = [...state.notices].sort((a, b) => {
+                const left = a.published_at || '';
+                const right = b.published_at || '';
+                return left < right ? 1 : -1;
+            });
+            const manageButton = canManageNotices()
+                ? `<button onclick="createNotice()" class="px-3 py-1.5 bg-er-dark text-white rounded-full text-xs font-bold hover:bg-gray-800">새 공지</button>`
+                : `<div class="w-16"></div>`;
             return `
                 <div class="bg-white min-h-screen py-16">
                     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1209,23 +1353,29 @@
                                 <i class="fas fa-arrow-left mr-1"></i> 함께한 이야기로
                             </button>
                             <h2 class="text-xl font-bold text-gray-900">공지사항</h2>
-                            <div class="w-16"></div>
+                            ${manageButton}
                         </div>
 
                         <div class="space-y-3 animate-fade-in-up" style="animation-delay:0.1s;">
                             ${items.map(n => `
-                                <div onclick="openNotice(${n.id})" class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
+                                <div onclick="openNotice('${n.id}')" class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
                                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
                                         <div class="min-w-0">
                                             <div class="flex items-center gap-2 mb-1.5">
                                                 <span class="inline-block px-1.5 py-0.5 rounded text-[9px] font-bold ${n.tag === '모집중' ? 'bg-er-accent/10 text-er-accent' : 'bg-gray-100 text-gray-500'}">${n.tag}</span>
-                                                <span class="text-[10px] text-gray-400">${n.date.replaceAll('-','.')}</span>
+                                                <span class="text-[10px] text-gray-400">${(n.published_at || '').replaceAll('-','.')}</span>
                                             </div>
                                             <h3 class="text-sm md:text-base font-bold text-gray-900 truncate group-hover:text-er-accent transition-colors">${n.title}</h3>
                                             <p class="text-xs text-gray-500 mt-1 line-clamp-1">${n.summary ?? ''}</p>
                                         </div>
-                                        <div class="hidden md:flex shrink-0 w-8 h-8 rounded-full border border-gray-200 items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all">
-                                            <i class="fas fa-arrow-right text-xs"></i>
+                                        <div class="hidden md:flex shrink-0 items-center gap-2">
+                                            ${canManageNotices() ? `
+                                                <button type="button" onclick="event.stopPropagation(); editNotice('${n.id}')" class="px-2 py-1 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">수정</button>
+                                                <button type="button" onclick="event.stopPropagation(); deleteNotice('${n.id}')" class="px-2 py-1 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
+                                            ` : ''}
+                                            <div class="w-8 h-8 rounded-full border border-gray-200 items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all ${canManageNotices() ? 'flex' : 'hidden md:flex'}">
+                                                <i class="fas fa-arrow-right text-xs"></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1237,8 +1387,8 @@
         }
         
         function renderNoticeDetail(payload) {
-            const id = Number(payload?.id);
-            const n = contentData.notices.find(x => x.id === id);
+            const id = String(payload?.id || '');
+            const n = state.notices.find(x => String(x.id) === id);
 
             if (!n) return `<div class="p-10 text-center">공지를 찾을 수 없습니다.<br><button class="mt-4 btn" onclick="renderSection('notices')">돌아가기</button></div>`;
 
@@ -1249,7 +1399,7 @@
                             <button onclick="openNotices()" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm border border-gray-100">
                                 <i class="fas fa-arrow-left mr-1"></i> 목록
                             </button>
-                            <span class="text-[10px] text-gray-400">${n.date.replaceAll('-','.')}</span>
+                            <span class="text-[10px] text-gray-400">${(n.published_at || '').replaceAll('-','.')}</span>
                         </div>
 
                         <div class="bg-white rounded-[2rem] shadow-card p-6 md:p-10 border border-gray-100 animate-fade-in-up">
@@ -1259,8 +1409,14 @@
                             </div>
                             <div class="h-px bg-gray-100 my-6"></div>
                             <div class="prose prose-sm max-w-none text-gray-600">
-                                ${n.body ?? n.summary}
+                                ${formatNoticeBody(n.body, n.body_is_html)}
                             </div>
+                            ${canManageNotices() ? `
+                                <div class="mt-6 flex gap-2">
+                                    <button onclick="editNotice('${n.id}')" class="px-3 py-1.5 rounded-full text-xs font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">공지 수정</button>
+                                    <button onclick="deleteNotice('${n.id}')" class="px-3 py-1.5 rounded-full text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50">공지 삭제</button>
+                                </div>
+                            ` : ''}
                             
                             <div class="mt-10 p-5 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
                                 <div>
@@ -2088,6 +2244,11 @@
 
         function isHeadCoach() {
             return !!(state.isCoach && state.coachProfile?.role === 'head_coach');
+        }
+
+        function canManageNotices() {
+            const email = (state.user?.email || '').toLowerCase();
+            return email === NOTICE_ADMIN_EMAIL || isHeadCoach();
         }
 
         async function loadCoachPortalDashboard() {
