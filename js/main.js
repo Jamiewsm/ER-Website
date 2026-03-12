@@ -1237,10 +1237,11 @@
             if (compressed) {
                 normalized = normalized
                     .replace(/([.!?])\s*/g, '$1\n')
-                    .replace(/(?:\s|^)(기간)(?=[0-9가-힣])/g, '\n$1: ')
-                    .replace(/(?:\s|^)(대상)(?=[0-9가-힣])/g, '\n$1: ')
-                    .replace(/(?:\s|^)(지원마감)(?=[0-9가-힣])/g, '\n$1: ');
+                    .replace(/(?:\s|^)(기간)(?=[0-9가-힣])/g, '\n\n$1: ')
+                    .replace(/(?:\s|^)(대상)(?=[0-9가-힣])/g, '\n\n$1: ')
+                    .replace(/(?:\s|^)(지원마감)(?=[0-9가-힣])/g, '\n\n$1: ');
             }
+            normalized = normalized.replace(/\n(기간:\s*|대상:\s*|지원마감:\s*)/g, '\n\n$1');
             return normalized
                 .split(/\n{2,}/)
                 .map((paragraph) => `<p class="mb-4 last:mb-0">${escapeHtml(paragraph).replace(/\n/g, '<br>')}</p>`)
