@@ -597,3 +597,61 @@ USING (
   bucket_id = 'coach-session-notes'
   AND public.is_active_coach(auth.uid())
 );
+
+create table if not exists public.public_notices (
+  id uuid primary key default gen_random_uuid(),
+  legacy_key integer unique,
+  tag text not null default '안내',
+  title text not null,
+  summary text,
+  body text not null,
+  body_is_html boolean not null default false,
+  published_at date not null default current_date,
+  created_by uuid references auth.users(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+DROP TRIGGER IF EXISTS trg_public_notices_updated_at ON public.public_notices;
+CREATE TRIGGER trg_public_notices_updated_at
+BEFORE UPDATE ON public.public_notices
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+ALTER TABLE public.public_notices ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "public can read notices" ON public.public_notices;
+CREATE POLICY "public can read notices"
+ON public.public_notices
+FOR SELECT
+USING (true);
+
+DROP POLICY IF EXISTS "admins can insert notices" ON public.public_notices;
+CREATE POLICY "admins can insert notices"
+ON public.public_notices
+FOR INSERT
+WITH CHECK (
+  lower(coalesce(auth.jwt()->>'email', '')) = 'campus.12000@gmail.com'
+  or public.is_head_coach(auth.uid())
+);
+
+DROP POLICY IF EXISTS "admins can update notices" ON public.public_notices;
+CREATE POLICY "admins can update notices"
+ON public.public_notices
+FOR UPDATE
+USING (
+  lower(coalesce(auth.jwt()->>'email', '')) = 'campus.12000@gmail.com'
+  or public.is_head_coach(auth.uid())
+)
+WITH CHECK (
+  lower(coalesce(auth.jwt()->>'email', '')) = 'campus.12000@gmail.com'
+  or public.is_head_coach(auth.uid())
+);
+
+DROP POLICY IF EXISTS "admins can delete notices" ON public.public_notices;
+CREATE POLICY "admins can delete notices"
+ON public.public_notices
+FOR DELETE
+USING (
+  lower(coalesce(auth.jwt()->>'email', '')) = 'campus.12000@gmail.com'
+  or public.is_head_coach(auth.uid())
+);
