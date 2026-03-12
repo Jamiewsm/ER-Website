@@ -1231,7 +1231,12 @@
         }
         function formatNoticeBody(body, bodyIsHtml) {
             if (bodyIsHtml) return body || '';
-            return escapeHtml(body || '').replace(/\n/g, '<br>');
+            const normalized = String(body || '').replace(/\r\n/g, '\n').trim();
+            if (!normalized) return '';
+            return normalized
+                .split(/\n{2,}/)
+                .map((paragraph) => `<p class="mb-4 last:mb-0">${escapeHtml(paragraph).replace(/\n/g, '<br>')}</p>`)
+                .join('');
         }
 
         function looksLikeHtml(value) {
@@ -1240,8 +1245,14 @@
 
         function stripHtmlToText(value) {
             const temp = document.createElement('div');
-            temp.innerHTML = String(value || '');
-            return (temp.textContent || temp.innerText || '').trim();
+            const htmlWithBreaks = String(value || '')
+                .replace(/<\s*br\s*\/?>/gi, '\n')
+                .replace(/<\s*\/(p|div|li|h1|h2|h3|h4|h5|h6)\s*>/gi, '\n');
+            temp.innerHTML = htmlWithBreaks;
+            return (temp.textContent || temp.innerText || '')
+                .replace(/\r\n/g, '\n')
+                .replace(/\n{3,}/g, '\n\n')
+                .trim();
         }
 
         function normalizeNoticeRecord(row) {
