@@ -615,6 +615,23 @@ create table if not exists public.public_notices (
   updated_at timestamptz not null default now()
 );
 
+create or replace function public.is_notice_admin()
+returns boolean
+language sql
+stable
+as $$
+  select (
+    lower(
+      coalesce(
+        auth.jwt()->>'email',
+        auth.jwt()->'user_metadata'->>'email',
+        auth.jwt()->'app_metadata'->>'email',
+        ''
+      )
+    ) = 'campus.12000@gmail.com'
+  ) or public.is_head_coach(auth.uid());
+$$;
+
 DROP TRIGGER IF EXISTS trg_public_notices_updated_at ON public.public_notices;
 CREATE TRIGGER trg_public_notices_updated_at
 BEFORE UPDATE ON public.public_notices
@@ -632,29 +649,17 @@ DROP POLICY IF EXISTS "admins can insert notices" ON public.public_notices;
 CREATE POLICY "admins can insert notices"
 ON public.public_notices
 FOR INSERT
-WITH CHECK (
-  lower(coalesce(auth.jwt()->>'email', '')) = 'campus.12000@gmail.com'
-  or public.is_head_coach(auth.uid())
-);
+WITH CHECK (public.is_notice_admin());
 
 DROP POLICY IF EXISTS "admins can update notices" ON public.public_notices;
 CREATE POLICY "admins can update notices"
 ON public.public_notices
 FOR UPDATE
-USING (
-  lower(coalesce(auth.jwt()->>'email', '')) = 'campus.12000@gmail.com'
-  or public.is_head_coach(auth.uid())
-)
-WITH CHECK (
-  lower(coalesce(auth.jwt()->>'email', '')) = 'campus.12000@gmail.com'
-  or public.is_head_coach(auth.uid())
-);
+USING (public.is_notice_admin())
+WITH CHECK (public.is_notice_admin());
 
 DROP POLICY IF EXISTS "admins can delete notices" ON public.public_notices;
 CREATE POLICY "admins can delete notices"
 ON public.public_notices
 FOR DELETE
-USING (
-  lower(coalesce(auth.jwt()->>'email', '')) = 'campus.12000@gmail.com'
-  or public.is_head_coach(auth.uid())
-);
+USING (public.is_notice_admin());
