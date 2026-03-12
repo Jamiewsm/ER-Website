@@ -1395,6 +1395,7 @@
                 error = out.error;
             }
             if (error) {
+                console.error('NOTICE_SAVE_ERROR', error);
                 alert(`공지 저장 실패: ${error.message}`);
                 return;
             }
