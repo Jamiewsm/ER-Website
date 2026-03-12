@@ -18,7 +18,10 @@
                 title: '',
                 summary: '',
                 body: '',
-                published_at: ''
+                published_at: '',
+                program_period: '',
+                program_target: '',
+                apply_deadline: ''
             },
             coachAdminUsers: [],
             coachCalendarMonth: null,
@@ -52,7 +55,10 @@
             summary: item.summary || '',
             body: item.body || '',
             body_is_html: true,
-            published_at: item.date || ''
+            published_at: item.date || '',
+            program_period: '',
+            program_target: '',
+            apply_deadline: ''
         }));
 
         
@@ -1267,7 +1273,10 @@
         function normalizeNoticeRecord(row) {
             return {
                 ...row,
-                body_is_html: Boolean(row.body_is_html) || looksLikeHtml(row.body)
+                body_is_html: Boolean(row.body_is_html) || looksLikeHtml(row.body),
+                program_period: row.program_period || '',
+                program_target: row.program_target || '',
+                apply_deadline: row.apply_deadline || ''
             };
         }
 
@@ -1280,7 +1289,7 @@
             }
             const { data, error } = await client
                 .from('public_notices')
-                .select('id, tag, title, summary, body, body_is_html, published_at')
+                .select('id, tag, title, summary, body, body_is_html, published_at, program_period, program_target, apply_deadline')
                 .order('published_at', { ascending: false })
                 .order('created_at', { ascending: false });
             if (!error && Array.isArray(data) && data.length) {
@@ -1307,7 +1316,10 @@
                     title: notice.title || '',
                     summary: notice.summary || '',
                     body: notice.body_is_html ? stripHtmlToText(notice.body) : (notice.body || ''),
-                    published_at: notice.published_at || new Date().toISOString().slice(0, 10)
+                    published_at: notice.published_at || new Date().toISOString().slice(0, 10),
+                    program_period: notice.program_period || '',
+                    program_target: notice.program_target || '',
+                    apply_deadline: notice.apply_deadline || ''
                 };
                 renderSection('notices', null, { syncHash: false });
                 return;
@@ -1320,7 +1332,10 @@
                 title: '',
                 summary: '',
                 body: '',
-                published_at: new Date().toISOString().slice(0, 10)
+                published_at: new Date().toISOString().slice(0, 10),
+                program_period: '',
+                program_target: '',
+                apply_deadline: ''
             };
             renderSection('notices', null, { syncHash: false });
         }
@@ -1360,7 +1375,10 @@
                 summary: String(state.noticeEditor.summary || '').trim(),
                 body,
                 body_is_html: false,
-                published_at: String(state.noticeEditor.published_at || '').trim() || new Date().toISOString().slice(0, 10)
+                published_at: String(state.noticeEditor.published_at || '').trim() || new Date().toISOString().slice(0, 10),
+                program_period: String(state.noticeEditor.program_period || '').trim(),
+                program_target: String(state.noticeEditor.program_target || '').trim(),
+                apply_deadline: String(state.noticeEditor.apply_deadline || '').trim()
             };
             let error = null;
             if (state.noticeEditor.mode === 'edit' && state.noticeEditor.noticeId) {
@@ -1400,6 +1418,11 @@
                         </div>
                         <input value="${escapeHtml(state.noticeEditor.summary)}" oninput="setNoticeEditorField('summary', this.value)" placeholder="요약 문구" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">
                         <textarea required oninput="setNoticeEditorField('body', this.value)" rows="7" placeholder="공지 본문" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">${escapeHtml(state.noticeEditor.body)}</textarea>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input value="${escapeHtml(state.noticeEditor.program_period)}" oninput="setNoticeEditorField('program_period', this.value)" placeholder="기간 (예: 8주)" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">
+                            <input value="${escapeHtml(state.noticeEditor.apply_deadline)}" oninput="setNoticeEditorField('apply_deadline', this.value)" placeholder="지원마감 (예: 2025.01.15)" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">
+                        </div>
+                        <textarea oninput="setNoticeEditorField('program_target', this.value)" rows="3" placeholder="대상" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">${escapeHtml(state.noticeEditor.program_target)}</textarea>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                             <input type="date" value="${escapeHtml(state.noticeEditor.published_at)}" onchange="setNoticeEditorField('published_at', this.value)" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">
                             <button type="submit" class="px-6 py-2.5 rounded-full text-xs font-bold bg-er-dark text-white">저장하기</button>
@@ -1503,6 +1526,13 @@
                             <div class="prose prose-sm max-w-none text-gray-600">
                                 ${formatNoticeBody(n.body, n.body_is_html)}
                             </div>
+                            ${(n.program_period || n.program_target || n.apply_deadline) ? `
+                                <div class="mt-8 grid gap-3">
+                                    ${n.program_period ? `<div class="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"><p class="text-[11px] font-bold text-gray-500 mb-1">기간</p><p class="text-sm text-gray-700 break-keep">${escapeHtml(n.program_period)}</p></div>` : ''}
+                                    ${n.program_target ? `<div class="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"><p class="text-[11px] font-bold text-gray-500 mb-1">대상</p><p class="text-sm text-gray-700 break-keep">${escapeHtml(n.program_target)}</p></div>` : ''}
+                                    ${n.apply_deadline ? `<div class="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"><p class="text-[11px] font-bold text-gray-500 mb-1">지원마감</p><p class="text-sm text-gray-700 break-keep">${escapeHtml(n.apply_deadline)}</p></div>` : ''}
+                                </div>
+                            ` : ''}
                             ${canManageNotices() ? `
                                 <div class="mt-6 flex gap-2">
                                     <button onclick="openNoticeEditor('edit', '${n.id}')" class="px-3 py-1.5 rounded-full text-xs font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">공지 수정</button>
