@@ -10,6 +10,16 @@
             coachProfile: null,
             notices: [],
             noticesLoaded: false,
+            noticeEditor: {
+                open: false,
+                mode: 'create',
+                noticeId: null,
+                tag: '안내',
+                title: '',
+                summary: '',
+                body: '',
+                published_at: ''
+            },
             coachAdminUsers: [],
             coachCalendarMonth: null,
             coachListCounts: {
@@ -1224,6 +1234,23 @@
             return escapeHtml(body || '').replace(/\n/g, '<br>');
         }
 
+        function looksLikeHtml(value) {
+            return /<\/?[a-z][\s\S]*>/i.test(String(value || ''));
+        }
+
+        function stripHtmlToText(value) {
+            const temp = document.createElement('div');
+            temp.innerHTML = String(value || '');
+            return (temp.textContent || temp.innerText || '').trim();
+        }
+
+        function normalizeNoticeRecord(row) {
+            return {
+                ...row,
+                body_is_html: Boolean(row.body_is_html) || looksLikeHtml(row.body)
+            };
+        }
+
         async function loadNotices(force = false) {
             if (!force && state.noticesLoaded) return;
             const client = window.supabaseClient;
@@ -1237,7 +1264,7 @@
                 .order('published_at', { ascending: false })
                 .order('created_at', { ascending: false });
             if (!error && Array.isArray(data) && data.length) {
-                state.notices = data;
+                state.notices = data.map(normalizeNoticeRecord);
             }
             state.noticesLoaded = true;
         }
@@ -1247,75 +1274,119 @@
             renderSection(state.currentSection === 'notice_detail' ? 'notice_detail' : 'notices', payload, { syncHash: false });
         }
 
-        async function createNotice() {
+        function openNoticeEditor(mode, id = null) {
             if (!canManageNotices()) return;
-            const title = prompt('공지 제목을 입력해 주세요.');
-            if (!title) return;
-            const tag = (prompt('태그를 입력해 주세요. (예: 안내, 모집중)', '안내') || '안내').trim() || '안내';
-            const summary = (prompt('요약 문구를 입력해 주세요.', '') || '').trim();
-            const body = (prompt('본문을 입력해 주세요.', summary) || '').trim();
-            if (!body) {
-                alert('본문은 비워둘 수 없습니다.');
+            if (mode === 'edit') {
+                const notice = state.notices.find((x) => String(x.id) === String(id));
+                if (!notice) return;
+                state.noticeEditor = {
+                    open: true,
+                    mode: 'edit',
+                    noticeId: notice.id,
+                    tag: notice.tag || '안내',
+                    title: notice.title || '',
+                    summary: notice.summary || '',
+                    body: notice.body_is_html ? stripHtmlToText(notice.body) : (notice.body || ''),
+                    published_at: notice.published_at || new Date().toISOString().slice(0, 10)
+                };
+                renderSection('notices', null, { syncHash: false });
                 return;
             }
-            const publishedAt = (prompt('게시일을 입력해 주세요. (YYYY-MM-DD)', new Date().toISOString().slice(0, 10)) || '').trim();
+            state.noticeEditor = {
+                open: true,
+                mode: 'create',
+                noticeId: null,
+                tag: '안내',
+                title: '',
+                summary: '',
+                body: '',
+                published_at: new Date().toISOString().slice(0, 10)
+            };
+            renderSection('notices', null, { syncHash: false });
+        }
+
+        function closeNoticeEditor() {
+            if (!state.noticeEditor.open) return;
+            state.noticeEditor.open = false;
+            renderSection('notices', null, { syncHash: false });
+        }
+
+        function setNoticeEditorField(field, value) {
+            if (!state.noticeEditor || typeof state.noticeEditor !== 'object') return;
+            state.noticeEditor[field] = value;
+        }
+
+        async function submitNoticeEditor(event) {
+            event.preventDefault();
+            if (!canManageNotices()) return;
+            const title = String(state.noticeEditor.title || '').trim();
+            const body = String(state.noticeEditor.body || '').trim();
+            if (!title) {
+                alert('공지 제목을 입력해 주세요.');
+                return;
+            }
+            if (!body) {
+                alert('본문을 입력해 주세요.');
+                return;
+            }
             const client = window.supabaseClient;
             if (!client) {
                 alert('Supabase 연결이 필요합니다.');
                 return;
             }
-            const { error } = await client.from('public_notices').insert([{
-                tag,
-                title: title.trim(),
-                summary,
+            const payload = {
+                tag: String(state.noticeEditor.tag || '안내').trim() || '안내',
+                title,
+                summary: String(state.noticeEditor.summary || '').trim(),
                 body,
                 body_is_html: false,
-                published_at: publishedAt || new Date().toISOString().slice(0, 10),
-                created_by: state.user?.id || null
-            }]);
+                published_at: String(state.noticeEditor.published_at || '').trim() || new Date().toISOString().slice(0, 10)
+            };
+            let error = null;
+            if (state.noticeEditor.mode === 'edit' && state.noticeEditor.noticeId) {
+                const out = await client
+                    .from('public_notices')
+                    .update(payload)
+                    .eq('id', state.noticeEditor.noticeId);
+                error = out.error;
+            } else {
+                const out = await client.from('public_notices').insert([{
+                    ...payload,
+                    created_by: state.user?.id || null
+                }]);
+                error = out.error;
+            }
             if (error) {
-                alert(`공지 생성 실패: ${error.message}`);
+                alert(`공지 저장 실패: ${error.message}`);
                 return;
             }
+            state.noticeEditor.open = false;
             await reloadNoticesView();
         }
 
-        async function editNotice(id) {
-            if (!canManageNotices()) return;
-            const notice = state.notices.find((x) => String(x.id) === String(id));
-            if (!notice) return;
-            const title = prompt('공지 제목을 수정해 주세요.', notice.title || '');
-            if (!title) return;
-            const tag = (prompt('태그를 수정해 주세요.', notice.tag || '안내') || '').trim() || '안내';
-            const summary = (prompt('요약 문구를 수정해 주세요.', notice.summary || '') || '').trim();
-            const initialBody = notice.body || '';
-            const body = (prompt('본문을 수정해 주세요.', initialBody) || '').trim();
-            if (!body) {
-                alert('본문은 비워둘 수 없습니다.');
-                return;
-            }
-            const publishedAt = (prompt('게시일을 입력해 주세요. (YYYY-MM-DD)', notice.published_at || '') || '').trim();
-            const client = window.supabaseClient;
-            if (!client) {
-                alert('Supabase 연결이 필요합니다.');
-                return;
-            }
-            const { error } = await client
-                .from('public_notices')
-                .update({
-                    tag,
-                    title: title.trim(),
-                    summary,
-                    body,
-                    body_is_html: false,
-                    published_at: publishedAt || notice.published_at
-                })
-                .eq('id', notice.id);
-            if (error) {
-                alert(`공지 수정 실패: ${error.message}`);
-                return;
-            }
-            await reloadNoticesView({ id: notice.id });
+        function renderNoticeEditor() {
+            if (!canManageNotices() || !state.noticeEditor.open) return '';
+            const editorTitle = state.noticeEditor.mode === 'edit' ? '공지 수정' : '새 공지 작성';
+            return `
+                <div class="mb-6 bg-er-base border border-er-accent/20 rounded-3xl p-5 md:p-6 animate-fade-in-up">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-er-dark">${editorTitle}</h3>
+                        <button type="button" onclick="closeNoticeEditor()" class="px-3 py-1.5 rounded-full text-xs font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">닫기</button>
+                    </div>
+                    <form onsubmit="submitNoticeEditor(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input required value="${escapeHtml(state.noticeEditor.title)}" oninput="setNoticeEditorField('title', this.value)" placeholder="공지 제목" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">
+                            <input value="${escapeHtml(state.noticeEditor.tag)}" oninput="setNoticeEditorField('tag', this.value)" placeholder="태그 (예: 안내, 모집중)" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">
+                        </div>
+                        <input value="${escapeHtml(state.noticeEditor.summary)}" oninput="setNoticeEditorField('summary', this.value)" placeholder="요약 문구" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">
+                        <textarea required oninput="setNoticeEditorField('body', this.value)" rows="7" placeholder="공지 본문" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">${escapeHtml(state.noticeEditor.body)}</textarea>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <input type="date" value="${escapeHtml(state.noticeEditor.published_at)}" onchange="setNoticeEditorField('published_at', this.value)" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm bg-white">
+                            <button type="submit" class="px-6 py-2.5 rounded-full text-xs font-bold bg-er-dark text-white">저장하기</button>
+                        </div>
+                    </form>
+                </div>
+            `;
         }
 
         async function deleteNotice(id) {
@@ -1343,7 +1414,7 @@
                 return left < right ? 1 : -1;
             });
             const manageButton = canManageNotices()
-                ? `<button onclick="createNotice()" class="px-3 py-1.5 bg-er-dark text-white rounded-full text-xs font-bold hover:bg-gray-800">새 공지</button>`
+                ? `<button onclick="openNoticeEditor('create')" class="px-3 py-1.5 bg-er-dark text-white rounded-full text-xs font-bold hover:bg-gray-800">새 공지</button>`
                 : `<div class="w-16"></div>`;
             return `
                 <div class="bg-white min-h-screen py-16">
@@ -1355,6 +1426,7 @@
                             <h2 class="text-xl font-bold text-gray-900">공지사항</h2>
                             ${manageButton}
                         </div>
+                        ${renderNoticeEditor()}
 
                         <div class="space-y-3 animate-fade-in-up" style="animation-delay:0.1s;">
                             ${items.map(n => `
@@ -1370,7 +1442,7 @@
                                         </div>
                                         <div class="hidden md:flex shrink-0 items-center gap-2">
                                             ${canManageNotices() ? `
-                                                <button type="button" onclick="event.stopPropagation(); editNotice('${n.id}')" class="px-2 py-1 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">수정</button>
+                                                <button type="button" onclick="event.stopPropagation(); openNoticeEditor('edit', '${n.id}')" class="px-2 py-1 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">수정</button>
                                                 <button type="button" onclick="event.stopPropagation(); deleteNotice('${n.id}')" class="px-2 py-1 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
                                             ` : ''}
                                             <div class="w-8 h-8 rounded-full border border-gray-200 items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white group-hover:border-transparent transition-all ${canManageNotices() ? 'flex' : 'hidden md:flex'}">
@@ -1413,7 +1485,7 @@
                             </div>
                             ${canManageNotices() ? `
                                 <div class="mt-6 flex gap-2">
-                                    <button onclick="editNotice('${n.id}')" class="px-3 py-1.5 rounded-full text-xs font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">공지 수정</button>
+                                    <button onclick="openNoticeEditor('edit', '${n.id}')" class="px-3 py-1.5 rounded-full text-xs font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">공지 수정</button>
                                     <button onclick="deleteNotice('${n.id}')" class="px-3 py-1.5 rounded-full text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50">공지 삭제</button>
                                 </div>
                             ` : ''}
