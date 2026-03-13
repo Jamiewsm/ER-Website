@@ -1352,55 +1352,60 @@
         }
 
         async function submitNoticeEditor(event) {
-            event.preventDefault();
-            if (!canManageNotices()) return;
-            const title = String(state.noticeEditor.title || '').trim();
-            const body = String(state.noticeEditor.body || '').trim();
-            if (!title) {
-                alert('공지 제목을 입력해 주세요.');
-                return;
+            if (event && typeof event.preventDefault === 'function') event.preventDefault();
+            try {
+                if (!canManageNotices()) return;
+                const title = String(state.noticeEditor.title || '').trim();
+                const body = String(state.noticeEditor.body || '').trim();
+                if (!title) {
+                    alert('공지 제목을 입력해 주세요.');
+                    return;
+                }
+                if (!body) {
+                    alert('본문을 입력해 주세요.');
+                    return;
+                }
+                const client = window.supabaseClient;
+                if (!client) {
+                    alert('Supabase 연결이 필요합니다.');
+                    return;
+                }
+                const payload = {
+                    tag: String(state.noticeEditor.tag || '안내').trim() || '안내',
+                    title,
+                    summary: String(state.noticeEditor.summary || '').trim(),
+                    body,
+                    body_is_html: false,
+                    published_at: String(state.noticeEditor.published_at || '').trim() || new Date().toISOString().slice(0, 10),
+                    program_period: String(state.noticeEditor.program_period || '').trim(),
+                    program_target: String(state.noticeEditor.program_target || '').trim(),
+                    apply_deadline: String(state.noticeEditor.apply_deadline || '').trim()
+                };
+                let error = null;
+                if (state.noticeEditor.mode === 'edit' && state.noticeEditor.noticeId) {
+                    const out = await client
+                        .from('public_notices')
+                        .update(payload)
+                        .eq('id', state.noticeEditor.noticeId);
+                    error = out.error;
+                } else {
+                    const out = await client.from('public_notices').insert([{
+                        ...payload,
+                        created_by: state.user?.id || null
+                    }]);
+                    error = out.error;
+                }
+                if (error) {
+                    console.error('NOTICE_SAVE_ERROR', error);
+                    alert(`공지 저장 실패: ${error.message}`);
+                    return;
+                }
+                state.noticeEditor.open = false;
+                await reloadNoticesView();
+            } catch (err) {
+                console.error('NOTICE_SAVE_FATAL', err);
+                alert(`공지 저장 중 오류가 발생했습니다: ${err?.message || err}`);
             }
-            if (!body) {
-                alert('본문을 입력해 주세요.');
-                return;
-            }
-            const client = window.supabaseClient;
-            if (!client) {
-                alert('Supabase 연결이 필요합니다.');
-                return;
-            }
-            const payload = {
-                tag: String(state.noticeEditor.tag || '안내').trim() || '안내',
-                title,
-                summary: String(state.noticeEditor.summary || '').trim(),
-                body,
-                body_is_html: false,
-                published_at: String(state.noticeEditor.published_at || '').trim() || new Date().toISOString().slice(0, 10),
-                program_period: String(state.noticeEditor.program_period || '').trim(),
-                program_target: String(state.noticeEditor.program_target || '').trim(),
-                apply_deadline: String(state.noticeEditor.apply_deadline || '').trim()
-            };
-            let error = null;
-            if (state.noticeEditor.mode === 'edit' && state.noticeEditor.noticeId) {
-                const out = await client
-                    .from('public_notices')
-                    .update(payload)
-                    .eq('id', state.noticeEditor.noticeId);
-                error = out.error;
-            } else {
-                const out = await client.from('public_notices').insert([{
-                    ...payload,
-                    created_by: state.user?.id || null
-                }]);
-                error = out.error;
-            }
-            if (error) {
-                console.error('NOTICE_SAVE_ERROR', error);
-                alert(`공지 저장 실패: ${error.message}`);
-                return;
-            }
-            state.noticeEditor.open = false;
-            await reloadNoticesView();
         }
 
         function renderNoticeEditor() {
@@ -1449,6 +1454,14 @@
                 return;
             }
             await reloadNoticesView();
+        }
+
+        if (typeof window !== 'undefined') {
+            window.openNoticeEditor = openNoticeEditor;
+            window.closeNoticeEditor = closeNoticeEditor;
+            window.setNoticeEditorField = setNoticeEditorField;
+            window.submitNoticeEditor = submitNoticeEditor;
+            window.deleteNotice = deleteNotice;
         }
 
         function renderNotices() {
