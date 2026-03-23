@@ -509,7 +509,7 @@
                         <div class="max-w-6xl mx-auto">
                             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
                                 <div>
-                                <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Core Offers</span>
+                                <span class="text-er-accent font-bold text-xs tracking-widest uppercase">대표 서비스</span>
                                 <h2 class="text-2xl md:text-4xl font-bold text-er-dark mt-3 break-keep">대표 상품 3가지</h2>
                                 <p class="mt-3 text-sm md:text-base text-gray-500 max-w-2xl break-keep">복잡한 선택 대신, 가장 효과적인 3개 트랙으로 시작할 수 있도록 구성했습니다.</p>
                             </div>
@@ -519,9 +519,9 @@
                             </div>
                             <div class="grid gap-6 md:grid-cols-3">
                                 ${[
-                                    { tag: '1:1', title: 'Identity Discovery Session', body: '90분 심층 세션 · $150\n타이핑 + 핵심 동기/방어 패턴 분석 + 맞춤 코칭 방향 제시' },
-                                    { tag: 'Core', title: 'Restoration Journey (4 Sessions)', body: '4회 패키지 · $340\n반복 갈등 구조를 끊고 관계·의사결정 패턴을 재설계' },
-                                    { tag: 'Training', title: 'Enneagram for Restoration Training', body: '8주 과정 · $400–$800\n코칭·강의·사례 실습 중심의 훈련 트랙' }
+                                    { tag: '1:1', title: '정체성 발견 세션', body: '90분 심층 세션 · $150\n타이핑 + 핵심 동기/방어 패턴 분석 + 맞춤 코칭 방향 제시' },
+                                    { tag: '핵심', title: '회복 여정 패키지 (4회)', body: '4회 패키지 · $340\n반복 갈등 구조를 끊고 관계·의사결정 패턴을 재설계' },
+                                    { tag: '훈련', title: '회복 중심 에니어그램 훈련', body: '8주 과정 · $400–$800\n코칭·강의·사례 실습 중심의 훈련 트랙' }
                                 ].map(item => `
                                     <div class="bg-white rounded-[2rem] p-7 border border-white/40 shadow-soft floating-card">
                                         <span class="inline-flex px-3 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-[0.2em]">${item.tag}</span>
@@ -915,7 +915,7 @@
                         <div class="mt-16 rounded-[2rem] bg-white border border-white/40 p-6 md:p-8 shadow-soft animate-fade-in-up">
                             <div class="flex items-center justify-between gap-3 mb-4">
                                 <h3 class="text-lg font-bold text-er-dark">가격 및 진행 정책</h3>
-                                <span class="text-[11px] text-gray-400">USD Policy</span>
+                                <span class="text-[11px] text-gray-400">USD 기준 안내</span>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 ${[
@@ -1684,7 +1684,7 @@
                     ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
                     : isOrgTrack
                         ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                        : ['Identity Discovery Session ($150)', 'Restoration Coaching ($95)', '4-session Journey ($340)', '8-session Track ($640)', 'Couple Session ($220)'];
+                        : ['정체성 발견 세션 ($150)', '회복 코칭 1회 ($95)', '회복 여정 4회 ($340)', '회복 여정 8회 ($640)', '부부 코칭 1회 ($220)'];
 
             return `
                 <div class="bg-er-base min-h-screen py-20 px-4">
@@ -1698,7 +1698,7 @@
                             ${fromTest ? `
                                 <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
                                     <p class="text-sm font-bold text-er-dark mb-1">테스트 후 추천 트랙</p>
-                                    <p class="text-xs text-gray-600 break-keep">약식 테스트 결과를 바탕으로 Identity Discovery Session에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.</p>
+                                    <p class="text-xs text-gray-600 break-keep">약식 테스트 결과를 바탕으로 정체성 발견 세션에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.</p>
                                 </div>
                             ` : isSupportTrack ? `
                                 <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
@@ -1759,7 +1759,7 @@
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">나누고 싶은 이야기</label>
-                                    <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${fromTest && testSummary ? `${testSummary}\nIdentity Discovery Session 신청합니다.` : ""}</textarea>
+                                    <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n정체성 발견 세션 신청합니다.` : ""}</textarea>
                                 </div>
 
                                 <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
@@ -3597,36 +3597,36 @@
                     title: '개인/가정 유료 코칭',
                     desc: '반복되는 감정·관계 패턴을 실제 변화로 연결하는 핵심 수익 트랙입니다. 모든 가격은 USD 기준입니다.',
                     cards: [
-                        { b: 'Entry', t: 'Identity Discovery Session', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$150', o: '결과: 반복 반응의 뿌리를 1회에 구조화', i: 'fas fa-fingerprint' },
-                        { b: 'Core', t: 'Restoration Coaching', d: '60분 코칭\n관계·감정·의사결정 패턴 적용', p: '$95 / session', o: '결과: 실제 관계 장면에서 반응 패턴 교정', i: 'fas fa-route' },
-                        { b: 'Package', t: 'Restoration Journey', d: '4회 패키지: $340\n8회 패키지: $640', p: 'Best Value', o: '결과: 감정·관계·실행 루틴까지 변화 정착', i: 'fas fa-layer-group' }
+                        { b: '입문', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$150', o: '결과: 반복 반응의 뿌리를 1회에 구조화', i: 'fas fa-fingerprint' },
+                        { b: '핵심', t: '회복 코칭', d: '60분 코칭\n관계·감정·의사결정 패턴 적용', p: '$95 / 1회', o: '결과: 실제 관계 장면에서 반응 패턴 교정', i: 'fas fa-route' },
+                        { b: '패키지', t: '회복 여정 패키지', d: '4회 패키지: $340\n8회 패키지: $640', p: '가성비 추천', o: '결과: 감정·관계·실행 루틴까지 변화 정착', i: 'fas fa-layer-group' }
                     ]
                 },
                 church: {
                     title: '기관/교회 프로그램',
                     desc: '목회자/선교사 개인 지원은 사역지원 트랙으로 유지하고, 기관 단위 프로그램은 유료 프로젝트로 운영합니다.',
                     cards: [
-                        { b: 'Workshop', t: 'Basic Workshop (2h)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: 'from $500', o: '결과: 공동체 갈등 언어를 공통 프레임으로 정렬', i: 'fas fa-chalkboard-teacher' },
-                        { b: 'Intensive', t: 'Intensive Workshop (6h)', d: '팀/리더 분석 + 갈등 구조 해석 + 적용 설계', p: 'from $1,800', o: '결과: 리더십 팀의 소통/의사결정 규칙 재설계', i: 'fas fa-users-cog' },
-                        { b: 'Follow-up', t: 'Leader Debrief Pack', d: '리더 디브리핑 + 소그룹 가이드 + 4주 후속 코호트', p: 'Custom Quote', o: '결과: 워크숍 이후 현장 적용이 끊기지 않게 유지', i: 'fas fa-file-signature' }
+                        { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등 언어를 공통 프레임으로 정렬', i: 'fas fa-chalkboard-teacher' },
+                        { b: '집중', t: '집중 워크숍 (6시간)', d: '팀/리더 분석 + 갈등 구조 해석 + 적용 설계', p: '$1,800부터', o: '결과: 리더십 팀의 소통/의사결정 규칙 재설계', i: 'fas fa-users-cog' },
+                        { b: '후속', t: '리더 디브리핑 패키지', d: '리더 디브리핑 + 소그룹 가이드 + 4주 후속 코호트', p: '맞춤 견적', o: '결과: 워크숍 이후 현장 적용이 끊기지 않게 유지', i: 'fas fa-file-signature' }
                     ]
                 },
                 business: {
                     title: '기업/팀 프로그램',
                     desc: '성격 설명이 아니라 팀 커뮤니케이션, 갈등 비용, 협업 효율을 개선하는 운영 언어로 설계합니다.',
                     cards: [
-                        { b: 'Team', t: 'Cognitive Diversity Workshop', d: '역할 적합성·소통 패턴·갈등 비용 진단', p: '$2,000–$5,000', o: '결과: 팀 충돌 원인을 가시화해 실행 합의 도출', i: 'fas fa-sitemap' },
-                        { b: 'HR', t: 'Hiring & Placement Advisory', d: '유형 기반 역할 매칭 + 팀 구조 제안', p: 'Custom Quote', o: '결과: 채용/배치 미스매치로 인한 비용 감소', i: 'fas fa-briefcase' },
-                        { b: 'Consulting', t: 'Leadership Communication Sprint', d: '리더십 커뮤니케이션 프레임 재설계', p: 'from $5,000', o: '결과: 리더-팀 간 피드백/협업 속도 향상', i: 'fas fa-chart-line' }
+                        { b: '팀', t: '인지 다양성 워크숍', d: '역할 적합성·소통 패턴·갈등 비용 진단', p: '$2,000–$5,000', o: '결과: 팀 충돌 원인을 가시화해 실행 합의 도출', i: 'fas fa-sitemap' },
+                        { b: '인사', t: '채용·배치 자문', d: '유형 기반 역할 매칭 + 팀 구조 제안', p: '맞춤 견적', o: '결과: 채용/배치 미스매치로 인한 비용 감소', i: 'fas fa-briefcase' },
+                        { b: '자문', t: '리더십 커뮤니케이션 스프린트', d: '리더십 커뮤니케이션 프레임 재설계', p: '$5,000부터', o: '결과: 리더-팀 간 피드백/협업 속도 향상', i: 'fas fa-chart-line' }
                     ]
                 },
                 training: {
-                    title: '훈련 과정 (Advanced Track)',
-                    desc: 'Certification 대신 Training Track으로 운영합니다. 실습과 수퍼비전 중심의 장기 확장 모델입니다.',
+                    title: '훈련 과정 (심화 트랙)',
+                    desc: '자격증 중심이 아니라 훈련 트랙 중심으로 운영합니다. 실습과 수퍼비전 중심의 장기 확장 모델입니다.',
                     cards: [
-                        { b: 'Core', t: 'Enneagram for Restoration Training', d: '8주 핵심 과정\n이론 + 타이핑 훈련 + 코칭 실습', p: '$400–$800', o: '결과: 강의/코칭 현장에 바로 적용 가능한 기본기 확보', i: 'fas fa-graduation-cap' },
-                        { b: 'Advanced', t: 'Advanced Formation Track', d: '수퍼비전 + 인턴십 + 사례 리뷰', p: 'By Cohort', o: '결과: 케이스 기반 피드백으로 실전 역량 강화', i: 'fas fa-user-check' },
-                        { b: 'Practice', t: 'Coach Practice Lab', d: '소그룹 피드백 + 실전 적용 클리닉', p: 'By Cohort', o: '결과: 독립 코칭/강의 수행을 위한 반복 훈련', i: 'fas fa-flask' }
+                        { b: '핵심', t: '회복 중심 에니어그램 훈련', d: '8주 핵심 과정\n이론 + 타이핑 훈련 + 코칭 실습', p: '$400–$800', o: '결과: 강의/코칭 현장에 바로 적용 가능한 기본기 확보', i: 'fas fa-graduation-cap' },
+                        { b: '심화', t: '심화 포메이션 트랙', d: '수퍼비전 + 인턴십 + 사례 리뷰', p: '기수별 안내', o: '결과: 케이스 기반 피드백으로 실전 역량 강화', i: 'fas fa-user-check' },
+                        { b: '실습', t: '코치 실습 랩', d: '소그룹 피드백 + 실전 적용 클리닉', p: '기수별 안내', o: '결과: 독립 코칭/강의 수행을 위한 반복 훈련', i: 'fas fa-flask' }
                     ]
                 }
             };
