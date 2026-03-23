@@ -188,8 +188,12 @@
                         유형 알아보기
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
-                    <button onclick="renderSection('programs')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        프로그램
+                    <button onclick="renderSection('programs', { tab: 'individual' })" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
+                        서비스 안내
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                    </button>
+                    <button onclick="renderSection('programs', { tab: 'training' })" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
+                        훈련 과정
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
                     <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
@@ -197,6 +201,10 @@
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
                     <button onclick="renderSection('support')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
+                        사역지원
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                    </button>
+                    <button onclick="renderSection('apply', { track: 'support' })" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         참여하기
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
@@ -207,8 +215,8 @@
                     
                     <div class="h-4 w-px bg-gray-200 mx-2"></div>
 
-                    <button onclick="renderSection('apply')" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
-                        상담 신청
+                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
+                        유료 상담 신청
                     </button>
                     <div class="relative">
                     <button id="desktop-auth-btn" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors" aria-label="기존 참여자 로그인 또는 마이페이지" aria-expanded="false" aria-controls="desktop-account-menu" title="기존 참여자 포털">
@@ -225,7 +233,7 @@
                 </div>
                 
                 <div class="md:hidden flex items-center gap-4">
-                    <button onclick="renderSection('apply')" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm">상담 신청</button>
+                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm">유료 상담 신청</button>
                     <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none" aria-label="메뉴 열기">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
@@ -238,9 +246,11 @@
                 <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">ER 소개</button>
                 <button onclick="renderSection('test')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">진단 테스트</button>
                 <button onclick="renderSection('types_guide')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">유형 알아보기</button>
-                <button onclick="renderSection('programs')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">프로그램</button>
+                <button onclick="renderSection('programs', { tab: 'individual' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">서비스 안내</button>
+                <button onclick="renderSection('programs', { tab: 'training' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">훈련 과정</button>
                 <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">회복 이야기</button>
-                <button onclick="renderSection('support')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">참여하기</button>
+                <button onclick="renderSection('support')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">사역지원</button>
+                <button onclick="renderSection('apply', { track: 'support' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">참여하기</button>
                 <button onclick="renderSection('notices')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">공지사항</button>
                 <div class="h-px bg-gray-100 my-3 mx-4"></div>
                 <button id="mobile-auth-btn" class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-500 hover:text-er-dark"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
@@ -322,8 +332,8 @@
                         <a href="mailto:hello@er-coaching.com" class="inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
                             <i class="far fa-envelope text-er-accent"></i> 문의 메일
                         </a>
-                        <button type="button" onclick="renderSection('apply')" class="inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
-                            <i class="fas fa-hand-holding-heart text-er-accent"></i> 상담·협력 문의
+                        <button type="button" onclick="renderSection('apply', { track: 'paid' })" class="inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
+                            <i class="fas fa-hand-holding-heart text-er-accent"></i> 유료 상담 신청
                         </button>
                     </div>
                 </div>
@@ -375,9 +385,11 @@
                     <button type="button" onclick="renderSection('about')" class="hover:text-er-dark transition-colors">ER 소개</button>
                     <button type="button" onclick="renderSection('test')" class="hover:text-er-dark transition-colors">진단 테스트</button>
                     <button type="button" onclick="renderSection('types_guide')" class="hover:text-er-dark transition-colors">유형 알아보기</button>
-                    <button type="button" onclick="renderSection('programs')" class="hover:text-er-dark transition-colors">프로그램</button>
+                    <button type="button" onclick="renderSection('programs', { tab: 'individual' })" class="hover:text-er-dark transition-colors">서비스 안내</button>
+                    <button type="button" onclick="renderSection('programs', { tab: 'training' })" class="hover:text-er-dark transition-colors">훈련 과정</button>
                     <button type="button" onclick="renderSection('community')" class="hover:text-er-dark transition-colors">회복 이야기</button>
-                    <button type="button" onclick="renderSection('support')" class="hover:text-er-dark transition-colors">참여하기</button>
+                    <button type="button" onclick="renderSection('support')" class="hover:text-er-dark transition-colors">사역지원</button>
+                    <button type="button" onclick="renderSection('apply', { track: 'support' })" class="hover:text-er-dark transition-colors">참여하기</button>
                     <button type="button" onclick="renderSection('notices')" class="hover:text-er-dark transition-colors">공지사항</button>
                     <button type="button" onclick="renderSection('privacy')" class="hover:text-er-dark transition-colors">Privacy</button>
                     <button type="button" onclick="renderSection('terms')" class="hover:text-er-dark transition-colors">Terms</button>
