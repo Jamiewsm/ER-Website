@@ -520,9 +520,9 @@
                             </div>
                             <div class="grid gap-6 md:grid-cols-3">
                                 ${[
-                                    { tag: '1:1', title: '정체성 발견 세션', body: '90분 심층 세션 · $150\n타이핑 + 핵심 동기/방어 패턴 분석 + 맞춤 코칭 방향 제시' },
-                                    { tag: '핵심', title: '회복 여정 패키지 (4회)', body: '4회 패키지 · $340\n반복 갈등 구조를 끊고 관계·의사결정 패턴을 재설계' },
-                                    { tag: '훈련', title: '회복 중심 에니어그램 훈련', body: '8주 과정 · $400–$800\n코칭·강의·사례 실습 중심의 훈련 트랙' }
+                                    { tag: 'Step 1', title: '정체성 발견 세션', body: '90분 만에 발견하는 나의 핵심 동기 · $150\n심층 인터뷰 + 핵심 동기/방어 패턴 분석' },
+                                    { tag: 'Step 2', title: '회복 코칭 (단품)', body: '60분 실전 코칭 · $120 / 1회\n관계·감정의 막힌 지점을 풀어내는 적용 코칭' },
+                                    { tag: 'Step 3', title: '회복 여정 패키지 (8회)', body: '8회 패키지 · $760\n뿌리부터 바뀌는 지속적 변화 코스' }
                                 ].map(item => `
                                     <div class="bg-white rounded-[2rem] p-7 border border-white/40 shadow-soft floating-card">
                                         <span class="inline-flex px-3 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-[0.2em]">${item.tag}</span>
@@ -1738,7 +1738,7 @@
                     ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
                     : isOrgTrack
                         ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                        : ['정체성 발견 세션 ($150)', '회복 코칭 1회 ($95)', '회복 여정 4회 ($340)', '회복 여정 8회 ($640)', '부부 코칭 1회 ($220)'];
+                        : ['정체성 발견 세션 ($150)', '회복 코칭 단품 ($120)', '회복 여정 4회 ($420)', '회복 여정 8회 ($760)', '부부 코칭 1회 ($220)'];
 
             return `
                 <div class="bg-er-base min-h-screen py-20 px-4">
@@ -3651,9 +3651,9 @@
                     title: '개인/가정 유료 코칭',
                     desc: '반복되는 감정·관계 패턴을 실제 변화로 연결하는 핵심 수익 트랙입니다. 모든 가격은 USD 기준입니다.',
                     cards: [
-                        { b: '입문', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$150', o: '결과: 반복 반응의 뿌리를 1회에 구조화', i: 'fas fa-fingerprint' },
-                        { b: '핵심', t: '회복 코칭', d: '60분 코칭\n관계·감정·의사결정 패턴 적용', p: '$95 / 1회', o: '결과: 실제 관계 장면에서 반응 패턴 교정', i: 'fas fa-route' },
-                        { b: '패키지', t: '회복 여정 패키지', d: '4회 패키지: $340\n8회 패키지: $640', p: '가성비 추천', o: '결과: 감정·관계·실행 루틴까지 변화 정착', i: 'fas fa-layer-group' }
+                        { b: 'Step 1', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$150', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
+                        { b: 'Step 2', t: '회복 코칭 (단품)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$120 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
+                        { b: 'Step 3', t: '회복 여정 패키지', d: '4회 패키지: $420\n8회 패키지: $760', p: '가장 많이 선택', o: '감정·관계·실행 루틴까지 이어지는 지속적 변화 정착', i: 'fas fa-layer-group', featured: true }
                     ]
                 },
                 church: {
@@ -3688,7 +3688,8 @@
 
             if(cardsEl) {
                 cardsEl.innerHTML = selected.cards.map(c => `
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-card transition-all group flex flex-col h-full">
+                    <div class="bg-white rounded-2xl p-6 border ${c.featured ? 'border-er-accent shadow-card ring-1 ring-er-accent/30' : 'border-gray-100 shadow-sm'} hover:shadow-card transition-all group flex flex-col h-full relative">
+                        ${c.featured ? `<span class="absolute -top-3 right-4 px-3 py-1 rounded-full bg-er-accent text-white text-[10px] font-bold tracking-wide">가장 많이 선택</span>` : ''}
                         <div class="flex items-center justify-between mb-4">
                             <span class="px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-wider">${c.b}</span>
                             <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-er-dark group-hover:text-white transition-colors text-sm">
@@ -3698,7 +3699,7 @@
                         <h4 class="text-base font-bold text-gray-900 mb-2">${c.t}</h4>
                         <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
                         <p class="text-sm font-extrabold text-er-dark mb-5">${c.p || ''}</p>
-                        <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">예상 결과:</span> ${c.o || ''}</p>
+                        <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">기대 효과:</span> ${c.o || ''}</p>
                         <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}' })" class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
                             신청/문의
                         </button>
