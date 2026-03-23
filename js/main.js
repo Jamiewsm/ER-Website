@@ -415,7 +415,7 @@
 
                                     <div class="grid sm:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto lg:mx-0">
                                         <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-4 bg-er-dark text-white rounded-full font-bold shadow-lg shadow-er-dark/20 hover:bg-gray-800 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
-                                            유료 상담 신청 <i class="fas fa-arrow-right text-xs opacity-70"></i>
+                                            상담 신청 <i class="fas fa-arrow-right text-xs opacity-70"></i>
                                         </button>
                                         <button onclick="renderSection('programs', { tab: 'individual' })" class="px-6 py-4 bg-white/90 backdrop-blur-sm text-er-dark border border-white/60 rounded-full font-bold shadow-sm hover:bg-white hover:border-er-accent/50 transition-all active:scale-95">
                                             서비스 안내
@@ -426,9 +426,9 @@
                                     </div>
 
                                     <div class="mt-10 md:mt-12 pt-6 border-t border-er-dark/5 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs md:text-sm text-gray-500 font-medium">
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px]"><i class="fas fa-check"></i></div> 유료 서비스 + 사역지원 이중 트랙</div>
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px]"><i class="fas fa-check"></i></div> All prices are listed in USD</div>
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-[10px]"><i class="fas fa-check"></i></div> 목회자·선교사 무료/감면 원칙 유지</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px]"><i class="fas fa-check"></i></div> 상담 트랙과 사역지원 트랙을 함께 운영합니다</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px]"><i class="fas fa-check"></i></div> 가격은 USD 기준으로 안내합니다</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-[10px]"><i class="fas fa-check"></i></div> 목회자·선교사 지원 원칙을 유지합니다</div>
                                     </div>
                                 </div>
 
@@ -528,7 +528,7 @@
                                         <span class="inline-flex px-3 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-[0.2em]">${item.tag}</span>
                                         <h3 class="text-xl font-bold text-er-dark mt-5 mb-3">${item.title}</h3>
                                         <p class="text-sm text-gray-500 leading-relaxed break-keep mb-6 whitespace-pre-line">${item.body}</p>
-                                        <button onclick="renderSection('apply', { track: 'paid' })" class="text-sm font-bold text-er-dark hover:text-er-accent transition-colors">유료 상담 신청</button>
+                                        <button onclick="renderSection('apply', { track: 'paid' })" class="text-sm font-bold text-er-dark hover:text-er-accent transition-colors">상담 신청</button>
                                     </div>
                                 `).join('')}
                             </div>
@@ -908,7 +908,7 @@
                             </div>
                             <div class="text-center mt-10">
                                 <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
-                                    유료 상담 신청
+                                    상담 신청
                                 </button>
                             </div>
                         </div>
@@ -1344,6 +1344,39 @@
                 </div>
             `;
         }
+
+        function renderListSkeleton(itemCount = 3) {
+            return Array.from({ length: itemCount }).map(() => `
+                <div class="border border-gray-100 rounded-2xl p-4 animate-pulse bg-white">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="h-4 w-44 rounded bg-er-accentLight/80"></div>
+                        <div class="h-5 w-16 rounded-full bg-gray-100"></div>
+                    </div>
+                    <div class="mt-3 h-3 w-5/6 rounded bg-gray-100"></div>
+                    <div class="mt-2 h-3 w-2/3 rounded bg-gray-100"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderMetricSkeleton(itemCount = 4) {
+            return Array.from({ length: itemCount }).map(() => `
+                <div class="bg-white rounded-2xl border border-gray-100 p-5 animate-pulse">
+                    <div class="h-3 w-24 rounded bg-gray-100"></div>
+                    <div class="mt-3 h-8 w-12 rounded bg-er-accentLight/80"></div>
+                </div>
+            `).join('');
+        }
+
+        function renderDetailSkeleton() {
+            return `
+                <div class="animate-pulse">
+                    <div class="h-5 w-48 rounded bg-er-accentLight/80"></div>
+                    <div class="mt-3 h-3 w-40 rounded bg-gray-100"></div>
+                    <div class="mt-4 h-20 w-full rounded-xl bg-white border border-gray-100"></div>
+                    <div class="mt-3 h-20 w-full rounded-xl bg-white border border-gray-100"></div>
+                </div>
+            `;
+        }
         function formatNoticeBody(body, bodyIsHtml) {
             if (bodyIsHtml) return body || '';
             let normalized = String(body || '').replace(/\r\n/g, '\n').trim();
@@ -1595,7 +1628,7 @@
                         ${renderNoticeEditor()}
 
                         <div class="space-y-3 animate-fade-in-up" style="animation-delay:0.1s;">
-                            ${items.map(n => `
+                            ${!state.noticesLoaded ? renderListSkeleton(3) : items.map(n => `
                                 <div onclick="openNotice('${n.id}')" class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
                                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
                                         <div class="min-w-0">
@@ -1628,7 +1661,20 @@
             const id = String(payload?.id || '');
             const n = state.notices.find(x => String(x.id) === id);
 
-            if (!n) return `<div class="p-10 text-center">공지를 찾을 수 없습니다.<br><button class="mt-4 btn" onclick="renderSection('notices')">돌아가기</button></div>`;
+            if (!n) {
+                if (!state.noticesLoaded) {
+                    return `
+                        <div class="bg-er-base min-h-screen py-16 px-4">
+                            <div class="max-w-3xl mx-auto">
+                                <div class="bg-white rounded-[2rem] shadow-card p-6 md:p-10 border border-gray-100">
+                                    ${renderDetailSkeleton()}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                return `<div class="p-10 text-center">공지를 찾을 수 없습니다.<br><button class="mt-4 btn" onclick="renderSection('notices')">돌아가기</button></div>`;
+            }
 
             return `
                 <div class="bg-er-base min-h-screen py-16 px-4">
@@ -1668,7 +1714,7 @@
                                     <p class="text-sm font-bold text-er-dark">문의하거나 신청하시겠어요?</p>
                                 </div>
                                 <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-2.5 bg-er-dark text-white rounded-full text-sm font-bold shadow-soft hover:bg-gray-800 transition-all w-full md:w-auto">
-                                    유료 상담 신청하기
+                                    상담 신청하기
                                 </button>
                             </div>
                         </div>
@@ -1758,7 +1804,7 @@
                     ? '사역지원 신청'
                     : isOrgTrack
                         ? '기관/교회 프로그램 문의'
-                        : '유료 상담 신청';
+                        : '상담 신청';
             const trackDesc = isSupportTrack
                 ? '후원 및 협력 관련 문의를 남겨 주세요.'
                 : isMinistryTrack
@@ -1984,10 +2030,7 @@
                             </div>
                         </div>
                         <div id="coach-portal-summary" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                            <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
-                            <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
-                            <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
-                            <div class="bg-white rounded-2xl border border-gray-100 p-5">불러오는 중...</div>
+                            ${renderMetricSkeleton(4)}
                         </div>
                         <div class="bg-white rounded-3xl border border-gray-100 p-6">
                             <div class="flex items-center justify-between mb-4">
@@ -1998,7 +2041,7 @@
                                     <button onclick="changeCoachCalendarMonth(1)" class="w-8 h-8 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50"><i class="fas fa-chevron-right text-xs"></i></button>
                                 </div>
                             </div>
-                            <div id="coach-calendar-grid" class="text-sm text-gray-500">불러오는 중...</div>
+                            <div id="coach-calendar-grid" class="text-sm text-gray-500">${renderListSkeleton(2)}</div>
                         </div>
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div class="bg-white rounded-3xl border border-gray-100 p-6">
@@ -2006,21 +2049,21 @@
                                     <h3 class="font-bold text-er-dark">최근 보고서</h3>
                                     <button onclick="renderSection('coach_tasks')" class="text-xs text-er-accent font-bold">전체 보기</button>
                                 </div>
-                                <div id="coach-portal-tasks" class="space-y-2 text-sm text-gray-500">불러오는 중...</div>
+                                <div id="coach-portal-tasks" class="space-y-2 text-sm text-gray-500">${renderListSkeleton(2)}</div>
                             </div>
                             <div class="bg-white rounded-3xl border border-gray-100 p-6">
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="font-bold text-er-dark">이번 주 일정</h3>
                                     <button onclick="renderSection('coach_schedule')" class="text-xs text-er-accent font-bold">전체 보기</button>
                                 </div>
-                                <div id="coach-portal-schedules" class="space-y-2 text-sm text-gray-500">불러오는 중...</div>
+                                <div id="coach-portal-schedules" class="space-y-2 text-sm text-gray-500">${renderListSkeleton(2)}</div>
                             </div>
                             <div class="bg-white rounded-3xl border border-gray-100 p-6">
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="font-bold text-er-dark">최근 세션 노트</h3>
                                     <button onclick="renderSection('coach_notes')" class="text-xs text-er-accent font-bold">전체 보기</button>
                                 </div>
-                                <div id="coach-portal-notes" class="space-y-2 text-sm text-gray-500">불러오는 중...</div>
+                                <div id="coach-portal-notes" class="space-y-2 text-sm text-gray-500">${renderListSkeleton(2)}</div>
                             </div>
                         </div>
                     </div>
@@ -2048,7 +2091,7 @@
                         </div>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
                             <h3 class="text-base font-bold text-er-dark mb-4">가입자 목록</h3>
-                            <div id="coach-admin-users-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                            <div id="coach-admin-users-list" class="space-y-3 text-sm text-gray-500">${renderListSkeleton(4)}</div>
                         </div>
                     </div>
                 </div>
@@ -2071,7 +2114,7 @@
                         </div>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
                             <h3 class="text-base font-bold text-er-dark mb-4">보고서 목록</h3>
-                            <div id="coach-tasks-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                            <div id="coach-tasks-list" class="space-y-3 text-sm text-gray-500">${renderListSkeleton(4)}</div>
                             <div id="coach-task-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
                         </div>
                         <div id="coach-task-composer" class="hidden bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
@@ -2117,7 +2160,7 @@
                         </div>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
                             <h3 class="text-base font-bold text-er-dark mb-4">자료 목록</h3>
-                            <div id="coach-materials-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                            <div id="coach-materials-list" class="space-y-3 text-sm text-gray-500">${renderListSkeleton(4)}</div>
                             <div id="coach-material-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
                         </div>
                         <div id="coach-material-composer" class="hidden bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
@@ -2166,7 +2209,7 @@
                                 <h3 class="text-base font-bold text-er-dark">다가오는 일정</h3>
                                 <button onclick="openScheduleModal()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">일정등록</button>
                             </div>
-                            <div id="coach-schedules-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                            <div id="coach-schedules-list" class="space-y-3 text-sm text-gray-500">${renderListSkeleton(4)}</div>
                         </div>
                     </div>
                 </div>
@@ -2215,7 +2258,7 @@
                         </div>
                         <div class="bg-white border border-gray-100 rounded-3xl p-6">
                             <h3 class="text-base font-bold text-er-dark mb-4">노트 목록</h3>
-                            <div id="coach-notes-list" class="space-y-3 text-sm text-gray-500">불러오는 중...</div>
+                            <div id="coach-notes-list" class="space-y-3 text-sm text-gray-500">${renderListSkeleton(4)}</div>
                             <div id="coach-note-detail" class="hidden mt-6 border border-gray-100 rounded-2xl p-4 md:p-5 bg-gray-50/50"></div>
                         </div>
                         <div id="coach-note-composer" class="hidden bg-er-base border border-er-accent/20 rounded-3xl p-6 md:p-8 space-y-4">
@@ -2627,7 +2670,7 @@
         async function loadCoachAdminUsers() {
             if (!ensureCoachAccess() || !isHeadCoach() || !supabaseClient) return;
             const listEl = document.getElementById('coach-admin-users-list');
-            if (listEl) listEl.innerHTML = '불러오는 중...';
+            if (listEl) listEl.innerHTML = renderListSkeleton(4);
 
             const { data, error } = await supabaseClient.rpc('admin_list_coach_candidates');
             if (error) {
@@ -2762,7 +2805,7 @@
         async function loadCoachNotes() {
             if (!ensureCoachAccess() || !supabaseClient) return;
             const listEl = document.getElementById('coach-notes-list');
-            if (listEl) listEl.innerHTML = '불러오는 중...';
+            if (listEl) listEl.innerHTML = renderListSkeleton(4);
             await populateCoachNoteScheduleOptions();
 
             const { data: notes, error } = await supabaseClient
@@ -2827,7 +2870,7 @@
             const detailEl = document.getElementById('coach-note-detail');
             if (!detailEl) return;
             detailEl.classList.remove('hidden');
-            detailEl.innerHTML = '불러오는 중...';
+            detailEl.innerHTML = renderDetailSkeleton();
 
             const { data: note, error } = await supabaseClient
                 .from('coach_session_notes')
@@ -2993,7 +3036,7 @@
         async function loadCoachTasks() {
             if (!ensureCoachAccess() || !supabaseClient) return;
             const listEl = document.getElementById('coach-tasks-list');
-            if (listEl) listEl.innerHTML = '불러오는 중...';
+            if (listEl) listEl.innerHTML = renderListSkeleton(4);
 
             const { data: tasks, error } = await supabaseClient
                 .from('coach_tasks')
@@ -3035,7 +3078,7 @@
             const detailEl = document.getElementById('coach-task-detail');
             if (!detailEl) return;
             detailEl.classList.remove('hidden');
-            detailEl.innerHTML = '불러오는 중...';
+            detailEl.innerHTML = renderDetailSkeleton();
 
             const { data: task, error } = await supabaseClient
                 .from('coach_tasks')
@@ -3169,7 +3212,7 @@
         async function loadCoachMaterials() {
             if (!ensureCoachAccess() || !supabaseClient) return;
             const listEl = document.getElementById('coach-materials-list');
-            if (listEl) listEl.innerHTML = '불러오는 중...';
+            if (listEl) listEl.innerHTML = renderListSkeleton(4);
 
             const { data, error } = await supabaseClient
                 .from('coach_materials')
@@ -3215,7 +3258,7 @@
             const detailEl = document.getElementById('coach-material-detail');
             if (!detailEl) return;
             detailEl.classList.remove('hidden');
-            detailEl.innerHTML = '불러오는 중...';
+            detailEl.innerHTML = renderDetailSkeleton();
 
             const { data: item, error } = await supabaseClient
                 .from('coach_materials')
@@ -3310,7 +3353,7 @@
         async function loadCoachSchedules() {
             if (!ensureCoachAccess() || !supabaseClient) return;
             const listEl = document.getElementById('coach-schedules-list');
-            if (listEl) listEl.innerHTML = '불러오는 중...';
+            if (listEl) listEl.innerHTML = renderListSkeleton(4);
 
             const { data, error } = await supabaseClient
                 .from('coach_schedules')
