@@ -11,8 +11,26 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link rel="stylesheet" href="css/test.css">
 </head>
-<body class="min-h-screen pb-20">
-  <main class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
+<body class="min-h-screen pb-20 bg-[#f8fafc] relative">
+  <div id="test-initial-skeleton" class="fixed inset-0 z-40 bg-[#f5f5f0]/90 backdrop-blur-[1px] transition-opacity duration-300">
+    <div class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
+      <div class="rounded-3xl border border-[#bfa68a]/20 bg-white/80 p-6 sm:p-8 shadow-sm">
+        <div class="flex items-center gap-2 mb-5">
+          <span class="w-2 h-2 rounded-full bg-[#bfa68a] animate-pulse"></span>
+          <span class="text-xs font-bold tracking-wider text-[#6b5f55]">진단 페이지 준비 중</span>
+        </div>
+        <div class="space-y-4 animate-pulse">
+          <div class="h-6 w-2/3 rounded-lg bg-[#eadccf]"></div>
+          <div class="h-4 w-5/6 rounded-lg bg-[#efe3d7]"></div>
+          <div class="h-4 w-3/4 rounded-lg bg-[#efe3d7]"></div>
+          <div class="h-24 w-full rounded-2xl border border-[#e9ddcf] bg-white"></div>
+          <div class="h-24 w-full rounded-2xl border border-[#e9ddcf] bg-white"></div>
+          <div class="h-24 w-full rounded-2xl border border-[#e9ddcf] bg-white"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <main id="test-main-content" class="max-w-3xl mx-auto pt-12 px-4 sm:px-6 transition-opacity duration-500 opacity-0">
     <header class="text-center mb-10">
       <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
       <h1 class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
@@ -115,6 +133,7 @@
       </div>
     </section>
   </main>
+  <noscript><style>#test-initial-skeleton{display:none!important;}#test-main-content{opacity:1!important;}</style></noscript>
 
   <script src="js/test.js"></script>
 </body>

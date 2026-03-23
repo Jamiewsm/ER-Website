@@ -358,6 +358,19 @@ function setProgress(percent) {
   if (track) track.setAttribute('aria-valuenow', String(percent));
 }
 
+function revealTestPageAfterLoad() {
+  const main = document.getElementById('test-main-content');
+  const skeleton = document.getElementById('test-initial-skeleton');
+  if (main) {
+    main.classList.remove('opacity-0');
+    main.classList.add('opacity-100');
+  }
+  if (skeleton) {
+    skeleton.classList.add('opacity-0');
+    setTimeout(() => skeleton.classList.add('hidden'), 320);
+  }
+}
+
 async function downloadResultPdf() {
   const target = document.getElementById('result-view');
   const btn = document.getElementById('download-pdf-btn');
@@ -847,3 +860,4 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
 
 renderQuestions('phase1-container', q1, 'p1');
 setProgress(50);
+requestAnimationFrame(revealTestPageAfterLoad);

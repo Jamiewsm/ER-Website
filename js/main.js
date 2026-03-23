@@ -511,7 +511,7 @@
                             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
                                 <div>
                                 <span class="text-er-accent font-bold text-xs tracking-widest uppercase">대표 서비스</span>
-                                <h2 class="text-2xl md:text-4xl font-bold text-er-dark mt-3 break-keep">대표 상품 3가지</h2>
+                                <h2 class="text-2xl md:text-4xl font-bold text-er-dark mt-3 break-keep">대표 프로그램 3가지</h2>
                                 <p class="mt-3 text-sm md:text-base text-gray-500 max-w-2xl break-keep">복잡한 선택 대신, 가장 효과적인 3개 트랙으로 시작할 수 있도록 구성했습니다.</p>
                             </div>
                                 <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex items-center justify-center gap-2 rounded-full border border-er-accent/30 bg-white px-5 py-3 text-sm font-bold text-er-dark hover:border-er-accent hover:bg-er-accentLight/40 transition-colors">
@@ -521,7 +521,7 @@
                             <div class="grid gap-6 md:grid-cols-3">
                                 ${[
                                     { tag: 'Step 1', title: '정체성 발견 세션', body: '90분 만에 발견하는 나의 핵심 동기 · $150\n심층 인터뷰 + 핵심 동기/방어 패턴 분석' },
-                                    { tag: 'Step 2', title: '회복 코칭 (단품)', body: '60분 실전 코칭 · $120 / 1회\n관계·감정의 막힌 지점을 풀어내는 적용 코칭' },
+                                    { tag: 'Step 2', title: '개별 코칭 (1회 세션)', body: '60분 실전 코칭 · $120 / 1회\n관계·감정의 막힌 지점을 풀어내는 적용 코칭' },
                                     { tag: 'Step 3', title: '회복 여정 패키지 (8회)', body: '8회 패키지 · $760\n뿌리부터 바뀌는 지속적 변화 코스' }
                                 ].map(item => `
                                     <div class="bg-white rounded-[2rem] p-7 border border-white/40 shadow-soft floating-card">
@@ -1267,6 +1267,20 @@
             `;
         }
 
+        function handleExternalFormIframeLoad(iframeId, skeletonId) {
+            const iframe = document.getElementById(iframeId);
+            const skeleton = document.getElementById(skeletonId);
+            if (iframe) {
+                iframe.classList.remove('opacity-0');
+                iframe.classList.add('opacity-100');
+            }
+            if (skeleton) {
+                skeleton.classList.add('opacity-0');
+                setTimeout(() => skeleton.classList.add('hidden'), 280);
+            }
+        }
+        if (typeof window !== 'undefined') window.handleExternalFormIframeLoad = handleExternalFormIframeLoad;
+
         function renderTest() {
             const isKo = adaptiveLang !== 'en';
             const langParam = isKo ? 'ko' : 'en';
@@ -1285,12 +1299,32 @@
                             class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${!isKo ? 'bg-er-dark text-white border-er-dark' : 'bg-white text-gray-600 border-gray-200 hover:border-er-accent hover:text-er-dark'}"
                         >English Test</button>
                     </div>
-                    <div class="bg-white rounded-3xl border border-gray-100 shadow-soft overflow-hidden">
+                    <div class="relative bg-white rounded-3xl border border-gray-100 shadow-soft overflow-hidden">
+                        <div id="adaptive-test-skeleton" class="absolute inset-0 z-10 bg-er-base/80 backdrop-blur-[1px] transition-opacity duration-300">
+                            <div class="h-full p-5 md:p-8">
+                                <div class="w-full h-full rounded-2xl border border-er-accent/20 bg-white/70 p-5 md:p-7">
+                                    <div class="flex items-center gap-2 mb-6">
+                                        <span class="w-2 h-2 rounded-full bg-er-accent animate-pulse"></span>
+                                        <span class="text-xs font-bold tracking-wider text-er-primary">진단 페이지 불러오는 중</span>
+                                    </div>
+                                    <div class="space-y-4 animate-pulse">
+                                        <div class="h-6 w-2/3 rounded-lg bg-er-accentLight"></div>
+                                        <div class="h-4 w-5/6 rounded-lg bg-er-accentLight/80"></div>
+                                        <div class="h-4 w-3/4 rounded-lg bg-er-accentLight/80"></div>
+                                        <div class="h-24 w-full rounded-2xl bg-white border border-er-accent/10"></div>
+                                        <div class="h-24 w-full rounded-2xl bg-white border border-er-accent/10"></div>
+                                        <div class="h-24 w-full rounded-2xl bg-white border border-er-accent/10"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <iframe
+                            id="adaptive-test-iframe"
                             src="test.html?v=${version}&lang=${langParam}&_=${cacheBuster}"
                             title="${title}"
-                            class="w-full min-h-[2500px] md:min-h-[2800px]"
+                            class="w-full min-h-[2500px] md:min-h-[2800px] opacity-0 transition-opacity duration-500"
                             loading="lazy"
+                            onload="handleExternalFormIframeLoad('adaptive-test-iframe', 'adaptive-test-skeleton')"
                         ></iframe>
                     </div>
 
@@ -1647,11 +1681,11 @@
             const types = [
                 { id: 1, name: "1번 올바른 사람 (The Reformer)", color: "border-red-200", bg: "bg-red-50", desc: "올바름을 추구하며 실수를 두려워합니다.", healing: "불완전함을 수용하는 연습, 괜찮아!" },
                 { id: 2, name: "2번 아낌없이 주는 사람 (The Helper)", color: "border-orange-200", bg: "bg-orange-50", desc: "사랑받기 위해 타인을 돕습니다.", healing: "내면의 욕구를 돌보는 연습" },
-                { id: 3, name: "3번 성공하는 사람 (The Achiever)", color: "border-yellow-200", bg: "bg-yellow-50", desc: "성공을 통해 가치를 증명하려 합니다.", healing: "사람들의 인정말고, 내가 좋아하는거 찾기" },
+                { id: 3, name: "3번 성공하는 사람 (The Achiever)", color: "border-yellow-200", bg: "bg-yellow-50", desc: "성공을 통해 가치를 증명하려 합니다.", healing: "사람들의 인정보다, 내가 좋아하는 것을 찾기" },
                 { id: 4, name: "4번 독창적인 사람 (The Individualist)", color: "border-purple-200", bg: "bg-purple-50", desc: "독특함과 깊이를 추구합니다.", healing: "감정의 균형과 일상성 회복" },
                 { id: 5, name: "5번 지혜로운 사람 (The Investigator)", color: "border-blue-200", bg: "bg-blue-50", desc: "지식을 통해 유능함을 추구합니다.", healing: "신체 감각 깨우기와 연결" },
                 { id: 6, name: "6번 충실한 사람 (The Loyalist)", color: "border-indigo-200", bg: "bg-indigo-50", desc: "안전을 위해 대비하고 의심합니다.", healing: "내면의 신뢰와 용기 회복" },
-                { id: 7, name: "7번 명량한 사람 (The Enthusiast)", color: "border-green-200", bg: "bg-green-50", desc: "새로운 경험과 즐거움을 쫓습니다.", healing: "현재의 고요함에 머무르기" },
+                { id: 7, name: "7번 명랑한 사람 (The Enthusiast)", color: "border-green-200", bg: "bg-green-50", desc: "새로운 경험과 즐거움을 쫓습니다.", healing: "현재의 고요함에 머무르기" },
                 { id: 8, name: "8번 강한 사람 (The Challenger)", color: "border-pink-200", bg: "bg-pink-50", desc: "강함을 통해 통제하려 합니다.", healing: "연약함을 드러내는 용기" },
                 { id: 9, name: "9번 조화로운 사람 (The Peacemaker)", color: "border-gray-200", bg: "bg-gray-50", desc: "평화를 위해 갈등을 회피합니다.", healing: "자기 목소리 내는 연습" }
             ];
@@ -1687,7 +1721,7 @@
                                             <div class="flex items-start gap-2">
                                                 <i class="fas fa-seedling text-er-accent mt-0.5 text-xs"></i>
                                                 <div>
-                                                    <p class="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Healing Path</p>
+                                                    <p class="text-[9px] text-gray-400 font-bold tracking-wider">회복의 길</p>
                                                     <p class="text-xs text-gray-800 font-medium mt-0.5 break-keep">${t.healing}</p>
                                                 </div>
                                             </div>
@@ -1738,7 +1772,7 @@
                     ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
                     : isOrgTrack
                         ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                        : ['정체성 발견 세션 ($150)', '회복 코칭 단품 ($120)', '회복 여정 4회 ($420)', '회복 여정 8회 ($760)', '부부 코칭 1회 ($220)'];
+                        : ['정체성 발견 세션 ($150)', '개별 코칭 1회 ($120)', '회복 여정 4회 ($420)', '회복 여정 8회 ($760)', '부부 코칭 1회 ($220)'];
 
             return `
                 <div class="bg-er-base min-h-screen py-20 px-4">
@@ -3652,7 +3686,7 @@
                     desc: '반복되는 감정·관계 패턴을 실제 변화로 연결하는 핵심 수익 트랙입니다. 모든 가격은 USD 기준입니다.',
                     cards: [
                         { b: 'Step 1', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$150', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
-                        { b: 'Step 2', t: '회복 코칭 (단품)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$120 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
+                        { b: 'Step 2', t: '개별 코칭 (1회 세션)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$120 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
                         { b: 'Step 3', t: '회복 여정 패키지', d: '4회 패키지: $420\n8회 패키지: $760', p: '가장 많이 선택', o: '감정·관계·실행 루틴까지 이어지는 지속적 변화 정착', i: 'fas fa-layer-group', featured: true }
                     ]
                 },
