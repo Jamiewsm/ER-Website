@@ -34,8 +34,16 @@ async function handleApplySubmit(event, source) {
   var formData = new FormData(form);
   var name = (formData.get('name') || '').toString().trim();
   var contact = (formData.get('contact') || '').toString().trim();
+  var country = (formData.get('country') || '').toString().trim();
+  var preferredTime = (formData.get('preferred_time') || '').toString().trim();
   var category = (formData.get('category') || '').toString().trim();
-  var message = (formData.get('message') || '').toString().trim();
+  var rawMessage = (formData.get('message') || '').toString().trim();
+  var extraLines = [];
+  if (country) extraLines.push('거주 국가: ' + country);
+  if (preferredTime) extraLines.push('희망 시간대: ' + preferredTime);
+  var message = extraLines.length
+    ? (extraLines.join('\n') + (rawMessage ? '\n\n' + rawMessage : ''))
+    : rawMessage;
   var turnstileToken = (formData.get('turnstile_token') || '').toString().trim();
   var submitBtn = document.getElementById('apply-submit-btn');
   if (!name || !contact || !category) {
