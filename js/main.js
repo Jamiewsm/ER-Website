@@ -335,6 +335,7 @@
                 case 'home': html = renderHome(); break;
                 case 'about': html = renderAbout(); break;
                 case 'programs': html = renderPrograms(); break;
+                case 'coach_training': html = renderCoachTraining(); break;
                 case 'community': html = renderCommunity(); break;
                 case 'resources': html = renderResources(); break;
                 case 'support': html = renderSupport(); break;
@@ -859,10 +860,10 @@
                         <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                         <div class="relative z-10 max-w-7xl mx-auto text-center">
                             <h2 class="text-2xl md:text-4xl font-bold mb-3">서비스 안내</h2>
-                            <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인/가정 유료 코칭, 기관 프로그램, 훈련 트랙을 명확한 가격과 결과 중심으로 안내합니다.</p>
+                            <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인/가정 유료 코칭, 기관/교회, 기업/팀 프로그램을 가격과 결과 중심으로 안내합니다.</p>
                             
                             <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
-                                ${['individual:개인/가정', 'church:기관/교회', 'business:기업/팀', 'training:훈련 과정'].map(item => {
+                                ${['individual:개인/가정', 'church:기관/교회', 'business:기업/팀'].map(item => {
                                     const [key, label] = item.split(':');
                                     const isActive = state.programFilter === key;
                                     return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
@@ -1024,6 +1025,59 @@
                                         </div>
                                     `).join('')}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCoachTraining() {
+            return `
+                <div class="bg-er-base min-h-screen py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-6xl mx-auto">
+                        <div class="text-center mb-12 animate-fade-in-up">
+                            <span class="text-er-accent font-bold text-xs tracking-widest uppercase">코치양성</span>
+                            <h2 class="text-3xl md:text-5xl font-bold text-er-dark mt-3 break-keep">훈련 과정 (심화 트랙)</h2>
+                            <p class="mt-4 text-sm md:text-base text-gray-500 max-w-3xl mx-auto break-keep">
+                                자격증 중심이 아니라 훈련 중심으로 운영합니다. 이론, 실습, 수퍼비전이 연결된 구조로 현장 적용 역량을 키웁니다.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up">
+                            ${[
+                                { b: '핵심', t: '회복 중심 에니어그램 훈련', d: '8주 핵심 과정\n이론 + 타이핑 훈련 + 코칭 실습', p: '$400–$800', o: '강의/코칭 현장에 바로 적용 가능한 기본기 확보', i: 'fas fa-graduation-cap' },
+                                { b: '심화', t: '심화 포메이션 트랙', d: '수퍼비전 + 인턴십 + 사례 리뷰', p: '기수별 안내', o: '케이스 기반 피드백으로 실전 역량 강화', i: 'fas fa-user-check' },
+                                { b: '실습', t: '코치 실습 랩', d: '소그룹 피드백 + 실전 적용 클리닉', p: '기수별 안내', o: '독립 코칭/강의 수행을 위한 반복 훈련', i: 'fas fa-flask' }
+                            ].map(c => `
+                                <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-soft floating-card flex flex-col h-full">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <span class="px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-wider">${c.b}</span>
+                                        <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 text-sm">
+                                            <i class="${c.i}"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-bold text-gray-900 mb-2">${c.t}</h3>
+                                    <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
+                                    <p class="text-sm font-extrabold text-er-dark mb-4">${c.p}</p>
+                                    <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">예상 결과:</span> ${c.o}</p>
+                                    <button onclick="renderSection('apply', { track: 'paid' })" class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
+                                        신청/문의
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="mt-10 rounded-[2rem] bg-white border border-white/40 p-6 md:p-8 shadow-soft animate-fade-in-up">
+                            <h3 class="text-lg font-bold text-er-dark mb-3">훈련 과정 안내</h3>
+                            <p class="text-sm text-gray-500 break-keep">
+                                훈련 과정은 선발형으로 운영되며, 기수별 일정과 정원에 따라 접수 순서가 아닌 심사 기준으로 안내됩니다.
+                                지원서를 남기면 오리엔테이션 일정과 세부 커리큘럼을 개별 전달합니다.
+                            </p>
+                            <div class="mt-6">
+                                <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-3 rounded-full bg-er-dark text-white text-sm font-bold hover:bg-gray-800 transition-all">
+                                    코치양성 문의하기
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -3620,15 +3674,7 @@
                         { b: '자문', t: '리더십 커뮤니케이션 스프린트', d: '리더십 커뮤니케이션 프레임 재설계', p: '$5,000부터', o: '결과: 리더-팀 간 피드백/협업 속도 향상', i: 'fas fa-chart-line' }
                     ]
                 },
-                training: {
-                    title: '훈련 과정 (심화 트랙)',
-                    desc: '자격증 중심이 아니라 훈련 트랙 중심으로 운영합니다. 실습과 수퍼비전 중심의 장기 확장 모델입니다.',
-                    cards: [
-                        { b: '핵심', t: '회복 중심 에니어그램 훈련', d: '8주 핵심 과정\n이론 + 타이핑 훈련 + 코칭 실습', p: '$400–$800', o: '결과: 강의/코칭 현장에 바로 적용 가능한 기본기 확보', i: 'fas fa-graduation-cap' },
-                        { b: '심화', t: '심화 포메이션 트랙', d: '수퍼비전 + 인턴십 + 사례 리뷰', p: '기수별 안내', o: '결과: 케이스 기반 피드백으로 실전 역량 강화', i: 'fas fa-user-check' },
-                        { b: '실습', t: '코치 실습 랩', d: '소그룹 피드백 + 실전 적용 클리닉', p: '기수별 안내', o: '결과: 독립 코칭/강의 수행을 위한 반복 훈련', i: 'fas fa-flask' }
-                    ]
-                }
+                
             };
             const selected = data[filterType];
             if (!selected || !selected.cards) return;
