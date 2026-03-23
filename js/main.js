@@ -914,6 +914,25 @@
 
                         <div class="mt-16 rounded-[2rem] bg-white border border-white/40 p-6 md:p-8 shadow-soft animate-fade-in-up">
                             <div class="flex items-center justify-between gap-3 mb-4">
+                                <h3 class="text-lg font-bold text-er-dark">가격 및 진행 정책</h3>
+                                <span class="text-[11px] text-gray-400">USD Policy</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                ${[
+                                    ['USD 기준', '모든 서비스 가격은 USD 기준으로 안내됩니다. 국가별 결제 수단과 환율에 따라 최종 청구 금액이 달라질 수 있습니다.'],
+                                    ['사역지원 트랙', '목회자·선교사 대상 무료/감면 원칙은 유지됩니다. 사역지원은 별도 심사 후 배정됩니다.'],
+                                    ['패키지 우선', '단회보다 4회/8회 패키지 전환율이 높고 변화 유지에 유리합니다. 초기 상담 후 최적 트랙을 제안합니다.']
+                                ].map(([title, desc]) => `
+                                    <div class="rounded-2xl border border-gray-100 bg-er-base/50 p-5">
+                                        <h4 class="text-sm font-bold text-er-dark">${title}</h4>
+                                        <p class="mt-2 text-xs text-gray-500 break-keep">${desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="mt-16 rounded-[2rem] bg-white border border-white/40 p-6 md:p-8 shadow-soft animate-fade-in-up">
+                            <div class="flex items-center justify-between gap-3 mb-4">
                                 <h3 class="text-lg font-bold text-er-dark">프로그램 자료</h3>
                                 <span class="text-[11px] text-gray-400">Teaching Materials</span>
                             </div>
