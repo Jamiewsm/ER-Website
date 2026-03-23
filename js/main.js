@@ -317,6 +317,9 @@
 
         function renderSection(sectionId, payload = null, options = {}) {
             const { syncHash = true, replaceHash = false } = options;
+            if (sectionId === 'programs' && payload?.tab) {
+                state.programFilter = payload.tab;
+            }
             state.currentSection = sectionId;
             state.currentPayload = payload;
             const main = document.getElementById('main-content');
@@ -398,33 +401,33 @@
                                 <div class="text-center lg:text-left animate-fade-in-up order-2 lg:order-1">
                                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 border border-er-accent/20 backdrop-blur-sm shadow-sm mb-6">
                                         <span class="w-2 h-2 rounded-full bg-er-accent animate-pulse"></span>
-                                        <span class="text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-primary">Non-profit Ministry</span>
+                                        <span class="text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-primary">Global Korean Coaching</span>
                                     </div>
 
                                     <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight font-extrabold text-er-dark mb-6 leading-[1.12] break-keep">
-                                        사람과 공동체의 회복을 돕습니다.
+                                        반복되는 갈등의 구조를 바꾸고<br class="hidden md:block">회복의 방향을 설계합니다.
                                     </h1>
 
                                     <p class="mt-2 text-base md:text-lg text-gray-600 mb-8 leading-relaxed max-w-3xl mx-auto lg:mx-0 break-keep font-medium">
-                                        ER은 기독교 세계관과 에니어그램을 통합적으로 이해하고 적용하여, 개인과 가정, 교회와 공동체가 하나님이 지으신 본래 모습을 다시 발견하고 건강한 관계와 소명을 회복하도록 돕습니다.
+                                        우리는 성격을 분석하는 데서 멈추지 않고, 하나님이 지으신 본래의 사람을 회복하도록 돕습니다. 개인·가정 코칭부터 훈련 과정, 기관 워크숍까지 실제 변화가 이어지는 구조로 설계합니다.
                                     </p>
 
                                     <div class="grid sm:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto lg:mx-0">
-                                        <button onclick="renderSection('apply')" class="px-6 py-4 bg-er-dark text-white rounded-full font-bold shadow-lg shadow-er-dark/20 hover:bg-gray-800 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
-                                            상담 신청하기 <i class="fas fa-arrow-right text-xs opacity-70"></i>
+                                        <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-4 bg-er-dark text-white rounded-full font-bold shadow-lg shadow-er-dark/20 hover:bg-gray-800 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
+                                            유료 상담 신청 <i class="fas fa-arrow-right text-xs opacity-70"></i>
                                         </button>
-                                        <button onclick="renderSection('programs')" class="px-6 py-4 bg-white/90 backdrop-blur-sm text-er-dark border border-white/60 rounded-full font-bold shadow-sm hover:bg-white hover:border-er-accent/50 transition-all active:scale-95">
-                                            프로그램 보기
+                                        <button onclick="renderSection('programs', { tab: 'individual' })" class="px-6 py-4 bg-white/90 backdrop-blur-sm text-er-dark border border-white/60 rounded-full font-bold shadow-sm hover:bg-white hover:border-er-accent/50 transition-all active:scale-95">
+                                            서비스 안내
                                         </button>
-                                        <button onclick="renderSection('apply', { source: 'support' })" class="px-6 py-4 bg-er-accent text-white rounded-full font-bold shadow-sm hover:bg-er-accentDark transition-all active:scale-95">
-                                            후원·협력 신청하기
+                                        <button onclick="renderSection('apply', { track: 'ministry' })" class="px-6 py-4 bg-er-accent text-white rounded-full font-bold shadow-sm hover:bg-er-accentDark transition-all active:scale-95">
+                                            사역지원 신청
                                         </button>
                                     </div>
 
                                     <div class="mt-10 md:mt-12 pt-6 border-t border-er-dark/5 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs md:text-sm text-gray-500 font-medium">
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px]"><i class="fas fa-check"></i></div> 사역 중심 운영 원칙</div>
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px]"><i class="fas fa-check"></i></div> 후원 여부와 무관한 참여 안내</div>
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-[10px]"><i class="fas fa-check"></i></div> 협력 네트워크 기반 운영</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px]"><i class="fas fa-check"></i></div> 유료 서비스 + 사역지원 이중 트랙</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px]"><i class="fas fa-check"></i></div> All prices are listed in USD</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-[10px]"><i class="fas fa-check"></i></div> 목회자·선교사 무료/감면 원칙 유지</div>
                                     </div>
                                 </div>
 
@@ -506,25 +509,25 @@
                         <div class="max-w-6xl mx-auto">
                             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
                                 <div>
-                                    <span class="text-er-accent font-bold text-xs tracking-widest uppercase">맞춤형 프로그램</span>
-                                    <h2 class="text-2xl md:text-4xl font-bold text-er-dark mt-3 break-keep">맞춤형 프로그램</h2>
-                                    <p class="mt-3 text-sm md:text-base text-gray-500 max-w-2xl break-keep">개인의 회복에서 공동체의 성장까지, 당신에게 가장 적합한 솔루션을 제안합니다.</p>
-                                </div>
-                                <button onclick="renderSection('programs')" class="inline-flex items-center justify-center gap-2 rounded-full border border-er-accent/30 bg-white px-5 py-3 text-sm font-bold text-er-dark hover:border-er-accent hover:bg-er-accentLight/40 transition-colors">
-                                    프로그램 전체 보기 <i class="fas fa-arrow-right text-xs"></i>
+                                <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Core Offers</span>
+                                <h2 class="text-2xl md:text-4xl font-bold text-er-dark mt-3 break-keep">대표 상품 3가지</h2>
+                                <p class="mt-3 text-sm md:text-base text-gray-500 max-w-2xl break-keep">복잡한 선택 대신, 가장 효과적인 3개 트랙으로 시작할 수 있도록 구성했습니다.</p>
+                            </div>
+                                <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex items-center justify-center gap-2 rounded-full border border-er-accent/30 bg-white px-5 py-3 text-sm font-bold text-er-dark hover:border-er-accent hover:bg-er-accentLight/40 transition-colors">
+                                    서비스 상세 보기 <i class="fas fa-arrow-right text-xs"></i>
                                 </button>
                             </div>
                             <div class="grid gap-6 md:grid-cols-3">
                                 ${[
-                                    { tag: 'Care', title: '개인·가정 회복', body: '자기 이해, 부부 관계, 자녀 양육 등 일상과 관계의 회복을 돕습니다.' },
-                                    { tag: 'Church', title: '교회·사역자 지원', body: '소진, 갈등, 리더십 회복을 위한 코칭과 워크숍을 제공합니다.' },
-                                    { tag: 'Training', title: '교육·강사 양성', body: '에니어그램과 회복 관점을 실제 교육과 현장 적용으로 연결합니다.' }
+                                    { tag: '1:1', title: 'Identity Discovery Session', body: '90분 심층 세션 · $150\n타이핑 + 핵심 동기/방어 패턴 분석 + 맞춤 코칭 방향 제시' },
+                                    { tag: 'Core', title: 'Restoration Journey (4 Sessions)', body: '4회 패키지 · $340\n반복 갈등 구조를 끊고 관계·의사결정 패턴을 재설계' },
+                                    { tag: 'Training', title: 'Enneagram for Restoration Training', body: '8주 과정 · $400–$800\n코칭·강의·사례 실습 중심의 훈련 트랙' }
                                 ].map(item => `
                                     <div class="bg-white rounded-[2rem] p-7 border border-white/40 shadow-soft floating-card">
                                         <span class="inline-flex px-3 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-[0.2em]">${item.tag}</span>
                                         <h3 class="text-xl font-bold text-er-dark mt-5 mb-3">${item.title}</h3>
-                                        <p class="text-sm text-gray-500 leading-relaxed break-keep mb-6">${item.body}</p>
-                                        <button onclick="renderSection('apply')" class="text-sm font-bold text-er-dark hover:text-er-accent transition-colors">문의 신청하기</button>
+                                        <p class="text-sm text-gray-500 leading-relaxed break-keep mb-6 whitespace-pre-line">${item.body}</p>
+                                        <button onclick="renderSection('apply', { track: 'paid' })" class="text-sm font-bold text-er-dark hover:text-er-accent transition-colors">유료 상담 신청</button>
                                     </div>
                                 `).join('')}
                             </div>
@@ -637,7 +640,7 @@
                                     <h3 class="text-xl font-bold mb-2 break-keep">후원은 사역을 넓히고, 협력은 회복의 통로를 만듭니다.</h3>
                                     <p class="text-sm text-gray-300 break-keep">후원 여부와 관계없이 먼저 필요한 상담과 프로그램을 안내하며, 협력 요청은 상황에 맞게 개별적으로 연결합니다.</p>
                                 </div>
-                                <button onclick="renderSection('apply', { source: 'support' })" class="shrink-0 inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-bold text-er-dark hover:bg-er-accentLight transition-colors">
+                                <button onclick="renderSection('apply', { track: 'support' })" class="shrink-0 inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-bold text-er-dark hover:bg-er-accentLight transition-colors">
                                     후원·협력 신청하기
                                 </button>
                             </div>
@@ -652,7 +655,7 @@
                             </div>
                             <div class="grid gap-4">
                                 ${[
-                                    ['상담은 후원자만 신청할 수 있나요?', '아닙니다. ER은 후원 여부와 관계없이 상담과 프로그램 문의를 받고 있습니다. 후원은 사역의 지속을 돕는 자발적인 참여입니다.'],
+                                    ['유료 서비스와 사역지원은 어떻게 다른가요?', '개인·가정·기관 서비스는 유료로 운영되며, 목회자·선교사 대상 사역지원은 심사를 통해 무료 또는 감면으로 안내합니다.'],
                                     ['어떤 분들을 주로 섬기나요?', '개인과 부부, 가정은 물론 목회자와 선교사, 교회 리더, 협력 기관 등 회복과 관계의 도움이 필요한 다양한 현장을 섬깁니다.'],
                                     ['공개 사이트의 로그인은 누구를 위한 기능인가요?', '기존 참여자와 코치, 운영상 연결된 사용자를 위한 보조 경로입니다. 처음 방문하신 분은 프로그램 안내와 상담 문의를 먼저 이용하시면 됩니다.'],
                                     ['협력 프로그램은 어떻게 진행되나요?', '기관과 교회의 필요를 먼저 듣고, 목적과 대상에 맞춰 코칭, 강의, 워크숍의 형식으로 개별 설계합니다.']
@@ -855,11 +858,11 @@
                     <div class="bg-er-dark text-white py-16 px-6 relative overflow-hidden rounded-b-[3rem]">
                         <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                         <div class="relative z-10 max-w-7xl mx-auto text-center">
-                            <h2 class="text-2xl md:text-4xl font-bold mb-3">맞춤형 프로그램</h2>
-                            <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인의 회복에서 공동체의 성장까지, 당신에게 가장 적합한 솔루션을 제안합니다.</p>
+                            <h2 class="text-2xl md:text-4xl font-bold mb-3">서비스 안내</h2>
+                            <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인/가정 유료 코칭, 기관 프로그램, 훈련 트랙을 명확한 가격과 결과 중심으로 안내합니다.</p>
                             
                             <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
-                                ${['individual:개인/가정', 'church:사역/교회', 'business:비즈니스', 'training:강사양성'].map(item => {
+                                ${['individual:개인/가정', 'church:기관/교회', 'business:기업/팀', 'training:훈련 과정'].map(item => {
                                     const [key, label] = item.split(':');
                                     const isActive = state.programFilter === key;
                                     return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
@@ -903,8 +906,8 @@
                                 </div>
                             </div>
                             <div class="text-center mt-10">
-                                <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
-                                    상담 신청하기
+                                <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
+                                    유료 상담 신청
                                 </button>
                             </div>
                         </div>
@@ -1014,11 +1017,10 @@
                 <div class="bg-er-base min-h-screen py-16 md:py-20 px-4 sm:px-6 lg:px-8">
                     <div class="max-w-6xl mx-auto">
                         <div class="text-center mb-12 animate-fade-in-up">
-                            <span class="text-er-accent font-bold text-xs tracking-widest uppercase">동역과 후원</span>
-                            <h2 class="text-3xl md:text-5xl font-bold text-er-dark mt-3 break-keep">여러분의 후원으로 더 많은 개인과 공동체를 섬길 수 있습니다</h2>
+                            <span class="text-er-accent font-bold text-xs tracking-widest uppercase">사역지원</span>
+                            <h2 class="text-3xl md:text-5xl font-bold text-er-dark mt-3 break-keep">목회자·선교사 사역지원 트랙</h2>
                             <p class="mt-4 text-sm md:text-base text-gray-500 max-w-3xl mx-auto break-keep">
-                                ER은 중동 선교와 캠퍼스 사역의 경험을 바탕으로, 목회자와 선교사를 비롯해 회복이 필요한 개인과 공동체를 섬겨 왔습니다.
-                                후원 문의와 협력 요청은 더 많은 이들이 이 사역에 연결되도록 돕고, 더 넓은 현장으로 회복의 기회를 잇는 통로가 됩니다.
+                                ER은 목회자·선교사를 위한 무료/감면 원칙을 유지합니다. 사역지원 신청은 심사형으로 운영되며, 후원금은 해당 트랙의 접근성을 지키는 데 우선 사용됩니다.
                             </p>
                         </div>
 
@@ -1039,12 +1041,12 @@
 
                         <div class="grid gap-6 lg:grid-cols-[1fr_1fr] animate-fade-in-up">
                             <div class="rounded-[2rem] bg-white border border-white/40 p-7 shadow-soft floating-card">
-                                <h3 class="text-xl font-bold text-er-dark mb-4">함께 마음을 보태는 방법</h3>
+                                <h3 class="text-xl font-bold text-er-dark mb-4">사역지원 운영 방식</h3>
                                 <div class="grid gap-4">
                                     ${[
-                                        ['후원 문의', '프로그램 운영과 자료 개발, 필요한 참여자 연결을 위한 후원 안내를 개별적으로 드립니다.'],
-                                        ['교회·기관 협력', '회복 프로그램과 워크숍, 훈련 과정을 함께 기획하고 운영할 수 있습니다.'],
-                                        ['기도와 소개', '도움이 필요한 개인과 공동체를 연결하고 사역 소식을 함께 나누는 방식으로 동참할 수 있습니다.'],
+                                        ['지원 대상', '목회자·선교사(개인) 중심으로 무료/감면을 적용합니다.'],
+                                        ['운영 방식', '월별 지원 슬롯 한도 내에서 심사 후 배정합니다.'],
+                                        ['후원 사용처', '사역지원 세션과 코치 운영비, 필수 자료 제공에 우선 사용합니다.'],
                                     ].map(([title, body]) => `
                                         <div class="rounded-2xl bg-er-base/60 border border-white/30 p-5 shadow-soft floating-card">
                                             <h4 class="font-bold text-er-dark mb-2">${title}</h4>
@@ -1060,9 +1062,9 @@
                                     <div class="rounded-2xl bg-white/10 border border-white/10 p-4">2. 상담과 교육, 훈련 프로그램이 더 정성스럽게 이어지도록 돕습니다.</div>
                                     <div class="rounded-2xl bg-white/10 border border-white/10 p-4">3. 협력 공동체와 코치 훈련 네트워크가 넓어지도록 뒷받침합니다.</div>
                                 </div>
-                                <p class="mt-4 text-xs text-gray-300 break-keep">현재 후원은 온라인 결제가 아닌 개별 안내 방식으로 진행됩니다.</p>
-                                <button onclick="renderSection('apply', { source: 'support' })" class="mt-6 w-full rounded-full bg-white py-3 text-sm font-bold text-er-dark hover:bg-er-accentLight transition-colors">
-                                    후원·협력 신청하기
+                                <p class="mt-4 text-xs text-gray-300 break-keep">후원은 현재 개별 안내 방식으로 운영되며, 세액공제 영수증은 제공되지 않을 수 있습니다.</p>
+                                <button onclick="renderSection('apply', { track: 'support' })" class="mt-6 w-full rounded-full bg-white py-3 text-sm font-bold text-er-dark hover:bg-er-accentLight transition-colors">
+                                    후원·협력 문의
                                 </button>
                             </div>
                         </div>
@@ -1558,8 +1560,8 @@
                                 <div>
                                     <p class="text-sm font-bold text-er-dark">문의하거나 신청하시겠어요?</p>
                                 </div>
-                                <button onclick="renderSection('apply')" class="px-6 py-2.5 bg-er-dark text-white rounded-full text-sm font-bold shadow-soft hover:bg-gray-800 transition-all w-full md:w-auto">
-                                    문의 신청하기
+                                <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-2.5 bg-er-dark text-white rounded-full text-sm font-bold shadow-soft hover:bg-gray-800 transition-all w-full md:w-auto">
+                                    유료 상담 신청하기
                                 </button>
                             </div>
                         </div>
@@ -1623,7 +1625,7 @@
                         </div>
                         
                         <div class="mt-12 text-center pb-10">
-                            <button onclick="renderSection('apply')" class="bg-er-dark text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors text-sm">
+                            <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors text-sm">
                                 전문가 상담 신청하기
                             </button>
                         </div>
@@ -1634,29 +1636,65 @@
 
         function renderApply(payload = null) {
             const fromTest = payload?.source === 'test';
-            const fromSupport = payload?.source === 'support';
+            const track = payload?.track || (fromTest ? 'paid' : 'paid');
+            const isSupportTrack = track === 'support';
+            const isMinistryTrack = track === 'ministry';
+            const isOrgTrack = track === 'org';
+            const submitSource = fromTest ? 'test' : track;
             const testSummary = state.latestTestResult
                 ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 하위유형 ${state.latestTestResult.subtypeSummary}, 본능 ${state.latestTestResult.instinctSummary}`
                 : "";
+
+            const trackTitle = isSupportTrack
+                ? '후원·협력 문의'
+                : isMinistryTrack
+                    ? '사역지원 신청'
+                    : isOrgTrack
+                        ? '기관/교회 프로그램 문의'
+                        : '유료 상담 신청';
+            const trackDesc = isSupportTrack
+                ? '후원 및 협력 관련 문의를 남겨 주세요.'
+                : isMinistryTrack
+                    ? '목회자·선교사 사역지원(무료/감면) 신청을 남겨 주세요.'
+                    : isOrgTrack
+                        ? '교회/기관/기업 프로그램 문의를 남겨 주세요.'
+                        : '개인·가정 유료 코칭 신청 내용을 남겨 주세요. 모든 가격은 USD 기준입니다.';
+            const categoryOptions = isSupportTrack
+                ? ['후원 문의', '협력 파트너십 문의', '공동 프로그램 제안', '기타 협력 문의']
+                : isMinistryTrack
+                    ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
+                    : isOrgTrack
+                        ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
+                        : ['Identity Discovery Session ($150)', 'Restoration Coaching ($95)', '4-session Journey ($340)', '8-session Track ($640)', 'Couple Session ($220)'];
 
             return `
                 <div class="bg-er-base min-h-screen py-20 px-4">
                     <div class="max-w-2xl mx-auto">
                         <div class="text-center mb-10 animate-fade-in-up">
-                            <h2 class="text-3xl font-bold text-gray-900">${fromSupport ? '후원·협력 신청하기' : '상담 신청하기'}</h2>
-                            <p class="mt-3 text-gray-500 text-sm">${fromSupport ? '후원, 파트너십, 교회·기관 협력을 원하시면 신청 내용을 남겨주세요.' : '상담과 프로그램 참여를 원하시면 신청 내용을 남겨주세요.'}</p>
+                            <h2 class="text-3xl font-bold text-gray-900">${trackTitle}</h2>
+                            <p class="mt-3 text-gray-500 text-sm">${trackDesc}</p>
                         </div>
                         
                         <div class="bg-white rounded-3xl shadow-card floating-card p-8 md:p-10 animate-fade-in-up border border-white/40" style="animation-delay: 0.1s;">
                             ${fromTest ? `
                                 <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
-                                    <p class="text-sm font-bold text-er-dark mb-1">약식 테스트 후 이어지는 이야기</p>
-                                    <p class="text-xs text-gray-600 break-keep">정식 타이핑 세션(무료)으로 더 깊은 자기 이해와 관계 이해를 함께 살펴봅니다.</p>
+                                    <p class="text-sm font-bold text-er-dark mb-1">테스트 후 추천 트랙</p>
+                                    <p class="text-xs text-gray-600 break-keep">약식 테스트 결과를 바탕으로 Identity Discovery Session에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.</p>
                                 </div>
-                            ` : fromSupport ? `
+                            ` : isSupportTrack ? `
                                 <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
                                     <p class="text-sm font-bold text-er-dark mb-1">후원·협력 전용 창구</p>
                                     <p class="text-xs text-gray-600 break-keep">후원 문의, 교회·기관 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.</p>
+                                </div>
+                            ` : isMinistryTrack ? `
+                                <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
+                                    <p class="text-sm font-bold text-er-dark mb-1">사역지원 신청 안내</p>
+                                    <p class="text-xs text-gray-600 break-keep">목회자·선교사 대상 무료/감면 사역지원 트랙은 심사 후 배정됩니다.</p>
+                                </div>
+                            ` : isOrgTrack ? `
+                                <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
+                                    <p class="text-sm font-bold text-er-dark mb-1">기관/교회 프로그램 안내</p>
+                                    <p class="text-xs text-gray-600 break-keep">프로그램 규모와 대상에 따라 맞춤 견적으로 안내드립니다.</p>
                                 </div>
                             ` : ""}
 
@@ -1667,7 +1705,7 @@
                                 <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">3</span></div>
                             </div>
 
-                            <form id="apply-form" class="space-y-6" onsubmit="handleApplySubmit(event, ${fromTest ? `'test'` : `'website'`})">
+                            <form id="apply-form" class="space-y-6" onsubmit="handleApplySubmit(event, '${submitSource}')">
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">이름</label>
@@ -1683,19 +1721,7 @@
                                     <label class="block text-sm font-bold text-gray-700 mb-2">어떤 마음으로 찾아오셨나요?</label>
                                     <div class="relative">
                                         <select name="category" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
-                                            ${fromTest ? '<option selected>정식 타이핑 세션 (무료)</option>' : ""}
-                                            ${fromSupport ? `
-                                                <option selected>후원 문의</option>
-                                                <option>교회/기관 협력 문의</option>
-                                                <option>공동 프로그램 제안</option>
-                                                <option>기타 협력 문의</option>
-                                            ` : `
-                                                <option>개인/가정 코칭 (부부, 자녀)</option>
-                                                <option>교회/사역자 회복 프로그램</option>
-                                                <option>비즈니스/조직 워크숍</option>
-                                                <option>강사 양성 과정</option>
-                                                <option>기타 문의</option>
-                                            `}
+                                            ${categoryOptions.map((opt, idx) => `<option ${idx === 0 ? 'selected' : ''}>${opt}</option>`).join('')}
                                         </select>
                                         <div class="absolute right-4 top-3.5 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></div>
                                     </div>
@@ -1703,15 +1729,20 @@
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">나누고 싶은 이야기</label>
-                                    <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n정식 타이핑 세션(무료) 신청합니다.` : ""}</textarea>
+                                    <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${fromTest && testSummary ? `${testSummary}\nIdentity Discovery Session 신청합니다.` : ""}</textarea>
                                 </div>
 
                                 <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
                                     <i class="fas fa-info-circle text-er-primary mt-0.5"></i>
                                     <p class="text-xs text-gray-500 leading-relaxed">
-                                        ER은 후원과 협력으로 운영되는 회복 사역입니다.
-                                        코칭과 상담은 후원 여부와 관계없이 안내되며,
-                                        후원은 사역을 응원하는 자발적인 선택으로 현재 개별 안내를 통해 연결됩니다. 접수 후 24시간 이내에 담당 코치 또는 운영 담당자가 연락드립니다.
+                                        ${isSupportTrack
+                                            ? '후원금은 목회자·선교사 사역지원 트랙의 접근성을 유지하는 데 우선 사용됩니다. 후원은 개별 안내 방식으로 연결됩니다.'
+                                            : isMinistryTrack
+                                                ? '사역지원 트랙은 월별 슬롯 기반으로 운영됩니다. 접수 후 심사 및 일정 가능 여부를 안내드립니다.'
+                                                : isOrgTrack
+                                                    ? '기관/교회/기업 프로그램은 요구사항과 일정에 따라 맞춤 제안으로 안내됩니다.'
+                                                    : '유료 코칭은 USD 기준으로 운영됩니다. 최종 결제 금액은 결제 수단 및 환율에 따라 달라질 수 있습니다.'}
+                                        접수 후 24시간 이내에 담당자가 연락드립니다.
                                     </p>
                                 </div>
 
@@ -3530,8 +3561,45 @@
 
             const introEl = document.getElementById('program-intro');
             const cardsEl = document.getElementById('program-cards');
-            
-            const data = (ER.programs && ER.programs.view) ? ER.programs.view : {};
+
+            const data = {
+                individual: {
+                    title: '개인/가정 유료 코칭',
+                    desc: '반복되는 감정·관계 패턴을 실제 변화로 연결하는 핵심 수익 트랙입니다. 모든 가격은 USD 기준입니다.',
+                    cards: [
+                        { b: 'Entry', t: 'Identity Discovery Session', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$150', i: 'fas fa-fingerprint' },
+                        { b: 'Core', t: 'Restoration Coaching', d: '60분 코칭\n관계·감정·의사결정 패턴 적용', p: '$95 / session', i: 'fas fa-route' },
+                        { b: 'Package', t: 'Restoration Journey', d: '4회 패키지: $340\n8회 패키지: $640', p: 'Best Value', i: 'fas fa-layer-group' }
+                    ]
+                },
+                church: {
+                    title: '기관/교회 프로그램',
+                    desc: '목회자/선교사 개인 지원은 사역지원 트랙으로 유지하고, 기관 단위 프로그램은 유료 프로젝트로 운영합니다.',
+                    cards: [
+                        { b: 'Workshop', t: 'Basic Workshop (2h)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: 'from $500', i: 'fas fa-chalkboard-teacher' },
+                        { b: 'Intensive', t: 'Intensive Workshop (6h)', d: '팀/리더 분석 + 갈등 구조 해석 + 적용 설계', p: 'from $1,800', i: 'fas fa-users-cog' },
+                        { b: 'Follow-up', t: 'Leader Debrief Pack', d: '리더 디브리핑 + 소그룹 가이드 + 4주 후속 코호트', p: 'Custom Quote', i: 'fas fa-file-signature' }
+                    ]
+                },
+                business: {
+                    title: '기업/팀 프로그램',
+                    desc: '성격 설명이 아니라 팀 커뮤니케이션, 갈등 비용, 협업 효율을 개선하는 운영 언어로 설계합니다.',
+                    cards: [
+                        { b: 'Team', t: 'Cognitive Diversity Workshop', d: '역할 적합성·소통 패턴·갈등 비용 진단', p: '$2,000–$5,000', i: 'fas fa-sitemap' },
+                        { b: 'HR', t: 'Hiring & Placement Advisory', d: '유형 기반 역할 매칭 + 팀 구조 제안', p: 'Custom Quote', i: 'fas fa-briefcase' },
+                        { b: 'Consulting', t: 'Leadership Communication Sprint', d: '리더십 커뮤니케이션 프레임 재설계', p: 'from $5,000', i: 'fas fa-chart-line' }
+                    ]
+                },
+                training: {
+                    title: '훈련 과정 (Advanced Track)',
+                    desc: 'Certification 대신 Training Track으로 운영합니다. 실습과 수퍼비전 중심의 장기 확장 모델입니다.',
+                    cards: [
+                        { b: 'Core', t: 'Enneagram for Restoration Training', d: '8주 핵심 과정\n이론 + 타이핑 훈련 + 코칭 실습', p: '$400–$800', i: 'fas fa-graduation-cap' },
+                        { b: 'Advanced', t: 'Advanced Formation Track', d: '수퍼비전 + 인턴십 + 사례 리뷰', p: 'By Cohort', i: 'fas fa-user-check' },
+                        { b: 'Practice', t: 'Coach Practice Lab', d: '소그룹 피드백 + 실전 적용 클리닉', p: 'By Cohort', i: 'fas fa-flask' }
+                    ]
+                }
+            };
             const selected = data[filterType];
             if (!selected || !selected.cards) return;
 
@@ -3552,9 +3620,10 @@
                             </div>
                         </div>
                         <h4 class="text-base font-bold text-gray-900 mb-2">${c.t}</h4>
-                        <p class="text-gray-500 text-xs leading-relaxed mb-6 flex-grow break-keep">${c.d}</p>
-                        <button onclick="renderSection('apply')" class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
-                            문의 신청하기
+                        <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
+                        <p class="text-sm font-extrabold text-er-dark mb-5">${c.p || ''}</p>
+                        <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}' })" class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
+                            신청/문의
                         </button>
                     </div>
                 `).join('');
