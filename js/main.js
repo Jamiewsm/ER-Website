@@ -423,29 +423,27 @@
                                     </div>
 
                                     <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-tight font-extrabold text-er-dark mb-6 leading-[1.12] break-keep">
-                                        반복되는 갈등의 구조를 바꾸고<br class="hidden md:block">회복의 방향을 설계합니다.
+                                        Enneagram for Restoration은<br class="hidden md:block">삶 속에서 반복되는 내면의 갈등과 관계 문제를<br class="hidden md:block">에니어그램을 통해 해석하고 회복을 돕습니다.
                                     </h1>
 
                                     <p class="mt-2 text-base md:text-lg text-gray-600 mb-8 leading-relaxed max-w-3xl mx-auto lg:mx-0 break-keep font-medium">
-                                        우리는 성격을 분석하는 데서 멈추지 않고, 하나님이 지으신 본래의 사람을 회복하도록 돕습니다. 개인·가정 코칭부터 훈련 과정, 기관 워크숍까지 실제 변화가 이어지는 구조로 설계합니다.
+                                        ER은 여러분의 성격을 분석하는 데서 멈추지 않고, 하나님이 각각의 개인에게 주신 아름다운 본모습(오리지널 디자인)을 발견하고 회복될 수 있도록 돕기 위해 존재합니다. 개인, 부부, 자녀 양육을 비롯한 관계 코칭 뿐 아니라, 에니어그램으로 진정한 성장을 이루고 싶은 분들을 위한 전문 프로그램, 각종 비즈니스와 기관 워크숍까지, 최고 수준의 에니어그램 전문가 및 코치들이 함께 합니다.
                                     </p>
 
-                                    <div class="grid sm:grid-cols-3 gap-3 md:gap-4 max-w-3xl mx-auto lg:mx-0">
+                                    <div class="grid sm:grid-cols-2 gap-3 md:gap-4 max-w-3xl mx-auto lg:mx-0">
                                         <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-4 bg-er-dark text-white rounded-full font-bold shadow-lg shadow-er-dark/20 hover:bg-gray-800 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
-                                            상담 신청 <i class="fas fa-arrow-right text-xs opacity-70"></i>
+                                            상담 및 코칭 신청 <i class="fas fa-arrow-right text-xs opacity-70"></i>
                                         </button>
                                         <button onclick="renderSection('programs', { tab: 'individual' })" class="px-6 py-4 bg-white/90 backdrop-blur-sm text-er-dark border border-white/60 rounded-full font-bold shadow-sm hover:bg-white hover:border-er-accent/50 transition-all active:scale-95">
                                             서비스 안내
                                         </button>
-                                        <button onclick="renderSection('apply', { track: 'ministry' })" class="px-6 py-4 bg-er-accent text-white rounded-full font-bold shadow-sm hover:bg-er-accentDark transition-all active:scale-95">
-                                            사역지원 신청
-                                        </button>
                                     </div>
 
                                     <div class="mt-10 md:mt-12 pt-6 border-t border-er-dark/5 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs md:text-sm text-gray-500 font-medium">
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px]"><i class="fas fa-check"></i></div> 상담 트랙과 사역지원 트랙을 함께 운영합니다</div>
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px]"><i class="fas fa-check"></i></div> 가격은 USD 기준으로 안내합니다</div>
-                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-[10px]"><i class="fas fa-check"></i></div> 목회자·선교사 지원 원칙을 유지합니다</div>
+                                        <div class="w-full text-left text-gray-600 font-semibold">ER은</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-[10px]"><i class="fas fa-check"></i></div> 한국, 미국, 아시아 등 국제적인 기반 위에서 활동합니다. (가격은 USD를 기준으로 합니다)</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-[10px]"><i class="fas fa-check"></i></div> 코칭 및 상담 윤리를 준수합니다.</div>
+                                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-[10px]"><i class="fas fa-check"></i></div> 목회자와 선교사 및 가족분들에게는 무료로 서비스를 지원합니다.</div>
                                     </div>
                                 </div>
 
@@ -471,16 +469,7 @@
                                             <canvas id="heroChart"></canvas>
                                         </div>
 
-                                        <div class="grid grid-cols-2 gap-3 mt-4">
-                                            <div class="rounded-2xl bg-white/80 border border-white/70 px-4 py-3">
-                                                <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold mb-1">Approach</p>
-                                                <p class="text-sm font-semibold text-er-dark">삶 가까이 머무는 회복 코칭</p>
-                                            </div>
-                                            <div class="rounded-2xl bg-white/80 border border-white/70 px-4 py-3">
-                                                <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 font-bold mb-1">Model</p>
-                                                <p class="text-sm font-semibold text-er-dark">따뜻한 후원과 협력의 흐름</p>
-                                            </div>
-                                        </div>
+                                        <div class="mt-4"></div>
                                     </div>
 
                                     <div class="absolute inset-0 bg-gradient-to-tr from-er-accent/20 to-transparent rounded-full blur-3xl -z-10 transform scale-110"></div>
@@ -537,15 +526,15 @@
                             </div>
                             <div class="grid gap-6 md:grid-cols-3">
                                 ${[
-                                    { tag: 'Step 1', title: '정체성 발견 세션', body: '90분 만에 발견하는 나의 핵심 동기 · $150\n심층 인터뷰 + 핵심 동기/방어 패턴 분석' },
-                                    { tag: 'Step 2', title: '개별 코칭 (1회 세션)', body: '60분 실전 코칭 · $120 / 1회\n관계·감정의 막힌 지점을 풀어내는 적용 코칭' },
-                                    { tag: 'Step 3', title: '회복 여정 패키지 (8회)', body: '8회 패키지 · $760\n뿌리부터 바뀌는 지속적 변화 코스' }
+                                    { tag: 'Step 1', title: '정체성 발견 세션', body: '90분 만에 발견하는 나의 핵심 동기 · $100\n심층 인터뷰 + 핵심 동기/방어 패턴 분석' },
+                                    { tag: 'Step 2', title: '개별 코칭 (1회 세션)', body: '60분 실전 코칭 · $80 / 1회\n관계·감정의 막힌 지점을 풀어내는 적용 코칭' },
+                                    { tag: 'Step 3', title: '회복 여정 패키지 (8회)', body: '8회 패키지 · $600\n뿌리부터 바뀌는 지속적 변화 코스' }
                                 ].map(item => `
                                     <div class="bg-white rounded-[2rem] p-7 border border-white/40 shadow-soft floating-card">
                                         <span class="inline-flex px-3 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-[0.2em]">${item.tag}</span>
                                         <h3 class="text-xl font-bold text-er-dark mt-5 mb-3">${item.title}</h3>
                                         <p class="text-sm text-gray-500 leading-relaxed break-keep mb-6 whitespace-pre-line">${item.body}</p>
-                                        <button onclick="renderSection('apply', { track: 'paid' })" class="text-sm font-bold text-er-dark hover:text-er-accent transition-colors">상담 신청</button>
+                                        <button onclick="renderSection('apply', { track: 'paid' })" class="text-sm font-bold text-er-dark hover:text-er-accent transition-colors">상담 및 코칭 신청</button>
                                     </div>
                                 `).join('')}
                             </div>
@@ -1904,21 +1893,21 @@
                     ? '사역지원 신청'
                     : isOrgTrack
                         ? '기관/교회 프로그램 문의'
-                        : '상담 신청';
+                        : '상담 및 코칭 신청';
             const trackDesc = isSupportTrack
                 ? '후원 및 협력 관련 문의를 남겨 주세요.'
                 : isMinistryTrack
                     ? '목회자·선교사 사역지원(무료/감면) 신청을 남겨 주세요.'
                     : isOrgTrack
                         ? '교회/기관/기업 프로그램 문의를 남겨 주세요.'
-                        : '개인·가정 유료 코칭 신청 내용을 남겨 주세요. 모든 가격은 USD 기준입니다.';
+                        : '신청 내용을 남겨주세요.';
             const categoryOptions = isSupportTrack
                 ? ['후원 문의', '협력 파트너십 문의', '공동 프로그램 제안', '기타 협력 문의']
                 : isMinistryTrack
                     ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
                     : isOrgTrack
                         ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                        : ['정체성 발견 세션 ($150)', '개별 코칭 1회 ($120)', '회복 여정 4회 ($420)', '회복 여정 8회 ($760)', '부부 코칭 1회 ($220)'];
+                        : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)'];
 
             return `
                 <div class="bg-er-base min-h-screen py-20 px-4">
@@ -1982,7 +1971,7 @@
                                 </div>
                                 
                                 <div>
-                                    <label class="block text-sm font-bold text-gray-700 mb-2">어떤 마음으로 찾아오셨나요?</label>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">희망하는 세션</label>
                                     <div class="relative">
                                         <select name="category" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
                                             ${categoryOptions.map((opt, idx) => `<option ${idx === 0 ? 'selected' : ''}>${opt}</option>`).join('')}
@@ -2005,7 +1994,7 @@
                                                 ? '사역지원 트랙은 월별 슬롯 기반으로 운영됩니다. 접수 후 심사 및 일정 가능 여부를 안내드립니다.'
                                                 : isOrgTrack
                                                     ? '기관/교회/기업 프로그램은 요구사항과 일정에 따라 맞춤 제안으로 안내됩니다.'
-                                                    : '유료 코칭은 USD 기준으로 운영됩니다. 최종 결제 금액은 결제 수단 및 환율에 따라 달라질 수 있습니다.'}
+                                                    : 'ER의 모든 세션은 USD 기준으로 운영됩니다. 최종 결제 금액은 결제 수단 및 환율에 따라 달라질 수 있습니다.'}
                                         접수 후 24시간 이내에 담당자가 연락드립니다.
                                     </p>
                                 </div>
@@ -3830,9 +3819,9 @@
                     title: '개인/가정 유료 코칭',
                     desc: '반복되는 감정·관계 패턴을 실제 변화로 연결하는 핵심 수익 트랙입니다. 모든 가격은 USD 기준입니다.',
                     cards: [
-                        { b: 'Step 1', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$150', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
-                        { b: 'Step 2', t: '개별 코칭 (1회 세션)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$120 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
-                        { b: 'Step 3', t: '회복 여정 패키지', d: '4회 패키지: $420\n8회 패키지: $760', p: '가장 많이 선택', o: '감정·관계·실행 루틴까지 이어지는 지속적 변화 정착', i: 'fas fa-layer-group', featured: true }
+                        { b: 'Step 1', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$100', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
+                        { b: 'Step 2', t: '개별 코칭 (1회 세션)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$80 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
+                        { b: 'Step 3', t: '회복 여정 패키지', d: '4회 패키지: $260\n8회 패키지: $600', p: '가장 많이 선택', o: '감정·관계·실행 루틴까지 이어지는 지속적 변화 정착', i: 'fas fa-layer-group', featured: true }
                     ]
                 },
                 church: {
