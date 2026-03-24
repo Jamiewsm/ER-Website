@@ -71,7 +71,7 @@
 
     contentData: {
       stats: { labels: ['개인/가정', '목회자', '기업/조직', '강사양성', '청소년'] },
-      types: { labels: ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 효율적인 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 열정적인 사람', '8번 강한 사람', '9번 조화로운 사람'] },
+      types: { labels: ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 열매맺는 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 열정적인 사람', '8번 보호하는 사람', '9번 조화로운 사람'] },
       notices: [
         { id: 1, tag: '모집중', title: 'SOIM 에니어그램 전문가반 5기 모집', date: '2025-01-15', summary: '온라인 8주 과정 강의과 1:1 멘토링', body: '<p class="text-gray-600 leading-relaxed break-keep">에니어그램을 "아는 단계"에서 끝내지 않고, 삶과 현장에 적용하는 단계까지 함께 갑니다. 전문가반 5기에서는 기초 이론부터 적용까지 매주 심화 수업과 과제로 훈련하고, 1:1 멘토링과 강의 피드백을 통해 실제 강의·코칭 현장에서 자신 있게 사용할 수 있도록 돕습니다. 수료 후에는 (선택사항) 스터디 그룹과 코칭 실습으로 이어지며, 정식 코치 활동을 준비할 수 있습니다.</p><div class="mt-6 grid gap-3"><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">기간</span><span class="text-sm text-gray-700">8주</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">대상</span><span class="text-sm text-gray-700 break-keep">에니어그램을 단순한 성격 이해를 넘어, <br> 기독교 세계관 안에서 "자기 이해와 타인 돌봄"(코칭·강의)에 <br> 실제로 적용하고자 하는 분</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">지원마감</span><span class="text-sm text-gray-700">2025.01.15</span></div></div>' },
         { id: 2, tag: '안내', title: '홈페이지 리뉴얼 안내', date: '2024-12-20', summary: '리뉴얼 진행 중이며 일부 기능은 준비 중입니다.', body: '<p class="text-gray-600 leading-relaxed break-keep">ER 홈페이지는 더 나은 정보 제공을 위해 리뉴얼 중입니다. 일부 메뉴와 기능(로그인/공지 확장 등)은 순차적으로 업데이트됩니다.</p>' }

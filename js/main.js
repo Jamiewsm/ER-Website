@@ -48,7 +48,7 @@
                 data: [45, 25, 15, 10, 5],
             },
             types: {
-                labels: (ER.contentData && ER.contentData.types && ER.contentData.types.labels) ? ER.contentData.types.labels.slice() : ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 효율적인 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 열정적인 사람', '8번 강한 사람', '9번 조화로운 사람'],
+                labels: (ER.contentData && ER.contentData.types && ER.contentData.types.labels) ? ER.contentData.types.labels.slice() : ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 열매맺는 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 열정적인 사람', '8번 보호하는 사람', '9번 조화로운 사람'],
                 data: [8, 9, 8, 7, 6, 8, 7, 8, 9] 
             },
             notices: (ER.contentData && ER.contentData.notices) ? ER.contentData.notices : []
@@ -469,7 +469,7 @@
                                             <canvas id="heroChart"></canvas>
                                         </div>
 
-                                        <div class="mt-4"></div>
+                                        <div id="hero-chart-labels" class="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2 text-[10px] md:text-[11px]"></div>
                                     </div>
 
                                     <div class="absolute inset-0 bg-gradient-to-tr from-er-accent/20 to-transparent rounded-full blur-3xl -z-10 transform scale-110"></div>
@@ -4665,6 +4665,17 @@
             if (sectionId === 'home') {
                 const ctx = document.getElementById('heroChart');
                 if(!ctx) return;
+                const typeColors = [
+                    'rgba(95, 155, 115, 0.92)',   // 1
+                    'rgba(200, 130, 150, 0.92)',  // 2
+                    'rgba(205, 160, 95, 0.92)',   // 3
+                    'rgba(135, 110, 175, 0.92)',  // 4
+                    'rgba(95, 135, 180, 0.92)',   // 5
+                    'rgba(95, 160, 165, 0.92)',   // 6
+                    'rgba(225, 165, 135, 0.92)',  // 7
+                    'rgba(170, 100, 85, 0.92)',   // 8
+                    'rgba(180, 155, 125, 0.92)'   // 9
+                ];
                 
                 new Chart(ctx.getContext('2d'), {
                     type: 'polarArea',
@@ -4672,17 +4683,7 @@
                         labels: contentData.types.labels,
                         datasets: [{ 
                             data: contentData.types.data, 
-                            backgroundColor: [
-                                'rgba(95, 155, 115, 0.92)',   // 1 – 그린 (세이지)
-                                'rgba(200, 130, 150, 0.92)',   // 2 – 로즈
-                                'rgba(205, 160, 95, 0.92)',    // 3 – 골드/앰버
-                                'rgba(135, 110, 175, 0.92)',   // 4 – 바이올렛 (1번과 명확히 구분)
-                                'rgba(95, 135, 180, 0.92)',    // 5 – 블루
-                                'rgba(95, 160, 165, 0.92)',    // 6 – 틸
-                                'rgba(225, 165, 135, 0.92)',   // 7 – 피치/코랄
-                                'rgba(170, 100, 85, 0.92)',    // 8 – 테라코타
-                                'rgba(180, 155, 125, 0.92)'    // 9 – 웜 샌드 (녹/보라와 구분)
-                            ],
+                            backgroundColor: typeColors,
                             borderWidth: 2.5,
                             borderColor: '#fdf7f1',
                             hoverOffset: 4
@@ -4715,6 +4716,15 @@
                         } 
                     }
                 });
+                const legendEl = document.getElementById('hero-chart-labels');
+                if (legendEl) {
+                    legendEl.innerHTML = contentData.types.labels.map((label, index) => `
+                        <div class="inline-flex items-center gap-1.5 rounded-full border border-white/60 bg-white/85 px-2 py-1 text-gray-600 shadow-sm">
+                            <span class="inline-block w-2 h-2 rounded-full" style="background:${typeColors[index]};"></span>
+                            <span class="font-medium">${label}</span>
+                        </div>
+                    `).join('');
+                }
                 renderImpactChart();
             } else if (sectionId === 'community') {
                 renderImpactChart();
