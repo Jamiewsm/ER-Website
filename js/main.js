@@ -970,17 +970,22 @@
 
         function renderCommunity() {
             const storyFilter = state.currentPayload?.story || '';
-            const stories = [
-                { k: 'personal', category: '개인 회복', quote: '“같은 갈등이 반복되던 이유를 이해하고, 반응이 달라졌습니다.”', who: '개인 코칭 참여자' },
-                { k: 'couple', category: '부부·가정', quote: '“서로를 바꾸려던 대화가, 서로를 이해하는 대화로 바뀌었습니다.”', who: '부부 코칭 참여자' },
-                { k: 'parenting', category: '자녀·양육', quote: '“아이의 반응을 문제로만 보지 않게 되었고, 부모의 대화 방식이 달라졌습니다.”', who: '양육 코칭 참여자' },
-                { k: 'ministry', category: '목회자·선교사', quote: '“소진을 버티는 방식에서 벗어나, 사역 리듬을 다시 세웠습니다.”', who: '사역지원 트랙 참여자' },
-                { k: 'church', category: '교회 공동체', quote: '“팀 내 긴장이 줄고, 회의와 결정이 훨씬 건강해졌습니다.”', who: '협력 교회 리더' },
-                { k: 'team', category: '리더십·팀', quote: '“각자 강점이 분명해지며 역할 분담이 자연스러워졌습니다.”', who: '기관 프로그램 참여팀' },
-                { k: 'leadership', category: '리더십·팀', quote: '“피드백 대화가 훨씬 선명해지고, 의사결정이 빨라졌습니다.”', who: '리더십 프로그램 참여자' },
-                { k: 'training', category: '훈련 참여자', quote: '“이론이 실제 코칭 장면에 연결되는 경험이 가장 컸습니다.”', who: '훈련 과정 수료생' }
-            ];
-            const filteredStories = storyFilter ? stories.filter((item) => item.k === storyFilter) : stories;
+            const stories = Array.isArray(publicTestimonials.stories) ? publicTestimonials.stories : [];
+            const storyTagMap = {
+                parenting: ['가정 회복', '부부·공동체'],
+                couple: ['부부·공동체', '가정 회복'],
+                personal: ['자기 이해', '자기 수용', '상담 깊이'],
+                ministry: ['선교·사역'],
+                church: ['부부·공동체', '선교·사역'],
+                team: ['부부·공동체', '상담 깊이'],
+                leadership: ['부부·공동체', '상담 깊이'],
+                training: ['상담 깊이', '자기 이해']
+            };
+            const allowedTags = storyTagMap[storyFilter] || null;
+            const filteredStories = storyFilter && allowedTags
+                ? stories.filter((item) => allowedTags.includes(item.tag))
+                : stories;
+            const visibleStories = filteredStories.length ? filteredStories : stories;
             return `
                 <div class="bg-white min-h-screen py-16 px-4">
                     <div class="max-w-6xl mx-auto">
@@ -1023,11 +1028,14 @@
                         </div>
 
                         <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3 mb-10 animate-fade-in-up">
-                            ${filteredStories.map(({ category, quote, who }) => `
+                            ${visibleStories.map((item) => `
                                 <div class="rounded-[2rem] bg-white border border-white/40 p-6 shadow-soft floating-card">
-                                    <span class="inline-flex px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold tracking-wider">${category}</span>
-                                    <p class="mt-4 text-sm text-gray-700 leading-relaxed break-keep">${quote}</p>
-                                    <p class="mt-4 text-xs text-gray-400">${who}</p>
+                                    <span class="inline-flex px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold tracking-wider">${item.tag || '후기'}</span>
+                                    <p class="mt-4 text-sm text-gray-700 leading-relaxed break-keep">${item.quote || ''}</p>
+                                    <div class="mt-4 pt-3 border-t border-gray-100">
+                                        <p class="text-sm font-bold text-gray-900">${item.person || ''}</p>
+                                        <p class="text-[11px] text-gray-400 uppercase tracking-[0.18em]">${item.meta || ''}</p>
+                                    </div>
                                 </div>
                             `).join('')}
                         </div>
