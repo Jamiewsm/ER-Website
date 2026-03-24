@@ -419,11 +419,11 @@
                                 <div class="text-center lg:text-left animate-fade-in-up order-2 lg:order-1">
                                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 border border-er-accent/20 backdrop-blur-sm shadow-sm mb-6">
                                         <span class="w-2 h-2 rounded-full bg-er-accent animate-pulse"></span>
-                                        <span class="text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-primary">Global Korean Coaching</span>
+                                        <span class="text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-primary">Enneagram for Restoration</span>
                                     </div>
 
                                     <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight font-extrabold text-er-dark mb-6 leading-[1.22] break-keep">
-                                        Enneagram for Restoration은<br class="hidden md:block">삶 속에서 반복되는 내면의 갈등과 관계 문제를<br class="hidden md:block">에니어그램을 통해 해석하고 회복을 돕습니다.
+                                        삶 속에서 반복되는 내면의 갈등과 관계 문제를<br class="hidden md:block">에니어그램을 통해 해석하고 회복을 돕습니다.
                                     </h1>
 
                                     <p class="mt-2 text-base md:text-lg text-gray-600 mb-8 leading-relaxed max-w-3xl mx-auto lg:mx-0 break-keep font-medium">
