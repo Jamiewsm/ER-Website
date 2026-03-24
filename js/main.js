@@ -1099,17 +1099,64 @@
                     <div class="max-w-6xl mx-auto">
                         <div class="text-center mb-12 animate-fade-in-up">
                             <span class="text-er-accent font-bold text-xs tracking-widest uppercase">코치양성</span>
-                            <h2 class="text-3xl md:text-5xl font-bold text-er-dark mt-3 break-keep">훈련 과정 (심화 트랙)</h2>
+                            <h2 class="text-3xl md:text-5xl font-bold text-er-dark mt-3 break-keep">훈련 과정 (1년 심화 트랙)</h2>
                             <p class="mt-4 text-sm md:text-base text-gray-500 max-w-3xl mx-auto break-keep">
-                                자격증 중심이 아니라 훈련 중심으로 운영합니다. 이론, 실습, 수퍼비전이 연결된 구조로 현장 적용 역량을 키웁니다.
+                                8주 핵심 과정을 마친 뒤, Formation / ER 전문 강사 / 코칭 스킬 / 통합 실습 트랙을 1년간 통합적으로 훈련합니다.
                             </p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in-up">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in-up">
                             ${[
-                                { b: '핵심', t: '회복 중심 에니어그램 훈련', d: '8주 핵심 과정\n이론 + 타이핑 훈련 + 코칭 실습', p: '$400–$800', o: '강의/코칭 현장에 바로 적용 가능한 기본기 확보', i: 'fas fa-graduation-cap' },
-                                { b: '심화', t: '심화 포메이션 트랙', d: '수퍼비전 + 인턴십 + 사례 리뷰', p: '기수별 안내', o: '케이스 기반 피드백으로 실전 역량 강화', i: 'fas fa-user-check' },
-                                { b: '실습', t: '코치 실습 랩', d: '소그룹 피드백 + 실전 적용 클리닉', p: '기수별 안내', o: '독립 코칭/강의 수행을 위한 반복 훈련', i: 'fas fa-flask' }
+                                {
+                                    b: 'A',
+                                    t: 'Formation Track (개인회복과 성장)',
+                                    d: [
+                                        '회복 사역자 이전에, 복음 안에서 성숙해지는 사람으로 서기',
+                                        '월 1회 Formation Lab: 한 달간의 N번 보고서 나눔과 기도',
+                                        '연말(12월) 연간 N번 보고서 작성 및 리트릿 계획',
+                                        '소임 기본과정 권장'
+                                    ],
+                                    o: '자기 객관화와 관계 성숙이 지속되는 내적 기반 형성',
+                                    i: 'fas fa-seedling'
+                                },
+                                {
+                                    b: 'B',
+                                    t: 'ER 전문 강사 트랙',
+                                    d: [
+                                        '에니어그램의 정확한 이해 + ER 핵심 신학 기반 복음적 재해석',
+                                        '연간 목표: 전문가 도약(책 3권 + 스터디 리딩)',
+                                        '격주 스터디 참여 + 요약/ER 관점 보완 과제',
+                                        '소임 강의법 수료(의무), 양성반 강의 복습/청강(권장)',
+                                        '2027년 개인 강의안 프로젝트 준비'
+                                    ],
+                                    o: '깊이 있는 강의 콘텐츠와 전달 역량 확보',
+                                    i: 'fas fa-chalkboard-teacher'
+                                },
+                                {
+                                    b: 'C',
+                                    t: '코칭 스킬 트랙',
+                                    d: [
+                                        '타이핑을 넘어 회복 방향을 함께 설계하는 코치 역량 강화',
+                                        '코칭/멘토링/상담의 차이 이해 + 기본 코칭 이론 습득',
+                                        '월 1회 Coaching Lab 운영',
+                                        '1분기: 코칭 이론, 2분기: 커뮤니케이션·경계선·윤리, 3·4분기: 유형별 회복 설계 매뉴얼 + 롤플레잉',
+                                        '과제: 보고서 또는 회차별 실습 과제'
+                                    ],
+                                    o: '실전 코칭 대화와 개입 구조를 설계하는 능력 강화',
+                                    i: 'fas fa-comments'
+                                },
+                                {
+                                    b: 'D',
+                                    t: '통합 실습 트랙',
+                                    d: [
+                                        '현장 기회마다 강의/코칭/상담 참관 및 실습',
+                                        '참관 후 옵저베이션 리포트 및 짧은 보고서 제출',
+                                        '타입 인터뷰/상담 관찰 노트(인상 깊은 순간, 질문 의도, 대상 반응, 내 적용)',
+                                        '강의법 수료 후 코티칭 투입 + 스터디 리딩'
+                                    ],
+                                    o: '현장 대응력과 실제 사역 적용 능력 내재화',
+                                    i: 'fas fa-flask'
+                                }
                             ].map(c => `
                                 <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-soft floating-card flex flex-col h-full">
                                     <div class="flex items-center justify-between mb-4">
@@ -1119,8 +1166,9 @@
                                         </div>
                                     </div>
                                     <h3 class="text-base font-bold text-gray-900 mb-2">${c.t}</h3>
-                                    <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
-                                    <p class="text-sm font-extrabold text-er-dark mb-4">${c.p}</p>
+                                    <ul class="text-gray-600 text-xs leading-relaxed mb-4 flex-grow break-keep space-y-2">
+                                        ${c.d.map((line) => `<li class="flex items-start gap-2"><span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-er-accent"></span><span>${line}</span></li>`).join('')}
+                                    </ul>
                                     <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">예상 결과:</span> ${c.o}</p>
                                     <button onclick="renderSection('apply', { track: 'paid' })" class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
                                         신청/문의
@@ -1130,11 +1178,21 @@
                         </div>
 
                         <div class="mt-10 rounded-[2rem] bg-white border border-white/40 p-6 md:p-8 shadow-soft animate-fade-in-up">
-                            <h3 class="text-lg font-bold text-er-dark mb-3">훈련 과정 안내</h3>
-                            <p class="text-sm text-gray-500 break-keep">
-                                훈련 과정은 선발형으로 운영되며, 기수별 일정과 정원에 따라 접수 순서가 아닌 심사 기준으로 안내됩니다.
-                                지원서를 남기면 오리엔테이션 일정과 세부 커리큘럼을 개별 전달합니다.
-                            </p>
+                            <h3 class="text-lg font-bold text-er-dark mb-3">한 달 운영 샘플 (주 1회 모임 구조)</h3>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm text-gray-600">
+                                <div class="rounded-2xl bg-er-base/50 border border-white/30 p-5">
+                                    <p>1) Formation Lab 월 1회</p>
+                                    <p>2) 스터디 모임 격주 1회</p>
+                                    <p>3) Coaching Lab 월 1회</p>
+                                    <p>4) 실습/참관: 기회별 진행</p>
+                                </div>
+                                <div class="rounded-2xl bg-er-base/50 border border-white/30 p-5">
+                                    <p>5) 연중 소임 강의법 학기 수료</p>
+                                    <p>6) 연 1~2회 리트릿</p>
+                                    <p>7) 개인 과제: N번 보고서/스터디 보고서/코칭랩 과제/실습 보고서/연간 독서 3권</p>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-xs text-gray-500 break-keep">연말 리트릿에서 한 해를 정리하고, 다음 해 개인 훈련 목표를 수립합니다.</p>
                             <div class="mt-6">
                                 <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-3 rounded-full bg-er-dark text-white text-sm font-bold hover:bg-gray-800 transition-all">
                                     코치양성 문의하기
