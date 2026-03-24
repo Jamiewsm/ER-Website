@@ -31,9 +31,14 @@
                 notes: 0
             },
             programFilter: 'individual',
-            latestTestResult: null
+            latestTestResult: null,
+            /** Detached iframe node when leaving 진단 테스트 (same SPA session reuse). */
+            testIframeEl: null,
+            testIframeLang: null
         };
         window.state = state;
+
+        const ADAPTIVE_TEST_EMBED_VERSION = '20260305-motive-v4';
 
         const ER = typeof window !== 'undefined' && window.ER_STRINGS ? window.ER_STRINGS : {};
         const contentData = {
@@ -317,6 +322,16 @@
 
         function renderSection(sectionId, payload = null, options = {}) {
             const { syncHash = true, replaceHash = false } = options;
+            const previousSection = state.currentSection;
+            // Preserve 진단 iframe across navigation: detach before main.innerHTML replaces DOM.
+            if (previousSection === 'test' && sectionId !== 'test') {
+                const iframe = document.getElementById('adaptive-test-iframe');
+                if (iframe) {
+                    state.testIframeEl = iframe;
+                    state.testIframeLang = adaptiveLang;
+                    iframe.remove();
+                }
+            }
             if (sectionId === 'programs' && payload?.tab) {
                 state.programFilter = payload.tab;
             }
@@ -379,6 +394,7 @@
             if(sectionId === 'coach_materials') setTimeout(() => loadCoachMaterials(), 0);
             if(sectionId === 'coach_schedule') setTimeout(() => loadCoachSchedules(), 0);
             if(sectionId === 'coach_notes') setTimeout(() => loadCoachNotes(), 0);
+            if (sectionId === 'test') setTimeout(() => mountAdaptiveTestIframe(), 0);
         }
 
         function toggleMobileMenu() {
@@ -602,7 +618,7 @@
                                                 <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                                             </div>
                                         </div>
-                                        <p class="text-gray-600 italic text-sm leading-relaxed break-keep mb-6">"${item.quote}"</p>
+                                        <p class="text-gray-600 italic text-sm leading-relaxed break-keep mb-6">${item.quote}</p>
                                         <div class="pt-4 border-t border-gray-100">
                                             <p class="text-sm font-bold text-gray-900">${item.person}</p>
                                             <p class="text-[11px] text-gray-400 uppercase tracking-[0.18em]">${item.meta}</p>
@@ -961,8 +977,8 @@
                     <div class="max-w-6xl mx-auto">
                         <div class="text-center mb-12 animate-fade-in-up">
                             <span class="text-er-accent font-bold text-xs tracking-widest uppercase">함께한 이야기</span>
-                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mt-2">사역의 변화와 방향</h2>
-                            <p class="mt-2 text-sm text-gray-500 break-keep">ER이 어떤 자리들을 섬기고 있으며, 어떤 변화의 방향을 꾸준히 만들어 가는지 지표 중심으로 정리했습니다.</p>
+                            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mt-2">회복 이야기와 변화의 기록</h2>
+                            <p class="mt-2 text-sm text-gray-500 break-keep">이 섹션은 실제 회복 사례와 후기, 카테고리별 변화 패턴을 담습니다. 후원/운영 정책은 사역지원 섹션에서 별도로 안내합니다.</p>
                         </div>
 
                         <div class="grid gap-5 md:grid-cols-4 mb-10 animate-fade-in-up">
@@ -975,6 +991,32 @@
                                 <div class="rounded-[2rem] border border-white/40 bg-er-base p-6 text-center shadow-soft floating-card">
                                     <p class="text-3xl md:text-4xl font-extrabold text-er-dark">${value}</p>
                                     <p class="mt-2 text-sm text-gray-500 break-keep">${label}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="mb-10 animate-fade-in-up">
+                            <h3 class="text-lg font-bold text-gray-900 mb-4">회복 이야기 카테고리</h3>
+                            <div class="flex flex-wrap gap-2">
+                                ${['개인 회복', '부부·가정', '목회자·선교사', '교회 공동체', '리더십·팀', '훈련 참여자'].map((tag) => `
+                                    <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-white border border-gray-100 text-gray-600">${tag}</span>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3 mb-10 animate-fade-in-up">
+                            ${[
+                                ['개인 회복', '“같은 갈등이 반복되던 이유를 이해하고, 반응이 달라졌습니다.”', '개인 코칭 참여자'],
+                                ['부부·가정', '“서로를 바꾸려던 대화가, 서로를 이해하는 대화로 바뀌었습니다.”', '부부 코칭 참여자'],
+                                ['목회자·선교사', '“소진을 버티는 방식에서 벗어나, 사역 리듬을 다시 세웠습니다.”', '사역지원 트랙 참여자'],
+                                ['교회 공동체', '“팀 내 긴장이 줄고, 회의와 결정이 훨씬 건강해졌습니다.”', '협력 교회 리더'],
+                                ['리더십·팀', '“각자 강점이 분명해지며 역할 분담이 자연스러워졌습니다.”', '기관 프로그램 참여팀'],
+                                ['훈련 참여자', '“이론이 실제 코칭 장면에 연결되는 경험이 가장 컸습니다.”', '훈련 과정 수료생'],
+                            ].map(([category, quote, who]) => `
+                                <div class="rounded-[2rem] bg-white border border-white/40 p-6 shadow-soft floating-card">
+                                    <span class="inline-flex px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold tracking-wider">${category}</span>
+                                    <p class="mt-4 text-sm text-gray-700 leading-relaxed break-keep">${quote}</p>
+                                    <p class="mt-4 text-xs text-gray-400">${who}</p>
                                 </div>
                             `).join('')}
                         </div>
@@ -1281,12 +1323,76 @@
         }
         if (typeof window !== 'undefined') window.handleExternalFormIframeLoad = handleExternalFormIframeLoad;
 
-        function renderTest() {
+        function mountAdaptiveTestIframe() {
+            const slot = document.getElementById('adaptive-test-iframe-slot');
+            const skeleton = document.getElementById('adaptive-test-skeleton');
+            if (!slot) return;
+
             const isKo = adaptiveLang !== 'en';
             const langParam = isKo ? 'ko' : 'en';
-            const version = '20260305-motive-v4';
             const title = isKo ? '적응형 에니어그램 심층 진단' : 'Adaptive Enneagram Typing Assessment';
-            const cacheBuster = Date.now();
+            const src = `test.html?v=${ADAPTIVE_TEST_EMBED_VERSION}&lang=${langParam}`;
+
+            const canReuse =
+                state.testIframeEl &&
+                state.testIframeEl.isConnected === false &&
+                state.testIframeLang === adaptiveLang;
+
+            if (canReuse) {
+                slot.appendChild(state.testIframeEl);
+                handleExternalFormIframeLoad('adaptive-test-iframe', 'adaptive-test-skeleton');
+                return;
+            }
+
+            if (state.testIframeEl) {
+                try {
+                    state.testIframeEl.remove();
+                } catch (_) { /* noop */ }
+                state.testIframeEl = null;
+                state.testIframeLang = null;
+            }
+
+            if (skeleton) {
+                skeleton.classList.remove('hidden', 'opacity-0');
+            }
+
+            const iframe = document.createElement('iframe');
+            iframe.id = 'adaptive-test-iframe';
+            iframe.src = src;
+            iframe.title = title;
+            iframe.className =
+                'w-full min-h-[2500px] md:min-h-[2800px] opacity-0 transition-opacity duration-500';
+            iframe.loading = 'lazy';
+            iframe.addEventListener('load', function onAdaptiveTestIframeLoad() {
+                iframe.removeEventListener('load', onAdaptiveTestIframeLoad);
+                handleExternalFormIframeLoad('adaptive-test-iframe', 'adaptive-test-skeleton');
+            });
+            slot.appendChild(iframe);
+            state.testIframeEl = iframe;
+            state.testIframeLang = adaptiveLang;
+        }
+
+        function prefetchTestAssets() {
+            const head = document.head || document.getElementsByTagName('head')[0];
+            if (!head) return;
+            const ensureLink = (rel, href, asValue) => {
+                if (!href || document.querySelector(`link[rel="${rel}"][href="${href}"]`)) return;
+                const link = document.createElement('link');
+                link.rel = rel;
+                link.href = href;
+                if (asValue) link.as = asValue;
+                head.appendChild(link);
+            };
+            const v = ADAPTIVE_TEST_EMBED_VERSION;
+            ensureLink('prefetch', `test.html?v=${v}&lang=ko`, 'document');
+            ensureLink('prefetch', `test.html?v=${v}&lang=en`, 'document');
+            ensureLink('prefetch', 'js/test.js', 'script');
+            ensureLink('prefetch', 'css/test.css', 'style');
+        }
+        if (typeof window !== 'undefined') window.prefetchTestAssets = prefetchTestAssets;
+
+        function renderTest() {
+            const isKo = adaptiveLang !== 'en';
             return `
                 <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
                     <div class="mb-4 flex items-center justify-end gap-2">
@@ -1318,14 +1424,7 @@
                                 </div>
                             </div>
                         </div>
-                        <iframe
-                            id="adaptive-test-iframe"
-                            src="test.html?v=${version}&lang=${langParam}&_=${cacheBuster}"
-                            title="${title}"
-                            class="w-full min-h-[2500px] md:min-h-[2800px] opacity-0 transition-opacity duration-500"
-                            loading="lazy"
-                            onload="handleExternalFormIframeLoad('adaptive-test-iframe', 'adaptive-test-skeleton')"
-                        ></iframe>
+                        <div id="adaptive-test-iframe-slot" class="relative w-full min-h-[2500px] md:min-h-[2800px]"></div>
                     </div>
 
                     <div class="mt-8 grid md:grid-cols-2 gap-4">
@@ -4584,6 +4683,12 @@
                     if (window.console && window.console.error) window.console.error('renderSection error', e);
                     try { renderSection('home', null, { syncHash: false }); } catch (_) {}
                 }
+                const schedulePrefetch = window.requestIdleCallback
+                    ? (cb) => window.requestIdleCallback(cb, { timeout: 1200 })
+                    : (cb) => setTimeout(cb, 900);
+                schedulePrefetch(() => {
+                    try { prefetchTestAssets(); } catch (_) {}
+                });
             })();
         }
 

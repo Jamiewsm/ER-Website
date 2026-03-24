@@ -358,6 +358,43 @@ function setProgress(percent) {
   if (track) track.setAttribute('aria-valuenow', String(percent));
 }
 
+let pdfLibLoadPromise = null;
+function loadScriptOnce(src) {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[src="${src}"]`);
+    if (existing) {
+      if (existing.dataset.loaded === 'true') {
+        resolve();
+        return;
+      }
+      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('error', () => reject(new Error(`Failed to load ${src}`)), { once: true });
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.defer = true;
+    script.addEventListener('load', () => {
+      script.dataset.loaded = 'true';
+      resolve();
+    }, { once: true });
+    script.addEventListener('error', () => reject(new Error(`Failed to load ${src}`)), { once: true });
+    document.head.appendChild(script);
+  });
+}
+
+async function ensurePdfLibsLoaded() {
+  if (window.html2canvas && window.jspdf && window.jspdf.jsPDF) return;
+  if (!pdfLibLoadPromise) {
+    pdfLibLoadPromise = Promise.all([
+      loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+      loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')
+    ]);
+  }
+  await pdfLibLoadPromise;
+}
+
 function revealTestPageAfterLoad() {
   const main = document.getElementById('test-main-content');
   const skeleton = document.getElementById('test-initial-skeleton');
@@ -376,19 +413,19 @@ async function downloadResultPdf() {
   const btn = document.getElementById('download-pdf-btn');
   if (!target || target.classList.contains('hidden')) return;
 
-  if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
-    alert('PDF 라이브러리를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.');
-    return;
-  }
-
   const prev = btn ? btn.innerText : '';
   if (btn) {
     btn.disabled = true;
-    btn.innerText = 'PDF 생성 중...';
+    btn.innerText = 'PDF 준비 중...';
     btn.classList.add('opacity-60', 'cursor-not-allowed');
   }
 
   try {
+    await ensurePdfLibsLoaded();
+    if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
+      throw new Error('PDF library unavailable');
+    }
+    if (btn) btn.innerText = 'PDF 생성 중...';
     const canvas = await window.html2canvas(target, {
       scale: 2,
       useCORS: true,
