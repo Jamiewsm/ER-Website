@@ -455,7 +455,7 @@
                                             </div>
                                             <div class="text-left pr-2">
                                                 <p class="text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-wider">Restoration in Motion</p>
-                                                <p class="text-sm md:text-base font-extrabold text-er-dark">개인 · 가정 · 교회 · 공동체</p>
+                                                <p class="text-sm md:text-base font-extrabold text-er-dark">개인 · 가정 · 공동체</p>
                                             </div>
                                         </div>
 
