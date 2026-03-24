@@ -969,6 +969,18 @@
         }
 
         function renderCommunity() {
+            const storyFilter = state.currentPayload?.story || '';
+            const stories = [
+                { k: 'personal', category: '개인 회복', quote: '“같은 갈등이 반복되던 이유를 이해하고, 반응이 달라졌습니다.”', who: '개인 코칭 참여자' },
+                { k: 'couple', category: '부부·가정', quote: '“서로를 바꾸려던 대화가, 서로를 이해하는 대화로 바뀌었습니다.”', who: '부부 코칭 참여자' },
+                { k: 'parenting', category: '자녀·양육', quote: '“아이의 반응을 문제로만 보지 않게 되었고, 부모의 대화 방식이 달라졌습니다.”', who: '양육 코칭 참여자' },
+                { k: 'ministry', category: '목회자·선교사', quote: '“소진을 버티는 방식에서 벗어나, 사역 리듬을 다시 세웠습니다.”', who: '사역지원 트랙 참여자' },
+                { k: 'church', category: '교회 공동체', quote: '“팀 내 긴장이 줄고, 회의와 결정이 훨씬 건강해졌습니다.”', who: '협력 교회 리더' },
+                { k: 'team', category: '리더십·팀', quote: '“각자 강점이 분명해지며 역할 분담이 자연스러워졌습니다.”', who: '기관 프로그램 참여팀' },
+                { k: 'leadership', category: '리더십·팀', quote: '“피드백 대화가 훨씬 선명해지고, 의사결정이 빨라졌습니다.”', who: '리더십 프로그램 참여자' },
+                { k: 'training', category: '훈련 참여자', quote: '“이론이 실제 코칭 장면에 연결되는 경험이 가장 컸습니다.”', who: '훈련 과정 수료생' }
+            ];
+            const filteredStories = storyFilter ? stories.filter((item) => item.k === storyFilter) : stories;
             return `
                 <div class="bg-white min-h-screen py-16 px-4">
                     <div class="max-w-6xl mx-auto">
@@ -1001,15 +1013,17 @@
                             </div>
                         </div>
 
+                        <div class="mb-5 flex flex-wrap items-center gap-2 animate-fade-in-up">
+                            ${storyFilter ? `
+                                <span class="inline-flex px-3 py-1 rounded-full bg-er-base text-er-accent text-xs font-bold">선택된 후기 보기</span>
+                                <button onclick="renderSection('community')" class="inline-flex px-3 py-1 rounded-full border border-gray-200 text-xs font-medium text-gray-600 hover:text-er-dark hover:border-er-accent transition-colors">
+                                    전체 후기 보기
+                                </button>
+                            ` : ''}
+                        </div>
+
                         <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3 mb-10 animate-fade-in-up">
-                            ${[
-                                ['개인 회복', '“같은 갈등이 반복되던 이유를 이해하고, 반응이 달라졌습니다.”', '개인 코칭 참여자'],
-                                ['부부·가정', '“서로를 바꾸려던 대화가, 서로를 이해하는 대화로 바뀌었습니다.”', '부부 코칭 참여자'],
-                                ['목회자·선교사', '“소진을 버티는 방식에서 벗어나, 사역 리듬을 다시 세웠습니다.”', '사역지원 트랙 참여자'],
-                                ['교회 공동체', '“팀 내 긴장이 줄고, 회의와 결정이 훨씬 건강해졌습니다.”', '협력 교회 리더'],
-                                ['리더십·팀', '“각자 강점이 분명해지며 역할 분담이 자연스러워졌습니다.”', '기관 프로그램 참여팀'],
-                                ['훈련 참여자', '“이론이 실제 코칭 장면에 연결되는 경험이 가장 컸습니다.”', '훈련 과정 수료생'],
-                            ].map(([category, quote, who]) => `
+                            ${filteredStories.map(({ category, quote, who }) => `
                                 <div class="rounded-[2rem] bg-white border border-white/40 p-6 shadow-soft floating-card">
                                     <span class="inline-flex px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold tracking-wider">${category}</span>
                                     <p class="mt-4 text-sm text-gray-700 leading-relaxed break-keep">${quote}</p>
@@ -3827,9 +3841,9 @@
                     title: '개인/가정 코칭',
                     desc: '',
                     problems: [
-                        { t: '우리 아이가 달라졌어요', d: '아이와 부모의 서로 다른 기질·반응 패턴을 분석하고, 갈등을 줄이는 맞춤 양육 코칭을 제공합니다.', i: 'fas fa-child-reaching' },
-                        { t: '우리 부부가 달라졌어요', d: '부부의 차이와 충돌 지점을 구조적으로 해석해, 반복되는 갈등을 대화 가능한 관계로 전환합니다.', i: 'fas fa-heart' },
-                        { t: '나를 이해하는 회복 세션', d: '직장·사회관계, 중년/청소년기의 위기에서 내 반응의 뿌리를 이해하고 회복 방향을 함께 설계합니다.', i: 'fas fa-compass' }
+                        { t: '우리 아이가 달라졌어요', d: '아이와 부모의 서로 다른 기질·반응 패턴을 분석하고, 갈등을 줄이는 맞춤 양육 코칭을 제공합니다.', i: 'fas fa-child-reaching', f: 'parenting' },
+                        { t: '우리 부부가 달라졌어요', d: '부부의 차이와 충돌 지점을 구조적으로 해석해, 반복되는 갈등을 대화 가능한 관계로 전환합니다.', i: 'fas fa-heart', f: 'couple' },
+                        { t: '나를 이해하는 회복 세션', d: '직장·사회관계, 중년/청소년기의 위기에서 내 반응의 뿌리를 이해하고 회복 방향을 함께 설계합니다.', i: 'fas fa-compass', f: 'personal' }
                     ],
                     cards: [
                         { b: 'Step 1', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$100', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
@@ -3841,9 +3855,9 @@
                     title: '기관/교회 프로그램',
                     desc: '목회자·선교사 개인은 지원 원칙에 따라 별도 안내해 드리며, 기관 프로그램은 규모와 목적에 맞춰 맞춤 제안으로 진행합니다.',
                     problems: [
-                        { t: '공동체 갈등 회복', d: '리더와 구성원 사이의 반복 갈등을 공통 언어로 정리하고, 실제 적용안을 함께 설계합니다.', i: 'fas fa-people-group' },
-                        { t: '사역자 소진 돌봄', d: '정서적 소진과 관계 피로를 다루며, 회복 루틴과 팀 내 건강한 역할 분담을 코칭합니다.', i: 'fas fa-hand-holding-heart' },
-                        { t: '리더십 소통 재정렬', d: '의사결정과 소통 방식의 충돌 지점을 점검해, 팀 운영 흐름이 끊기지 않도록 돕습니다.', i: 'fas fa-comments' }
+                        { t: '공동체 갈등 회복', d: '리더와 구성원 사이의 반복 갈등을 공통 언어로 정리하고, 실제 적용안을 함께 설계합니다.', i: 'fas fa-people-group', f: 'church' },
+                        { t: '사역자 소진 돌봄', d: '정서적 소진과 관계 피로를 다루며, 회복 루틴과 팀 내 건강한 역할 분담을 코칭합니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' },
+                        { t: '리더십 소통 재정렬', d: '의사결정과 소통 방식의 충돌 지점을 점검해, 팀 운영 흐름이 끊기지 않도록 돕습니다.', i: 'fas fa-comments', f: 'leadership' }
                     ],
                     cards: [
                         { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등 언어를 공통 프레임으로 정렬', i: 'fas fa-chalkboard-teacher' },
@@ -3855,9 +3869,9 @@
                     title: '기업/팀 프로그램',
                     desc: '성격 설명이 아니라 팀 커뮤니케이션, 갈등 비용, 협업 효율을 개선하는 운영 언어로 설계합니다.',
                     problems: [
-                        { t: '팀 소통 충돌 해결', d: '업무 스타일 차이로 생기는 오해를 줄이고, 협업 속도를 높이는 소통 규칙을 설계합니다.', i: 'fas fa-users' },
-                        { t: '리더십 의사결정 정렬', d: '리더-팀 간 피드백 단절을 줄이고 의사결정 흐름이 막히지 않도록 구조를 재정비합니다.', i: 'fas fa-diagram-project' },
-                        { t: '배치·역할 적합성 개선', d: '강점과 동기 기반으로 역할을 조정해, 사람-업무 미스매치로 인한 비용을 줄입니다.', i: 'fas fa-briefcase' }
+                        { t: '팀 소통 충돌 해결', d: '업무 스타일 차이로 생기는 오해를 줄이고, 협업 속도를 높이는 소통 규칙을 설계합니다.', i: 'fas fa-users', f: 'team' },
+                        { t: '리더십 의사결정 정렬', d: '리더-팀 간 피드백 단절을 줄이고 의사결정 흐름이 막히지 않도록 구조를 재정비합니다.', i: 'fas fa-diagram-project', f: 'leadership' },
+                        { t: '배치·역할 적합성 개선', d: '강점과 동기 기반으로 역할을 조정해, 사람-업무 미스매치로 인한 비용을 줄입니다.', i: 'fas fa-briefcase', f: 'team' }
                     ],
                     cards: [
                         { b: '팀', t: '인지 다양성 워크숍', d: '역할 적합성·소통 패턴·갈등 비용 진단', p: '$2,000–$5,000', o: '결과: 팀 충돌 원인을 가시화해 실행 합의 도출', i: 'fas fa-sitemap' },
@@ -3886,6 +3900,9 @@
                         </div>
                         <h4 class="text-sm md:text-base font-bold text-er-dark mb-2 break-keep">${p.t}</h4>
                         <p class="text-xs text-gray-600 leading-relaxed break-keep">${p.d}</p>
+                        <button onclick="renderSection('community', { story: '${p.f || ''}' })" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">
+                            상담 후기 보기 <i class="fas fa-arrow-right text-[10px]"></i>
+                        </button>
                     </div>
                 `).join('');
             }
