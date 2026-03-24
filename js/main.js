@@ -884,6 +884,13 @@
                     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 pb-20">
                         <div id="program-intro" class="mb-6 text-center bg-white rounded-2xl p-6 shadow-soft max-w-2xl mx-auto border border-white/40 animate-fade-in-up floating-card">
                             </div>
+
+                        <div class="mb-4 text-center">
+                            <h3 class="text-lg md:text-xl font-bold text-er-dark">이런 문제를 함께 다룹니다</h3>
+                            <p class="mt-1 text-xs text-gray-500 break-keep">내 상황에 맞는 구체적인 주제로 코칭/프로그램을 선택할 수 있습니다.</p>
+                        </div>
+                        <div id="program-problem-cards" class="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        </div>
                         
                         <div id="program-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             </div>
@@ -3812,12 +3819,18 @@
             });
 
             const introEl = document.getElementById('program-intro');
+            const problemCardsEl = document.getElementById('program-problem-cards');
             const cardsEl = document.getElementById('program-cards');
 
             const data = {
                 individual: {
                     title: '개인/가정 유료 코칭',
                     desc: '반복되는 감정·관계 패턴을 실제 변화로 연결하는 핵심 수익 트랙입니다. 모든 가격은 USD 기준입니다.',
+                    problems: [
+                        { t: '우리 아이가 달라졌어요', d: '아이와 부모의 서로 다른 기질·반응 패턴을 분석하고, 갈등을 줄이는 맞춤 양육 코칭을 제공합니다.', i: 'fas fa-child-reaching' },
+                        { t: '우리 부부가 달라졌어요', d: '부부의 차이와 충돌 지점을 구조적으로 해석해, 반복되는 갈등을 대화 가능한 관계로 전환합니다.', i: 'fas fa-heart' },
+                        { t: '나를 이해하는 회복 세션', d: '직장·사회관계, 중년/청소년기의 위기에서 내 반응의 뿌리를 이해하고 회복 방향을 함께 설계합니다.', i: 'fas fa-compass' }
+                    ],
                     cards: [
                         { b: 'Step 1', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$100', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
                         { b: 'Step 2', t: '개별 코칭 (1회 세션)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$80 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
@@ -3827,6 +3840,11 @@
                 church: {
                     title: '기관/교회 프로그램',
                     desc: '목회자·선교사 개인은 지원 원칙에 따라 별도 안내해 드리며, 기관 프로그램은 규모와 목적에 맞춰 맞춤 제안으로 진행합니다.',
+                    problems: [
+                        { t: '공동체 갈등 회복', d: '리더와 구성원 사이의 반복 갈등을 공통 언어로 정리하고, 실제 적용안을 함께 설계합니다.', i: 'fas fa-people-group' },
+                        { t: '사역자 소진 돌봄', d: '정서적 소진과 관계 피로를 다루며, 회복 루틴과 팀 내 건강한 역할 분담을 코칭합니다.', i: 'fas fa-hand-holding-heart' },
+                        { t: '리더십 소통 재정렬', d: '의사결정과 소통 방식의 충돌 지점을 점검해, 팀 운영 흐름이 끊기지 않도록 돕습니다.', i: 'fas fa-comments' }
+                    ],
                     cards: [
                         { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등 언어를 공통 프레임으로 정렬', i: 'fas fa-chalkboard-teacher' },
                         { b: '집중', t: '집중 워크숍 (6시간)', d: '팀/리더 분석 + 갈등 구조 해석 + 적용 설계', p: '$1,800부터', o: '결과: 리더십 팀의 소통/의사결정 규칙 재설계', i: 'fas fa-users-cog' },
@@ -3836,6 +3854,11 @@
                 business: {
                     title: '기업/팀 프로그램',
                     desc: '성격 설명이 아니라 팀 커뮤니케이션, 갈등 비용, 협업 효율을 개선하는 운영 언어로 설계합니다.',
+                    problems: [
+                        { t: '팀 소통 충돌 해결', d: '업무 스타일 차이로 생기는 오해를 줄이고, 협업 속도를 높이는 소통 규칙을 설계합니다.', i: 'fas fa-users' },
+                        { t: '리더십 의사결정 정렬', d: '리더-팀 간 피드백 단절을 줄이고 의사결정 흐름이 막히지 않도록 구조를 재정비합니다.', i: 'fas fa-diagram-project' },
+                        { t: '배치·역할 적합성 개선', d: '강점과 동기 기반으로 역할을 조정해, 사람-업무 미스매치로 인한 비용을 줄입니다.', i: 'fas fa-briefcase' }
+                    ],
                     cards: [
                         { b: '팀', t: '인지 다양성 워크숍', d: '역할 적합성·소통 패턴·갈등 비용 진단', p: '$2,000–$5,000', o: '결과: 팀 충돌 원인을 가시화해 실행 합의 도출', i: 'fas fa-sitemap' },
                         { b: '인사', t: '채용·배치 자문', d: '유형 기반 역할 매칭 + 팀 구조 제안', p: '맞춤 견적', o: '결과: 채용/배치 미스매치로 인한 비용 감소', i: 'fas fa-briefcase' },
@@ -3852,6 +3875,19 @@
                     <h3 class="text-lg font-bold text-er-dark mb-1">${selected.title}</h3>
                     <p class="text-xs text-gray-500 break-keep">${selected.desc}</p>
                 `;
+            }
+
+            if(problemCardsEl) {
+                const problems = selected.problems || [];
+                problemCardsEl.innerHTML = problems.map((p) => `
+                    <div class="bg-white rounded-2xl p-5 border border-white/40 shadow-soft floating-card">
+                        <div class="w-10 h-10 rounded-xl bg-er-base text-er-accent flex items-center justify-center mb-3">
+                            <i class="${p.i}"></i>
+                        </div>
+                        <h4 class="text-sm md:text-base font-bold text-er-dark mb-2 break-keep">${p.t}</h4>
+                        <p class="text-xs text-gray-600 leading-relaxed break-keep">${p.d}</p>
+                    </div>
+                `).join('');
             }
 
             if(cardsEl) {
