@@ -36,10 +36,23 @@ async function openCoachPortalFromMenu() {
       await loadCoachProfile();
     } catch (_) {}
   }
-  if (typeof renderSection === 'function') renderSection('coach_portal');
+  if (window.state && window.state.coachProfileLoading) return;
+  if (!window.state || !window.state.user) {
+    if (typeof toggleLogin === 'function') toggleLogin();
+    return;
+  }
+  if (typeof renderSection === 'function') {
+    renderSection(window.state.isCoach ? 'coach_portal' : 'mypage');
+  }
 }
 
 function openCoachAppFromMenu() {
   if (typeof closeDesktopAccountMenu === 'function') closeDesktopAccountMenu();
   if (typeof openCoachApp === 'function') openCoachApp();
+}
+
+if (typeof window !== 'undefined') {
+  window.openMyAccount = openMyAccount;
+  window.openCoachPortalFromMenu = openCoachPortalFromMenu;
+  window.openCoachAppFromMenu = openCoachAppFromMenu;
 }

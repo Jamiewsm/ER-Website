@@ -8,6 +8,7 @@
             user: null, 
             isCoach: false,
             coachProfile: null,
+            coachProfileLoading: false,
             notices: [],
             noticesLoaded: false,
             noticeEditor: {
@@ -2061,7 +2062,9 @@
             }
 
             const userEmail = state.user.email || '-';
-            const coachBadge = state.isCoach
+            const coachBadge = state.coachProfileLoading
+                ? `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-100"><i class="fas fa-spinner fa-spin"></i> 권한 확인 중</span>`
+                : state.isCoach
                 ? `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-700 border border-green-100"><i class="fas fa-check-circle"></i> 코치 계정</span>`
                 : `<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold bg-gray-50 text-gray-600 border border-gray-100">일반 계정</span>`;
             return `

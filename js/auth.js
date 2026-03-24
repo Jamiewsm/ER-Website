@@ -6,22 +6,29 @@ function isSupabaseConfigured() {
 async function loadCoachProfile() {
   if (!window.state) return;
   var s = window.state;
+  s.coachProfileLoading = true;
   s.isCoach = false;
   s.coachProfile = null;
+  updateAuthButtons();
   if (!window.supabaseClient || !s.user || !s.user.id) {
+    s.coachProfileLoading = false;
     updateAuthButtons();
     return;
   }
-  var res = await window.supabaseClient
-    .from('coach_profiles')
-    .select('user_id, display_name, role, is_active')
-    .eq('user_id', s.user.id)
-    .maybeSingle();
-  if (!res.error && res.data && res.data.is_active) {
-    s.isCoach = true;
-    s.coachProfile = res.data;
+  try {
+    var res = await window.supabaseClient
+      .from('coach_profiles')
+      .select('user_id, display_name, role, is_active')
+      .eq('user_id', s.user.id)
+      .maybeSingle();
+    if (!res.error && res.data && res.data.is_active) {
+      s.isCoach = true;
+      s.coachProfile = res.data;
+    }
+  } finally {
+    s.coachProfileLoading = false;
+    updateAuthButtons();
   }
-  updateAuthButtons();
 }
 
 function updateAuthButtons() {
@@ -131,6 +138,9 @@ async function initializeSupabase() {
   if (window.state) window.state.user = (sessionRes && sessionRes.data && sessionRes.data.session) ? sessionRes.data.session.user : null;
   await loadCoachProfile();
   updateAuthButtons();
+  if (window.state && (window.state.currentSection === 'mypage' || String(window.state.currentSection).indexOf('coach_') === 0)) {
+    if (typeof renderSection === 'function') renderSection(window.state.currentSection, window.state.currentPayload, { syncHash: false });
+  }
   window.supabaseClient.auth.onAuthStateChange(async function (_event, session) {
     if (window.state) window.state.user = session ? session.user : null;
     await loadCoachProfile();
