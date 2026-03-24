@@ -866,7 +866,7 @@
                         <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                         <div class="relative z-10 max-w-7xl mx-auto text-center">
                             <h2 class="text-2xl md:text-4xl font-bold mb-3">서비스 안내</h2>
-                            <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인/가정 유료 코칭, 기관/교회, 기업/팀 프로그램을 가격과 결과 중심으로 안내합니다.</p>
+                            <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인·가정 코칭부터 기관·교회·기업/팀 프로그램까지, 지금 필요한 회복 여정을 안내합니다.</p>
                             
                             <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
                                 ${['individual:개인/가정', 'church:기관/교회', 'business:기업/팀'].map(item => {
@@ -3826,7 +3826,7 @@
                 },
                 church: {
                     title: '기관/교회 프로그램',
-                    desc: '목회자/선교사 개인 지원은 사역지원 트랙으로 유지하고, 기관 단위 프로그램은 유료 프로젝트로 운영합니다.',
+                    desc: '목회자·선교사 개인은 지원 원칙에 따라 별도 안내해 드리며, 기관 프로그램은 규모와 목적에 맞춰 맞춤 제안으로 진행합니다.',
                     cards: [
                         { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등 언어를 공통 프레임으로 정렬', i: 'fas fa-chalkboard-teacher' },
                         { b: '집중', t: '집중 워크숍 (6시간)', d: '팀/리더 분석 + 갈등 구조 해석 + 적용 설계', p: '$1,800부터', o: '결과: 리더십 팀의 소통/의사결정 규칙 재설계', i: 'fas fa-users-cog' },
