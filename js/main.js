@@ -3824,8 +3824,8 @@
 
             const data = {
                 individual: {
-                    title: '개인/가정 유료 코칭',
-                    desc: '반복되는 감정·관계 패턴을 실제 변화로 연결하는 핵심 수익 트랙입니다. 모든 가격은 USD 기준입니다.',
+                    title: '개인/가정 코칭',
+                    desc: '',
                     problems: [
                         { t: '우리 아이가 달라졌어요', d: '아이와 부모의 서로 다른 기질·반응 패턴을 분석하고, 갈등을 줄이는 맞춤 양육 코칭을 제공합니다.', i: 'fas fa-child-reaching' },
                         { t: '우리 부부가 달라졌어요', d: '부부의 차이와 충돌 지점을 구조적으로 해석해, 반복되는 갈등을 대화 가능한 관계로 전환합니다.', i: 'fas fa-heart' },
@@ -3873,7 +3873,7 @@
             if(introEl) {
                 introEl.innerHTML = `
                     <h3 class="text-lg font-bold text-er-dark mb-1">${selected.title}</h3>
-                    <p class="text-xs text-gray-500 break-keep">${selected.desc}</p>
+                    ${selected.desc ? `<p class="text-xs text-gray-500 break-keep">${selected.desc}</p>` : ''}
                 `;
             }
 
