@@ -31,7 +31,7 @@ function renderCoaches() {
             : `<div class="w-full h-full flex items-center justify-center bg-gray-50"><i class="fas fa-user text-4xl text-gray-300" aria-hidden="true"></i></div>`;
 
         return `
-        <div class="bg-white rounded-[2.5rem] p-3 md:p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100/80 transition-all duration-300 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 group">
+        <div class="bg-white rounded-[2.5rem] p-3 md:p-4 shadow-soft floating-card border border-white/60 transition-all duration-300 hover:shadow-card hover:-translate-y-1 group">
             <div class="flex flex-col md:flex-row gap-6 md:gap-8">
                 <!-- Photo -->
                 <div class="md:w-[280px] shrink-0">
@@ -47,12 +47,12 @@ function renderCoaches() {
                             <div class="flex flex-wrap items-center gap-2 mb-3">
                                 ${ministryBadge}
                             </div>
-                            <h3 class="text-3xl font-extrabold text-gray-900 tracking-tight">${coach.name}</h3>
+                            <h3 class="text-3xl font-extrabold text-er-dark tracking-tight">${coach.name}</h3>
                             <p class="text-base text-gray-500 font-medium mt-1">${coach.role}</p>
                             ${coach.locations ? `<p class="flex items-center text-sm text-gray-400 mt-2 font-medium">${svgPin}${coach.locations}</p>` : ''}
                         </div>
                         <button onclick="renderSection('apply', { track: '${ctaTrack}' })"
-                            class="shrink-0 px-6 py-3 rounded-full bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg active:scale-95 inline-flex items-center gap-2">
+                            class="shrink-0 px-6 py-3 rounded-full bg-er-dark text-white text-sm font-semibold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg active:scale-95 inline-flex items-center gap-2">
                             ${ctaLabel}
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                         </button>
@@ -92,15 +92,15 @@ function renderCoaches() {
         : '';
 
     return `
-    <section class="min-h-screen bg-[#FAF9F7] pt-12 pb-24">
+    <section class="min-h-screen bg-er-base pt-12 pb-24">
         <div class="max-w-[1000px] mx-auto px-5 sm:px-6">
 
             <!-- Header -->
             <div class="mb-14 animate-fade-in-up text-center" style="animation-fill-mode:both">
-                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight break-keep leading-tight mb-4">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-er-dark tracking-tight break-keep leading-tight mb-4">
                     ${C.title || '회복의 여정을 함께할 코치를 소개합니다'}
                 </h1>
-                <p class="text-gray-500 break-keep leading-relaxed text-base md:text-lg max-w-2xl mx-auto font-light">
+                <p class="text-gray-600 break-keep leading-relaxed text-base md:text-lg max-w-2xl mx-auto font-light">
                     ${C.desc || '주님을 사랑하는 사람들이 여러분의 여정을 함께 걷습니다.'}
                 </p>
             </div>
@@ -108,10 +108,10 @@ function renderCoaches() {
             <!-- Ministry Support Notice (Minimalist) -->
             <div class="mb-12 rounded-2xl bg-white border border-gray-200/60 shadow-sm px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fade-in-up" style="animation-delay:0.1s;animation-fill-mode:both">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                    <div class="w-8 h-8 rounded-full bg-er-base flex items-center justify-center shrink-0">
                         ${svgCross}
                     </div>
-                    <span class="text-gray-700 font-medium text-sm break-keep">목회자·선교사와 그 가족에게는 <span class="font-bold text-gray-900">무료 코칭</span>을 제공합니다.</span>
+                    <span class="text-gray-700 font-medium text-sm break-keep">목회자·선교사와 그 가족에게는 <span class="font-bold text-er-dark">무료 코칭</span>을 제공합니다.</span>
                 </div>
                 <button onclick="renderSection('support')" class="shrink-0 px-4 py-2 rounded-lg bg-gray-50 text-gray-700 text-sm font-semibold hover:bg-gray-100 transition-colors border border-gray-200/60">
                     무료 지원 알아보기
