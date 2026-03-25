@@ -122,7 +122,19 @@
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full">무료 1:1 세션 신청</a>
           </div>
 
-          <div class="text-center pt-6 border-t border-gray-100">
+          <!-- Share -->
+          <div class="flex justify-center pt-2">
+            <button onclick="shareTestResult()"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#4a4540] text-white text-sm font-bold hover:bg-[#3a3530] active:scale-95 transition-all shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+              결과 공유하기
+            </button>
+          </div>
+
+          <div class="text-center pt-4 border-t border-gray-100">
             <button id="download-pdf-btn" onclick="downloadResultPdf()" class="mr-3 text-sm text-[#4a4540] hover:text-black font-semibold underline">결과 PDF 다운로드</button>
             <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">처음부터 다시하기</button>
             <p class="text-xs text-gray-400 mt-4">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
