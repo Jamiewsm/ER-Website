@@ -10,9 +10,10 @@
       news: '사역소식',
       about: 'ER 소개',
       programs: '프로그램',
+      coaches: '코치 소개',
       resources: '자료실',
       community: '함께한 이야기',
-      support: '동역과 후원',
+      support: '후원하기',
       apply: '상담 신청',
       menuOpen: '메뉴 열기',
       login: '기존 참여자 로그인',
@@ -33,7 +34,7 @@
       hours: 'Mon–Fri 10:00 – 17:00',
       resources: '자료실',
       community: '함께한 이야기',
-      support: '동역과 후원',
+      support: '후원하기',
       privacy: 'Privacy',
       terms: 'Terms',
       copyright: '© 2025 ER (Enneagram for Restoration).'
@@ -96,20 +97,20 @@
     },
 
     home: {
-      badge: 'Non-profit Ministry',
+      badge: 'Enneagram Coaching',
       headline: '사람과 공동체의 회복을 돕습니다.',
       sub: 'ER은 기독교 세계관과 에니어그램을 통합적으로 이해하고 적용하여, 개인과 가정, 교회와 공동체가 하나님이 지으신 본래 모습을 다시 발견하고 건강한 관계와 소명을 회복하도록 돕습니다.',
       ctaApply: '상담 신청하기',
       ctaPrograms: '프로그램 보기',
-      ctaSupport: '후원·협력 신청하기',
-      principle1: '사역 중심 운영 원칙',
-      principle2: '후원 여부와 무관한 참여 안내',
+      ctaSupport: '사역지원 후원하기',
+      principle1: '전문 코칭 서비스 원칙',
+      principle2: '목회자·선교사 무료 사역지원 원칙',
       principle3: '협력 네트워크 기반 운영',
       restorationInMotion: 'Restoration in Motion',
       approachLabel: 'Approach',
       approach: '삶 가까이 머무는 회복 코칭',
       modelLabel: 'Model',
-      model: '따뜻한 후원과 협력의 흐름',
+      model: '목회·선교 현장을 섬기는 사역지원',
       visionLabel: 'Vision & Mission',
       visionQuote: '나의 Original Design을 알 때,\\n비로소 타인의 Original Design이 보입니다.',
       whoWeServeLabel: 'Who We Serve',
@@ -208,16 +209,16 @@
       howWeOperate: '이 사역을 운영하는 방식',
       operateItems: [
         ['협력 기반의 사역', '교회와 기관, 코치와 협력자와 함께 사역의 구조를 세워 갑니다.'],
-        ['후원과 접근성', '후원과 협력을 통해 더 많은 개인과 공동체가 이 사역에 접근할 수 있도록 운영합니다.'],
+        ['사역지원 후원', '후원금은 목회자·선교사를 위한 무료 코칭 트랙을 유지하는 데 우선 사용됩니다.'],
         ['빠른 해결보다 형성', '단기 해결보다 지속 가능한 회복과 형성의 과정을 중요하게 여깁니다.'],
         ['신뢰와 투명성', '사역의 목적과 운영 방향, 참여 경로를 공개적으로 설명하는 사이트를 지향합니다.']
       ]
     },
 
     support: {
-      label: '동역과 후원',
-      title: '여러분의 후원으로 더 많은 개인과 공동체를 섬길 수 있습니다',
-      desc: 'ER은 중동 선교와 캠퍼스 사역의 경험을 바탕으로, 목회자와 선교사를 비롯해 회복이 필요한 개인과 공동체를 섬겨 왔습니다. 후원 문의와 협력 요청은 더 많은 이들이 이 사역에 연결되도록 돕고, 더 넓은 현장으로 회복의 기회를 잇는 통로가 됩니다.',
+      label: '후원하기',
+      title: '목회자·선교사의 회복 코칭을 함께 후원해 주세요',
+      desc: 'ER의 개인·가정·기업 코칭은 유료 서비스로 운영됩니다. 그러나 목회자와 선교사에게는 무료로 회복 코칭을 제공합니다. 여러분의 후원이 이 무료 사역지원 트랙을 지속할 수 있게 합니다.',
       stats: [['300명+', '지금까지 섬긴 인원'], ['350회+', '누적 세션 수'], ['10곳', '협력 교회·기관'], ['7명', '함께하는 코치'], ['20명+', '훈련 참가자']],
       howToGive: '함께 마음을 보내는 방법',
       howToGiveItems: [
@@ -233,11 +234,11 @@
       ],
       whereUsedNote: '현재 후원은 온라인 결제가 아닌 개별 안내 방식으로 진행됩니다.',
       ctaSupport: '후원·협력 신청하기',
-      principlesTitle: '함께 지키는 운영 원칙',
+      principlesTitle: '후원 운영 원칙',
       principles: [
-        '후원 여부와 관계없이 먼저 필요를 듣고 적절한 연결을 돕습니다.',
-        '협력 요청은 목적과 대상, 현장에 맞추어 개별적으로 설계합니다.',
-        '공개 사이트는 안내 창구로, 운영 포털은 내부 도구로 분리해 운영합니다.'
+        '후원금은 목회자·선교사 무료 코칭 트랙에 우선 사용됩니다.',
+        '일반 개인·가정·기업 서비스는 유료로 운영됩니다.',
+        '협력 파트너십과 공동 프로그램은 현장에 맞게 개별 설계합니다.'
       ]
     },
 
@@ -258,7 +259,7 @@
       messageLabel: '나누고 싶은 이야기',
       messagePlaceholder: '지금의 고민이나 바라는 도움을 편하게 적어주세요.',
       securityNote: '보안 확인',
-      infoNote: 'ER은 후원과 협력으로 운영되는 회복 사역입니다. 코칭과 상담은 후원 여부와 관계없이 안내되며, 후원은 사역을 응원하는 자발적인 선택으로 현재 개별 안내를 통해 연결됩니다. 접수 후 24시간 이내에 담당 코치 또는 운영 담당자가 연락드립니다.',
+      infoNote: 'ER의 개인·가정·기업 코칭은 유료 서비스입니다. 목회자·선교사를 위한 무료 사역지원 트랙은 별도 심사 후 안내드립니다. 접수 후 24시간 이내에 담당 코치가 연락드립니다.',
       submitBtn: '신청하기',
       categoryOptions: ['개인/가정 코칭 (부부, 자녀)', '교회/사역자 회복 프로그램', '비즈니스/조직 워크숍', '강사 양성 과정', '기타 문의'],
       categoryOptionsSupport: ['후원 문의', '교회/기관 협력 문의', '공동 프로그램 제안', '기타 협력 문의'],
@@ -311,6 +312,31 @@
     },
 
     resources: { label: '자료실', noticesTitle: '공지·소식', typesGuideTitle: '유형 가이드' },
+
+    coaches: {
+      label: '코치 소개',
+      title: '회복의 여정을 함께할 코치를 소개합니다',
+      desc: '에니어그램과 기독교 세계관을 통합적으로 훈련받은 코치들이 개인·가정·교회·조직의 회복을 함께 걸어갑니다.',
+      ministryBadge: '사역지원 전담',
+      ministryDesc: '목회자·선교사 무료 코칭 트랙을 담당합니다.',
+      ctaApply: '상담 신청하기',
+      ctaMinistry: '사역지원 신청하기',
+      certLabel: '자격',
+      specialtyLabel: '전문 분야',
+      list: [
+        {
+          id: 'coach-son',
+          name: '손지영 코치',
+          role: 'Head Coach · 에니어그램 전문 코치',
+          photo: 'son-profile-picture.png',
+          bio: '중동 선교와 캠퍼스 사역의 경험을 바탕으로, 에니어그램과 기독교 세계관을 통합하여 개인·가정·교회의 회복을 돕고 있습니다. SOIM 에니어그램 전문가 과정 수료, IEA 멤버.',
+          specialties: ['개인 자기 이해 코칭', '부부·가정 회복', '사역자·선교사 돌봄', '에니어그램 강사 양성'],
+          certs: ['SOIM 에니어그램 전문가', 'IEA Member'],
+          ministry: true,
+          locations: 'Korea · USA'
+        }
+      ]
+    },
     notices: { allNotices: '전체 공지', backToList: '목록으로' },
 
     adaptiveUi: {

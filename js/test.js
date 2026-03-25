@@ -898,3 +898,72 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
 renderQuestions('phase1-container', q1, 'p1');
 setProgress(50);
 requestAnimationFrame(revealTestPageAfterLoad);
+
+// --- Share Feature ---
+function shareTestResult() {
+  const finalEl = document.getElementById('res-final');
+  const instinctsEl = document.getElementById('res-instincts');
+  const badgeEl = document.getElementById('confidence-badge');
+  if (!finalEl || !finalEl.innerText) return;
+
+  const typeResult = finalEl.innerText.trim();
+  const instincts = instinctsEl ? instinctsEl.innerText.trim() : '';
+  const confidence = badgeEl ? badgeEl.innerText.trim() : '';
+  const shareUrl = 'https://er-coaching.com/test.html';
+
+  const shareText = [
+    `나의 에니어그램 유형: ${typeResult}`,
+    instincts ? `${instincts}` : '',
+    confidence ? `(${confidence})` : '',
+    '',
+    'ER 에니어그램 심층 진단으로 알아보기 👇',
+    shareUrl
+  ].filter(Boolean).join('\n');
+
+  if (navigator.share) {
+    navigator.share({
+      title: `에니어그램 결과: ${typeResult}`,
+      text: shareText,
+      url: shareUrl
+    }).catch(() => {});
+    return;
+  }
+
+  // Fallback: copy to clipboard
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(shareText).then(() => {
+      showShareToast('결과가 클립보드에 복사되었습니다 ✓');
+    }).catch(() => {
+      showShareToast('복사 실패. 직접 선택 후 복사해 주세요.');
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = shareText;
+    ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0;';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); showShareToast('결과가 클립보드에 복사되었습니다 ✓'); }
+    catch (_) { showShareToast('복사 실패. 직접 선택 후 복사해 주세요.'); }
+    document.body.removeChild(ta);
+  }
+}
+
+function showShareToast(msg) {
+  let toast = document.getElementById('share-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'share-toast';
+    toast.style.cssText = [
+      'position:fixed', 'bottom:24px', 'left:50%', 'transform:translateX(-50%)',
+      'background:#3E362E', 'color:#fff', 'padding:10px 20px', 'border-radius:24px',
+      'font-size:13px', 'font-weight:600', 'z-index:9999',
+      'transition:opacity 0.3s', 'pointer-events:none', 'white-space:nowrap'
+    ].join(';');
+    document.body.appendChild(toast);
+  }
+  toast.innerText = msg;
+  toast.style.opacity = '1';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2800);
+}
