@@ -3,3 +3,8 @@ supabase/.temp/
 
 # Remote schema scratch files generated during db pull
 supabase/migrations/*_remote_schema.sql
+
+# Local OS/tooling artifacts
+.DS_Store
+**/.DS_Store
+.wrangler/

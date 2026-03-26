@@ -128,6 +128,20 @@ as $$
   );
 $$;
 
+create or replace function public.is_head_coach(_uid uuid)
+returns boolean
+language sql
+stable
+as $$
+  select exists (
+    select 1
+    from public.coach_profiles cp
+    where cp.user_id = _uid
+      and cp.role = 'head_coach'
+      and cp.is_active = true
+  );
+$$;
+
 create or replace function public.require_head_coach()
 returns void
 language plpgsql
@@ -382,14 +396,32 @@ DROP POLICY IF EXISTS "coaches can update materials" ON public.coach_materials;
 CREATE POLICY "coaches can update materials"
 ON public.coach_materials
 FOR UPDATE
-USING (public.is_active_coach(auth.uid()))
-WITH CHECK (public.is_active_coach(auth.uid()));
+USING (
+  public.is_active_coach(auth.uid())
+  and (
+    uploaded_by = auth.uid()
+    or public.is_head_coach(auth.uid())
+  )
+)
+WITH CHECK (
+  public.is_active_coach(auth.uid())
+  and (
+    uploaded_by = auth.uid()
+    or public.is_head_coach(auth.uid())
+  )
+);
 
 DROP POLICY IF EXISTS "coaches can delete materials" ON public.coach_materials;
 CREATE POLICY "coaches can delete materials"
 ON public.coach_materials
 FOR DELETE
-USING (public.is_active_coach(auth.uid()));
+USING (
+  public.is_active_coach(auth.uid())
+  and (
+    uploaded_by = auth.uid()
+    or public.is_head_coach(auth.uid())
+  )
+);
 
 DROP POLICY IF EXISTS "coaches can read session notes" ON public.coach_session_notes;
 CREATE POLICY "coaches can read session notes"
@@ -414,7 +446,13 @@ DROP POLICY IF EXISTS "coaches can delete session notes" ON public.coach_session
 CREATE POLICY "coaches can delete session notes"
 ON public.coach_session_notes
 FOR DELETE
-USING (public.is_active_coach(auth.uid()));
+USING (
+  public.is_active_coach(auth.uid())
+  and (
+    uploaded_by = auth.uid()
+    or public.is_head_coach(auth.uid())
+  )
+);
 
 -- Storage buckets (private)
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
@@ -559,3 +597,69 @@ USING (
   bucket_id = 'coach-session-notes'
   AND public.is_active_coach(auth.uid())
 );
+
+create table if not exists public.public_notices (
+  id uuid primary key default gen_random_uuid(),
+  legacy_key integer unique,
+  tag text not null default '안내',
+  title text not null,
+  summary text,
+  body text not null,
+  body_is_html boolean not null default false,
+  program_period text,
+  program_target text,
+  apply_deadline text,
+  published_at date not null default current_date,
+  created_by uuid references auth.users(id),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create or replace function public.is_notice_admin()
+returns boolean
+language sql
+stable
+as $$
+  select (
+    lower(
+      coalesce(
+        auth.jwt()->>'email',
+        auth.jwt()->'user_metadata'->>'email',
+        auth.jwt()->'app_metadata'->>'email',
+        ''
+      )
+    ) = 'campus.12000@gmail.com'
+  ) or public.is_head_coach(auth.uid());
+$$;
+
+DROP TRIGGER IF EXISTS trg_public_notices_updated_at ON public.public_notices;
+CREATE TRIGGER trg_public_notices_updated_at
+BEFORE UPDATE ON public.public_notices
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+ALTER TABLE public.public_notices ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "public can read notices" ON public.public_notices;
+CREATE POLICY "public can read notices"
+ON public.public_notices
+FOR SELECT
+USING (true);
+
+DROP POLICY IF EXISTS "admins can insert notices" ON public.public_notices;
+CREATE POLICY "admins can insert notices"
+ON public.public_notices
+FOR INSERT
+WITH CHECK (public.is_notice_admin());
+
+DROP POLICY IF EXISTS "admins can update notices" ON public.public_notices;
+CREATE POLICY "admins can update notices"
+ON public.public_notices
+FOR UPDATE
+USING (public.is_notice_admin())
+WITH CHECK (public.is_notice_admin());
+
+DROP POLICY IF EXISTS "admins can delete notices" ON public.public_notices;
+CREATE POLICY "admins can delete notices"
+ON public.public_notices
+FOR DELETE
+USING (public.is_notice_admin());
