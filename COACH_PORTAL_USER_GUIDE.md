@@ -31,7 +31,8 @@
 - 코치 이메일을 실제 이메일로 바꾼 뒤 실행
 
 관리자 계정 예시:
-- `campus.12000@gmail.com` -> `head_coach` 권한 지정
+- `campus.12000@gmail.com` -> 관리자 / 공지·운영 관리용 계정
+- `json@er-coaching.com` -> 손지영 대표 / Founder 공개 표기용 계정
 
 ---
 

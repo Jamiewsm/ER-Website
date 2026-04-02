@@ -34,8 +34,8 @@ function renderMyPage() {
                 <p class="text-gray-500 mb-3 text-sm">인증된 계정으로 로그인되어 있습니다.</p>
                 <div class="mb-6">${coachBadge}</div>
                 <div class="flex flex-col gap-2">
-                    ${state.isCoach ? `<button onclick="renderSection('coach_portal')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">Coach Portal</button>` : ''}
-                    ${state.isCoach ? `<button onclick="openCoachApp()" class="px-6 py-2 bg-white text-er-dark rounded-full text-xs font-bold border border-er-accent/30">Coach App</button>` : ''}
+                    ${state.isCoach ? `<button onclick="openCoachPortalFromMenu()" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">코치 포털 열기</button>` : ''}
+                    <button onclick="switchWebsiteAccount()" class="px-6 py-2 bg-white text-er-dark rounded-full text-xs font-bold border border-er-accent/30">계정 전환</button>
                     <button onclick="renderSection('home')" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">홈으로</button>
                 </div>
             </div>
@@ -57,4 +57,3 @@ function renderCoachAccessDenied(message = '코치 계정만 접근할 수 있�
         </div>
     `;
 }
-

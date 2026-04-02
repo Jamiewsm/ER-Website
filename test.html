@@ -15,7 +15,7 @@
       <div class="rounded-3xl border border-[#bfa68a]/20 bg-white/80 p-6 sm:p-8 shadow-sm">
         <div class="flex items-center gap-2 mb-5">
           <span class="w-2 h-2 rounded-full bg-[#bfa68a] animate-pulse"></span>
-          <span class="text-xs font-bold tracking-wider text-[#6b5f55]">진단 페이지 준비 중</span>
+          <span id="loading-kicker" class="text-xs font-bold tracking-wider text-[#6b5f55]">진단 페이지 준비 중</span>
         </div>
         <div class="space-y-4 animate-pulse">
           <div class="h-6 w-2/3 rounded-lg bg-[#eadccf]"></div>
@@ -30,10 +30,10 @@
   </div>
   <main id="test-main-content" class="max-w-3xl mx-auto pt-12 px-4 sm:px-6 transition-opacity duration-500 opacity-0">
     <header class="text-center mb-10">
-      <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
-      <h1 class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
-      <p class="mt-4 text-gray-600 leading-relaxed text-sm">행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.</p>
-      <p class="text-xs text-gray-400 mt-4">* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.</p>
+      <span id="test-pill" class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
+      <h1 id="test-title" class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
+      <p id="test-subtitle" class="mt-4 text-gray-600 leading-relaxed text-sm">행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.</p>
+      <p id="test-disclaimer" class="text-xs text-gray-400 mt-4">* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.</p>
     </header>
 
     <div id="progress-container" class="mb-8" aria-live="polite">
@@ -48,37 +48,37 @@
 
     <form id="phase1-form" class="space-y-10" novalidate>
       <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center">
-        <p class="font-semibold text-gray-700">1부: 일상적 자동반응 패턴</p>
-        <p class="text-sm text-gray-500 mt-1">불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.</p>
+        <p id="phase1-intro-title" class="font-semibold text-gray-700">1부: 일상적 자동반응 패턴</p>
+        <p id="phase1-intro-desc" class="text-sm text-gray-500 mt-1">불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.</p>
       </div>
       <div id="phase1-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">2단계로 이동</button>
+        <button id="phase1-submit-btn" type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">2단계로 이동</button>
       </div>
     </form>
 
     <form id="phase2-form" class="space-y-10 hidden" novalidate>
       <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center">
-        <p class="font-bold text-[#4a4540] text-lg">1차 분석 완료</p>
-        <p class="text-sm text-gray-600 mt-2">후보 유형 경합을 줄이기 위한 심층 질문입니다.</p>
+        <p id="phase2-intro-title" class="font-bold text-[#4a4540] text-lg">1차 분석 완료</p>
+        <p id="phase2-intro-desc" class="text-sm text-gray-600 mt-2">후보 유형 경합을 줄이기 위한 심층 질문입니다.</p>
       </div>
       <div id="phase2-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg">결과 보기</button>
+        <button id="phase2-submit-btn" type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg">결과 보기</button>
       </div>
     </form>
 
     <form id="phase3-form" class="space-y-10 hidden" novalidate>
       <div class="bg-orange-50 p-6 rounded-2xl border border-orange-200 text-center">
-        <p class="font-bold text-orange-800 text-lg">마지막 정밀 감별</p>
-        <p class="text-sm text-orange-700 mt-2">상위 2개 유형이 모두 높게 경합 중입니다. 최종 확정을 위해 아래 문항 1개만 선택해 주세요.</p>
+        <p id="phase3-intro-title" class="font-bold text-orange-800 text-lg">마지막 정밀 감별</p>
+        <p id="phase3-intro-desc" class="text-sm text-orange-700 mt-2">상위 2개 유형이 모두 높게 경합 중입니다. 최종 확정을 위해 아래 문항 1개만 선택해 주세요.</p>
       </div>
       <div id="phase3-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-3" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">문항을 선택해 주세요.</p>
-        <button type="button" onclick="submitPhase3()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
+        <button id="phase3-submit-btn" type="button" onclick="submitPhase3()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
       </div>
     </form>
 
@@ -108,18 +108,18 @@
           </div>
 
           <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
-            <h3 class="font-bold text-[#4a4540] mb-2 text-sm">분석 리포트</h3>
+            <h3 id="analysis-report-title" class="font-bold text-[#4a4540] mb-2 text-sm">분석 리포트</h3>
             <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
           </div>
 
           <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-            <h3 class="font-bold text-[#4a4540] mb-3 text-sm">상위 3유형 상대 점유율 및 근거</h3>
+            <h3 id="top3-title" class="font-bold text-[#4a4540] mb-3 text-sm">상위 3유형 상대 점유율 및 근거</h3>
             <div id="res-top3" class="space-y-3 text-sm text-gray-700"></div>
           </div>
 
           <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
-            <p class="text-sm text-red-800 mb-3">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.</p>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full">무료 1:1 세션 신청</a>
+            <p id="consult-cta-text" class="text-sm text-red-800 mb-3">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.</p>
+            <a id="consult-cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full">무료 1:1 세션 신청</a>
           </div>
 
           <!-- Share -->
@@ -130,14 +130,14 @@
                 <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
                 <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
               </svg>
-              결과 공유하기
+              <span id="share-btn-label">결과 공유하기</span>
             </button>
           </div>
 
           <div class="text-center pt-4 border-t border-gray-100">
             <button id="download-pdf-btn" onclick="downloadResultPdf()" class="mr-3 text-sm text-[#4a4540] hover:text-black font-semibold underline">결과 PDF 다운로드</button>
-            <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">처음부터 다시하기</button>
-            <p class="text-xs text-gray-400 mt-4">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
+            <button id="restart-test-btn" onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">처음부터 다시하기</button>
+            <p id="result-disclaimer" class="text-xs text-gray-400 mt-4">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
           </div>
         </div>
       </div>

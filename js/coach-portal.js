@@ -27,23 +27,30 @@ function toggleCoachComposer(kind, forceVisible) {
 function openMyAccount() {
   if (typeof closeDesktopAccountMenu === 'function') closeDesktopAccountMenu();
   if (typeof renderSection === 'function') renderSection('mypage');
+  if (window.state && window.state.user && typeof loadCoachProfile === 'function') {
+    loadCoachProfile();
+  }
 }
 
 async function openCoachPortalFromMenu() {
   if (typeof closeDesktopAccountMenu === 'function') closeDesktopAccountMenu();
   if (window.state && window.state.user && typeof loadCoachProfile === 'function') {
-    try {
-      await loadCoachProfile();
-    } catch (_) {}
+    await loadCoachProfile();
   }
-  if (window.state && window.state.coachProfileLoading) return;
   if (!window.state || !window.state.user) {
     if (typeof toggleLogin === 'function') toggleLogin();
     return;
   }
-  if (typeof renderSection === 'function') {
-    renderSection(window.state.isCoach ? 'coach_portal' : 'mypage');
+  if (!window.state.isCoach) {
+    if (typeof renderSection === 'function') renderSection('mypage');
+    return;
   }
+  var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '') || window.matchMedia('(max-width: 1024px)').matches;
+  if (isMobile && typeof openCoachApp === 'function') {
+    openCoachApp();
+    return;
+  }
+  if (typeof renderSection === 'function') renderSection('coach_portal');
 }
 
 function openCoachAppFromMenu() {
@@ -52,6 +59,28 @@ function openCoachAppFromMenu() {
 }
 
 if (typeof window !== 'undefined') {
+  function setDesktopCoachEmbedTab(tab) {
+    var frame = document.getElementById('coach-portal-embed-frame');
+    if (!frame) return;
+    var allowed = ['dashboard', 'training', 'mentoring', 'calendar', 'resources'];
+    var nextTab = allowed.indexOf(String(tab || '').toLowerCase()) >= 0 ? String(tab).toLowerCase() : 'dashboard';
+    var base = typeof window.COACH_APP_URL === 'string' && window.COACH_APP_URL
+      ? window.COACH_APP_URL
+      : 'https://coach.er-coaching.com';
+    frame.src = base.replace(/\/$/, '') + '/#' + nextTab;
+
+    document.querySelectorAll('[data-desktop-embed-tab]').forEach(function (button) {
+      var active = button.getAttribute('data-desktop-embed-tab') === nextTab;
+      button.classList.toggle('bg-er-dark', active);
+      button.classList.toggle('text-white', active);
+      button.classList.toggle('bg-white', !active);
+      button.classList.toggle('border', !active);
+      button.classList.toggle('border-gray-200', !active);
+      button.classList.toggle('text-gray-700', !active);
+    });
+  }
+
+  window.setDesktopCoachEmbedTab = setDesktopCoachEmbedTab;
   window.openMyAccount = openMyAccount;
   window.openCoachPortalFromMenu = openCoachPortalFromMenu;
   window.openCoachAppFromMenu = openCoachAppFromMenu;

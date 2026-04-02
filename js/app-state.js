@@ -27,6 +27,9 @@ const state = {
     },
     coachAdminUsers: [],
     coachCalendarMonth: null,
+    coachSchedules: [],
+    coachCalendarSchedules: [],
+    coachSelectedDate: null,
     coachListCounts: {
         tasks: 0,
         materials: 0,

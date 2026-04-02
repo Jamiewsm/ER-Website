@@ -1,5 +1,124 @@
 const params = new URLSearchParams(window.location.search || '');
 const pageLang = params.get('lang') === 'en' ? 'en' : 'ko';
+document.documentElement.lang = pageLang === 'en' ? 'en' : 'ko';
+
+const TEST_UI = {
+  ko: {
+    loadingKicker: '진단 페이지 준비 중',
+    title: '적응형 에니어그램 심층 진단',
+    subtitle: '행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.',
+    disclaimer: '* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.',
+    phase1IntroTitle: '1부: 일상적 자동반응 패턴',
+    phase1IntroDesc: '불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.',
+    phase1Submit: '2단계로 이동',
+    phase2IntroTitle: '1차 분석 완료',
+    phase2IntroDesc: '후보 유형 경합을 줄이기 위한 심층 질문입니다.',
+    phase2Submit: '결과 보기',
+    phase3IntroTitle: '마지막 정밀 감별',
+    phase3IntroDesc: '상위 2개 유형이 모두 높게 경합 중입니다. 최종 확정을 위해 아래 문항 1개만 선택해 주세요.',
+    phase3Submit: '최종 결과 보기',
+    requiredAll: '모든 문항에 응답해 주세요.',
+    requiredOne: '문항을 선택해 주세요.',
+    step2Label: '2단계: 동기 교차 검증',
+    step3Label: '3단계: 최종 타이브레이커',
+    analysisReportTitle: '분석 리포트',
+    top3Title: '상위 3유형 상대 점유율 및 근거',
+    consultText: '현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.',
+    consultBtn: '무료 1:1 세션 신청',
+    shareBtn: '결과 공유하기',
+    downloadPdf: '결과 PDF 다운로드',
+    restart: '처음부터 다시하기',
+    resultDisclaimer: '* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.',
+    pdfPreparing: 'PDF 준비 중...',
+    pdfGenerating: 'PDF 생성 중...',
+    pdfError: 'PDF 생성 중 오류가 발생했습니다. 다시 시도해 주세요.',
+    shareCopied: '결과가 클립보드에 복사되었습니다 ✓',
+    shareCopyFail: '복사 실패. 직접 선택 후 복사해 주세요.'
+  },
+  en: {
+    loadingKicker: 'Preparing assessment page',
+    title: 'Adaptive Enneagram Assessment',
+    subtitle: 'We explore your core motivations and narrow close candidates with a two-step tie-breaker.',
+    disclaimer: '* This assessment is for self-exploration and does not replace medical or clinical diagnosis.',
+    phase1IntroTitle: 'Part 1: Everyday automatic response patterns',
+    phase1IntroDesc: 'Please rate how your automatic response tends to show up under pressure or uncertainty.',
+    phase1Submit: 'Continue to Phase 2',
+    phase2IntroTitle: 'Phase 1 analysis complete',
+    phase2IntroDesc: 'These follow-up questions help separate close candidate types.',
+    phase2Submit: 'View results',
+    phase3IntroTitle: 'Final precision check',
+    phase3IntroDesc: 'Your top two types are very close. Please answer one final question.',
+    phase3Submit: 'See final result',
+    requiredAll: 'Please answer every question before continuing.',
+    requiredOne: 'Please select one option to continue.',
+    step2Label: 'Phase 2: Cross-check core motivations',
+    step3Label: 'Phase 3: Final tie-breaker',
+    analysisReportTitle: 'Analysis summary',
+    top3Title: 'Top 3 relative shares and evidence',
+    consultText: 'Your top two results are very close. For clearer typing, we recommend a free 1:1 session.',
+    consultBtn: 'Book a free 1:1 session',
+    shareBtn: 'Share result',
+    downloadPdf: 'Download result PDF',
+    restart: 'Start over',
+    resultDisclaimer: '* This result does not replace clinical diagnosis by a licensed professional.',
+    pdfPreparing: 'Preparing PDF...',
+    pdfGenerating: 'Generating PDF...',
+    pdfError: 'An error occurred while generating the PDF. Please try again.',
+    shareCopied: 'Result copied to clipboard ✓',
+    shareCopyFail: 'Copy failed. Please copy manually.'
+  }
+};
+
+const TYPE_PROMPT_EN = {
+  1: 'I am driven to restore what feels right, clear, and principled.',
+  2: 'I naturally move toward caring support and relational connection.',
+  3: 'I focus on outcomes, competence, and visible effectiveness.',
+  4: 'I seek depth, authenticity, and meaning in what I feel.',
+  5: 'I step back to observe, analyze, and preserve mental energy.',
+  6: 'I scan for risk, verify details, and secure safety first.',
+  7: 'I shift toward options, momentum, and possibility under pressure.',
+  8: 'I move directly to protect, confront, and reclaim control.',
+  9: 'I reduce tension and protect harmony before pushing my preference.'
+};
+
+function uiText(key) {
+  return (TEST_UI[pageLang] && TEST_UI[pageLang][key]) || TEST_UI.ko[key] || key;
+}
+
+function localizeStaticTestPage() {
+  const map = {
+    'loading-kicker': 'loadingKicker',
+    'test-title': 'title',
+    'test-subtitle': 'subtitle',
+    'test-disclaimer': 'disclaimer',
+    'phase1-intro-title': 'phase1IntroTitle',
+    'phase1-intro-desc': 'phase1IntroDesc',
+    'phase1-submit-btn': 'phase1Submit',
+    'phase2-intro-title': 'phase2IntroTitle',
+    'phase2-intro-desc': 'phase2IntroDesc',
+    'phase2-submit-btn': 'phase2Submit',
+    'phase3-intro-title': 'phase3IntroTitle',
+    'phase3-intro-desc': 'phase3IntroDesc',
+    'phase3-submit-btn': 'phase3Submit',
+    'validation-msg-1': 'requiredAll',
+    'validation-msg-2': 'requiredAll',
+    'validation-msg-3': 'requiredOne',
+    'analysis-report-title': 'analysisReportTitle',
+    'top3-title': 'top3Title',
+    'consult-cta-text': 'consultText',
+    'consult-cta-btn': 'consultBtn',
+    'share-btn-label': 'shareBtn',
+    'download-pdf-btn': 'downloadPdf',
+    'restart-test-btn': 'restart',
+    'result-disclaimer': 'resultDisclaimer'
+  };
+  Object.keys(map).forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = uiText(map[id]);
+  });
+  const stepLabel = document.getElementById('step-label');
+  if (stepLabel && pageLang === 'en') stepLabel.textContent = 'Phase 1: Baseline pattern and instinct scan';
+}
 
 // Minimal English question/option texts (ported from adaptiveQuestionEn in index.html)
 const questionTextEn = {
@@ -59,6 +178,11 @@ function getQuestionText(item) {
 function getOptionText(item, side) {
   const base = side === 'a' ? item.a : item.b;
   if (pageLang === 'en') {
+    if (item.id.startsWith('tb_gen_')) {
+      return side === 'a'
+        ? `A. ${TYPE_PROMPT_EN[item.leftType] || 'This statement fits me more.'}`
+        : `B. ${TYPE_PROMPT_EN[item.rightType] || 'This statement fits me more.'}`;
+    }
     const key = `${item.id}_${side}`;
     if (questionTextEn[key]) return questionTextEn[key];
   }
@@ -416,7 +540,7 @@ async function downloadResultPdf() {
   const prev = btn ? btn.innerText : '';
   if (btn) {
     btn.disabled = true;
-    btn.innerText = 'PDF 준비 중...';
+    btn.innerText = uiText('pdfPreparing');
     btn.classList.add('opacity-60', 'cursor-not-allowed');
   }
 
@@ -425,7 +549,7 @@ async function downloadResultPdf() {
     if (!window.html2canvas || !window.jspdf || !window.jspdf.jsPDF) {
       throw new Error('PDF library unavailable');
     }
-    if (btn) btn.innerText = 'PDF 생성 중...';
+    if (btn) btn.innerText = uiText('pdfGenerating');
     const canvas = await window.html2canvas(target, {
       scale: 2,
       useCORS: true,
@@ -459,11 +583,11 @@ async function downloadResultPdf() {
     const d = String(now.getDate()).padStart(2, '0');
     pdf.save(`enneagram_${title}_${y}${m}${d}.pdf`);
   } catch (_err) {
-    alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+    alert(uiText('pdfError'));
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerText = prev || '결과 PDF 다운로드';
+      btn.innerText = prev || uiText('downloadPdf');
       btn.classList.remove('opacity-60', 'cursor-not-allowed');
     }
   }
@@ -511,9 +635,11 @@ function buildPostTieQuestion(typeA, typeB) {
       format: 'ab',
       leftType: typeA,
       rightType: typeB,
-      q: `${typeA}번 vs ${typeB}번 중 내 자동반응에 더 가까운 쪽을 고르세요.`,
-      a: preset.a,
-      b: preset.b
+      q: pageLang === 'en'
+        ? `Between Type ${typeA} and Type ${typeB}, which response feels more automatic for you?`
+        : `${typeA}번 vs ${typeB}번 중 내 자동반응에 더 가까운 쪽을 고르세요.`,
+      a: pageLang === 'en' ? `A. ${TYPE_PROMPT_EN[typeA]}` : preset.a,
+      b: pageLang === 'en' ? `B. ${TYPE_PROMPT_EN[typeB]}` : preset.b
     };
   }
   return {
@@ -521,9 +647,15 @@ function buildPostTieQuestion(typeA, typeB) {
     format: 'ab',
     leftType: typeA,
     rightType: typeB,
-    q: `${typeA}번 vs ${typeB}번 중, 압박 상황에서 더 자동으로 나오는 반응을 선택해 주세요.`,
-    a: (deep[typeA] && deep[typeA][0]) ? deep[typeA][0].q : `${typeA}번 특성이 더 가깝다.`,
-    b: (deep[typeB] && deep[typeB][0]) ? deep[typeB][0].q : `${typeB}번 특성이 더 가깝다.`
+    q: pageLang === 'en'
+      ? `Under pressure, which pattern feels more natural to you?`
+      : `${typeA}번 vs ${typeB}번 중, 압박 상황에서 더 자동으로 나오는 반응을 선택해 주세요.`,
+    a: pageLang === 'en'
+      ? `A. ${TYPE_PROMPT_EN[typeA]}`
+      : ((deep[typeA] && deep[typeA][0]) ? deep[typeA][0].q : `${typeA}번 특성이 더 가깝다.`),
+    b: pageLang === 'en'
+      ? `B. ${TYPE_PROMPT_EN[typeB]}`
+      : ((deep[typeB] && deep[typeB][0]) ? deep[typeB][0].q : `${typeB}번 특성이 더 가깝다.`)
   };
 }
 
@@ -602,9 +734,11 @@ function submitPhase1() {
         leftType: typeA,
         rightType: typeB,
         weight: TEST_CONFIG.weights.phase2Base,
-        q: custom ? custom.q : '다음 두 문장 중 자신에게 더 가까운 쪽을 선택해 주세요.',
-        a: qA,
-        b: qB
+        q: pageLang === 'en'
+          ? 'Which statement sounds more like your natural pattern?'
+          : (custom ? custom.q : '다음 두 문장 중 자신에게 더 가까운 쪽을 선택해 주세요.'),
+        a: pageLang === 'en' ? `A. ${TYPE_PROMPT_EN[typeA]}` : qA,
+        b: pageLang === 'en' ? `B. ${TYPE_PROMPT_EN[typeB]}` : qB
       }];
       testState.tie.tGeneric = { enabled: true, typeA, typeB, weight: TEST_CONFIG.weights.tieBreaker.default };
       testState.phase2Questions = testState.phase2Questions.concat(genericTb);
@@ -635,7 +769,7 @@ function submitPhase1() {
   document.getElementById('phase2-form').classList.remove('hidden');
   document.getElementById('phase3-form').classList.add('hidden');
   setProgress(100);
-  document.getElementById('step-label').innerText = '2단계: 동기 교차 검증';
+  document.getElementById('step-label').innerText = uiText('step2Label');
   document.getElementById('step-counter').innerText = '2 / 2';
   renderQuestions('phase2-container', testState.phase2Questions, 'p2');
   requestAnimationFrame(() => scrollToTopSmart());
@@ -736,7 +870,7 @@ function submitPhase2() {
     renderQuestions('phase3-container', [testState.phase3Question], 'p3');
     document.getElementById('phase2-form').classList.add('hidden');
     document.getElementById('phase3-form').classList.remove('hidden');
-    document.getElementById('step-label').innerText = '3단계: 최종 타이브레이커';
+    document.getElementById('step-label').innerText = uiText('step3Label');
     document.getElementById('step-counter').innerText = '3 / 3';
     setProgress(100);
     requestAnimationFrame(() => scrollToTopSmart());
@@ -795,7 +929,9 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   const coreResolved = max !== sec && diff >= TEST_CONFIG.thresholds.coreReserveDiff;
 
   const inst = {sp:0,sx:0,so:0};
-  const instName = {sp:'자기보존', sx:'성적(일대일)', so:'사회적'};
+  const instName = pageLang === 'en'
+    ? { sp: 'Self-preservation', sx: 'One-to-one', so: 'Social' }
+    : { sp:'자기보존', sx:'성적(일대일)', so:'사회적' };
   q1.filter((q)=>q.inst).forEach((q)=>{
     const score = toScore(testState.phase1Responses[q.id]);
     if (score !== null) inst[q.inst] += score;
@@ -815,17 +951,21 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   let instinctLabel = instRank[0].name;
   if (instRank[0].score === instRank[1].score) {
     instinctCode = `${instRank[0].code}/${instRank[1].code}`;
-    instinctLabel = `${instRank[0].name} & ${instRank[1].name} (공동 1위)`;
+    instinctLabel = pageLang === 'en'
+      ? `${instRank[0].name} & ${instRank[1].name} (tied for first)`
+      : `${instRank[0].name} & ${instRank[1].name} (공동 1위)`;
   }
 
-  let wing = '활성화 안됨';
-  let wingCode = `${core} (순수유형)`;
-  let coreDisplay = `${core}번`;
+  let wing = pageLang === 'en' ? 'Not activated' : '활성화 안됨';
+  let wingCode = pageLang === 'en' ? `${core} (pure core)` : `${core} (순수유형)`;
+  let coreDisplay = pageLang === 'en' ? `Type ${core}` : `${core}번`;
 
   if (!coreResolved) {
-    coreDisplay = `${core}번 / ${second.type}번 (코어 보류)`;
-    wing = '코어 확정 후 판별 가능';
-    wingCode = '판별 보류 (코어 보류)';
+    coreDisplay = pageLang === 'en'
+      ? `Type ${core} / Type ${second.type} (core pending)`
+      : `${core}번 / ${second.type}번 (코어 보류)`;
+    wing = pageLang === 'en' ? 'Available after core confirmation' : '코어 확정 후 판별 가능';
+    wingCode = pageLang === 'en' ? 'Pending (core pending)' : '판별 보류 (코어 보류)';
   } else {
     const ps = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
     const t2 = toScore(testState.phase1Responses.t2) || 0;
@@ -843,7 +983,7 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
       const w = ls >= rs ? l : r;
       const ws = Math.max(ls, rs);
       if (ws > 0 && ws >= cs * TEST_CONFIG.thresholds.wingActivationRatio) {
-        wing = `${w}번 날개`;
+        wing = pageLang === 'en' ? `Wing ${w}` : `${w}번 날개`;
         wingCode = `${core}w${w}`;
       }
     }
@@ -856,23 +996,29 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   document.getElementById('cta-consulting').classList.add('hidden');
 
   document.getElementById('res-final').innerText = `${instinctCode} ${wingCode}`;
-  document.getElementById('res-instincts').innerText = `제 1본능: ${instinctLabel}`;
+  document.getElementById('res-instincts').innerText = pageLang === 'en' ? `Primary instinct: ${instinctLabel}` : `제 1본능: ${instinctLabel}`;
   document.getElementById('res-core').innerText = coreDisplay;
   document.getElementById('res-wing').innerText = wing;
   document.getElementById('res-arrows').innerHTML = coreResolved
-    ? `<span class="text-blue-600 font-bold">통합(건강) 방향: ${arrowLines[core].growth}번</span><br><span class="text-red-500 font-bold">비통합(스트레스) 방향: ${arrowLines[core].stress}번</span>`
-    : '코어 확정 후 확인 가능합니다.';
+    ? (pageLang === 'en'
+      ? `<span class="text-blue-600 font-bold">Growth direction: Type ${arrowLines[core].growth}</span><br><span class="text-red-500 font-bold">Stress direction: Type ${arrowLines[core].stress}</span>`
+      : `<span class="text-blue-600 font-bold">통합(건강) 방향: ${arrowLines[core].growth}번</span><br><span class="text-red-500 font-bold">비통합(스트레스) 방향: ${arrowLines[core].stress}번</span>`)
+    : (pageLang === 'en' ? 'Available after core confirmation.' : '코어 확정 후 확인 가능합니다.');
 
   const badge = document.getElementById('confidence-badge');
-  if (confidence === '높음') { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white'; badge.innerText='신뢰도: 높음'; }
-  else if (confidence === '보통') { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white'; badge.innerText='신뢰도: 보통'; }
-  else { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white'; badge.innerText='신뢰도: 낮음'; document.getElementById('cta-consulting').classList.remove('hidden'); }
+  if (confidence === '높음') { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-green-500 text-white'; badge.innerText = pageLang === 'en' ? 'Confidence: High' : '신뢰도: 높음'; }
+  else if (confidence === '보통') { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white'; badge.innerText = pageLang === 'en' ? 'Confidence: Medium' : '신뢰도: 보통'; }
+  else { badge.className='absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold bg-red-500 text-white'; badge.innerText = pageLang === 'en' ? 'Confidence: Low' : '신뢰도: 낮음'; document.getElementById('cta-consulting').classList.remove('hidden'); }
 
   let log = '';
   if (!coreResolved) {
-    log = `현재는 <strong>${core}번</strong>과 <strong>${second.type}번</strong>이 매우 근접하여 코어를 보류로 표시합니다.`;
+    log = pageLang === 'en'
+      ? `Type <strong>${core}</strong> and Type <strong>${second.type}</strong> are extremely close, so core typing is marked as pending.`
+      : `현재는 <strong>${core}번</strong>과 <strong>${second.type}번</strong>이 매우 근접하여 코어를 보류로 표시합니다.`;
   } else {
-    log = `가중치 병합 결과 중심 축은 <strong>${core}번</strong>, 2순위는 <strong>${second.type}번</strong>, 점수 격차는 <strong>${(diff*100).toFixed(1)}%</strong> 입니다.`;
+    log = pageLang === 'en'
+      ? `Weighted merge result: core axis is <strong>Type ${core}</strong>, runner-up is <strong>Type ${second.type}</strong>, and score gap is <strong>${(diff*100).toFixed(1)}%</strong>.`
+      : `가중치 병합 결과 중심 축은 <strong>${core}번</strong>, 2순위는 <strong>${second.type}번</strong>, 점수 격차는 <strong>${(diff*100).toFixed(1)}%</strong> 입니다.`;
     if (second.type === arrowLines[core].stress) log += `<br><br><span class="text-red-600 text-sm">2순위 ${second.type}번은 현재 스트레스 방향 영향일 수 있습니다.</span>`;
     if (second.type === arrowLines[core].growth) log += `<br><br><span class="text-blue-600 text-sm">2순위 ${second.type}번은 현재 성장 방향 영향일 수 있습니다.</span>`;
     if (testState.tie.t71.enabled) log += `<br><br><span class="text-xs">* 전환형/기준형 경합 타이브레이커 적용</span>`;
@@ -889,12 +1035,13 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   document.getElementById('res-top3').innerHTML = top3.map((x,i)=>{
     const p = top3Total>0 ? ((x.score/top3Total)*100).toFixed(1) : '0.0';
     const ev = evidence[x.type].sort((a,b)=>b.points-a.points).slice(0,3).map((e)=>`<li class="text-xs text-gray-600 leading-relaxed">• ${e.text}</li>`).join('');
-    return `<div class="rounded-xl border border-gray-200 bg-white p-4"><div class="flex items-center justify-between mb-2"><p class="font-semibold text-gray-800">${i+1}. ${x.type}번</p><p class="text-xs font-bold text-[#4a4540]">상대 점유율: ${p}%</p></div><p class="text-xs text-gray-500 mb-1">근거 문항</p><ul class="space-y-1">${ev}</ul></div>`;
+    return `<div class="rounded-xl border border-gray-200 bg-white p-4"><div class="flex items-center justify-between mb-2"><p class="font-semibold text-gray-800">${i+1}. ${pageLang === 'en' ? `Type ${x.type}` : `${x.type}번`}</p><p class="text-xs font-bold text-[#4a4540]">${pageLang === 'en' ? `Relative share: ${p}%` : `상대 점유율: ${p}%`}</p></div><p class="text-xs text-gray-500 mb-1">${pageLang === 'en' ? 'Evidence items' : '근거 문항'}</p><ul class="space-y-1">${ev}</ul></div>`;
   }).join('');
 
   document.getElementById('download-pdf-btn').onclick = downloadResultPdf;
 }
 
+localizeStaticTestPage();
 renderQuestions('phase1-container', q1, 'p1');
 setProgress(50);
 requestAnimationFrame(revealTestPageAfterLoad);
@@ -911,18 +1058,27 @@ function shareTestResult() {
   const confidence = badgeEl ? badgeEl.innerText.trim() : '';
   const shareUrl = 'https://er-coaching.com/test.html';
 
-  const shareText = [
-    `나의 에니어그램 유형: ${typeResult}`,
-    instincts ? `${instincts}` : '',
-    confidence ? `(${confidence})` : '',
-    '',
-    'ER 에니어그램 심층 진단으로 알아보기 👇',
-    shareUrl
-  ].filter(Boolean).join('\n');
+  const shareText = pageLang === 'en'
+    ? [
+      `My Enneagram result: ${typeResult}`,
+      instincts ? `${instincts}` : '',
+      confidence ? `(${confidence})` : '',
+      '',
+      'Try the ER Enneagram assessment 👇',
+      shareUrl
+    ].filter(Boolean).join('\n')
+    : [
+      `나의 에니어그램 유형: ${typeResult}`,
+      instincts ? `${instincts}` : '',
+      confidence ? `(${confidence})` : '',
+      '',
+      'ER 에니어그램 심층 진단으로 알아보기 👇',
+      shareUrl
+    ].filter(Boolean).join('\n');
 
   if (navigator.share) {
     navigator.share({
-      title: `에니어그램 결과: ${typeResult}`,
+      title: pageLang === 'en' ? `Enneagram Result: ${typeResult}` : `에니어그램 결과: ${typeResult}`,
       text: shareText,
       url: shareUrl
     }).catch(() => {});
@@ -932,9 +1088,9 @@ function shareTestResult() {
   // Fallback: copy to clipboard
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(shareText).then(() => {
-      showShareToast('결과가 클립보드에 복사되었습니다 ✓');
+      showShareToast(uiText('shareCopied'));
     }).catch(() => {
-      showShareToast('복사 실패. 직접 선택 후 복사해 주세요.');
+      showShareToast(uiText('shareCopyFail'));
     });
   } else {
     const ta = document.createElement('textarea');
@@ -943,8 +1099,8 @@ function shareTestResult() {
     document.body.appendChild(ta);
     ta.focus();
     ta.select();
-    try { document.execCommand('copy'); showShareToast('결과가 클립보드에 복사되었습니다 ✓'); }
-    catch (_) { showShareToast('복사 실패. 직접 선택 후 복사해 주세요.'); }
+    try { document.execCommand('copy'); showShareToast(uiText('shareCopied')); }
+    catch (_) { showShareToast(uiText('shareCopyFail')); }
     document.body.removeChild(ta);
   }
 }
