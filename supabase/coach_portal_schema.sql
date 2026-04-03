@@ -51,6 +51,7 @@ create table if not exists public.coach_schedules (
   ),
   start_at timestamptz not null,
   end_at timestamptz not null,
+  all_day boolean not null default false,
   location text,
   notes text,
   created_by uuid not null references auth.users(id),
