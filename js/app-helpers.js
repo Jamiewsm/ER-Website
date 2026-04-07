@@ -412,6 +412,11 @@ function isHeadCoach() {
     return !!(state.isCoach && state.coachProfile?.role === 'head_coach');
 }
 
+function canManageCoachAdmin() {
+    const email = (state.user?.email || '').toLowerCase();
+    return email === NOTICE_ADMIN_EMAIL || isHeadCoach();
+}
+
 function canManageNotices() {
     const email = (state.user?.email || '').toLowerCase();
     return email === NOTICE_ADMIN_EMAIL || isHeadCoach();
@@ -561,7 +566,7 @@ async function loadCoachAdminOverview() {
     const sectionEl = document.getElementById('coach-admin-overview-section');
     const listEl = document.getElementById('coach-admin-overview-list');
     if (!sectionEl || !listEl) return;
-    if (!isHeadCoach() || !supabaseClient) {
+    if (!canManageCoachAdmin() || !supabaseClient) {
         sectionEl.classList.add('hidden');
         return;
     }
@@ -653,7 +658,7 @@ async function loadCoachAdminOverview() {
 }
 
 async function loadCoachAdminUsers() {
-    if (!ensureCoachAccess() || !isHeadCoach() || !supabaseClient) return;
+    if (!ensureCoachAccess() || !canManageCoachAdmin() || !supabaseClient) return;
     const listEl = document.getElementById('coach-admin-users-list');
     if (listEl) listEl.innerHTML = renderListSkeleton(4);
 

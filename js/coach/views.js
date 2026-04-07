@@ -5,7 +5,7 @@ function renderCoachPortal() {
     const coachAppUrl = typeof window.COACH_APP_URL === 'string' && window.COACH_APP_URL
         ? window.COACH_APP_URL
         : 'https://coach.er-coaching.com';
-    const adminButton = state.coachProfile?.role === 'head_coach'
+    const adminButton = (typeof canManageCoachAdmin === 'function' && canManageCoachAdmin())
         ? `<button onclick="renderSection('coach_admin')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">코치 승인</button>`
         : '';
     return `
@@ -46,8 +46,8 @@ function renderCoachPortal() {
 
 function renderCoachAdmin() {
     if (!state.user) return renderCoachAccessDenied('로그인 후 코치 승인 기능을 사용할 수 있습니다.');
-    if (!state.isCoach || state.coachProfile?.role !== 'head_coach') {
-        return renderCoachAccessDenied('헤드 코치만 코치 승인 기능을 사용할 수 있습니다.');
+    if (!state.isCoach || !(typeof canManageCoachAdmin === 'function' && canManageCoachAdmin())) {
+        return renderCoachAccessDenied('관리자/헤드 코치만 코치 승인 기능을 사용할 수 있습니다.');
     }
     return `
         <div class="bg-white min-h-screen py-10 px-4 sm:px-6 lg:px-8">

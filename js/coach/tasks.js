@@ -11,7 +11,7 @@ function findCoachAdminUser(userId) {
 }
 
 async function approveCoachCandidate(userId) {
-    if (!ensureCoachAccess() || !isHeadCoach() || !supabaseClient) return;
+    if (!ensureCoachAccess() || !(typeof canManageCoachAdmin === 'function' && canManageCoachAdmin()) || !supabaseClient) return;
     const target = findCoachAdminUser(userId);
     if (!target) {
         alert('대상 사용자를 다시 불러와 주세요.');
@@ -40,7 +40,7 @@ async function approveCoachCandidate(userId) {
 }
 
 async function disableCoachCandidate(userId) {
-    if (!ensureCoachAccess() || !isHeadCoach() || !supabaseClient) return;
+    if (!ensureCoachAccess() || !(typeof canManageCoachAdmin === 'function' && canManageCoachAdmin()) || !supabaseClient) return;
     if (userId === state.user?.id) {
         alert('현재 로그인한 헤드 코치는 여기서 비활성화할 수 없습니다.');
         return;
