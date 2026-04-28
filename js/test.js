@@ -17,10 +17,14 @@ const TEST_UI = {
     phase3IntroTitle: '마지막 정밀 감별',
     phase3IntroDesc: '상위 2개 유형이 모두 높게 경합 중입니다. 최종 확정을 위해 아래 문항 1개만 선택해 주세요.',
     phase3Submit: '최종 결과 보기',
+    phase4IntroTitle: '최종 하위유형/날개 판별',
+    phase4IntroDesc: '확정된 기본 유형에 맞춰 하위유형과 날개를 한 번 더 정밀하게 확인합니다.',
+    phase4Submit: '최종 결과 보기',
     requiredAll: '모든 문항에 응답해 주세요.',
     requiredOne: '문항을 선택해 주세요.',
     step2Label: '2단계: 동기 교차 검증',
     step3Label: '3단계: 최종 타이브레이커',
+    step4Label: '4단계: 하위유형 및 날개 확정',
     analysisReportTitle: '분석 리포트',
     top3Title: '상위 3유형 상대 점유율 및 근거',
     consultText: '현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.',
@@ -49,10 +53,14 @@ const TEST_UI = {
     phase3IntroTitle: 'Final precision check',
     phase3IntroDesc: 'Your top two types are very close. Please answer one final question.',
     phase3Submit: 'See final result',
+    phase4IntroTitle: 'Final subtype and wing check',
+    phase4IntroDesc: 'Now that the core type is resolved, choose the subtype and wing pattern that fits most closely.',
+    phase4Submit: 'See final result',
     requiredAll: 'Please answer every question before continuing.',
     requiredOne: 'Please select one option to continue.',
     step2Label: 'Phase 2: Cross-check core motivations',
     step3Label: 'Phase 3: Final tie-breaker',
+    step4Label: 'Phase 4: Confirm subtype and wing',
     analysisReportTitle: 'Analysis summary',
     top3Title: 'Top 3 relative shares and evidence',
     consultText: 'Your top two results are very close. For clearer typing, we recommend a free 1:1 session.',
@@ -100,9 +108,13 @@ function localizeStaticTestPage() {
     'phase3-intro-title': 'phase3IntroTitle',
     'phase3-intro-desc': 'phase3IntroDesc',
     'phase3-submit-btn': 'phase3Submit',
+    'phase4-intro-title': 'phase4IntroTitle',
+    'phase4-intro-desc': 'phase4IntroDesc',
+    'phase4-submit-btn': 'phase4Submit',
     'validation-msg-1': 'requiredAll',
     'validation-msg-2': 'requiredAll',
     'validation-msg-3': 'requiredOne',
+    'validation-msg-4': 'requiredAll',
     'analysis-report-title': 'analysisReportTitle',
     'top3-title': 'top3Title',
     'consult-cta-text': 'consultText',
@@ -122,55 +134,81 @@ function localizeStaticTestPage() {
 
 // Minimal English question/option texts (ported from adaptiveQuestionEn in index.html)
 const questionTextEn = {
-  t2: "When I am with other people, I become aware of how I am coming across before I focus on what I actually feel.",
-  t5: "When something unexpected happens, I want to step back and secure time to take in the situation before jumping in.",
-  t8: "When I see an unfair or oppressive situation, I want to step in directly and change the flow rather than stand back.",
-  c1: "When something feels off, I feel driven to fix it and get it right, and I can become strict with myself and others.",
-  c2: "When I feel needed in a relationship, my sense of value becomes clearer.",
-  c3: "When my sense of worth feels threatened, I shift into performance and image mode to restore credibility.",
-  c4: "When life feels too ordinary, I look for emotional depth and personal meaning, even if it delays contentment.",
-  c5: "When demands pile up, I pull back to conserve energy, and that distance can make me seem emotionally unavailable.",
-  c6: "Before making an important decision, I want to check whether I may have missed any risks before I move ahead.",
-  c7: "When discomfort rises, I instinctively open up options and pivot toward possibility, often delaying direct emotional contact.",
-  c8: "When I see my people or the vulnerable being treated unfairly or used, my first reaction is to step in directly to protect them and change the situation, rather than back off.",
-  c9: "When tension starts building, I would rather let things pass gently than make my position clear and risk the atmosphere turning harsh.",
-  f_2_3: "Under pressure, which pattern shows up first for you?",
-  f_3_6: "When pressure rises, which response feels more automatic for you?",
-  f_6_8: "When you feel threatened, which response is more automatic?",
-  f_1_9: "Right before conflict, which response tends to come first?",
-  f_5_7: "When your energy is low, which recovery pattern appears first?",
-  f_2_8: "When a relationship feels unstable, which reaction is more automatic?",
-  f_2_3_a: "A. I first move to care for the other person and hold on to the connection.",
-  f_2_3_b: "B. I first move to prove competence and take charge of the situation.",
-  f_3_6_a: "A. Even if the information is not fully organized, I move first to create results and get the flow going.",
-  f_3_6_b: "B. Even if things slow down a little, I need to check for missed risks and variables before I can move.",
-  tb_3_6_1: "Which of these situations feels harder for you to endure?",
-  tb_3_6_1_a: "A. Looking unprepared and ending up unable to produce results, so that I seem incompetent.",
-  tb_3_6_1_b: "B. Finishing quickly on the surface, only to have a major problem emerge later because I did not check enough.",
-  tb_3_6_2: "When the pressure is high, which thought tends to repeat more in your mind?",
-  tb_3_6_2_a: "A. I need to show results quickly. If I hesitate, I will fall behind and lose value.",
-  tb_3_6_2_b: "B. I may be missing something. If I move without checking, a bigger problem may appear later.",
+  t2: "When I am with people, I tend to adjust my words and attitude based on how I will come across before I focus on what I actually feel.",
+  t2_eval: "When I feel embarrassed or negatively judged in front of people, the scene tends to stay with me and replay later.",
+  t5: "When something unexpected happens, I tend to organize the situation in my head before responding emotionally.",
+  t5_var: "In uncertain situations, I feel more settled when I can check possible variables and exceptions in advance.",
+  t8: "When I see something unfair or out of line in a relationship or task, tension rises quickly and I want to correct it rather than let it pass.",
+  c1: "When I work, I often feel pressure to meet my own standards apart from what others require.",
+  c2: "In relationships, I tend to move first toward what helps the other person rather than taking care of my own needs first.",
+  c3: "I feel more settled when my value or competence is confirmed through concrete results.",
+  c4: "When a repetitive, ordinary flow continues for a long time, I tend to feel emotionally dulled.",
+  c4_unique: "When I feel I am not very different from others, discomfort arises as if my uniqueness is fading.",
+  c5: "After interacting with people for a long time, my energy drains quickly, and I need time alone to step back and sort things out.",
+  c6: "Before an important decision, I tend to check risks and missing pieces before acting.",
+  c7: "When the atmosphere becomes heavy or constricting, I tend to shift my attention quickly toward other possibilities or the next plan rather than staying with the feeling.",
+  c8: "When I see my people or vulnerable people treated unfairly, my first reaction is that I need to step in directly.",
+  c9: "When tension starts building, I tend to move first toward reducing friction rather than making my position clear.",
+  f_2_3: "Under pressure, which first strategy do I use more to hold a relationship together?",
+  f_3_6: "When anxiety rises, which first strategy do I rely on more?",
+  f_6_8: "When I feel threatened, which first response is closer to mine?",
+  f_1_9: "Right before conflict grows, which response tends to come first?",
+  f_5_7: "When my energy is low, which recovery pattern do I tend to choose first?",
+  f_2_8: "When a relationship feels unstable, which first strategy is closer to mine?",
+  f_2_3_a: "A. I move toward what helps the other person and try to restore the relationship.",
+  f_2_3_b: "B. I show results and competence to stabilize the situation.",
+  f_3_6_a: "A. I try to create results quickly, prove my value, and stabilize the situation.",
+  f_3_6_b: "B. I check risks and make backup plans to reduce anxiety.",
+  f_6_8_a: "A. I check the situation and prepare safe standards or backup plans.",
+  f_6_8_b: "B. I step in directly, set a boundary, and regain initiative.",
+  f_1_9_a: "A. Tension rises to clarify what is wrong and correct it.",
+  f_1_9_b: "B. I move toward keeping the flow smooth so friction does not grow.",
+  f_5_7_a: "A. I step back, reduce stimulation, and sort things out alone.",
+  f_5_7_b: "B. I shift toward a new stimulus or plan to get out of the stuck state.",
+  f_2_8_a: "A. I help more and adjust more to hold the relationship.",
+  f_2_8_b: "B. I make the line clearer and regain initiative on my side.",
+  state_2w: "Over the past two weeks, how much pressure and stress have you felt overall? (1=very stable, 6=almost hard to endure)",
+  state_defensive: "Over the past two weeks, how much more often than usual have you reacted sensitively or defensively? (1=almost none, 6=almost constantly)",
+  state_unusual: "Over the past two weeks, how often have you felt unlike your usual self because the situation demanded a response? (1=not at all, 6=almost always)",
+  i_sp_1: "Even in an unfamiliar environment, the first thing I check is whether my body, rest, and daily rhythm can be maintained.",
+  i_sp_2: "If I cannot tell where time, energy, or money is leaking, I tend to feel uneasy.",
+  i_sp_3: "When making important choices, I tend to consider stability and sustainability of daily life before interest or relationships.",
+  i_sx_1: "Rather than maintaining many broad relationships, my energy tends to concentrate on one object or person I feel strongly drawn to.",
+  i_sx_2: "When I feel strongly drawn to something, my focus shifts so much that other priorities can temporarily move aside.",
+  i_sx_3: "When my heart moves toward a person or pursuit, my energy comes alive when there is strong immersion and clear attraction rather than moderate interest.",
+  i_so_1: "When I enter a group, I tend to read fairly quickly who has influence and how the relational flow is moving.",
+  i_so_2: "I feel much more stable when my role and contribution point inside a group are clear.",
+  i_so_3: "As much as personal comfort or closeness, it matters to me where I stand within a larger flow or group.",
+  d1_1: "Even after finishing work, I tend to check again whether I met the standard.",
+  d1_2: "When I feel a situation is out of line with a standard, tension rises quickly that it should be corrected rather than passed over.",
+  d2_1: "Caring for or helping others is relatively familiar, but directly stating my own needs and asking for help feels uncomfortable.",
+  d2_2: "I tend to delay expressing what I want because saying it directly may make the relationship awkward.",
+  d3_1: "My value feels clearer when I have produced visible results or achievement.",
+  d3_2: "When I sense the possibility of failing or looking incompetent, tension rises strongly even before the work actually begins.",
+  d4_1: "Even when I am with people, I tend to feel distance, as if I am the only one not fully understood.",
+  d4_2: "When a repetitive, flat flow lasts too long, I feel emotionally dulled; I feel alive again when emotional depth is present.",
+  d5_1: "I feel more comfortable observing and understanding from one step back than entering the middle of the problem.",
+  d5_2: "When unexpected emotional demands or sudden intrusions come in, my first reaction is to close my energy and step back to sort things out.",
+  d6_1: "Before an important decision, I feel settled only after checking hidden risks or missing pieces beyond what is visible.",
+  d6_2: "Even when I follow an authority or system, I feel settled only after testing and questioning it to the end.",
+  d7_1: "When an uncomfortable reality or heavy feeling lasts too long, my first reaction is to change the atmosphere or turn toward another possibility.",
+  d7_2: "When options shrink and I am tied to one direction for a long time, I feel constrained and want to keep another path open.",
+  d8_1: "When I sense unfair pressure or intrusion, my first reaction is to regain my side’s strength and initiative rather than step back.",
+  d8_2: "I am more sensitive to my influence being ignored or handled carelessly than to not receiving praise.",
+  d9_1: "When relational friction may grow, I tend to choose maintaining connection before my actual wants.",
+  d9_2: "Before an important conflict or decision, I tend to disperse energy into other tasks and delay facing it directly.",
+  tb_3_6_1: "As pressure grows, I move more toward producing quick results to prove my competence and reliability.",
+  tb_3_6_2: "As pressure grows, I move more toward checking risks and preparing safeguards to reduce uncertainty.",
   tb_5_6_1: "When demands and variables pile up at once, which response feels more automatic for you?",
   tb_5_6_1_a: "A. I need to step back a little and secure some distance so I can sort things out on my own.",
   tb_5_6_1_b: "B. I need to check whether there are missing facts or danger signals before I can relax.",
   tb_5_6_2: "Which of these situations feels harder for you to endure?",
   tb_5_6_2_a: "A. My space and energy getting drained because I keep reacting and staying connected.",
   tb_5_6_2_b: "B. Moving before checking enough and then having a problem surface later.",
-  tb_3_1_1: "When a deadline and a standard collide, which do you more often protect first?",
-  tb_3_1_1_a: "A. Results and speed first, then I can improve what is rough later.",
-  tb_3_1_1_b: "B. Accuracy and standards first, even if the result comes more slowly.",
-  tb_3_1_2: "When something goes wrong, which failure feels more piercing to you?",
-  tb_3_1_2_a: "A. Not producing enough and looking less competent than I should.",
-  tb_3_1_2_b: "B. Getting it done but realizing the process was wrong or inaccurate.",
-  tb_7_1_1: "When a situation feels stuck and frustrating, which response is closer to yours?",
-  tb_7_1_1_a: "A. I first look for another path or option to change the flow.",
-  tb_7_1_1_b: "B. I first look for what is off so I can correct and organize it.",
-  tb_7_1_2: "Which state is harder for you to tolerate?",
-  tb_7_1_2_a: "A. Being trapped in the same problem with no open options.",
-  tb_7_1_2_b: "B. An incorrect or misaligned part remaining unresolved.",
-  tb_7_1_3: "In a frustrating situation, which thought comes first?",
-  tb_7_1_3_a: "A. If I stay here, I will get more stuck. I need to find another path.",
-  tb_7_1_3_b: "B. I cannot just let this pass. I need to correct what is wrong.",
+  tb_3_1_1: "When achieving the goal matters more, I feel I can adjust existing methods or procedures to fit reality and get the result.",
+  tb_3_1_2: "When achieving the goal matters more, I feel the process needs to keep its standards and principles for the result to be right.",
+  tb_7_1_1: "When a situation is stuck and frustrating, I try to breathe again by shifting toward another possibility or direction.",
+  tb_7_1_2: "When a situation is stuck and frustrating, I feel settled only after identifying what is off and restoring the standard.",
   tb_3_8_1: "When you push hard toward a goal, which motive is closer to what is happening inside?",
   tb_3_8_1_a: "A. I want the result to clearly show my competence and value.",
   tb_3_8_1_b: "B. I want to make my influence and initiative clear so I do not get pushed around.",
@@ -207,15 +245,12 @@ const questionTextEn = {
   tb_6_9_3: "When you hesitate before a decision, which thought comes first?",
   tb_6_9_3_a: "A. I may be missing something. I need to check a little more.",
   tb_6_9_3_b: "B. If I make this too clear, things may get bigger. I want to let it pass more gently.",
-  tb_7_8_1: "In a frustrating situation, which feeling is harder for you to tolerate first?",
-  tb_7_8_1_a: "A. Feeling trapped with no room to move or choose another path.",
-  tb_7_8_1_b: "B. Feeling that someone is trying to stand over me and direct me.",
-  tb_7_8_2: "When you push strongly, which motive is closer to what is happening inside?",
-  tb_7_8_2_a: "A. I want to break the stuck flow and make room to breathe again.",
-  tb_7_8_2_b: "B. I want to stop a line being crossed and avoid being pushed around.",
-  tb_7_8_3: "After conflict, which feeling tends to remain longer?",
-  tb_7_8_3_a: "A. The frustration that my options still feel too limited or blocked.",
-  tb_7_8_3_b: "B. The discomfort that I have not fully recovered my position or control.",
+  tb_7_8_1: "When I state my position strongly, the bigger reason is that I want to break a stuck flow and widen the available options.",
+  tb_7_8_2: "When I state my position strongly, the bigger reason is that I want to regain initiative in a flow that feels controlling or intrusive.",
+  tb_3_sx_1: "When I push a goal through to the end, what matters more is confirming my value and competence through clear results.",
+  tb_3_sx_2: "When I become deeply absorbed in one object of attention, what matters more is the strong focus and pull I feel in the process itself.",
+  tb_7w_1: "Even when starting something new, I feel settled only after checking the reactions around me and some degree of stability.",
+  tb_7w_2: "When starting something new, I tend to push ahead even when I see constraints and make the path while moving.",
   f_6_8_a: "A. I start with verification, alignment, and safeguards.",
   f_6_8_b: "B. I intervene directly to reset the power balance.",
   f_1_9_a: "A. I clarify standards and correct what is off.",
@@ -224,21 +259,15 @@ const questionTextEn = {
   f_5_7_b: "B. I look for pivots and fresh stimulating options.",
   f_2_8_a: "A. I offer more care to hold the connection.",
   f_2_8_b: "B. I draw firmer boundaries and reclaim control.",
-  tb_1_8_1: "Which feels harder for you to tolerate over time?",
-  tb_1_8_1_a: "A. A wrong way of doing things becoming fixed and staying uncorrected.",
-  tb_1_8_1_b: "B. Someone pushing into my territory or treating my boundary lightly.",
-  tb_1_8_2: "Which fear feels more piercing to you?",
-  tb_1_8_2_a: "A. Being exposed as flawed, inaccurate, or not properly put together.",
-  tb_1_8_2_b: "B. Being pushed back, looked down on, or controlled because I seem weak.",
-  tb_1_8_3: "When you lead people, which state is harder for you to endure?",
-  tb_1_8_3_a: "A. Everything getting loose and misaligned because no clear standard is holding.",
-  tb_1_8_3_b: "B. Outside pressure pushing in while our side looks weak and easy to override.",
-  tb_1_8_4: "Which inner pressure tends to activate first in you?",
-  tb_1_8_4_a: "A. I need to correct what is wrong and set it back in order.",
-  tb_1_8_4_b: "B. I need to put force behind this right now so I do not get pushed around.",
-  tb_1_8_5: "What is the deeper reason you are likely to confront something directly?",
-  tb_1_8_5_a: "A. To correct a wrong standard or restore a disordered situation.",
-  tb_1_8_5_b: "B. To reclaim a crossed boundary and recover initiative.",
+  tb_1_8_1: "Which scene is closer to when your anger rises strongly?",
+  tb_1_8_1_a: "A. When work is handled irrationally or against the standard.",
+  tb_1_8_1_b: "B. When someone treats my people or a vulnerable person carelessly or forcefully.",
+  tb_1_8_2: "Which scene do you monitor more sensitively?",
+  tb_1_8_2_a: "A. The possibility that I may be wrong or may have violated a standard.",
+  tb_1_8_2_b: "B. The possibility that I may be controlled or treated as easy to push around.",
+  tb_1_8_3: "When you lead people, which direction matters more?",
+  tb_1_8_3_a: "A. Leading them toward a more correct and ordered direction.",
+  tb_1_8_3_b: "B. Protecting them from outside pressure and securing strength.",
   tb_1_4_1: "When you notice something in yourself that feels lacking or wrong, which response is closer to yours?",
   tb_1_4_1_a: "A. I raise the standard and push myself, asking how I can fix this and improve.",
   tb_1_4_1_b: "B. I sink into the feeling of lack, wondering why I cannot be natural like other people.",
@@ -257,6 +286,18 @@ const questionTextEn = {
   tb_1_5_3: "When you dig deeply to know something accurately, what motive is more underneath?",
   tb_1_5_3_a: "A. I want to do it correctly without mistakes and fulfill my role responsibly.",
   tb_1_5_3_b: "B. I want to understand how things work and have a clear map in my mind.",
+  tb_3_5_1: "When you feel pressure to prove your ability, which worst-case scenario feels more threatening?",
+  tb_3_5_1_a: "A. My results look poor compared with my effort, and people judge me as unsuccessful or lacking value.",
+  tb_3_5_1_b: "B. It becomes obvious that I lack real depth in the field, so I am intellectually dismissed as unqualified.",
+  tb_3_5_2: "What is the deeper drive behind aggressively filling in knowledge, credentials, or proven results in a field?",
+  tb_3_5_2_a: "A. They make me stand out as successful and bring clear praise and recognition from others.",
+  tb_3_5_2_b: "B. I feel anxious that I am not prepared enough for the world's demands, so expertise helps me defend myself and connect.",
+  tb_5_8_1: "What is the deepest reason you block others' involvement and act independently?",
+  tb_5_8_1_a: "A. I need to protect my safe space and prevent my time and energy from being wasted by outside demands.",
+  tb_5_8_1_b: "B. I cannot stand handing over my decision-making power or initiative, or being under someone else's control.",
+  tb_5_8_2: "In conflict or anger, which trigger most strongly gets under your skin?",
+  tb_5_8_2_a: "A. A messy structure or foolish mistakes force me to spend energy I should not have had to spend.",
+  tb_5_8_2_b: "B. Someone treats me as easy to push around, invades my territory, or tries to control me through a power imbalance.",
   tb_1_6_1: "When you keep checking your work, which thought is closer to what is happening inside?",
   tb_1_6_1_a: "A. This part is still rough. I need to refine it more properly and thoroughly.",
   tb_1_6_1_b: "B. What if I missed something? There must not be a problem later.",
@@ -329,15 +370,18 @@ const questionTextEn = {
   tb_4_7_3: "When you escape reality in your imagination, which content is more common?",
   tb_4_7_3_a: "A. A romantic, deep ideal or feeling that may not be easily fulfilled in real life.",
   tb_4_7_3_b: "B. A new idea or plan that is interesting, curiosity-sparking, and possible to try soon.",
-  tb_3_7_1: "When pressure rises, which response is closer to yours?",
-  tb_3_7_1_a: "A. I want to create results and regain the flow so I can show that I can handle it.",
-  tb_3_7_1_b: "B. I want to break the stuck flow and find another possibility or a way to breathe again.",
-  tb_3_7_2: "Which state is harder for you to tolerate?",
-  tb_3_7_2_a: "A. Being stuck without results and looking incompetent.",
-  tb_3_7_2_b: "B. Having options close down and being tied to one frustrating direction.",
-  tb_3_7_3: "When work gets blocked, which thought comes first?",
-  tb_3_7_3_a: "A. I need to create a result quickly and recover the flow.",
-  tb_3_7_3_b: "B. I cannot stay trapped here. I need to find another path first.",
+  tb_4_8_1: "When you become forcefully angry and push your demands, which feeling is deeper underneath?",
+  tb_4_8_1_a: "A. Even if I look angry, underneath is a deep sense that I was not understood and a fear of seeming lacking.",
+  tb_4_8_1_b: "B. I do not feel complex hurt or inferiority; someone crossed a line, so I am exercising my rightful power.",
+  tb_4_8_2: "When you compete or clash with others to win, what inner reward are you really seeking?",
+  tb_4_8_2_a: "A. I want to prove I am superior to those who rejected or ignored me, compensating for shame and hurt.",
+  tb_4_8_2_b: "B. I want to protect my people and territory, making sure no one can control or underestimate me.",
+  tb_3_7_1: "When you try to be recognized as useful and sociable, which purpose is closer underneath?",
+  tb_3_7_1_a: "A. I feel my value depends on how much I perform and how useful I am, so I need to prove my worth.",
+  tb_3_7_1_b: "B. If I am useful, people will like me, and the opportunity network that can help me in a crisis stays alive.",
+  tb_3_7_2: "When you stop producing results or stop receiving attention where you are, what is your automatic response?",
+  tb_3_7_2_a: "A. I feel deep shame and emptiness, as if my identity has collapsed, and I try hard to recover my successful position.",
+  tb_3_7_2_b: "B. If this place is not working, I quickly look for another fun place or opportunity and turn toward other possibilities.",
   tb_5_9_1: "When you want to pull away from people or a situation, which response is closer to yours?",
   tb_5_9_1_a: "A. I want to secure distance before my energy and thinking space get taken over.",
   tb_5_9_1_b: "B. I want to quietly step out before the atmosphere becomes more uncomfortable.",
@@ -360,6 +404,7 @@ const questionTextEn = {
 
 function getQuestionText(item) {
   if (pageLang === 'en' && item.id.startsWith('tb_gen_')) return 'Which of the two sentences below is closer to you?';
+  if (pageLang === 'en' && item.qEn) return item.qEn;
   if (pageLang === 'en' && questionTextEn[item.id]) return questionTextEn[item.id];
   return item.q;
 }
@@ -374,8 +419,16 @@ function getOptionText(item, side) {
     }
     const key = `${item.id}_${side}`;
     if (questionTextEn[key]) return questionTextEn[key];
+    if (side === 'a' && item.aEn) return item.aEn;
+    if (side === 'b' && item.bEn) return item.bEn;
   }
   return base;
+}
+
+function getChoiceOptionText(option) {
+  const label = pageLang === 'en' ? option.labelEn : option.label;
+  const text = pageLang === 'en' ? option.textEn : option.text;
+  return `<span class="font-bold text-[#4a4540]">${label}</span><br>${text}`;
 }
 
 const arrowLines = {1:{stress:4,growth:7},2:{stress:8,growth:4},3:{stress:9,growth:6},4:{stress:2,growth:1},5:{stress:7,growth:8},6:{stress:3,growth:9},7:{stress:1,growth:5},8:{stress:5,growth:2},9:{stress:6,growth:3}};
@@ -394,7 +447,9 @@ const TEST_CONFIG = {
       type71Close: 2.2,
       type78Default: 2.0,
       type78Close: 2.2,
-      wing7: 2.0
+      wing7: 2.0,
+      counterType: 0.75,
+      counterInstinct: 0.55
     }
   },
   thresholds: {
@@ -442,18 +497,22 @@ const testState = {
   phase1Responses: {},
   phase2Questions: [],
   phase3Question: null,
+  phase4Questions: [],
   pendingResult: null,
   tie: {
     t36: {enabled:false,weight:0,margin:null},
     t56: {enabled:false,weight:0,margin:null},
+    t58: {enabled:false,weight:0,margin:null},
     t59: {enabled:false,weight:0,margin:null},
     t31: {enabled:false,weight:0,margin:null},
+    t35: {enabled:false,weight:0,margin:null},
     t37: {enabled:false,weight:0,margin:null},
     t38: {enabled:false,weight:0,margin:null},
     t39: {enabled:false,weight:0,margin:null},
     t45: {enabled:false,weight:0,margin:null},
     t46: {enabled:false,weight:0,margin:null},
     t47: {enabled:false,weight:0,margin:null},
+    t48: {enabled:false,weight:0,margin:null},
     t68: {enabled:false,weight:0,margin:null},
     t69: {enabled:false,weight:0,margin:null},
     t3sx: {enabled:false,weight:0,margin:null},
@@ -474,55 +533,64 @@ const testState = {
 };
 
 const q1 = [
-  { id:'t2', type:2, q:'여러 사람 앞에 있을 때, 내 진짜 감정보다 내가 어떻게 비칠지가 먼저 신경 쓰이는 편이다.' },
-  { id:'t5', type:5, q:'예상 밖의 일이 생기면, 바로 뛰어들기보다 한 걸음 물러나 상황을 파악할 시간을 먼저 확보하고 싶어진다.' },
-  { id:'t8', type:8, q:'부당하거나 억눌리는 상황을 보면, 물러서기보다 직접 개입해 흐름을 바꾸고 싶어지는 편이다.' },
-  { id:'c1', type:1, q:'일을 할 때 스스로 정한 기준과 원칙을 맞추려는 압력이 강한 편이다.' },
-  { id:'c2', type:2, q:'관계에서 내가 필요한 사람으로 느껴질 때, 내 가치가 더 또렷해지는 편이다.' },
-  { id:'c3', type:3, q:'내가 유능하고 가치 있게 보이는지를 성과로 확인하려는 동기가 강한 편이다.' },
-  { id:'c4', type:4, q:'평범하고 무난한 흐름이 길어지면, 내 고유함이 흐려진다고 느끼는 편이다.' },
-  { id:'c5', type:5, q:'사람들과 오래 상호작용하면 에너지가 빠르게 소진되어, 혼자 거리를 두고 정리하는 시간이 반드시 필요하다.' },
-  { id:'c6', type:6, q:'중요한 결정을 앞두면, 바로 실행하기보다 놓친 위험이 없는지 먼저 확인하고 싶어지는 편이다.' },
-  { id:'c7', type:7, q:'분위기가 무겁거나 답답할 때, 그 감정에 머물기보다 새로운 가능성으로 빠르게 전환하려는 반응이 먼저 나온다.' },
-  { id:'c8', type:8, q:'내 사람이나 약자가 부당하게 공격받거나 이용당하는 것을 보면, 물러서기보다 직접 개입해 보호하고 판을 바꾸려는 반응이 먼저 나온다.' },
-  { id:'c9', type:9, q:'갈등 기류가 생기면, 내 입장을 분명히 하기보다 분위기가 거칠어지지 않게 넘기고 싶어지는 편이다.' },
-  { id:'f_2_3', format:'ab', leftType:2,rightType:3,weight:2.2,q:'압박 상황에서 내 안에서 더 자동으로 튀어나오는 패턴에 가까운 쪽을 고르세요.',a:'나는 먼저 상대의 필요를 읽고 돕는 방식으로 관계를 붙잡으려는 반응이 더 먼저 나온다.',b:'나는 먼저 성과와 유능함을 증명해 상황을 장악하려는 반응이 더 먼저 나온다.' },
-  { id:'f_3_6', format:'ab', leftType:3,rightType:6,weight:2.2,q:'압박이 커질 때, 내 반응은 어느 쪽에 더 가까운가?',a:'정보가 덜 정리돼도 일단 결과를 만들며 흐름을 잡으려는 쪽으로 먼저 움직인다.',b:'속도가 조금 늦어져도 빠진 위험과 변수부터 확인해야 움직일 수 있다.' },
-  { id:'f_6_8', format:'ab', leftType:6,rightType:8,weight:2.2,q:'위협을 느낄 때 실제로 더 자주 쓰는 대응 방식에 가까운 쪽을 고르세요.',a:'나는 먼저 확인과 협의, 검증 가능한 안전장치를 마련하여 실수를 줄이려는 편이다.',b:'나는 바로 개입해 힘의 균형을 바꾸고 주도권을 회수하려는 편이다.' },
-  { id:'f_1_9', format:'ab', leftType:1,rightType:9,weight:2.2,q:'갈등 직전 순간에 더 자동으로 작동하는 경향에 가까운 쪽을 고르세요.',a:'나는 기준을 분명히 세우고 잘못된 부분을 바로잡아야 마음이 놓인다.',b:'나는 마찰을 줄이고 관계의 흐름을 유지하는 쪽을 우선 선택한다.' },
-  { id:'f_5_7', format:'ab', leftType:5,rightType:7,weight:2.2,q:'에너지가 떨어졌을 때 회복을 위해 더 본능적으로 택하는 방식에 가까운 쪽을 고르세요.',a:'나는 물러나 상황을 분석하고 자극을 최소화하며 에너지를 보존한다.',b:'나는 전환점이 될 만한 새로운 자극과 가능성을 찾아 분위기를 바꾼다.' },
-  { id:'f_2_8', format:'ab', leftType:2,rightType:8,weight:2.2,q:'관계가 흔들린다고 느낄 때 더 자동으로 나오는 패턴에 가까운 쪽을 고르세요.',a:'나는 더 도우며 유대감을 회복하려 하고, 관계를 붙잡는 쪽으로 에너지를 쓴다.',b:'나는 경계를 분명히 세우고 주도권을 회수하는 쪽으로 에너지를 쓴다.' },
-  { id:'state_2w', q:'최근 2주를 기준으로 볼 때, 내 일상 전반은 어느 정도 압박과 스트레스 상태였나요? (1=매우 안정, 6=매우 높은 압박)' },
-  { id:'i_sp_1', inst:'sp', q:'어딜 가든 온도, 조명, 식사, 수면 등 나의 신체적 안락함과 환경적 요소가 꽤 중요하게 느껴진다.' },
-  { id:'i_sp_2', inst:'sp', q:'나의 시간, 에너지, 자원(돈 등)이 불필요하게 낭비되거나 예측 불가능하게 소모되는 것에 예민한 편이다.' },
-  { id:'i_sp_3', inst:'sp', q:'재정적인 안정과 독립적인 생활 기반을 확보하는 것이 삶에서 우선순위가 높은 편이다.' },
-  { id:'i_sx_1', inst:'sx', q:'여러 사람과 얕게 어울리는 것보다, 나와 코드가 맞는 단 한 사람과 깊고 강렬하게 교감할 때 에너지를 얻는다.' },
-  { id:'i_sx_2', inst:'sx', q:'무언가(사람, 취미, 관심사)에 한 번 꽂히면 주변을 잊을 만큼 모든 열정을 쏟아붓는 편이다.' },
-  { id:'i_sx_3', inst:'sx', q:'표면적이고 일상적인 대화보다는, 서로의 깊은 생각이나 가치관을 온전히 알 수 있는 밀도 높은 대화를 훨씬 선호한다.' },
-  { id:'i_so_1', inst:'so', q:'내가 속한 조직이나 모임에 들어가면, 누가 실질적 영향력을 갖고 있고 분위기가 어디로 흐르는지 같은 집단 역학을 본능적으로 읽게 되는 편이다.' },
-  { id:'i_so_2', inst:'so', q:'어떤 그룹에서든 내가 맡은 역할과 기여 지점이 분명할 때 심리적으로 가장 안정되며, 소속감이 약해지면 에너지가 빠르게 떨어지는 편이다.' },
-  { id:'i_so_3', inst:'so', q:'개인적 편안함이나 1:1 친밀감만큼, 집단과 사회의 흐름 안에서 내 역할이 연결되어 있다고 느낄 때 동기와 에너지가 더 또렷해지는 편이다.' }
+  { id:'t2', triad:[2,3,4], triadWeight:0.5, q:'사람들과 함께 있을 때, 실제로 느끼는 감정보다 내가 어떻게 보일지를 먼저 의식하며 말과 태도를 조절하는 편이다.' },
+  { id:'t2_eval', triad:[2,3,4], triadWeight:0.5, q:'사람들 앞에서 민망하거나 부정적으로 평가받았다고 느끼면, 그 장면이 오래 남아 반복해서 떠오르는 편이다.' },
+  { id:'t5', triad:[5,6,7], triadWeight:0.5, q:'예상 밖의 상황이 생기면, 감정적으로 바로 반응하기보다 먼저 상황을 머릿속으로 정리하려는 편이다.' },
+  { id:'t5_var', triad:[5,6,7], triadWeight:0.5, q:'불확실한 상황에서는 가능한 변수와 예외를 미리 점검해야 마음이 놓이는 편이다.' },
+  { id:'t8', triad:[8,9,1], q:'관계나 일에서 부당하거나 기준에 어긋난 장면을 보면, 그냥 넘기기보다 바로잡고 싶다는 긴장이 빠르게 올라오는 편이다.' },
+  { id:'c1', type:1, q:'일을 할 때, 외부 요구와 별개로 스스로 정한 기준에 맞춰야 한다는 압박을 자주 느끼는 편이다.' },
+  { id:'c2', type:2, q:'관계에서 내 필요를 먼저 챙기기보다, 상대에게 도움이 되는 쪽으로 먼저 움직이는 편이다.' },
+  { id:'c3', type:3, q:'내 가치나 유능함이 실제 성과로 확인될 때 더 안심되는 편이다.' },
+  { id:'c4', type:4, scoreWeight:0.5, q:'반복적이고 무난한 흐름이 오래 이어지면 정서적으로 무뎌지는 편이다.' },
+  { id:'c4_unique', type:4, scoreWeight:0.5, q:'남들과 크게 다르지 않다고 느껴질 때, 내 고유함이 흐려진 듯한 불편함이 생기는 편이다.' },
+  { id:'c5', type:5, q:'사람들과 오래 상호작용하면 에너지가 빨리 소진되어, 혼자 거리를 두고 정리하는 시간이 필요한 편이다.' },
+  { id:'c6', type:6, q:'중요한 결정을 앞두면, 바로 실행하기보다 먼저 위험 요소와 빠진 부분을 확인하게 되는 편이다.' },
+  { id:'c7', type:7, q:'분위기가 무겁거나 답답해지면, 그 감정에 오래 머물기보다 다른 가능성이나 다음 계획으로 빨리 시선을 돌리는 편이다.' },
+  { id:'c8', type:8, q:'내 사람이나 약자가 부당한 대우를 받는 것을 보면, 물러서기보다 직접 개입해야 한다는 반응이 먼저 올라오는 편이다.' },
+  { id:'c9', type:9, q:'갈등 기류가 생기면, 내 입장을 분명히 하기보다 먼저 마찰을 줄이는 쪽으로 움직이는 편이다.' },
+  { id:'f_2_3', format:'ab', leftType:2,rightType:3,weight:2.2,q:'압박 상황에서, 관계를 붙잡기 위해 내가 먼저 쓰는 방식에 더 가까운 쪽을 고르세요.',a:'나는 상대에게 도움이 되는 쪽으로 움직이며 관계를 회복하려는 편이다.',b:'나는 성과와 유능함을 보여 상황을 안정시키려는 편이다.' },
+  { id:'f_3_6', format:'ab', leftType:3,rightType:6,weight:2.2,q:'불안이 올라올 때, 내가 먼저 의지하는 방식에 더 가까운 쪽을 고르세요.',a:'나는 결과를 빨리 만들어 내 가치를 증명하고 상황을 안정시키려는 편이다.',b:'나는 위험 요소를 점검하고 대비책을 세워 불안을 줄이려는 편이다.' },
+  { id:'f_6_8', format:'ab', leftType:6,rightType:8,weight:2.2,q:'위협을 느낄 때, 내가 먼저 취하는 대응에 더 가까운 쪽을 고르세요.',a:'나는 상황을 확인하고 안전한 기준과 대비책을 마련하려는 편이다.',b:'나는 직접 개입해 경계를 세우고 주도권을 되찾으려는 편이다.' },
+  { id:'f_1_9', format:'ab', leftType:1,rightType:9,weight:2.2,q:'갈등이 생기기 직전, 더 자동적으로 먼저 나오는 반응에 가까운 쪽을 고르세요.',a:'나는 무엇이 잘못됐는지 분명히 하고 바로잡아야 한다는 긴장이 올라온다.',b:'나는 마찰이 더 커지지 않게 흐름을 부드럽게 유지하려는 쪽으로 움직인다.' },
+  { id:'f_5_7', format:'ab', leftType:5,rightType:7,weight:2.2,q:'에너지가 떨어졌을 때, 회복을 위해 더 먼저 택하는 방식에 가까운 쪽을 고르세요.',a:'나는 물러나 자극을 줄이고 혼자 정리하는 편이다.',b:'나는 답답한 상태를 벗어나기 위해 새로운 자극이나 계획으로 전환하는 편이다.' },
+  { id:'f_2_8', format:'ab', leftType:2,rightType:8,weight:2.2,q:'관계가 흔들린다고 느낄 때, 내가 먼저 쓰는 방식에 더 가까운 쪽을 고르세요.',a:'나는 더 돕고 더 맞추면서 관계를 붙잡으려는 편이다.',b:'나는 선을 분명히 하고 내 쪽의 주도권을 되찾으려는 편이다.' },
+  { id:'state_2w', state:true, q:'최근 2주 동안, 일상 전반에서 느낀 압박과 스트레스 수준은 어느 정도였나요? (1=매우 안정적이었다, 6=거의 버티기 어려울 정도였다)' },
+  { id:'state_defensive', state:true, q:'최근 2주 동안, 평소의 나보다 예민하거나 방어적으로 반응하는 일이 얼마나 늘었나요? (1=거의 없었다, 6=거의 계속 그랬다)' },
+  { id:'state_unusual', state:true, q:"최근 2주 동안, 내 본래 성향보다 상황 대응이 우선되어 '평소 같지 않다'고 느낀 적이 얼마나 있었나요? (1=전혀 없었다, 6=거의 항상 그랬다)" },
+  { id:'i_sp_1', inst:'sp', q:'낯선 환경에서도 가장 먼저 확인하게 되는 것은 내 몸 상태, 휴식 가능성, 생활 리듬이 유지되는지 여부다.' },
+  { id:'i_sp_2', inst:'sp', q:'시간, 에너지, 돈이 어디서 새고 있는지 파악되지 않으면 마음이 불편해지는 편이다.' },
+  { id:'i_sp_3', inst:'sp', q:'중요한 선택을 할 때, 흥미나 관계보다 생활의 안정성과 지속 가능성을 먼저 따지게 되는 편이다.' },
+  { id:'i_sx_1', inst:'sx', q:'많은 관계를 넓게 유지하는 것보다, 강하게 끌리는 대상 하나에 에너지가 집중되는 편이다.' },
+  { id:'i_sx_2', inst:'sx', q:'무언가에 강하게 끌리면 다른 일의 우선순위가 잠시 밀릴 만큼 집중이 한쪽으로 쏠리는 편이다.' },
+  { id:'i_sx_3', inst:'sx', q:'사람이나 일에 마음이 움직일 때, 적당한 관심보다 강한 몰입감과 선명한 끌림이 있어야 에너지가 살아나는 편이다.' },
+  { id:'i_so_1', inst:'so', q:'어떤 모임에 들어가면, 누가 영향력을 갖고 있고 관계의 흐름이 어떻게 움직이는지 비교적 빨리 읽는 편이다.' },
+  { id:'i_so_2', inst:'so', q:'집단 안에서 내가 맡은 역할과 기여 지점이 분명할 때 훨씬 안정감을 느끼는 편이다.' },
+  { id:'i_so_3', inst:'so', q:'개인적 편안함이나 친밀감만큼, 내가 더 큰 흐름이나 집단 안에서 어떤 위치에 있는지가 중요하게 느껴지는 편이다.' }
 ];
 
 const deep = {
-  1:[{id:'d1_1',type:1,q:'일을 끝낸 뒤에도 이것이 최선이었는지, 더 정확하게 할 수 있었는지를 스스로 반복 점검하며 기준에 맞추려는 내면의 압력이 자주 작동하는 편이다.'},{id:'d1_2',type:1,q:'속으로는 이 상황의 올바른 방식이 분명하다는 감각이 강해서, 내가 그 기준을 어기거나 타인이 기준 밖으로 움직일 때 답답함과 긴장이 빠르게 올라오는 편이다.'}],
-  2:[{id:'d2_1',type:2,q:'관계가 흔들린다고 느껴질수록, 내가 더 따뜻하고 유용하게 움직여 다시 필요한 사람이 되어야 연결이 유지된다고 느끼는 편이다.'},{id:'d2_2',type:2,q:'상대가 원하는 것은 빨리 보이는데, 내가 원하는 것을 먼저 말하는 일은 불편한 편이다.'}],
-  3:[{id:'d3_1',type:3,q:'있는 그대로의 나보다, 유능하고 성과 내는 사람으로 보일 때 가치가 확인된다는 동기가 강해서 결과를 통해 존재 가치를 증명하려는 압력이 크게 작동하는 편이다.'},{id:'d3_2',type:3,q:'실패하거나 무능해 보이는 장면이 남을 수 있다고 느끼면, 실제 상황 전부터 긴장과 스트레스가 크게 올라오며 성과 회복 압력이 강해지는 편이다.'}],
-  4:[{id:'d4_1',type:4,q:'겉으로 함께 있어도 나만 완전히 이해받지 못한다는 정서적 거리감을 자주 느끼며, 슬픔이나 결핍의 경험을 통해 오히려 내 고유성이 선명해진다고 느끼는 편이다.'},{id:'d4_2',type:4,q:'반복적이고 평탄한 일상만 이어지면 정서적으로 무감해지기 쉽고, 감정의 깊이와 의미가 살아 있는 장면에서 존재감이 또렷해지는 편이다.'}],
-  5:[{id:'d5_1',type:5,q:'문제 한가운데 직접 뛰어들기보다 한 걸음 떨어진 자리에서 구조를 관찰하고 파악할 때 더 안전하고 통제 가능하다고 느끼는 편이다.'},{id:'d5_2',type:5,q:'예고 없는 감정 요구나 갑작스러운 침범이 들어오면, 관계를 끊으려는 의도는 없어도 즉시 에너지를 닫고 물러나 정리하려는 반응이 자동으로 나온다.'}],
-  6:[{id:'d6_1',type:6,q:'중요한 결정을 내리기 전, 겉으로 드러난 정보보다 숨어 있는 의도와 잠재적 리스크를 먼저 확인해야 안심이 되는 편이며 대비가 부족하면 불안이 크게 올라온다.'},{id:'d6_2',type:6,q:'믿을 만해 보이는 사람이나 시스템도, 정말 신뢰해도 되는지 속으로 계속 점검하는 편이다.'}],
-  7:[{id:'d7_1',type:7,q:'불편한 현실이나 무거운 감정에 오래 머물면 에너지가 급격히 떨어져서, 의식적으로든 무의식적으로든 분위기를 바꾸거나 다른 가능성으로 주의를 전환하려는 패턴이 나타난다.'},{id:'d7_2',type:7,q:'선택지가 닫히거나 한 길에 오래 묶이는 상황을 답답하게 느껴, 언제든 방향을 바꿀 수 있는 여지를 남겨둘 때 심리적으로 훨씬 자유롭고 안정된 편이다.'}],
-  8:[{id:'d8_1',type:8,q:'내 사람이나 약자가 부당하게 공격받거나 이용당하는 것을 보면, 주도권을 회수하고 보호하려는 반응이 먼저 나온다.'},{id:'d8_2',type:8,q:'인정을 원하는 것처럼 보이는 순간에도 핵심 동기는 칭찬 자체보다, 내 영향력이 무시되지 않고 함부로 통제되지 않는 상태를 확보하려는 데 더 가깝다.'}],
-  9:[{id:'d9_1',type:9,q:'관계나 환경의 긴장이 높아지면, 문제를 더 키우지 않기 위해 내 욕구와 우선순위를 뒤로 미루고 일단 부드럽게 지나가게 만드는 선택을 자주 한다.'},{id:'d9_2',type:9,q:'중요한 갈등이나 결정을 앞두면, 그 문제를 바로 다루기보다 다른 일로 넘어가며 잠시 흐리고 싶어지는 편이다.'}]
+  1:[{id:'d1_1',type:1,q:'일을 마친 뒤에도, 기준에 맞게 했는지 스스로 다시 점검하게 되는 편이다.'},{id:'d1_2',type:1,q:'상황이 기준에 어긋난다고 느껴지면, 그냥 넘기기보다 바로잡아야 한다는 긴장이 빠르게 올라오는 편이다.'}],
+  2:[{id:'d2_1',type:2,q:'남을 챙기거나 도와주는 것은 비교적 익숙하지만, 내가 먼저 필요를 말하고 도움을 요청하는 일은 불편한 편이다.'},{id:'d2_2',type:2,q:'내가 원하는 것을 바로 말하면 관계가 어색해질까 봐, 내 욕구 표현을 미루는 편이다.'}],
+  3:[{id:'d3_1',type:3,q:'내 가치가 분명해지는 순간은, 눈에 보이는 결과나 성과를 만들었을 때인 편이다.'},{id:'d3_2',type:3,q:'실패하거나 무능해 보일 가능성이 느껴지면, 실제 일이 시작되기 전부터 긴장이 크게 올라오는 편이다.'}],
+  4:[{id:'d4_1',type:4,q:'사람들과 함께 있어도, 나만 완전히 이해받지 못한다는 거리감을 느끼는 편이다.'},{id:'d4_2',type:4,q:'반복적이고 평탄한 흐름이 길어지면 정서적으로 무뎌지고, 감정의 깊이가 느껴질 때 비로소 내가 살아나는 편이다.'}],
+  5:[{id:'d5_1',type:5,q:'문제 한가운데 들어가기보다, 한 걸음 떨어져 관찰하고 파악할 때 더 편한 편이다.'},{id:'d5_2',type:5,q:'예고 없는 감정 요구나 갑작스러운 침범이 들어오면, 먼저 에너지를 닫고 물러나 정리하려는 반응이 나온다.'}],
+  6:[{id:'d6_1',type:6,q:'중요한 결정을 앞두면, 겉으로 보이는 정보보다 숨은 위험이나 빠진 부분을 먼저 확인해야 마음이 놓이는 편이다.'},{id:'d6_2',type:6,q:'권위나 시스템을 따르더라도, 그 대상을 끝까지 검증하고 의심해 봐야 안심되는 편이다.'}],
+  7:[{id:'d7_1',type:7,q:'불편한 현실이나 무거운 감정이 길어지면, 분위기를 바꾸거나 다른 가능성으로 시선을 돌리려는 반응이 먼저 나온다.'},{id:'d7_2',type:7,q:'선택지가 줄어들고 한 방향에 오래 묶이는 상황을 답답하게 느껴, 언제든 다른 길을 열어두고 싶어 하는 편이다.'}],
+  8:[{id:'d8_1',type:8,q:'부당한 압박이나 침범을 느끼면, 물러서기보다 내 쪽의 힘과 주도권을 되찾아야 한다는 반응이 먼저 올라온다.'},{id:'d8_2',type:8,q:'칭찬을 받지 못하는 것보다, 내 영향력이 무시되거나 함부로 다뤄지는 상황에 더 예민한 편이다.'}],
+  9:[{id:'d9_1',type:9,q:'관계의 마찰이 커질 것 같으면, 내 실제 욕구보다 연결을 유지하는 쪽을 먼저 선택하는 편이다.'},{id:'d9_2',type:9,q:'중요한 갈등이나 결정을 앞두면, 바로 직면하기보다 다른 일에 에너지를 분산시키며 미루는 편이다.'}]
 };
 
 const tb36 = [
-  {id:'tb_3_6_1',format:'ab',leftType:3,rightType:6,q:'둘 중 내게 더 견디기 어려운 상황은 어느 쪽에 가까운가?',a:'준비가 덜 되어 보여도, 결과를 못 내 무능해 보이는 것',b:'겉으로는 빨리 해냈어도, 확인 부족으로 큰 문제가 뒤늦게 터지는 것'},
-  {id:'tb_3_6_2',format:'ab',leftType:3,rightType:6,q:'압박이 심할 때, 내 머릿속에서 더 자주 반복되는 쪽은 어느 쪽에 가까운가?',a:'빨리 결과를 보여 줘야 한다. 멈칫하면 뒤처지고 가치가 떨어진다.',b:'뭔가 빠뜨린 게 있을 수 있다. 확인 없이 가면 나중에 더 큰 문제가 된다.'}
+  {id:'tb_3_6_1',type:3,q:'압박이 커질수록, 나는 빠른 결과를 만들어 내 유능함과 신뢰를 입증하려는 쪽으로 더 움직인다.'},
+  {id:'tb_3_6_2',type:6,q:'압박이 커질수록, 나는 위험 요소를 확인하고 대비를 갖춰 불확실성을 줄이려는 쪽으로 더 움직인다.'}
 ];
 const tb56 = [
   {id:'tb_5_6_1',format:'ab',leftType:5,rightType:6,q:'요구와 변수가 한꺼번에 몰릴 때, 내 반응은 어느 쪽에 더 가까운가?',a:'일단 사람과 자극에서 조금 물러나 혼자 정리할 거리부터 확보해야 한다.',b:'빠진 정보나 위험 신호가 없는지 먼저 확인해야 마음이 놓인다.'},
   {id:'tb_5_6_2',format:'ab',leftType:5,rightType:6,q:'둘 중 내게 더 견디기 어려운 상황은 어느 쪽에 가까운가?',a:'계속 반응하고 연결되느라 내 공간과 에너지가 바닥나는 것',b:'확인이 덜 된 채 움직였다가 나중에 문제가 터지는 것'}
+];
+const tb58 = [
+  {id:'tb_5_8_1',format:'ab',leftType:5,rightType:8,q:'타인의 개입을 차단하고 철저히 독립적으로 행동하려는 가장 깊은 이유는?',a:'내 시간과 에너지가 쓸데없는 곳에 소모되는 것을 막고, 외부의 요구로부터 나만의 안전한 공간을 지켜내야 직성이 풀리기 때문이다.',b:'남들에게 내 결정권과 주도권을 넘겨주는 것이 싫고, 누군가의 통제나 지시 아래 놓이는 상황 자체를 참을 수 없기 때문이다.'},
+  {id:'tb_5_8_2',format:'ab',leftType:5,rightType:8,q:'갈등이나 화가 나는 상황에서, 내 속을 더 뒤집어 놓는 핵심 촉발점은?',a:'구조가 엉망이거나 사람들이 멍청한 실수를 해서, 굳이 안 써도 될 내 에너지가 낭비되고 얽혀 들어가야 할 때 가장 화가 난다.',b:'누군가 나를 만만하게 보거나 힘의 불균형을 이용해 내 영역을 침범하고 통제하려 들 때 가장 화가 난다.'}
 ];
 const tb59 = [
   {id:'tb_5_9_1',format:'ab',leftType:5,rightType:9,q:'사람이나 상황에서 물러나고 싶어질 때, 내 반응은 어느 쪽에 더 가까운가?',a:'내 에너지와 생각할 공간이 더 잠식되기 전에 거리를 확보하고 싶어진다.',b:'이 분위기가 더 불편해지기 전에 조용히 빠져 긴장을 낮추고 싶어진다.'},
@@ -530,13 +598,16 @@ const tb59 = [
   {id:'tb_5_9_3',format:'ab',leftType:5,rightType:9,q:'거리를 두고 싶어질 때, 내 머릿속에 더 먼저 도는 말은 어느 쪽에 가까운가?',a:'이대로 두면 너무 많이 들어온다. 조금 떨어져 정리할 공간이 필요하다.',b:'이대로 두면 분위기가 더 무거워진다. 조용히 지나가게 두는 게 낫다.'}
 ];
 const tb31 = [
-  {id:'tb_3_1_1',format:'ab',leftType:3,rightType:1,q:'마감과 기준이 충돌할 때, 더 자주 먼저 지키는 쪽은 어느 쪽인가?',a:'일단 결과와 속도',b:'일단 정확성과 기준'},
-  {id:'tb_3_1_2',format:'ab',leftType:3,rightType:1,q:'일이 어그러졌을 때 더 먼저 찔리는 쪽은 어느 쪽인가?',a:'충분히 해내지 못해 유능하지 않아 보인 것',b:'제대로 하지 못해 틀리거나 부정확했던 것'}
+  {id:'tb_3_1_1',type:3,q:'목표 달성이 중요할수록, 나는 결과를 내기 위해 기존 방식이나 절차를 현실에 맞게 조정할 수 있다고 느끼는 편이다.'},
+  {id:'tb_3_1_2',type:1,q:'목표 달성이 중요할수록, 나는 과정의 기준과 원칙이 지켜져야 결과도 제대로 된 것이라고 느끼는 편이다.'}
+];
+const tb35 = [
+  {id:'tb_3_5_1',format:'ab',leftType:3,rightType:5,q:'누군가에게 내 능력을 증명해야 하는 압박 상황에서, 내가 더 두려워하는 최악의 시나리오는?',a:'내가 들인 노력에 비해 결과가 초라해서, 사람들에게 가치 없거나 실패한 사람으로 평가받고 무대에서 밀려나는 것',b:'내가 이 분야에 대해 사실은 깊이가 없고 무지하다는 사실이 들통나서, 지적으로 무시당하고 부적격자로 판명되는 것'},
+  {id:'tb_3_5_2',format:'ab',leftType:3,rightType:5,q:'내가 특정 분야에서 지식, 자격증, 혹은 확실한 성과를 악착같이 채우려는 무의식적 동력은?',a:'그것들이 나를 남들보다 돋보이고 성공한 사람으로 만들어 주어, 타인의 찬사와 인정을 확실하게 가져다주기 때문이다.',b:'세상의 요구에 내가 충분히 준비되어 있지 않다는 불안이 커서, 확실한 전문성이 있어야 나를 방어하고 연결될 수 있기 때문이다.'}
 ];
 const tb37 = [
-  {id:'tb_3_7_1',format:'ab',leftType:3,rightType:7,q:'압박이 커질 때, 내 반응은 어느 쪽에 더 가까운가?',a:'일단 성과를 만들고 흐름을 잡아 내가 해낼 수 있다는 걸 보여 주고 싶어진다.',b:'일단 답답한 흐름을 깨고 다른 가능성이나 숨통 트일 길을 찾고 싶어진다.'},
-  {id:'tb_3_7_2',format:'ab',leftType:3,rightType:7,q:'둘 중 내게 더 견디기 어려운 상태는 어느 쪽에 가까운가?',a:'성과 없이 정체되어 내가 무능해 보이는 상태',b:'선택지가 막히고 한 방향에 묶여 답답한 상태'},
-  {id:'tb_3_7_3',format:'ab',leftType:3,rightType:7,q:'일이 막힐 때, 내 머릿속에 더 먼저 도는 말은 어느 쪽에 가까운가?',a:'빨리 결과를 만들어 흐름을 회복해야 한다.',b:'이 상태에 갇히면 안 된다. 다른 길부터 찾아야 한다.'}
+  {id:'tb_3_7_1',format:'ab',leftType:3,rightType:7,q:'내가 타인에게 유용하고 싹싹한 사람으로 인정받으려 노력할 때, 그 진짜 목적에 더 가까운 것은?',a:'나라는 사람의 가치 자체가 내가 얼마나 성과를 내고 유용한가에 달려 있다고 느끼기 때문에, 쓸모를 증명해야만 내가 가치 있는 존재로 느껴지기 때문이다.',b:'내가 유용한 사람이 되어야 사람들이 나를 좋아하고, 그래야 내가 위기에 처했을 때 도움을 받을 수 있는 든든한 생존 네트워크와 기회가 유지되기 때문이다.'},
+  {id:'tb_3_7_2',format:'ab',leftType:3,rightType:7,q:'내가 속한 곳에서 성과를 내지 못하거나 주목받지 못하게 되었을 때, 나의 자동 반응은?',a:'나의 정체성이 무너진 것 같은 깊은 수치심과 공허함을 느낀다. 어떻게든 성과를 회복해 다시 성공한 사람의 위치로 돌아가려고 안간힘을 쓴다.',b:'이곳이 안 되면 나를 반겨줄 다른 재미있는 곳이나 기회를 빠르게 찾아 이동한다. 무거운 실패감에 빠져 있기보다 다른 가능성으로 시선을 돌린다.'}
 ];
 const tb38 = [
   {id:'tb_3_8_1',format:'ab',leftType:3,rightType:8,q:'내가 목표를 강하게 밀어붙일 때, 더 핵심에 가까운 이유는 어느 쪽인가?',a:'결과를 통해 내 유능함과 가치를 분명히 보여 주고 싶어서',b:'누구에게도 밀리지 않고 내 영향력과 주도권을 분명히 하고 싶어서'},
@@ -563,23 +634,495 @@ const tb69 = [
   {id:'tb_6_9_2',format:'ab',leftType:6,rightType:9,q:'둘 중 내게 더 견디기 어려운 상태는 어느 쪽에 가까운가?',a:'충분히 확인하지 못한 채 결정해서 나중에 문제가 생기는 것',b:'결정을 분명히 내리면서 분위기가 거칠어지고 관계가 불편해지는 것'},
   {id:'tb_6_9_3',format:'ab',leftType:6,rightType:9,q:'결정을 앞두고 멈칫할 때, 내 머릿속에 더 먼저 도는 말은 어느 쪽에 가까운가?',a:'뭔가 놓친 게 있을 수 있다. 조금 더 확인해야 한다.',b:'이걸 분명히 하면 괜히 일이 커질 수 있다. 조금 더 부드럽게 넘기고 싶다.'}
 ];
-const tb3sx = [{id:'tb_3_sx_1',type:3,q:'내가 끝까지 목표를 밀어붙이는 핵심 동력은, 유능하고 가치 있는 사람으로 보이는 결과를 만들어 신뢰와 인정을 확보하려는 데 더 가깝다.'},{id:'tb_3_sx_2',q:'내가 한 대상에 깊게 몰입하는 핵심 동력은, 외부 인정보다 몰입 과정의 강한 집중감과 에너지 자체를 끝까지 경험하려는 데 더 가깝다.'}];
+const tb3sx = [{id:'tb_3_sx_1',type:3,q:'내가 목표를 끝까지 밀어붙일 때 더 중요한 것은, 분명한 결과를 통해 내 가치와 유능함을 확인하는 일이다.'},{id:'tb_3_sx_2',q:'내가 한 대상에 깊이 몰입할 때 더 중요한 것은, 그 과정에서 느껴지는 강한 집중감과 끌림 자체다.'}];
 const tb71 = [
-  {id:'tb_7_1_1',format:'ab',leftType:7,rightType:1,q:'상황이 막히고 답답할 때, 내 반응은 어느 쪽에 더 가까운가?',a:'일단 다른 길이나 새로운 선택지를 찾아 흐름을 바꾸고 싶어진다.',b:'일단 무엇이 어긋났는지 찾아 바로잡고 정리하고 싶어진다.'},
-  {id:'tb_7_1_2',format:'ab',leftType:7,rightType:1,q:'둘 중 내게 더 견디기 어려운 상태는 어느 쪽에 가까운가?',a:'선택지가 막혀 같은 문제 안에 오래 갇혀 있는 상태',b:'틀리거나 어긋난 부분이 그대로 남아 있는 상태'},
-  {id:'tb_7_1_3',format:'ab',leftType:7,rightType:1,q:'답답한 상황에서 내 머릿속에 더 먼저 도는 말은 어느 쪽에 가까운가?',a:'이렇게 계속 있으면 더 막힌다. 다른 길부터 찾아야 한다.',b:'이 상태로 넘기면 안 된다. 잘못된 부분부터 바로잡아야 한다.'}
+  {id:'tb_7_1_1',type:7,q:'상황이 막히고 답답할 때, 나는 다른 가능성이나 새로운 방향으로 전환하면서 숨통을 틔우려는 편이다.'},
+  {id:'tb_7_1_2',type:1,q:'상황이 막히고 답답할 때, 나는 무엇이 어긋났는지 바로잡아 기준을 회복해야 마음이 놓이는 편이다.'}
 ];
 const tb78 = [
-  {id:'tb_7_8_1',format:'ab',leftType:7,rightType:8,q:'답답한 상황에서 더 먼저 못 견디는 것은 어느 쪽에 가까운가?',a:'선택지가 막혀 움직일 수 없는 느낌',b:'누군가가 내 위에 서서 좌우하려는 느낌'},
-  {id:'tb_7_8_2',format:'ab',leftType:7,rightType:8,q:'내가 세게 나갈 때 더 가까운 동기는 어느 쪽인가?',a:'흐름을 깨고 숨통을 트기 위해서',b:'선 넘는 흐름을 끊고 밀리지 않기 위해서'},
-  {id:'tb_7_8_3',format:'ab',leftType:7,rightType:8,q:'갈등 후에도 더 오래 남는 것은 어느 쪽에 가까운가?',a:'여전히 선택지가 부족하고 다시 막힐 것 같은 답답함',b:'내가 아직 주도권을 완전히 회수하지 못했다는 찜찜함'}
+  {id:'tb_7_8_1',type:7,q:'내 주장을 강하게 내세울 때, 더 큰 이유는 막힌 흐름을 깨고 선택지를 넓히고 싶어서인 편이다.'},
+  {id:'tb_7_8_2',type:8,q:'내 주장을 강하게 내세울 때, 더 큰 이유는 통제당하거나 침범당한 흐름에서 주도권을 되찾고 싶어서인 편이다.'}
 ];
 const tb89 = [
   {id:'tb_8_9_1',format:'ab',leftType:8,rightType:9,q:'누군가 내게 이래라저래라 지시하거나 통제하려 할 때, 내 반응은 어느 쪽에 가까운가?',a:'"네가 뭔데?" 하는 마음이 들며 즉시 맞서거나 강하게 선을 긋는다.',b:'겉으로는 알았다고 하거나 침묵하지만, 속으로는 한 귀로 흘리며 내 페이스대로 간다.'},
   {id:'tb_8_9_2',format:'ab',leftType:8,rightType:9,q:'피할 수 없는 갈등과 마주했을 때, 내 몸의 에너지는 어느 쪽에 가까운가?',a:'오히려 에너지가 올라오고 정신이 맑아지며, 끝장을 보거나 승부를 내고 싶어진다.',b:'에너지가 급격히 빠지고 피곤해지며, 어떻게든 이 상황을 빨리 덮고 지나가고 싶어진다.'},
   {id:'tb_8_9_3',format:'ab',leftType:8,rightType:9,q:'둘 중 내게 더 견디기 어려운 상태는 어느 쪽에 가까운가?',a:'내가 만만하게 보여서 남들에게 밀리고 주도권을 뺏기는 상태',b:'시끄러운 마찰과 긴장이 계속 이어져서 내 마음이 평온할 수 없는 상태'}
 ];
-const tb7wing = [{id:'tb_7w_1',wing:6,q:'새로운 일을 벌일 때도, 가까운 관계의 안정과 안전망이 흔들리지 않는지 먼저 점검해야 마음이 놓이는 편이다.'},{id:'tb_7w_2',wing:8,q:'새로운 일을 추진할 때, 제약이 보여도 주저하기보다 강하게 밀어붙이며 방해가 생기면 정면으로 돌파하는 편이다.'}];
+const tb7wing = [{id:'tb_7w_1',wing:6,q:'새로운 일을 시작할 때도, 주변 반응과 안정성을 어느 정도 확인해야 마음이 놓이는 편이다.'},{id:'tb_7w_2',wing:8,q:'새로운 일을 시작할 때, 제약이 보여도 일단 밀어붙이며 진행하면서 길을 만드는 편이다.'}];
+
+const counterTypeQuestions = {
+  1: {
+    id: 'ct_1_sx',
+    type: 1,
+    inst: 'sx',
+    counterType: true,
+    label: 'SX 1',
+    q: '기준에 어긋난 상황을 보면 감정을 눌러 넘기기보다, 관계가 거칠어지더라도 바로 지적하고 고쳐야 직성이 풀리는 편이다.',
+    qEn: 'When a situation violates a standard, I am more likely to point it out and correct it even if the relationship becomes rough, rather than simply suppressing my reaction.'
+  },
+  2: {
+    id: 'ct_2_sp',
+    type: 2,
+    inst: 'sp',
+    counterType: true,
+    label: 'SP 2',
+    q: '나는 남을 챙기는 편이지만, 정작 내 필요는 직접 말하기보다 상대가 먼저 알아채고 챙겨주길 기대하는 편이다.',
+    qEn: 'I tend to care for others, but when it comes to my own needs, I often hope the other person notices and takes care of them before I say them directly.'
+  },
+  3: {
+    id: 'ct_3_sp',
+    type: 3,
+    inst: 'sp',
+    counterType: true,
+    label: 'SP 3',
+    q: '성과를 내고 싶어도 그것을 크게 드러내기보다, 꾸준하고 성실한 사람으로 평가받는 쪽을 더 안전하게 느끼는 편이다.',
+    qEn: 'Even when I want to achieve, I feel safer being seen as steady and diligent than making my accomplishments highly visible.'
+  },
+  4: {
+    id: 'ct_4_sp',
+    type: 4,
+    inst: 'sp',
+    counterType: true,
+    label: 'SP 4',
+    q: '힘든 감정을 드러내 도움을 구하기보다, 혼자 견디다가 지친 뒤에야 상태를 알아차리는 편이다.',
+    qEn: 'Rather than showing difficult feelings and asking for help, I tend to endure alone and only notice my state after I have become worn out.'
+  },
+  5: {
+    id: 'ct_5_sx',
+    type: 5,
+    inst: 'sx',
+    counterType: true,
+    label: 'SX 5',
+    q: '평소에는 쉽게 거리를 좁히지 않지만, 아주 드물게 강하게 신뢰가 생긴 대상에게는 예상보다 훨씬 깊이 몰입하는 편이다.',
+    qEn: 'I usually do not close distance easily, but on rare occasions when strong trust forms, I can become much more deeply absorbed than expected.'
+  },
+  6: {
+    id: 'ct_6_sx',
+    type: 6,
+    inst: 'sx',
+    counterType: true,
+    label: 'SX 6',
+    q: '위협을 느끼면 숨기보다, 만만하게 보이지 않기 위해 평소보다 더 강하게 나가거나 먼저 맞서는 편이다.',
+    qEn: 'When I feel threatened, I am more likely to come on stronger or confront first so I do not look easy to push around, rather than hiding.'
+  },
+  7: {
+    id: 'ct_7_so',
+    type: 7,
+    inst: 'so',
+    counterType: true,
+    label: 'SO 7',
+    q: '내가 즐거운 것을 먼저 챙기면 이기적으로 보일까 신경 쓰여, 내 욕구보다 사람들 일이나 더 큰 명분을 우선하는 편이다.',
+    qEn: 'I worry that prioritizing my own enjoyment may look selfish, so I tend to put other people’s needs or a larger cause before my own desires.'
+  },
+  8: {
+    id: 'ct_8_so',
+    type: 8,
+    inst: 'so',
+    counterType: true,
+    label: 'SO 8',
+    q: '내 힘을 굳이 앞세우지는 않아도, 주변 사람이 부당한 대우를 받으면 평소보다 훨씬 강하게 개입하는 편이다.',
+    qEn: 'Even if I do not usually put my strength forward, when someone around me is treated unfairly I tend to intervene much more strongly than usual.'
+  },
+  9: {
+    id: 'ct_9_so',
+    type: 9,
+    inst: 'so',
+    counterType: true,
+    label: 'SO 9',
+    q: '정작 내 우선순위는 미뤄두면서도, 그룹에서 필요한 역할에는 과하게 맞춰 들어가는 편이다.',
+    qEn: 'I may postpone my own priorities, yet over-adapt to whatever role the group needs from me.'
+  }
+};
+
+const phase4TypeSets = {
+  1: {
+    subtype: {
+      id: 'p4_1_subtype',
+      format: 'abc',
+      q: '완벽함에 대한 나의 기준과 잣대는 주로 어디로 향하며, 분노는 어떻게 표현되는가?',
+      qEn: 'Where do my standards of perfection mostly point, and how is my anger expressed?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 1번 - 걱정/불안',
+          labelEn: 'Self-preservation 1 - Worry / anxiety',
+          text: "나 스스로가 실수하거나 책임을 다하지 못할까 봐 끊임없이 걱정하며, 나 자신을 향해 가장 엄격하고 가혹하게 기준을 들이댄다. 남들에게 화를 내기보다 '내가 더 잘해야지' 하고 삭인다.",
+          textEn: 'I constantly worry that I may make a mistake or fail my responsibilities, and I apply the harshest standards to myself. Instead of getting angry at others, I swallow it and tell myself I must do better.'
+        },
+        {
+          value: 'so',
+          label: '사회적 1번 - 완고함/비적응',
+          labelEn: 'Social 1 - Rigidity / non-adaptation',
+          text: "내가 가진 원칙과 방법이 가장 옳다는 확신이 강하다. 틀린 방식을 따르는 사람이나 시스템을 보면 무의식적으로 '내가 너희에게 올바른 길을 가르쳐 주겠다'는 우월감과 답답함을 동시에 느낀다.",
+          textEn: 'I am strongly convinced that my principles and methods are right. When I see people or systems following a wrong way, I feel both frustration and a sense that I should teach them the right path.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 1번 - 열정/개혁',
+          labelEn: 'One-to-one 1 - Zeal / reform',
+          text: '내 주변의 사람이나 환경이 기준에 어긋나는 것을 절대 참지 못한다. 잘못된 것을 보면 분노를 숨기지 않고 거침없이 지적하며, 내 방식대로 상대를 강하게 뜯어고치려(개혁하려) 한다.',
+          textEn: 'I cannot tolerate people or environments around me falling below the standard. When I see something wrong, I do not hide my anger; I point it out directly and push strongly to reform it my way.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_1_wing',
+      format: 'ab',
+      leftWing: 9,
+      rightWing: 2,
+      q: '원칙을 지키고 바르게 행동하려 할 때, 나의 전반적인 태도와 분위기는?',
+      qEn: 'When I try to keep principles and act rightly, which overall attitude fits me more?',
+      a: '웬만하면 감정을 드러내지 않고 객관적이고 차분한 태도를 유지하려 한다. 혼자서 묵묵히 원칙을 지키며, 시끄러운 갈등보다는 조용히 정렬된 상태를 선호한다.',
+      b: '사람들에게 적극적으로 다가가서 조언하고 가르치는 것을 좋아한다. 차갑기보다는 따뜻하고 인간적인 모습을 보이려 애쓰며, 세상과 타인에게 실제적인 도움을 주고 싶다.',
+      aEn: 'I try to stay objective and calm without showing much emotion. I quietly keep principles on my own and prefer a quietly aligned state over noisy conflict.',
+      bEn: 'I like actively approaching people to advise and teach. I try to seem warm and human rather than cold, and I want to give practical help to people and the world.'
+    }
+  },
+  2: {
+    subtype: {
+      id: 'p4_2_subtype',
+      format: 'abc',
+      q: '사람들에게 사랑받고 필요한 존재가 되기 위해, 내가 무의식적으로 사용하는 전략은?',
+      qEn: 'What unconscious strategy do I use to be loved and needed by people?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 2번 - 특권',
+          labelEn: 'Self-preservation 2 - Privilege',
+          text: '어리고 순수한 아이처럼 귀엽고 사랑스러운 모습을 은연중에 어필한다. 내가 남들을 챙기는 만큼, 남들도 나를 예뻐해 주고 내 필요를 알아서 채워주며 특별 대우를 해주길 바란다.',
+          textEn: 'I subtly present myself as sweet, innocent, or lovable. As much as I care for others, I want them to cherish me, notice my needs, and give me special treatment.'
+        },
+        {
+          value: 'so',
+          label: '사회적 2번 - 야망',
+          labelEn: 'Social 2 - Ambition',
+          text: "모임이나 조직의 중심에서 유능하고 영향력 있는 사람이 되려 한다. 중요한 사람들과 인맥을 맺고 '우리 그룹에 없어서는 안 될 핵심적인 조력자'로 인정받을 때 가장 만족한다.",
+          textEn: 'I try to become competent and influential at the center of a group or organization. I feel most satisfied when I connect with important people and am recognized as an indispensable helper.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 2번 - 유혹/공격성',
+          labelEn: 'One-to-one 2 - Seduction / aggression',
+          text: '특정 대상(또는 소수)과 깊고 치명적인 관계를 맺고 싶어 한다. 상대가 나를 원하게 만들기 위해 매력을 적극적으로 발산하며, 상대가 내 마음을 알아주지 않으면 강하게 밀어붙이거나 통제하려 든다.',
+          textEn: 'I want a deep, irresistible bond with a particular person or small circle. I actively use charm so the other person wants me, and if they do not recognize my heart, I may push or control strongly.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_2_wing',
+      format: 'ab',
+      leftWing: 1,
+      rightWing: 3,
+      q: '사람들과 관계를 맺고 도움을 줄 때, 내 방식과 태도는 어느 쪽에 더 가까운가?',
+      qEn: 'When I relate to people and help them, which style is closer to mine?',
+      a: "감정적으로 들뜨기보다 차분하고 객관적인 편이다. 무조건 잘해주기보다 '무엇이 상대에게 정말 올바른 도움인가'를 생각하며 책임감 있고 절도 있게 챙겨준다.",
+      b: '밝고 사교적이며 에너지가 넘친다. 사람들에게 매력적이고 능력 있는 사람으로 보이길 원하며, 분위기를 띄우고 인간관계를 넓게 확장하는 데 능숙하다.',
+      aEn: 'I am more calm and objective than emotionally effusive. Instead of simply doing everything for someone, I think about what truly helps them rightly and care for them responsibly.',
+      bEn: 'I am bright, sociable, and energetic. I want to seem attractive and capable, and I am good at lifting the mood and expanding relationships.'
+    }
+  },
+  3: {
+    subtype: {
+      id: 'p4_3_subtype',
+      format: 'abc',
+      q: '나의 가치와 성과를 증명하기 위해, 내가 가장 신경 쓰는 이미지는 무엇인가?',
+      qEn: 'To prove my value and achievement, which image do I care about most?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 3번 - 안정감/좋은 사람',
+          labelEn: 'Self-preservation 3 - Security / good person',
+          text: "성공하고 싶지만 잘난 척하는 건 싫다. 나는 '믿을 수 있고 성실하며 자기 일을 묵묵히 잘해내는 좋은 사람'이라는 평가를 받기 위해, 내 성과를 내세우기보단 안정적인 결과를 내는 데 집중한다.",
+          textEn: 'I want success, but I dislike showing off. I focus on steady results rather than advertising my achievements so I am seen as reliable, sincere, and quietly competent.'
+        },
+        {
+          value: 'so',
+          label: '사회적 3번 - 위신/지위',
+          labelEn: 'Social 3 - Prestige / status',
+          text: "사람들의 시선과 무대 중앙을 즐긴다. 사회가 인정하는 스펙, 명성, 지위를 얻는 것이 중요하며, 내가 속한 그룹에서 '가장 뛰어나고 화려한 성공의 모델'로 돋보이고 싶다.",
+          textEn: 'I enjoy attention and the center stage. Recognized credentials, reputation, and status matter to me, and I want to stand out as a brilliant model of success in my group.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 3번 - 매력/가면',
+          labelEn: 'One-to-one 3 - Attraction / image',
+          text: '특정 대상이나 주변 사람들에게 가장 매력적이고 이상적인 모습으로 비치길 원한다. 상대가 원하는 완벽한 이미지(외모, 매너, 유능함 등)로 나를 자유자재로 바꾸어 상대의 마음을 얻어낸다.',
+          textEn: 'I want to appear as the most attractive and ideal version of myself to a particular person or those around me. I can adapt my appearance, manners, and competence to win the other person.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_3_wing',
+      format: 'ab',
+      leftWing: 2,
+      rightWing: 4,
+      q: '목표를 향해 달려갈 때, 사람들과 맺는 관계의 방식은 어느 쪽인가?',
+      qEn: 'When I move toward a goal, which relational style fits me more?',
+      a: "사람들의 호감을 얻고 분위기를 맞추는 데 에너지를 많이 쓴다. 성과도 중요하지만, 주변 사람들과 친밀하게 지내며 '인기 있고 매력적인 스타'로 남고 싶다.",
+      b: "인간관계보다는 업무의 완성도와 내 전문성에 훨씬 더 집중한다. 사람 비위를 맞추기보다는 다소 차갑게 보이더라도 '내 분야에서 독보적이고 깊이 있는 실력자'로 인정받고 싶다.",
+      aEn: 'I spend a lot of energy gaining people’s goodwill and matching the atmosphere. Results matter, but I also want to remain a popular, attractive star.',
+      bEn: 'I focus much more on work quality and expertise than on relationships. Even if I seem a bit cold, I want to be recognized as an irreplaceable expert with depth.'
+    }
+  },
+  4: {
+    subtype: {
+      id: 'p4_4_subtype',
+      format: 'abc',
+      q: '나에게 없는 것을 갈망하며 결핍과 슬픔을 느낄 때, 내가 그 고통을 처리하는 방식은?',
+      qEn: 'When I long for what I do not have and feel lack or sadness, how do I handle that pain?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 4번 - 인내/무모함',
+          labelEn: 'Self-preservation 4 - Tenacity / recklessness',
+          text: '슬프고 고통스럽더라도 그것을 밖으로 징징대며 티 내는 것은 굴욕적이라고 생각한다. 남몰래 아파하면서도 겉으로는 불평 없이 웃으며, 그 고통을 묵묵히 혼자 견뎌내는 것에 자부심을 느낀다.',
+          textEn: 'Even when I am sad or in pain, I find it humiliating to complain or show it. I hurt privately, smile without complaint on the outside, and take pride in quietly enduring the pain alone.'
+        },
+        {
+          value: 'so',
+          label: '사회적 4번 - 수치심',
+          labelEn: 'Social 4 - Shame',
+          text: '나만 빼고 남들은 다 행복하고 온전한 것 같아 비교당하는 느낌과 부끄러움을 자주 느낀다. 내 슬픔과 결핍을 솔직하게 드러냄으로써 누군가가 나를 이해하고 보듬어 주기를 은연중에 바란다.',
+          textEn: 'It often feels as if everyone else is happy and whole except me, which brings comparison and shame. By showing my sadness and lack honestly, I quietly hope someone will understand and hold me.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 4번 - 경쟁/오만',
+          labelEn: 'One-to-one 4 - Competition / arrogance',
+          text: '내게 없는 것을 가진 사람들을 보면 슬픔보다 질투와 분노가 치밀어 오른다. 내가 최고가 되거나 남들을 깎아내림으로써 내 우월성을 증명하고 싶으며, 원할 때는 사람들에게 강렬하고 치명적으로 다가간다.',
+          textEn: 'When I see people who have what I lack, jealousy and anger rise more than sadness. I want to prove my superiority by becoming the best or cutting others down, and when I want to, I can approach people intensely.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_4_wing',
+      format: 'ab',
+      leftWing: 3,
+      rightWing: 5,
+      q: '내 감정과 정체성을 세상에 드러낼 때, 나의 분위기와 태도는?',
+      qEn: 'When I reveal my emotions and identity to the world, which mood and attitude fit me more?',
+      a: '나의 독특함과 감성을 세련되고 매력적인 방식으로 표현하고 싶다. 어느 정도는 사람들에게 인정받고 돋보이기를 원하며, 외모나 성과 등 현실적인 부분도 꽤 신경 쓰는 편이다.',
+      b: '사람들의 시선이나 사회적 인정보다는 나만의 깊은 내면세계를 탐구하는 것이 훨씬 중요하다. 타인과 거리를 두고 혼자만의 동굴에 틀어박혀 지적이고 철학적인 고독에 빠지기를 즐긴다.',
+      aEn: 'I want to express my uniqueness and sensitivity in a refined, attractive way. I do want some recognition and visibility, and I care about practical things such as appearance or achievement.',
+      bEn: 'Exploring my own deep inner world matters much more than social recognition. I enjoy withdrawing from others into my own cave of intellectual and philosophical solitude.'
+    }
+  },
+  5: {
+    subtype: {
+      id: 'p4_5_subtype',
+      format: 'abc',
+      q: '세상의 침범으로부터 내 에너지와 공간을 지키기 위해, 내가 주로 사용하는 생존 전략은?',
+      qEn: 'What survival strategy do I use to protect my energy and space from the world’s intrusions?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 5번 - 은신처',
+          labelEn: 'Self-preservation 5 - Castle / refuge',
+          text: '철저하게 나만의 물리적, 심리적 경계를 치고 숨는다. 세상을 관찰만 할 뿐 깊이 엮이려 하지 않으며, 누군가 내 공간에 들어오거나 내 시간과 에너지를 요구하는 것을 극도로 경계한다.',
+          textEn: 'I create strict physical and psychological boundaries and hide within them. I observe the world without getting deeply entangled, and I am extremely wary when someone enters my space or asks for my time and energy.'
+        },
+        {
+          value: 'so',
+          label: '사회적 5번 - 토템/전문가',
+          labelEn: 'Social 5 - Totem / expert',
+          text: "단순히 숨어있는 것이 아니라, 내가 가장 가치 있다고 여기는 '전문 지식'이나 '특별한 그룹'에 소속되어 거기서 의미를 찾는다. 대중들과는 거리를 두지만, 소수의 전문가나 지식인 그룹 안에서는 열정적으로 교류한다.",
+          textEn: 'I do not simply hide; I seek meaning through specialized knowledge or a special group I consider valuable. I keep distance from the general crowd, but engage passionately with a small circle of experts or thinkers.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 5번 - 신뢰/로맨스',
+          labelEn: 'One-to-one 5 - Trust / romance',
+          text: "평소에는 가장 차갑고 거리를 두지만, 내 모든 것을 보여줘도 될 만큼 '절대적으로 신뢰할 수 있는 단 한 사람(또는 이상)'을 끊임없이 찾는다. 그 대상을 만나면 내 안의 폭발적인 감정과 비밀을 남김없이 쏟아낸다.",
+          textEn: 'I may seem cold and distant most of the time, but I keep searching for the one person or ideal I can trust absolutely with everything. When I find that target, I pour out my intense emotions and secrets.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_5_wing',
+      format: 'ab',
+      leftWing: 4,
+      rightWing: 6,
+      q: '머릿속으로 정보를 분석하고 거리를 둘 때, 내 일상적인 모습은 어느 쪽인가?',
+      qEn: 'When I analyze information and keep distance, which everyday style fits me more?',
+      a: '단순한 논리나 과학적 사실을 넘어, 나만의 독특한 세계관이나 미학, 철학적인 상상에 빠지기를 좋아한다. 다소 예민하고 감수성이 있으며 현실과 동떨어진 기인처럼 보일 때가 있다.',
+      b: '상상력보다는 실용적이고 체계적인 정보 수집에 더 관심이 많다. 의심이 많고 조심스러우며, 불안을 잠재우기 위해 객관적인 데이터를 분석하고 시스템의 원리를 파악하려 한다.',
+      aEn: 'Beyond simple logic or scientific facts, I like immersing myself in my own unique worldview, aesthetics, or philosophical imagination. I can seem sensitive, unconventional, or detached from ordinary reality.',
+      bEn: 'I am more interested in practical, systematic information-gathering than imagination. I am cautious and questioning, and I analyze objective data and systems to calm uncertainty.'
+    }
+  },
+  6: {
+    subtype: {
+      id: 'p4_6_subtype',
+      format: 'abc',
+      q: '세상의 불확실성과 위협을 느낄 때, 불안을 해소하고 안전해지기 위해 취하는 방식은?',
+      qEn: 'When I feel uncertainty and threat, how do I reduce anxiety and become safe?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 6번 - 따뜻함',
+          labelEn: 'Self-preservation 6 - Warmth',
+          text: '사람들에게 친절하고 무해하며 다정한 사람으로 보인다. 적을 만들지 않고 나를 지켜줄 수 있는 강한 보호자나 든든한 내 편을 많이 만들어 안전망을 구축하려 한다.',
+          textEn: 'I appear kind, harmless, and warm to people. I try not to make enemies and build a safety net by creating strong protectors or dependable allies who can look out for me.'
+        },
+        {
+          value: 'so',
+          label: '사회적 6번 - 의무',
+          labelEn: 'Social 6 - Duty',
+          text: '믿고 따를 수 있는 명확한 규칙, 매뉴얼, 권위자, 시스템을 찾는다. 모호한 것은 견디기 힘들며, 흑백이 분명한 이념이나 조직에 소속되어 그곳의 규정을 철저히 따르는 것으로 안심한다.',
+          textEn: 'I look for clear rules, manuals, authorities, or systems I can trust and follow. Ambiguity is hard to tolerate, and I feel safer belonging to a clear ideology or organization and carefully following its rules.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 6번 - 힘/대항',
+          labelEn: 'One-to-one 6 - Strength / counterphobia',
+          text: "두려움과 위협을 느낄 때 웅크리기보다는 오히려 먼저 맹렬하게 들이받고 공격한다. '최고의 방어는 공격'이라고 생각하며, 상대를 도발하거나 나의 강인함을 과시하여 위험 요소를 제거하려 한다.",
+          textEn: 'When I feel fear or threat, I do not shrink back; I strike first and confront fiercely. I think the best defense is offense, and I try to remove danger by provoking others or displaying strength.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_6_wing',
+      format: 'ab',
+      leftWing: 5,
+      rightWing: 7,
+      q: '안전망을 확인하고 불안에 대처할 때, 평소에 내가 주로 보이는 태도는?',
+      qEn: 'When I check for safety and deal with anxiety, which ordinary attitude fits me more?',
+      a: '사람들과 섞이기보다는 조금 떨어져서 독립적으로 상황을 분석하고 위험을 계산한다. 의심이 많아 정보를 끝까지 파고들며, 혼자서 세밀하게 예측하고 방비하는 편이다.',
+      b: '불안해질수록 사람들과 대화하고 어울리면서 무거운 분위기를 환기하려 한다. 농담도 잘하고 사교적이며, 함께 어울리며 연대감을 다지는 것으로 긴장을 풀고 마음을 놓는다.',
+      aEn: 'Rather than blending with people, I step back and independently analyze the situation and calculate risks. I question deeply, dig into information, and prepare carefully on my own.',
+      bEn: 'The more anxious I become, the more I talk and connect with people to lighten the mood. I can be humorous and sociable, and I relax by building solidarity with others.'
+    }
+  },
+  7: {
+    subtype: {
+      id: 'p4_7_subtype',
+      format: 'abc',
+      q: '일상의 지루함이나 내면의 결핍을 느낄 때, 내 에너지가 무의식적으로 쏠리는 방향은 어느 쪽인가?',
+      qEn: 'When I feel daily boredom or inner lack, where does my energy unconsciously go?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 7번 - 실용적 네트워크',
+          labelEn: 'Self-preservation 7 - Practical network',
+          text: '나와 내 사람들에게 이익이 될 만한 실질적인 기회나 정보를 기가 막히게 찾아낸다. 현실적이고 유용한 네트워크를 만들며, 내 삶의 물질적·경험적 풍요를 확실하게 챙기는 데 에너지를 쓴다.',
+          textEn: 'I quickly find practical opportunities or information that benefit me and my people. I build useful networks and spend energy securing material and experiential abundance in my life.'
+        },
+        {
+          value: 'so',
+          label: '사회적 7번 - 희생적 이상주의',
+          labelEn: 'Social 7 - Sacrificial idealism',
+          text: "나 혼자만 쾌락을 좇고 욕심을 부리는 것은 이기적이라는 무의식적인 죄책감이 있다. 그래서 내 욕구를 미루더라도 타인이나 대의를 위해 헌신하며, 책임감 있고 '좋은 사람'으로 남기 위해 에너지를 쓴다.",
+          textEn: 'I carry an unconscious guilt that pursuing pleasure or desire just for myself is selfish. So even when I postpone my own desires, I spend energy serving others or a cause and staying responsible and good.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 7번 - 본질 갈망과 허무',
+          labelEn: 'One-to-one 7 - Longing for essence and disillusionment',
+          text: "단순한 재미보다는 사물의 깊은 '본질'과 완벽한 '이상'을 끊임없이 갈망한다. 내가 바라는 이상에 가닿을 수 없는 얄팍한 현실을 볼 때면 '모든 것이 헛되다'는 깊은 허무함과 환멸에 빠지며, 이를 벗어나기 위해 또 다른 강렬한 의미나 본질을 찾아 나선다.",
+          textEn: 'More than simple fun, I constantly long for deep essence and a perfect ideal. When shallow reality cannot reach the ideal I want, I fall into emptiness or disillusionment and search for another intense meaning or essence.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_7_wing',
+      format: 'ab',
+      leftWing: 6,
+      rightWing: 8,
+      q: '내가 원하는 바를 추진하거나 장애물을 마주했을 때, 나의 전반적인 태도는?',
+      qEn: 'When I pursue what I want or face obstacles, which overall attitude fits me more?',
+      a: '사람들과 유쾌하게 어울리며 분위기를 부드럽게 만드는 것을 좋아한다. 내심 걱정이나 불안이 있어서, 독단적으로 밀어붙이기보다는 주변 사람들과 타협하고 확인을 거치며 함께 가려 한다.',
+      b: '내가 꽂힌 것이 있으면 남의 눈치를 보지 않고 강한 추진력으로 과감하게 밀어붙인다. 내 앞길을 방해받는 것을 극도로 싫어하며, 원하는 것을 쟁취하기 위해 다소 직선적이고 거칠게 부딪히는 것도 감수한다.',
+      aEn: 'I like cheerfully connecting with people and softening the mood. Because I have some inner worry or anxiety, I prefer to compromise, check with others, and move together rather than push alone.',
+      bEn: 'When I am hooked on something, I push boldly with strong drive without worrying much about others’ reactions. I hate being blocked and will clash directly if needed to get what I want.'
+    }
+  },
+  8: {
+    subtype: {
+      id: 'p4_8_subtype',
+      format: 'abc',
+      q: '나의 통제권과 힘을 확인하고, 내 영역을 지켜내는 방식은 어느 쪽에 가장 가까운가?',
+      qEn: 'How do I confirm my control and strength and protect my territory?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 8번 - 생존/실속',
+          labelEn: 'Self-preservation 8 - Survival / practical power',
+          text: '불필요하게 시끄러운 싸움은 피하지만, 나만의 확고한 성(영역)을 구축하고 내가 필요한 자원과 만족을 끈질기게 챙긴다. 겉으로 크게 으르렁대지 않아도 속으로는 절대 남에게 호락호락하게 당하지 않는다.',
+          textEn: 'I avoid unnecessary noisy fights, but I build my own solid territory and tenaciously secure the resources and satisfaction I need. Even if I do not roar loudly, inside I will never let others take advantage of me.'
+        },
+        {
+          value: 'so',
+          label: '사회적 8번 - 연대/보호',
+          labelEn: 'Social 8 - Solidarity / protection',
+          text: '나 개인의 힘을 과시하기보다는, 부당한 대우를 받는 내 사람(약자)을 보호하고 의리를 지키는 데 내 힘을 쓴다. 내가 이끄는 무리 안에서는 충성스럽고 다정하며, 불의를 보면 동료들과 연대해서 맹렬히 맞서 싸운다.',
+          textEn: 'Rather than showing off personal power, I use my strength to protect my people or the vulnerable and keep loyalty. Inside my group I can be loyal and warm, and when I see injustice I fight fiercely in solidarity.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 8번 - 장악/도발',
+          labelEn: 'One-to-one 8 - Possession / provocation',
+          text: '공간의 중심에서 모든 상황과 주도권을 내가 쥐고 있어야 직성이 풀린다. 강렬한 에너지로 굽힘 없이 반항하거나 상대를 도발하며, 기선을 제압하여 상대방을 완전히 내 통제 아래 두려 한다.',
+          textEn: 'I feel settled only when I hold the center of the room and the initiative. With intense energy, I resist, provoke, and seize the upper hand so the other person comes under my control.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_8_wing',
+      format: 'ab',
+      leftWing: 7,
+      rightWing: 9,
+      q: '내가 리더십을 발휘하거나 힘을 쓸 때, 남들이 느끼는 나의 에너지는 어느 쪽인가?',
+      qEn: 'When I lead or use power, which energy do others feel from me?',
+      a: '에너지가 밖으로 크게 뻗치며 행동이 빠르고 호탕하다. 규율이나 한계에 얽매이는 것을 비웃으며, 다소 거칠더라도 내가 원하는 크고 새로운 비전을 향해 거침없이 전진한다.',
+      b: '평소에는 불필요한 에너지를 쓰지 않고 묵직하게 뒤에서 상황을 관망한다. 하지만 누군가 내 허락 없이 선을 넘거나 내 구역을 침범하면, 숨겨둔 엄청난 힘으로 단번에 상황을 짓눌러버린다.',
+      aEn: 'My energy extends outward strongly, and I act quickly and boldly. I laugh at limits and rules, and even if I seem rough, I move straight toward the large new vision I want.',
+      bEn: 'Usually I conserve energy and watch from behind with heavy steadiness. But if someone crosses a line or invades my territory without permission, I press the situation down with hidden force.'
+    }
+  },
+  9: {
+    subtype: {
+      id: 'p4_9_subtype',
+      format: 'abc',
+      q: '골치 아픈 문제나 갈등을 마주했을 때, 내면의 평온을 지키기 위해 나는 어떻게 회피하는가?',
+      qEn: 'When I face a troublesome problem or conflict, how do I avoid it to protect inner peace?',
+      options: [
+        {
+          value: 'sp',
+          label: '자기보존 9번 - 일상의 위안',
+          labelEn: 'Self-preservation 9 - Everyday comfort',
+          text: "맛있는 것을 먹거나, 멍하니 영상을 보거나, 잠을 자는 등 단순하고 반복적인 '소소한 즐거움'에 빠져든다. 신체를 편안하게 만드는 활동에 몰두함으로써 복잡한 현실을 잊고 감각을 마비시킨다.",
+          textEn: 'I sink into simple repetitive comforts such as eating something good, zoning out with videos, or sleeping. By focusing on bodily comfort, I forget complicated reality and numb my senses.'
+        },
+        {
+          value: 'so',
+          label: '사회적 9번 - 과잉 참여',
+          labelEn: 'Social 9 - Over-participation',
+          text: '나를 위해 쉴 틈도 없이, 내가 속한 그룹이나 타인의 필요를 챙기느라 엄청나게 바쁘게 움직인다. 모임에 끊임없이 참여하고 헌신함으로써, 정작 직면해야 할 내 진짜 문제와 욕구는 무의식적으로 덮어버린다.',
+          textEn: 'Instead of resting for myself, I stay extremely busy meeting the needs of my group or others. By constantly participating and serving, I unconsciously cover over my own real problems and desires.'
+        },
+        {
+          value: 'sx',
+          label: '1:1/성적 9번 - 완전한 융합',
+          labelEn: 'One-to-one 9 - Complete merging',
+          text: '내가 중요하게 생각하는 특정 타인(배우자, 연인, 멘토 등)과 나 자신을 완전히 합쳐버린다. 상대방의 의견, 취향, 목표를 마치 내 것인 양 받아들이며, 갈등을 피하기 위해 나 자신의 독립적인 목소리를 지워버린다.',
+          textEn: 'I merge myself completely with a specific important person such as a spouse, partner, or mentor. I take their opinions, tastes, and goals as if they were mine and erase my independent voice to avoid conflict.'
+        }
+      ]
+    },
+    wing: {
+      id: 'p4_9_wing',
+      format: 'ab',
+      leftWing: 8,
+      rightWing: 1,
+      q: '불편한 압박이 들어올 때, 나의 내면에서 일어나는 반응은 어느 쪽인가?',
+      qEn: 'When uncomfortable pressure comes in, which inner response fits me more?',
+      a: "겉으로는 무던해 보여도 속으로는 꽤 고집이 세고 내 영역이 확실하다. 누가 나를 억지로 통제하거나 조종하려 들면, 대놓고 화를 내진 않아도 '절대 안 움직이는 바위'처럼 버티며 내 페이스를 지켜낸다.",
+      b: '예의 바르고 반듯한 태도를 중요하게 여기며, 상황을 이성적이고 매끄럽게 조율하려 애쓴다. 현실이 시끄러워지면 화를 내기보다는, 완벽한 질서와 평화가 있는 나만의 이상적인 내면세계로 도피하곤 한다.',
+      aEn: 'Even if I look easygoing, inside I can be very stubborn and have a clear territory. If someone tries to control or manipulate me, I may not openly explode, but I hold my pace like an immovable rock.',
+      bEn: 'I value a polite, proper attitude and try to coordinate situations smoothly and rationally. When reality gets noisy, I escape into an ideal inner world of perfect order and peace rather than getting angry.'
+    }
+  }
+};
 
 const tb14 = [
   {id:'tb_1_4_1',format:'ab',leftType:1,rightType:4,q:'내 안에서 마음에 들지 않는 부족함을 발견했을 때, 내 반응은 어느 쪽에 가까운가?',a:'"이걸 어떻게 고치고 나아질 수 있을까?"라며 기준을 높이고 나를 채찍질한다.',b:'"왜 나는 남들처럼 자연스럽지 못할까?"라며 그 결핍감과 우울감 안으로 깊이 빠져든다.'},
@@ -602,13 +1145,11 @@ const tb19 = [
   {id:'tb_1_9_3',format:'ab',leftType:1,rightType:9,q:'내 안에서 짜증이나 분노가 올라올 때, 나는 무의식적으로 어떻게 반응하는가?',a:'감정을 억누르려 하지만, 목소리가 굳어지거나 표정이 차가워지는 등 밖으로 에너지가 샌다.',b:'화난 감정 자체를 희미하게 만들려 하며, 아무 일 없는 척 멍해지거나 다른 데로 주의를 돌린다.'}
 ];
 
-// 1번 vs 8번 타이브레이커: 동기(Why) 기반 – SO 1 / SO 8 오타이핑 감소
+// 1번 vs 8번 타이브레이커: 분노 초점, 경계 초점, 리더십 초점으로 압축
 const tb18 = [
-  { id:'tb_1_8_1', format:'ab', leftType:1, rightType:8, weight:2.2, q:'더 오래 참기 어려운 쪽은 어느 쪽에 가까운가?', a:'틀린 방식이 그대로 굳어지는 것', b:'누군가가 내 영역을 함부로 넘보는 것' },
-  { id:'tb_1_8_2', format:'ab', leftType:1, rightType:8, weight:2.2, q:'더 찔리는 두려움은 어느 쪽에 가까운가?', a:'내가 결함 있거나 부정확한 사람으로 드러나는 것', b:'내가 밀리거나 약하게 보여 통제당하는 것' },
-  { id:'tb_1_8_3', format:'ab', leftType:1, rightType:8, weight:2.2, q:'사람들을 이끌 때 내가 더 못 견디는 상태는 어느 쪽에 가까운가?', a:'기준 없이 흐트러져 아무나 제멋대로 움직이는 상태', b:'외부가 쉽게 침범하고 우리 쪽 힘이 약하게 보이는 상태' },
-  { id:'tb_1_8_4', format:'ab', leftType:1, rightType:8, weight:2.2, q:'내 안에서 더 자주 먼저 작동하는 압박은 어느 쪽에 가까운가?', a:'잘못된 것을 바로잡아야 한다는 압박', b:'밀리지 않도록 바로 힘을 실어야 한다는 압박' },
-  { id:'tb_1_8_5', format:'ab', leftType:1, rightType:8, weight:2.2, q:'내가 직접 맞서게 되는 더 핵심적인 이유는 어느 쪽에 가까운가?', a:'잘못된 기준이나 흐트러진 질서를 바로잡기 위해서', b:'침범당한 경계와 주도권을 회수하기 위해서' }
+  { id:'tb_1_8_1', format:'ab', leftType:1, rightType:8, q:'화가 강하게 올라오는 장면에 더 가까운 쪽을 고르세요.', a:'일이 비합리적이거나 기준에 어긋나게 처리될 때 더 못 견디는 편이다.', b:'누군가 내 사람이나 약자를 함부로 대하거나 밀어붙일 때 더 못 견디는 편이다.' },
+  { id:'tb_1_8_2', format:'ab', leftType:1, rightType:8, q:'더 민감하게 경계하는 장면에 가까운 쪽을 고르세요.', a:'내가 틀렸거나 기준을 어겼다는 비판을 받을 가능성', b:'내가 통제당하거나 만만하게 다뤄질 가능성' },
+  { id:'tb_1_8_3', format:'ab', leftType:1, rightType:8, q:'내가 사람들을 이끌 때 더 중요하게 여기는 방향에 가까운 쪽을 고르세요.', a:'더 올바르고 정돈된 방향으로 이끄는 것', b:'외부 압력으로부터 지켜내고 힘을 확보하는 것' }
 ];
 const tb24 = [
   {id:'tb_2_4_1',format:'ab',leftType:2,rightType:4,q:'관계가 어색해지거나 멀어진다고 느낄 때, 내 반응은 어느 쪽에 더 가까운가?',a:'내가 더 챙기고 더 맞춰서 다시 따뜻하게 연결을 회복하고 싶어진다.',b:'이 사람이 정말 내 진짜 마음을 이해하고 있는지 더 예민하게 보게 된다.'},
@@ -635,164 +1176,54 @@ const tb47 = [
   {id:'tb_4_7_2',format:'ab',leftType:4,rightType:7,q:'다람쥐 쳇바퀴 돌듯 반복되는 뻔한 일상 속에서 내가 더 자주 느끼는 불편함은?',a:'삶의 진짜 의미와 깊이가 사라진 것 같아 가슴 한구석이 텅 빈 것 같은 공허함',b:'더 새롭고 재밌는 일들이 많은데, 이 좁은 현실에 묶여 있는 것 같은 갇힌 답답함'},
   {id:'tb_4_7_3',format:'ab',leftType:4,rightType:7,q:'내가 현실을 벗어나 머릿속으로 무언가를 상상할 때, 그 내용은 주로 어느 쪽인가?',a:'현실에서는 쉽게 채워지지 않을, 나만의 낭만적이고 깊이 있는 이상적인 모습이나 감정',b:'내일 당장이라도 시도해 볼 수 있는, 흥미롭고 호기심을 자극하는 새로운 아이디어나 계획'}
 ];
+const tb48 = [
+  {id:'tb_4_8_1',format:'ab',leftType:4,rightType:8,q:'내가 누군가에게 강하게 화를 내고 내 요구를 밀어붙일 때, 내면 깊은 곳에 깔려 있는 감정은?',a:'겉으로는 강하게 화를 내지만, 내면에는 결국 나는 이해받지 못했다는 깊은 결핍감과 남들보다 부족해 보이기 싫은 마음이 깔려 있다.',b:'화를 낼 때 내면에 복잡한 상처나 열등감은 없다. 누군가 선을 넘었기 때문에 정당하게 내 권리와 힘을 행사할 뿐이라고 확신한다.'},
+  {id:'tb_4_8_2',format:'ab',leftType:4,rightType:8,q:'사람들과 경쟁하거나 부딪혀서 이기려 할 때, 내가 진짜로 얻고자 하는 내적 보상은?',a:'나를 거절하거나 무시했던 사람들보다 내가 더 우월하다는 것을 증명하여, 내 안의 수치심과 상처를 보상받고 싶다.',b:'내 사람들과 내 영역을 지켜내고, 그 누구도 나를 함부로 통제하거나 만만하게 볼 수 없도록 힘의 우위를 확실히 하고 싶다.'}
+];
 
 // 전용 타이브레이커가 없는 31개 쌍: 동기·두려움·세계관 차이 기반 전용 질문 (키: 'typeA_typeB')
 const tbCustomMap = {
-  '1_2': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 다른 사람을 돕거나 조언할 때, 그들이 더 올바르고 나은 길로 가도록 이끄는 것에 대한 책임감을 느낀다. (1번 동기)', b: '나는 다른 사람을 돕거나 조언할 때, 그들과 정서적으로 연결되고 그들에게 필요한 존재가 되는 것에서 만족감을 느낀다. (2번 동기)' },
-  '1_4': { q: '내 안의 결점을 마주했을 때 더 자연스러운 반응은 어느 쪽인가?', a: '어떻게든 고쳐서 기준에 맞추려 한다.', b: '그 결핍감과 슬픔 안으로 들어가 내 감정과 의미를 오래 들여다본다.' },
-  '1_5': { q: '잘못되거나 틀린 것을 봤을 때 더 익숙한 반응은 어느 쪽인가?', a: '고치고 싶어서 속으로 계속 답답하고 거슬린다.', b: '에너지를 뺏기기 싫어서 신경을 끄고 거리를 둔다.' },
-  '1_6': { q: '꼼꼼하게 일처리를 하는 내 마음속 진짜 동기는 어느 쪽에 가까운가?', a: '빈틈없이 깔끔하고 올바르게 완성하고 싶어서', b: '나중에 실수나 문제로 책임을 추궁당할까 봐 불안해서' },
-  '1_9': { q: '마음에 안 드는 상황을 마주했을 때 나의 내적 에너지는 어느 쪽인가?', a: '어떻게든 바로잡아야 한다는 쪽으로 에너지가 모이고 팽팽해진다.', b: '굳이 긁어 부스럼 만들지 말자는 쪽으로 에너지가 흩어지고 느슨해진다.' },
-  '2_3': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 다른 사람들에게 인정받기 위해, 내가 얼마나 따뜻하고 도움을 주는 사람인지를 보여주는 것이 중요하다. (2번 동기)', b: '나는 다른 사람들에게 인정받기 위해, 내가 얼마나 유능하고 성공한 사람인지를 보여주는 것이 중요하다. (3번 동기)' },
-  '2_4': { q: '관계가 흔들릴 때 더 먼저 하는 것은 어느 쪽에 가까운가?', a: '더 챙기고 더 맞춰서 필요한 존재로 연결을 회복하려 한다.', b: '내 진짜 마음을 정말 이해받고 있는지 확인하게 된다.' },
-  '2_5': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 사람들과의 관계에서 감정적인 교류와 연결을 통해 에너지를 얻는다. (2번 동기)', b: '나는 사람들과의 관계에서 나의 시간과 에너지가 소모된다고 느끼며, 혼자만의 시간이 반드시 필요하다. (5번 동기)' },
-  '2_6': { q: '내가 사람들에게 헌신하는 진짜 동기에 더 가까운 것은?', a: '"네가 없으면 안 돼"라는 느낌을 주어 끊어지지 않는 관계를 만들고 싶어서', b: '나를 공격하지 않고 나를 지켜줄 수 있는 안전한 울타리를 만들고 싶어서' },
-  '2_7': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나의 주된 관심은 사람들이며, 그들의 필요를 채워주는 것에서 기쁨을 찾는다. (2번 동기)', b: '나의 주된 관심은 즐거운 경험이며, 새로운 가능성을 탐험하는 것에서 기쁨을 찾는다. (7번 동기)' },
-  '2_8': { q: '갈등 상황에서 내가 주도권을 잡기 위해 은연중에 꺼내는 카드는 어느 쪽에 가까운가?', a: '내가 널 위해 어떻게 해줬는데 하는 내 헌신과 수고', b: '어디 한번 해보자는 건가 하는 내 힘과 단호함' },
-  '2_9': { q: '관계가 어색해졌을 때, 내 쪽에서 더 자주 먼저 일어나는 반응은 어느 쪽에 가까운가?', a: '내가 더 챙기고 더 맞춰서라도 다시 필요한 사람으로 연결을 회복하고 싶어진다.', b: '내 입장을 조금 접더라도 이 분위기가 더 거칠어지지 않게 빨리 눌러 두고 싶어진다.' },
-  '3_4': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 내가 성취한 것과 성공적인 이미지를 통해 나의 가치를 증명하려고 한다. (3번 동기)', b: '나는 내가 얼마나 독특하고 진실한 감정을 가졌는지를 통해 나의 정체성을 찾으려고 한다. (4번 동기)' },
-  '3_5': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 전문적인 지식을 쌓는 이유가 그것을 통해 성공을 이루고 최고로 인정받기 위해서이다. (3번 동기)', b: '나는 전문적인 지식을 쌓는 이유가 그것을 통해 세상을 이해하고 유능함을 느끼기 위해서이다. (5번 동기)' },
-  '3_7': { q: '압박이 올 때 더 먼저 붙잡는 것은 어느 쪽에 가까운가?', a: '결과와 성과를 만들어 흐름을 회복하는 것', b: '다른 가능성과 답답함에서 빠져나갈 길을 찾는 것' },
-  '3_8': { q: '내가 강하게 나갈 때 더 중요한 것은 어느 쪽에 가까운가?', a: '결과로 내 실력을 증명하는 것', b: '흐름을 장악하고 밀리지 않는 것' },
-  '3_9': { q: '다른 사람들에게 맞춰서 행동할 때 나의 진짜 목적은 어느 쪽에 가까운가?', a: '상황에 잘 적응하는 유능한 사람으로 인정받기 위해서', b: '굳이 내 주장을 펴서 긁어 부스럼 만들고 싶지 않아서' },
-  '4_5': { q: '혼자 있을 때 더 자연스러운 쪽은 어느 쪽에 가까운가?', a: '내 감정의 의미를 오래 느껴 보는 것', b: '내 관심사를 구조적으로 이해하는 것' },
-  '4_6': { q: '불안할 때 더 먼저 떠오르는 것은 어느 쪽에 가까운가?', a: '내 안의 결핍감과 소외감', b: '놓친 위험과 불확실성' },
-  '4_7': { q: '내가 결핍이나 부족함을 느낄 때 대처하는 방식은 어느 쪽에 가까운가?', a: '나에게 없는 그 특별한 무언가를 계속 갈망하며, 닿지 못하는 슬픔을 느낀다.', b: '이 결핍을 채워줄 완전히 다른 새롭고 흥미로운 것들로 재빨리 눈을 돌린다.' },
-  '4_8': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 상처를 받았을 때, 내면으로 침잠하며 그 고통스러운 감정을 곱씹는 경향이 있다. (4번 동기)', b: '나는 상처를 받았을 때, 그 원인을 찾아 외부로 분노를 표출하고 복수하려는 경향이 있다. (8번 동기)' },
-  '4_9': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 나 자신을 남들과는 다른 특별하고 독특한 존재로 인식하며, 평범해지는 것을 꺼린다. (4번 동기)', b: '나는 나 자신을 다른 사람들과 조화를 이루는 평범한 존재로 인식하며, 갈등을 일으키는 것을 꺼린다. (9번 동기)' },
-  '5_6': { q: '요구와 변수가 한꺼번에 몰릴 때, 내 반응은 어느 쪽에 더 가까운가?', a: '일단 사람과 자극에서 조금 물러나 혼자 정리할 거리부터 확보해야 한다.', b: '빠진 정보나 위험 신호가 없는지 먼저 확인해야 마음이 놓인다.' },
-  '5_7': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나의 주된 정신 활동은 관심 있는 주제를 깊이 파고들어 전문 지식을 쌓는 것이다. (5번 동기)', b: '나의 주된 정신 활동은 여러 아이디어들을 빠르게 연결하고 새로운 가능성을 상상하는 것이다. (7번 동기)' },
-  '5_8': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '갈등 상황에서 나는 물리적으로나 정신적으로 거리를 두고, 상황을 객관적으로 관찰하고 분석하려 한다. (5번 동기)', b: '갈등 상황에서 나는 그 중심에 뛰어들어, 상황을 통제하고 나의 힘으로 문제를 해결하려 한다. (8번 동기)' },
-  '5_9': { q: '내가 거리를 둘 때 더 가까운 이유는 어느 쪽인가?', a: '내 공간과 에너지가 더 침범되기 전에 지키기 위해서', b: '불편한 긴장과 무거운 분위기가 더 커지지 않게 하기 위해서' },
-  '6_7': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 불확실한 미래에 대해 최악의 경우를 먼저 생각하고 대비책을 세우며 불안감을 관리한다. (6번 동기)', b: '나는 불확실한 미래에 대해 가장 즐거운 가능성을 먼저 생각하며 불안감을 잊으려고 한다. (7번 동기)' },
-  '6_8': { q: '강하게 반발하고 맞설 때, 내 행동의 밑바탕에 깔린 감정에 더 가까운 것은?', a: '도대체 무슨 속셈이지 하는 불안과 의심', b: '어디 한번 해보자는 건가 하는 분노와 팽창감' },
-  '6_9': { q: '결정을 미루게 될 때, 더 가까운 이유는 어느 쪽인가?', a: '아직 확인이 덜 되어 마음이 안 놓여서', b: '분명히 정하면 불편한 긴장이 생길 것 같아서' },
-  '7_9': { q: '다음 두 문장 중 자신의 마음을 더 깊이·본능적으로 설명하는 쪽을 선택해 주세요.', a: '나는 불편한 감정이나 상황을 피하기 위해 더 즐겁고 새로운 활동이나 계획을 찾아 나선다. (7번 동기)', b: '나는 불편한 감정이나 상황을 피하기 위해 그 감각을 무디게 만들고 다른 생각이나 활동에 안주한다. (9번 동기)' },
-  '8_9': { q: '누가 나를 통제하려 할 때 더 가까운 반응은 어느 쪽인가?', a: '맞서서 강하게 선을 긋고 밀리지 않으려 한다.', b: '겉으로만 넘기고 속으로는 내 페이스대로 버틴다.' }
+  '1_2': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '사람을 도울 때, 그 사람에게 필요한 존재가 되는 것보다 무엇이 더 바르고 적절한지 바로잡아 주고 싶어지는 편이다.', b: '사람을 도울 때, 무엇이 맞는지 알려주는 것보다 그 사람에게 필요한 존재가 되고 관계가 가까워지는 쪽이 더 중요하다.' },
+  '1_4': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '내 부족함을 발견하면, 그것을 고치고 바로잡아야 할 문제로 느끼는 편이다.', b: '내 부족함을 발견하면, 그 감정이 내 정체감과 깊게 연결된다고 느끼는 편이다.' },
+  '1_5': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '문제나 부조리를 보면, 개선하거나 바로잡아야 한다는 긴장이 먼저 올라온다.', b: '문제나 부조리를 보면, 일단 물러나 구조를 이해하려는 쪽으로 간다.' },
+  '1_6': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '무엇이 옳은지에 대한 내 기준이 행동의 출발점이 되는 편이다.', b: '무엇이 안전한지 확인하는 과정이 행동의 출발점이 되는 편이다.' },
+  '1_9': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '불편하거나 잘못된 장면을 보면, 바로잡고 싶다는 긴장이 먼저 올라온다.', b: '불편하거나 잘못된 장면을 보면, 더 커지지 않게 지나가길 바라는 마음이 먼저 올라온다.' },
+  '2_4': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '관계에서 더 중요한 것은 상대의 필요를 채우고 사랑받는 것이다.', b: '관계에서 더 중요한 것은 상대가 나를 깊고 특별하게 이해해 주는 것이다.' },
+  '2_5': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '사람들과 감정적으로 연결될 때 에너지가 살아나는 편이다.', b: '사람들과 오래 엮이면 에너지가 빠져 혼자 정리할 시간이 필요해지는 편이다.' },
+  '2_6': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '사람들에게 잘해줄 때, 관계가 멀어지지 않도록 연결을 지키려는 마음이 더 크다.', b: '사람들에게 잘해줄 때, 신뢰를 쌓아 안전한 관계 기반을 만들려는 마음이 더 크다.' },
+  '2_7': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '내 관심은 사람들의 필요와 관계에 더 자주 향한다.', b: '내 관심은 재미있는 경험과 새로운 가능성에 더 자주 향한다.' },
+  '2_9': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '다른 사람 의견에 맞출 때, 관계가 더 가까워지길 바라는 마음이 큰 편이다.', b: '다른 사람 의견에 맞출 때, 마찰을 줄이고 조용히 넘어가려는 마음이 큰 편이다.' },
+  '3_4': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '눈에 보이는 성취와 결과를 통해 내 가치를 확인하려는 편이다.', b: '내 감정의 진실함과 고유함을 통해 내가 누구인지 확인하려는 편이다.' },
+  '3_5': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '지식이나 실력을 쌓을 때, 그것이 분명한 성과와 인정으로 이어지는지가 중요하다.', b: '지식이나 실력을 쌓을 때, 그것을 이해하고 익히는 과정 자체가 더 중요하다.' },
+  '3_7': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '내 에너지는 목표를 이루고 결과를 만드는 쪽에 더 자주 모인다.', b: '내 에너지는 새롭고 흥미로운 가능성을 넓히는 쪽에 더 자주 모인다.' },
+  '3_8': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '목표를 밀어붙일 때, 다른 사람이 나를 어떻게 평가하는지가 중요한 편이다.', b: '목표를 밀어붙일 때, 다른 사람의 평가보다 내 영향력과 통제감이 더 중요한 편이다.' },
+  '3_9': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '일이 잘 풀리지 않으면, 실패해 보일까 봐 불안과 초조가 먼저 올라온다.', b: '일이 잘 풀리지 않으면, 갈등이 커질까 봐 불편하고 피하고 싶어진다.' },
+  '4_5': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '혼자 있을 때, 내 감정과 상상 속으로 더 깊이 들어가는 편이다.', b: '혼자 있을 때, 정보와 지적 관심사 속으로 더 깊이 들어가는 편이다.' },
+  '4_6': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '불안의 바닥에는 내가 남들과 다르고 어딘가 결핍되어 있다는 느낌이 깔려 있는 편이다.', b: '불안의 바닥에는 세상이 예측하기 어렵고 안전장치가 필요하다는 느낌이 깔려 있는 편이다.' },
+  '4_7': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '삶의 깊이와 의미를 위해 불편한 감정도 어느 정도 붙들고 있는 편이다.', b: '삶의 즐거움과 자유를 위해 불편한 감정에서 빨리 벗어나려는 편이다.' },
+  '4_8': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '상처를 받으면 내 안으로 더 깊이 들어가 그 감정을 오래 붙드는 편이다.', b: '상처를 받으면 원인을 밖에서 찾고 강하게 맞서는 쪽으로 가는 편이다.' },
+  '4_9': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '평범하게 섞이는 것보다, 나만의 다름과 고유함이 더 중요하게 느껴진다.', b: '두드러지기보다, 무리 없이 어울리고 평온한 흐름을 유지하는 쪽이 더 중요하게 느껴진다.' },
+  '5_6': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '불안할 때, 정보를 모으고 분석해 이해하려는 쪽으로 간다.', b: '불안할 때, 위험을 확인하고 대비책을 세우는 쪽으로 간다.' },
+  '5_8': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '갈등이 생기면, 거리를 두고 관찰하고 분석하려는 편이다.', b: '갈등이 생기면, 직접 들어가 흐름을 바꾸고 통제하려는 편이다.' },
+  '5_9': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '사람들과 거리를 둘 때, 내 에너지와 공간을 지키기 위한 경우가 더 많다.', b: '사람들과 거리를 둘 때, 불편한 마찰을 피하고 조용히 넘어가기 위한 경우가 더 많다.' },
+  '6_7': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '불확실한 미래를 보면, 먼저 최악의 경우와 대비책을 생각하는 편이다.', b: '불확실한 미래를 보면, 먼저 더 나은 가능성과 탈출구를 떠올리는 편이다.' },
+  '6_9': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '결정을 내리기 전, 여러 의견과 잠재 위험을 확인해야 마음이 놓인다.', b: '결정을 내릴 순간이 오면, 갈등을 피하려고 미루거나 남의 흐름을 따르기 쉬운 편이다.' },
+  '7_9': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '불편한 상태가 오면, 더 나은 가능성이나 즐거운 계획 쪽으로 빨리 옮겨가려는 편이다.', b: '불편한 상태가 오면, 익숙하고 무난한 활동 속으로 들어가 감각을 무디게 하려는 편이다.' },
+  '8_9': { q: '다음 두 문장 중, 불편하거나 압박이 있을 때 더 자동적으로 가까운 쪽을 고르세요.', a: '갈등은 힘을 쓰고 흐름을 바꿔야 하는 장면이 되기 쉽다.', b: '갈등은 평온과 연결을 깨뜨릴 수 있어 가능하면 피하고 싶은 장면이 되기 쉽다.' }
 };
 
 const postTieBreakerMap = {
-  '1_4': {
-    a: '둘 다 불편한 상태라면, 완벽해지려다 나 스스로와 주변을 숨 막히게 하고 늘 긴장 상태에 있는 쪽으로 더 자주 빠진다.',
-    b: '둘 다 불편한 상태라면, 내 안의 복잡한 감정과 결핍에 빠져 현실의 일상을 무기력하게 놓아버리는 쪽으로 더 자주 빠진다.',
-    aEn: 'When both are uncomfortable, I more often get caught in trying to be flawless, making myself and others feel constrained and tense.',
-    bEn: 'When both are uncomfortable, I more often sink into complex feelings and lack, losing energy for ordinary daily life.'
-  },
-  '1_5': {
-    a: '둘 다 불편한 상태라면, 너무 높은 기준을 세우고 나와 타인을 통제하려다 뻣뻣해지고 피곤해지는 쪽으로 더 자주 빠진다.',
-    b: '둘 다 불편한 상태라면, 현실의 문제를 직접 해결하기보다 머릿속 생각과 분석으로만 도피해 버리는 쪽으로 더 자주 빠진다.',
-    aEn: 'When both are uncomfortable, I more often get rigid and exhausted from setting standards too high and trying to control myself or others.',
-    bEn: 'When both are uncomfortable, I more often retreat into thoughts and analysis instead of directly dealing with the real problem.'
-  },
-  '1_6': {
-    a: '둘 다 불편한 상태라면, 어떻게든 제대로 해내려다 내 기준에 못 미치는 나 자신과 타인에게 화가 나 있는 쪽으로 더 자주 빠진다.',
-    b: '둘 다 불편한 상태라면, 확실해질 때까지 확인하고 의심하느라 결정을 내리지 못하고 에너지를 소진하는 쪽으로 더 자주 빠진다.',
-    aEn: 'When both are uncomfortable, I more often get angry at myself and others for falling short of my standard while trying to do things properly.',
-    bEn: 'When both are uncomfortable, I more often drain my energy by checking and doubting until things feel certain, unable to decide.'
-  },
-  '1_9': {
-    a: '둘 다 불편한 상태라면, 잘못된 걸 고치려다 혼자 짐을 다 짊어지고 세상이 내 맘 같지 않아 화가 나 있는 쪽으로 더 자주 빠진다.',
-    b: '둘 다 불편한 상태라면, 좋은 게 좋은 거라며 묻어두다가 정작 내가 진짜 원하는 게 뭔지 나조차 모르게 되는 쪽으로 더 자주 빠진다.',
-    aEn: 'When both are uncomfortable, I more often end up carrying everything myself while trying to fix what is wrong, angry that the world does not work as it should.',
-    bEn: 'When both are uncomfortable, I more often bury things to keep them easy, until even I lose track of what I truly want.'
-  },
   '3_6': {
-    a: '둘 다 손해라면, 불확실성이 남아 있어도 먼저 밀어붙여 결과를 만들고 생기는 문제는 나중에 수습하는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 기회를 일부 놓치더라도 먼저 확인해 불확실성을 줄이고 확신이 설 때 움직이는 쪽을 더 자주 감수한다.'
-  },
-  '5_6': {
-    a: '둘 다 손해라면, 오해를 사더라도 일단 물러나 내 에너지와 사고 공간을 확보한 뒤 대응하는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 속도가 늦어지더라도 먼저 확인과 재확인을 거쳐 불확실성을 줄인 뒤 대응하는 쪽을 더 자주 감수한다.'
-  },
-  '5_9': {
-    a: '둘 다 손해라면, 차갑거나 멀게 보이더라도 내 공간과 에너지를 지키기 위해 물러나는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 내 입장이나 존재감이 흐려지더라도 갈등이 커지지 않게 조용히 물러나는 쪽을 더 자주 감수한다.',
-    aEn: 'Even if I seem cold or distant, I more often pull back to protect my space and energy.',
-    bEn: 'Even if my position or presence becomes less clear, I more often quietly pull back so conflict does not grow.'
-  },
-  '1_3': {
-    a: '둘 다 손해라면, 성과가 늦어져도 먼저 기준에 맞게 바로잡고 그다음 결과를 내는 쪽을 더 자주 택한다.',
-    b: '둘 다 손해라면, 다소 매끄럽지 않아도 먼저 성과를 만들고 부족한 부분은 나중에 보완하는 쪽을 더 자주 택한다.'
-  },
-  '3_8': {
-    a: '둘 다 손해라면, 다소 무리해 보여도 결과를 만들어 내 존재가치를 증명하는 쪽을 더 자주 택한다.',
-    b: '둘 다 손해라면, 다소 거칠고 세게 보여도 밀리지 않도록 주도권을 끝까지 지키는 쪽을 더 자주 택한다.'
-  },
-  '3_7': {
-    a: '둘 다 손해라면, 재미가 떨어지더라도 일단 결과를 만들어 내 위치와 유능함을 지키는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 평가가 조금 흐려져도 일단 막힌 흐름을 바꾸고 더 살아 있는 선택지로 옮겨 가는 쪽을 더 자주 감수한다.',
-    aEn: 'Even if it becomes less interesting, I more often create a result first to protect my position and sense of competence.',
-    bEn: 'Even if my evaluation becomes less clear, I more often change the stuck flow and move toward a more alive option.'
-  },
-  '3_9': {
-    a: '둘 다 피하고 싶은 상황이라면, 열심히 했는데 아무도 알아주지 않고 그저 평범하고 존재감 없는 사람으로 묻히는 쪽이 더 견디기 힘들다.',
-    b: '둘 다 피하고 싶은 상황이라면, 내게 너무 많은 기대와 시선이 집중되어 내 편안한 일상과 쉼을 완전히 뺏기는 쪽이 더 견디기 힘들다.',
-    aEn: 'If both are situations I want to avoid, it is harder to work hard and still be unnoticed, buried as an ordinary person with no presence.',
-    bEn: 'If both are situations I want to avoid, it is harder to have too many expectations and eyes on me, losing my comfortable routine and rest.'
-  },
-  '4_5': {
-    a: '둘 다 손해라면, 감정의 기복이 커지더라도 내 안의 진짜 느낌을 놓치지 않고 붙들고 있는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 차갑거나 멀게 보이더라도 거리를 두고 이해 가능한 상태를 먼저 확보하는 쪽을 더 자주 감수한다.'
-  },
-  '4_6': {
-    a: '둘 다 손해라면, 감정이 더 무거워지더라도 내 결핍감과 진짜 마음을 끝까지 붙들고 있는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 마음이 더 긴장되더라도 위험 요소와 신뢰 가능성을 끝까지 확인하는 쪽을 더 자주 감수한다.'
-  },
-  '4_7': {
-    a: '둘 다 피하고 싶은 상황이라면, 겉으로는 웃고 떠들지만 누구와도 진심으로 연결되지 못한 채 가벼운 사람으로 남는 쪽이 더 견디기 힘들다.',
-    b: '둘 다 피하고 싶은 상황이라면, 분위기가 무겁고 우울한 상황에 꼼짝없이 갇혀서 다른 데로 빠져나갈 구멍이 없는 쪽이 더 견디기 힘들다.',
-    aEn: 'If both are situations I want to avoid, it is harder to laugh and talk on the outside while never truly connecting with anyone and remaining shallow.',
-    bEn: 'If both are situations I want to avoid, it is harder to be stuck in a heavy, depressed situation with no opening to escape elsewhere.'
-  },
-  '6_9': {
-    a: '둘 다 손해라면, 결정이 늦어지더라도 먼저 확인과 재확인을 거쳐 불확실성을 줄이는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 내 입장이 흐려지더라도 먼저 분위기가 거칠어지지 않게 지나가도록 두는 쪽을 더 자주 감수한다.'
-  },
-  '6_8': {
-    a: '둘 다 불편한 상태라면, 까칠하고 예민해 보인다는 소리를 듣더라도 의심스러운 부분은 끝까지 파헤쳐 확인해야 마음이 놓이는 쪽을 더 자주 감수한다.',
-    b: '둘 다 불편한 상태라면, 거칠고 위압적이라는 오해를 사더라도 내가 호락호락하게 밀리지 않는다는 걸 분명히 해야 마음이 놓이는 쪽을 더 자주 감수한다.',
-    aEn: 'When both are uncomfortable, I more often keep digging into suspicious parts until I can verify them, even if I seem prickly or oversensitive.',
-    bEn: 'When both are uncomfortable, I more often make it clear that I will not be pushed around, even if I seem rough or intimidating.'
-  },
-  '8_9': {
-    a: '둘 다 손해라면, 시끄럽고 거친 싸움이 되더라도 내가 밀리지 않는다는 걸 분명히 보여주는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 내 입장이 조금 무시되더라도 분위기가 더 험악해지기 전에 조용히 넘기는 쪽을 더 자주 감수한다.',
-    aEn: 'Even if it becomes loud and rough, I more often make it clear that I will not be pushed around.',
-    bEn: 'Even if my position is somewhat ignored, I more often let it pass quietly before the atmosphere gets harsher.'
-  },
-  '1_7': {
-    a: '둘 다 손해라면, 속도가 늦어져도 어긋난 부분을 바로잡기 전에는 그냥 넘기지 않는 쪽을 더 자주 택한다.',
-    b: '둘 다 손해라면, 완벽하게 정리되지 않았어도 더 막히기 전에 방향을 바꾸고 움직이는 쪽을 더 자주 택한다.'
-  },
-  '7_8': {
-    a: '둘 다 손해라면, 가볍게 보인다는 평가를 감수하더라도 더 답답해지기 전에 판을 바꾸고 다른 길을 찾는 쪽을 더 자주 택한다.',
-    b: '둘 다 손해라면, 강압적으로 보인다는 오해를 감수하더라도 침범당한 느낌이 들면 바로 밀어붙여 주도권을 되찾는 쪽을 더 자주 택한다.'
+    a: '압박이 커질수록, 결과를 빨리 만들어 내 가치를 입증하려는 반응이 먼저 나온다.',
+    b: '압박이 커질수록, 위험 요소를 점검해 안전장치를 세우려는 반응이 먼저 나온다.'
   },
   '1_8': {
-    a: '둘 다 손해라면, 관계가 다소 불편해져도 잘못된 부분은 바로잡고 기준을 분명히 하는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 오해를 사더라도 침범당한 느낌이 들면 바로 선을 긋고 주도권을 되찾는 쪽을 더 자주 감수한다.'
+    a: '일이 비합리적이거나 기준에 어긋나게 처리될 때 더 못 견디는 편이다.',
+    b: '내 사람이나 약자가 부당하게 다뤄질 때 더 못 견디는 편이다.'
   },
-  '2_4': {
-    a: '둘 다 손해라면, 내 마음을 조금 눌러도 상대에게 더 맞추고 보살피며 관계를 붙잡는 쪽을 더 자주 감수한다.',
-    b: '둘 다 손해라면, 관계가 다소 불편해져도 내 진짜 감정과 이해받고 싶은 지점을 붙드는 쪽을 더 자주 감수한다.',
-    aEn: 'Even if it costs me, I more often hold back my own feelings, adjust to the other person, and care for them to keep the relationship.',
-    bEn: 'Even if it makes the relationship uncomfortable, I more often hold onto my true feelings and the part of me that I want understood.'
-  },
-  '2_6': {
-    a: '둘 다 피하고 싶은 상황이라면, 내가 도와줬는데 상대방이 무덤덤하게 반응해서 나의 존재감이 투명해진 느낌이 더 견디기 힘들다.',
-    b: '둘 다 피하고 싶은 상황이라면, 내가 도와줬는데 상대방의 진짜 속마음이 뭔지 나를 어떻게 생각하는지 헷갈리는 느낌이 더 견디기 힘들다.',
-    aEn: 'If both are situations I want to avoid, it is harder when I help and the other person responds flatly, making my presence feel invisible.',
-    bEn: 'If both are situations I want to avoid, it is harder when I help and I still cannot tell what the other person really thinks of me.'
-  },
-  '2_8': {
-    a: '둘 다 피하고 싶은 상황이라면, 내가 애쓴 만큼 인정받지 못하고 더 이상 너의 도움은 필요 없다며 밀려나는 쪽이 더 견디기 힘들다.',
-    b: '둘 다 피하고 싶은 상황이라면, 내 영향력이 미치지 않는 곳에서 누군가가 내 허락 없이 상황을 멋대로 쥐고 흔드는 쪽이 더 견디기 힘들다.',
-    aEn: 'If both are situations I want to avoid, it is harder to be pushed away after all my effort, as if my help is no longer needed.',
-    bEn: 'If both are situations I want to avoid, it is harder when someone takes control of the situation without my permission beyond my influence.'
-  },
-  '2_9': {
-    a: '관계가 어색해졌을 때, 내가 더 챙기고 더 맞춰서라도 다시 필요한 사람으로 연결을 회복하고 싶어지는 쪽이 더 자동적이다.',
-    b: '관계가 어색해졌을 때, 내 입장을 조금 접더라도 이 분위기가 더 거칠어지지 않게 빨리 눌러 두고 싶어지는 쪽이 더 자동적이다.'
+  '7_8': {
+    a: '막힌 흐름을 깨고 선택지를 넓히는 쪽으로 에너지가 먼저 향한다.',
+    b: '침범이나 통제를 감지하면 주도권을 되찾는 쪽으로 에너지가 먼저 향한다.'
   }
 };
 
@@ -802,6 +1233,26 @@ function renderQuestions(containerId, items, prefix) {
   items.forEach((item) => {
     const legendId = `${prefix}-legend-${item.id}`;
     const hintId = `${prefix}-hint-${item.id}`;
+    if (item.format === 'abc') {
+      root.innerHTML += `
+        <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
+          <fieldset id="${prefix}-fieldset-${item.id}" aria-labelledby="${legendId}">
+            <legend id="${legendId}" class="text-[15px] sm:text-base font-medium text-gray-800 mb-2 leading-relaxed">${getQuestionText(item)}</legend>
+            <div class="grid gap-3 mt-5">
+              ${item.options.map((option, idx) => `
+                <label class="block cursor-pointer">
+                  <input type="radio" name="${item.id}" value="${option.value}" class="sr-only peer" required>
+                  <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth">
+                    <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${String.fromCharCode(65 + idx)} ${pageLang === 'en' ? 'choice' : '선택'}</span>
+                    <div>${getChoiceOptionText(option)}</div>
+                  </div>
+                </label>
+              `).join('')}
+            </div>
+          </fieldset>
+        </div>`;
+      return;
+    }
     if (item.format === 'ab') {
       root.innerHTML += `
         <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
@@ -858,6 +1309,46 @@ function toScore(raw) {
   if (raw === 'U' || raw === undefined || raw === null) return null;
   const n = Number(raw);
   return Number.isFinite(n) ? n : null;
+}
+
+function getCoreResolution(final) {
+  const ranked = Object.keys(final).map((k)=>({type:parseInt(k,10), score:final[k]})).sort((a,b)=>b.score-a.score);
+  const max = ranked[0].score;
+  const sec = ranked[1].score;
+  const diff = max > 0 ? (max-sec)/max : 0;
+  return {
+    ranked,
+    core: ranked[0].type,
+    coreResolved: max !== sec && diff >= TEST_CONFIG.thresholds.coreReserveDiff
+  };
+}
+
+function getRecentStatePressure() {
+  const values = q1
+    .filter((q) => q.state)
+    .map((q) => toScore(testState.phase1Responses[q.id]))
+    .filter((score) => score !== null);
+  if (!values.length) return 3;
+  return values.reduce((sum, score) => sum + score, 0) / values.length;
+}
+
+function maybeShowPhase4(resultData) {
+  const resolution = getCoreResolution(resultData.final);
+  const phase4Set = resolution.coreResolved ? phase4TypeSets[resolution.core] : null;
+  if (!phase4Set) return false;
+
+  testState.phase4Questions = [phase4Set.subtype, phase4Set.wing];
+  testState.pendingResult = resultData;
+  renderQuestions('phase4-container', testState.phase4Questions, 'p4');
+  document.getElementById('phase1-form').classList.add('hidden');
+  document.getElementById('phase2-form').classList.add('hidden');
+  document.getElementById('phase3-form').classList.add('hidden');
+  document.getElementById('phase4-form').classList.remove('hidden');
+  document.getElementById('step-label').innerText = uiText('step4Label');
+  document.getElementById('step-counter').innerText = '4 / 4';
+  setProgress(100);
+  requestAnimationFrame(() => scrollToTopSmart());
+  return true;
 }
 
 function validate(items, prefix, msgId) {
@@ -1076,6 +1567,7 @@ function buildPostTieQuestion(typeA, typeB) {
 function submitPhase1() {
   if (!validate(q1, 'p1', 'validation-msg-1')) return;
   testState.phase3Question = null;
+  testState.phase4Questions = [];
   testState.pendingResult = null;
   const center = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
 
@@ -1092,10 +1584,10 @@ function submitPhase1() {
 
     const score = toScore(raw);
     if (score === null) return;
-    if (item.id === 't2') { center[2]+=score; center[3]+=score; center[4]+=score; }
-    if (item.id === 't5') { center[5]+=score; center[6]+=score; center[7]+=score; }
-    if (item.id === 't8') { center[8]+=score; center[9]+=score; center[1]+=score; }
-    if (item.id.startsWith('c')) center[item.type] += score * TEST_CONFIG.weights.phase1Core;
+    if (item.triad) {
+      item.triad.forEach((type) => { center[type] += score * (item.triadWeight || 1); });
+    }
+    if (item.id.startsWith('c')) center[item.type] += score * TEST_CONFIG.weights.phase1Core * (item.scoreWeight || 1);
   });
 
   const ranked = Object.keys(center).map((k)=>({type:parseInt(k,10), score:center[k]})).sort((a,b)=>b.score-a.score);
@@ -1110,6 +1602,9 @@ function submitPhase1() {
 
   testState.phase2Questions = [];
   topTypes.forEach((t)=>{ if (deep[t]) testState.phase2Questions = testState.phase2Questions.concat(deep[t]); });
+  topTypes.forEach((t) => {
+    if (counterTypeQuestions[t]) testState.phase2Questions.push(counterTypeQuestions[t]);
+  });
 
   // 상위 2개 유형 점수 차이가 16% 이하일 때만 해당 쌍에 대한 타이브레이커 1개 발동 (통일 기준)
   const top2Score1 = ranked[0].score;
@@ -1127,6 +1622,9 @@ function submitPhase1() {
     } else if (typeA === 5 && typeB === 6) {
       testState.tie.t56 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb56.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb56);
+    } else if (typeA === 5 && typeB === 8) {
+      testState.tie.t58 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb58.length, 1), margin: top2Diff };
+      testState.phase2Questions = testState.phase2Questions.concat(tb58);
     } else if (typeA === 5 && typeB === 9) {
       testState.tie.t59 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb59.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb59);
@@ -1145,6 +1643,9 @@ function submitPhase1() {
     } else if (typeA === 1 && typeB === 9) {
       testState.tie.t19 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb19.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb19);
+    } else if (typeA === 3 && typeB === 5) {
+      testState.tie.t35 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb35.length, 1), margin: top2Diff };
+      testState.phase2Questions = testState.phase2Questions.concat(tb35);
     } else if (typeA === 3 && typeB === 7) {
       testState.tie.t37 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb37.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb37);
@@ -1163,6 +1664,9 @@ function submitPhase1() {
     } else if (typeA === 4 && typeB === 7) {
       testState.tie.t47 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb47.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb47);
+    } else if (typeA === 4 && typeB === 8) {
+      testState.tie.t48 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb48.length, 1), margin: top2Diff };
+      testState.phase2Questions = testState.phase2Questions.concat(tb48);
     } else if (typeA === 6 && typeB === 8) {
       testState.tie.t68 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb68.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb68);
@@ -1188,7 +1692,7 @@ function submitPhase1() {
       testState.tie.t89 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb89.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb89);
     } else if (typeA === 1 && typeB === 8) {
-      testState.tie.t18 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near, margin: top2Diff };
+      testState.tie.t18 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb18.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb18);
     } else {
       // 그 외 조합: tbCustomMap 전용 질문 사용 (동기·두려움·세계관 기반). 없으면 deep 첫 문항으로 폴백.
@@ -1225,7 +1729,7 @@ function submitPhase1() {
     (ranked[0].type===3 || m3top<=TEST_CONFIG.thresholds.tie3sxMargin);
   testState.tie.t3sx = {
     enabled:e3sx,
-    weight:m3top<=TEST_CONFIG.thresholds.tieCloseBand?TEST_CONFIG.weights.tieBreaker.close:(m3top<=TEST_CONFIG.thresholds.tie3sxMargin?TEST_CONFIG.weights.tieBreaker.near:TEST_CONFIG.weights.tieBreaker.default),
+    weight:(m3top<=TEST_CONFIG.thresholds.tieCloseBand?TEST_CONFIG.weights.tieBreaker.close:(m3top<=TEST_CONFIG.thresholds.tie3sxMargin?TEST_CONFIG.weights.tieBreaker.near:TEST_CONFIG.weights.tieBreaker.default)) * 0.75,
     margin:m3top
   };
   if (e3sx) testState.phase2Questions = testState.phase2Questions.concat(tb3sx);
@@ -1236,9 +1740,10 @@ function submitPhase1() {
   document.getElementById('phase1-form').classList.add('hidden');
   document.getElementById('phase2-form').classList.remove('hidden');
   document.getElementById('phase3-form').classList.add('hidden');
+  document.getElementById('phase4-form').classList.add('hidden');
   setProgress(100);
   document.getElementById('step-label').innerText = uiText('step2Label');
-  document.getElementById('step-counter').innerText = '2 / 2';
+  document.getElementById('step-counter').innerText = '2 / 4';
   renderQuestions('phase2-container', testState.phase2Questions, 'p2');
   requestAnimationFrame(() => scrollToTopSmart());
 }
@@ -1256,8 +1761,12 @@ function submitPhase2() {
   };
 
   let tb3sxCore = null, tb3sxInstinct = null, tb7w6 = 0, tb7w8 = 0;
-  const stressRaw = toScore(testState.phase1Responses.state_2w);
-  const recentStress = stressRaw === null ? 3 : stressRaw;
+  const counterSignals = {
+    1: {sp:0,sx:0,so:0}, 2: {sp:0,sx:0,so:0}, 3: {sp:0,sx:0,so:0},
+    4: {sp:0,sx:0,so:0}, 5: {sp:0,sx:0,so:0}, 6: {sp:0,sx:0,so:0},
+    7: {sp:0,sx:0,so:0}, 8: {sp:0,sx:0,so:0}, 9: {sp:0,sx:0,so:0}
+  };
+  const recentStress = getRecentStatePressure();
 
   q1.forEach((q) => {
     if (q.format === 'ab') {
@@ -1268,10 +1777,8 @@ function submitPhase2() {
     }
     const score = toScore(testState.phase1Responses[q.id]);
     if (score === null) return;
-    if (q.id === 't2') { addScore(2, score, q.id); addScore(3, score, q.id); addScore(4, score, q.id); }
-    if (q.id === 't5') { addScore(5, score, q.id); addScore(6, score, q.id); addScore(7, score, q.id); }
-    if (q.id === 't8') { addScore(8, score, q.id); addScore(9, score, q.id); addScore(1, score, q.id); }
-    if (q.id.startsWith('c')) addScore(q.type, score * TEST_CONFIG.weights.phase1Core, q.id);
+    if (q.triad) q.triad.forEach((type) => addScore(type, score * (q.triadWeight || 1), q.id));
+    if (q.id.startsWith('c')) addScore(q.type, score * TEST_CONFIG.weights.phase1Core * (q.scoreWeight || 1), q.id);
   });
 
   testState.phase2Questions.forEach((q) => {
@@ -1290,14 +1797,17 @@ function submitPhase2() {
       else if (q.id.startsWith('tb_2_8_') && testState.tie.t28.enabled) w = testState.tie.t28.weight;
       else if (q.id.startsWith('tb_3_6') && testState.tie.t36.enabled) w = testState.tie.t36.weight;
       else if (q.id.startsWith('tb_5_6') && testState.tie.t56.enabled) w = testState.tie.t56.weight;
+      else if (q.id.startsWith('tb_5_8_') && testState.tie.t58.enabled) w = testState.tie.t58.weight;
       else if (q.id.startsWith('tb_5_9_') && testState.tie.t59.enabled) w = testState.tie.t59.weight;
       else if (q.id.startsWith('tb_3_1_') && testState.tie.t31.enabled) w = testState.tie.t31.weight;
+      else if (q.id.startsWith('tb_3_5_') && testState.tie.t35.enabled) w = testState.tie.t35.weight;
       else if (q.id.startsWith('tb_3_7_') && testState.tie.t37.enabled) w = testState.tie.t37.weight;
       else if (q.id.startsWith('tb_3_8_') && testState.tie.t38.enabled) w = testState.tie.t38.weight;
       else if (q.id.startsWith('tb_3_9_') && testState.tie.t39.enabled) w = testState.tie.t39.weight;
       else if (q.id.startsWith('tb_4_5_') && testState.tie.t45.enabled) w = testState.tie.t45.weight;
       else if (q.id.startsWith('tb_4_6_') && testState.tie.t46.enabled) w = testState.tie.t46.weight;
       else if (q.id.startsWith('tb_4_7_') && testState.tie.t47.enabled) w = testState.tie.t47.weight;
+      else if (q.id.startsWith('tb_4_8_') && testState.tie.t48.enabled) w = testState.tie.t48.weight;
       else if (q.id.startsWith('tb_6_8_') && testState.tie.t68.enabled) w = testState.tie.t68.weight;
       else if (q.id.startsWith('tb_6_9_') && testState.tie.t69.enabled) w = testState.tie.t69.weight;
       else if (q.id.startsWith('tb_7_1_') && testState.tie.t71.enabled) w = testState.tie.t71.weight;
@@ -1313,6 +1823,13 @@ function submitPhase2() {
     if (q.id === 'tb_3_sx_2') { tb3sxInstinct = val; return; }
     if (q.id === 'tb_7w_1') { tb7w6 = val; return; }
     if (q.id === 'tb_7w_2') { tb7w8 = val; return; }
+    if (q.counterType) {
+      const coreBoost = val * TEST_CONFIG.weights.tieBreaker.counterType;
+      const instinctBoost = val * TEST_CONFIG.weights.tieBreaker.counterInstinct;
+      addScore(q.type, coreBoost, q.id);
+      counterSignals[q.type][q.inst] += instinctBoost;
+      return;
+    }
 
     let w = q.weight || TEST_CONFIG.weights.phase2Base;
     if (q.id.startsWith('tb_3_6') && testState.tie.t36.enabled) w = testState.tie.t36.weight;
@@ -1324,14 +1841,17 @@ function submitPhase2() {
     else if (q.id.startsWith('tb_2_6_') && testState.tie.t26.enabled) w = testState.tie.t26.weight;
     else if (q.id.startsWith('tb_2_8_') && testState.tie.t28.enabled) w = testState.tie.t28.weight;
     else if (q.id.startsWith('tb_5_6') && testState.tie.t56.enabled) w = testState.tie.t56.weight;
+    else if (q.id.startsWith('tb_5_8_') && testState.tie.t58.enabled) w = testState.tie.t58.weight;
     else if (q.id.startsWith('tb_5_9_') && testState.tie.t59.enabled) w = testState.tie.t59.weight;
     else if (q.id.startsWith('tb_3_1_') && testState.tie.t31.enabled) w = testState.tie.t31.weight;
+    else if (q.id.startsWith('tb_3_5_') && testState.tie.t35.enabled) w = testState.tie.t35.weight;
     else if (q.id.startsWith('tb_3_7_') && testState.tie.t37.enabled) w = testState.tie.t37.weight;
     else if (q.id.startsWith('tb_3_8_') && testState.tie.t38.enabled) w = testState.tie.t38.weight;
     else if (q.id.startsWith('tb_3_9_') && testState.tie.t39.enabled) w = testState.tie.t39.weight;
     else if (q.id.startsWith('tb_4_5_') && testState.tie.t45.enabled) w = testState.tie.t45.weight;
     else if (q.id.startsWith('tb_4_6_') && testState.tie.t46.enabled) w = testState.tie.t46.weight;
     else if (q.id.startsWith('tb_4_7_') && testState.tie.t47.enabled) w = testState.tie.t47.weight;
+    else if (q.id.startsWith('tb_4_8_') && testState.tie.t48.enabled) w = testState.tie.t48.weight;
     else if (q.id.startsWith('tb_6_8_') && testState.tie.t68.enabled) w = testState.tie.t68.weight;
     else if (q.id.startsWith('tb_6_9_') && testState.tie.t69.enabled) w = testState.tie.t69.weight;
     else if (q.id.startsWith('tb_7_1_') && testState.tie.t71.enabled) w = testState.tie.t71.weight;
@@ -1374,18 +1894,21 @@ function submitPhase2() {
     const typeA = ranked[0].type;
     const typeB = ranked[1].type;
     testState.phase3Question = buildPostTieQuestion(typeA, typeB);
-    testState.pendingResult = { final, evidence, recentStress, tb7w6, tb7w8, sxBoost };
+    testState.pendingResult = { final, evidence, recentStress, tb7w6, tb7w8, sxBoost, counterSignals };
     renderQuestions('phase3-container', [testState.phase3Question], 'p3');
     document.getElementById('phase2-form').classList.add('hidden');
     document.getElementById('phase3-form').classList.remove('hidden');
+    document.getElementById('phase4-form').classList.add('hidden');
     document.getElementById('step-label').innerText = uiText('step3Label');
-    document.getElementById('step-counter').innerText = '3 / 3';
+    document.getElementById('step-counter').innerText = '3 / 4';
     setProgress(100);
     requestAnimationFrame(() => scrollToTopSmart());
     return;
   }
 
-  renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, sxBoost, postTieApplied: false });
+  const resultData = { final, evidence, recentStress, tb7w6, tb7w8, sxBoost, counterSignals, phase4: null, postTieApplied: false };
+  if (maybeShowPhase4(resultData)) return;
+  renderResultFromScores(resultData);
 }
 
 function submitPhase3() {
@@ -1403,13 +1926,38 @@ function submitPhase3() {
     text: `[최종 타이브레이커] ${boostText}`
   });
 
-  renderResultFromScores({
+  const resultData = {
     ...testState.pendingResult,
     postTieApplied: true
+  };
+  if (maybeShowPhase4(resultData)) return;
+  renderResultFromScores(resultData);
+}
+
+function submitPhase4() {
+  if (!testState.phase4Questions.length) return;
+  if (!validate(testState.phase4Questions, 'p4', 'validation-msg-4')) return;
+  if (!testState.pendingResult) return;
+
+  const subtypeQuestion = testState.phase4Questions.find((q) => q.format === 'abc');
+  const wingQuestion = testState.phase4Questions.find((q) => q.format === 'ab');
+  const subtypeCode = document.querySelector(`input[name="${subtypeQuestion.id}"]:checked`)?.value || null;
+  const wingChoice = document.querySelector(`input[name="${wingQuestion.id}"]:checked`)?.value || null;
+  const subtypeOption = subtypeQuestion.options.find((option) => option.value === subtypeCode);
+  const wingNum = wingChoice === 'A' ? wingQuestion.leftWing : wingQuestion.rightWing;
+
+  renderResultFromScores({
+    ...testState.pendingResult,
+    phase4: {
+      subtypeCode,
+      subtypeLabel: subtypeOption ? (pageLang === 'en' ? subtypeOption.labelEn : subtypeOption.label) : subtypeCode,
+      wingNum,
+      wingText: wingChoice === 'A' ? getOptionText(wingQuestion, 'a') : getOptionText(wingQuestion, 'b')
+    }
   });
 }
 
-function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, sxBoost, postTieApplied }) {
+function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, sxBoost, counterSignals, phase4, postTieApplied }) {
   const ranked = Object.keys(final).map((k)=>({type:parseInt(k,10), score:final[k]})).sort((a,b)=>b.score-a.score);
   const core = ranked[0].type;
   const second = ranked[1];
@@ -1444,6 +1992,11 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     const score = toScore(testState.phase1Responses[q.id]);
     if (score !== null) inst[q.inst] += score;
   });
+  if (counterSignals && counterSignals[core]) {
+    inst.sp += counterSignals[core].sp || 0;
+    inst.sx += counterSignals[core].sx || 0;
+    inst.so += counterSignals[core].so || 0;
+  }
   if (sxBoost > 0) inst.sx += sxBoost;
   let soPenalty = 0;
   if ([3,6,9].includes(core)) {
@@ -1463,6 +2016,10 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
       ? `${instRank[0].name} & ${instRank[1].name} (tied for first)`
       : `${instRank[0].name} & ${instRank[1].name} (공동 1위)`;
   }
+  if (phase4 && phase4.subtypeCode) {
+    instinctCode = phase4.subtypeCode;
+    instinctLabel = phase4.subtypeLabel || instName[phase4.subtypeCode] || phase4.subtypeCode;
+  }
 
   let wing = pageLang === 'en' ? 'Not activated' : '활성화 안됨';
   let wingCode = pageLang === 'en' ? `${core} (pure core)` : `${core} (순수유형)`;
@@ -1476,12 +2033,20 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     wingCode = pageLang === 'en' ? 'Pending (core pending)' : '판별 보류 (코어 보류)';
   } else {
     const ps = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
-    const t2 = toScore(testState.phase1Responses.t2) || 0;
-    const t5 = toScore(testState.phase1Responses.t5) || 0;
-    const t8 = toScore(testState.phase1Responses.t8) || 0;
-    ps[2]+=t2; ps[3]+=t2; ps[4]+=t2; ps[5]+=t5; ps[6]+=t5; ps[7]+=t5; ps[8]+=t8; ps[9]+=t8; ps[1]+=t8;
-    for (let i=1;i<=9;i++) ps[i]+=(toScore(testState.phase1Responses[`c${i}`]) || 0)*TEST_CONFIG.weights.phase1Core;
-    q1.filter((q)=>q.format==='ab').forEach((q)=>{ const c = testState.phase1Responses[q.id]; const t = c==='A'?q.leftType:q.rightType; ps[t]+=TEST_CONFIG.weights.phase1Binary; });
+    q1.forEach((q) => {
+      if (q.triad) {
+        const score = toScore(testState.phase1Responses[q.id]) || 0;
+        q.triad.forEach((type) => { ps[type] += score * (q.triadWeight || 1); });
+      }
+      if (q.id && q.id.startsWith('c')) {
+        ps[q.type] += (toScore(testState.phase1Responses[q.id]) || 0) * TEST_CONFIG.weights.phase1Core * (q.scoreWeight || 1);
+      }
+      if (q.format === 'ab') {
+        const c = testState.phase1Responses[q.id];
+        const t = c === 'A' ? q.leftType : q.rightType;
+        ps[t] += TEST_CONFIG.weights.phase1Binary;
+      }
+    });
     if (core === 7 && testState.tie.t7wing.enabled) { ps[6] += tb7w6 * testState.tie.t7wing.weight; ps[8] += tb7w8 * testState.tie.t7wing.weight; }
 
     const l = core===1?9:core-1;
@@ -1495,16 +2060,23 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
         wingCode = `${core}w${w}`;
       }
     }
+    if (phase4 && phase4.wingNum) {
+      wing = pageLang === 'en' ? `Wing ${phase4.wingNum}` : `${phase4.wingNum}번 날개`;
+      wingCode = `${core}w${phase4.wingNum}`;
+    }
   }
 
   document.getElementById('phase2-form').classList.add('hidden');
   document.getElementById('phase3-form').classList.add('hidden');
+  document.getElementById('phase4-form').classList.add('hidden');
   document.getElementById('progress-container').classList.add('hidden');
   document.getElementById('result-view').classList.remove('hidden');
   document.getElementById('cta-consulting').classList.add('hidden');
 
   document.getElementById('res-final').innerText = `${instinctCode} ${wingCode}`;
-  document.getElementById('res-instincts').innerText = pageLang === 'en' ? `Primary instinct: ${instinctLabel}` : `제 1본능: ${instinctLabel}`;
+  document.getElementById('res-instincts').innerText = phase4
+    ? (pageLang === 'en' ? `Subtype: ${instinctLabel}` : `하위유형: ${instinctLabel}`)
+    : (pageLang === 'en' ? `Primary instinct: ${instinctLabel}` : `제 1본능: ${instinctLabel}`);
   document.getElementById('res-core').innerText = coreDisplay;
   document.getElementById('res-wing').innerText = wing;
   document.getElementById('res-arrows').innerHTML = coreResolved
@@ -1538,14 +2110,17 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     if (testState.tie.t16.enabled) log += `<br><br><span class="text-xs">* 기준정렬형/불확실검증형(1-6) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t19.enabled) log += `<br><br><span class="text-xs">* 기준긴장형/평온완충형(1-9) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t56.enabled) log += `<br><br><span class="text-xs">* 관찰형/검증형(5-6) 동기 타이브레이커 적용</span>`;
+    if (testState.tie.t58.enabled) log += `<br><br><span class="text-xs">* 자원보호형/주도권방어형(5-8) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t59.enabled) log += `<br><br><span class="text-xs">* 자원보호형/긴장완충형(5-9) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t31.enabled) log += `<br><br><span class="text-xs">* 성과형/기준형(3-1) 동기 타이브레이커 적용</span>`;
-    if (testState.tie.t37.enabled) log += `<br><br><span class="text-xs">* 성과회복형/전환탈출형(3-7) 동기 타이브레이커 적용</span>`;
+    if (testState.tie.t35.enabled) log += `<br><br><span class="text-xs">* 성과증명형/전문방어형(3-5) 동기 타이브레이커 적용</span>`;
+    if (testState.tie.t37.enabled) log += `<br><br><span class="text-xs">* 성과증명형/기회네트워크형(3-7) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t38.enabled) log += `<br><br><span class="text-xs">* 성과형/돌파형(3-8) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t39.enabled) log += `<br><br><span class="text-xs">* 돋보임적응형/무난동화형(3-9) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t45.enabled) log += `<br><br><span class="text-xs">* 정서몰입형/관찰형(4-5) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t46.enabled) log += `<br><br><span class="text-xs">* 정서결핍형/검증형(4-6) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t47.enabled) log += `<br><br><span class="text-xs">* 결핍침잠형/전환환기형(4-7) 동기 타이브레이커 적용</span>`;
+    if (testState.tie.t48.enabled) log += `<br><br><span class="text-xs">* 수치보상형/경계행사형(4-8) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t68.enabled) log += `<br><br><span class="text-xs">* 검증공격형/경계장악형(6-8) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t69.enabled) log += `<br><br><span class="text-xs">* 검증형/완충형(6-9) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t24.enabled) log += `<br><br><span class="text-xs">* 필요확인형/정서공명형(2-4) 동기 타이브레이커 적용</span>`;
@@ -1553,6 +2128,15 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     if (testState.tie.t28.enabled) log += `<br><br><span class="text-xs">* 정서부채형/주도권장악형(2-8) 동기 타이브레이커 적용</span>`;
     if (testState.tie.tGeneric.enabled) log += `<br><br><span class="text-xs">* ${testState.tie.tGeneric.typeA}-${testState.tie.tGeneric.typeB}번 공용 타이브레이커 적용</span>`;
     if (testState.tie.t7wing.enabled && core===7) log += `<br><br><span class="text-xs">* 전환형 하위패턴 보정 적용</span>`;
+    if (phase4) log += `<br><br><span class="text-xs">* 확정 코어 기반 Phase 4 하위유형/날개 강제선택 적용</span>`;
+    if (counterSignals && counterSignals[core]) {
+      const coreCounterTotal = (counterSignals[core].sp || 0) + (counterSignals[core].sx || 0) + (counterSignals[core].so || 0);
+      if (coreCounterTotal > 0) {
+        const ct = counterTypeQuestions[core];
+        const ctLabel = ct ? ct.label : `${core}번 역유형`;
+        log += `<br><br><span class="text-xs">* ${ctLabel} 역유형 필터 적용</span>`;
+      }
+    }
     if (soPenalty > 0) log += `<br><br><span class="text-xs">* 사회적 본능 과대표집 보정 적용 (-${soPenalty.toFixed(1)})</span>`;
     if (recentStress >= TEST_CONFIG.thresholds.stressCorrectionStart) log += `<br><br><span class="text-xs">* 최근 2주 스트레스 보정 적용</span>`;
     if (postTieApplied) log += `<br><br><span class="text-xs">* 최종 타이브레이커 1문항 적용</span>`;

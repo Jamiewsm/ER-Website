@@ -39,7 +39,7 @@
     <div id="progress-container" class="mb-8" aria-live="polite">
       <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
         <span id="step-label">1단계: 기초 성향 및 본능 파악</span>
-        <span id="step-counter">1 / 2</span>
+        <span id="step-counter">1 / 4</span>
       </div>
       <div id="progress-track" class="w-full bg-gray-200 rounded-full h-1.5" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
         <div id="progress-bar" class="bg-[#8c8680] h-1.5 rounded-full smooth" style="width:50%"></div>
@@ -79,6 +79,18 @@
       <div class="text-center pt-6">
         <p id="validation-msg-3" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">문항을 선택해 주세요.</p>
         <button id="phase3-submit-btn" type="button" onclick="submitPhase3()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
+      </div>
+    </form>
+
+    <form id="phase4-form" class="space-y-10 hidden" novalidate>
+      <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center">
+        <p id="phase4-intro-title" class="font-bold text-[#4a4540] text-lg">최종 하위유형/날개 판별</p>
+        <p id="phase4-intro-desc" class="text-sm text-gray-600 mt-2">확정된 기본 유형에 맞춰 하위유형과 날개를 한 번 더 정밀하게 확인합니다.</p>
+      </div>
+      <div id="phase4-container" class="space-y-6"></div>
+      <div class="text-center pt-6">
+        <p id="validation-msg-4" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
+        <button id="phase4-submit-btn" type="button" onclick="submitPhase4()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
       </div>
     </form>
 
