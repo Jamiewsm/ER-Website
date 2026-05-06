@@ -1,10 +1,21 @@
+<!-- 9 유형 archetype + Center/Passion/Defense/Virtue 매트릭스 + 27 subtype index + countertype 플래그 + question design implications -->
 ---
 kb_id: complete_enneagram.diagnostic_kb
+title: "Complete Enneagram Diagnostic Knowledge Base"
 source_pdf: "/Users/Joeyswoo/Downloads/Complete_Enneagram.pdf"
 source_title: "The Complete Enneagram: 27 Paths to Greater Self-Knowledge"
 source_author: "Beatrice Chestnut"
 created_at: "2026-05-05"
+last_updated: "2026-05-06"
 index_type: "diagnostic_reference"
+retrieval_tags:
+  - diagnostic_kb
+  - core_axes
+  - passion_defense_virtue
+  - 9_archetypes
+  - 27_subtype_index
+  - countertype
+  - state_vs_trait
 ---
 
 # Complete Enneagram 진단 지식베이스
@@ -30,6 +41,8 @@ index_type: "diagnostic_reference"
 | Instinctual subtype | self-preservation, social, sexual instinct가 core passion과 결합된 27 subtype | Overview p32-p40, subtype anchors |
 | Vice to Virtue | 성장 방향. 진단 후 코칭/리포트 문구에 유용 | type chapter growth sections |
 | Pair differentiation | 유사 타입 구분. tie-breaker 문항 설계에 직접 사용 | Appendix p472-p517 |
+| State vs Trait | 일시적 (스트레스/통합 화살표 활성, 최근 사건) vs 안정적 (core type). 진단 시 state 가 trait 으로 오인되지 않도록 분리 | type chapter work sections |
+| Centers & Triads (1차 필터) | Body/Heart/Head + Hornevian + Harmonic. 후보 1-2 type 으로 좁히는 1차 그물. See [centers_and_triads.md](./centers_and_triads.md) | p20-p43 |
 
 ## Passion, Defense, Virtue Matrix
 
