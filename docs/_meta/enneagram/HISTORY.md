@@ -14,6 +14,8 @@ retrieval_tags:
 
 | Timestamp (UTC) | Agent | Task | Event | Tokens | Note |
 |---|---|---|---|---:|---|
+| 2026-05-06T11:20:00Z | claude-manual-bootstrap | 2.1 | complete | - | Task 2.1 완료 — subtypes_27.md 신규 (138 줄). frontmatter + 27 subtype index + Type 1 (sp_1 Worry, so_1 Non-Adaptability, sx_1 Zeal countertype) 7 슬롯 each. verify 1 file OK. Next — Task 2.2. |
+| 2026-05-06T11:15:00Z | claude-manual-bootstrap | 2.1 | start | - | Task 2.1 시작 |
 | 2026-05-06T11:10:00Z | claude-manual-bootstrap | 2.0 | complete | - | Task 2.0 완료 — PHASE_2_PLAN.md 실제 plan 으로 교체 (595 줄, 11 task). verify.mjs 에 task 2.0-2.9 spec 추가. Next — Task 2.1 (subtypes_27.md 신규 + Type 1). |
 | 2026-05-06T11:00:00Z | claude-manual-bootstrap | 2.0 | start | - | Task 2.0 시작 — Phase 2 plan 작성 |
 | 2026-05-06T10:30:00Z | claude-manual-bootstrap | phase_1 | complete | - | **Phase 1 (KB Foundation) 완료.** 14 파일 verify all 통과 — 5 _meta + verify.mjs + AGENTS.md + .cursor + CLAUDE.md + 4 신규 KB + 3 갱신 KB. Phase 2 (27 subtypes 깊이) 시작 대기. |
