@@ -14,6 +14,10 @@ retrieval_tags:
 
 | Timestamp (UTC) | Agent | Task | Event | Tokens | Note |
 |---|---|---|---|---:|---|
+| 2026-05-07T05:00:00Z | claude-manual-bootstrap | phase_4 | complete | - | **Phase 4 (Codebase Cleanup) 완료.** test-shared.js (44 줄, arrowLines + INSTINCT_LABELS + TYPE_NAMES) 신규, 두 entry point (test.js + app-adaptive-data.js) 가 단일 소스 참조 + fallback inline. verify all 26 files OK + 26/26 unit test 통과. Phase 5 (결과 출력 포맷) 시작 대기. |
+| 2026-05-07T05:00:00Z | claude-manual-bootstrap | 4.5 | complete | - | Task 4.5 완료 — verify all 26 files OK, PHASE_5_PLAN.md placeholder 생성, WORK_STATUS Phase 5 로 전환. |
+| 2026-05-07T04:50:00Z | claude-manual-bootstrap | 4.2-4.4 | complete | - | Tasks 4.2-4.4 완료 (combined) — js/test-shared.js (44줄) + js/test.js arrowLines refactor + js/app-adaptive-data.js adaptiveArrowLines refactor + test.html script load. Phase 3 unit test 통과 유지. |
+| 2026-05-07T04:40:00Z | claude-manual-bootstrap | 4.1 | complete | - | Task 4.1 완료 — test_dup_audit.md (97줄) — 두 entry point 흐름, 중복 데이터 매핑, 텍스트 발산 매핑, Phase 4 안전 통합 부분, Phase 5 결합 끊기 전략. |
 | 2026-05-07T04:30:00Z | claude-manual-bootstrap | 4.0 | complete | - | Task 4.0 완료 — PHASE_4_PLAN.md 실제 plan 으로 교체 (575 줄, 6 task). 실용 범위 — 안전한 부분 (arrowLines + 상수) 만 통합, 텍스트 발산 통합은 Phase 5 lookup 으로 결합 끊기 후로 보류. verify.mjs 에 task 4.0-4.4 spec 추가. |
 | 2026-05-07T04:00:00Z | claude-manual-bootstrap | 4.0 | start | - | Task 4.0 시작 — Phase 4 plan 작성 |
 | 2026-05-07T03:00:00Z | claude-manual-bootstrap | phase_3 | complete | - | **Phase 3 (Scoring Accuracy) 완료.** test-scoring.js (147 줄, 8 함수) + js/test.js 와이어링 + test.html 신규 placeholder + 26 unit test 모두 통과. 결과지 형식 `7 w8(50%) sx(80%) so(60%) sp(10%)` 산출 가능. verify all 21 files OK. Phase 4 (코드베이스 정리) 시작 대기. |
