@@ -14,6 +14,8 @@ retrieval_tags:
 
 | Timestamp (UTC) | Agent | Task | Event | Tokens | Note |
 |---|---|---|---|---:|---|
+| 2026-05-07T04:30:00Z | claude-manual-bootstrap | 4.0 | complete | - | Task 4.0 완료 — PHASE_4_PLAN.md 실제 plan 으로 교체 (575 줄, 6 task). 실용 범위 — 안전한 부분 (arrowLines + 상수) 만 통합, 텍스트 발산 통합은 Phase 5 lookup 으로 결합 끊기 후로 보류. verify.mjs 에 task 4.0-4.4 spec 추가. |
+| 2026-05-07T04:00:00Z | claude-manual-bootstrap | 4.0 | start | - | Task 4.0 시작 — Phase 4 plan 작성 |
 | 2026-05-07T03:00:00Z | claude-manual-bootstrap | phase_3 | complete | - | **Phase 3 (Scoring Accuracy) 완료.** test-scoring.js (147 줄, 8 함수) + js/test.js 와이어링 + test.html 신규 placeholder + 26 unit test 모두 통과. 결과지 형식 `7 w8(50%) sx(80%) so(60%) sp(10%)` 산출 가능. verify all 21 files OK. Phase 4 (코드베이스 정리) 시작 대기. |
 | 2026-05-07T03:00:00Z | claude-manual-bootstrap | 3.8 | complete | - | Task 3.8 완료 — verify all 21 files OK + 26 unit test 통과, PHASE_4_PLAN.md placeholder 생성, WORK_STATUS Phase 4 로 전환. |
 | 2026-05-07T02:50:00Z | claude-manual-bootstrap | 3.7 | complete | - | Task 3.7 완료 — tests/test-scoring.test.mjs (213 줄, 26 단위 테스트, Node test runner ESM, 의존 없음). 모두 통과. |

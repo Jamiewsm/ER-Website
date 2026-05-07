@@ -92,6 +92,21 @@ const TASK_FILE_SPECS = {
   '3.7': [
     { path: 'tests/test-scoring.test.mjs', minLines: 100, maxLines: 400, requireOurFrontmatter: false },
   ],
+  '4.0': [
+    { path: 'docs/_meta/enneagram/PHASE_4_PLAN.md', minLines: 100, maxLines: 800 },
+  ],
+  '4.1': [
+    { path: 'docs/_meta/enneagram/test_dup_audit.md', minLines: 60, maxLines: 300 },
+  ],
+  '4.2': [
+    { path: 'js/test-shared.js', minLines: 20, maxLines: 150, requireOurFrontmatter: false },
+  ],
+  '4.3': [
+    { path: 'js/test.js', minLines: 950, maxLines: 1100, requireOurFrontmatter: false },
+  ],
+  '4.4': [
+    { path: 'js/app-adaptive-data.js', minLines: 200, maxLines: 250, requireOurFrontmatter: false },
+  ],
 };
 
 function parseFrontmatter(text) {
