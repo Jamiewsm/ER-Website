@@ -68,6 +68,30 @@ const TASK_FILE_SPECS = {
   '2.9': [
     { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 830, maxLines: 1300 },
   ],
+  '3.0': [
+    { path: 'docs/_meta/enneagram/PHASE_3_PLAN.md', minLines: 200, maxLines: 1500 },
+  ],
+  '3.1': [
+    { path: 'docs/_meta/enneagram/scoring_spec.md', minLines: 80, maxLines: 300 },
+  ],
+  '3.2': [
+    { path: 'js/test-scoring.js', minLines: 30, maxLines: 200, requireOurFrontmatter: false },
+  ],
+  '3.3': [
+    { path: 'js/test-scoring.js', minLines: 60, maxLines: 250, requireOurFrontmatter: false },
+  ],
+  '3.4': [
+    { path: 'js/test-scoring.js', minLines: 100, maxLines: 300, requireOurFrontmatter: false },
+  ],
+  '3.5': [
+    { path: 'js/test-scoring.js', minLines: 140, maxLines: 350, requireOurFrontmatter: false },
+  ],
+  '3.6': [
+    { path: 'test.html', minLines: 200, maxLines: 400, requireOurFrontmatter: false },
+  ],
+  '3.7': [
+    { path: 'tests/test-scoring.test.mjs', minLines: 100, maxLines: 400, requireOurFrontmatter: false },
+  ],
 };
 
 function parseFrontmatter(text) {
