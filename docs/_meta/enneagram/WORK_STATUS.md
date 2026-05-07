@@ -4,13 +4,13 @@ kb_id: enneagram_test_meta.work_status
 schema_version: 1
 title: "ER Enneagram Test — Work Status"
 created_at: "2026-05-06"
-last_updated: "2026-05-06T09:30:00Z"
+last_updated: "2026-05-06T10:30:00Z"
 retrieval_tags:
   - work_status
   - phase_progress
   - lock_state
-current_phase: 1
-current_task: "1.1"
+current_phase: 2
+current_task: "2.0"
 checkpoint_plan: []
 checkpoint: null
 paused: false
@@ -27,9 +27,21 @@ scheduled_task_id: "er-enneagram-auto-resume"
 
 ## 현재 상태
 
-- Phase 1 (KB Foundation) 진행 중.
-- 다음 task — 1.1 (type_pair_disambiguation 24 템플릿 완성).
+- **Phase 1 (KB Foundation) 완료. Phase 2 (27 subtypes 깊이) 시작 대기.**
+- 다음 task — 2.0 (Phase 2 plan 작성, [PHASE_2_PLAN.md](./PHASE_2_PLAN.md) placeholder 를 실제 plan 으로 채움).
 - 일시정지 — 아니오.
+
+## Phase 1 완료 산출물
+
+- `docs/_meta/enneagram/` — 5 _meta 파일 + verify.mjs
+- `AGENTS.md`, `.cursor/rules/enneagram-work.mdc`, `CLAUDE.md` 패치
+- `docs/knowledge_base/enneagram/complete_enneagram/` — 4 신규 KB 파일 (centers_and_triads, type_wings, instinct_stacks, korean_test_copy_guide) + 3 갱신 파일 (type_pair_disambiguation, complete_enneagram_kb, README)
+- 하드-오토 스케줄 — `er-enneagram-auto-resume` (cron `0 */6 * * *`)
+- 14 파일 verify all 통과
+
+## Phase 2 시작 protocol
+
+다음 wakeup/세션이 본 파일의 `current_task = "2.0"` 을 보고 [PHASE_2_PLAN.md](./PHASE_2_PLAN.md) (현재 placeholder) 를 읽는다. placeholder 는 plan 작성 가이드를 포함. cold-start AI 는 `superpowers:writing-plans` skill 호출 후 27 subtype task 분해된 plan 으로 PHASE_2_PLAN.md 를 덮어쓰고, 그 plan 의 Task 2.1 부터 실행.
 
 ## 일시정지 방법
 
