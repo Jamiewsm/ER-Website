@@ -14,6 +14,16 @@ retrieval_tags:
 
 | Timestamp (UTC) | Agent | Task | Event | Tokens | Note |
 |---|---|---|---|---:|---|
+| 2026-05-07T00:00:00Z | claude-manual-bootstrap | phase_2 | complete | - | **Phase 2 (27 Subtypes Depth) 완료.** subtypes_27.md 829 줄, 27 subtype 모두 7 슬롯. 9 type 의 stress/growth arrows + wing 영향 추가. verify all 16 files OK. Phase 3 (스코어링 정확도) 시작 대기. |
+| 2026-05-07T00:00:00Z | claude-manual-bootstrap | 2.10 | complete | - | Task 2.10 완료 — verify all 16 files OK (verify.mjs all-mode dedup fix), PHASE_3_PLAN.md placeholder 생성, WORK_STATUS phase 3 으로 전환. |
+| 2026-05-06T23:50:00Z | claude-manual-bootstrap | 2.9 | complete | - | Task 2.9 완료 — Type 9 sp_9/so_9 (Participation countertype)/sx_9 + arrows (6/3) + wings 9w8/9w1. 27/27 subtype 완성. |
+| 2026-05-06T23:30:00Z | claude-manual-bootstrap | 2.8 | complete | - | Task 2.8 완료 — Type 8 sp_8/so_8 (Solidarity countertype)/sx_8 + arrows (5/2) + wings 8w7/8w9. |
+| 2026-05-06T23:00:00Z | claude-manual-bootstrap | 2.7 | complete | - | Task 2.7 완료 — Type 7 sp_7/so_7 (Sacrifice countertype)/sx_7 + arrows (1/5) + wings 7w6/7w8. |
+| 2026-05-06T22:00:00Z | claude-manual-bootstrap | 2.6 | complete | - | Task 2.6 완료 — Type 6 sp_6/so_6/sx_6 (Strength/Beauty countertype) + arrows (3/9) + wings 6w5/6w7. |
+| 2026-05-06T21:00:00Z | claude-manual-bootstrap | 2.5 | complete | - | Task 2.5 완료 — Type 5 sp_5/so_5/sx_5 (Confidence countertype) + arrows (7/8) + wings 5w4/5w6. |
+| 2026-05-06T20:00:00Z | claude-manual-bootstrap | 2.4 | complete | - | Task 2.4 완료 — Type 4 sp_4 (Tenacity countertype)/so_4/sx_4 + arrows (2/1). |
+| 2026-05-06T19:00:00Z | claude-manual-bootstrap | 2.3 | complete | - | Task 2.3 완료 — Type 3 sp_3 (Security countertype)/so_3/sx_3. |
+| 2026-05-06T18:00:00Z | claude-manual-bootstrap | 2.2 | complete | - | Task 2.2 완료 — Type 2 sp_2 (Privilege countertype)/so_2/sx_2. |
 | 2026-05-06T11:20:00Z | claude-manual-bootstrap | 2.1 | complete | - | Task 2.1 완료 — subtypes_27.md 신규 (138 줄). frontmatter + 27 subtype index + Type 1 (sp_1 Worry, so_1 Non-Adaptability, sx_1 Zeal countertype) 7 슬롯 each. verify 1 file OK. Next — Task 2.2. |
 | 2026-05-06T11:15:00Z | claude-manual-bootstrap | 2.1 | start | - | Task 2.1 시작 |
 | 2026-05-06T11:10:00Z | claude-manual-bootstrap | 2.0 | complete | - | Task 2.0 완료 — PHASE_2_PLAN.md 실제 plan 으로 교체 (595 줄, 11 task). verify.mjs 에 task 2.0-2.9 spec 추가. Next — Task 2.1 (subtypes_27.md 신규 + Type 1). |

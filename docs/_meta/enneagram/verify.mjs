@@ -136,9 +136,16 @@ function checkFile(spec) {
 function main() {
   const taskId = process.argv[2];
   if (!taskId) { console.error('Usage: node verify.mjs <task_id>'); process.exit(2); }
-  const specs = taskId === 'all'
-    ? Object.values(TASK_FILE_SPECS).flat()
-    : TASK_FILE_SPECS[taskId];
+  let specs;
+  if (taskId === 'all') {
+    // For "all" mode, dedupe by path keeping only the LAST spec per file
+    // (handles progressive minLines/maxLines across tasks like 2.1-2.9 that share subtypes_27.md)
+    const byPath = new Map();
+    for (const spec of Object.values(TASK_FILE_SPECS).flat()) byPath.set(spec.path, spec);
+    specs = Array.from(byPath.values());
+  } else {
+    specs = TASK_FILE_SPECS[taskId];
+  }
   if (!specs) { console.error(`Unknown task: ${taskId}`); process.exit(2); }
   const errors = [];
   for (const spec of specs) errors.push(...checkFile(spec));
