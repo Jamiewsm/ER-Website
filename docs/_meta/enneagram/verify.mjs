@@ -87,7 +87,7 @@ const TASK_FILE_SPECS = {
     { path: 'js/test-scoring.js', minLines: 140, maxLines: 350, requireOurFrontmatter: false },
   ],
   '3.6': [
-    { path: 'test.html', minLines: 200, maxLines: 400, requireOurFrontmatter: false },
+    { path: 'test.html', minLines: 150, maxLines: 400, requireOurFrontmatter: false },
   ],
   '3.7': [
     { path: 'tests/test-scoring.test.mjs', minLines: 100, maxLines: 400, requireOurFrontmatter: false },

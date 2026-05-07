@@ -821,6 +821,7 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   let wing = '활성화 안됨';
   let wingCode = `${core} (순수유형)`;
   let coreDisplay = `${core}번`;
+  let phase3Result = null;
 
   if (!coreResolved) {
     coreDisplay = `${core}번 / ${second.type}번 (코어 보류)`;
@@ -847,6 +848,22 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
         wingCode = `${core}w${w}`;
       }
     }
+
+    // Phase 3 — 통합 결과 (wing %, instinct %, 27 subtype, formatted)
+    try {
+      if (typeof window !== 'undefined' && window.TestScoring && window.TestScoring.computeResult) {
+        const scoresForResult = {};
+        for (let i = 1; i <= 9; i++) scoresForResult[i] = ps[i] || 0;
+        phase3Result = window.TestScoring.computeResult({
+          coreType: core,
+          scores: scoresForResult,
+          responses: testState.phase1Responses,
+          q1: q1,
+        });
+      }
+    } catch (_e) {
+      phase3Result = null;
+    }
   }
 
   document.getElementById('phase2-form').classList.add('hidden');
@@ -855,10 +872,32 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   document.getElementById('result-view').classList.remove('hidden');
   document.getElementById('cta-consulting').classList.add('hidden');
 
-  document.getElementById('res-final').innerText = `${instinctCode} ${wingCode}`;
-  document.getElementById('res-instincts').innerText = `제 1본능: ${instinctLabel}`;
+  document.getElementById('res-final').innerText = phase3Result
+    ? phase3Result.formatted
+    : `${instinctCode} ${wingCode}`;
+  document.getElementById('res-instincts').innerText = phase3Result
+    ? `27 subtype: ${phase3Result.subtype || '미정'}${phase3Result.countertype ? ' (countertype)' : ''}`
+    : `제 1본능: ${instinctLabel}`;
   document.getElementById('res-core').innerText = coreDisplay;
   document.getElementById('res-wing').innerText = wing;
+  // Phase 3 신규 placeholder (test.html 에 추가됨, 없으면 null-safe)
+  const wingPctEl = document.getElementById('res-wing-pct');
+  if (wingPctEl) {
+    wingPctEl.innerText = phase3Result && phase3Result.wing && phase3Result.wing.wing
+      ? `${phase3Result.wing.pct}% (w${phase3Result.wing.wing})`
+      : '활성화 안됨';
+  }
+  const instPctEl = document.getElementById('res-instinct-pct');
+  if (instPctEl && phase3Result) {
+    const ip = phase3Result.instinctPct;
+    instPctEl.innerText = `sp(${ip.sp}%) sx(${ip.sx}%) so(${ip.so}%)`;
+  }
+  const subtypeEl = document.getElementById('res-subtype-27');
+  if (subtypeEl && phase3Result) {
+    subtypeEl.innerText = phase3Result.subtype
+      ? `${phase3Result.subtype}${phase3Result.countertype ? ' (countertype)' : ''}`
+      : '미정';
+  }
   document.getElementById('res-arrows').innerHTML = coreResolved
     ? `<span class="text-blue-600 font-bold">통합(건강) 방향: ${arrowLines[core].growth}번</span><br><span class="text-red-500 font-bold">비통합(스트레스) 방향: ${arrowLines[core].stress}번</span>`
     : '코어 확정 후 확인 가능합니다.';
