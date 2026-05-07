@@ -65,7 +65,8 @@ function getOptionText(item, side) {
   return base;
 }
 
-const arrowLines = {1:{stress:4,growth:7},2:{stress:8,growth:4},3:{stress:9,growth:6},4:{stress:2,growth:1},5:{stress:7,growth:8},6:{stress:3,growth:9},7:{stress:1,growth:5},8:{stress:5,growth:2},9:{stress:6,growth:3}};
+// arrowLines — js/test-shared.js 가 진실 소스. fallback 으로 인라인 (script 로드 실패 시 안전).
+const arrowLines = (typeof window !== 'undefined' && window.TestShared && window.TestShared.arrowLines) || {1:{stress:4,growth:7},2:{stress:8,growth:4},3:{stress:9,growth:6},4:{stress:2,growth:1},5:{stress:7,growth:8},6:{stress:3,growth:9},7:{stress:1,growth:5},8:{stress:5,growth:2},9:{stress:6,growth:3}};
 
 const TEST_CONFIG = {
   weights: {
