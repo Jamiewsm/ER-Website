@@ -14,6 +14,12 @@ retrieval_tags:
 
 | Timestamp (UTC) | Agent | Task | Event | Tokens | Note |
 |---|---|---|---|---:|---|
+| 2026-05-07T03:00:00Z | claude-manual-bootstrap | phase_3 | complete | - | **Phase 3 (Scoring Accuracy) 완료.** test-scoring.js (147 줄, 8 함수) + js/test.js 와이어링 + test.html 신규 placeholder + 26 unit test 모두 통과. 결과지 형식 `7 w8(50%) sx(80%) so(60%) sp(10%)` 산출 가능. verify all 21 files OK. Phase 4 (코드베이스 정리) 시작 대기. |
+| 2026-05-07T03:00:00Z | claude-manual-bootstrap | 3.8 | complete | - | Task 3.8 완료 — verify all 21 files OK + 26 unit test 통과, PHASE_4_PLAN.md placeholder 생성, WORK_STATUS Phase 4 로 전환. |
+| 2026-05-07T02:50:00Z | claude-manual-bootstrap | 3.7 | complete | - | Task 3.7 완료 — tests/test-scoring.test.mjs (213 줄, 26 단위 테스트, Node test runner ESM, 의존 없음). 모두 통과. |
+| 2026-05-07T02:30:00Z | claude-manual-bootstrap | 3.5+3.6 | complete | - | Tasks 3.5+3.6 완료 — js/test.js renderResultFromScores 가 window.TestScoring.computeResult 호출, test.html 에 Wing Strength / 27 Subtype / Instinct Stack placeholder 카드 + script 로드 추가. |
+| 2026-05-07T02:00:00Z | claude-manual-bootstrap | 3.2-3.4 | complete | - | Tasks 3.2-3.4 완료 (combined) — js/test-scoring.js (147 줄): computeWingPct + computeInstinctPct + COUNTERTYPES + computeDominantInstinct + compute27Subtype + isCountertype + computeResult + formatResult. 브라우저 + Node 호환 export. 스모크 테스트 OK. |
+| 2026-05-07T01:50:00Z | claude-manual-bootstrap | 3.1 | complete | - | Task 3.1 완료 — scoring_spec.md (153 줄): 현재 audit + 신규 wing/instinct/27 subtype 공식 + 27 subtype 매핑 표 + 마이그레이션 전략 + 15 검증 케이스. |
 | 2026-05-07T01:30:00Z | claude-manual-bootstrap | 3.0 | complete | - | Task 3.0 완료 — PHASE_3_PLAN.md 실제 plan 으로 교체 (1180 줄, 9 task self-contained, wing/instinct/27 subtype 공식 + 단위 테스트 케이스). verify.mjs 에 task 3.0-3.7 spec 추가. Next — Task 3.1 (scoring_spec.md). |
 | 2026-05-07T01:00:00Z | claude-manual-bootstrap | 3.0 | start | - | Task 3.0 시작 — Phase 3 plan 작성 |
 | 2026-05-07T00:00:00Z | claude-manual-bootstrap | phase_2 | complete | - | **Phase 2 (27 Subtypes Depth) 완료.** subtypes_27.md 829 줄, 27 subtype 모두 7 슬롯. 9 type 의 stress/growth arrows + wing 영향 추가. verify all 16 files OK. Phase 3 (스코어링 정확도) 시작 대기. |

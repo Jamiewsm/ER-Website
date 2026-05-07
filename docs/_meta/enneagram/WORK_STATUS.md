@@ -4,13 +4,13 @@ kb_id: enneagram_test_meta.work_status
 schema_version: 1
 title: "ER Enneagram Test — Work Status"
 created_at: "2026-05-06"
-last_updated: "2026-05-07T01:30:00Z"
+last_updated: "2026-05-07T03:00:00Z"
 retrieval_tags:
   - work_status
   - phase_progress
   - lock_state
-current_phase: 3
-current_task: "3.1"
+current_phase: 4
+current_task: "4.0"
 checkpoint_plan: []
 checkpoint: null
 paused: false
@@ -27,49 +27,36 @@ scheduled_task_id: "er-enneagram-auto-resume"
 
 ## 현재 상태
 
-- **Phase 1 + Phase 2 완료. Phase 3 (스코어링 정확도) 시작 대기.**
-- 다음 task — 3.0 ([PHASE_3_PLAN.md](./PHASE_3_PLAN.md) placeholder 를 실제 plan 으로 채움, `superpowers:writing-plans` skill 사용).
+- **Phase 1 + Phase 2 + Phase 3 완료. Phase 4 (코드베이스 정리) 시작 대기.**
+- 다음 task — 4.0 ([PHASE_4_PLAN.md](./PHASE_4_PLAN.md) placeholder 를 실제 plan 으로 채움, `superpowers:writing-plans` skill 사용).
 - 일시정지 — 아니오.
 
 ## 완료 산출물 요약
 
 ### Phase 1 (KB Foundation)
 
-- 5 _meta 파일 + verify.mjs + AGENTS.md + .cursor rule + CLAUDE.md 패치
-- 4 신규 KB 파일 (centers_and_triads, type_wings, instinct_stacks, korean_test_copy_guide)
-- 3 갱신 KB 파일 (type_pair_disambiguation, complete_enneagram_kb, README)
-- 14 파일 verify all 통과
+- 5 _meta + verify.mjs + AGENTS.md + .cursor + CLAUDE.md
+- 4 신규 KB (centers_and_triads, type_wings, instinct_stacks, korean_test_copy_guide)
+- 3 갱신 KB (type_pair_disambiguation, complete_enneagram_kb, README)
 
 ### Phase 2 (27 Subtypes Depth)
 
-- PHASE_2_PLAN.md (595 줄, 11 task)
-- subtypes_27.md (829 줄, 27 subtype 모두 7 슬롯 + 9 type 의 stress/growth arrows + wing 영향)
-- 27 subtype 카운트 확인 — `grep -c '^### s[pox]_[1-9]' = 27`
-- countertype 9 개 모두 헤더 표기
+- PHASE_2_PLAN.md 595 줄
+- subtypes_27.md 829 줄, 27 subtype × 7 슬롯 + 9 type stress/growth arrows + wings
 
-## Phase 3 시작 protocol
+### Phase 3 (Scoring Accuracy)
 
-다음 wakeup/세션이 본 파일의 `current_task = "3.0"` 을 보고 [PHASE_3_PLAN.md](./PHASE_3_PLAN.md) (현재 placeholder) 를 읽는다. placeholder 의 가이드대로 `superpowers:writing-plans` skill 호출 → 7-9 task (스코어링 점검, wing %, instinct %, 가중치 재교정 등) 분해된 plan 으로 PHASE_3_PLAN.md 를 덮어쓰고, Task 3.1 부터 실행.
+- PHASE_3_PLAN.md 1180 줄 + scoring_spec.md 153 줄
+- js/test-scoring.js 147 줄 (8 함수 — wing %, instinct %, 27 subtype, countertype, computeResult, formatResult)
+- js/test.js renderResultFromScores 와이어링 + test.html 신규 placeholder 카드 3 개
+- tests/test-scoring.test.mjs 213 줄 (26 unit test, 모두 통과)
+- 결과지 형식 `7 w8(50%) sx(80%) so(60%) sp(10%)` 산출 가능
 
-## Phase 1 완료 산출물
+## Phase 4 시작 protocol
 
-- `docs/_meta/enneagram/` — 5 _meta 파일 + verify.mjs
-- `AGENTS.md`, `.cursor/rules/enneagram-work.mdc`, `CLAUDE.md` 패치
-- `docs/knowledge_base/enneagram/complete_enneagram/` — 4 신규 KB 파일 (centers_and_triads, type_wings, instinct_stacks, korean_test_copy_guide) + 3 갱신 파일 (type_pair_disambiguation, complete_enneagram_kb, README)
-- 하드-오토 스케줄 — `er-enneagram-auto-resume` (cron `0 */6 * * *`)
-- 14 파일 verify all 통과
+다음 wakeup/세션이 본 파일의 `current_task = "4.0"` 을 보고 [PHASE_4_PLAN.md](./PHASE_4_PLAN.md) (현재 placeholder) 를 읽는다. placeholder 의 가이드대로 `superpowers:writing-plans` skill 호출 → 6-8 task (test.js / app-adaptive.js 중복 해소, test-engine.js 통합) 분해된 plan 으로 PHASE_4_PLAN.md 를 덮어쓰고, Task 4.1 부터 실행.
 
-## Phase 2 시작 protocol
+## 검증 명령
 
-다음 wakeup/세션이 본 파일의 `current_task = "2.0"` 을 보고 [PHASE_2_PLAN.md](./PHASE_2_PLAN.md) (현재 placeholder) 를 읽는다. placeholder 는 plan 작성 가이드를 포함. cold-start AI 는 `superpowers:writing-plans` skill 호출 후 27 subtype task 분해된 plan 으로 PHASE_2_PLAN.md 를 덮어쓰고, 그 plan 의 Task 2.1 부터 실행.
-
-## 일시정지 방법
-
-`paused: true` 로 변경하면 모든 wakeup 이 즉시 종료. 어느 AI 세션에서든 "에니어그램 작업 일시정지" 한 마디로 가능 — 그 세션이 본 파일을 편집한다.
-
-## 자동 진행 보기
-
-- [PHASE_PLAN.md](./PHASE_PLAN.md) — 모든 task 정의
-- [HANDOFF.md](./HANDOFF.md) — cold-start AI 5단계 protocol
-- [HISTORY.md](./HISTORY.md) — wakeup 로그
-- [CONTEXT.md](./CONTEXT.md) — 설계 결정 + 거부 대안
+- `node docs/_meta/enneagram/verify.mjs all` — KB + spec 파일 검증.
+- `node --test tests/test-scoring.test.mjs` — Phase 3 스코어링 단위 테스트.
