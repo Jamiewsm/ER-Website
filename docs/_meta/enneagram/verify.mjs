@@ -38,6 +38,36 @@ const TASK_FILE_SPECS = {
   '1.7': [
     { path: 'docs/knowledge_base/enneagram/complete_enneagram/README.md', minLines: 40, maxLines: 100 },
   ],
+  '2.0': [
+    { path: 'docs/_meta/enneagram/PHASE_2_PLAN.md', minLines: 200, maxLines: 800 },
+  ],
+  '2.1': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 110, maxLines: 200 },
+  ],
+  '2.2': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 200, maxLines: 320 },
+  ],
+  '2.3': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 290, maxLines: 440 },
+  ],
+  '2.4': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 380, maxLines: 560 },
+  ],
+  '2.5': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 470, maxLines: 680 },
+  ],
+  '2.6': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 560, maxLines: 800 },
+  ],
+  '2.7': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 650, maxLines: 920 },
+  ],
+  '2.8': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 740, maxLines: 1040 },
+  ],
+  '2.9': [
+    { path: 'docs/knowledge_base/enneagram/complete_enneagram/subtypes_27.md', minLines: 830, maxLines: 1300 },
+  ],
 };
 
 function parseFrontmatter(text) {

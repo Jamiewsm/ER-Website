@@ -4,13 +4,13 @@ kb_id: enneagram_test_meta.work_status
 schema_version: 1
 title: "ER Enneagram Test — Work Status"
 created_at: "2026-05-06"
-last_updated: "2026-05-06T10:30:00Z"
+last_updated: "2026-05-06T11:10:00Z"
 retrieval_tags:
   - work_status
   - phase_progress
   - lock_state
 current_phase: 2
-current_task: "2.0"
+current_task: "2.1"
 checkpoint_plan: []
 checkpoint: null
 paused: false
@@ -27,9 +27,10 @@ scheduled_task_id: "er-enneagram-auto-resume"
 
 ## 현재 상태
 
-- **Phase 1 (KB Foundation) 완료. Phase 2 (27 subtypes 깊이) 시작 대기.**
-- 다음 task — 2.0 (Phase 2 plan 작성, [PHASE_2_PLAN.md](./PHASE_2_PLAN.md) placeholder 를 실제 plan 으로 채움).
+- Phase 2 (27 subtypes 깊이) 진행 중.
+- 다음 task — 2.1 (subtypes_27.md 신규 + Type 1).
 - 일시정지 — 아니오.
+- 완료 — Phase 1 전체 (9 task), Phase 2.0 (plan 작성 595 줄).
 
 ## Phase 1 완료 산출물
 
