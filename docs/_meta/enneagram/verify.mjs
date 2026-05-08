@@ -107,6 +107,21 @@ const TASK_FILE_SPECS = {
   '4.4': [
     { path: 'js/app-adaptive-data.js', minLines: 200, maxLines: 250, requireOurFrontmatter: false },
   ],
+  '5.0': [
+    { path: 'docs/_meta/enneagram/PHASE_5_PLAN.md', minLines: 100, maxLines: 800 },
+  ],
+  '5.1': [
+    { path: 'js/subtypes-27-data.js', minLines: 250, maxLines: 1500, requireOurFrontmatter: false },
+  ],
+  '5.2': [
+    { path: 'js/test-result-renderer.js', minLines: 50, maxLines: 300, requireOurFrontmatter: false },
+  ],
+  '5.3': [
+    { path: 'test.html', minLines: 150, maxLines: 500, requireOurFrontmatter: false },
+  ],
+  '5.4': [
+    { path: 'js/test.js', minLines: 950, maxLines: 1200, requireOurFrontmatter: false },
+  ],
 };
 
 function parseFrontmatter(text) {
