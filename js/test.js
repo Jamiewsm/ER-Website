@@ -908,6 +908,24 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     if (typeof window !== 'undefined') {
       window._lastPhase3Result = phase3Result || null;
     }
+    // Phase 6 — 신규 섹션 렌더링 (subtype hero, countertype full, signature summary)
+    if (typeof window !== 'undefined' && window.TestResultRenderer && phase3Result) {
+      const headerEl = document.getElementById('res-subtype-header');
+      if (headerEl && window.TestResultRenderer.renderSubtypeHeader) {
+        window.TestResultRenderer.renderSubtypeHeader(phase3Result, headerEl);
+      }
+      const ctSectionEl = document.getElementById('rs-countertype');
+      const ctCardEl = document.getElementById('res-countertype-card');
+      if (ctSectionEl && ctCardEl && window.TestResultRenderer.renderCountertypeFull) {
+        window.TestResultRenderer.renderCountertypeFull(phase3Result, ctSectionEl, ctCardEl);
+      }
+      const sigEl = document.getElementById('res-signature-card');
+      if (sigEl && window.TestResultRenderer.renderSignatureSummary && coreResolved) {
+        const scoresForSig = {};
+        for (let i = 1; i <= 9; i++) scoresForSig[i] = (typeof ps !== 'undefined' && ps && ps[i]) || 0;
+        window.TestResultRenderer.renderSignatureSummary(core, scoresForSig, phase3Result, sigEl);
+      }
+    }
   } catch (_e) {
     // 렌더 실패는 결과지 핵심 표시에 영향 X
   }
