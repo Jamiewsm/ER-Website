@@ -899,6 +899,18 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
       ? `${phase3Result.subtype}${phase3Result.countertype ? ' (countertype)' : ''}`
       : '미정';
   }
+  // Phase 5 — 27 subtype 깊이 콘텐츠 카드 렌더링 + share/PDF 용 보관
+  try {
+    const cardsEl = document.getElementById('res-subtype-cards');
+    if (cardsEl && phase3Result && typeof window !== 'undefined' && window.TestResultRenderer && window.TestResultRenderer.renderResultCards) {
+      window.TestResultRenderer.renderResultCards(phase3Result, cardsEl);
+    }
+    if (typeof window !== 'undefined') {
+      window._lastPhase3Result = phase3Result || null;
+    }
+  } catch (_e) {
+    // 렌더 실패는 결과지 핵심 표시에 영향 X
+  }
   document.getElementById('res-arrows').innerHTML = coreResolved
     ? `<span class="text-blue-600 font-bold">통합(건강) 방향: ${arrowLines[core].growth}번</span><br><span class="text-red-500 font-bold">비통합(스트레스) 방향: ${arrowLines[core].stress}번</span>`
     : '코어 확정 후 확인 가능합니다.';
@@ -951,9 +963,23 @@ function shareTestResult() {
   const confidence = badgeEl ? badgeEl.innerText.trim() : '';
   const shareUrl = 'https://er-coaching.com/test.html';
 
+  // Phase 5 — phase3Result 로 subtype 한국어 이름 추가
+  let subtypeLine = '';
+  try {
+    const last = (typeof window !== 'undefined' && window._lastPhase3Result) || null;
+    if (last && last.subtype && typeof window !== 'undefined' && window.SubtypesData && window.SubtypesData.SUBTYPES_27) {
+      const profile = window.SubtypesData.SUBTYPES_27[last.subtype];
+      if (profile) {
+        const ct = last.countertype ? ' (countertype)' : '';
+        subtypeLine = `27 subtype: ${profile.nameKr} — ${profile.name}${ct}`;
+      }
+    }
+  } catch (_e) { /* noop */ }
+
   const shareText = [
-    `나의 에니어그램 유형: ${typeResult}`,
-    instincts ? `${instincts}` : '',
+    `나의 에니어그램 결과: ${typeResult}`,
+    subtypeLine,
+    instincts && !subtypeLine ? `${instincts}` : '',
     confidence ? `(${confidence})` : '',
     '',
     'ER 에니어그램 심층 진단으로 알아보기 👇',
