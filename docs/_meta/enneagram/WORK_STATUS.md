@@ -11,18 +11,18 @@ retrieval_tags:
   - lock_state
   - project_complete
 current_phase: 6
-current_task: "DONE"
-checkpoint_plan: []
-checkpoint: null
-paused: true
+current_task: "6.0"
+checkpoint_plan: ["6.0.1", "6.0.2"]
+checkpoint: "6.0.1"
+paused: false
 schedule_interval_hours: 6
-locked_task: null
-lock_holder: null
-lock_expires_at: null
+locked_task: "6.0"
+lock_holder: "claude-manual-bootstrap"
+lock_expires_at: "2026-05-19T07:30:00Z"
 wakeup_count: 1
 last_wakeup_tokens: null
 scheduled_task_id: "er-enneagram-auto-resume"
-project_status: "complete"
+project_status: "phase_6_premium_polish"
 ---
 
 # Work Status — 🎉 프로젝트 완료
