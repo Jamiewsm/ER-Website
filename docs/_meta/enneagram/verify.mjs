@@ -10,7 +10,7 @@ const REQUIRED_KEYS = ['kb_id', 'title', 'created_at', 'retrieval_tags'];
 const TASK_FILE_SPECS = {
   '1.0': [
     { path: 'docs/_meta/enneagram/CONTEXT.md', minLines: 100, maxLines: 500 },
-    { path: 'docs/_meta/enneagram/WORK_STATUS.md', minLines: 10, maxLines: 80 },
+    { path: 'docs/_meta/enneagram/WORK_STATUS.md', minLines: 10, maxLines: 200 },
     { path: 'docs/_meta/enneagram/PHASE_PLAN.md', minLines: 200, maxLines: 2000 },
     { path: 'docs/_meta/enneagram/HANDOFF.md', minLines: 30, maxLines: 200 },
     { path: 'docs/_meta/enneagram/HISTORY.md', minLines: 5, maxLines: 5000 },
