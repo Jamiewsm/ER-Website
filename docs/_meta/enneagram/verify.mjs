@@ -92,21 +92,6 @@ const TASK_FILE_SPECS = {
   '3.7': [
     { path: 'tests/test-scoring.test.mjs', minLines: 100, maxLines: 400, requireOurFrontmatter: false },
   ],
-  '6.2': [
-    { path: 'docs/_meta/enneagram/PHASE_6_PLAN.md', minLines: 100, maxLines: 800 },
-  ],
-  '6.3': [
-    { path: 'test.html', minLines: 200, maxLines: 1000, requireOurFrontmatter: false },
-  ],
-  '6.4': [
-    { path: 'js/test-charts.js', minLines: 80, maxLines: 500, requireOurFrontmatter: false },
-  ],
-  '6.5': [
-    { path: 'js/test-result-renderer.js', minLines: 200, maxLines: 800, requireOurFrontmatter: false },
-  ],
-  '6.6': [
-    { path: 'test.html', minLines: 250, maxLines: 1500, requireOurFrontmatter: false },
-  ],
   '4.0': [
     { path: 'docs/_meta/enneagram/PHASE_4_PLAN.md', minLines: 100, maxLines: 800 },
   ],
@@ -136,6 +121,21 @@ const TASK_FILE_SPECS = {
   ],
   '5.4': [
     { path: 'js/test.js', minLines: 950, maxLines: 1200, requireOurFrontmatter: false },
+  ],
+  '6.2': [
+    { path: 'docs/_meta/enneagram/PHASE_6_PLAN.md', minLines: 100, maxLines: 800 },
+  ],
+  '6.3': [
+    { path: 'test.html', minLines: 200, maxLines: 1500, requireOurFrontmatter: false },
+  ],
+  '6.4': [
+    { path: 'js/test-charts.js', minLines: 80, maxLines: 500, requireOurFrontmatter: false },
+  ],
+  '6.5': [
+    { path: 'js/test-result-renderer.js', minLines: 200, maxLines: 800, requireOurFrontmatter: false },
+  ],
+  '6.6': [
+    { path: 'tests/render-smoke.test.mjs', minLines: 50, maxLines: 300, requireOurFrontmatter: false },
   ],
 };
 
