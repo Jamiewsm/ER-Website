@@ -911,6 +911,36 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   } catch (_e) {
     // 렌더 실패는 결과지 핵심 표시에 영향 X
   }
+  // Phase 6 — Premium 차트 렌더링 (에니어그램 지도, 9 type 도넛, wing 메터, 본능 바, triads)
+  try {
+    if (phase3Result && typeof window !== 'undefined' && window.TestCharts && window.TestCharts.renderAllCharts && coreResolved) {
+      const scoresForCharts = {};
+      for (let i = 1; i <= 9; i++) scoresForCharts[i] = (typeof ps !== 'undefined' && ps && ps[i]) || 0;
+      window.TestCharts.renderAllCharts({
+        coreType: core,
+        scores: scoresForCharts,
+        phase3Result,
+      });
+    }
+    // Cover 날짜 + 강도 band 라벨
+    const dateEl = document.getElementById('res-cover-date');
+    if (dateEl) {
+      const d = new Date();
+      dateEl.innerText = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    }
+    const wbEl = document.getElementById('res-wing-band');
+    if (wbEl && phase3Result && phase3Result.wing) {
+      const p = phase3Result.wing.pct;
+      let band = '거의 무 wing — 균등';
+      if (p >= 81) band = '매우 강 — wing type 으로 오진단 위험';
+      else if (p >= 61) band = '강 wing — wing 이 코어를 깊게 변형';
+      else if (p >= 41) band = '중 wing — 코어 + wing 함께 작동';
+      else if (p >= 21) band = '약 wing — 코어가 80% 이상';
+      wbEl.innerText = band;
+    }
+  } catch (_e) {
+    // 차트 렌더 실패는 핵심 표시에 영향 X
+  }
   document.getElementById('res-arrows').innerHTML = coreResolved
     ? `<span class="text-blue-600 font-bold">통합(건강) 방향: ${arrowLines[core].growth}번</span><br><span class="text-red-500 font-bold">비통합(스트레스) 방향: ${arrowLines[core].stress}번</span>`
     : '코어 확정 후 확인 가능합니다.';
