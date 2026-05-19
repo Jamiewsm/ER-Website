@@ -4,65 +4,89 @@ kb_id: enneagram_test_meta.work_status
 schema_version: 1
 title: "ER Enneagram Test — Work Status"
 created_at: "2026-05-06"
-last_updated: "2026-05-08T01:30:00Z"
+last_updated: "2026-05-19T05:00:00Z"
 retrieval_tags:
   - work_status
   - phase_progress
   - lock_state
-current_phase: 5
-current_task: "5.1"
+  - project_complete
+current_phase: 6
+current_task: "DONE"
 checkpoint_plan: []
 checkpoint: null
-paused: false
+paused: true
 schedule_interval_hours: 6
 locked_task: null
 lock_holder: null
 lock_expires_at: null
-wakeup_count: 0
+wakeup_count: 1
 last_wakeup_tokens: null
 scheduled_task_id: "er-enneagram-auto-resume"
+project_status: "complete"
 ---
 
-# Work Status
+# Work Status — 🎉 프로젝트 완료
 
-## 현재 상태
+## 종료 상태
 
-- **Phase 1+2+3+4 완료. Phase 5 (결과 출력 포맷) 시작 대기 — 마지막 phase.**
-- 다음 task — 5.0 ([PHASE_5_PLAN.md](./PHASE_5_PLAN.md) placeholder 를 실제 plan 으로 채움, `superpowers:writing-plans` skill 사용).
-- 일시정지 — 아니오.
+- **Phase 1 + 2 + 3 + 4 + 5 모두 완료.**
+- `current_phase = 6` → 모든 wakeup 즉시 종료 (HANDOFF.md §1 조건).
+- `paused = true` → 추가 안전 장치 (혹시 phase 체크 우회해도 정지).
+- 스케줄 task `er-enneagram-auto-resume` 은 비활성 상태로 남음 — 사용자가 `mcp__scheduled-tasks__delete_scheduled_task` 로 수동 삭제하거나 보존 가능.
 
-## 완료 산출물 요약
+## 5 Phase 종료 산출물 요약
 
 ### Phase 1 (KB Foundation)
-
-- 5 _meta + verify.mjs + AGENTS.md + .cursor + CLAUDE.md
-- 4 신규 KB (centers_and_triads, type_wings, instinct_stacks, korean_test_copy_guide)
-- 3 갱신 KB (type_pair_disambiguation, complete_enneagram_kb, README)
+- 5 _meta 파일 (CONTEXT, WORK_STATUS, PHASE_PLAN, HANDOFF, HISTORY) + verify.mjs
+- 진입점 — AGENTS.md, .cursor/rules, CLAUDE.md 패치
+- KB 4 신규 (centers_and_triads, type_wings, instinct_stacks, korean_test_copy_guide) + 3 갱신
 
 ### Phase 2 (27 Subtypes Depth)
-
-- PHASE_2_PLAN.md 595 줄 + subtypes_27.md 829 줄
-- 27 subtype × 7 슬롯 + 9 type stress/growth arrows + wings
+- subtypes_27.md 829줄, 27 subtype × 7 슬롯 + 9 type stress/growth arrows + wings
 
 ### Phase 3 (Scoring Accuracy)
-
-- PHASE_3_PLAN.md 1180 줄 + scoring_spec.md 153 줄
-- js/test-scoring.js 147 줄 (8 함수)
-- tests/test-scoring.test.mjs 213 줄 (26 unit test 통과)
+- js/test-scoring.js 147줄 (8 함수)
+- tests/test-scoring.test.mjs 213줄 (26 unit test)
 - 결과지 형식 `7 w8(50%) sx(80%) so(60%) sp(10%)` 산출 가능
 
 ### Phase 4 (Codebase Cleanup)
+- js/test-shared.js 44줄 (arrowLines + INSTINCT_LABELS + TYPE_NAMES)
+- test.js + app-adaptive-data.js 단일 소스 참조
 
-- PHASE_4_PLAN.md 575 줄 + test_dup_audit.md 97 줄
-- js/test-shared.js 44 줄 (arrowLines + INSTINCT_LABELS + TYPE_NAMES)
-- js/test.js + js/app-adaptive-data.js refactor (단일 소스 + fallback inline)
-- test.html script 로드 순서
+### Phase 5 (Result Output Format)
+- js/subtypes-27-data.js 518줄 (27 subtype × 7 슬롯 데이터)
+- js/test-result-renderer.js 174줄 (lookup + 9 카드 HTML)
+- test.html `#res-subtype-cards` 컨테이너 + share text 보강
 
-## Phase 5 시작 protocol
+## 검증 (최종)
 
-다음 wakeup/세션이 본 파일의 `current_task = "5.0"` 을 보고 [PHASE_5_PLAN.md](./PHASE_5_PLAN.md) (현재 placeholder) 를 읽는다. placeholder 의 가이드대로 `superpowers:writing-plans` skill 호출 → 8-10 task (subtypes-27-data.js, test-result-renderer.js, 결과지 카드, countertype 안내, % 시각화, PDF/공유 갱신, 디자인 정렬) 분해된 plan 으로 PHASE_5_PLAN.md 를 덮어쓰고, Task 5.1 부터 실행. **마지막 phase.**
+```
+node docs/_meta/enneagram/verify.mjs all
+OK: task all verified (29 files)
 
-## 검증 명령
+node --test tests/test-scoring.test.mjs
+26/26 tests pass
+```
 
-- `node docs/_meta/enneagram/verify.mjs all` — KB + spec 파일 검증 (현재 26 files OK).
-- `node --test tests/test-scoring.test.mjs` — Phase 3 스코어링 단위 테스트 (26/26 pass).
+## 결과지 예시 출력
+
+```
+res-final          : 7 w8(50%) sp(83%) sx(67%) so(33%)
+res-instincts      : 27 subtype: sp_7 (countertype 아님)
+res-wing-pct       : 50% (w8)
+res-instinct-pct   : sp(83%) sx(67%) so(33%)
+res-subtype-27     : sp_7
+res-subtype-cards  : (9 카드 — 핵심 집착, 행동 시그니처, 방어/그림자, sister-diff,
+                     confused-with, wing 강도, 본능 stack, 한국어 결과 카피)
+```
+
+## 재시작 protocol (필요 시)
+
+- 추가 작업이 필요하면 `current_phase` 를 6 → 새 값 (예: 5 또는 7) 으로 되돌리고 `paused: false`.
+- 또는 신규 phase plan 을 작성하고 `current_task` 설정.
+
+## 사용자 액션 (선택)
+
+- main 브랜치 머지 — `git checkout main && git merge claude/musing-taussig-e181fd` (또는 PR 생성).
+- 스케줄 task 정리 — `mcp__scheduled-tasks__delete_scheduled_task er-enneagram-auto-resume`.
+- 결과지 수동 확인 — `test.html` 직접 열기.
