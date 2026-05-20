@@ -1999,6 +1999,41 @@ function getFinalSubtypeCode(instinctCode) {
   return ['sp', 'sx', 'so'].includes(first) ? first : 'sp';
 }
 
+function formatReportHeadline(resultData) {
+  const core = resultData.core;
+  const instCode = getFinalSubtypeCode(resultData.instinctCode);
+  const instincts = window.ERDiagnosticReportContent && window.ERDiagnosticReportContent.instincts;
+  const instLabel = (instincts && instincts[instCode] && instincts[instCode].label) || instCode;
+  const wingPart = resultData.wingNum
+    ? `w${resultData.wingNum}`
+    : (pageLang === 'en' ? 'core only' : '순수유형');
+  if (pageLang === 'en') {
+    return `Type ${core} · ${instLabel} · ${wingPart}`;
+  }
+  return `${core}번 · ${instLabel} · ${wingPart}`;
+}
+
+function notifyEmbedResize() {
+  if (!window.parent || window.parent === window) return;
+  const height = Math.max(
+    document.documentElement.scrollHeight || 0,
+    document.body ? document.body.scrollHeight : 0,
+    document.documentElement.offsetHeight || 0
+  );
+  try {
+    window.parent.postMessage({ type: 'er-test-embed-resize', height }, '*');
+  } catch (_err) {
+    // cross-origin embed — ignore
+  }
+}
+
+function scheduleEmbedResize() {
+  notifyEmbedResize();
+  requestAnimationFrame(notifyEmbedResize);
+  setTimeout(notifyEmbedResize, 120);
+  setTimeout(notifyEmbedResize, 480);
+}
+
 function buildWingMetrics(core, wingScores) {
   const left = core === 1 ? 9 : core - 1;
   const right = core === 9 ? 1 : core + 1;
@@ -2081,6 +2116,7 @@ function buildPremiumReportModel(resultData) {
     instinctRows,
     wingRows,
     display: {
+      headline: formatReportHeadline(resultData),
       final: `${subtypeCode} ${resultData.wingCode}`,
       core: resultData.coreDisplay,
       subtype: resultData.phase4
@@ -2149,12 +2185,13 @@ function renderPremiumReport(model) {
       <section class="er-report-hero">
         <div class="er-report-hero-inner">
           <p class="er-report-kicker">ER Enneagram Premium Report</p>
+          <p class="er-report-hero-type" id="res-final">${escapeReportHtml(model.display.headline)}</p>
           <h1>${escapeReportHtml(c.heroStatement)}</h1>
           <p>${escapeReportHtml(c.definition)}</p>
           <div class="er-report-hero-badges" aria-label="진단 결과 요약">
-            <span id="res-final">${escapeReportHtml(model.display.final)}</span>
             <span id="res-instincts">${escapeReportHtml(c.subtypeLabel || model.display.subtype)}</span>
             <span id="res-wing">${escapeReportHtml(model.display.wing)}</span>
+            <span class="er-report-hero-code">${escapeReportHtml(model.display.final)}</span>
           </div>
           <span id="confidence-badge" class="er-report-confidence">${escapeReportHtml(model.display.confidence)}</span>
         </div>
@@ -2305,6 +2342,7 @@ function renderPremiumReport(model) {
     </article>
   `;
   bindPremiumReportInteractions(model);
+  scheduleEmbedResize();
 }
 
 function bindPremiumReportInteractions(model) {
@@ -2499,6 +2537,7 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     responses: snapshotAllDiagnosticResponses()
   });
   renderPremiumReport(premiumModel);
+  scheduleEmbedResize();
 
   if (confidence === '낮음') {
     const consult = document.getElementById('cta-consulting');
@@ -2639,6 +2678,13 @@ localizeStaticTestPage();
 renderQuestions('phase1-container', q1, 'p1');
 setProgress(50);
 requestAnimationFrame(revealTestPageAfterLoad);
+
+if (typeof window !== 'undefined' && window.parent !== window && typeof ResizeObserver === 'function') {
+  const embedResizeObserver = new ResizeObserver(() => notifyEmbedResize());
+  embedResizeObserver.observe(document.documentElement);
+  if (document.body) embedResizeObserver.observe(document.body);
+  scheduleEmbedResize();
+}
 
 // --- Share Feature ---
 function shareTestResult() {

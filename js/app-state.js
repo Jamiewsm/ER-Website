@@ -43,7 +43,7 @@ const state = {
 };
 window.state = state;
 
-const ADAPTIVE_TEST_EMBED_VERSION = '20260520-premium-result-v1';
+const ADAPTIVE_TEST_EMBED_VERSION = '20260521-result-hero-scroll-v1';
 
 const ER = typeof window !== 'undefined' && window.ER_STRINGS ? window.ER_STRINGS : {};
 const contentData = {
