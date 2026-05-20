@@ -131,7 +131,7 @@ function renderAbout() {
                                     <p class="text-xs text-gray-500">Dr. Wagner (International Enneagram Association)</p>
                                 </div>
                                 <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                    <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Professional</h4>
+                                    <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Instructor</h4>
                                     <p class="text-xs text-gray-500">국제 에니어그램 협회 인증 전문가</p>
                                 </div>
                                 <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">

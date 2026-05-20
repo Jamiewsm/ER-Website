@@ -8,7 +8,7 @@ function renderHome() {
             photo: 'son-profile-picture.png',
             bio: '에니어그램과 기독교 세계관을 통합적으로 적용해 개인·가정·공동체의 회복을 돕습니다.',
             specialties: ['개인 자기 이해 코칭', '부부·가정 회복', '사역자·선교사 돌봄', '에니어그램 강사 양성'],
-            certs: ['Enneagram Spectrum Advanced Certification', 'IEA Accredited Professional', 'SOIM GLTC Instructor', 'DTS Counseling'],
+            certs: ['Enneagram Spectrum Advanced Certification', 'IEA Accredited Instructor', 'SOIM GLTC Instructor', 'DTS Counseling'],
             locations: 'Korea · USA'
         };
     const stories = Array.isArray(publicTestimonials?.stories) ? publicTestimonials.stories : [];
