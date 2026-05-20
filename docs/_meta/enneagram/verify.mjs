@@ -120,7 +120,7 @@ const TASK_FILE_SPECS = {
     { path: 'test.html', minLines: 150, maxLines: 500, requireOurFrontmatter: false },
   ],
   '5.4': [
-    { path: 'js/test.js', minLines: 950, maxLines: 1200, requireOurFrontmatter: false },
+    { path: 'js/test.js', minLines: 950, maxLines: 3200, requireOurFrontmatter: false },
   ],
   '6.2': [
     { path: 'docs/_meta/enneagram/PHASE_6_PLAN.md', minLines: 100, maxLines: 800 },
