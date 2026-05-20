@@ -10,7 +10,8 @@ let adaptiveTieBreaker71Meta = { enabled: false, weight: 0, margin: null };
 let adaptiveTieBreaker78Meta = { enabled: false, weight: 0, margin: null };
 let adaptiveTieBreaker7WingMeta = { enabled: false, weight: 0, margin: null };
 let adaptiveLang = 'ko';
-const adaptiveArrowLines = {
+// adaptiveArrowLines — js/test-shared.js 의 arrowLines 가 진실 소스. fallback 으로 인라인.
+const adaptiveArrowLines = (typeof window !== 'undefined' && window.TestShared && window.TestShared.arrowLines) || {
     1: { stress: 4, growth: 7 },
     2: { stress: 8, growth: 4 },
     3: { stress: 9, growth: 6 },

@@ -65,7 +65,8 @@ function getOptionText(item, side) {
   return base;
 }
 
-const arrowLines = {1:{stress:4,growth:7},2:{stress:8,growth:4},3:{stress:9,growth:6},4:{stress:2,growth:1},5:{stress:7,growth:8},6:{stress:3,growth:9},7:{stress:1,growth:5},8:{stress:5,growth:2},9:{stress:6,growth:3}};
+// arrowLines — js/test-shared.js 가 진실 소스. fallback 으로 인라인 (script 로드 실패 시 안전).
+const arrowLines = (typeof window !== 'undefined' && window.TestShared && window.TestShared.arrowLines) || {1:{stress:4,growth:7},2:{stress:8,growth:4},3:{stress:9,growth:6},4:{stress:2,growth:1},5:{stress:7,growth:8},6:{stress:3,growth:9},7:{stress:1,growth:5},8:{stress:5,growth:2},9:{stress:6,growth:3}};
 
 const TEST_CONFIG = {
   weights: {
@@ -821,6 +822,7 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   let wing = '활성화 안됨';
   let wingCode = `${core} (순수유형)`;
   let coreDisplay = `${core}번`;
+  let phase3Result = null;
 
   if (!coreResolved) {
     coreDisplay = `${core}번 / ${second.type}번 (코어 보류)`;
@@ -847,6 +849,22 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
         wingCode = `${core}w${w}`;
       }
     }
+
+    // Phase 3 — 통합 결과 (wing %, instinct %, 27 subtype, formatted)
+    try {
+      if (typeof window !== 'undefined' && window.TestScoring && window.TestScoring.computeResult) {
+        const scoresForResult = {};
+        for (let i = 1; i <= 9; i++) scoresForResult[i] = ps[i] || 0;
+        phase3Result = window.TestScoring.computeResult({
+          coreType: core,
+          scores: scoresForResult,
+          responses: testState.phase1Responses,
+          q1: q1,
+        });
+      }
+    } catch (_e) {
+      phase3Result = null;
+    }
   }
 
   document.getElementById('phase2-form').classList.add('hidden');
@@ -855,10 +873,92 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   document.getElementById('result-view').classList.remove('hidden');
   document.getElementById('cta-consulting').classList.add('hidden');
 
-  document.getElementById('res-final').innerText = `${instinctCode} ${wingCode}`;
-  document.getElementById('res-instincts').innerText = `제 1본능: ${instinctLabel}`;
+  document.getElementById('res-final').innerText = phase3Result
+    ? phase3Result.formatted
+    : `${instinctCode} ${wingCode}`;
+  document.getElementById('res-instincts').innerText = phase3Result
+    ? `27 subtype: ${phase3Result.subtype || '미정'}${phase3Result.countertype ? ' (countertype)' : ''}`
+    : `제 1본능: ${instinctLabel}`;
   document.getElementById('res-core').innerText = coreDisplay;
   document.getElementById('res-wing').innerText = wing;
+  // Phase 3 신규 placeholder (test.html 에 추가됨, 없으면 null-safe)
+  const wingPctEl = document.getElementById('res-wing-pct');
+  if (wingPctEl) {
+    wingPctEl.innerText = phase3Result && phase3Result.wing && phase3Result.wing.wing
+      ? `${phase3Result.wing.pct}% (w${phase3Result.wing.wing})`
+      : '활성화 안됨';
+  }
+  const instPctEl = document.getElementById('res-instinct-pct');
+  if (instPctEl && phase3Result) {
+    const ip = phase3Result.instinctPct;
+    instPctEl.innerText = `sp(${ip.sp}%) sx(${ip.sx}%) so(${ip.so}%)`;
+  }
+  const subtypeEl = document.getElementById('res-subtype-27');
+  if (subtypeEl && phase3Result) {
+    subtypeEl.innerText = phase3Result.subtype
+      ? `${phase3Result.subtype}${phase3Result.countertype ? ' (countertype)' : ''}`
+      : '미정';
+  }
+  // Phase 5 — 27 subtype 깊이 콘텐츠 카드 렌더링 + share/PDF 용 보관
+  try {
+    const cardsEl = document.getElementById('res-subtype-cards');
+    if (cardsEl && phase3Result && typeof window !== 'undefined' && window.TestResultRenderer && window.TestResultRenderer.renderResultCards) {
+      window.TestResultRenderer.renderResultCards(phase3Result, cardsEl);
+    }
+    if (typeof window !== 'undefined') {
+      window._lastPhase3Result = phase3Result || null;
+    }
+    // Phase 6 — 신규 섹션 렌더링 (subtype hero, countertype full, signature summary)
+    if (typeof window !== 'undefined' && window.TestResultRenderer && phase3Result) {
+      const headerEl = document.getElementById('res-subtype-header');
+      if (headerEl && window.TestResultRenderer.renderSubtypeHeader) {
+        window.TestResultRenderer.renderSubtypeHeader(phase3Result, headerEl);
+      }
+      const ctSectionEl = document.getElementById('rs-countertype');
+      const ctCardEl = document.getElementById('res-countertype-card');
+      if (ctSectionEl && ctCardEl && window.TestResultRenderer.renderCountertypeFull) {
+        window.TestResultRenderer.renderCountertypeFull(phase3Result, ctSectionEl, ctCardEl);
+      }
+      const sigEl = document.getElementById('res-signature-card');
+      if (sigEl && window.TestResultRenderer.renderSignatureSummary && coreResolved) {
+        const scoresForSig = {};
+        for (let i = 1; i <= 9; i++) scoresForSig[i] = (typeof ps !== 'undefined' && ps && ps[i]) || 0;
+        window.TestResultRenderer.renderSignatureSummary(core, scoresForSig, phase3Result, sigEl);
+      }
+    }
+  } catch (_e) {
+    // 렌더 실패는 결과지 핵심 표시에 영향 X
+  }
+  // Phase 6 — Premium 차트 렌더링 (에니어그램 지도, 9 type 도넛, wing 메터, 본능 바, triads)
+  try {
+    if (phase3Result && typeof window !== 'undefined' && window.TestCharts && window.TestCharts.renderAllCharts && coreResolved) {
+      const scoresForCharts = {};
+      for (let i = 1; i <= 9; i++) scoresForCharts[i] = (typeof ps !== 'undefined' && ps && ps[i]) || 0;
+      window.TestCharts.renderAllCharts({
+        coreType: core,
+        scores: scoresForCharts,
+        phase3Result,
+      });
+    }
+    // Cover 날짜 + 강도 band 라벨
+    const dateEl = document.getElementById('res-cover-date');
+    if (dateEl) {
+      const d = new Date();
+      dateEl.innerText = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    }
+    const wbEl = document.getElementById('res-wing-band');
+    if (wbEl && phase3Result && phase3Result.wing) {
+      const p = phase3Result.wing.pct;
+      let band = '거의 무 wing — 균등';
+      if (p >= 81) band = '매우 강 — wing type 으로 오진단 위험';
+      else if (p >= 61) band = '강 wing — wing 이 코어를 깊게 변형';
+      else if (p >= 41) band = '중 wing — 코어 + wing 함께 작동';
+      else if (p >= 21) band = '약 wing — 코어가 80% 이상';
+      wbEl.innerText = band;
+    }
+  } catch (_e) {
+    // 차트 렌더 실패는 핵심 표시에 영향 X
+  }
   document.getElementById('res-arrows').innerHTML = coreResolved
     ? `<span class="text-blue-600 font-bold">통합(건강) 방향: ${arrowLines[core].growth}번</span><br><span class="text-red-500 font-bold">비통합(스트레스) 방향: ${arrowLines[core].stress}번</span>`
     : '코어 확정 후 확인 가능합니다.';
@@ -911,9 +1011,23 @@ function shareTestResult() {
   const confidence = badgeEl ? badgeEl.innerText.trim() : '';
   const shareUrl = 'https://er-coaching.com/test.html';
 
+  // Phase 5 — phase3Result 로 subtype 한국어 이름 추가
+  let subtypeLine = '';
+  try {
+    const last = (typeof window !== 'undefined' && window._lastPhase3Result) || null;
+    if (last && last.subtype && typeof window !== 'undefined' && window.SubtypesData && window.SubtypesData.SUBTYPES_27) {
+      const profile = window.SubtypesData.SUBTYPES_27[last.subtype];
+      if (profile) {
+        const ct = last.countertype ? ' (countertype)' : '';
+        subtypeLine = `27 subtype: ${profile.nameKr} — ${profile.name}${ct}`;
+      }
+    }
+  } catch (_e) { /* noop */ }
+
   const shareText = [
-    `나의 에니어그램 유형: ${typeResult}`,
-    instincts ? `${instincts}` : '',
+    `나의 에니어그램 결과: ${typeResult}`,
+    subtypeLine,
+    instincts && !subtypeLine ? `${instincts}` : '',
     confidence ? `(${confidence})` : '',
     '',
     'ER 에니어그램 심층 진단으로 알아보기 👇',
