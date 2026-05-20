@@ -6,92 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ER Enneagram Test</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/test.css">
-  <style>
-    /* Phase 6 — Premium Visual Polish */
-    /* 3 Center 컬러 시스템 — Birkman 4색 키 차용, ER 톤으로 번안 */
-    :root {
-      --er-base: #f5f5f0;
-      --er-accent: #bfa68a;
-      --er-dark: #4a4540;
-      --center-body: #C44536;   /* Type 8, 9, 1 — Body/Gut */
-      --center-heart: #5A8F69;  /* Type 2, 3, 4 — Heart/Image */
-      --center-head: #3D5A80;   /* Type 5, 6, 7 — Head/Fear */
-      --inst-sp: #A0522D;       /* sp 자기보호 */
-      --inst-sx: #9C3848;       /* sx 일대일 */
-      --inst-so: #3E7CB1;       /* so 사회 */
-    }
-    /* Logogram 텍스트 — Birkman 다채색 모자이크 글자 차용. 3-center 컬러 그라데이션 */
-    .logogram-text {
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      background-image: linear-gradient(115deg,
-        var(--center-body) 0%, var(--center-body) 30%,
-        var(--center-heart) 30%, var(--center-heart) 60%,
-        var(--center-head) 60%, var(--center-head) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.02em;
-      line-height: 1.05;
-    }
-    /* 섹션 디바이더 */
-    .section-divider {
-      padding: 4rem 1rem 3rem;
-      border-top: 1px solid #eadccf;
-      page-break-before: always;
-    }
-    .section-divider-title {
-      font-size: clamp(2.5rem, 7vw, 4.5rem);
-      margin-bottom: 1.5rem;
-    }
-    .section-subtitle {
-      color: #8c8680;
-      font-size: 1.05rem;
-      line-height: 1.55;
-      max-width: 36rem;
-    }
-    /* Center 색 액센트 카드 */
-    .center-body  { border-left: 6px solid var(--center-body); }
-    .center-heart { border-left: 6px solid var(--center-heart); }
-    .center-head  { border-left: 6px solid var(--center-head); }
-    .pill-body  { background: var(--center-body); }
-    .pill-heart { background: var(--center-heart); }
-    .pill-head  { background: var(--center-head); }
-    .text-body  { color: var(--center-body); }
-    .text-heart { color: var(--center-heart); }
-    .text-head  { color: var(--center-head); }
-    /* 본능 색 액센트 */
-    .inst-sp { background: var(--inst-sp); }
-    .inst-sx { background: var(--inst-sx); }
-    .inst-so { background: var(--inst-so); }
-    .text-inst-sp { color: var(--inst-sp); }
-    .text-inst-sx { color: var(--inst-sx); }
-    .text-inst-so { color: var(--inst-so); }
-    /* 큰 페이지 번호 (목차 페이지 스타일) */
-    .toc-number {
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      font-size: 4rem;
-      color: #8c8680;
-      line-height: 1;
-    }
-    /* 차트 컨테이너 */
-    .chart-box {
-      position: relative;
-      width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-    /* PDF 캡처 시 배경 흰색 강제 */
-    @media print {
-      body { background: #fff !important; }
-      .section-divider { page-break-before: always; }
-    }
-  </style>
 </head>
 <body class="min-h-screen pb-20 bg-[#f8fafc] relative">
   <div id="test-initial-skeleton" class="fixed inset-0 z-40 bg-[#f5f5f0]/90 backdrop-blur-[1px] transition-opacity duration-300">
@@ -99,7 +16,7 @@
       <div class="rounded-3xl border border-[#bfa68a]/20 bg-white/80 p-6 sm:p-8 shadow-sm">
         <div class="flex items-center gap-2 mb-5">
           <span class="w-2 h-2 rounded-full bg-[#bfa68a] animate-pulse"></span>
-          <span class="text-xs font-bold tracking-wider text-[#6b5f55]">진단 페이지 준비 중</span>
+          <span id="loading-kicker" class="text-xs font-bold tracking-wider text-[#6b5f55]">진단 페이지 준비 중</span>
         </div>
         <div class="space-y-4 animate-pulse">
           <div class="h-6 w-2/3 rounded-lg bg-[#eadccf]"></div>
@@ -114,16 +31,53 @@
   </div>
   <main id="test-main-content" class="max-w-3xl mx-auto pt-12 px-4 sm:px-6 transition-opacity duration-500 opacity-0">
     <header class="text-center mb-10">
-      <span class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
-      <h1 class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
-      <p class="mt-4 text-gray-600 leading-relaxed text-sm">행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.</p>
-      <p class="text-xs text-gray-400 mt-4">* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.</p>
+      <span id="test-pill" class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
+      <h1 id="test-title" class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
+      <p id="test-subtitle" class="mt-4 text-gray-600 leading-relaxed text-sm">행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.</p>
+      <p id="test-disclaimer" class="text-xs text-gray-400 mt-4">* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.</p>
     </header>
+
+    <div id="experiment-closed" class="hidden mb-10">
+      <div class="rounded-3xl border border-amber-200 bg-amber-50/90 p-6 sm:p-8 shadow-sm space-y-3 text-center">
+        <p class="text-xs font-bold tracking-wider text-amber-900 uppercase">진단 테스트 제한 안내</p>
+        <p class="text-sm text-amber-900/90 leading-relaxed">
+          죄송합니다. 현재 진단 테스트는 초대받으신 분들만 참여하실 수 있습니다.
+        </p>
+        <p class="text-xs text-amber-800/90">
+          (정식 오픈 전 실험 운영 중입니다.)
+        </p>
+      </div>
+    </div>
+
+    <!-- 실험 모드: test.html?experiment=1 — 소수 초대·실명 동의 후에만 표시 -->
+    <div id="experiment-gate" class="hidden mb-10">
+      <div class="rounded-3xl border border-amber-200 bg-amber-50/90 p-6 sm:p-8 shadow-sm space-y-4">
+        <p class="text-xs font-bold tracking-wider text-amber-900 uppercase">실험 참가 (비공개)</p>
+        <p class="text-sm text-amber-900/90 leading-relaxed">
+          초대받은 분만 이용해 주세요. 입력하신 이름과 응답은 진단 알고리즘 개선을 위해 저장됩니다. 삭제를 원하시면 운영자에게 요청할 수 있습니다.
+        </p>
+        <div>
+          <label for="experiment-participant-name" class="block text-xs font-semibold text-gray-700 mb-1">실명 (필수)</label>
+          <input id="experiment-participant-name" type="text" autocomplete="name" maxlength="200"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#4a4540]/30 focus:border-[#4a4540]"
+            placeholder="홍길동" />
+        </div>
+        <label class="flex items-start gap-2 text-sm text-gray-800 cursor-pointer">
+          <input id="experiment-consent" type="checkbox" class="mt-1 accent-[#4a4540]" />
+          <span>이름·응답·결과·자기평가를 ER 진단 개선 목적으로 저장하는 것에 동의합니다.</span>
+        </label>
+        <p id="experiment-gate-error" class="text-sm text-red-600 hidden" role="alert"></p>
+        <button id="experiment-gate-start" type="button"
+          class="w-full sm:w-auto bg-[#4a4540] hover:bg-[#3a3530] text-white font-bold py-3 px-10 rounded-full text-sm">
+          동의하고 진단 시작
+        </button>
+      </div>
+    </div>
 
     <div id="progress-container" class="mb-8" aria-live="polite">
       <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
         <span id="step-label">1단계: 기초 성향 및 본능 파악</span>
-        <span id="step-counter">1 / 2</span>
+        <span id="step-counter">1 / 4</span>
       </div>
       <div id="progress-track" class="w-full bg-gray-200 rounded-full h-1.5" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
         <div id="progress-bar" class="bg-[#8c8680] h-1.5 rounded-full smooth" style="width:50%"></div>
@@ -132,283 +86,122 @@
 
     <form id="phase1-form" class="space-y-10" novalidate>
       <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center">
-        <p class="font-semibold text-gray-700">1부: 일상적 자동반응 패턴</p>
-        <p class="text-sm text-gray-500 mt-1">불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.</p>
+        <p id="phase1-intro-title" class="font-semibold text-gray-700">1부: 일상적 자동반응 패턴</p>
+        <p id="phase1-intro-desc" class="text-sm text-gray-500 mt-1">불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.</p>
       </div>
       <div id="phase1-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">2단계로 이동</button>
+        <button id="phase1-submit-btn" type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">2단계로 이동</button>
       </div>
     </form>
 
     <form id="phase2-form" class="space-y-10 hidden" novalidate>
       <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center">
-        <p class="font-bold text-[#4a4540] text-lg">1차 분석 완료</p>
-        <p class="text-sm text-gray-600 mt-2">후보 유형 경합을 줄이기 위한 심층 질문입니다.</p>
+        <p id="phase2-intro-title" class="font-bold text-[#4a4540] text-lg">1차 분석 완료</p>
+        <p id="phase2-intro-desc" class="text-sm text-gray-600 mt-2">후보 유형 경합을 줄이기 위한 심층 질문입니다.</p>
       </div>
       <div id="phase2-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg">결과 보기</button>
+        <button id="phase2-submit-btn" type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg">결과 보기</button>
       </div>
     </form>
 
     <form id="phase3-form" class="space-y-10 hidden" novalidate>
       <div class="bg-orange-50 p-6 rounded-2xl border border-orange-200 text-center">
-        <p class="font-bold text-orange-800 text-lg">마지막 정밀 감별</p>
-        <p class="text-sm text-orange-700 mt-2">상위 2개 유형이 모두 높게 경합 중입니다. 최종 확정을 위해 아래 문항 1개만 선택해 주세요.</p>
+        <p id="phase3-intro-title" class="font-bold text-orange-800 text-lg">마지막 정밀 감별</p>
+        <p id="phase3-intro-desc" class="text-sm text-orange-700 mt-2">상위 2개 유형이 모두 높게 경합 중입니다. 최종 확정을 위해 아래 문항 1개만 선택해 주세요.</p>
       </div>
       <div id="phase3-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-3" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">문항을 선택해 주세요.</p>
-        <button type="button" onclick="submitPhase3()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
+        <button id="phase3-submit-btn" type="button" onclick="submitPhase3()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
       </div>
     </form>
 
-    <!-- ============================================================
-         Phase 6 — Premium Visual Result Page (Birkman Signature 참조)
-         15 섹션 구조 + 3 Center 컬러 + Chart.js + 인라인 SVG
-         ============================================================ -->
+    <form id="phase4-form" class="space-y-10 hidden" novalidate>
+      <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center">
+        <p id="phase4-intro-title" class="font-bold text-[#4a4540] text-lg">최종 하위유형/날개 판별</p>
+        <p id="phase4-intro-desc" class="text-sm text-gray-600 mt-2">확정된 기본 유형에 맞춰 하위유형과 날개를 한 번 더 정밀하게 확인합니다.</p>
+      </div>
+      <div id="phase4-container" class="space-y-6"></div>
+      <div class="text-center pt-6">
+        <p id="validation-msg-4" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
+        <button id="phase4-submit-btn" type="button" onclick="submitPhase4()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
+      </div>
+    </form>
+
     <section id="result-view" class="hidden">
       <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-
-        <!-- 1. COVER — logogram + 결과 코드 + 신뢰도 배지 -->
-        <section id="rs-cover" class="bg-[#4a4540] px-6 sm:px-12 py-16 text-white relative">
-          <div class="text-xs font-semibold tracking-[0.3em] text-[#bfa68a] uppercase mb-6">ER Enneagram Test</div>
-          <h2 class="logogram-text section-divider-title">당신의 결과</h2>
-          <div class="mt-12 space-y-3">
-            <p class="text-xs uppercase tracking-widest opacity-60">YOUR 27 SUBTYPE CODE</p>
-            <div id="res-final" class="text-4xl sm:text-5xl font-bold tracking-tight text-[#bfa68a]"></div>
-            <p id="res-instincts" class="text-base font-medium opacity-90"></p>
-          </div>
+        <div class="bg-[#4a4540] px-8 py-10 text-center text-white relative">
+          <h2 class="text-sm font-medium opacity-80 uppercase tracking-widest mb-3">Your Original Design</h2>
+          <div id="res-final" class="text-5xl font-bold mb-4 tracking-tight text-[#bfa68a]"></div>
+          <p id="res-instincts" class="text-lg font-medium opacity-90"></p>
           <div id="confidence-badge" class="absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold border border-white/30"></div>
-          <div class="absolute bottom-6 right-8 text-xs opacity-50" id="res-cover-date"></div>
-        </section>
+        </div>
 
-        <div class="px-6 sm:px-10 py-8">
-
-          <!-- 2. WELCOME -->
-          <section id="rs-welcome" class="section-divider" style="border-top:none;padding-top:2rem;">
-            <h3 class="logogram-text section-divider-title">WELCOME</h3>
-            <p class="section-subtitle mt-6">이 결과지는 Beatrice Chestnut, <em>The Complete Enneagram</em> (2013) 의 27 instinctual subtype 체계 기반입니다. 9 type × 3 본능 = 27 변형을 깊이 있게 진단합니다. 행동 표면이 아닌 핵심 동기로 자기 패턴을 들여다 보세요.</p>
-          </section>
-
-          <!-- 3. COLOR KEY — 3 Center -->
-          <section id="rs-color-key" class="section-divider">
-            <h3 class="logogram-text section-divider-title">COLOR KEY</h3>
-            <p class="section-subtitle mt-6 mb-8">에니어그램의 3 Center 는 각 type 의 1차 자동 반응 채널입니다.</p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div class="rounded-2xl overflow-hidden border border-gray-100">
-                <div class="pill-body px-5 py-3"><h4 class="text-white font-bold text-lg">BODY · 본능</h4></div>
-                <div class="p-5 bg-white">
-                  <p class="text-xs text-gray-500 mb-1">Type 8 · 9 · 1</p>
-                  <p class="text-sm text-gray-700 leading-relaxed">분노, 경계, 통제, 침범. 신체로 즉각 대응. 깊은 감정 = Anger.</p>
-                </div>
-              </div>
-              <div class="rounded-2xl overflow-hidden border border-gray-100">
-                <div class="pill-heart px-5 py-3"><h4 class="text-white font-bold text-lg">HEART · 감정</h4></div>
-                <div class="p-5 bg-white">
-                  <p class="text-xs text-gray-500 mb-1">Type 2 · 3 · 4</p>
-                  <p class="text-sm text-gray-700 leading-relaxed">인정, 호감, 가치, 정체성. 이미지로 자기 확인. 깊은 감정 = Shame.</p>
-                </div>
-              </div>
-              <div class="rounded-2xl overflow-hidden border border-gray-100">
-                <div class="pill-head px-5 py-3"><h4 class="text-white font-bold text-lg">HEAD · 사고</h4></div>
-                <div class="p-5 bg-white">
-                  <p class="text-xs text-gray-500 mb-1">Type 5 · 6 · 7</p>
-                  <p class="text-sm text-gray-700 leading-relaxed">위험, 분석, 가능성. 머리로 안전 확보. 깊은 감정 = Fear.</p>
-                </div>
-              </div>
+        <div class="p-8 space-y-6">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+              <p class="text-xs text-gray-400 font-bold uppercase mb-1">Core Type</p>
+              <p id="res-core" class="text-2xl font-bold text-gray-800"></p>
             </div>
-          </section>
-
-          <!-- 4. ENNEAGRAM MAP — 9점 다이어그램 -->
-          <section id="rs-enneagram-map" class="section-divider">
-            <h3 class="logogram-text section-divider-title">ENNEAGRAM MAP</h3>
-            <p class="section-subtitle mt-6 mb-8">9 type 의 원형 배치 + 사용자 점수 시각화. 각 type 의 강도가 점 크기 + 색 강도로 표현됩니다.</p>
-            <div class="chart-box" style="aspect-ratio:1;max-width:420px;">
-              <svg id="chart-enneagram-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full"></svg>
+            <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100">
+              <p class="text-xs text-gray-400 font-bold uppercase mb-1">Wing</p>
+              <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
             </div>
-            <div class="mt-6 grid grid-cols-2 gap-3 text-xs text-gray-600 max-w-md mx-auto">
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full pill-body"></span><span>Body (8·9·1)</span></div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full pill-heart"></span><span>Heart (2·3·4)</span></div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full pill-head"></span><span>Head (5·6·7)</span></div>
-              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-[#bfa68a]"></span><span>당신의 코어 type</span></div>
+            <div class="bg-gray-50 p-6 rounded-2xl text-center border border-gray-100 col-span-2">
+              <p class="text-xs text-gray-400 font-bold uppercase mb-1">Stress & Growth</p>
+              <p id="res-arrows" class="text-[15px] font-medium text-gray-700 mt-2 leading-relaxed"></p>
             </div>
-          </section>
+          </div>
 
-          <!-- 5. 9 TYPE SCORES — 도넛 차트 -->
-          <section id="rs-type-scores" class="section-divider">
-            <h3 class="logogram-text section-divider-title">9 TYPE SCORES</h3>
-            <p class="section-subtitle mt-6 mb-8">각 type 의 상대 점유율. 가장 높은 type 이 당신의 코어 + 다음 후보 = wing 또는 stress/integration 방향.</p>
-            <div class="chart-box" style="aspect-ratio:1;max-width:380px;">
-              <canvas id="chart-9-types"></canvas>
-            </div>
-            <div id="chart-9-types-legend" class="mt-6 grid grid-cols-3 gap-3 text-xs"></div>
-          </section>
+          <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
+            <h3 id="analysis-report-title" class="font-bold text-[#4a4540] mb-2 text-sm">분석 리포트</h3>
+            <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
+          </div>
 
-          <!-- 6. WING ANALYSIS — Wing 메터 + 강도 해석 -->
-          <section id="rs-wing-analysis" class="section-divider">
-            <h3 class="logogram-text section-divider-title">WING</h3>
-            <p class="section-subtitle mt-6 mb-8">코어의 양옆 두 type 중 더 활성화된 쪽이 wing. 강도 % 가 클수록 wing 색이 코어를 깊게 변형합니다.</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                <p class="text-xs text-gray-400 font-bold uppercase mb-2">Wing Code</p>
-                <p id="res-wing" class="text-2xl font-bold text-gray-800"></p>
-                <p id="res-wing-pct" class="text-sm text-gray-600 mt-2"></p>
-              </div>
-              <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                <p class="text-xs text-gray-400 font-bold uppercase mb-2">강도 해석</p>
-                <p id="res-wing-band" class="text-base font-semibold text-gray-800"></p>
-                <p class="text-xs text-gray-500 mt-2 leading-relaxed">0-20% 균등 · 21-40% 약 · 41-60% 중 · 61-80% 강 · 81-100% 매우 강</p>
-              </div>
-            </div>
-            <div id="chart-wing-meter" class="mt-6"></div>
-          </section>
+          <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+            <h3 id="top3-title" class="font-bold text-[#4a4540] mb-3 text-sm">상위 3유형 상대 점유율 및 근거</h3>
+            <div id="res-top3" class="space-y-3 text-sm text-gray-700"></div>
+          </div>
 
-          <!-- 7. INSTINCT STACK — 3 본능 절대 % 바 -->
-          <section id="rs-instinct" class="section-divider">
-            <h3 class="logogram-text section-divider-title">INSTINCT STACK</h3>
-            <p class="section-subtitle mt-6 mb-8">sp · sx · so 세 본능은 모두에게 있되 강도가 다릅니다. 가장 약한 본능 = blind/repressed = 성장 영역.</p>
-            <div id="chart-instinct-bars" class="space-y-4 max-w-xl mx-auto"></div>
-            <p id="res-instinct-pct" class="text-center text-sm text-gray-600 mt-6 font-medium"></p>
-          </section>
+          <div id="experiment-result-panel" class="hidden"></div>
 
-          <!-- 8. TRIADS — 3 카드 (Center / Hornevian / Harmonic) -->
-          <section id="rs-triads" class="section-divider">
-            <h3 class="logogram-text section-divider-title">TRIADS</h3>
-            <p class="section-subtitle mt-6 mb-8">3 종류의 triad — Center (자동 반응), Hornevian (대인관계 전략), Harmonic (갈등 대처).</p>
-            <div id="res-triads" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
-          </section>
+          <div id="cta-consulting" class="hidden bg-red-50 border border-red-100 p-5 rounded-xl text-center">
+            <p id="consult-cta-text" class="text-sm text-red-800 mb-3">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.</p>
+            <a id="consult-cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-5 py-2 rounded-full">무료 1:1 세션 신청</a>
+          </div>
 
-          <!-- 9. YOUR SUBTYPE — main subtype 카드 -->
-          <section id="rs-subtype-main" class="section-divider">
-            <h3 class="logogram-text section-divider-title">YOUR 27 SUBTYPE</h3>
-            <p class="section-subtitle mt-6 mb-8">27 instinctual subtype 은 코어 × 1차 본능. 같은 코어도 본능에 따라 표현이 크게 다릅니다.</p>
-            <div id="res-subtype-header"></div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-              <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-                <p class="text-xs text-gray-400 font-bold uppercase mb-1">Core Type</p>
-                <p id="res-core" class="text-xl font-bold text-gray-800"></p>
-              </div>
-              <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-                <p class="text-xs text-gray-400 font-bold uppercase mb-1">Subtype Code</p>
-                <p id="res-subtype-27" class="text-xl font-bold text-gray-800"></p>
-              </div>
-            </div>
-          </section>
+          <!-- Share -->
+          <div class="flex justify-center pt-2">
+            <button onclick="shareTestResult()"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#4a4540] text-white text-sm font-bold hover:bg-[#3a3530] active:scale-95 transition-all shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+              <span id="share-btn-label">결과 공유하기</span>
+            </button>
+          </div>
 
-          <!-- 10. SUBTYPE DETAIL — 7 슬롯 카드 (renderer 가 채움) -->
-          <section id="rs-subtype-detail" class="section-divider">
-            <h3 class="logogram-text section-divider-title">DETAIL</h3>
-            <p class="section-subtitle mt-6 mb-8">subtype 의 7 슬롯 — 핵심 집착, 방어 패턴, 행동 시그니처, 그림자, sister-subtype 차이, 헷갈리는 type, 한국어 설명.</p>
-            <div id="res-subtype-cards" class="space-y-4"></div>
-          </section>
-
-          <!-- 11. COUNTERTYPE WARNING — 조건부 (renderer 가 채움) -->
-          <section id="rs-countertype" class="section-divider hidden">
-            <h3 class="logogram-text section-divider-title">COUNTERTYPE</h3>
-            <p class="section-subtitle mt-6 mb-8">당신의 subtype 은 9개 countertype 중 하나로, 일반 코어 stereotype 과 반대로 보일 수 있습니다.</p>
-            <div id="res-countertype-card"></div>
-          </section>
-
-          <!-- 12. GROWTH — stress/integration arrows -->
-          <section id="rs-growth" class="section-divider">
-            <h3 class="logogram-text section-divider-title">GROWTH</h3>
-            <p class="section-subtitle mt-6 mb-8">통합 (성장) 방향과 비통합 (스트레스) 방향. 건강할 때와 압박 시 자동으로 가는 type.</p>
-            <div id="res-arrows-card" class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-              <p id="res-arrows" class="text-base font-medium text-gray-800 leading-relaxed"></p>
-            </div>
-            <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a] mt-4">
-              <h4 class="font-bold text-[#4a4540] mb-2 text-sm">분석 리포트</h4>
-              <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
-            </div>
-            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100 mt-4">
-              <h4 class="font-bold text-[#4a4540] mb-3 text-sm">상위 3유형 상대 점유율</h4>
-              <div id="res-top3" class="space-y-3 text-sm text-gray-700"></div>
-            </div>
-          </section>
-
-          <!-- 13. ACTION PLAN — Birkman 스타일 워크시트 -->
-          <section id="rs-action-plan" class="section-divider">
-            <h3 class="logogram-text section-divider-title">ACTION PLAN</h3>
-            <p class="section-subtitle mt-6 mb-8">결과를 일상으로. 아래 필드를 직접 채우며 자기 인식을 행동으로 옮기세요.</p>
-            <div class="space-y-4">
-              <div>
-                <div class="bg-[#4a4540] text-white px-5 py-3 rounded-t-xl">
-                  <p class="text-sm font-semibold">이 결과에서 얻은 가장 중요한 인사이트는 무엇인가요.</p>
-                </div>
-                <textarea class="w-full p-4 rounded-b-xl border border-gray-200 text-sm" rows="3" placeholder="자유롭게 적어 보세요"></textarea>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <div class="bg-[#4a4540] text-white px-5 py-3 rounded-t-xl">
-                    <p class="text-sm font-semibold">살릴 강점</p>
-                  </div>
-                  <textarea class="w-full p-4 rounded-b-xl border border-gray-200 text-sm" rows="3"></textarea>
-                </div>
-                <div>
-                  <div class="bg-[#4a4540] text-white px-5 py-3 rounded-t-xl">
-                    <p class="text-sm font-semibold">개발할 영역</p>
-                  </div>
-                  <textarea class="w-full p-4 rounded-b-xl border border-gray-200 text-sm" rows="3"></textarea>
-                </div>
-              </div>
-              <div>
-                <div class="bg-[#4a4540] text-white px-5 py-3 rounded-t-xl">
-                  <p class="text-sm font-semibold">앞으로 30일 안에 시도할 한 가지 행동</p>
-                </div>
-                <textarea class="w-full p-4 rounded-b-xl border border-gray-200 text-sm" rows="2"></textarea>
-              </div>
-            </div>
-          </section>
-
-          <!-- 14. SIGNATURE SUMMARY — 1-page 압축 대시보드 -->
-          <section id="rs-signature" class="section-divider">
-            <h3 class="logogram-text section-divider-title">SIGNATURE SUMMARY</h3>
-            <p class="section-subtitle mt-6 mb-8">한 페이지로 모든 결과 종합. 공유 + 인쇄에 최적화.</p>
-            <div id="res-signature-card" class="bg-gray-50 p-6 rounded-2xl border border-gray-200"></div>
-          </section>
-
-          <!-- 15. SOURCES + CTA -->
-          <section id="rs-sources" class="section-divider">
-            <h3 class="logogram-text section-divider-title">SOURCES</h3>
-            <div class="mt-6 space-y-3 text-sm text-gray-600 leading-relaxed">
-              <p><strong class="text-[#4a4540]">학술적 출처</strong> — Beatrice Chestnut, <em>The Complete Enneagram: 27 Paths to Greater Self-Knowledge</em>, She Writes Press (2013).</p>
-              <p>본 진단은 70년+ 에니어그램 연구 (Naranjo, Ichazo, Riso-Hudson, Chestnut) 의 27 instinctual subtype 체계에 기반합니다.</p>
-              <p class="text-xs text-gray-400 pt-3 border-t border-gray-100">* 본 결과는 자기탐색 참고용이며, 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
-            </div>
-            <div id="cta-consulting" class="hidden bg-amber-50 border border-amber-200 p-5 rounded-xl text-center mt-6">
-              <p class="text-sm text-amber-900 mb-3">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.</p>
-              <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold px-5 py-2 rounded-full">무료 1:1 세션 신청</a>
-            </div>
-            <div class="flex flex-wrap items-center justify-center gap-3 pt-8">
-              <button onclick="shareTestResult()" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#4a4540] text-white text-sm font-bold hover:bg-[#3a3530] active:scale-95 transition-all shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                </svg>
-                결과 공유
-              </button>
-              <button id="download-pdf-btn" onclick="downloadResultPdf()" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#bfa68a] text-white text-sm font-bold hover:bg-[#a68c70] active:scale-95 transition-all shadow-md">
-                결과 PDF 다운로드
-              </button>
-              <button onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">처음부터 다시하기</button>
-            </div>
-          </section>
-
+          <div class="text-center pt-4 border-t border-gray-100">
+            <button id="download-pdf-btn" onclick="downloadResultPdf()" class="mr-3 text-sm text-[#4a4540] hover:text-black font-semibold underline">결과 PDF 다운로드</button>
+            <button id="restart-test-btn" onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">처음부터 다시하기</button>
+            <p id="result-disclaimer" class="text-xs text-gray-400 mt-4">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
+          </div>
         </div>
       </div>
     </section>
   </main>
   <noscript><style>#test-initial-skeleton{display:none!important;}#test-main-content{opacity:1!important;}</style></noscript>
 
-  <script src="js/test-shared.js"></script>
-  <script src="js/test-scoring.js"></script>
-  <script src="js/subtypes-27-data.js"></script>
-  <script src="js/test-result-renderer.js"></script>
-  <script src="js/test-charts.js"></script>
+  <script src="js/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/diagnostic-experiment.js"></script>
+  <script src="js/diagnostic-report-content.js"></script>
   <script src="js/test.js"></script>
 </body>
 </html>
