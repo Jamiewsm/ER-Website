@@ -1,12 +1,133 @@
 // ER Coach: Schedule — CRUD, modal, calendar
-function openScheduleModal() {
+function resetCoachScheduleForm(dayKey = '') {
+    const form = document.querySelector('#coach-schedule-modal form');
+    if (!form) return;
+    form.reset();
+    if (form.schedule_id) form.schedule_id.value = '';
+    if (form.schedule_type) form.schedule_type.value = 'study_track';
+    const titleEl = document.querySelector('#coach-schedule-modal h3');
+    const submitEl = form.querySelector('button[type="submit"]');
+    if (titleEl) titleEl.textContent = '일정 등록';
+    if (submitEl) submitEl.textContent = '일정 저장';
+    if (dayKey && form.start_at && !form.start_at.value) {
+        form.start_at.value = `${dayKey}T18:00`;
+        if (form.end_at) form.end_at.value = `${dayKey}T19:00`;
+    }
+}
+
+function openScheduleModal(schedule = null, dayKey = '') {
     const modal = document.getElementById('coach-schedule-modal');
     if (!modal) return;
+    resetCoachScheduleForm(dayKey);
+    const form = modal.querySelector('form');
+    if (schedule && form) {
+        if (form.schedule_id) form.schedule_id.value = schedule.id || '';
+        if (form.title) form.title.value = schedule.title || '';
+        if (form.schedule_type) form.schedule_type.value = schedule.schedule_type || 'study_track';
+        if (form.start_at) form.start_at.value = toLocalDatetimeInputValue(schedule.start_at);
+        if (form.end_at) form.end_at.value = toLocalDatetimeInputValue(schedule.end_at);
+        if (form.location) form.location.value = schedule.location || '';
+        if (form.notes) form.notes.value = schedule.notes || '';
+        const titleEl = modal.querySelector('h3');
+        const submitEl = form.querySelector('button[type="submit"]');
+        if (titleEl) titleEl.textContent = '일정 수정';
+        if (submitEl) submitEl.textContent = '일정 수정 저장';
+    }
     modal.classList.remove('hidden');
 }
 
 function closeScheduleModal() {
     const modal = document.getElementById('coach-schedule-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+}
+
+function openScheduleModalForSelectedDay() {
+    if (!state.coachSelectedDate) return;
+    closeCoachScheduleDayModal();
+    openScheduleModal(null, state.coachSelectedDate);
+}
+
+function closeCoachScheduleDayModal() {
+    const modal = document.getElementById('coach-schedule-day-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+}
+
+function getCoachScheduleById(scheduleId) {
+    return (state.coachSchedules || []).find((item) => String(item.id) === String(scheduleId))
+        || (state.coachCalendarSchedules || []).find((item) => String(item.id) === String(scheduleId))
+        || null;
+}
+
+function startEditCoachSchedule(scheduleId) {
+    const schedule = getCoachScheduleById(scheduleId);
+    if (!schedule) return;
+    closeCoachScheduleDayModal();
+    openScheduleModal(schedule);
+}
+
+function openCoachScheduleDayModal(dayKey) {
+    if (!ensureCoachAccess()) return;
+    const modal = document.getElementById('coach-schedule-day-modal');
+    const titleEl = document.getElementById('coach-schedule-day-title');
+    const listEl = document.getElementById('coach-schedule-day-list');
+    if (!modal || !titleEl || !listEl) return;
+    state.coachSelectedDate = String(dayKey || '');
+    titleEl.textContent = `${state.coachSelectedDate} 일정`;
+
+    const schedules = [...(state.coachSchedules || []), ...(state.coachCalendarSchedules || [])]
+        .filter((item, index, arr) => arr.findIndex((row) => String(row.id) === String(item.id)) === index)
+        .filter((item) => getDateKeyInZone(item.start_at, 'Asia/Seoul') === state.coachSelectedDate)
+        .sort((a, b) => new Date(a.start_at).getTime() - new Date(b.start_at).getTime());
+
+    listEl.innerHTML = schedules.length
+        ? schedules.map((item) => {
+            const dual = formatScheduleDualRange(item.start_at, item.end_at);
+            return `
+                <div class="border border-gray-100 rounded-2xl p-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h4 class="font-bold text-gray-900">${escapeHtml(item.title)}</h4>
+                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(formatCoachScheduleTypeLabel(item.schedule_type))}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            ${item.location ? renderScheduleLocation(item.location) : ''}
+                            <button onclick="startEditCoachSchedule('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-700 hover:bg-gray-50">수정</button>
+                            <button onclick="deleteCoachSchedule('${item.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-red-200 text-red-600 hover:bg-red-50">삭제</button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">${escapeHtml(dual.kr)}</p>
+                    <p class="text-xs text-gray-500 mt-1">${escapeHtml(dual.ct)}</p>
+                    <p class="text-xs text-gray-400 mt-1 break-keep">${escapeHtml(item.notes || '')}</p>
+                </div>
+            `;
+        }).join('')
+        : '<p class="text-sm text-gray-500">선택한 날짜에 등록된 일정이 없습니다.</p>';
+
+    modal.classList.remove('hidden');
+}
+
+function openCoachTaskModal() {
+    const modal = document.getElementById('coach-task-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+}
+
+function closeCoachTaskModal() {
+    const modal = document.getElementById('coach-task-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+}
+
+function openCoachNoteModal() {
+    const modal = document.getElementById('coach-note-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+}
+
+function closeCoachNoteModal() {
+    const modal = document.getElementById('coach-note-modal');
     if (!modal) return;
     modal.classList.add('hidden');
 }
@@ -46,7 +167,7 @@ async function submitCoachTask(event) {
     }
 
     if (taskError || !task?.id) {
-        alert(`보고서 저장 실패: ${taskError?.message || 'unknown error'}`);
+        alert(`훈련 기록 저장 실패: ${taskError?.message || 'unknown error'}`);
         return;
     }
 
@@ -78,9 +199,9 @@ async function submitCoachTask(event) {
 
     resetCoachTaskForm();
     await loadCoachTasks();
-    setCoachComposerVisibility('task', !taskId && state.coachListCounts.tasks === 0);
+    closeCoachTaskModal();
     await viewCoachTaskDetail(task.id);
-    alert(taskId ? '보고서가 수정되었습니다.' : '보고서가 저장되었습니다.');
+    alert(taskId ? '훈련 기록이 수정되었습니다.' : '훈련 기록이 저장되었습니다.');
 }
 
 async function downloadCoachTaskFile(encodedStoragePath) {
@@ -103,7 +224,10 @@ async function submitCoachMaterial(event) {
     const materialId = String(formData.get('material_id') || '').trim();
     const title = String(formData.get('title') || '').trim();
     const description = String(formData.get('description') || '').trim();
-    const category = String(formData.get('category') || 'general');
+    const categoryMain = String(formData.get('category_main') || formData.get('category') || 'general').trim() || 'general';
+    const categoryFolder = String(formData.get('category_folder') || '').trim();
+    const category = categoryFolder ? `${categoryMain}/${categoryFolder}` : categoryMain;
+    if (form.category) form.category.value = category;
     const file = form.querySelector('input[name="file"]')?.files?.[0];
     if (!materialId && !file) {
         alert('업로드할 파일을 선택해 주세요.');
@@ -173,7 +297,7 @@ async function submitCoachMaterial(event) {
         }
         resetCoachMaterialForm();
         await loadCoachMaterials();
-        setCoachComposerVisibility('material', state.coachListCounts.materials === 0);
+        closeCoachMaterialModal();
         alert('자료가 수정되었습니다.');
         return;
     }
@@ -206,7 +330,7 @@ async function submitCoachMaterial(event) {
 
     resetCoachMaterialForm();
     await loadCoachMaterials();
-    setCoachComposerVisibility('material', state.coachListCounts.materials === 0);
+    closeCoachMaterialModal();
     alert('자료가 업로드되었습니다.');
 }
 
@@ -241,11 +365,16 @@ async function deleteCoachMaterial(materialId, encodedStoragePath) {
 async function submitCoachSchedule(event) {
     event.preventDefault();
     if (!ensureCoachAccess() || !supabaseClient) return;
-    const formData = new FormData(event.target);
+    const form = event.target;
+    const formData = new FormData(form);
+    const scheduleId = String(formData.get('schedule_id') || '').trim();
     const title = String(formData.get('title') || '').trim();
     const schedule_type = String(formData.get('schedule_type') || 'study_track');
     const start_at = toIsoOrNull(String(formData.get('start_at') || '').trim());
-    const end_at = toIsoOrNull(String(formData.get('end_at') || '').trim());
+    const rawEndAt = String(formData.get('end_at') || '').trim();
+    const end_at = rawEndAt
+        ? toIsoOrNull(rawEndAt)
+        : (start_at ? new Date(new Date(start_at).getTime() + 60 * 60 * 1000).toISOString() : null);
     const location = String(formData.get('location') || '').trim();
     const notes = String(formData.get('notes') || '').trim();
 
@@ -254,25 +383,52 @@ async function submitCoachSchedule(event) {
         return;
     }
 
-    const { error } = await supabaseClient.from('coach_schedules').insert([{
+    const payload = {
         title,
         schedule_type,
         start_at,
         end_at,
         location,
-        notes,
-        created_by: state.user.id
-    }]);
+        notes
+    };
+    const query = scheduleId
+        ? supabaseClient.from('coach_schedules').update(payload).eq('id', scheduleId)
+        : supabaseClient.from('coach_schedules').insert([{ ...payload, created_by: state.user.id }]);
+    const { error } = await query;
 
     if (error) {
         alert(`일정 저장 실패: ${error.message}`);
         return;
     }
 
-    event.target.reset();
+    form.reset();
     closeScheduleModal();
     await loadCoachSchedules();
-    alert('일정이 등록되었습니다.');
+    if (state.coachSelectedDate) openCoachScheduleDayModal(state.coachSelectedDate);
+    alert(scheduleId ? '일정이 수정되었습니다.' : '일정이 등록되었습니다.');
+}
+
+document.addEventListener('change', (event) => {
+    const startInput = event.target.closest('#coach-schedule-modal input[name="start_at"]');
+    if (!startInput) return;
+    const form = startInput.form;
+    const endInput = form?.querySelector('input[name="end_at"]');
+    if (!endInput || endInput.value || !startInput.value) return;
+    const startDate = new Date(startInput.value);
+    if (Number.isNaN(startDate.getTime())) return;
+    endInput.value = toLocalDatetimeInputValue(new Date(startDate.getTime() + 60 * 60 * 1000));
+});
+
+if (typeof window !== 'undefined') {
+    window.openScheduleModal = openScheduleModal;
+    window.openScheduleModalForSelectedDay = openScheduleModalForSelectedDay;
+    window.closeCoachScheduleDayModal = closeCoachScheduleDayModal;
+    window.openCoachScheduleDayModal = openCoachScheduleDayModal;
+    window.startEditCoachSchedule = startEditCoachSchedule;
+    window.openCoachTaskModal = openCoachTaskModal;
+    window.closeCoachTaskModal = closeCoachTaskModal;
+    window.openCoachNoteModal = openCoachNoteModal;
+    window.closeCoachNoteModal = closeCoachNoteModal;
 }
 
 async function deleteCoachSchedule(scheduleId) {
@@ -290,6 +446,7 @@ async function deleteCoachSchedule(scheduleId) {
     }
 
     await loadCoachSchedules();
+    if (state.coachSelectedDate) openCoachScheduleDayModal(state.coachSelectedDate);
     alert('일정이 삭제되었습니다.');
 }
 
@@ -316,4 +473,3 @@ async function openCoachMaterial(encodedStoragePath) {
     }
     window.open(data.signedUrl, '_blank', 'noopener,noreferrer');
 }
-

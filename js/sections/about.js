@@ -121,9 +121,9 @@ function renderAbout() {
                         </div>
 
                         <div>
-                            <h3 class="text-xl md:text-2xl font-bold text-er-dark mb-4 break-keep">설립자 소개</h3>
+                            <h3 class="text-xl md:text-2xl font-bold text-er-dark mb-4 break-keep">Founder 소개</h3>
                             <p class="text-sm md:text-base text-gray-500 leading-relaxed break-keep mb-5">
-                                손지영 사모는 에니어그램과 기독교 세계관을 통합적으로 적용하여 개인과 공동체의 회복을 돕는 비전을 품고 ER을 시작했습니다.
+                                손지영 대표는 에니어그램과 기독교 세계관을 통합적으로 적용하여 개인과 공동체의 회복을 돕는 비전을 품고 ER을 시작했습니다.
                             </p>
                             <div class="grid sm:grid-cols-2 gap-4">
                                 <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">

@@ -43,19 +43,37 @@ function runAppInit() {
             if (modal) modal.classList.remove('hidden');
         });
     }
-    const mobileAuthBtn = document.getElementById('mobile-auth-btn');
-    if (mobileAuthBtn) {
-        mobileAuthBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
+    async function handleMobileAccountNavClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var menu = document.getElementById('mobile-menu');
+        if (menu) menu.classList.add('hidden');
+        if (!window.state || !window.state.user) {
             if (typeof toggleLogin === 'function') {
                 toggleLogin();
                 return;
             }
             var modal = document.getElementById('auth-modal');
             if (modal) modal.classList.remove('hidden');
-        });
+            return;
+        }
+        if (typeof loadCoachProfile === 'function') {
+            try { await loadCoachProfile(); } catch (_) {}
+        }
+        if (window.state && window.state.isCoach && typeof openCoachPortalFromMenu === 'function') {
+            if (typeof openCoachApp === 'function' && (window.matchMedia('(max-width: 1024px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || ''))) {
+                openCoachApp();
+            } else {
+                openCoachPortalFromMenu();
+            }
+            return;
+        }
+        if (typeof renderSection === 'function') renderSection('mypage');
     }
+    const mobileAuthBtn = document.getElementById('mobile-auth-btn');
+    if (mobileAuthBtn) mobileAuthBtn.addEventListener('click', handleMobileAccountNavClick);
+    const mobileHeaderAuthBtn = document.getElementById('mobile-header-auth-btn');
+    if (mobileHeaderAuthBtn) mobileHeaderAuthBtn.addEventListener('click', handleMobileAccountNavClick);
     document.addEventListener('click', (event) => {
         const menu = document.getElementById('desktop-account-menu');
         const button = document.getElementById('desktop-auth-btn');
@@ -67,6 +85,36 @@ function runAppInit() {
         const modal = document.getElementById('coach-schedule-modal');
         if (modal && !modal.classList.contains('hidden') && event.target === modal) {
             closeScheduleModal();
+        }
+    });
+    document.addEventListener('click', (event) => {
+        const modal = document.getElementById('coach-schedule-day-modal');
+        if (modal && !modal.classList.contains('hidden') && event.target === modal) {
+            closeCoachScheduleDayModal();
+        }
+    });
+    document.addEventListener('click', (event) => {
+        const modal = document.getElementById('coach-material-modal');
+        if (modal && !modal.classList.contains('hidden') && event.target === modal) {
+            closeCoachMaterialModal();
+        }
+    });
+    document.addEventListener('click', (event) => {
+        const modal = document.getElementById('coach-typing-practicum-modal');
+        if (modal && !modal.classList.contains('hidden') && event.target === modal) {
+            closeCoachTypingPracticumModal();
+        }
+    });
+    document.addEventListener('click', (event) => {
+        const modal = document.getElementById('coach-task-modal');
+        if (modal && !modal.classList.contains('hidden') && event.target === modal) {
+            closeCoachTaskModal();
+        }
+    });
+    document.addEventListener('click', (event) => {
+        const modal = document.getElementById('coach-note-modal');
+        if (modal && !modal.classList.contains('hidden') && event.target === modal) {
+            closeCoachNoteModal();
         }
     });
 
