@@ -1,0 +1,71 @@
+<!-- 모든 wakeup/세션의 작업 로그. 1줄/event. 최신이 위로 -->
+---
+kb_id: enneagram_test_meta.history
+title: "Work History Log"
+created_at: "2026-05-06"
+last_updated: "2026-05-06"
+retrieval_tags:
+  - history
+  - audit_log
+  - wakeup_log
+---
+
+# Work History Log
+
+| Timestamp (UTC) | Agent | Task | Event | Tokens | Note |
+|---|---|---|---|---:|---|
+| 2026-05-19T05:05:00Z | claude-manual-bootstrap | project | complete | - | 🎉 **프로젝트 완료.** 5 Phase 모두 종료. current_phase = 6, paused = true. verify all 29 files OK + 26/26 unit test. 결과지 — 27 subtype × 7 슬롯 lookup + wing/instinct % 시각화 + countertype 안내 + Korean 카피. |
+| 2026-05-19T05:00:00Z | claude-manual-bootstrap | 5.5 | complete | - | Task 5.5 완료 — WORK_STATUS current_phase=6, paused=true. 스케줄 task 보존 (사용자 결정). 최종 verify + 26 unit test 통과. |
+| 2026-05-19T05:00:00Z | claude-manual-bootstrap | 5.2-5.4 | complete | - | Tasks 5.2-5.4 완료 (combined) — test-result-renderer.js (174줄, 9 카드 빌더) + test.html `#res-subtype-cards` 컨테이너 + script 로드 + js/test.js 와이어링 + share text subtype 한국어 이름 추가. PDF 는 html2canvas 가 신규 카드 자동 캡처. |
+| 2026-05-19T04:55:00Z | claude-manual-bootstrap | 5.1 | takeover | - | Task 5.1 인계 — claude-auto-1 락 만료 (5/11 → 5/19), 산출물 (subtypes-27-data.js 518줄, 27 entry / 9 countertype) verify OK. 락 해제 + 5.2 로 advance. |
+| 2026-05-19T05:30:00Z | claude-manual-bootstrap | phase_6 | complete | - | 🎉 **Phase 6 (Premium Visual Polish) 완료.** 15섹션 구조 + logogram CSS + 3-center 컬러 시스템 + Chart.js 차트 (에니어그램 9점 지도/9-type 도넛/wing 메터/본능 바/triads) + subtype hero + countertype full card + signature summary + action plan worksheet. 시뮬레이션 35/35 + render-smoke 9/9 + unit test 26/26 모두 PASS. PDF 자동 캡처 호환. |
+| 2026-05-19T05:25:00Z | claude-manual-bootstrap | 6.6 | complete | - | Task 6.6 완료 — render-smoke.test.mjs 9 케이스 모두 PASS (subtype hero, countertype full, signature summary, instinct bars, triads, enneagram map, wing meter). |
+| 2026-05-19T05:15:00Z | claude-manual-bootstrap | 6.5 | complete | - | Task 6.5 완료 — js/test-result-renderer.js 확장 (renderSubtypeHeader + renderCountertypeFull + renderSignatureSummary). 3-center 컬러 액센트 적용. countertype 9개 amber 강조 카드. |
+| 2026-05-19T05:05:00Z | claude-manual-bootstrap | 6.4 | complete | - | Task 6.4 완료 — js/test-charts.js 신규 (218줄): renderEnneagramMap (9점 SVG), render9TypeDonut (Chart.js), renderWingMeter, renderInstinctBars, renderTriads, renderAllCharts 통합 함수. |
+| 2026-05-19T04:50:00Z | claude-manual-bootstrap | 6.3 | complete | - | Task 6.3 완료 — test.html 전면 재구조화 (15 섹션: cover/welcome/color-key/enneagram-map/9-type-scores/wing-analysis/instinct/triads/subtype-main/subtype-detail/countertype/growth/action-plan/signature/sources). logogram CSS + 3-center 컬러 + Chart.js CDN 추가. |
+| 2026-05-19T04:35:00Z | claude-manual-bootstrap | 6.2 | complete | - | Task 6.2 완료 — PHASE_6_PLAN.md 작성 (181줄, 5 task, design spec: 3-center colors, 15-section structure, logogram pattern, Chart.js + SVG 하이브리드). |
+| 2026-05-19T04:20:00Z | claude-manual-bootstrap | 6.1 | complete | - | Task 6.1 완료 — tests/simulate.mjs 시뮬레이션 35 케이스 모두 PASS. 27 subtype + 9 countertype 정확 식별, 데이터 무결성 perfect (27 entry, 슬롯 0 누락). 4 개선 기회 식별 (subtype-disambiguation 질문, wing 0% 메시지, confidence 근거, 빈 데이터 안내). |
+| 2026-05-11T19:22:00Z | claude-auto-1 | 5.1 | start | - | Task 5.1 시작 — subtypes-27-data.js 신규 (27 subtype lookup) |
+| 2026-05-08T01:30:00Z | claude-manual-bootstrap | 5.0 | complete | - | Task 5.0 완료 — PHASE_5_PLAN.md 실제 plan 으로 교체 (523 줄, 6 task — 마지막 phase). 5.1 subtypes-27-data, 5.2 result-renderer, 5.3 wiring, 5.4 PDF/share, 5.5 project closure. verify.mjs 에 task 5.0-5.4 spec 추가. |
+| 2026-05-08T01:00:00Z | claude-manual-bootstrap | 5.0 | start | - | Task 5.0 시작 — Phase 5 plan 작성 |
+| 2026-05-07T05:00:00Z | claude-manual-bootstrap | phase_4 | complete | - | **Phase 4 (Codebase Cleanup) 완료.** test-shared.js (44 줄, arrowLines + INSTINCT_LABELS + TYPE_NAMES) 신규, 두 entry point (test.js + app-adaptive-data.js) 가 단일 소스 참조 + fallback inline. verify all 26 files OK + 26/26 unit test 통과. Phase 5 (결과 출력 포맷) 시작 대기. |
+| 2026-05-07T05:00:00Z | claude-manual-bootstrap | 4.5 | complete | - | Task 4.5 완료 — verify all 26 files OK, PHASE_5_PLAN.md placeholder 생성, WORK_STATUS Phase 5 로 전환. |
+| 2026-05-07T04:50:00Z | claude-manual-bootstrap | 4.2-4.4 | complete | - | Tasks 4.2-4.4 완료 (combined) — js/test-shared.js (44줄) + js/test.js arrowLines refactor + js/app-adaptive-data.js adaptiveArrowLines refactor + test.html script load. Phase 3 unit test 통과 유지. |
+| 2026-05-07T04:40:00Z | claude-manual-bootstrap | 4.1 | complete | - | Task 4.1 완료 — test_dup_audit.md (97줄) — 두 entry point 흐름, 중복 데이터 매핑, 텍스트 발산 매핑, Phase 4 안전 통합 부분, Phase 5 결합 끊기 전략. |
+| 2026-05-07T04:30:00Z | claude-manual-bootstrap | 4.0 | complete | - | Task 4.0 완료 — PHASE_4_PLAN.md 실제 plan 으로 교체 (575 줄, 6 task). 실용 범위 — 안전한 부분 (arrowLines + 상수) 만 통합, 텍스트 발산 통합은 Phase 5 lookup 으로 결합 끊기 후로 보류. verify.mjs 에 task 4.0-4.4 spec 추가. |
+| 2026-05-07T04:00:00Z | claude-manual-bootstrap | 4.0 | start | - | Task 4.0 시작 — Phase 4 plan 작성 |
+| 2026-05-07T03:00:00Z | claude-manual-bootstrap | phase_3 | complete | - | **Phase 3 (Scoring Accuracy) 완료.** test-scoring.js (147 줄, 8 함수) + js/test.js 와이어링 + test.html 신규 placeholder + 26 unit test 모두 통과. 결과지 형식 `7 w8(50%) sx(80%) so(60%) sp(10%)` 산출 가능. verify all 21 files OK. Phase 4 (코드베이스 정리) 시작 대기. |
+| 2026-05-07T03:00:00Z | claude-manual-bootstrap | 3.8 | complete | - | Task 3.8 완료 — verify all 21 files OK + 26 unit test 통과, PHASE_4_PLAN.md placeholder 생성, WORK_STATUS Phase 4 로 전환. |
+| 2026-05-07T02:50:00Z | claude-manual-bootstrap | 3.7 | complete | - | Task 3.7 완료 — tests/test-scoring.test.mjs (213 줄, 26 단위 테스트, Node test runner ESM, 의존 없음). 모두 통과. |
+| 2026-05-07T02:30:00Z | claude-manual-bootstrap | 3.5+3.6 | complete | - | Tasks 3.5+3.6 완료 — js/test.js renderResultFromScores 가 window.TestScoring.computeResult 호출, test.html 에 Wing Strength / 27 Subtype / Instinct Stack placeholder 카드 + script 로드 추가. |
+| 2026-05-07T02:00:00Z | claude-manual-bootstrap | 3.2-3.4 | complete | - | Tasks 3.2-3.4 완료 (combined) — js/test-scoring.js (147 줄): computeWingPct + computeInstinctPct + COUNTERTYPES + computeDominantInstinct + compute27Subtype + isCountertype + computeResult + formatResult. 브라우저 + Node 호환 export. 스모크 테스트 OK. |
+| 2026-05-07T01:50:00Z | claude-manual-bootstrap | 3.1 | complete | - | Task 3.1 완료 — scoring_spec.md (153 줄): 현재 audit + 신규 wing/instinct/27 subtype 공식 + 27 subtype 매핑 표 + 마이그레이션 전략 + 15 검증 케이스. |
+| 2026-05-07T01:30:00Z | claude-manual-bootstrap | 3.0 | complete | - | Task 3.0 완료 — PHASE_3_PLAN.md 실제 plan 으로 교체 (1180 줄, 9 task self-contained, wing/instinct/27 subtype 공식 + 단위 테스트 케이스). verify.mjs 에 task 3.0-3.7 spec 추가. Next — Task 3.1 (scoring_spec.md). |
+| 2026-05-07T01:00:00Z | claude-manual-bootstrap | 3.0 | start | - | Task 3.0 시작 — Phase 3 plan 작성 |
+| 2026-05-07T00:00:00Z | claude-manual-bootstrap | phase_2 | complete | - | **Phase 2 (27 Subtypes Depth) 완료.** subtypes_27.md 829 줄, 27 subtype 모두 7 슬롯. 9 type 의 stress/growth arrows + wing 영향 추가. verify all 16 files OK. Phase 3 (스코어링 정확도) 시작 대기. |
+| 2026-05-07T00:00:00Z | claude-manual-bootstrap | 2.10 | complete | - | Task 2.10 완료 — verify all 16 files OK (verify.mjs all-mode dedup fix), PHASE_3_PLAN.md placeholder 생성, WORK_STATUS phase 3 으로 전환. |
+| 2026-05-06T23:50:00Z | claude-manual-bootstrap | 2.9 | complete | - | Task 2.9 완료 — Type 9 sp_9/so_9 (Participation countertype)/sx_9 + arrows (6/3) + wings 9w8/9w1. 27/27 subtype 완성. |
+| 2026-05-06T23:30:00Z | claude-manual-bootstrap | 2.8 | complete | - | Task 2.8 완료 — Type 8 sp_8/so_8 (Solidarity countertype)/sx_8 + arrows (5/2) + wings 8w7/8w9. |
+| 2026-05-06T23:00:00Z | claude-manual-bootstrap | 2.7 | complete | - | Task 2.7 완료 — Type 7 sp_7/so_7 (Sacrifice countertype)/sx_7 + arrows (1/5) + wings 7w6/7w8. |
+| 2026-05-06T22:00:00Z | claude-manual-bootstrap | 2.6 | complete | - | Task 2.6 완료 — Type 6 sp_6/so_6/sx_6 (Strength/Beauty countertype) + arrows (3/9) + wings 6w5/6w7. |
+| 2026-05-06T21:00:00Z | claude-manual-bootstrap | 2.5 | complete | - | Task 2.5 완료 — Type 5 sp_5/so_5/sx_5 (Confidence countertype) + arrows (7/8) + wings 5w4/5w6. |
+| 2026-05-06T20:00:00Z | claude-manual-bootstrap | 2.4 | complete | - | Task 2.4 완료 — Type 4 sp_4 (Tenacity countertype)/so_4/sx_4 + arrows (2/1). |
+| 2026-05-06T19:00:00Z | claude-manual-bootstrap | 2.3 | complete | - | Task 2.3 완료 — Type 3 sp_3 (Security countertype)/so_3/sx_3. |
+| 2026-05-06T18:00:00Z | claude-manual-bootstrap | 2.2 | complete | - | Task 2.2 완료 — Type 2 sp_2 (Privilege countertype)/so_2/sx_2. |
+| 2026-05-06T11:20:00Z | claude-manual-bootstrap | 2.1 | complete | - | Task 2.1 완료 — subtypes_27.md 신규 (138 줄). frontmatter + 27 subtype index + Type 1 (sp_1 Worry, so_1 Non-Adaptability, sx_1 Zeal countertype) 7 슬롯 each. verify 1 file OK. Next — Task 2.2. |
+| 2026-05-06T11:15:00Z | claude-manual-bootstrap | 2.1 | start | - | Task 2.1 시작 |
+| 2026-05-06T11:10:00Z | claude-manual-bootstrap | 2.0 | complete | - | Task 2.0 완료 — PHASE_2_PLAN.md 실제 plan 으로 교체 (595 줄, 11 task). verify.mjs 에 task 2.0-2.9 spec 추가. Next — Task 2.1 (subtypes_27.md 신규 + Type 1). |
+| 2026-05-06T11:00:00Z | claude-manual-bootstrap | 2.0 | start | - | Task 2.0 시작 — Phase 2 plan 작성 |
+| 2026-05-06T10:30:00Z | claude-manual-bootstrap | phase_1 | complete | - | **Phase 1 (KB Foundation) 완료.** 14 파일 verify all 통과 — 5 _meta + verify.mjs + AGENTS.md + .cursor + CLAUDE.md + 4 신규 KB + 3 갱신 KB. Phase 2 (27 subtypes 깊이) 시작 대기. |
+| 2026-05-06T10:30:00Z | claude-manual-bootstrap | 1.8 | complete | - | Task 1.8 완료 — verify all 14 files OK, PHASE_2_PLAN.md placeholder 생성, WORK_STATUS phase 2 로 전환. |
+| 2026-05-06T10:25:00Z | claude-manual-bootstrap | 1.7 | complete | - | Task 1.7 완료 — README.md (68 줄) — 4 신규 파일 인덱스 + 7 단계 사용 규칙 + 6 검색 예시. verify 1 file OK. |
+| 2026-05-06T10:20:00Z | claude-manual-bootstrap | 1.6 | complete | - | Task 1.6 완료 — complete_enneagram_kb.md (403 줄) — Diagnostic Axes 표에 State vs Trait + Centers/Triads 행 2개 추가 + frontmatter 컨벤션. verify 1 file OK. |
+| 2026-05-06T10:15:00Z | claude-manual-bootstrap | 1.5 | complete | - | Task 1.5 완료 — korean_test_copy_guide.md (201 줄) — 30 번역 패턴 + 27 subtype 시드 + 10 금기 + 10 before-after. verify 1 file OK. |
+| 2026-05-06T10:10:00Z | claude-manual-bootstrap | 1.4 | complete | - | Task 1.4 완료 — instinct_stacks.md (155 줄) — 6 stack + blind 패턴 + % 강도 해석. verify 1 file OK. |
+| 2026-05-06T10:05:00Z | claude-manual-bootstrap | 1.3 | complete | - | Task 1.3 완료 — type_wings.md (270 줄) — 18 wing 동일 깊이 + % 강도 5 단계. verify 1 file OK. |
+| 2026-05-06T10:00:00Z | claude-manual-bootstrap | 1.2 | complete | - | Task 1.2 완료 — centers_and_triads.md (114 줄) — Body/Heart/Head Center + Hornevian + Harmonic + 9 type cross-map + 3-question filter. verify 1 file OK. Next — Task 1.3. |
+| 2026-05-06T09:55:00Z | claude-manual-bootstrap | 1.2 | start | - | Task 1.2 시작 |
+| 2026-05-06T09:50:00Z | claude-manual-bootstrap | 1.1 | complete | - | Task 1.1 완료 — type_pair_disambiguation 24 신규 템플릿 + target_diagnostic_axis 컬럼 + KB 컨벤션 frontmatter. 36 템플릿/36 axis/305 줄. verify 1 file OK. Next — Task 1.2. |
+| 2026-05-06T09:35:00Z | claude-manual-bootstrap | 1.1 | start | - | Task 1.1 시작 |
+| 2026-05-06T09:30:00Z | claude-manual-bootstrap | 1.0 | complete | - | Task 1.0 완료 — 5 _meta + verify.mjs + AGENTS.md + .cursor rule + CLAUDE.md 패치 + KB sync + 스케줄 task `er-enneagram-auto-resume` (cron `0 */6 * * *`) 생성. verify 7 files OK. Next — Task 1.1. |
+| 2026-05-06T09:00:00Z | claude-manual-bootstrap | 1.0 | start | - | Phase 1 부트스트랩 시작 — Task 1.0 (연속성 인프라) |
