@@ -117,24 +117,26 @@ function renderHome() {
     return `
         <div class="bg-er-base">
             <section class="relative overflow-hidden px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-                <div class="absolute inset-0 bg-pattern opacity-90 pointer-events-none"></div>
-                <div class="absolute -top-20 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-er-accent/15 blur-3xl pointer-events-none"></div>
-                <div class="absolute bottom-0 right-0 h-64 w-64 rounded-full bg-white/50 blur-3xl pointer-events-none"></div>
+                <div class="absolute inset-0 pointer-events-none">
+                    <img src="hero-community-background.jpg" alt="" class="h-full w-full object-cover object-center opacity-80" style="filter: saturate(0.88) contrast(0.98);">
+                    <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(247, 238, 228, 0.78) 0%, rgba(247, 238, 228, 0.56) 42%, rgba(247, 238, 228, 0.82) 100%);"></div>
+                    <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 9%, rgba(255, 251, 246, 0.86) 0%, rgba(255, 251, 246, 0.54) 36%, rgba(247, 238, 228, 0.08) 100%);"></div>
+                </div>
 
                 <div class="max-w-6xl mx-auto relative z-10">
-                    <div class="max-w-4xl mx-auto text-center animate-fade-in-up">
+                    <div class="max-w-5xl mx-auto text-center animate-fade-in-up">
                         <span class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.28em] text-er-primary shadow-soft">
                             <span class="h-2 w-2 rounded-full bg-er-accent"></span>
                             Enneagram for Restoration
                         </span>
-                        <h1 class="mt-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-er-dark leading-[1.18] break-keep">
-                            나를 향한 하나님의 놀라운 뜻과 계획을 발견하세요.
+                        <h1 class="mt-6 text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[3.45rem] font-extrabold tracking-normal text-er-dark leading-[1.14] break-keep">
+                            나는 왜 이렇게 반응하고,<br>
+                            사랑하는 사람은 왜 그렇게 행동할까요?
                         </h1>
-                        <p class="mt-6 text-base md:text-xl text-gray-600 leading-relaxed break-keep max-w-3xl mx-auto font-medium">
-                            성경적 에니어그램을 배우면,<br>
-                            나를 이해하게 됩니다!<br>
-                            내가 사랑하는 사람을 이해하게 됩니다!<br>
-                            늦기 전에 시작하세요!
+                        <p class="mt-6 text-sm sm:text-[15px] md:text-base text-er-dark/75 leading-[1.85] break-keep max-w-3xl mx-auto font-medium tracking-normal">
+                            ER은 에니어그램을 복음의 회복 이야기 안에서 다루며,<br class="hidden md:block">
+                            나와 타인의 반복되는 패턴을 이해하고<br class="hidden md:block">
+                            더 자유롭고 건강한 사랑으로 자라가도록 돕습니다.
                         </p>
                     </div>
 
