@@ -39,7 +39,7 @@
         };
         window.state = state;
 
-        const ADAPTIVE_TEST_EMBED_VERSION = '20260305-motive-v4';
+        const ADAPTIVE_TEST_EMBED_VERSION = '20260521-result-hero-scroll-v1';
 
         const ER = typeof window !== 'undefined' && window.ER_STRINGS ? window.ER_STRINGS : {};
         const contentData = {
@@ -324,6 +324,11 @@
         function renderSection(sectionId, payload = null, options = {}) {
             const { syncHash = true, replaceHash = false } = options;
             const previousSection = state.currentSection;
+            const coachSections = ['coach_portal', 'coach_admin', 'coach_tasks', 'coach_materials', 'coach_schedule', 'coach_notes'];
+            if (coachSections.includes(sectionId)) {
+                openCoachApp();
+                return;
+            }
             // Preserve 진단 iframe across navigation: detach before main.innerHTML replaces DOM.
             if (previousSection === 'test' && sectionId !== 'test') {
                 const iframe = document.getElementById('adaptive-test-iframe');
@@ -363,12 +368,6 @@
                 case 'types_guide': html = renderTypesGuide(); break; 
                 case 'apply': html = renderApply(payload); break;
                 case 'mypage': html = renderMyPage(); break;
-                case 'coach_portal': html = renderCoachPortal(); break;
-                case 'coach_admin': html = renderCoachAdmin(); break;
-                case 'coach_tasks': html = renderCoachTasks(); break;
-                case 'coach_materials': html = renderCoachMaterials(); break;
-                case 'coach_schedule': html = renderCoachSchedule(); break;
-                case 'coach_notes': html = renderCoachNotes(); break;
                 case 'thankyou': html = renderThankYou(); break;
                 default: html = renderHome();
             }
@@ -389,12 +388,6 @@
                     }
                 }, 0);
             }
-            if(sectionId === 'coach_portal') setTimeout(() => loadCoachPortalDashboard(), 0);
-            if(sectionId === 'coach_admin') setTimeout(() => loadCoachAdminUsers(), 0);
-            if(sectionId === 'coach_tasks') setTimeout(() => loadCoachTasks(), 0);
-            if(sectionId === 'coach_materials') setTimeout(() => loadCoachMaterials(), 0);
-            if(sectionId === 'coach_schedule') setTimeout(() => loadCoachSchedules(), 0);
-            if(sectionId === 'coach_notes') setTimeout(() => loadCoachNotes(), 0);
             if (sectionId === 'test') setTimeout(() => mountAdaptiveTestIframe(), 0);
         }
 
@@ -829,9 +822,9 @@
                                 </div>
 
                                 <div>
-                                    <h3 class="text-xl md:text-2xl font-bold text-er-dark mb-4 break-keep">설립자 소개</h3>
+                                    <h3 class="text-xl md:text-2xl font-bold text-er-dark mb-4 break-keep">Founder 소개</h3>
                                     <p class="text-sm md:text-base text-gray-500 leading-relaxed break-keep mb-5">
-                                        손지영 사모는 에니어그램과 기독교 세계관을 통합적으로 적용하여 개인과 공동체의 회복을 돕는 비전을 품고 ER을 시작했습니다.
+                                        손지영 대표는 에니어그램과 기독교 세계관을 통합적으로 적용하여 개인과 공동체의 회복을 돕는 비전을 품고 ER을 시작했습니다.
                                     </p>
                                     <div class="grid sm:grid-cols-2 gap-4">
                                         <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
@@ -839,7 +832,7 @@
                                             <p class="text-xs text-gray-500">Dr. Wagner (International Enneagram Association)</p>
                                         </div>
                                         <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Professional</h4>
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Instructor</h4>
                                             <p class="text-xs text-gray-500">국제 에니어그램 협회 인증 전문가</p>
                                         </div>
                                         <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
@@ -2176,8 +2169,7 @@
                         <p class="text-gray-500 mb-3 text-sm">인증된 계정으로 로그인되어 있습니다.</p>
                         <div class="mb-6">${coachBadge}</div>
                         <div class="flex flex-col gap-2">
-                            ${state.isCoach ? `<button onclick="renderSection('coach_portal')" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">Coach Portal</button>` : ''}
-                            ${state.isCoach ? `<button onclick="openCoachApp()" class="px-6 py-2 bg-white text-er-dark rounded-full text-xs font-bold border border-er-accent/30">Coach App</button>` : ''}
+                            ${state.isCoach ? `<button onclick="openCoachApp()" class="px-6 py-2 bg-er-dark text-white rounded-full text-xs font-bold">Coach Portal</button>` : ''}
                             <button onclick="renderSection('home')" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">홈으로</button>
                         </div>
                     </div>
@@ -2425,9 +2417,11 @@
                                         <option value="spiritual_formation_track">Spiritual Formation 트랙</option>
                                         <option value="coaching_track">Coaching 트랙</option>
                                         <option value="practicum_track">Practicum 트랙</option>
+                                        <option value="er_ministry">ER 사역</option>
+                                        <option value="other">기타</option>
                                     </select>
                                     <input name="start_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
-                                    <input name="end_at" type="datetime-local" required class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
+                                    <input name="end_at" type="datetime-local" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm">
                                     <input name="location" placeholder="장소 / 온라인 링크" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm md:col-span-2">
                                 </div>
                                 <textarea name="notes" rows="2" placeholder="메모" class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"></textarea>
@@ -2480,7 +2474,7 @@
         // --- Helper Functions ---
         function openNotices() { renderSection('notices'); }
         function openNotice(id) { renderSection('notice_detail', { id }); }
-        function openCoachApp() { window.open(COACH_APP_URL, '_blank', 'noopener,noreferrer'); }
+        function openCoachApp() { window.location.assign(COACH_APP_URL); }
 
         function escapeHtml(value) {
             return String(value || '')
@@ -2518,7 +2512,7 @@
             if (!raw) return '-';
             const href = normalizeExternalLink(raw);
             if (!href) return escapeHtml(raw);
-            return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="text-er-accent underline underline-offset-2 break-all hover:text-er-accentDark transition-colors">${escapeHtml(raw)}</a>`;
+            return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-full bg-er-dark px-3 py-1.5 text-[11px] font-bold text-white transition-colors hover:bg-er-accentDark">Join</a>`;
         }
 
         function formatDateTimeInZone(value, timeZone, locale = 'ko-KR') {
@@ -2620,7 +2614,9 @@
                 study_track: 'Study 트랙',
                 spiritual_formation_track: 'Spiritual Formation 트랙',
                 coaching_track: 'Coaching 트랙',
-                practicum_track: 'Practicum 트랙'
+                practicum_track: 'Practicum 트랙',
+                er_ministry: 'ER 사역',
+                other: '기타'
             };
             return labels[String(value || '').trim()] || String(value || '일정');
         }
@@ -3087,7 +3083,7 @@
                 .maybeSingle();
 
             const scheduleStartLabel = schedule ? escapeHtml(formatDateTime(schedule.start_at)) : '';
-            const scheduleLocationLabel = schedule && schedule.location ? ` · ${renderScheduleLocation(schedule.location)}` : '';
+            const scheduleLocationLabel = schedule && schedule.location ? ` ${renderScheduleLocation(schedule.location)}` : '';
 
             detailEl.innerHTML = `
                 <div class="flex items-start justify-between gap-3">
@@ -3830,11 +3826,15 @@
         async function submitCoachSchedule(event) {
             event.preventDefault();
             if (!ensureCoachAccess() || !supabaseClient) return;
-            const formData = new FormData(event.target);
+            const form = event.target;
+            const formData = new FormData(form);
             const title = String(formData.get('title') || '').trim();
             const schedule_type = String(formData.get('schedule_type') || 'study_track');
             const start_at = toIsoOrNull(String(formData.get('start_at') || '').trim());
-            const end_at = toIsoOrNull(String(formData.get('end_at') || '').trim());
+            const rawEndAt = String(formData.get('end_at') || '').trim();
+            const end_at = rawEndAt
+                ? toIsoOrNull(rawEndAt)
+                : (start_at ? new Date(new Date(start_at).getTime() + 60 * 60 * 1000).toISOString() : null);
             const location = String(formData.get('location') || '').trim();
             const notes = String(formData.get('notes') || '').trim();
 
@@ -3858,11 +3858,22 @@
                 return;
             }
 
-            event.target.reset();
+            form.reset();
             closeScheduleModal();
             await loadCoachSchedules();
             alert('일정이 등록되었습니다.');
         }
+
+        document.addEventListener('change', (event) => {
+            const startInput = event.target.closest('#coach-schedule-modal input[name="start_at"]');
+            if (!startInput) return;
+            const form = startInput.form;
+            const endInput = form?.querySelector('input[name="end_at"]');
+            if (!endInput || endInput.value || !startInput.value) return;
+            const startDate = new Date(startInput.value);
+            if (Number.isNaN(startDate.getTime())) return;
+            endInput.value = toLocalDatetimeInputValue(new Date(startDate.getTime() + 60 * 60 * 1000));
+        });
 
         async function deleteCoachSchedule(scheduleId) {
             if (!ensureCoachAccess() || !supabaseClient) return;

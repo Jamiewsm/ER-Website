@@ -1,13 +1,13 @@
 function showProgramTestimonials(filterKey) {
     const storyTagMap = {
-        parenting: ['가정 회복', '부부·공동체'],
-        couple: ['부부·공동체', '가정 회복'],
-        personal: ['자기 이해', '자기 수용', '상담 깊이'],
+        parenting: ['양육상담'],
+        couple: ['부부관계'],
+        personal: ['자기이해', '자기성찰'],
         ministry: ['선교·사역'],
-        church: ['부부·공동체', '선교·사역'],
-        team: ['부부·공동체', '상담 깊이'],
-        leadership: ['부부·공동체', '상담 깊이'],
-        training: ['상담 깊이', '자기 이해']
+        church: ['부부관계', '선교·사역'],
+        team: ['자기성찰', '자기이해'],
+        leadership: ['자기성찰', '선교·사역'],
+        training: ['자기이해', '자기성찰']
     };
     const stories = Array.isArray(publicTestimonials?.stories) ? publicTestimonials.stories : [];
     const allowedTags = storyTagMap[filterKey] || null;

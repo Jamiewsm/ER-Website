@@ -87,6 +87,7 @@ function renderSection(sectionId, payload = null, options = {}) {
         case 'coach_materials': html = renderCoachMaterials(); break;
         case 'coach_schedule': html = renderCoachSchedule(); break;
         case 'coach_notes': html = renderCoachNotes(); break;
+        case 'coach_mentoring': html = renderCoachMentoring(); break;
         case 'thankyou': html = renderThankYou(); break;
         default: html = renderHome();
     }
@@ -95,7 +96,26 @@ function renderSection(sectionId, payload = null, options = {}) {
     // Announce section change to screen readers via dedicated live region
     const srStatus = document.getElementById('sr-status');
     if (srStatus) {
-        const sectionLabels = { home: '홈', about: 'ER 소개', test: '진단 테스트', types_guide: '유형 안내', programs: '서비스 안내', coaches: '코치 소개', coach_training: '전문가 양성반', community: '회복 이야기', support: '사역지원', apply: '신청', notices: '공지사항' };
+        const sectionLabels = {
+            home: '홈',
+            about: 'ER 소개',
+            test: '진단 테스트',
+            types_guide: '유형 안내',
+            programs: '서비스 안내',
+            coaches: 'ER 대표 소개',
+            coach_training: '전문가 양성반',
+            community: '회복 이야기',
+            support: '사역지원',
+            apply: '신청',
+            notices: '공지사항',
+            coach_portal: '코치 포털',
+            coach_admin: '코치 승인',
+            coach_tasks: '훈련 보고서',
+            coach_materials: '자료실',
+            coach_schedule: '주간 일정',
+            coach_notes: '일정 세션 노트',
+            coach_mentoring: '멘토링 허브',
+        };
         srStatus.textContent = (sectionLabels[sectionId] || sectionId) + ' 페이지로 이동했습니다';
         setTimeout(() => { srStatus.textContent = ''; }, 1000);
     }
@@ -120,6 +140,7 @@ function renderSection(sectionId, payload = null, options = {}) {
     if(sectionId === 'coach_materials') setTimeout(() => loadCoachMaterials(), 0);
     if(sectionId === 'coach_schedule') setTimeout(() => loadCoachSchedules(), 0);
     if(sectionId === 'coach_notes') setTimeout(() => loadCoachNotes(), 0);
+    if(sectionId === 'coach_mentoring') setTimeout(() => loadCoachMentoringHub(), 0);
     if (sectionId === 'test') setTimeout(() => mountAdaptiveTestIframe(), 0);
 }
 
@@ -127,4 +148,3 @@ function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     menu.classList.toggle('hidden');
 }
-

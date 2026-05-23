@@ -27,6 +27,9 @@ const state = {
     },
     coachAdminUsers: [],
     coachCalendarMonth: null,
+    coachSchedules: [],
+    coachCalendarSchedules: [],
+    coachSelectedDate: null,
     coachListCounts: {
         tasks: 0,
         materials: 0,
@@ -40,7 +43,7 @@ const state = {
 };
 window.state = state;
 
-const ADAPTIVE_TEST_EMBED_VERSION = '20260305-motive-v4';
+const ADAPTIVE_TEST_EMBED_VERSION = '20260521-result-hero-scroll-v1';
 
 const ER = typeof window !== 'undefined' && window.ER_STRINGS ? window.ER_STRINGS : {};
 const contentData = {
@@ -71,4 +74,3 @@ state.notices = (contentData.notices || []).map((item) => ({
 
 
 const publicTestimonials = (ER.publicTestimonials) ? ER.publicTestimonials : { impactThemes: [], stories: [] };
-

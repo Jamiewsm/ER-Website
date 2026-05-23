@@ -13,6 +13,27 @@ function handleExternalFormIframeLoad(iframeId, skeletonId) {
 }
 if (typeof window !== 'undefined') window.handleExternalFormIframeLoad = handleExternalFormIframeLoad;
 
+function applyAdaptiveTestIframeHeight(height) {
+    const iframe = document.getElementById('adaptive-test-iframe');
+    const slot = document.getElementById('adaptive-test-iframe-slot');
+    const nextHeight = Math.max(720, Math.ceil(Number(height) || 0));
+    if (iframe) {
+        iframe.style.height = `${nextHeight}px`;
+        iframe.style.minHeight = `${nextHeight}px`;
+    }
+    if (slot) {
+        slot.style.minHeight = `${nextHeight}px`;
+    }
+}
+
+if (typeof window !== 'undefined') {
+    window.addEventListener('message', (event) => {
+        const data = event && event.data;
+        if (!data || data.type !== 'er-test-embed-resize') return;
+        applyAdaptiveTestIframeHeight(data.height);
+    });
+}
+
 function mountAdaptiveTestIframe() {
     const slot = document.getElementById('adaptive-test-iframe-slot');
     const skeleton = document.getElementById('adaptive-test-skeleton');
@@ -51,7 +72,8 @@ function mountAdaptiveTestIframe() {
     iframe.src = src;
     iframe.title = title;
     iframe.className =
-        'w-full min-h-[2500px] md:min-h-[2800px] opacity-0 transition-opacity duration-500';
+        'w-full min-h-[720px] opacity-0 transition-opacity duration-500';
+    iframe.setAttribute('scrolling', 'yes');
     iframe.loading = 'lazy';
     iframe.addEventListener('load', function onAdaptiveTestIframeLoad() {
         iframe.removeEventListener('load', onAdaptiveTestIframeLoad);
@@ -114,7 +136,7 @@ function renderTest() {
                         </div>
                     </div>
                 </div>
-                <div id="adaptive-test-iframe-slot" class="relative w-full min-h-[2500px] md:min-h-[2800px]"></div>
+                <div id="adaptive-test-iframe-slot" class="relative w-full min-h-[720px]"></div>
             </div>
 
             <div class="mt-8 grid md:grid-cols-2 gap-4">

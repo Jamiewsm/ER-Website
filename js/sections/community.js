@@ -2,14 +2,14 @@ function renderCommunity() {
     const storyFilter = state.currentPayload?.story || '';
     const stories = Array.isArray(publicTestimonials.stories) ? publicTestimonials.stories : [];
     const storyTagMap = {
-        parenting: ['가정 회복', '부부·공동체'],
-        couple: ['부부·공동체', '가정 회복'],
-        personal: ['자기 이해', '자기 수용', '상담 깊이'],
+        parenting: ['양육상담'],
+        couple: ['부부관계'],
+        personal: ['자기이해', '자기성찰'],
         ministry: ['선교·사역'],
-        church: ['부부·공동체', '선교·사역'],
-        team: ['부부·공동체', '상담 깊이'],
-        leadership: ['부부·공동체', '상담 깊이'],
-        training: ['상담 깊이', '자기 이해']
+        church: ['부부관계', '선교·사역'],
+        team: ['자기성찰', '자기이해'],
+        leadership: ['자기성찰', '선교·사역'],
+        training: ['자기이해', '자기성찰']
     };
     const allowedTags = storyTagMap[storyFilter] || null;
     const filteredStories = storyFilter && allowedTags
@@ -42,7 +42,7 @@ function renderCommunity() {
                 <div class="mb-10 animate-fade-in-up">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">회복 이야기 카테고리</h3>
                     <div class="flex flex-wrap gap-2">
-                        ${['개인 회복', '부부·가정', '목회자·선교사', '교회 공동체', '리더십·팀', '훈련 참여자'].map((tag) => `
+                        ${['자기이해', '자기성찰', '부부관계', '양육상담', '선교·사역', '리더십·팀'].map((tag) => `
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-white border border-gray-100 text-gray-600">${tag}</span>
                         `).join('')}
                     </div>

@@ -1,66 +1,126 @@
 function renderApply(payload = null) {
     const fromTest = payload?.source === 'test';
-    const track = payload?.track || (fromTest ? 'paid' : 'paid');
+    const focus = String(payload?.focus || '').trim();
+    const focusConfig = {
+        parenting: {
+            track: 'paid',
+            title: '자녀 양육 코칭 상담',
+            desc: '부모와 아이의 반응 패턴, 반복되는 충돌 장면, 집에서 바로 적용할 양육 언어를 함께 정리합니다.',
+            bannerTitle: '자녀 양육 상담 안내',
+            bannerBody: '아이만 바꾸려 하기보다 부모와 아이의 기질 차이를 함께 읽고, 실제 집 안 대화 장면에 적용하는 방향으로 안내합니다.',
+            category: '자녀 양육 코칭 문의',
+            message: '자녀 양육 문제를 함께 정리받고 싶습니다.'
+        },
+        couple: {
+            track: 'paid',
+            title: '부부 코칭 상담',
+            desc: '부부의 차이와 오해, 반복되는 갈등 패턴을 함께 정리하고 실제 대화 방식을 설계합니다.',
+            bannerTitle: '부부 관계 상담 안내',
+            bannerBody: '서로의 다름을 문제로만 보지 않고, 반복되는 갈등 구조를 이해하고 대화 가능한 관계로 전환하는 방향을 함께 찾습니다.',
+            category: '부부 코칭 1회 ($220)',
+            message: '부부 관계 코칭을 원합니다.'
+        },
+        team: {
+            track: 'org',
+            title: '기업/팀 프로그램 문의',
+            desc: '팀 소통, 역할 충돌, 갈등 비용, 리더십 정렬 문제를 남겨 주시면 맞춤형 워크숍 방향을 제안합니다.',
+            bannerTitle: '팀 워크숍 문의 안내',
+            bannerBody: '성격 설명에서 끝나지 않고, 팀 소통 규칙과 역할 적합성, 리더십 커뮤니케이션까지 연결하는 방식으로 설계합니다.',
+            category: '기업/팀 워크숍 문의',
+            message: '우리 팀의 소통과 역할 정렬 문제를 상담하고 싶습니다.'
+        },
+        church: {
+            track: 'org',
+            title: '교회 프로그램 문의',
+            desc: '사역자 소진, 공동체 갈등, 리더십 소통 문제를 교회 현장에 맞는 워크숍과 후속 코칭으로 제안합니다.',
+            bannerTitle: '교회 공동체 회복 문의 안내',
+            bannerBody: '교회의 규모와 현재 고민, 리더 구성과 일정에 맞춰 공동체 회복 프로그램과 리더십 워크숍 방향을 함께 정리합니다.',
+            category: '교회 워크숍 문의',
+            message: '우리 교회의 공동체/리더십 회복을 위한 상담을 원합니다.'
+        }
+    };
+
+    const selectedFocus = focusConfig[focus] || null;
+    const requestedTrack = payload?.track || (fromTest ? 'paid' : 'paid');
+    const track = selectedFocus?.track || requestedTrack;
     const isSupportTrack = track === 'support';
     const isMinistryTrack = track === 'ministry';
     const isOrgTrack = track === 'org';
-    const submitSource = fromTest ? 'test' : track;
+    const submitSource = fromTest ? 'test' : (focus ? `${track}:${focus}` : track);
     const testSummary = state.latestTestResult
         ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 하위유형 ${state.latestTestResult.subtypeSummary}, 본능 ${state.latestTestResult.instinctSummary}`
-        : "";
+        : '';
 
-    const trackTitle = isSupportTrack
-        ? '후원·협력 문의'
-        : isMinistryTrack
-            ? '사역지원 신청'
-            : isOrgTrack
-                ? '기관/교회 프로그램 문의'
-                : '상담 및 코칭 신청';
-    const trackDesc = isSupportTrack
-        ? '후원 및 협력 관련 문의를 남겨 주세요.'
-        : isMinistryTrack
-            ? '목회자·선교사 사역지원(무료/감면) 신청을 남겨 주세요.'
-            : isOrgTrack
-                ? '교회/기관/기업 프로그램 문의를 남겨 주세요.'
-                : '신청 내용을 남겨주세요.';
+    const trackTitle = selectedFocus?.title || (
+        isSupportTrack
+            ? '후원·협력 문의'
+            : isMinistryTrack
+                ? '사역지원 신청'
+                : isOrgTrack
+                    ? '기관/교회 프로그램 문의'
+                    : '상담 및 코칭 신청'
+    );
+    const trackDesc = selectedFocus?.desc || (
+        isSupportTrack
+            ? '후원 및 협력 관련 문의를 남겨 주세요.'
+            : isMinistryTrack
+                ? '목회자·선교사 사역지원(무료/감면) 신청을 남겨 주세요.'
+                : isOrgTrack
+                    ? '교회/기관/기업 프로그램 문의를 남겨 주세요.'
+                    : '신청 내용을 남겨주세요.'
+    );
+
     const categoryOptions = isSupportTrack
         ? ['후원 문의', '협력 파트너십 문의', '공동 프로그램 제안', '기타 협력 문의']
         : isMinistryTrack
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
             : isOrgTrack
                 ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)'];
+                : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '자녀 양육 코칭 문의', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)'];
+    const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
+        ? selectedFocus.category
+        : categoryOptions[0];
+    const seededMessage = fromTest && testSummary
+        ? `${testSummary}\n${selectedFocus?.message || '정체성 발견 세션 신청합니다.'}`
+        : (selectedFocus?.message || '');
+    const bannerTitle = selectedFocus?.bannerTitle || (
+        fromTest
+            ? '테스트 후 추천 트랙'
+            : isSupportTrack
+                ? '후원·협력 전용 창구'
+                : isMinistryTrack
+                    ? '사역지원 신청 안내'
+                    : isOrgTrack
+                        ? '기관/교회 프로그램 안내'
+                        : ''
+    );
+    const bannerBody = selectedFocus?.bannerBody || (
+        fromTest
+            ? '약식 테스트 결과를 바탕으로 정체성 발견 세션에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.'
+            : isSupportTrack
+                ? '후원 문의, 교회·기관 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.'
+                : isMinistryTrack
+                    ? '목회자·선교사 대상 무료/감면 사역지원 트랙은 심사 후 배정됩니다.'
+                    : isOrgTrack
+                        ? '프로그램 규모와 대상에 따라 맞춤 견적으로 안내드립니다.'
+                        : ''
+    );
 
     return `
         <div class="bg-er-base min-h-screen py-20 px-4">
             <div class="max-w-2xl mx-auto">
                 <div class="text-center mb-10 animate-fade-in-up">
                     <h2 class="text-3xl font-bold text-gray-900">${trackTitle}</h2>
-                    <p class="mt-3 text-gray-500 text-sm">${trackDesc}</p>
+                    <p class="mt-3 text-gray-500 text-sm break-keep">${trackDesc}</p>
                 </div>
                 
                 <div class="bg-white rounded-3xl shadow-card floating-card p-8 md:p-10 animate-fade-in-up border border-white/40" style="animation-delay: 0.1s;">
-                    ${fromTest ? `
+                    ${bannerTitle ? `
                         <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
-                            <p class="text-sm font-bold text-er-dark mb-1">테스트 후 추천 트랙</p>
-                            <p class="text-xs text-gray-600 break-keep">약식 테스트 결과를 바탕으로 정체성 발견 세션에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.</p>
+                            <p class="text-sm font-bold text-er-dark mb-1">${bannerTitle}</p>
+                            <p class="text-xs text-gray-600 break-keep">${bannerBody}</p>
                         </div>
-                    ` : isSupportTrack ? `
-                        <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
-                            <p class="text-sm font-bold text-er-dark mb-1">후원·협력 전용 창구</p>
-                            <p class="text-xs text-gray-600 break-keep">후원 문의, 교회·기관 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.</p>
-                        </div>
-                    ` : isMinistryTrack ? `
-                        <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
-                            <p class="text-sm font-bold text-er-dark mb-1">사역지원 신청 안내</p>
-                            <p class="text-xs text-gray-600 break-keep">목회자·선교사 대상 무료/감면 사역지원 트랙은 심사 후 배정됩니다.</p>
-                        </div>
-                    ` : isOrgTrack ? `
-                        <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
-                            <p class="text-sm font-bold text-er-dark mb-1">기관/교회 프로그램 안내</p>
-                            <p class="text-xs text-gray-600 break-keep">프로그램 규모와 대상에 따라 맞춤 견적으로 안내드립니다.</p>
-                        </div>
-                    ` : ""}
+                    ` : ''}
 
                     <div class="flex items-center justify-between mb-8 px-4 relative">
                         <div class="absolute top-1/2 left-0 w-full h-px bg-gray-100 -z-10"></div>
@@ -96,7 +156,7 @@ function renderApply(payload = null) {
                             <label class="block text-sm font-bold text-gray-700 mb-2">희망하는 세션</label>
                             <div class="relative">
                                 <select name="category" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
-                                    ${categoryOptions.map((opt, idx) => `<option ${idx === 0 ? 'selected' : ''}>${opt}</option>`).join('')}
+                                    ${categoryOptions.map((opt) => `<option ${opt === selectedCategory ? 'selected' : ''}>${opt}</option>`).join('')}
                                 </select>
                                 <div class="absolute right-4 top-3.5 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></div>
                             </div>
@@ -104,7 +164,7 @@ function renderApply(payload = null) {
                         
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">나누고 싶은 이야기</label>
-                            <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n정체성 발견 세션 신청합니다.` : ""}</textarea>
+                            <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${seededMessage}</textarea>
                         </div>
 
                         <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
@@ -132,6 +192,26 @@ function renderApply(payload = null) {
                         </button>
                     </form>
                 </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderThankYou() {
+    return `
+        <div class="min-h-screen flex items-center justify-center bg-er-base px-6">
+            <div class="bg-white rounded-[2rem] shadow-card floating-card p-10 max-w-sm w-full text-center animate-fade-in-up border border-white/40">
+                <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center text-green-500 text-2xl mx-auto mb-6">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-900 mb-2">소중한 이야기를 잘 받았습니다</h2>
+                <p class="text-gray-500 mb-8 leading-relaxed text-xs break-keep">
+                    마음을 나누어 주셔서 감사합니다.<br>
+                    남겨주신 연락처로 곧 정성껏 연락드리겠습니다.
+                </p>
+                <button onclick="renderSection('home')" class="w-full py-3 rounded-xl bg-er-dark text-white hover:bg-gray-800 transition-colors font-bold shadow-md text-sm">
+                    처음 화면으로 돌아가기
+                </button>
             </div>
         </div>
     `;

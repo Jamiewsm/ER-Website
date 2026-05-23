@@ -3,9 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="ER는 개인, 가정, 교회와 공동체의 회복을 돕는 사역입니다. 기독교 세계관과 에니어그램의 통합적 접근으로 상담, 교육, 협력 프로그램을 소개합니다.">
+    <meta name="description" content="ER는 기독교 세계관과 에니어그램을 통합한 전문 코칭 서비스입니다. 개인·가정·기업을 위한 유료 코칭과 목회자·선교사를 위한 무료 사역지원 트랙을 운영합니다.">
+    <meta name="keywords" content="에니어그램 코칭, 기독교 코칭, 에니어그램 상담, 부부 코칭, 목회자 코칭, 선교사 돌봄, 회복 코칭, 에니어그램 강사, enneagram coaching">
     <meta name="theme-color" content="#F5E6D3">
-    <title>ER - Enneagram For Restoration</title>
+    <link rel="canonical" href="https://er-coaching.com/">
+    <title>ER - Enneagram Coaching | 기독교 에니어그램 코칭</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://er-coaching.com/">
+    <meta property="og:title" content="ER - Enneagram Coaching | 기독교 에니어그램 코칭">
+    <meta property="og:description" content="기독교 세계관과 에니어그램을 통합한 전문 코칭. 개인·가정·기업 유료 코칭, 목회자·선교사 무료 사역지원.">
+    <meta property="og:image" content="https://er-coaching.com/ER-logo-header.png">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:site_name" content="ER Enneagram Coaching">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ER - Enneagram Coaching | 기독교 에니어그램 코칭">
+    <meta name="twitter:description" content="기독교 세계관과 에니어그램을 통합한 전문 코칭. 개인·가정·기업 유료 코칭, 목회자·선교사 무료 사역지원.">
+    <meta name="twitter:image" content="https://er-coaching.com/ER-logo-header.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "ER - Enneagram Coaching",
+      "description": "기독교 세계관과 에니어그램을 통합한 전문 코칭 서비스. 개인·가정·기업 코칭 및 목회자·선교사 사역지원.",
+      "url": "https://er-coaching.com",
+      "logo": "https://er-coaching.com/ER-logo-header.png",
+      "areaServed": ["KR", "US"],
+      "serviceType": ["에니어그램 코칭", "기독교 코칭", "부부 상담", "목회자 코칭"],
+      "knowsAbout": ["에니어그램", "기독교 세계관", "회복 코칭", "리더십"],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "상담 문의",
+        "email": "hello@er-coaching.com",
+        "availableLanguage": ["Korean", "English"]
+      }
+    }
+    </script>
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -111,10 +149,12 @@
             border: 1px solid rgba(255, 250, 245, 0.6);
         }
 
-        /* Mobile Menu Transition */
+        /* Mobile Menu Transition + 패널 내부 스크롤(짧은 뷰포트·안드로이드) */
         #mobile-menu {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
             transform-origin: top;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
         }
         #mobile-menu.hidden {
             opacity: 0;
@@ -128,6 +168,10 @@
         }
         
         .break-keep { word-break: keep-all; }
+
+        .desktop-nav button {
+            white-space: nowrap;
+        }
         
         /* Text Highlight Animation */
         .text-highlight {
@@ -175,7 +219,7 @@
                     >
                </div>
                 
-                <div class="hidden lg:flex space-x-6 items-center">
+                <div class="desktop-nav hidden xl:flex space-x-6 items-center">
                     <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         ER 소개
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
@@ -190,6 +234,10 @@
                     </button>
                     <button onclick="renderSection('programs', { tab: 'individual' })" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
                         서비스 안내
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
+                    </button>
+                    <button onclick="renderSection('coaches')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
+                        코치 소개
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
                     <button onclick="renderSection('coach_training')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
@@ -224,41 +272,64 @@
                         </button>
                         <div id="desktop-account-menu" class="hidden absolute right-0 top-12 w-48 rounded-2xl border border-gray-100 bg-white shadow-xl p-2 z-[80]">
                             <button type="button" onclick="openMyAccount()" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">마이페이지</button>
-                            <button type="button" id="desktop-account-coach-btn" onclick="openCoachPortalFromMenu()" class="hidden w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">Coach Portal</button>
-                            <button type="button" id="desktop-account-app-btn" onclick="openCoachAppFromMenu()" class="hidden w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">Coach App</button>
+                            <button type="button" id="desktop-account-coach-btn" onclick="openCoachPortalFromMenu()" class="hidden w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">코치 포털</button>
+                            <button type="button" id="desktop-account-app-btn" onclick="openCoachAppFromMenu()" class="hidden w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">코치 포털(앱)</button>
+                            <button type="button" onclick="switchWebsiteAccount()" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50">계정 전환</button>
                             <div class="my-2 h-px bg-gray-100"></div>
                             <button type="button" onclick="handleLogoutFromMenu()" class="w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50">로그아웃</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="md:hidden flex items-center gap-4">
-                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm">상담 신청</button>
-                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none" aria-label="메뉴 열기">
+                <div class="xl:hidden flex items-center gap-2 sm:gap-3">
+                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm shrink-0">상담 신청</button>
+                    <button type="button" id="mobile-header-auth-btn" class="shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors" aria-label="기존 참여자 로그인 또는 마이페이지" title="기존 참여자 포털">
+                        <i class="far fa-user"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none shrink-0" aria-label="메뉴 열기">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
         </div>
         
-        <div id="mobile-menu" class="hidden absolute w-full bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl z-40 top-16 left-0">
+        <div id="mobile-menu" class="hidden absolute w-full left-0 z-40 top-16 md:top-20 max-h-[calc(100dvh-4rem)] md:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-y-contain bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl">
             <div class="px-5 py-6 space-y-2">
+                <button id="mobile-auth-btn" class="block w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
+                <div class="h-px bg-gray-100 my-2 mx-4"></div>
                 <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">ER 소개</button>
                 <button onclick="renderSection('test')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">진단 테스트</button>
                 <button onclick="renderSection('types_guide')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">유형 알아보기</button>
                 <button onclick="renderSection('programs', { tab: 'individual' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">서비스 안내</button>
+                <button onclick="renderSection('coaches')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">코치 소개</button>
                 <button onclick="renderSection('coach_training')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">전문가 양성반</button>
                 <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">회복 이야기</button>
                 <button onclick="renderSection('support')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">사역지원</button>
                 <button onclick="renderSection('apply', { track: 'support' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">후원·협력 문의</button>
                 <button onclick="renderSection('notices')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">공지사항</button>
-                <div class="h-px bg-gray-100 my-3 mx-4"></div>
-                <button id="mobile-auth-btn" class="block w-full text-left px-4 py-3 text-sm font-medium text-gray-500 hover:text-er-dark"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
             </div>
         </div>
     </nav>
 
+    <div id="sr-status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
     <main id="main-content" class="flex-grow pt-16 md:pt-20">
+        <noscript>
+            <div style="max-width:720px;margin:4rem auto;padding:2rem;font-family:sans-serif;line-height:1.7;color:#3E362E;">
+                <h1>ER — Enneagram Coaching</h1>
+                <p>기독교 세계관과 에니어그램을 통합한 전문 코칭 서비스입니다. 개인·가정·기업을 위한 유료 코칭과 목회자·선교사를 위한 무료 사역지원 트랙을 운영합니다.</p>
+                <h2>주요 서비스</h2>
+                <ul>
+                    <li><strong>개인·가정 코칭</strong> — 자기 이해, 부부 관계, 자녀 양육 코칭</li>
+                    <li><strong>교회·사역자 코칭</strong> — 번아웃 회복, 소명 재발견, 리더십 수련회</li>
+                    <li><strong>기업·조직 코칭</strong> — 강점 기반 팀 빌딩, 갈등 해결, 소통 워크숍</li>
+                    <li><strong>에니어그램 강사 양성</strong> — 8주 전문가 과정, 심화 스터디</li>
+                    <li><strong>목회자·선교사 사역지원</strong> — 심사 후 무료 코칭 제공 (후원 기반)</li>
+                </ul>
+                <h2>문의</h2>
+                <p>이메일: <a href="mailto:hello@er-coaching.com">hello@er-coaching.com</a></p>
+                <p>이 페이지를 제대로 보려면 JavaScript를 활성화해 주세요.</p>
+            </div>
+        </noscript>
         </main>
 
     <div id="auth-modal" class="hidden fixed inset-0 z-[70] bg-black/50 backdrop-blur-[1px] px-4">
@@ -386,6 +457,7 @@
                     <button type="button" onclick="renderSection('test')" class="hover:text-er-dark transition-colors">진단 테스트</button>
                     <button type="button" onclick="renderSection('types_guide')" class="hover:text-er-dark transition-colors">유형 알아보기</button>
                     <button type="button" onclick="renderSection('programs', { tab: 'individual' })" class="hover:text-er-dark transition-colors">서비스 안내</button>
+                    <button type="button" onclick="renderSection('coaches')" class="hover:text-er-dark transition-colors">코치 소개</button>
                     <button type="button" onclick="renderSection('coach_training')" class="hover:text-er-dark transition-colors">전문가 양성반</button>
                     <button type="button" onclick="renderSection('community')" class="hover:text-er-dark transition-colors">회복 이야기</button>
                     <button type="button" onclick="renderSection('support')" class="hover:text-er-dark transition-colors">사역지원</button>
@@ -398,12 +470,43 @@
         </div>
     </footer>
 
+    <!-- Config & foundation -->
     <script src="js/config.js"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/coach-portal.js"></script>
     <script src="js/strings.js"></script>
-    <script src="js/main.js"></script>
+
+    <!-- App state & utilities -->
+    <script src="js/app-state.js"></script>
+    <script src="js/app-helpers.js?v=20260406a"></script>
+    <script src="js/app-charts.js"></script>
+    <script src="js/app-adaptive-data.js"></script>
+    <script src="js/app-adaptive.js"></script>
+
+    <!-- Sections -->
+    <script src="js/sections/home.js"></script>
+    <script src="js/sections/about.js"></script>
+    <script src="js/sections/programs.js"></script>
+    <script src="js/sections/coaches.js"></script>
+    <script src="js/sections/coach-training.js"></script>
+    <script src="js/sections/community.js"></script>
+    <script src="js/sections/support.js"></script>
+    <script src="js/sections/apply.js?v=20260422a"></script>
+    <script src="js/sections/notices.js"></script>
+    <script src="js/sections/types-guide.js"></script>
+    <script src="js/sections/test-embed.js"></script>
+    <script src="js/sections/account.js"></script>
+    <script src="js/sections/pages.js"></script>
+    <script src="js/coach/views.js?v=20260406a"></script>
+    <script src="js/coach/tasks.js?v=20260406a"></script>
+    <script src="js/coach/materials.js?v=20260331b"></script>
+    <script src="js/coach/schedule.js"></script>
+    <script src="js/coach/mentoring-hub.js"></script>
+
+    <!-- Core routing & init -->
+    <script src="js/app-core.js?v=20260331b"></script>
+    <script src="js/app-init.js"></script>
+    <script src="js/coach-portal.js?v=20260401a"></script>
 </body>
 </html>
