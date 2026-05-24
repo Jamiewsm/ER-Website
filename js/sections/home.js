@@ -124,7 +124,7 @@ function renderHome() {
                 </div>
 
                 <div class="max-w-6xl mx-auto relative z-10">
-                    <div class="max-w-5xl mx-auto text-center animate-fade-in-up">
+                    <div class="max-w-5xl mx-auto text-center">
                         <span class="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/80 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.28em] text-er-primary shadow-soft">
                             <span class="h-2 w-2 rounded-full bg-er-accent"></span>
                             Enneagram for Restoration
