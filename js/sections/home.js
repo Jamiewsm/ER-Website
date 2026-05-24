@@ -117,10 +117,10 @@ function renderHome() {
     return `
         <div class="bg-er-base">
             <section class="relative overflow-hidden px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-                <div class="absolute inset-0 pointer-events-none">
-                    <img src="hero-community-background.jpg" alt="" class="h-full w-full object-cover object-center opacity-80" style="filter: saturate(0.88) contrast(0.98);">
-                    <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(247, 238, 228, 0.78) 0%, rgba(247, 238, 228, 0.56) 42%, rgba(247, 238, 228, 0.82) 100%);"></div>
-                    <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 9%, rgba(255, 251, 246, 0.86) 0%, rgba(255, 251, 246, 0.54) 36%, rgba(247, 238, 228, 0.08) 100%);"></div>
+                <div class="absolute inset-x-0 top-0 h-[760px] md:h-[720px] lg:h-[760px] pointer-events-none">
+                    <img src="https://images.unsplash.com/photo-1758024836397-2c9c698087f0?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=70&w=2200" alt="" class="h-full w-full object-cover opacity-100" style="object-position: center 68%; filter: saturate(0.96) contrast(0.96) brightness(1.01);">
+                    <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(247, 238, 228, 0.66) 0%, rgba(247, 238, 228, 0.34) 44%, rgba(247, 238, 228, 0.70) 100%);"></div>
+                    <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 13%, rgba(255, 251, 246, 0.78) 0%, rgba(255, 251, 246, 0.40) 33%, rgba(247, 238, 228, 0.06) 100%);"></div>
                 </div>
 
                 <div class="max-w-6xl mx-auto relative z-10">
