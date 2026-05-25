@@ -5,28 +5,27 @@ Status: User-approved direction, ready for implementation planning
 
 ## Decision
 
-The mobile brochure already explains the workshop and builds interest. The QR destination should therefore stop repeating promotional content and become a focused application experience.
+The mobile brochure already explains the workshop and builds interest. Its mobile-friendly application button should therefore open a focused application experience without repeating promotional content.
 
-- Keep the distributed QR destination unchanged: `https://er-coaching.com/parenting-workshop.html?apply_source=qr`.
-- Keep the page path `/parenting-workshop.html` stable for homepage, notice, Instagram, and manual sharing traffic.
-- Replace the long promotional landing content on that page with a dedicated `Enneagram for Parenting` application screen.
-- Preserve `apply_source` attribution, especially the `qr` value embedded in the distributed brochure.
-- Do not edit the completed brochure PDF or regenerate/replace the QR image as part of this work.
+- Keep the link now attached to the distributed brochure button unchanged: `https://er-coaching.com/#apply?track=paid&focus=parenting_workshop&apply_source=qr`.
+- Render a dedicated `Enneagram for Parenting` application screen for the app route `#apply?focus=parenting_workshop`, rather than treating it as the generic application form.
+- Preserve `apply_source` attribution, especially the `qr` value carried by the brochure button.
+- Do not edit the completed brochure PDF, its button hyperlink, or the existing QR asset as part of this work.
 
 ## Current Context
 
-As of 2026-05-25, the latest GitHub `main` renders `/parenting-workshop.html` as a long landing page whose CTA sends visitors to the general SPA form at `/#apply?track=paid&focus=parenting_workshop&apply_source=...`. The application pipeline already supports:
+As of 2026-05-25, the brochure button points directly at the general SPA form at `/#apply?track=paid&focus=parenting_workshop&apply_source=qr`. Production inspection confirmed that it shows the correct preselected category but still renders the generic stepper, category select, prefilled message, and full site footer. The application pipeline already supports:
 
 - the `parenting_workshop` focused application category,
 - `name`, `contact`, optional `country`, optional `preferred_time`, and message values,
 - Cloudflare Turnstile validation,
 - attribution stored through `buildApplySubmitSource(...)`.
 
-The production page observed during design review was temporarily behind GitHub `main`, still displaying a removed brochure CTA. Final verification must confirm the deployed page matches the merged implementation.
+Final verification must be performed against the exact distributed button URL after deployment.
 
 ## Goals
 
-- Let a parent who scans the brochure QR begin applying immediately, without another CTA click.
+- Let a parent who taps the mobile brochure button begin applying immediately, without another CTA click.
 - Keep the page calm, warm, and visually connected to the approved ER homepage/brochure artwork.
 - Reduce friction: show only information needed to confirm the workshop and complete an application.
 - Reuse the existing secure submission pipeline and source tracking.
@@ -34,7 +33,7 @@ The production page observed during design review was temporarily behind GitHub 
 
 ## Non-Goals
 
-- Rewriting the brochure, its PDF export, or its QR asset.
+- Rewriting the brochure, its PDF export, button hyperlink, or QR asset.
 - Repeating the curriculum, ER perspective, or promotional narrative already contained in the brochure.
 - Redesigning the general application section for all other ER programs.
 - Changing workshop pricing, schedule, eligibility, or business rules.
@@ -43,22 +42,22 @@ The production page observed during design review was temporarily behind GitHub 
 
 ```mermaid
 flowchart LR
-  A["KakaoTalk PDF brochure / printed QR"] --> B["/parenting-workshop.html?apply_source=qr"]
-  C["Homepage, notice, Instagram, direct link"] --> B
-  B --> D["Dedicated workshop application form"]
+  A["KakaoTalk PDF brochure button"] --> B["/#apply?track=paid&focus=parenting_workshop&apply_source=qr"]
+  C["Any #apply link with focus=parenting_workshop"] --> B
+  B --> D["Dedicated workshop form inside the ER app"]
   D --> E["Existing secure submission pipeline"]
   E --> F["Inline confirmation and response expectation"]
 ```
 
-The old compatibility URL `/parents-workshop.html` should continue to forward to `/parenting-workshop.html`; it is separate from the distributed QR URL and does not require a QR change.
+The existing static landing and compatibility redirect are outside this button-path implementation and should remain functional; the distributed brochure button does not depend on them.
 
 ## Screen Design
 
 ### Mobile-First Layout
 
-The first mobile viewport should contain the ER header, a compact workshop identity block, key facts, and the beginning of the form. It must not make the visitor scroll through another sales presentation before applying.
+The first mobile viewport on the `#apply` route should contain the ER logo header, a compact workshop identity block, key facts, and the beginning of the form. It must not make the visitor scroll through another sales presentation before applying.
 
-1. Minimal sticky header with ER logo and no redundant `신청하기` jump button.
+1. Keep the global ER header shell but remove distracting generic navigation/actions while the Parenting-focused application route is active.
 2. A shallow photo accent using the existing approved chair/window image (`assets/er-visual/hero-home.jpg`) with a restrained warm overlay; it is a bridge from the brochure, not a full hero.
 3. Compact title block:
    - `Enneagram for Parenting`
@@ -68,7 +67,7 @@ The first mobile viewport should contain the ER header, a compact workshop ident
 4. Application fields begin immediately after the identity block.
 5. Small inquiry links below the form: email and Instagram only.
 
-Desktop should preserve the same reading order in a centered, restrained layout. A two-column arrangement may place the compact identity/photo at left and the form at right only when it keeps the form prominent and does not become a marketing hero.
+The global general-purpose footer should be hidden while this focused form and its confirmation view are active. Desktop should preserve the same reading order in a centered, restrained layout; a two-column arrangement may place the compact identity/photo at left and the form at right only when it keeps the form prominent and does not become a marketing hero.
 
 ### Removed From This Page
 
@@ -100,13 +99,13 @@ Secondary links beneath submission: `신청 전 문의` followed by email and In
 
 ## Data And Integration
 
-- `/parenting-workshop.html` hosts the dedicated form directly instead of redirecting through a CTA into the generic `#apply` view.
-- The standalone screen reuses the existing Supabase submission endpoint and Turnstile flow rather than creating a second application backend.
+- `renderApply(payload)` renders the dedicated form whenever `payload.focus` normalizes to `parenting_workshop`; every other application route keeps the generic form.
+- The focused app screen reuses the existing Supabase submission endpoint and Turnstile flow rather than creating a second application backend.
 - The hidden category value must remain compatible with existing application records: `Enneagram for Parenting 4주 ($120)`.
 - Query attribution must be carried through submission. A QR visit with `?apply_source=qr` must be stored as the workshop application source equivalent of `paid:parenting_workshop:qr`.
 - Unknown attribution values should continue to be normalized/ignored according to the existing allowed-source behavior.
-- `js/api.js` remains the single submission implementation and will support a small optional page-level success/error UI hook, while retaining the existing SPA thank-you fallback for other forms.
-- A narrowly scoped parenting-page script will initialize hidden category/source values and render the standalone confirmation state through that hook.
+- `js/api.js` remains the single submission implementation and forwards the route focus into the thank-you render while retaining ordinary behavior for other forms.
+- The Parenting form itself supplies the hidden fixed category and the existing normalized attribution-derived submission source.
 
 ## States And Messages
 
@@ -141,21 +140,22 @@ Replace the form area with a compact confirmation state:
 
 ## Files Expected To Change During Implementation
 
-- `parenting-workshop.html` for the direct form screen and its content.
-- `css/parenting-workshop-landing.css` for the new compact layout and form presentation.
-- `js/api.js` for the optional standalone UI hook without regressing the SPA form.
-- A narrowly scoped parenting-page script for source/category initialization and standalone confirmation rendering.
-- `docs/projects/parents-brochure/FUNNEL.md` to document that the landing URL now contains the form directly.
+- `js/sections/apply.js` for the focused form and focused thank-you content.
+- `js/app-core.js` for applying/removing the focused-route page class.
+- `js/api.js` for preserving the focus when transitioning into confirmation and showing readable submission failure state.
+- `css/parenting-application.css` and `index.html` for focused-route layout and asset loading.
+- `tests/apply-workshop-render.test.mjs` for focused/generic renderer coverage.
+- `docs/projects/parents-brochure/FUNNEL.md` to document that the brochure button opens the focused form directly.
 
-The implementation must not change `assets/parents-brochure/qr-apply.png` or the final brochure PDF.
+The implementation must not change `assets/parents-brochure/qr-apply.png`, the final brochure PDF, or its attached hyperlink.
 
 ## Verification
 
-- Open `/parenting-workshop.html?apply_source=qr` on a mobile viewport and verify form fields begin in the first screen without a promotional-scroll detour.
+- Open `/#apply?track=paid&focus=parenting_workshop&apply_source=qr` on a mobile viewport and verify form fields begin in the first screen without a promotional-scroll detour.
 - Verify desktop layout is balanced and keeps the form as the primary action.
 - Verify the chair photo renders correctly, is not overly dark, and does not obscure text.
 - Verify no visible brochure button, curriculum section, or feature-card section remains on this QR destination.
 - Submit a workshop application through the secure pipeline and verify category and `qr` attribution are retained.
 - Test Turnstile unavailable/failure and submission error handling.
-- Verify `/parents-workshop.html` compatibility redirect still reaches the stable workshop page.
-- After merge/deployment, verify the public URL at `https://er-coaching.com/parenting-workshop.html?apply_source=qr` reflects the new direct application experience.
+- Verify ordinary `#apply?track=paid` still renders its selectable generic application form.
+- After merge/deployment, verify the public URL at `https://er-coaching.com/#apply?track=paid&focus=parenting_workshop&apply_source=qr` reflects the new focused application experience.
