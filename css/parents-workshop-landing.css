@@ -1,0 +1,232 @@
+/* QR arrival — Enneagram for Parents short landing */
+
+:root {
+  --pw-bg: #f7eee4;
+  --pw-surface: rgba(255, 251, 246, 0.82);
+  --pw-text: #3e362e;
+  --pw-body: #5c4f44;
+  --pw-muted: #8a7a6b;
+  --pw-gold: #b89170;
+  --pw-terracotta: #c47a5a;
+  --pw-frame-max: 430px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body.pw-body {
+  margin: 0;
+  font-family: "Pretendard", system-ui, sans-serif;
+  background: #d9cfc3;
+  color: var(--pw-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+.pw-frame {
+  max-width: var(--pw-frame-max);
+  margin: 0 auto;
+  min-height: 100dvh;
+  box-shadow: 0 0 56px rgba(62, 54, 46, 0.15);
+}
+
+.pw-hero {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background-image: url("../assets/parents-brochure/bg-01-cover.jpg");
+  background-size: cover;
+  background-position: center 22%;
+}
+
+.pw-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(62, 54, 46, 0.12) 0%,
+    rgba(247, 238, 228, 0.5) 42%,
+    rgba(255, 251, 246, 0.96) 78%
+  );
+  z-index: 0;
+}
+
+.pw-inner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 1.35rem 2rem;
+  margin-top: 28vh;
+}
+
+.pw-sheet {
+  background: var(--pw-surface);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 1.75rem 1.75rem 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.7);
+  padding: 1.75rem 1.35rem 2rem;
+  margin: 0 -1.35rem -2rem;
+  box-shadow: 0 -16px 48px rgba(62, 54, 46, 0.1);
+  flex: 1;
+}
+
+.pw-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #6b7b5c;
+  margin: 0 0 0.5rem;
+}
+
+.pw-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--pw-terracotta), #b86a52);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  margin-bottom: 0.85rem;
+}
+
+.pw-title {
+  font-size: clamp(1.5rem, 5.5vw, 1.85rem);
+  font-weight: 800;
+  color: var(--pw-text);
+  line-height: 1.28;
+  word-break: keep-all;
+  margin: 0 0 0.4rem;
+}
+
+.pw-tagline {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--pw-text);
+  line-height: 1.5;
+  word-break: keep-all;
+  margin: 0 0 0.35rem;
+}
+
+.pw-lead {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--pw-body);
+  word-break: keep-all;
+  margin: 0 0 1.25rem;
+}
+
+.pw-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+}
+
+.pw-chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  color: var(--pw-text);
+}
+
+.pw-note {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--pw-muted);
+  word-break: keep-all;
+  margin: 0 0 1.35rem;
+  padding: 0.85rem 1rem;
+  background: rgba(184, 145, 112, 0.12);
+  border-radius: 0.85rem;
+  border: 1px solid rgba(184, 145, 112, 0.2);
+}
+
+.pw-note strong {
+  color: var(--pw-text);
+}
+
+.pw-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+
+.pw-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.pw-btn:active {
+  transform: scale(0.98);
+}
+
+.pw-btn--primary {
+  color: #fff;
+  background: linear-gradient(145deg, #3e362e, #52463c);
+  box-shadow: 0 6px 22px rgba(62, 54, 46, 0.28);
+}
+
+.pw-btn--secondary {
+  color: var(--pw-text);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(184, 145, 112, 0.45);
+}
+
+.pw-btn--ghost {
+  color: var(--pw-terracotta);
+  background: transparent;
+  border: 1px solid rgba(196, 122, 90, 0.35);
+  font-size: 0.9rem;
+  min-height: 2.75rem;
+}
+
+.pw-contact {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  margin: 0 0 1rem;
+}
+
+.pw-contact a {
+  color: var(--pw-terracotta);
+  font-weight: 600;
+}
+
+.pw-footer {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  text-align: center;
+  font-size: 0.72rem;
+}
+
+.pw-footer a {
+  color: var(--pw-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (min-width: 431px) {
+  .pw-body {
+    padding: 1rem 0 2rem;
+  }
+}

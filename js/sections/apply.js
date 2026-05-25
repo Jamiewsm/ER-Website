@@ -11,6 +11,15 @@ function renderApply(payload = null) {
             category: '자녀 양육 코칭 문의',
             message: '자녀 양육 문제를 함께 정리받고 싶습니다.'
         },
+        parents_workshop: {
+            track: 'paid',
+            title: 'Enneagram for Parents 4주 워크샵 신청',
+            desc: '나를 알고, 아이를 이해하는 4주 자녀양육 워크샵(온라인 Zoom) 신청을 남겨 주세요.',
+            bannerTitle: 'Enneagram for Parents — 심화 워크샵',
+            bannerBody: '에니어그램 입문 과정이 아닌 심화 과정입니다. 6월 셋째 주–7월 둘째 주, 소규모 선착순 모집($120). 일정은 인원 확정 후 안내드립니다.',
+            category: 'Enneagram for Parents 4주 ($120)',
+            message: 'Enneagram for Parents 4주 워크샵 신청합니다.'
+        },
         couple: {
             track: 'paid',
             title: '부부 코칭 상담',
@@ -76,7 +85,7 @@ function renderApply(payload = null) {
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
             : isOrgTrack
                 ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '자녀 양육 코칭 문의', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)'];
+                : ['Enneagram for Parents 4주 ($120)', '정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '자녀 양육 코칭 문의', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)'];
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
         : categoryOptions[0];

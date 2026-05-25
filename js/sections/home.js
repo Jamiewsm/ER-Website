@@ -22,7 +22,7 @@ function renderHome() {
 
     const landingCards = [
         {
-            eyebrow: 'Parenting',
+            eyebrow: 'Parents',
             title: '우리 아이가 달라졌어요',
             summary: '모든 아이들은 다릅니다. 하나님이 만드신 나와 아이만의 고유한 아름다움을 이해할 때, 그리고 아이가 세상과 부모와 관계하는 방식이 이해되어질 때, 비로소 아이의 욕구가 해결되어질 수 있습니다. ER이 도와드립니다.',
             quote: parentingStory.quote,
@@ -31,8 +31,8 @@ function renderHome() {
             icon: 'fas fa-child-reaching',
             accentClass: 'from-[#fff9f1] via-white to-[#f9efe0]',
             iconClass: 'bg-[#f1debf] text-[#8a6848]',
-            primaryAction: "renderSection('apply', { track: 'paid', focus: 'parenting' })",
-            secondaryAction: "renderSection('programs', { tab: 'individual' })"
+            primaryAction: "renderSection('apply', { track: 'paid', focus: 'parents_workshop' })",
+            secondaryAction: "window.location.href='/parents-brochure.html'"
         },
         {
             eyebrow: 'Couple',

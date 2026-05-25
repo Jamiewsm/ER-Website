@@ -330,6 +330,15 @@ function renderNoticeDetail(payload) {
         return `<div class="p-10 text-center">공지를 찾을 수 없습니다.<br><button class="mt-4 btn" onclick="renderSection('notices')">돌아가기</button></div>`;
     }
 
+    const isParentsWorkshop = String(n.id) === '4';
+    const applyOnclick = isParentsWorkshop
+        ? "renderSection('apply', { track: 'paid', focus: 'parents_workshop' })"
+        : "renderSection('apply', { track: 'paid' })";
+    const applyLabel = isParentsWorkshop ? '워크샵 신청하기' : '상담 신청하기';
+    const brochureCta = isParentsWorkshop
+        ? `<a href="/parents-brochure.html" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">모바일 브로셔</a>`
+        : '';
+
     return `
         <div class="bg-er-base min-h-screen py-16 px-4">
             <div class="max-w-3xl mx-auto">
@@ -365,11 +374,14 @@ function renderNoticeDetail(payload) {
                     
                     <div class="mt-10 p-5 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
                         <div>
-                            <p class="text-sm font-bold text-er-dark">문의하거나 신청하시겠어요?</p>
+                            <p class="text-sm font-bold text-er-dark">${isParentsWorkshop ? '워크샵을 신청하거나 브로셔를 확인해 보세요.' : '문의하거나 신청하시겠어요?'}</p>
                         </div>
-                        <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-2.5 bg-er-dark text-white rounded-full text-sm font-bold shadow-soft hover:bg-gray-800 transition-all w-full md:w-auto">
-                            상담 신청하기
-                        </button>
+                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                            ${brochureCta}
+                            <button onclick="${applyOnclick}" class="px-6 py-2.5 bg-er-dark text-white rounded-full text-sm font-bold shadow-soft hover:bg-gray-800 transition-all w-full md:w-auto">
+                                ${applyLabel}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
