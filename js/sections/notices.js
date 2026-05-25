@@ -76,6 +76,20 @@ function normalizeNoticeRecord(row) {
     };
 }
 
+/** Route id from hash (#notice_detail?id=4) — matches numeric id or Supabase legacy_key */
+function findPublicNoticeByRouteId(routeId) {
+    const key = String(routeId || '').trim();
+    if (!key) return null;
+    return state.notices.find(
+        (row) => String(row.id) === key || String(row.legacy_key ?? '') === key
+    ) || null;
+}
+
+function getNoticeLegacyKey(notice) {
+    if (notice == null) return '';
+    return String(notice.legacy_key != null ? notice.legacy_key : notice.id);
+}
+
 function getBundledPublicNotices() {
     const items = (typeof contentData !== 'undefined' && contentData.notices) ? contentData.notices : [];
     return items.map((item) => ({
@@ -135,7 +149,7 @@ async function reloadNoticesView(payload) {
 function openNoticeEditor(mode, id = null) {
     if (!canManageNotices()) return;
     if (mode === 'edit') {
-        const notice = state.notices.find((x) => String(x.id) === String(id));
+        const notice = findPublicNoticeByRouteId(id);
         if (!notice) return;
         state.noticeEditor = {
             open: true,
@@ -269,7 +283,7 @@ function renderNoticeEditor() {
 
 async function deleteNotice(id) {
     if (!canManageNotices()) return;
-    const notice = state.notices.find((x) => String(x.id) === String(id));
+    const notice = findPublicNoticeByRouteId(id);
     if (!notice) return;
     if (!confirm(`"${notice.title}" 공지를 삭제할까요?`)) return;
     const client = window.supabaseClient;
@@ -316,7 +330,7 @@ function renderNotices() {
 
                 <div class="space-y-3 animate-fade-in-up" style="animation-delay:0.1s;">
                     ${!state.noticesLoaded ? renderListSkeleton(3) : items.map(n => `
-                        <div onclick="openNotice('${n.id}')" class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
+                        <div onclick="openNotice('${n.legacy_key != null ? n.legacy_key : n.id}')" class="group bg-white border border-gray-100 rounded-2xl p-5 shadow-sm hover:shadow-card hover:-translate-y-0.5 transition-all cursor-pointer">
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-4">
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-2 mb-1.5">
@@ -346,7 +360,7 @@ function renderNotices() {
 
 function renderNoticeDetail(payload) {
     const id = String(payload?.id || '');
-    const n = state.notices.find(x => String(x.id) === id);
+    const n = findPublicNoticeByRouteId(id);
 
     if (!n) {
         if (!state.noticesLoaded) {
@@ -363,15 +377,20 @@ function renderNoticeDetail(payload) {
         return `<div class="p-10 text-center">공지를 찾을 수 없습니다.<br><button class="mt-4 btn" onclick="renderSection('notices')">돌아가기</button></div>`;
     }
 
-    const isParentsWorkshop = String(n.id) === '4';
-    const applyOnclick = isParentsWorkshop
+    const legacyKey = getNoticeLegacyKey(n);
+    const isParentingNotice = legacyKey === '4';
+    const isMagazineNotice = legacyKey === '3';
+    const applyOnclick = isParentingNotice
         ? "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'notice' })"
         : "renderSection('apply', { track: 'paid' })";
-    const applyLabel = isParentsWorkshop ? '워크샵 신청하기' : '상담 신청하기';
-    const brochureCta = isParentsWorkshop
-        ? `<a href="/parenting-workshop.html" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">워크샵 안내</a>
-                            <a href="/parents-brochure.html" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">모바일 브로셔</a>`
-        : '';
+    const applyLabel = isParentingNotice ? '워크샵 신청하기' : '상담 신청하기';
+    const parentingLinks = `
+        <a href="/parenting-workshop.html?apply_source=${isMagazineNotice ? 'magazine' : 'notice'}" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">워크샵 안내</a>
+        <a href="/parents-brochure.html" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">모바일 브로셔</a>`;
+    const brochureCta = (isParentingNotice || isMagazineNotice) ? parentingLinks : '';
+    const footerHint = isMagazineNotice
+        ? '창간호 하이라이트를 보셨다면 워크샵 안내로 이어가 보세요.'
+        : (isParentingNotice ? '안내 페이지·브로셔를 보거나 바로 신청할 수 있습니다.' : '문의하거나 신청하시겠어요?');
 
     return `
         <div class="bg-er-base min-h-screen py-16 px-4">
@@ -408,7 +427,7 @@ function renderNoticeDetail(payload) {
                     
                     <div class="mt-10 p-5 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
                         <div>
-                            <p class="text-sm font-bold text-er-dark">${isParentsWorkshop ? '안내 페이지·브로셔를 보거나 바로 신청할 수 있습니다.' : '문의하거나 신청하시겠어요?'}</p>
+                            <p class="text-sm font-bold text-er-dark">${footerHint}</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                             ${brochureCta}

@@ -58,7 +58,9 @@ curl -sL "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A
 ## Instagram · Kakao 공유
 
 - Story/Reels: PNG 9:16 그대로 업로드
-- 링크 스티커: `parenting-workshop.html` (안내) 또는 `parents-brochure.html` (브로셔)
+- 링크 스티커 (유입 추적): `https://er-coaching.com/parenting-workshop.html?apply_source=instagram`
+- 브로셔: `https://er-coaching.com/parents-brochure.html`
+- 매거진 공지: `https://er-coaching.com/#notice_detail?id=3` → 본문에서 `apply_source=magazine` 랜딩
 - Carousel(1:1): 선택 산출물 — `COPY.md` 기준으로 Canva에서 재레이아웃
 
 ## 짧은 홍보 문구 (선택)

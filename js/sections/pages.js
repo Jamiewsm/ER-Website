@@ -47,6 +47,21 @@ function renderResources() {
                 </div>
 
                 <div class="space-y-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+
+                    <div class="grid md:grid-cols-2 gap-4 md:gap-6">
+                        <div onclick="openNotice(3)" class="group bg-gradient-to-br from-[#fff9f1] via-white to-[#f3e8da] rounded-[2rem] p-6 md:p-7 shadow-soft floating-card cursor-pointer border border-white/60 relative overflow-hidden">
+                            <span class="inline-flex rounded-full bg-er-accent/15 text-er-accent text-[9px] font-bold px-2.5 py-0.5 uppercase">Magazine</span>
+                            <h3 class="mt-3 text-lg font-bold text-er-dark break-keep group-hover:text-er-accent transition-colors">ER 매거진 창간호</h3>
+                            <p class="mt-2 text-sm text-gray-600 leading-relaxed break-keep">이번 호 하이라이트 — <strong>Parenting</strong>과 양육의 자기이해. 전체 PDF 전에 웹에서 읽는 짧은 글.</p>
+                            <span class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-er-dark">창간호 읽기 <i class="fas fa-arrow-right text-[10px]"></i></span>
+                        </div>
+                        <div onclick="window.location.href='/parenting-workshop.html?apply_source=magazine'" class="group bg-white rounded-[2rem] p-6 md:p-7 shadow-soft floating-card cursor-pointer border border-er-accent/20 relative overflow-hidden">
+                            <span class="inline-flex rounded-full bg-[#c47a5a] text-white text-[9px] font-bold px-2.5 py-0.5">모집중</span>
+                            <h3 class="mt-3 text-lg font-bold text-er-dark break-keep">Enneagram for Parenting</h3>
+                            <p class="mt-2 text-sm text-gray-600 leading-relaxed break-keep">매거진 주제와 이어지는 4주 심화 워크샵 — 6월–7월, Zoom, $120</p>
+                            <span class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-er-accent">워크샵 안내 <i class="fas fa-arrow-right text-[10px]"></i></span>
+                        </div>
+                    </div>
                     
                     <div onclick="renderSection('types_guide')" class="group bg-white rounded-[2rem] p-6 md:p-8 shadow-soft floating-card cursor-pointer relative overflow-hidden border border-white/40">
                         <div class="absolute top-0 right-0 w-48 h-48 bg-er-accent/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:bg-er-accent/20 transition-all"></div>
