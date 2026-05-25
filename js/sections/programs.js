@@ -117,9 +117,18 @@ function updateProgramView(filterType) {
     if (!selected || !selected.cards) return;
 
     if (introEl) {
+        const ministryNotice = filterType === 'church'
+            ? `<div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs">
+                    <span class="text-gray-500 break-keep">목회자·선교사 본인은 무료/감면 사역지원 트랙으로 안내드립니다.</span>
+                    <button onclick="renderSection('support')" class="font-bold text-er-accent hover:text-er-dark transition-colors whitespace-nowrap">
+                        사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>`
+            : '';
         introEl.innerHTML = `
             <h3 class="text-lg font-bold text-er-dark mb-1">${selected.title}</h3>
             ${selected.desc ? `<p class="text-xs text-gray-500 break-keep">${selected.desc}</p>` : ''}
+            ${ministryNotice}
         `;
     }
 
@@ -152,7 +161,7 @@ function updateProgramView(filterType) {
                 <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
                 <p class="text-sm font-extrabold text-er-dark mb-5">${c.p || ''}</p>
                 <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">기대 효과:</span> ${c.o || ''}</p>
-                <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}' })" class="w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
+                <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}' })" class="w-full py-2.5 rounded-xl ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
                     신청/문의
                 </button>
             </div>
@@ -234,13 +243,14 @@ function renderPrograms() {
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         ${[
-                            ['USD 기준', '모든 서비스 가격은 USD 기준으로 안내됩니다. 국가별 결제 수단과 환율에 따라 최종 청구 금액이 달라질 수 있습니다.'],
-                            ['사역지원 트랙', '목회자·선교사 대상 무료/감면 원칙은 유지됩니다. 사역지원은 별도 심사 후 배정됩니다.'],
-                            ['패키지 우선', '단회보다 4회/8회 패키지 전환율이 높고 변화 유지에 유리합니다. 초기 상담 후 최적 트랙을 제안합니다.']
-                        ].map(([title, desc]) => `
+                            ['USD 기준', '모든 서비스 가격은 USD 기준으로 안내됩니다. 국가별 결제 수단과 환율에 따라 최종 청구 금액이 달라질 수 있습니다.', null],
+                            ['사역지원 트랙', '목회자·선교사 대상 무료/감면 원칙은 유지됩니다. 사역지원은 별도 심사 후 배정됩니다.', { label: '사역지원 보기', section: 'support' }],
+                            ['패키지 우선', '단회보다 4회/8회 패키지 전환율이 높고 변화 유지에 유리합니다. 초기 상담 후 최적 트랙을 제안합니다.', null]
+                        ].map(([title, desc, link]) => `
                             <div class="rounded-2xl border border-gray-100 bg-er-base/50 p-5">
                                 <h4 class="text-sm font-bold text-er-dark">${title}</h4>
                                 <p class="mt-2 text-xs text-gray-500 break-keep">${desc}</p>
+                                ${link ? `<button onclick="renderSection('${link.section}')" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">${link.label} <i class="fas fa-arrow-right text-[10px]"></i></button>` : ''}
                             </div>
                         `).join('')}
                     </div>

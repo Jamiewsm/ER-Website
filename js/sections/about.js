@@ -87,62 +87,22 @@ function renderAbout() {
                     </div>
                 </div>
 
-                <div class="animate-fade-in-up">
-                    <h3 class="text-xl md:text-2xl font-bold text-center text-er-dark mb-3">함께하는 코치진</h3>
-                    <p class="text-center text-sm text-gray-500 mb-8 break-keep">ER은 한 사람을 소개하는 사이트가 아니라, 코치와 협력자 네트워크가 함께 운영하는 회복 사역입니다.</p>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-                        ${['김수잔', '서초윤', '정익훈', '정경하', '주찬미', '임효조', '최다영'].map(name => `
-                            <div class="bg-white rounded-2xl p-5 text-center shadow-soft border border-white/40 floating-card">
-                                <div class="w-14 h-14 mx-auto bg-gray-50 rounded-full flex items-center justify-center text-lg font-bold text-gray-400 mb-3">
-                                    ${name.substring(0,1)}
-                                </div>
-                                <h4 class="font-bold text-gray-900 text-sm">${name}</h4>
-                                <p class="text-[10px] text-er-accent mt-1 uppercase tracking-wide">Collaborator</p>
-                            </div>
-                        `).join('')}
-                        <div class="bg-gray-50 rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors" onclick="renderSection('notices')">
-                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-300 mb-2 shadow-sm"><i class="fas fa-plus"></i></div>
-                            <p class="text-[10px] text-gray-500 font-medium">전문가 과정<br>모집 중</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-16 bg-white rounded-[2.5rem] p-8 md:p-10 shadow-soft border border-white/40 animate-fade-in-up">
-                    <div class="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] items-center">
-                        <div class="relative group flex flex-col items-center text-center">
-                            <div class="relative mb-4">
-                                <div class="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden shadow-card bg-gray-200 ring-4 ring-white">
-                                    <img src="son-profile-picture.png" alt="Jiyoung Son" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://via.placeholder.com/300x300?text=Profile';">
-                                </div>
-                                <div class="absolute -inset-3 rounded-full border border-er-accent/20 pointer-events-none"></div>
-                            </div>
-                            <p class="text-[10px] tracking-widest text-er-accent font-bold uppercase">Founder</p>
-                            <h3 class="text-2xl font-extrabold text-er-dark mt-2">손지영</h3>
-                        </div>
-
+                <div class="mt-16 rounded-[2.5rem] bg-er-dark p-8 md:p-10 text-white shadow-card animate-fade-in-up">
+                    <div class="grid gap-6 lg:grid-cols-[1.3fr_0.7fr] lg:items-center">
                         <div>
-                            <h3 class="text-xl md:text-2xl font-bold text-er-dark mb-4 break-keep">Founder 소개</h3>
-                            <p class="text-sm md:text-base text-gray-500 leading-relaxed break-keep mb-5">
-                                손지영 대표는 에니어그램과 기독교 세계관을 통합적으로 적용하여 개인과 공동체의 회복을 돕는 비전을 품고 ER을 시작했습니다.
+                            <span class="text-[10px] tracking-widest text-er-accent font-bold uppercase">Next Step</span>
+                            <h3 class="mt-3 text-xl md:text-2xl font-bold break-keep">ER이 어떻게 일하는지 보셨다면, 함께할 코치를 만나보세요.</h3>
+                            <p class="mt-3 text-sm md:text-[15px] text-gray-300 leading-relaxed break-keep">
+                                손지영 대표를 비롯해 7명의 코치 프로필과 자격, 전문 분야는 코치 소개 페이지에서 확인하실 수 있습니다.
                             </p>
-                            <div class="grid sm:grid-cols-2 gap-4">
-                                <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                    <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Enneagram Spectrum Advanced Certification</h4>
-                                    <p class="text-xs text-gray-500">Dr. Wagner (International Enneagram Association)</p>
-                                </div>
-                                <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                    <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Instructor</h4>
-                                    <p class="text-xs text-gray-500">국제 에니어그램 협회 인증 전문가</p>
-                                </div>
-                                <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                    <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">SOIM GLTC Instructor</h4>
-                                    <p class="text-xs text-gray-500">소임 글로벌 리더십 트레이닝 강사</p>
-                                </div>
-                                <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                    <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">DTS Counseling</h4>
-                                    <p class="text-xs text-gray-500">Dallas Theological Seminary 석사 과정</p>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row lg:flex-col gap-3">
+                            <button onclick="renderSection('coaches')" class="inline-flex items-center justify-center rounded-full bg-er-accent px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-er-accentDark">
+                                코치 소개 보기
+                            </button>
+                            <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/5 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-white/10">
+                                프로그램 보기
+                            </button>
                         </div>
                     </div>
                 </div>

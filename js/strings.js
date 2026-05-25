@@ -74,6 +74,8 @@
       stats: { labels: ['개인/가정', '목회자', '기업/조직', '강사양성', '청소년'] },
       types: { labels: ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 열매맺는 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 열정적인 사람', '8번 보호하는 사람', '9번 조화로운 사람'] },
       notices: [
+        { id: 4, tag: '모집중', title: 'Enneagram for Parenting — 6월 4주 과정 모집', date: '2026-06-01', summary: '에니어그램으로 부모와 아이의 기질 차이를 이해하고 실제 양육 언어로 적용하는 4주 집중 과정', body: '<p class="text-gray-600 leading-relaxed break-keep">아이를 바꾸려 하기 전에, 부모와 아이의 기질 차이를 먼저 이해해야 합니다. Enneagram for Parenting 4주 과정은 양육 현장에서 반복되는 충돌 장면을 에니어그램 관점으로 해석하고, 집에서 바로 적용할 수 있는 양육 언어를 함께 정리합니다.</p><div class="mt-6 grid gap-3"><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">기간</span><span class="text-sm text-gray-700">2026년 6월 · 4주</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">대상</span><span class="text-sm text-gray-700 break-keep">자녀 양육에서 반복되는 충돌과 오해를 줄이고 싶은 부모·양육자</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">구성</span><span class="text-sm text-gray-700 break-keep">주 1회 · 강의 + 부모 자기 이해 + 아이 기질 해석 + 실제 적용</span></div></div>' },
+        { id: 3, tag: '발행', title: 'ER 매거진 창간호 발행', date: '2026-05-24', summary: 'ER 의 회복 사역 이야기와 인사이트를 담은 매거진 첫 호가 나왔습니다.', body: '<p class="text-gray-600 leading-relaxed break-keep">ER 매거진 창간호가 나왔습니다. 회복의 여정에서 만난 분들의 이야기와, 에니어그램과 기독교 세계관을 통합한 사역의 인사이트를 한 권에 담았습니다. 자세한 안내는 곧 업데이트 됩니다.</p>' },
         { id: 1, tag: '모집중', title: 'SOIM 에니어그램 전문가반 5기 모집', date: '2025-01-15', summary: '온라인 8주 과정 강의과 1:1 멘토링', body: '<p class="text-gray-600 leading-relaxed break-keep">에니어그램을 "아는 단계"에서 끝내지 않고, 삶과 현장에 적용하는 단계까지 함께 갑니다. 전문가반 5기에서는 기초 이론부터 적용까지 매주 심화 수업과 과제로 훈련하고, 1:1 멘토링과 강의 피드백을 통해 실제 강의·코칭 현장에서 자신 있게 사용할 수 있도록 돕습니다. 수료 후에는 (선택사항) 스터디 그룹과 코칭 실습으로 이어지며, 정식 코치 활동을 준비할 수 있습니다.</p><div class="mt-6 grid gap-3"><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">기간</span><span class="text-sm text-gray-700">8주</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">대상</span><span class="text-sm text-gray-700 break-keep">에니어그램을 단순한 성격 이해를 넘어, <br> 기독교 세계관 안에서 "자기 이해와 타인 돌봄"(코칭·강의)에 <br> 실제로 적용하고자 하는 분</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">지원마감</span><span class="text-sm text-gray-700">2025.01.15</span></div></div>' },
         { id: 2, tag: '안내', title: '홈페이지 리뉴얼 안내', date: '2024-12-20', summary: '리뉴얼 진행 중이며 일부 기능은 준비 중입니다.', body: '<p class="text-gray-600 leading-relaxed break-keep">ER 홈페이지는 더 나은 정보 제공을 위해 리뉴얼 중입니다. 일부 메뉴와 기능(로그인/공지 확장 등)은 순차적으로 업데이트됩니다.</p>' }
       ]
@@ -113,7 +115,7 @@
       modelLabel: 'Model',
       model: '목회·선교 현장을 섬기는 사역지원',
       visionLabel: 'Vision & Mission',
-      visionQuote: '나의 Original Design을 알 때,\\n비로소 타인의 Original Design이 보입니다.',
+      visionQuote: '나의 Original Design을 알 때,\n비로소 타인의 Original Design이 보입니다.',
       whoWeServeLabel: 'Who We Serve',
       whoWeServeDesc: '개인의 자기 이해에서 공동체의 관계 회복에 이르기까지, 각 현장에 맞는 회복의 여정을 함께 만들어 갑니다.',
       whoWeServe: [
@@ -269,7 +271,7 @@
 
     thankyou: {
       title: '소중한 이야기를 잘 받았습니다',
-      desc: '마음을 나누어 주셔서 감사합니다.\\n남겨주신 연락처로 곧 정성껏 연락드리겠습니다.'
+      desc: '마음을 나누어 주셔서 감사합니다.\n남겨주신 연락처로 곧 정성껏 연락드리겠습니다.'
     },
 
     mypage: {
