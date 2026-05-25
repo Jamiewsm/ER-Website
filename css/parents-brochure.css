@@ -682,3 +682,135 @@ body.pb-body {
     opacity: 0.85;
   }
 }
+
+/* —— PNG design mode (parenting-workshop/mb1–mb6.png) —— */
+
+.pb-mode-png {
+  --pb-qr-bottom: 10.5%;
+  --pb-qr-width: min(40vw, 164px);
+  --pb-qr-pad: 0.4rem;
+  --pb-cta-bottom: 28%;
+  --pb-cta-height: 7.5%;
+  --pb-contact-bottom: 22%;
+  --pb-contact-height: 4%;
+}
+
+.pb-mode-png .pb-brand-bar {
+  display: none;
+}
+
+.pb-slide--png {
+  padding: 0;
+  background: var(--pb-bg);
+}
+
+.pb-slide--png::before {
+  display: none;
+}
+
+.pb-png-page {
+  display: block;
+  width: 100%;
+  height: 100dvh;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.pb-slide--p6-qr {
+  position: relative;
+}
+
+.pb-slide--p6-qr .pb-qr-slot {
+  position: absolute;
+  left: 50%;
+  bottom: var(--pb-qr-bottom);
+  transform: translateX(-50%);
+  width: var(--pb-qr-width);
+  z-index: 5;
+  padding: var(--pb-qr-pad);
+  background: #fffbf6;
+  border-radius: 0.65rem;
+  box-shadow:
+    0 2px 12px rgba(62, 54, 46, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.85);
+  pointer-events: none;
+}
+
+.pb-slide--p6-qr .pb-qr-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.35rem;
+}
+
+.pb-tap-cta,
+.pb-tap-mail,
+.pb-tap-ig {
+  position: absolute;
+  z-index: 6;
+  opacity: 0;
+  overflow: hidden;
+  text-indent: -9999px;
+}
+
+.pb-tap-cta {
+  left: 10%;
+  right: 10%;
+  bottom: var(--pb-cta-bottom);
+  height: var(--pb-cta-height);
+}
+
+.pb-tap-mail {
+  left: 12%;
+  right: 12%;
+  bottom: calc(var(--pb-contact-bottom) + var(--pb-contact-height));
+  height: var(--pb-contact-height);
+}
+
+.pb-tap-ig {
+  left: 12%;
+  right: 12%;
+  bottom: var(--pb-contact-bottom);
+  height: var(--pb-contact-height);
+}
+
+.pb-missing-hint {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: min(400px, 92vw);
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--pb-text);
+  background: rgba(255, 251, 246, 0.96);
+  border: 1px solid rgba(184, 145, 112, 0.35);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 28px rgba(62, 54, 46, 0.15);
+  z-index: 40;
+  text-align: center;
+}
+
+.pb-missing-hint code {
+  font-size: 0.75rem;
+}
+
+@media print {
+  .pb-mode-png .pb-slide::before {
+    display: none;
+  }
+  .pb-mode-png .pb-png-page {
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+  }
+  .pb-mode-png .pb-qr-slot {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    margin: 1rem auto;
+  }
+}
