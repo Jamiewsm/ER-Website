@@ -50,16 +50,16 @@
 
 Font Awesome 6 (CDN): `users`, `chalkboard-user`, `bullseye`, `cross`, `calendar`, `video`
 
-## Imagery
+## Imagery (PNG 브로셔 — 현재 정본)
 
-Each slide uses a **full-bleed photo** from repo root [`photos-put-here/`](../../../photos-put-here/) with cream gradient overlay + **glass** cards. `ER-logo-header.png` appears in the fixed brand bar.
+디자인 PNG 6장: [`parenting-workshop/`](../../../parenting-workshop/) (`mb1.png` … `mb6.png`, 1080×1920 권장).
 
-| File | Page |
-|------|------|
-| `hero-home.jpg` | 1 표지, 3 ER 관점, 6 신청 (homepage hero match) |
-| `warm-hand.jpg` | 2 공감 |
-| `warm-candles.jpg` | 4 특징, 5 커리큘럼 |
+웹: `parents-brochure.html` · `pb-mode-png` · 페이지 6 QR만 `assets/parents-brochure/qr-apply.png` 오버레이.
 
-인쇄용 복사본: `bash scripts/sync-photos-to-brochure.sh` → `assets/parents-brochure/bg-*.jpg`
+QR 위치 튜닝: `css/parents-brochure.css` → `--pb-qr-bottom`, `--pb-qr-width`.
 
-**배경 사진 교체:** [`photos-put-here/읽어주세요.md`](../../../photos-put-here/읽어주세요.md)
+카피 검토: [`parenting-workshop/콘텐츠-검토.md`](../../../parenting-workshop/콘텐츠-검토.md)
+
+### (레거시) HTML + JPG 브로셔
+
+`photos-put-here/` + glass 카드 — PNG 전환 이전 방식. [`photos-put-here/읽어주세요.md`](../../../photos-put-here/읽어주세요.md)

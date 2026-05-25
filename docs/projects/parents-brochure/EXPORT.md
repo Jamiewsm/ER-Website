@@ -4,6 +4,7 @@
 
 - Production: `https://er-coaching.com/parents-brochure.html`
 - Local: `npx serve .` 또는 정적 서버 후 `/parents-brochure.html`
+- **디자인 정본:** `parenting-workshop/mb1.png` … `mb6.png` (VS Code에 넣은 PNG 그대로 웹에 표시)
 
 신청 링크·QR은 **웹 URL**을 기준으로 합니다. PDF는 보조 자료입니다.
 
