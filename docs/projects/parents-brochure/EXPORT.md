@@ -44,13 +44,14 @@ node scripts/export-parents-brochure.mjs
 ## QR 코드
 
 - 정본 이미지: `assets/parents-brochure/qr-apply.png`
-- 인코딩 URL (QR): `https://er-coaching.com/parenting-workshop.html` — **웹 랜딩** (팝업·인쇄물과 동일)
-- 신청 폼 직접 링크: `https://er-coaching.com/#apply?track=paid&focus=parenting_workshop`
+- 인코딩 URL (QR): `https://er-coaching.com/parenting-workshop.html?apply_source=qr` — **웹 랜딩** (유입 추적)
+- 신청 폼 직접 링크: `https://er-coaching.com/#apply?track=paid&focus=parenting_workshop&apply_source=brochure`
+- 유입 추적 값: `qr`, `landing`, `brochure`, `home_banner`, `home_card`, `notice`, `instagram`, `magazine` → 신청 `source` 필드에 `paid:parenting_workshop:<값>` 형태로 저장
 - 구 URL: `parents-workshop.html` → `parenting-workshop.html` 리다이렉트
 - 재생성:
 
 ```bash
-curl -sL "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fer-coaching.com%2Fparenting-workshop.html" \
+curl -sL "https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fer-coaching.com%2Fparenting-workshop.html%3Fapply_source%3Dqr" \
   -o assets/parents-brochure/qr-apply.png
 ```
 

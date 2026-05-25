@@ -705,3 +705,33 @@ async function loadCoachAdminUsers() {
         `;
     }).join('');
 }
+
+/** Paid/org apply funnel attribution (stored in application.source). */
+const APPLY_ATTRIBUTION_SOURCES = new Set([
+    'website',
+    'qr',
+    'landing',
+    'brochure',
+    'home_promo',
+    'home_banner',
+    'home_card',
+    'notice',
+    'instagram',
+    'magazine'
+]);
+
+function normalizeApplyAttribution(value) {
+    const raw = String(value || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+    return APPLY_ATTRIBUTION_SOURCES.has(raw) ? raw : '';
+}
+
+function buildApplySubmitSource(track, focus, attribution) {
+    if (attribution === 'test') return 'test';
+    const attr = normalizeApplyAttribution(attribution);
+    const focusKey = String(focus || '').trim();
+    const base = focusKey ? `${track}:${focusKey}` : String(track || 'paid');
+    return attr ? `${base}:${attr}` : base;
+}
+
+window.normalizeApplyAttribution = normalizeApplyAttribution;
+window.buildApplySubmitSource = buildApplySubmitSource;

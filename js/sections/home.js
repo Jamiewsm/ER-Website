@@ -31,7 +31,7 @@ function renderHome() {
             icon: 'fas fa-child-reaching',
             accentClass: 'from-[#fff9f1] via-white to-[#f9efe0]',
             iconClass: 'bg-[#f1debf] text-[#8a6848]',
-            primaryAction: "renderSection('apply', { track: 'paid', focus: 'parenting_workshop' })",
+            primaryAction: "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'home_card' })",
             secondaryAction: "window.location.href='/parenting-workshop.html'"
         },
         {
@@ -100,6 +100,7 @@ function renderHome() {
                             나와 타인의 반복되는 패턴을 이해하고<br class="hidden md:block">
                             더 자유롭고 건강한 사랑으로 자라가도록 돕습니다.
                         </p>
+                        ${typeof renderParentingSeasonBanner === 'function' ? renderParentingSeasonBanner() : ''}
                     </div>
 
                     <div class="mt-12 grid gap-5 md:grid-cols-2 animate-fade-in-up" style="animation-delay:0.08s;">
