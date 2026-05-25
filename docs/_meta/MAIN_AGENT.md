@@ -65,10 +65,10 @@ git fetch origin main && git checkout main && git pull
 
 ### Enneagram for Parenting (완료·배포)
 
-- `parents-brochure.html` — 6p 모바일 브로셔
+- `parenting-workshop/mb*.png` — 카톡용 브로셔 PNG (웹 페이지 없음)
 - `parents-workshop.html` — QR 랜딩
 - `/parenting-workshop.html` — 웹 랜딩 (팝업·QR)
-- `/parents-brochure.html` — 모바일 브로셔
+- `parenting-workshop.html` — 워크샵 랜딩
 - `#apply?focus=parenting_workshop` — 신청 프리필 (`parents_workshop` 구 링크 별칭)
 - `js/parents-workshop-promo.js` — 홈 팝업 (머지 후 활성)
 

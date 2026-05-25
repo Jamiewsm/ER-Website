@@ -13,4 +13,4 @@
 - [ ] 마지막 페이지에서 신청 CTA가 가장 눈에 띄는가?
 - [ ] 공지(id:4) 및 브로셔 URL이 일치하는 프로그램명(Enneagram for Parenting)인가?
 
-**QA URL:** `/parents-brochure.html`
+**QA:** 카톡으로 `parenting-workshop/mb1.png` … `mb6.png` 순서·QR·문구 확인
