@@ -1,5 +1,7 @@
 # ER Website — 이미지 에셋 (배경 사진)
 
+> **VS Code에서 폴더가 안 보일 때:** 별도 “에이전트 폴더”가 없습니다. [github.com/Jamiewsm/ER-Website](https://github.com/Jamiewsm/ER-Website) 를 clone 한 뒤, 그 루트의 `assets/er-visual/` 을 여세요. 로컬 설정: [docs/LOCAL_DEV.md](../docs/LOCAL_DEV.md)
+
 배경 사진을 바꿀 때는 **아래 폴더에 JPEG를 넣고**, 표에 맞는 **파일명**을 유지하세요. CSS는 이 경로를 참조합니다.
 
 ## 1. 정본 (권장) — `assets/er-visual/`
