@@ -95,7 +95,7 @@ function renderSection(sectionId, payload = null, options = {}) {
         case 'coach_schedule': html = renderCoachSchedule(); break;
         case 'coach_notes': html = renderCoachNotes(); break;
         case 'coach_mentoring': html = renderCoachMentoring(); break;
-        case 'thankyou': html = renderThankYou(); break;
+        case 'thankyou': html = renderThankYou(payload); break;
         default: html = renderHome();
     }
 

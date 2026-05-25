@@ -5,6 +5,7 @@ import vm from 'node:vm';
 
 const applySource = readFileSync(new URL('../js/sections/apply.js', import.meta.url), 'utf8');
 const apiSource = readFileSync(new URL('../js/api.js', import.meta.url), 'utf8');
+const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url), 'utf8');
 
 function loadApplyRenderer() {
   const context = {
@@ -52,6 +53,40 @@ test('parenting workshop confirmation uses course-specific response copy', () =>
   assert.match(html, /신청이 접수되었습니다/);
   assert.match(html, /일정과 참여 안내/);
   assert.match(html, /24시간 이내/);
+});
+
+test('router preserves parenting focus while rendering the confirmation view', () => {
+  let thankYouPayload = null;
+  let hasFocusedClass = false;
+  const mainContent = { innerHTML: '' };
+  const context = {
+    state: { currentSection: 'apply', currentPayload: null },
+    document: {
+      body: {
+        classList: {
+          toggle(_className, enabled) { hasFocusedClass = enabled; }
+        }
+      },
+      getElementById(id) {
+        if (id === 'main-content') return mainContent;
+        if (id === 'mobile-menu') return { classList: { add() {} } };
+        return null;
+      }
+    },
+    window: { scrollTo() {} },
+    renderThankYou(payload) {
+      thankYouPayload = payload;
+      return '<p>confirmation</p>';
+    },
+    setTimeout() {}
+  };
+  vm.createContext(context);
+  vm.runInContext(appCoreSource, context, { filename: 'js/app-core.js' });
+
+  context.renderSection('thankyou', { focus: 'parenting_workshop' }, { syncHash: false });
+
+  assert.equal(hasFocusedClass, true);
+  assert.equal(thankYouPayload?.focus, 'parenting_workshop');
 });
 
 test('successful focused submission carries parenting focus into confirmation', async () => {
