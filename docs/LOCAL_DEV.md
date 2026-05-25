@@ -6,11 +6,12 @@
 ER-Website/parenting-workshop/mb1.png … mb6.png
 ```
 
-목업 PNG = 최종 디자인. `/parents-brochure.html` 은 6장 스와이프만 합니다. **사이트 메뉴·공지에 브로셔 버튼 없음.**
+Canva **목업 PNG = 최종 디자인**. `/parents-brochure.html` 은 6장 스와이프 뷰어만 제공합니다.  
+**ER 웹사이트에는 모바일 브로셔 버튼을 두지 않습니다** — PNG/PDF·카톡·인쇄로 배포.
 
-mb6 QR: Canva에 `assets/parents-brochure/qr-apply.png` 포함 후 보내기.
+mb6 QR: Canva에 `assets/parents-brochure/qr-apply.png` 를 넣어 보내기.
 
-[`parenting-workshop/읽어주세요.md`](../parenting-workshop/읽어주세요.md)
+[`parenting-workshop/읽어주세요.md`](../parenting-workshop/읽어주세요.md) · [`콘텐츠-검토.md`](../parenting-workshop/콘텐츠-검토.md)
 
 ---
 
@@ -23,8 +24,6 @@ git pull origin main
 ```
 
 VS Code: **File → Open Folder** → 방금 만든 `ER-Website` 폴더.
-
-> Agent가 만든 코드는 GitHub `main` 에 있습니다. PC에 예전 clone 만 있으면 `photos-put-here` 가 없을 수 있습니다. **`git pull origin main`** 또는 새로 clone 하세요.
 
 ## 2. 파일 위치 요약
 
@@ -42,7 +41,7 @@ cd ER-Website
 npx serve .
 ```
 
-브라우저: `http://localhost:3000/#home`
+브라우저: `http://localhost:3000/#home` · 브로셔: `http://localhost:3000/parents-brochure.html`
 
 ## 4. 배포 사이트
 
