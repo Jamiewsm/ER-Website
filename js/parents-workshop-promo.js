@@ -46,13 +46,17 @@
 
     modal.innerHTML = `
       <div class="relative w-full max-w-md rounded-[2rem] overflow-hidden bg-er-surface shadow-card border border-white/80 animate-fade-in-up max-h-[90dvh] overflow-y-auto" onclick="event.stopPropagation()">
-        <div class="relative h-36 sm:h-40">
-          <img src="/assets/parents-brochure/bg-01-cover.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" style="object-position: center 30%;" />
-          <div class="absolute inset-0 bg-gradient-to-t from-er-surface via-er-surface/40 to-transparent"></div>
-          <button type="button" onclick="closeParentsWorkshopPromo()" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 text-gray-500 hover:bg-er-dark hover:text-white flex items-center justify-center shadow-sm transition-colors" aria-label="닫기">
+        <div class="relative h-44 sm:h-48 overflow-hidden bg-er-base">
+          <img src="/assets/er-visual/hero-home.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" style="object-position: center 68%; filter: saturate(0.96) contrast(0.96) brightness(1.01);" />
+          <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(247,238,228,0.72) 0%, rgba(247,238,228,0.38) 42%, rgba(255,251,246,0.96) 100%);"></div>
+          <div class="absolute inset-0" style="background: radial-gradient(circle at 50% 22%, rgba(255,251,246,0.9) 0%, rgba(255,251,246,0.35) 38%, transparent 72%);"></div>
+          <div class="absolute inset-x-0 top-0 flex flex-col items-center pt-5 sm:pt-6 pointer-events-none">
+            <img src="/ER-logo-header.png" alt="ER" class="h-8 sm:h-9 w-auto max-w-[10rem] object-contain drop-shadow-sm" />
+            <span class="mt-3 inline-flex rounded-full bg-[#c47a5a] text-white text-[10px] font-bold px-3 py-1 shadow-sm">소규모 선착순 · 4주 워크샵</span>
+          </div>
+          <button type="button" onclick="closeParentsWorkshopPromo()" class="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/90 text-gray-500 hover:bg-er-dark hover:text-white flex items-center justify-center shadow-sm transition-colors" aria-label="닫기">
             <i class="fas fa-times"></i>
           </button>
-          <span class="absolute bottom-3 left-4 inline-flex rounded-full bg-[#c47a5a] text-white text-[10px] font-bold px-3 py-1 shadow-sm">소규모 선착순</span>
         </div>
         <div class="px-6 pb-6 pt-2">
           <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-er-primary mb-1">Enneagram for Restoration</p>
