@@ -38,7 +38,7 @@ body.pw-body {
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  background-image: url("../assets/parents-brochure/bg-01-cover.jpg");
+  background-image: url("../photos-put-here/hero-home.jpg");
   background-size: cover;
   background-position: center 22%;
 }

@@ -52,7 +52,7 @@ Font Awesome 6 (CDN): `users`, `chalkboard-user`, `bullseye`, `cross`, `calendar
 
 ## Imagery
 
-Each slide uses a **full-bleed photo** from `assets/er-visual/` (same warm tone as the ER homepage hero) with cream gradient overlay + **glass** cards. `ER-logo-header.png` appears in the fixed brand bar.
+Each slide uses a **full-bleed photo** from repo root [`photos-put-here/`](../../../photos-put-here/) with cream gradient overlay + **glass** cards. `ER-logo-header.png` appears in the fixed brand bar.
 
 | File | Page |
 |------|------|
@@ -60,6 +60,6 @@ Each slide uses a **full-bleed photo** from `assets/er-visual/` (same warm tone 
 | `warm-hand.jpg` | 2 공감 |
 | `warm-candles.jpg` | 4 특징, 5 커리큘럼 |
 
-Legacy copies in `assets/parents-brochure/bg-*.jpg` may be regenerated from `er-visual` for PDF export. Update paths in `css/parents-brochure.css` if filenames change.
+인쇄용 복사본: `bash scripts/sync-photos-to-brochure.sh` → `assets/parents-brochure/bg-*.jpg`
 
-**배경 사진 교체 가이드 (운영자):** 리포 루트 [`assets/README.md`](../../../assets/README.md)
+**배경 사진 교체:** [`photos-put-here/읽어주세요.md`](../../../photos-put-here/읽어주세요.md)
