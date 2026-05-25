@@ -61,3 +61,5 @@ Each slide uses a **full-bleed photo** from `assets/er-visual/` (same warm tone 
 | `warm-candles.jpg` | 4 특징, 5 커리큘럼 |
 
 Legacy copies in `assets/parents-brochure/bg-*.jpg` may be regenerated from `er-visual` for PDF export. Update paths in `css/parents-brochure.css` if filenames change.
+
+**배경 사진 교체 가이드 (운영자):** 리포 루트 [`assets/README.md`](../../../assets/README.md)
