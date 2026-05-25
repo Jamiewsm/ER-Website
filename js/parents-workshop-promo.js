@@ -2,6 +2,7 @@
 (function () {
   var BANNER_ID = 'parenting-season-banner';
   var STORAGE_KEY = 'er_parenting_season_banner_dismissed_date';
+  var LEGACY_POPUP_KEY = 'er_parents_workshop_promo_dismissed_date';
 
   function todayKey() {
     return new Date().toISOString().slice(0, 10);
@@ -15,12 +16,19 @@
     }
   }
 
+  /** X or navigate away from home: hide until next full render — no localStorage */
+  function closeParentingSeasonBanner() {
+    var el = document.getElementById(BANNER_ID);
+    if (el) el.remove();
+  }
+
+  /** “오늘 하루 이 안내 숨기기” only */
   function dismissParentingSeasonBannerToday() {
     try {
       localStorage.setItem(STORAGE_KEY, todayKey());
+      localStorage.removeItem(LEGACY_POPUP_KEY);
     } catch (_e) {}
-    var el = document.getElementById(BANNER_ID);
-    if (el) el.remove();
+    closeParentingSeasonBanner();
   }
 
   function renderParentingSeasonBanner() {
@@ -28,9 +36,9 @@
     if (/[?&]no_promo=1/.test(window.location.search || '')) return '';
 
     return `
-      <div id="${BANNER_ID}" class="psb-wrap animate-fade-in-up" style="animation-delay:0.05s;" role="region" aria-labelledby="psb-title">
+      <div id="${BANNER_ID}" class="psb-wrap" role="region" aria-labelledby="psb-title">
         <article class="psb-card">
-          <button type="button" class="psb-close" onclick="dismissParentingSeasonBannerToday()" aria-label="배너 닫기">
+          <button type="button" class="psb-close" onclick="closeParentingSeasonBanner()" aria-label="닫기 (새로고침 시 다시 표시)">
             <i class="fas fa-times text-sm" aria-hidden="true"></i>
           </button>
           <header class="psb-head">
@@ -69,14 +77,14 @@
     }
   }
 
-  /** @deprecated Fullscreen promo removed — kept for compatibility */
   function maybeShowParentsWorkshopPromo() {}
 
   function closeParentsWorkshopPromo() {
-    dismissParentingSeasonBannerToday();
+    closeParentingSeasonBanner();
   }
 
   window.renderParentingSeasonBanner = renderParentingSeasonBanner;
+  window.closeParentingSeasonBanner = closeParentingSeasonBanner;
   window.dismissParentingSeasonBannerToday = dismissParentingSeasonBannerToday;
   window.parentingBannerGoDetail = parentingBannerGoDetail;
   window.parentingBannerGoApply = parentingBannerGoApply;
