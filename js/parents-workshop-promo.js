@@ -28,34 +28,30 @@
     if (/[?&]no_promo=1/.test(window.location.search || '')) return '';
 
     return `
-      <div id="${BANNER_ID}" class="mt-10 max-w-3xl mx-auto animate-fade-in-up" style="animation-delay:0.05s;">
-        <article class="relative overflow-hidden rounded-[1.75rem] border border-white/70 bg-gradient-to-br from-[#fff9f1] via-white to-[#f3e8da] p-5 sm:p-6 shadow-soft">
-          <div class="flex flex-wrap items-start justify-between gap-3">
-            <div class="min-w-0 flex-1">
-              <span class="inline-flex rounded-full bg-[#c47a5a] text-white text-[10px] font-bold px-3 py-1">모집중 · 4주 워크샵</span>
-              <h2 class="mt-3 text-lg sm:text-xl font-extrabold text-er-dark leading-snug break-keep">
-                Enneagram for Parenting
-              </h2>
-              <p class="mt-1 text-sm font-semibold text-er-primary break-keep">나를 알고, 아이를 이해하는 자녀양육 심화 과정</p>
-              <p class="mt-2 text-sm text-gray-600 leading-relaxed break-keep">
-                양육의 변화는 부모의 자기이해에서 시작됩니다. 6월–7월 온라인 Zoom · 소규모 선착순 · $120
-              </p>
-            </div>
-            <button type="button" onclick="dismissParentingSeasonBannerToday()" class="shrink-0 w-8 h-8 rounded-full bg-white/90 text-gray-400 hover:text-er-dark border border-gray-100 flex items-center justify-center" aria-label="배너 닫기">
-              <i class="fas fa-times text-sm"></i>
-            </button>
-          </div>
-          <div class="mt-4 flex flex-col sm:flex-row gap-2.5">
-            <button type="button" onclick="parentingBannerGoDetail()" class="flex-1 py-3 rounded-full bg-er-dark text-white text-sm font-bold shadow-soft hover:bg-gray-800 transition-all">
-              워크샵 안내 보기
-            </button>
-            <button type="button" onclick="parentingBannerGoApply()" class="flex-1 py-3 rounded-full border border-er-accent/50 bg-white text-er-dark text-sm font-bold hover:bg-er-accentLight/40 transition-colors">
-              바로 신청하기
-            </button>
-          </div>
-          <button type="button" onclick="dismissParentingSeasonBannerToday()" class="mt-3 text-xs text-er-muted hover:text-er-dark underline underline-offset-2 break-keep">
-            오늘 하루 이 안내 숨기기
+      <div id="${BANNER_ID}" class="psb-wrap animate-fade-in-up" style="animation-delay:0.05s;" role="region" aria-labelledby="psb-title">
+        <article class="psb-card">
+          <button type="button" class="psb-close" onclick="dismissParentingSeasonBannerToday()" aria-label="배너 닫기">
+            <i class="fas fa-times text-sm" aria-hidden="true"></i>
           </button>
+          <header class="psb-head">
+            <span class="psb-badge">모집중</span>
+            <span class="psb-eyebrow">4주 자녀양육 심화</span>
+          </header>
+          <h2 id="psb-title" class="psb-title">Enneagram for Parenting</h2>
+          <p class="psb-sub">나를 알고, 아이를 이해하는</p>
+          <p class="psb-lead">양육의 변화는 부모의 자기이해에서 시작됩니다.</p>
+          <ul class="psb-meta" aria-label="워크샵 안내">
+            <li>4주 · 주 1회</li>
+            <li>6월–7월 · Zoom</li>
+            <li>소규모 선착순</li>
+            <li>참가비 $120</li>
+          </ul>
+          <p class="psb-note">에니어그램 입문이 아닌, 유형을 어느 정도 알고 계신 부모님을 위한 심화 과정입니다.</p>
+          <div class="psb-actions">
+            <button type="button" class="psb-btn psb-btn--primary" onclick="parentingBannerGoDetail()">워크샵 안내 보기</button>
+            <button type="button" class="psb-btn psb-btn--secondary" onclick="parentingBannerGoApply()">바로 신청하기</button>
+          </div>
+          <button type="button" class="psb-dismiss" onclick="dismissParentingSeasonBannerToday()">오늘 하루 이 안내 숨기기</button>
         </article>
       </div>
     `;
