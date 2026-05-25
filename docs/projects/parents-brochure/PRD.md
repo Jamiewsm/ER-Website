@@ -51,8 +51,8 @@ ER **Enneagram for Parenting** 4주 워크샵 홍보용 모바일 디지털 브�
 
 | 필수 | 구현 위치 |
 |------|-----------|
-| 웹 6페이지 | `parents-brochure.html` |
-| PDF/PNG 가이드 | [EXPORT.md](./EXPORT.md) |
+| PNG 6장 (카톡 등) | `parenting-workshop/mb1.png` … `mb6.png` |
+| 배포 가이드 | [EXPORT.md](./EXPORT.md) |
 | QR | `assets/parents-brochure/qr-apply.png` |
 
 ## 11. 체크리스트
@@ -61,4 +61,4 @@ ER **Enneagram for Parenting** 4주 워크샵 홍보용 모바일 디지털 브�
 
 ## 12. 한 줄 요약
 
-핸드폰에서 ER 복음적 자녀양육 워크샵을 넘기며 읽고, 마지막에 링크·QR로 신청하는 따뜻하고 깊이 있는 모바일 브로셔.
+카톡 등으로 PNG 6장을 넘기며 읽고, 마지막 QR·랜딩 링크로 신청하는 따뜻하고 깊이 있는 모바일 브로셔.

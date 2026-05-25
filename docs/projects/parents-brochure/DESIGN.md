@@ -1,6 +1,6 @@
 # Enneagram for Parenting — Design Spec
 
-브로셔 전용 시각 가이드. 사이트 SSOT [DESIGN.md](../../../DESIGN.md) 와 함께 사용합니다.
+Canva PNG 브로셔 시각 가이드. 사이트 SSOT [DESIGN.md](../../../DESIGN.md) 와 함께 사용합니다.
 
 ## Mood
 
@@ -8,68 +8,28 @@
 
 피할 것: 가벼운 성격검사 홍보, 상업적 육아 강의, “아이를 고치는 법” 메시지.
 
-## CSS variables (`css/parents-brochure.css`)
+## ER 토큰 (Canva에 맞출 색)
 
 | Token | Hex | Maps to ER |
 |-------|-----|-----------|
-| `--pb-bg` | `#F7EEE4` | `er-base` |
-| `--pb-surface` | `#FFFBF6` | `er-surface` |
-| `--pb-text` | `#3E362E` | `er-dark` |
-| `--pb-body` | `#5C4F44` | body |
-| `--pb-muted` | `#8A7A6B` | captions |
-| `--pb-gold` | `#B89170` | `er-accent` |
-| `--pb-terracotta` | `#C47A5A` | accent alt |
-| `--pb-olive` | `#6B7B5C` | accent alt |
-| `--pb-cta` | `#3E362E` | primary CTA (`er-dark`) |
+| Background | `#F7EEE4` | `er-base` |
+| Surface | `#FFFBF6` | `er-surface` |
+| Text | `#3E362E` | `er-dark` |
+| Body | `#5C4F44` | body |
+| Accent | `#B89170` | `er-accent` |
+| Terracotta | `#C47A5A` | accent alt |
+| Olive | `#6B7B5C` | accent alt |
 
 ## Layout
 
-- Viewport: `100dvh` per slide, `scroll-snap-type: y mandatory`
-- Frame: `max-width: 430px`, centered on desktop
-- Export aspect: **9:16** (1080×1920px target for PNG)
+- **9:16** (1080×1920px) 세로 6페이지
+- Pretendard (또는 유사 산세리프)
+- 본문 최소 16–18px, `keep-all` 줄바꿈
 
-## Typography
+## 배포
 
-- Family: Pretendard (CDN, same as site)
-- Cover title: ~1.75–2rem, bold
-- Body: min **16px** (1rem), comfortable **18px** where space allows
-- Line height: 1.55–1.65 for Korean body
-- `word-break: keep-all` on headings
+[`parenting-workshop/mb1.png` … `mb6.png`](../../../parenting-workshop/) — **카톡·인스타·인쇄** (웹 HTML 브로셔 없음)
 
-## Components
-
-- **Badge:** pill, terracotta/olive tint, small caps optional
-- **Quote cards:** left border gold, cream surface
-- **Feature cards:** 2×2 grid on page 4, line icon top
-- **Timeline:** vertical line + week nodes (page 5)
-- **Info cards:** page 6 grid, label + value
-- **CTA:** full-width, min-height 48px, rounded-full
-- **QR:** min 120×120px display
-
-## Icons (Page 4–5)
-
-Font Awesome 6 (CDN): `users`, `chalkboard-user`, `bullseye`, `cross`, `calendar`, `video`
-
-<<<<<<< HEAD
-## Imagery (PNG 정본)
-
-[`parenting-workshop/mb1.png` … `mb6.png`](../../../parenting-workshop/) — Canva 목업 = 배포용 최종. HTML 재구현 없음.
-
-QR: `assets/parents-brochure/qr-apply.png` 를 mb6에 Canva에서 포함.
-
-웹 뷰어: `parents-brochure.html` (사이트 네비·공지 버튼 없음).
-=======
-## Imagery (PNG 브로셔 — 현재 정본)
-
-디자인 PNG 6장: [`parenting-workshop/`](../../../parenting-workshop/) (`mb1.png` … `mb6.png`, 1080×1920 권장).
-
-웹: `parents-brochure.html` · `pb-mode-png` · 페이지 6 QR만 `assets/parents-brochure/qr-apply.png` 오버레이.
-
-QR 위치 튜닝: `css/parents-brochure.css` → `--pb-qr-bottom`, `--pb-qr-width`.
+QR: `assets/parents-brochure/qr-apply.png` → mb6에 Canva 삽입
 
 카피 검토: [`parenting-workshop/콘텐츠-검토.md`](../../../parenting-workshop/콘텐츠-검토.md)
-
-### (레거시) HTML + JPG 브로셔
-
-`photos-put-here/` + glass 카드 — PNG 전환 이전 방식. [`photos-put-here/읽어주세요.md`](../../../photos-put-here/읽어주세요.md)
->>>>>>> origin/main

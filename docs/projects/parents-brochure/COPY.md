@@ -1,6 +1,6 @@
 # Enneagram for Parenting — Brochure Copy (SSOT)
 
-페이지별 카피 정본. `parents-brochure.html` 과 Canva/PDF 제작 시 이 파일을 기준으로 합니다.
+페이지별 카피 정본. Canva PNG(`parenting-workshop/mb*.png`) 제작 시 이 파일을 기준으로 합니다.
 
 ---
 
