@@ -97,9 +97,7 @@ function initApplyTurnstile() {
     return false;
   }
 
-  if (window.turnstile && typeof window.turnstile.ready === 'function') {
-    window.turnstile.ready(attemptMount);
-  }
+  if (attemptMount()) return;
 
   var attempts = 0;
   applyTurnstileInitTimer = setInterval(function () {

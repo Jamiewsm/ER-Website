@@ -179,3 +179,50 @@ test('failed focused submission reports an inline retryable error', async () => 
   assert.match(statusEl.className, /text-red/);
   assert.equal(submitButton.textContent, '4주 워크샵 신청하기');
 });
+
+test('Turnstile init mounts the explicit widget without calling ready on an async-loaded API', () => {
+  let readyCalls = 0;
+  let renderCalls = 0;
+  const statusEl = {
+    className: 'hidden',
+    textContent: '',
+    classList: { add() {}, remove() {} }
+  };
+  const retryBtn = {
+    classList: { add() {}, toggle() {} }
+  };
+  const widgetEl = { innerHTML: '' };
+  const tokenEl = { value: '' };
+  const context = {
+    window: {
+      TURNSTILE_SITE_KEY: 'test-site-key',
+      turnstile: {
+        ready() {
+          readyCalls += 1;
+          throw new Error('ready cannot be used with async script loading');
+        },
+        render() {
+          renderCalls += 1;
+          return 'widget-id';
+        }
+      }
+    },
+    document: {
+      getElementById(id) {
+        if (id === 'apply-turnstile-status') return statusEl;
+        if (id === 'apply-turnstile-retry') return retryBtn;
+        if (id === 'apply-turnstile-widget') return widgetEl;
+        if (id === 'apply-turnstile-token') return tokenEl;
+        return null;
+      }
+    },
+    setInterval() { return 1; },
+    clearInterval() {}
+  };
+  vm.createContext(context);
+  vm.runInContext(apiSource, context, { filename: 'js/api.js' });
+
+  assert.doesNotThrow(() => context.initApplyTurnstile());
+  assert.equal(readyCalls, 0);
+  assert.equal(renderCalls, 1);
+});
