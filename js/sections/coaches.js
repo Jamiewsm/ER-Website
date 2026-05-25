@@ -124,6 +124,30 @@ function renderCoaches() {
                 ${emptyState}
             </div>
 
+            <!-- Collaborators -->
+            <div class="mt-16 animate-fade-in-up">
+                <div class="text-center mb-8">
+                    <span class="text-[11px] font-bold uppercase tracking-[0.26em] text-er-accent">Collaborators</span>
+                    <h3 class="mt-3 text-xl md:text-2xl font-bold text-er-dark break-keep">함께하는 협력 코치진</h3>
+                    <p class="mt-3 text-sm text-gray-500 break-keep max-w-xl mx-auto">ER은 한 사람의 사역이 아닙니다. 코치와 협력자 네트워크가 함께 회복의 여정을 만들어 갑니다.</p>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+                    ${['김수잔', '서초윤', '정익훈', '정경하', '주찬미', '임효조', '최다영'].map(name => `
+                        <div class="bg-white rounded-2xl p-5 text-center shadow-soft border border-white/40 floating-card">
+                            <div class="w-14 h-14 mx-auto bg-er-base rounded-full flex items-center justify-center text-lg font-bold text-er-accent mb-3">
+                                ${name.substring(0,1)}
+                            </div>
+                            <h4 class="font-bold text-er-dark text-sm">${name}</h4>
+                            <p class="text-[10px] text-er-accent mt-1 uppercase tracking-wide">Collaborator</p>
+                        </div>
+                    `).join('')}
+                    <div class="bg-gray-50 rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-dashed border-gray-300 cursor-pointer hover:bg-gray-100 transition-colors" onclick="renderSection('coach_training')">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-300 mb-2 shadow-sm"><i class="fas fa-plus"></i></div>
+                        <p class="text-[10px] text-gray-500 font-medium">전문가 과정<br>모집 중</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>`;
 }

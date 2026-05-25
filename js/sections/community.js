@@ -20,9 +20,9 @@ function renderCommunity() {
         <div class="bg-white min-h-screen py-16 px-4">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-12 animate-fade-in-up">
-                    <span class="text-er-accent font-bold text-xs tracking-widest uppercase">함께한 이야기</span>
-                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mt-2">회복 이야기와 변화의 기록</h2>
-                    <p class="mt-2 text-sm text-gray-500 break-keep">이 섹션은 실제 회복 사례와 후기, 카테고리별 변화 패턴을 담습니다. 후원/운영 정책은 사역지원 섹션에서 별도로 안내합니다.</p>
+                    <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Stories</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mt-2">먼저 회복을 경험한 분들의 이야기</h2>
+                    <p class="mt-2 text-sm text-gray-500 break-keep max-w-xl mx-auto">실제 회복 사례와 카테고리별 변화 패턴을 함께 모아 두었습니다.</p>
                 </div>
 
                 <div class="grid gap-5 md:grid-cols-4 mb-10 animate-fade-in-up">
@@ -100,22 +100,32 @@ function renderCommunity() {
                     </div>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 0.2s;">
-                    <div class="md:col-span-3">
-                        <h3 class="text-lg font-bold text-gray-900 mb-4">이 사역을 운영하는 방식</h3>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            ${[
-                                ['협력 기반의 사역', '교회와 기관, 코치와 협력자와 함께 사역의 구조를 세워 갑니다.'],
-                                ['후원과 접근성', '후원과 협력을 통해 더 많은 개인과 공동체가 이 사역에 접근할 수 있도록 운영합니다.'],
-                                ['빠른 해결보다 형성', '단기 해결보다 지속 가능한 회복과 형성의 과정을 중요하게 여깁니다.'],
-                                ['신뢰와 투명성', '사역의 목적과 운영 방향, 참여 경로를 공개적으로 설명하는 사이트를 지향합니다.'],
-                            ].map(([title, desc]) => `
-                                <div class="bg-white/70 rounded-2xl p-5 border border-white/30 shadow-soft floating-card">
-                                    <h4 class="font-bold text-gray-900 mb-2">${title}</h4>
-                                    <p class="text-sm text-gray-500 break-keep">${desc}</p>
+                <div class="rounded-[2.5rem] bg-er-base p-8 md:p-10 shadow-soft animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="text-center max-w-2xl mx-auto mb-8">
+                        <span class="text-[11px] font-bold uppercase tracking-[0.26em] text-er-accent">Next Step</span>
+                        <h3 class="mt-3 text-xl md:text-2xl font-bold text-er-dark break-keep">내 경우는 어디에 가까운가요?</h3>
+                        <p class="mt-3 text-sm text-gray-600 break-keep">관심 영역을 선택하면 ER이 다루는 프로그램으로 이어집니다.</p>
+                    </div>
+                    <div class="grid gap-3 md:grid-cols-4">
+                        ${[
+                            { label: '양육', desc: '부모-아이 기질 차이', icon: 'fas fa-child-reaching', tab: 'individual' },
+                            { label: '부부', desc: '반복 갈등·대화 회복', icon: 'fas fa-heart', tab: 'individual' },
+                            { label: '팀', desc: '소통·역할 정렬', icon: 'fas fa-users', tab: 'business' },
+                            { label: '교회', desc: '공동체·리더십', icon: 'fas fa-church', tab: 'church' },
+                        ].map((card) => `
+                            <button onclick="renderSection('programs', { tab: '${card.tab}' })" class="text-left rounded-2xl bg-white border border-white/40 p-5 shadow-soft hover:-translate-y-1 hover:shadow-card transition-all">
+                                <div class="w-10 h-10 rounded-xl bg-er-base text-er-accent flex items-center justify-center mb-3">
+                                    <i class="${card.icon}"></i>
                                 </div>
-                            `).join('')}
-                        </div>
+                                <h4 class="text-sm font-bold text-er-dark">${card.label}</h4>
+                                <p class="mt-1 text-xs text-gray-500 break-keep">${card.desc}</p>
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button onclick="renderSection('test')" class="inline-flex items-center gap-2 rounded-full bg-er-dark px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-gray-800">
+                            먼저 진단 테스트 해보기 <i class="fas fa-arrow-right text-[11px]"></i>
+                        </button>
                     </div>
                 </div>
             </div>

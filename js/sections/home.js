@@ -1,16 +1,4 @@
 function renderHome() {
-    const erSite = window.ER_STRINGS || {};
-    const founder = Array.isArray(erSite?.coaches?.list) && erSite.coaches.list.length
-        ? erSite.coaches.list[0]
-        : {
-            name: '손지영 대표',
-            role: '대표 · Founder',
-            photo: 'son-profile-picture.png',
-            bio: '에니어그램과 기독교 세계관을 통합적으로 적용해 개인·가정·공동체의 회복을 돕습니다.',
-            specialties: ['개인 자기 이해 코칭', '부부·가정 회복', '사역자·선교사 돌봄', '에니어그램 강사 양성'],
-            certs: ['Enneagram Spectrum Advanced Certification', 'IEA Accredited Instructor', 'SOIM GLTC Instructor', 'DTS Counseling'],
-            locations: 'Korea · USA'
-        };
     const stories = Array.isArray(publicTestimonials?.stories) ? publicTestimonials.stories : [];
     const findStory = (matcher, fallback) => stories.find((story) => matcher(story)) || fallback;
     const fallbackStory = { quote: 'ER은 각 사람과 공동체의 실제 이야기를 먼저 듣고, 맞는 회복의 방향을 함께 정리합니다.', person: 'ER', meta: '상담 사례' };
@@ -87,32 +75,6 @@ function renderHome() {
         }
     ];
 
-    const guideCards = [
-        {
-            label: '서비스 안내',
-            title: '프로그램 전체 보기',
-            desc: '개인·가정, 교회·기관, 기업·팀 프로그램 구성을 한 번에 확인합니다.',
-            action: "renderSection('programs', { tab: 'individual' })"
-        },
-        {
-            label: '회복 이야기',
-            title: '후기와 변화 보기',
-            desc: '실제 사례와 카테고리별 변화 패턴을 더 보고 싶다면 여기서 이어집니다.',
-            action: "renderSection('community')"
-        },
-        {
-            label: 'ER 소개',
-            title: '대표와 사역 방향 보기',
-            desc: 'ER이 어떤 배경과 철학으로 사역하는지 짧고 명확하게 확인합니다.',
-            action: "renderSection('about')"
-        },
-        {
-            label: '진단 테스트',
-            title: '먼저 진단해 보기',
-            desc: '상담 전에 현재 패턴을 스스로 정리해 보고 싶다면 진단 테스트로 시작합니다.',
-            action: "renderSection('test')"
-        }
-    ];
 
     return `
         <div class="bg-er-base">
@@ -178,105 +140,24 @@ function renderHome() {
                 </div>
             </section>
 
-            <section class="bg-white px-4 sm:px-6 lg:px-8 py-12 md:py-14 border-y border-er-accentLight/50">
-                <div class="max-w-6xl mx-auto">
-                    <div class="rounded-[2.25rem] bg-er-dark p-7 md:p-8 text-white shadow-card">
-                        <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-                            <div>
-                                <span class="inline-flex rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-er-accent">First Conversation</span>
-                                <h3 class="mt-4 text-2xl md:text-3xl font-bold break-keep">아직 무엇이 문제인지 정확히 말로 정리되지 않아도 괜찮습니다.</h3>
-                                <div class="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-gray-200">
-                                    <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5">Korea · USA 기준 운영</span>
-                                    <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5">24시간 내 1차 응답</span>
-                                    <span class="rounded-full border border-white/15 bg-white/5 px-3 py-1.5">개인·가정 / 교회·기관 분리 안내</span>
-                                </div>
-                            </div>
-                            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                                <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-3.5 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight">
-                                    개인·가정 상담 신청
-                                </button>
-                                <button onclick="renderSection('apply', { track: 'org' })" class="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-3.5 text-sm font-bold text-white transition-colors hover:bg-white/15">
-                                    교회·기관 상담 신청
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bg-white px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-                <div class="max-w-6xl mx-auto grid gap-8 lg:grid-cols-[0.82fr_1.18fr] items-center">
-                    <div class="relative mx-auto w-full max-w-sm">
-                        <div class="rounded-[2.5rem] border border-white/70 bg-er-base/70 p-5 shadow-card">
-                            <div class="aspect-[0.95] overflow-hidden rounded-[2rem] bg-gray-200">
-                                <img src="${founder.photo}" alt="${founder.name}" class="h-full w-full object-cover object-top" onerror="this.src='https://via.placeholder.com/720x760?text=ER'">
-                            </div>
-                        </div>
-                        <div class="absolute -bottom-4 left-6 rounded-2xl border border-white/70 bg-white/90 px-4 py-3 shadow-soft">
-                            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-er-accent">Founder</p>
-                            <p class="mt-1 text-base font-bold text-er-dark">${founder.name}</p>
-                            <p class="text-xs text-gray-500">${founder.locations || 'Korea · USA'}</p>
-                        </div>
-                    </div>
-
-                    <div>
-                        <span class="text-[11px] font-bold uppercase tracking-[0.26em] text-er-accent">Who You Meet</span>
-                        <h3 class="mt-4 text-2xl md:text-4xl font-bold text-er-dark break-keep">선택 뒤에는, 삶의 현장을 이해하는 사람이 함께합니다.</h3>
-                        <p class="mt-4 text-sm md:text-base text-gray-600 leading-relaxed break-keep">
-                            ${founder.bio}
-                        </p>
-
-                        <div class="mt-8 grid gap-4 md:grid-cols-2">
-                            <div class="rounded-[1.75rem] border border-er-accentLight bg-er-base/55 p-5 shadow-soft">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-er-accent">Specialties</p>
-                                <div class="mt-3 flex flex-wrap gap-2">
-                                    ${(founder.specialties || []).map((item) => `
-                                        <span class="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-sm">${item}</span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                            <div class="rounded-[1.75rem] border border-er-accentLight bg-er-base/55 p-5 shadow-soft">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-er-accent">Credentials</p>
-                                <div class="mt-3 flex flex-wrap gap-2">
-                                    ${(founder.certs || []).slice(0, 4).map((item) => `
-                                        <span class="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-sm">${item}</span>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 flex flex-wrap gap-3">
-                            <button onclick="renderSection('about')" class="inline-flex items-center justify-center rounded-full border border-er-accent/30 bg-white px-5 py-3 text-sm font-bold text-er-dark transition-colors hover:border-er-accent hover:bg-er-accentLight/40">
-                                ER 소개 보기
-                            </button>
-                            <button onclick="renderSection('coaches')" class="inline-flex items-center justify-center rounded-full border border-er-accent/30 bg-white px-5 py-3 text-sm font-bold text-er-dark transition-colors hover:border-er-accent hover:bg-er-accentLight/40">
-                                코치 소개 보기
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section class="bg-er-base px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-                <div class="max-w-6xl mx-auto">
-                    <div class="text-center max-w-3xl mx-auto">
-                        <h3 class="text-2xl md:text-4xl font-bold text-er-dark break-keep">상담 전에 필요한 내용만 먼저 확인해보세요.</h3>
-                        <p class="mt-4 text-sm md:text-base text-gray-600 leading-relaxed break-keep">
-                            프로그램 안내, 실제 후기, 진단 테스트, ER 소개 가운데 필요한 메뉴만 바로 보실 수 있습니다.
+                <div class="max-w-4xl mx-auto">
+                    <div class="rounded-[2.5rem] bg-er-dark p-8 md:p-12 text-white shadow-card text-center">
+                        <span class="inline-flex rounded-full bg-white/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.22em] text-er-accent">Start Here</span>
+                        <h3 class="mt-5 text-2xl md:text-4xl font-bold break-keep leading-tight">
+                            어디서부터 시작해야 할지 모르시나요?
+                        </h3>
+                        <p class="mt-4 text-sm md:text-base text-gray-200 leading-relaxed break-keep max-w-xl mx-auto">
+                            10분 진단으로 내 반응 패턴을 먼저 정리하면, 상담이 훨씬 가벼워집니다.
                         </p>
-                    </div>
-
-                    <div class="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                        ${guideCards.map((card) => `
-                            <div class="rounded-[2rem] border border-white/65 bg-white/80 p-6 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card">
-                                <span class="inline-flex rounded-full bg-er-base px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-er-accent">${card.label}</span>
-                                <h4 class="mt-4 text-lg font-bold text-er-dark break-keep">${card.title}</h4>
-                                <p class="mt-3 text-sm text-gray-500 leading-relaxed break-keep">${card.desc}</p>
-                                <button onclick="${card.action}" class="mt-5 inline-flex items-center gap-2 text-sm font-bold text-er-dark transition-colors hover:text-er-accent">
-                                    바로 보기 <i class="fas fa-arrow-right text-[11px]"></i>
-                                </button>
-                            </div>
-                        `).join('')}
+                        <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                            <button onclick="renderSection('test')" class="inline-flex items-center justify-center rounded-full bg-er-accent px-7 py-4 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-er-accentDark">
+                                무료 진단 시작하기
+                            </button>
+                            <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/5 px-7 py-4 text-sm font-bold text-white transition-colors hover:bg-white/10">
+                                프로그램 둘러보기
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
