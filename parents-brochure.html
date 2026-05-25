@@ -10,105 +10,28 @@
   <meta property="og:description" content="4주 자녀양육 워크샵 — ER 복음적 에니어그램 심화 과정" />
   <meta name="theme-color" content="#F7EEE4" />
   <link rel="preload" href="parenting-workshop/mb1.png" as="image" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="css/parents-brochure.css" />
 </head>
 <body class="pb-body pb-mode-png">
   <div class="pb-frame">
     <div class="pb-scroll" id="pb-scroll" aria-label="브로셔 페이지">
       <section class="pb-slide pb-slide--png" data-page="1" aria-label="표지">
-        <img
-          class="pb-png-page"
-          src="parenting-workshop/mb1.png"
-          width="1080"
-          height="1920"
-          alt="Enneagram for Parenting — 4주 자녀양육 워크샵 표지"
-          decoding="async"
-        />
+        <img class="pb-png-page" src="parenting-workshop/mb1.png" width="1080" height="1920" alt="" decoding="async" />
       </section>
-
-      <section class="pb-slide pb-slide--png" data-page="2" aria-label="공감">
-        <img
-          class="pb-png-page"
-          src="parenting-workshop/mb2.png"
-          width="1080"
-          height="1920"
-          alt="아이를 키우다 보면 우리는 자주 묻게 됩니다"
-          loading="lazy"
-          decoding="async"
-        />
+      <section class="pb-slide pb-slide--png" data-page="2" aria-label="2">
+        <img class="pb-png-page" src="parenting-workshop/mb2.png" width="1080" height="1920" alt="" loading="lazy" decoding="async" />
       </section>
-
-      <section class="pb-slide pb-slide--png" data-page="3" aria-label="ER의 관점">
-        <img
-          class="pb-png-page"
-          src="parenting-workshop/mb3.png"
-          width="1080"
-          height="1920"
-          alt="ER의 관점 — 오리지널 디자인과 복음적 회복"
-          loading="lazy"
-          decoding="async"
-        />
+      <section class="pb-slide pb-slide--png" data-page="3" aria-label="3">
+        <img class="pb-png-page" src="parenting-workshop/mb3.png" width="1080" height="1920" alt="" loading="lazy" decoding="async" />
       </section>
-
-      <section class="pb-slide pb-slide--png" data-page="4" aria-label="프로그램 특징">
-        <img
-          class="pb-png-page"
-          src="parenting-workshop/mb4.png"
-          width="1080"
-          height="1920"
-          alt="이 워크샵의 특징"
-          loading="lazy"
-          decoding="async"
-        />
+      <section class="pb-slide pb-slide--png" data-page="4" aria-label="4">
+        <img class="pb-png-page" src="parenting-workshop/mb4.png" width="1080" height="1920" alt="" loading="lazy" decoding="async" />
       </section>
-
-      <section class="pb-slide pb-slide--png" data-page="5" aria-label="4주 커리큘럼">
-        <img
-          class="pb-png-page"
-          src="parenting-workshop/mb5.png"
-          width="1080"
-          height="1920"
-          alt="4주 과정 커리큘럼"
-          loading="lazy"
-          decoding="async"
-        />
+      <section class="pb-slide pb-slide--png" data-page="5" aria-label="5">
+        <img class="pb-png-page" src="parenting-workshop/mb5.png" width="1080" height="1920" alt="" loading="lazy" decoding="async" />
       </section>
-
-      <section class="pb-slide pb-slide--png pb-slide--p6-qr" data-page="6" aria-label="신청 안내">
-        <img
-          class="pb-png-page pb-png-page--base"
-          src="parenting-workshop/mb6.png"
-          width="1080"
-          height="1920"
-          alt="신청 안내"
-          loading="lazy"
-          decoding="async"
-        />
-        <div class="pb-qr-slot" id="pb-qr-slot">
-          <img
-            class="pb-qr-img"
-            src="assets/parents-brochure/qr-apply.png"
-            width="400"
-            height="400"
-            alt="워크샵 신청 QR 코드 — 웹 랜딩으로 연결"
-          />
-        </div>
-        <a class="pb-tap-cta" id="pb-apply-cta" href="#">워크샵 신청하기</a>
-        <a
-          class="pb-tap-mail"
-          id="pb-email"
-          href="mailto:restoration.son@gmail.com"
-          aria-label="이메일 restoration.son@gmail.com"
-        ></a>
-        <a
-          class="pb-tap-ig"
-          id="pb-instagram"
-          href="https://www.instagram.com/enneagram_for_restoration/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Instagram @enneagram_for_restoration"
-        ></a>
+      <section class="pb-slide pb-slide--png" data-page="6" aria-label="6">
+        <img class="pb-png-page" src="parenting-workshop/mb6.png" width="1080" height="1920" alt="" loading="lazy" decoding="async" />
       </section>
     </div>
 
@@ -122,30 +45,18 @@
     </div>
 
     <p class="pb-missing-hint" id="pb-missing-hint" hidden>
-      PNG가 보이지 않으면 <code>parenting-workshop/mb1.png</code> … <code>mb6.png</code> 를 넣었는지 확인하세요.
-      <a href="parenting-workshop/읽어주세요.md">읽어주세요.md</a>
+      <code>parenting-workshop/mb1.png</code> … <code>mb6.png</code> 를 넣어 주세요.
     </p>
   </div>
 
   <script>
     (function () {
-      var PRODUCTION_ORIGIN = "https://er-coaching.com";
-      var applyPath = "/#apply?track=paid&focus=parenting_workshop&apply_source=brochure";
-      var origin = window.location.origin;
-      var isLocal = /^localhost$|^127\.0\.0\.1$/.test(window.location.hostname);
-      var base = isLocal ? origin : PRODUCTION_ORIGIN;
-      var applyUrl = base + applyPath;
-
-      var cta = document.getElementById("pb-apply-cta");
-      if (cta) cta.href = applyUrl;
-
       var scrollEl = document.getElementById("pb-scroll");
       var dots = document.querySelectorAll("#pb-progress span");
       var slides = document.querySelectorAll(".pb-slide");
       var hint = document.getElementById("pb-missing-hint");
-      var pngs = document.querySelectorAll(".pb-png-page");
 
-      pngs.forEach(function (img) {
+      document.querySelectorAll(".pb-png-page").forEach(function (img) {
         img.addEventListener("error", function () {
           if (hint) hint.hidden = false;
         });

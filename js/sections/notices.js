@@ -385,12 +385,11 @@ function renderNoticeDetail(payload) {
         : "renderSection('apply', { track: 'paid' })";
     const applyLabel = isParentingNotice ? '워크샵 신청하기' : '상담 신청하기';
     const parentingLinks = `
-        <a href="/parenting-workshop.html?apply_source=${isMagazineNotice ? 'magazine' : 'notice'}" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">워크샵 안내</a>
-        <a href="/parents-brochure.html" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">모바일 브로셔</a>`;
+        <a href="/parenting-workshop.html?apply_source=${isMagazineNotice ? 'magazine' : 'notice'}" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">워크샵 안내</a>`;
     const brochureCta = (isParentingNotice || isMagazineNotice) ? parentingLinks : '';
     const footerHint = isMagazineNotice
         ? '창간호 하이라이트를 보셨다면 워크샵 안내로 이어가 보세요.'
-        : (isParentingNotice ? '안내 페이지·브로셔를 보거나 바로 신청할 수 있습니다.' : '문의하거나 신청하시겠어요?');
+        : (isParentingNotice ? '워크샵 안내를 보거나 바로 신청할 수 있습니다.' : '문의하거나 신청하시겠어요?');
 
     return `
         <div class="bg-er-base min-h-screen py-16 px-4">

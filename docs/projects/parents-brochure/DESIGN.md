@@ -50,6 +50,15 @@
 
 Font Awesome 6 (CDN): `users`, `chalkboard-user`, `bullseye`, `cross`, `calendar`, `video`
 
+<<<<<<< HEAD
+## Imagery (PNG 정본)
+
+[`parenting-workshop/mb1.png` … `mb6.png`](../../../parenting-workshop/) — Canva 목업 = 배포용 최종. HTML 재구현 없음.
+
+QR: `assets/parents-brochure/qr-apply.png` 를 mb6에 Canva에서 포함.
+
+웹 뷰어: `parents-brochure.html` (사이트 네비·공지 버튼 없음).
+=======
 ## Imagery (PNG 브로셔 — 현재 정본)
 
 디자인 PNG 6장: [`parenting-workshop/`](../../../parenting-workshop/) (`mb1.png` … `mb6.png`, 1080×1920 권장).
@@ -63,3 +72,4 @@ QR 위치 튜닝: `css/parents-brochure.css` → `--pb-qr-bottom`, `--pb-qr-widt
 ### (레거시) HTML + JPG 브로셔
 
 `photos-put-here/` + glass 카드 — PNG 전환 이전 방식. [`photos-put-here/읽어주세요.md`](../../../photos-put-here/읽어주세요.md)
+>>>>>>> origin/main
