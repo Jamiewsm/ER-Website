@@ -76,21 +76,54 @@ function normalizeNoticeRecord(row) {
     };
 }
 
+function getBundledPublicNotices() {
+    const items = (typeof contentData !== 'undefined' && contentData.notices) ? contentData.notices : [];
+    return items.map((item) => ({
+        id: item.id,
+        legacy_key: item.id,
+        tag: item.tag || '안내',
+        title: item.title || '',
+        summary: item.summary || '',
+        body: item.body || '',
+        body_is_html: true,
+        published_at: item.date || '',
+        program_period: item.program_period || '',
+        program_target: item.program_target || '',
+        apply_deadline: item.apply_deadline || ''
+    }));
+}
+
+function mergePublicNotices(remoteRows, bundledRows) {
+    const merged = [...remoteRows];
+    const legacyKeys = new Set(
+        remoteRows
+            .map((row) => (row.legacy_key != null ? String(row.legacy_key) : ''))
+            .filter(Boolean)
+    );
+    bundledRows.forEach((bundled) => {
+        const key = String(bundled.legacy_key ?? bundled.id);
+        if (legacyKeys.has(key)) return;
+        merged.push(bundled);
+    });
+    return merged;
+}
+
 async function loadNotices(force = false) {
     if (!force && state.noticesLoaded) return;
+    const bundled = getBundledPublicNotices();
     const client = window.supabaseClient;
     if (!client) {
+        state.notices = mergePublicNotices([], bundled);
         state.noticesLoaded = true;
         return;
     }
     const { data, error } = await client
         .from('public_notices')
-        .select('id, tag, title, summary, body, body_is_html, published_at, program_period, program_target, apply_deadline')
+        .select('id, legacy_key, tag, title, summary, body, body_is_html, published_at, program_period, program_target, apply_deadline')
         .order('published_at', { ascending: false })
         .order('created_at', { ascending: false });
-    if (!error && Array.isArray(data) && data.length) {
-        state.notices = data.map(normalizeNoticeRecord);
-    }
+    const remote = (!error && Array.isArray(data)) ? data.map(normalizeNoticeRecord) : [];
+    state.notices = mergePublicNotices(remote, bundled);
     state.noticesLoaded = true;
 }
 
@@ -332,7 +365,7 @@ function renderNoticeDetail(payload) {
 
     const isParentsWorkshop = String(n.id) === '4';
     const applyOnclick = isParentsWorkshop
-        ? "renderSection('apply', { track: 'paid', focus: 'parenting_workshop' })"
+        ? "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'notice' })"
         : "renderSection('apply', { track: 'paid' })";
     const applyLabel = isParentsWorkshop ? '워크샵 신청하기' : '상담 신청하기';
     const brochureCta = isParentsWorkshop

@@ -56,7 +56,10 @@ function renderApply(payload = null) {
     const isSupportTrack = track === 'support';
     const isMinistryTrack = track === 'ministry';
     const isOrgTrack = track === 'org';
-    const submitSource = fromTest ? 'test' : (focus ? `${track}:${focus}` : track);
+    const applyAttribution = fromTest ? 'test' : (payload?.apply_source || '');
+    const submitSource = typeof buildApplySubmitSource === 'function'
+        ? buildApplySubmitSource(track, focus, applyAttribution)
+        : (fromTest ? 'test' : (focus ? `${track}:${focus}` : track));
     const testSummary = state.latestTestResult
         ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 하위유형 ${state.latestTestResult.subtypeSummary}, 본능 ${state.latestTestResult.instinctSummary}`
         : '';
@@ -86,10 +89,11 @@ function renderApply(payload = null) {
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
             : isOrgTrack
                 ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                : ['Enneagram for Parenting 4주 ($120)', '정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '자녀 양육 코칭 문의', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)'];
+                : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '자녀 양육 코칭 문의', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)', 'Enneagram for Parenting 4주 ($120)'];
+    const defaultPaidCategory = '정체성 발견 세션 ($100)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
-        : categoryOptions[0];
+        : defaultPaidCategory;
     const seededMessage = fromTest && testSummary
         ? `${testSummary}\n${selectedFocus?.message || '정체성 발견 세션 신청합니다.'}`
         : (selectedFocus?.message || '');

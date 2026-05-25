@@ -156,7 +156,9 @@
   <script>
     (function () {
       var origin = /^localhost$|^127\.0\.0\.1$/.test(location.hostname) ? location.origin : 'https://er-coaching.com';
-      var applyUrl = origin + '/#apply?track=paid&focus=parenting_workshop';
+      var params = new URLSearchParams(location.search);
+      var inbound = (params.get('apply_source') || params.get('source') || 'landing').replace(/[^a-z0-9_]/gi, '_').toLowerCase();
+      var applyUrl = origin + '/#apply?track=paid&focus=parenting_workshop&apply_source=' + encodeURIComponent(inbound);
       ['pt-nav-apply', 'pt-hero-apply', 'pt-footer-apply'].forEach(function (id) {
         var el = document.getElementById(id);
         if (el) el.href = applyUrl;

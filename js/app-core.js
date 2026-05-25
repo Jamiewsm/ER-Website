@@ -127,9 +127,6 @@ function renderSection(sectionId, payload = null, options = {}) {
     // Post-render actions
     if (sectionId === 'home') {
         setTimeout(() => initCharts('home'), 100);
-        setTimeout(() => {
-            if (typeof maybeShowParentsWorkshopPromo === 'function') maybeShowParentsWorkshopPromo();
-        }, 550);
     }
     if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
     if(sectionId === 'programs') updateProgramView(state.programFilter);
