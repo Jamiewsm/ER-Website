@@ -406,13 +406,17 @@ function renderNoticeDetail(payload) {
         typeof PARENTING_MOBILE_BROCHURE_PDF !== 'undefined'
             ? PARENTING_MOBILE_BROCHURE_PDF
             : '/parenting-workshop/mobile-brochure.pdf';
+    const noticeCtaBtnClass =
+        'inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold break-keep whitespace-nowrap transition-all w-full sm:w-auto min-h-[2.75rem]';
     const parentingLinks = `
-        <a href="/parenting-workshop.html?apply_source=${isMagazineNotice ? 'magazine' : 'notice'}" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">워크샵 안내</a>
-        <a href="${brochurePdf}" target="_blank" rel="noopener noreferrer" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">모바일 브로셔</a>`;
+        <a href="/parenting-workshop.html?apply_source=${isMagazineNotice ? 'magazine' : 'notice'}" class="${noticeCtaBtnClass} border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">워크샵 안내</a>
+        <a href="${brochurePdf}" target="_blank" rel="noopener noreferrer" class="${noticeCtaBtnClass} border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">모바일 브로셔</a>`;
     const brochureCta = (isParentingNotice || isMagazineNotice) ? parentingLinks : '';
-    const footerHint = isMagazineNotice
-        ? '창간호 하이라이트를 보셨다면 워크샵 안내·브로셔 PDF를 확인해 보세요.'
-        : (isParentingNotice ? '워크샵 안내·모바일 브로셔(PDF)를 보거나 바로 신청할 수 있습니다.' : '문의하거나 신청하시겠어요?');
+    const footerHintHtml = isMagazineNotice
+        ? '창간호 하이라이트를 보셨다면<br />워크샵 안내·브로셔 PDF를 확인해 보세요.'
+        : isParentingNotice
+            ? '워크샵 안내·모바일 브로셔 PDF를 보거나<br />바로 신청할 수 있습니다.'
+            : '문의하거나 신청하시겠어요?';
 
     return `
         <div class="bg-er-base min-h-screen py-16 px-4">
@@ -447,13 +451,11 @@ function renderNoticeDetail(payload) {
                         </div>
                     ` : ''}
                     
-                    <div class="mt-10 p-5 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-                        <div>
-                            <p class="text-sm font-bold text-er-dark">${footerHint}</p>
-                        </div>
-                        <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                    <div class="mt-10 p-5 md:p-6 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col gap-4 md:gap-5">
+                        <p class="text-sm font-bold text-er-dark break-keep leading-relaxed text-left w-full">${footerHintHtml}</p>
+                        <div class="flex flex-col sm:flex-row sm:flex-wrap gap-2.5 w-full sm:justify-start">
                             ${brochureCta}
-                            <button onclick="${applyOnclick}" class="px-6 py-2.5 bg-er-dark text-white rounded-full text-sm font-bold shadow-soft hover:bg-gray-800 transition-all w-full md:w-auto">
+                            <button type="button" onclick="${applyOnclick}" class="${noticeCtaBtnClass} bg-er-dark text-white shadow-soft hover:bg-gray-800">
                                 ${applyLabel}
                             </button>
                         </div>
