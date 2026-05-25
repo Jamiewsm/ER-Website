@@ -1,4 +1,4 @@
-// Home promo modal — Enneagram for Parents 4-week workshop
+// Home promo modal — Enneagram for Parenting 4-week workshop
 (function () {
   var PROMO_ID = 'parents-workshop-promo-modal';
   var STORAGE_KEY = 'er_parents_workshop_promo_dismissed_date';
@@ -57,7 +57,7 @@
         <div class="px-6 pb-6 pt-2">
           <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-er-primary mb-1">Enneagram for Restoration</p>
           <h2 id="parents-promo-title" class="text-xl sm:text-2xl font-extrabold text-er-dark leading-snug break-keep">
-            Enneagram for Parents
+            Enneagram for Parenting
           </h2>
           <p class="mt-1 text-base font-semibold text-er-dark break-keep">4주 자녀양육 워크샵</p>
           <p class="mt-3 text-sm text-gray-600 leading-relaxed break-keep">
@@ -110,15 +110,15 @@
 
   function parentsPromoGoDetail() {
     closeParentsWorkshopPromo();
-    window.location.href = '/parents-brochure.html';
+    window.location.href = '/parenting-workshop.html';
   }
 
   function parentsPromoGoApply() {
     closeParentsWorkshopPromo();
     if (typeof renderSection === 'function') {
-      renderSection('apply', { track: 'paid', focus: 'parents_workshop' });
+      renderSection('apply', { track: 'paid', focus: 'parenting_workshop' });
     } else {
-      window.location.href = '/#apply?track=paid&focus=parents_workshop';
+      window.location.href = '/#apply?track=paid&focus=parenting_workshop';
     }
   }
 

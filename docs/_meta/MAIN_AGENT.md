@@ -63,11 +63,13 @@ git fetch origin main && git checkout main && git pull
 
 ## 활성 제품 라인 (에니어그램 자동화 외)
 
-### Enneagram for Parents (완료·배포 대기)
+### Enneagram for Parenting (완료·배포)
 
 - `parents-brochure.html` — 6p 모바일 브로셔
 - `parents-workshop.html` — QR 랜딩
-- `#apply?focus=parents_workshop` — 신청 프리필
+- `/parenting-workshop.html` — 웹 랜딩 (팝업·QR)
+- `/parents-brochure.html` — 모바일 브로셔
+- `#apply?focus=parenting_workshop` — 신청 프리필 (`parents_workshop` 구 링크 별칭)
 - `js/parents-workshop-promo.js` — 홈 팝업 (머지 후 활성)
 
 ### ER Enneagram Test

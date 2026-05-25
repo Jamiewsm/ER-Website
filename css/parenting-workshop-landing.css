@@ -1,0 +1,26 @@
+/* Enneagram for Parenting — web landing (not mobile brochure) */
+
+.pt-landing {
+  font-family: "Pretendard", system-ui, sans-serif;
+  color: #5c4f44;
+  background: #f7eee4;
+}
+
+.pt-landing .pt-hero-bg {
+  background-image: linear-gradient(
+      180deg,
+      rgba(247, 238, 228, 0.55) 0%,
+      rgba(255, 251, 246, 0.92) 55%,
+      #f7eee4 100%
+    ),
+    url("/assets/parents-brochure/bg-01-cover.jpg");
+  background-size: cover;
+  background-position: center 28%;
+}
+
+.pt-glass {
+  background: rgba(255, 251, 246, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}

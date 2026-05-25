@@ -1,4 +1,4 @@
-# Enneagram for Parents — Design Spec
+# Enneagram for Parenting — Design Spec
 
 브로셔 전용 시각 가이드. 사이트 SSOT [DESIGN.md](../../../DESIGN.md) 와 함께 사용합니다.
 
