@@ -1,0 +1,21 @@
+/* Parenting workshop focused application route. */
+
+body.parenting-focused-apply footer,
+body.parenting-focused-apply #navbar .desktop-nav,
+body.parenting-focused-apply #navbar .parenting-hide-on-focused {
+  display: none;
+}
+
+body.parenting-focused-apply #navbar > div > div {
+  justify-content: center;
+}
+
+body.parenting-focused-apply .parenting-apply-photo {
+  object-position: center 70%;
+}
+
+@media (min-width: 1024px) {
+  body.parenting-focused-apply .parenting-apply-photo {
+    object-position: center 67%;
+  }
+}

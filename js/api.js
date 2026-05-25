@@ -117,12 +117,32 @@ function initApplyTurnstile() {
 
 window.initApplyTurnstile = initApplyTurnstile;
 
-async function handleApplySubmit(event, source) {
+function setApplySubmitStatus(message, tone) {
+  var el = document.getElementById('apply-submit-status');
+  if (!el) return false;
+  if (!message) {
+    el.className = 'hidden rounded-lg px-4 py-3 text-sm break-keep';
+    el.textContent = '';
+    return true;
+  }
+  el.className = 'rounded-lg px-4 py-3 text-sm break-keep ' + (
+    tone === 'error'
+      ? 'border border-red-100 bg-red-50 text-red-700'
+      : 'border border-er-accentLight bg-er-base text-er-primary'
+  );
+  el.textContent = message;
+  return true;
+}
+
+async function handleApplySubmit(event, source, successPayload) {
   if (source === undefined) source = 'website';
   event.preventDefault();
+  setApplySubmitStatus('', null);
   var config = window.SUPABASE_CONFIG;
   if (!config || !config.url) {
-    alert('제출 기능 초기화에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+    if (!setApplySubmitStatus('접수 기능을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.', 'error')) {
+      alert('제출 기능 초기화에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+    }
     return;
   }
 
@@ -149,18 +169,29 @@ async function handleApplySubmit(event, source) {
   }
   var submitBtn = document.getElementById('apply-submit-btn');
   if (!name || !contact || !category) {
-    alert('이름, 연락처, 신청 분야를 확인해 주세요.');
+    if (!setApplySubmitStatus('이름과 연락받으실 곳을 확인해 주세요.', 'error')) {
+      alert('이름, 연락처, 신청 분야를 확인해 주세요.');
+    }
     return;
   }
   if (!turnstileToken) {
-    alert('「보안 확인」 체크를 완료해 주세요. 확인 창이 보이지 않으면 「다시 불러오기」를 눌러 주세요.');
+    if (!setApplySubmitStatus('보안 확인을 완료한 뒤 다시 신청해 주세요.', 'error')) {
+      alert('「보안 확인」 체크를 완료해 주세요. 확인 창이 보이지 않으면 「다시 불러오기」를 눌러 주세요.');
+    }
     return;
   }
 
+  var defaultSubmitLabel = submitBtn && submitBtn.dataset.defaultLabel
+    ? submitBtn.dataset.defaultLabel
+    : '신청하기';
+  var loadingSubmitLabel = submitBtn && submitBtn.dataset.loadingLabel
+    ? submitBtn.dataset.loadingLabel
+    : '제출 중...';
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.textContent = '제출 중...';
+    submitBtn.textContent = loadingSubmitLabel;
   }
+  setApplySubmitStatus('신청 내용을 접수하고 있습니다.', null);
 
   var payload = {
     name: name,
@@ -183,10 +214,12 @@ async function handleApplySubmit(event, source) {
       throw new Error(errorText || 'HTTP ' + response.status);
     }
 
-    if (typeof renderSection === 'function') renderSection('thankyou');
+    if (typeof renderSection === 'function') renderSection('thankyou', successPayload || null);
   } catch (err) {
     var msg = err instanceof Error ? err.message : String(err);
-    alert('제출에 실패했습니다: ' + msg);
+    if (!setApplySubmitStatus('신청을 접수하지 못했습니다. 잠시 후 다시 시도해 주세요.', 'error')) {
+      alert('제출에 실패했습니다: ' + msg);
+    }
     if (window.turnstile && applyTurnstileWidgetId !== null) {
       try { window.turnstile.reset(applyTurnstileWidgetId); } catch (_e) {}
     }
@@ -195,7 +228,7 @@ async function handleApplySubmit(event, source) {
   } finally {
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = '신청하기';
+      submitBtn.textContent = defaultSubmitLabel;
     }
   }
 }

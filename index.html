@@ -49,6 +49,7 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/parenting-season-banner.css?v=20260526b" />
+    <link rel="stylesheet" href="css/parenting-application.css?v=20260525a" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
@@ -279,7 +280,7 @@
                     </div>
                 </div>
                 
-                <div class="xl:hidden flex items-center gap-2 sm:gap-3">
+                <div class="parenting-hide-on-focused xl:hidden flex items-center gap-2 sm:gap-3">
                     <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm shrink-0">상담 신청</button>
                     <button type="button" id="mobile-header-auth-btn" class="shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors" aria-label="기존 참여자 로그인 또는 마이페이지" title="기존 참여자 포털">
                         <i class="far fa-user"></i>
@@ -477,7 +478,7 @@
     <script src="js/config.js"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/api.js?v=20260525a"></script>
+    <script src="js/api.js?v=20260525b"></script>
     <script src="js/strings.js?v=20260525f"></script>
 
     <!-- App state & utilities -->
@@ -496,7 +497,7 @@
     <script src="js/sections/coach-training.js"></script>
     <script src="js/sections/community.js?v=20260524a"></script>
     <script src="js/sections/support.js?v=20260524a"></script>
-    <script src="js/sections/apply.js?v=20260525e"></script>
+    <script src="js/sections/apply.js?v=20260525f"></script>
     <script src="js/sections/notices.js?v=20260525f"></script>
     <script src="js/sections/types-guide.js"></script>
     <script src="js/sections/test-embed.js"></script>
@@ -509,7 +510,7 @@
     <script src="js/coach/mentoring-hub.js"></script>
 
     <!-- Core routing & init -->
-    <script src="js/app-core.js?v=20260525e"></script>
+    <script src="js/app-core.js?v=20260525f"></script>
     <script src="js/app-init.js"></script>
     <script src="js/coach-portal.js?v=20260401a"></script>
 </body>
