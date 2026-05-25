@@ -52,15 +52,12 @@ Font Awesome 6 (CDN): `users`, `chalkboard-user`, `bullseye`, `cross`, `calendar
 
 ## Imagery
 
-Each slide uses a **full-bleed photo** from `assets/parents-brochure/bg-*.jpg` (committed JPEGs, originally from Unsplash) with cream gradient overlay + **glass** cards.
+Each slide uses a **full-bleed photo** from `assets/er-visual/` (same warm tone as the ER homepage hero) with cream gradient overlay + **glass** cards. `ER-logo-header.png` appears in the fixed brand bar.
 
 | File | Page |
 |------|------|
-| `bg-01-cover.jpg` | 1 표지 |
-| `bg-02-empathy.jpg` | 2 공감 |
-| `bg-03-vision.jpg` | 3 ER 관점 |
-| `bg-04-features.jpg` | 4 특징 |
-| `bg-05-curriculum.jpg` | 5 커리큘럼 |
-| `bg-06-apply.jpg` | 6 신청 |
+| `hero-home.jpg` | 1 표지, 3 ER 관점, 6 신청 (homepage hero match) |
+| `warm-hand.jpg` | 2 공감 |
+| `warm-candles.jpg` | 4 특징, 5 커리큘럼 |
 
-Swap these files to use ER-owned photography; keep filenames or update `css/parents-brochure.css`.
+Legacy copies in `assets/parents-brochure/bg-*.jpg` may be regenerated from `er-visual` for PDF export. Update paths in `css/parents-brochure.css` if filenames change.

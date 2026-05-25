@@ -39,6 +39,33 @@ body.pb-body {
   background: var(--pb-bg);
   min-height: 100dvh;
   box-shadow: 0 0 56px rgba(62, 54, 46, 0.18);
+  position: relative;
+}
+
+.pb-brand-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  padding: max(0.65rem, env(safe-area-inset-top, 0px)) 1.25rem 0.35rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 251, 246, 0.96) 0%,
+    rgba(255, 251, 246, 0.72) 55%,
+    rgba(255, 251, 246, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.pb-logo {
+  height: 1.65rem;
+  width: auto;
+  max-width: min(72vw, 11.5rem);
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(62, 54, 46, 0.08));
 }
 
 .pb-scroll {
@@ -79,26 +106,33 @@ body.pb-body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 2.25rem 1.35rem 2rem;
+  padding: 3.35rem 1.35rem 2rem;
   min-height: 100dvh;
 }
 
-/* Background photos: assets/parents-brochure/bg-*.jpg (committed; avoids broken CDN URLs) */
+/* Background photos: aligned with ER homepage hero + warm spiritual set (assets/er-visual) */
 
-/* Page 1 — family, open horizon */
+/* Page 1 — homepage hero (restoration / warm light) */
 .pb-slide--p1 {
-  background-image: url("../assets/parents-brochure/bg-01-cover.jpg");
-  background-position: center 25%;
+  background-image: url("../assets/er-visual/hero-home.jpg");
+  background-position: center 68%;
 }
 
 .pb-slide--p1::before {
-  background: linear-gradient(
-    to bottom,
-    rgba(62, 54, 46, 0.05) 0%,
-    rgba(247, 238, 228, 0.2) 32%,
-    rgba(255, 251, 246, 0.78) 62%,
-    rgba(255, 251, 246, 0.94) 100%
-  );
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      rgba(255, 251, 246, 0.82) 0%,
+      rgba(255, 251, 246, 0.42) 34%,
+      rgba(247, 238, 228, 0.08) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(247, 238, 228, 0.66) 0%,
+      rgba(247, 238, 228, 0.34) 44%,
+      rgba(255, 251, 246, 0.78) 72%,
+      rgba(255, 251, 246, 0.94) 100%
+    );
 }
 
 .pb-slide--cover .pb-slide-inner {
@@ -127,10 +161,10 @@ body.pb-body {
   text-align: center;
 }
 
-/* Page 2 — parent & child, warm */
+/* Page 2 — reaching hand, warm light (connection / longing) */
 .pb-slide--p2 {
-  background-image: url("../assets/parents-brochure/bg-02-empathy.jpg");
-  background-position: center 35%;
+  background-image: url("../assets/er-visual/warm-hand.jpg");
+  background-position: center 42%;
 }
 
 .pb-slide--p2::before {
@@ -142,10 +176,10 @@ body.pb-body {
   );
 }
 
-/* Page 3 — soft morning / home light */
+/* Page 3 — ER perspective (homepage hero, softer) */
 .pb-slide--p3 {
-  background-image: url("../assets/parents-brochure/bg-03-vision.jpg");
-  background-position: center center;
+  background-image: url("../assets/er-visual/hero-home.jpg");
+  background-position: center 55%;
 }
 
 .pb-slide--p3::before {
@@ -157,10 +191,10 @@ body.pb-body {
   );
 }
 
-/* Page 4 — quiet together */
+/* Page 4 — candlelight / sacred calm */
 .pb-slide--p4 {
-  background-image: url("../assets/parents-brochure/bg-04-features.jpg");
-  background-position: center 40%;
+  background-image: url("../assets/er-visual/warm-candles.jpg");
+  background-position: center 45%;
 }
 
 .pb-slide--p4::before {
@@ -172,10 +206,10 @@ body.pb-body {
   );
 }
 
-/* Page 5 — learning / growth */
+/* Page 5 — reflection / journey */
 .pb-slide--p5 {
-  background-image: url("../assets/parents-brochure/bg-05-curriculum.jpg");
-  background-position: center 30%;
+  background-image: url("../assets/er-visual/warm-candles.jpg");
+  background-position: center 62%;
 }
 
 .pb-slide--p5::before {
@@ -187,10 +221,10 @@ body.pb-body {
   );
 }
 
-/* Page 6 — community / invitation */
+/* Page 6 — invitation (homepage hero) */
 .pb-slide--p6 {
-  background-image: url("../assets/parents-brochure/bg-06-apply.jpg");
-  background-position: center 25%;
+  background-image: url("../assets/er-visual/hero-home.jpg");
+  background-position: center 62%;
 }
 
 .pb-slide--p6::before {
