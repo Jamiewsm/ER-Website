@@ -44,7 +44,8 @@ node scripts/export-parents-brochure.mjs
 ## QR 코드
 
 - 정본 이미지: `assets/parents-brochure/qr-apply.png`
-- 인코딩 URL: `https://er-coaching.com/#apply?track=paid&focus=parents_workshop`
+- 인코딩 URL (QR): `https://er-coaching.com/parents-workshop.html` — 짧은 랜딩 → 신청 버튼
+- 신청 폼 직접 링크: `https://er-coaching.com/#apply?track=paid&focus=parents_workshop`
 - 재생성:
 
 ```bash

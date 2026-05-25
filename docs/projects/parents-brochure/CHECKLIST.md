@@ -4,7 +4,7 @@
 
 - [ ] 모바일에서 글자가 확대 없이 읽히는가?
 - [ ] 신청 버튼이 클릭 가능한가? (`/#apply?track=paid&focus=parents_workshop`)
-- [ ] QR코드가 실제 신청 페이지로 연결되는가?
+- [ ] QR코드가 `parents-workshop.html` 랜딩으로 연결되고, 랜딩에서 신청 버튼이 동작하는가?
 - [ ] Email (`restoration.son@gmail.com`) 과 Instagram 링크가 클릭 가능한가?
 - [ ] “입문 과정이 아님”이 심화 과정 장점으로 전달되는가?
 - [ ] 소규모 심화 과정의 프리미엄 가치가 느껴지는가?
