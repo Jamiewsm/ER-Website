@@ -52,4 +52,15 @@ Font Awesome 6 (CDN): `users`, `chalkboard-user`, `bullseye`, `cross`, `calendar
 
 ## Imagery
 
-Prefer CSS gradients / soft patterns for v1. Optional stock: hands, back view, warm interior — no face close-ups, no bright “parenting ad” stock.
+Each slide uses a **full-bleed Unsplash photo** (warm, natural, no face close-ups) with cream gradient overlay + **glass** content cards (`backdrop-filter`).
+
+| Page | Photo theme |
+|------|-------------|
+| 1 표지 | Family walk, golden light (backs) |
+| 2 공감 | Parent–child closeness |
+| 3 ER 관점 | Warm home / window light |
+| 4 특징 | Coffee & journal (reflection) |
+| 5 커리큘럼 | Reading together |
+| 6 신청 | Family on beach (backs) |
+
+Replace URLs in `css/parents-brochure.css` (`.pb-slide--p1` … `--p6`) for custom photography. Credit photographers per [Unsplash License](https://unsplash.com/license).
