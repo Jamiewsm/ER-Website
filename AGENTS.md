@@ -3,6 +3,16 @@
 
 이 리포는 ER Website (https://er-coaching.com) 입니다. 코치 포털, 에니어그램 진단 테스트, 정적 페이지를 포함합니다.
 
+## 메인 에이전트 (Cursor Cloud)
+
+사용자 지정 **메인 에이전트**는 PR 머지·배포·다른 agent 작업 조율을 담당합니다.
+
+- **조율 SSOT:** [docs/_meta/MAIN_AGENT.md](./docs/_meta/MAIN_AGENT.md) — 브랜치/PR/WORK_STATUS 확인, 머지 절차, 머지 대기 목록
+- **GitHub:** `main` 은 protected → PR merge 필요. Cursor 연동에 **Pull requests: Read and write** 권한 권장.
+- **다른 agent 추적:** `docs/_meta/enneagram/WORK_STATUS.md`, `HISTORY.md`, `git branch -a`, `gh pr list`
+
+서브 에이전트(Task/explore) 결과는 메인 agent가 통합·커밋·PR까지 이어갑니다.
+
 ## 활성 자동화 작업 — ER Enneagram Test 발전 프로젝트
 
 현재 진행 중인 다단계 자동화 작업이 있습니다. AI 에이전트로 이 리포에서 작업을 시작한다면 먼저 다음을 읽으세요.
