@@ -706,6 +706,9 @@ async function loadCoachAdminUsers() {
     }).join('');
 }
 
+/** Parenting workshop mobile brochure PDF (공지·본문 링크). */
+const PARENTING_MOBILE_BROCHURE_PDF = '/parenting-workshop/mobile-brochure.pdf';
+
 /** Paid/org apply funnel attribution (stored in application.source). */
 const APPLY_ATTRIBUTION_SOURCES = new Set([
     'website',

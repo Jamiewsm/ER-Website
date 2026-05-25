@@ -29,6 +29,7 @@ VS Code: **File → Open Folder** → `ER-Website`
 | 용도 | 경로 |
 |------|------|
 | **브로셔 PNG** | `parenting-workshop/mb1.png` … `mb6.png` |
+| **공지 PDF** | `parenting-workshop/mobile-brochure.pdf` |
 | 웹 랜딩 | `parenting-workshop.html` |
 | QR (Canva용) | `assets/parents-brochure/qr-apply.png` |
 
