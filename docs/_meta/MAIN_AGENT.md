@@ -26,29 +26,40 @@
 
 `main` 은 **protected** — 직접 push 불가, PR 머지 필수.
 
-### Cursor GitHub App 권한
+### GitHub CLI (`gh`) — Cloud Agent 토큰 한계
 
-Repository **Jamiewsm/ER-Website** (또는 `jamiewsm/er-website`) 에서:
+기본 연동 계정(`cursor`) 토큰은 **git push는 되지만** `gh pr create` 가 `Resource not accessible by integration` 으로 실패하는 경우가 많습니다 (Cursor 포럼 알려진 이슈).
 
-- **Settings → Integrations / GitHub Apps → Cursor** (또는 Cursor Settings → GitHub)
-- **Repository permissions → Pull requests: Read and write**
-- 저장 후 Cloud Agent 세션 **재시작** 또는 `gh auth refresh`
+**우선순위 (메인 agent):**
+
+1. **Cursor `ManagePullRequest` 도구** — PR 생성·업데이트 (repo URL이 Jamiewsm/ER-Website 형태일 때)
+2. **`gh pr merge`** — PR이 이미 있으면 머지는 될 수 있음 (`gh pr merge <n> --repo Jamiewsm/ER-Website --merge`)
+3. **`gh pr create`** — PAT 주입 후에만 안정적
+
+### PAT로 `gh` 전체 권한 주기 (사용자 1회 설정)
+
+Cloud Agent는 **대화형 `gh auth login` 불가**. 대신 Cursor에 시크릿을 넣습니다.
+
+1. GitHub → **Settings → Developer settings → Personal access tokens**  
+   - Fine-grained: repo `ER-Website`, Pull requests + Contents **Read and write**  
+   - 또는 Classic: `repo` scope
+2. Cursor → **Dashboard → Cloud Agents → Secrets** (또는 Background Agent 환경 변수)  
+   - `GH_TOKEN` = `github_pat_...` 또는 `ghp_...`
+3. **새 Cloud Agent 실행** 후 `gh auth status` 에서 토큰 scopes 확인
+
+`GH_TOKEN` 이 있으면 `gh` 는 설치 토큰 대신 PAT를 사용합니다.
 
 ### 권한 있을 때 표준 명령
 
 ```bash
 gh pr create --repo Jamiewsm/ER-Website --base main --head <branch> --title "..." --body "..."
-gh pr merge <number> --merge --delete-branch
+gh pr merge <number> --repo Jamiewsm/ER-Website --merge --delete-branch
 git fetch origin main && git checkout main && git pull
 ```
 
-### 현재 머지 대기 (2026-05-25)
+### 머지 완료 (2026-05-25)
 
-| 브랜치 | 내용 | Compare |
-|--------|------|---------|
-| `cursor/fix-apply-turnstile-c2f9` | Turnstile 신청 수정 + 홈 Parents 팝업 | [compare](https://github.com/Jamiewsm/ER-Website/compare/main...cursor/fix-apply-turnstile-c2f9) |
-
-권한 없을 때: 사용자에게 위 compare 링크로 **Create PR → Merge** 요청.
+- **PR #21** — Turnstile 신청 수정 + 홈 Parents 팝업 + MAIN_AGENT.md → `main` 머지됨
 
 ## 활성 제품 라인 (에니어그램 자동화 외)
 
