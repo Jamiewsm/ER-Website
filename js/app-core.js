@@ -93,6 +93,9 @@ function renderSection(sectionId, payload = null, options = {}) {
     }
 
     main.innerHTML = html;
+    if (sectionId !== 'home' && typeof closeParentsWorkshopPromo === 'function') {
+        closeParentsWorkshopPromo();
+    }
     // Announce section change to screen readers via dedicated live region
     const srStatus = document.getElementById('sr-status');
     if (srStatus) {
@@ -122,7 +125,12 @@ function renderSection(sectionId, payload = null, options = {}) {
     if (syncHash) syncSectionHash(sectionId, payload, replaceHash);
     
     // Post-render actions
-    if(sectionId === 'home') setTimeout(() => initCharts('home'), 100);
+    if (sectionId === 'home') {
+        setTimeout(() => initCharts('home'), 100);
+        setTimeout(() => {
+            if (typeof maybeShowParentsWorkshopPromo === 'function') maybeShowParentsWorkshopPromo();
+        }, 550);
+    }
     if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
     if(sectionId === 'programs') updateProgramView(state.programFilter);
     if (sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 50);
