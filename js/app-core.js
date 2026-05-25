@@ -125,7 +125,7 @@ function renderSection(sectionId, payload = null, options = {}) {
     if(sectionId === 'home') setTimeout(() => initCharts('home'), 100);
     if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
     if(sectionId === 'programs') updateProgramView(state.programFilter);
-    if(sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 0);
+    if (sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 50);
     if((sectionId === 'home' || sectionId === 'notices' || sectionId === 'notice_detail') && !state.noticesLoaded) {
         setTimeout(async () => {
             await loadNotices();

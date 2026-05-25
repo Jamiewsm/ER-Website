@@ -191,8 +191,13 @@ function renderApply(payload = null) {
                         </div>
 
                         <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                            <p class="text-xs text-gray-500 mb-2">보안 확인</p>
-                            <div id="apply-turnstile-widget" class="min-h-[65px]"></div>
+                            <p class="text-xs font-bold text-gray-600 mb-1">보안 확인</p>
+                            <p class="text-[11px] text-gray-500 mb-2 break-keep">스팸 방지를 위해 아래 확인을 완료한 뒤 신청하기를 눌러 주세요.</p>
+                            <p id="apply-turnstile-status" class="text-xs text-gray-500 mb-2 break-keep hidden" role="status" aria-live="polite"></p>
+                            <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
+                            <button type="button" id="apply-turnstile-retry" class="hidden mt-2 w-full py-2 rounded-lg border border-er-accent/40 text-er-dark text-xs font-bold hover:bg-er-accentLight/30" onclick="initApplyTurnstile()">
+                                보안 확인 다시 불러오기
+                            </button>
                             <input type="hidden" name="turnstile_token" id="apply-turnstile-token" value="">
                         </div>
                         
