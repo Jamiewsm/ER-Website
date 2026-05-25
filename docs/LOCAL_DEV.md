@@ -1,8 +1,20 @@
 # 로컬 PC / VS Code에서 ER Website 열기
 
-Cursor Cloud Agent가 수정하는 코드는 **별도 숨겨진 폴더**가 아니라, GitHub의 **ER-Website** 저장소와 동일합니다.
+## ★ 배경 사진 넣는 곳 (가장 중요)
 
-## 1. 저장소 받기
+저장소를 clone 하면 **루트에 이 폴더가 생깁니다:**
+
+```
+ER-Website/photos-put-here/
+```
+
+VS Code 왼쪽 파일 트리 **맨 위**에서 `photos-put-here` → `읽어주세요.md` 를 읽고, 같은 폴더의 JPG 세 장을 교체하세요.
+
+루트에 [`사진-넣는-곳.md`](../사진-넣는-곳.md) 파일도 안내용으로 있습니다.
+
+---
+
+## 1. 저장소 받기 (로컬에 폴더 만들기)
 
 ```bash
 git clone https://github.com/Jamiewsm/ER-Website.git
@@ -10,37 +22,28 @@ cd ER-Website
 git pull origin main
 ```
 
-VS Code: **File → Open Folder** → `ER-Website` 폴더 선택 (클론한 폴더 자체).
+VS Code: **File → Open Folder** → 방금 만든 `ER-Website` 폴더.
 
-## 2. Parenting · 배경 사진 위치
+> Agent가 만든 코드는 GitHub `main` 에 있습니다. PC에 예전 clone 만 있으면 `photos-put-here` 가 없을 수 있습니다. **`git pull origin main`** 또는 새로 clone 하세요.
 
-| 용도 | 경로 (리포 루트 기준) |
-|------|------------------------|
-| 배경 사진 정본 | `assets/er-visual/hero-home.jpg`, `warm-hand.jpg`, `warm-candles.jpg` |
-| 브로셔·QR | `assets/parents-brochure/` |
-| 홈 배너 | `css/parenting-season-banner.css`, `js/parents-workshop-promo.js` |
-| 모바일 브로셔 | `parents-brochure.html` |
+## 2. 파일 위치 요약
+
+| 용도 | 경로 |
+|------|------|
+| **배경 사진 (여기만 수정)** | `photos-put-here/*.jpg` |
+| 모바일 브로셔 HTML | `parents-brochure.html` |
 | 웹 랜딩 | `parenting-workshop.html` |
-
-사진 교체: [assets/README.md](../assets/README.md)
+| 홈 배너 | `js/parents-workshop-promo.js` |
 
 ## 3. 로컬 미리보기
 
 ```bash
+cd ER-Website
 npx serve .
 ```
 
-홈 배너: `http://localhost:3000/#home`
+브라우저: `http://localhost:3000/#home`
 
-배너가 안 보이면 DevTools → Application → Local Storage에서  
-`er_parenting_season_banner_dismissed_date` 삭제 후 새로고침.
+## 4. 배포 사이트
 
-## 4. 배너 닫기 동작
-
-- **X**: 이번 방문만 숨김 → **새로고침하면 다시 표시**
-- **오늘 하루 숨기기**: 당일 자정까지 숨김 (localStorage)
-
-## 5. Cloud vs 내 PC
-
-- Agent 작업: GitHub `main`에 머지 → `git pull` 하면 PC에 동일 경로 표시
-- 라이브: https://er-coaching.com
+https://er-coaching.com — `main` 머지 후 Cloudflare 등에 반영됩니다.

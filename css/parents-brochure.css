@@ -110,11 +110,11 @@ body.pb-body {
   min-height: 100dvh;
 }
 
-/* Background photos: aligned with ER homepage hero + warm spiritual set (assets/er-visual) */
+/* Background photos: repo root photos-put-here/ (see 읽어주세요.md) */
 
 /* Page 1 — homepage hero (restoration / warm light) */
 .pb-slide--p1 {
-  background-image: url("../assets/er-visual/hero-home.jpg");
+  background-image: url("../photos-put-here/hero-home.jpg");
   background-position: center 68%;
 }
 
@@ -163,7 +163,7 @@ body.pb-body {
 
 /* Page 2 — reaching hand, warm light (connection / longing) */
 .pb-slide--p2 {
-  background-image: url("../assets/er-visual/warm-hand.jpg");
+  background-image: url("../photos-put-here/warm-hand.jpg");
   background-position: center 42%;
 }
 
@@ -178,7 +178,7 @@ body.pb-body {
 
 /* Page 3 — ER perspective (homepage hero, softer) */
 .pb-slide--p3 {
-  background-image: url("../assets/er-visual/hero-home.jpg");
+  background-image: url("../photos-put-here/hero-home.jpg");
   background-position: center 55%;
 }
 
@@ -193,7 +193,7 @@ body.pb-body {
 
 /* Page 4 — candlelight / sacred calm */
 .pb-slide--p4 {
-  background-image: url("../assets/er-visual/warm-candles.jpg");
+  background-image: url("../photos-put-here/warm-candles.jpg");
   background-position: center 45%;
 }
 
@@ -208,7 +208,7 @@ body.pb-body {
 
 /* Page 5 — reflection / journey */
 .pb-slide--p5 {
-  background-image: url("../assets/er-visual/warm-candles.jpg");
+  background-image: url("../photos-put-here/warm-candles.jpg");
   background-position: center 62%;
 }
 
@@ -223,7 +223,7 @@ body.pb-body {
 
 /* Page 6 — invitation (homepage hero) */
 .pb-slide--p6 {
-  background-image: url("../assets/er-visual/hero-home.jpg");
+  background-image: url("../photos-put-here/hero-home.jpg");
   background-position: center 62%;
 }
 
