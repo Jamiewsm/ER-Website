@@ -1,0 +1,217 @@
+/* Home hero — Parenting season banner (readable on cream hero background) */
+
+#parenting-season-banner.psb-wrap {
+  margin-top: 2.5rem;
+  width: 100%;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+#parenting-season-banner .psb-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  background: rgba(255, 251, 246, 0.97);
+  border: 1px solid rgba(62, 54, 46, 0.12);
+  box-shadow:
+    0 4px 6px rgba(62, 54, 46, 0.06),
+    0 18px 40px rgba(62, 54, 46, 0.14);
+  padding: 1.35rem 1.25rem 1.15rem;
+  padding-right: 2.75rem;
+}
+
+@media (min-width: 640px) {
+  #parenting-season-banner .psb-card {
+    padding: 1.5rem 1.65rem 1.35rem;
+    padding-right: 3rem;
+  }
+}
+
+#parenting-season-banner .psb-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #c47a5a 0%, #b89170 100%);
+  border-radius: 1.5rem 0 0 1.5rem;
+}
+
+#parenting-season-banner .psb-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(62, 54, 46, 0.1);
+  background: #fff;
+  color: #8a7a6b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+#parenting-season-banner .psb-close:hover {
+  background: #3e362e;
+  color: #fff;
+}
+
+#parenting-season-banner .psb-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+#parenting-season-banner .psb-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.65rem;
+  background: #c47a5a;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(196, 122, 90, 0.35);
+}
+
+#parenting-season-banner .psb-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7d6a5b;
+}
+
+#parenting-season-banner .psb-title {
+  margin: 0;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  font-weight: 800;
+  color: #3e362e;
+  word-break: keep-all;
+}
+
+@media (min-width: 640px) {
+  #parenting-season-banner .psb-title {
+    font-size: 1.625rem;
+  }
+}
+
+#parenting-season-banner .psb-sub {
+  margin: 0.45rem 0 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #5c4f44;
+  word-break: keep-all;
+}
+
+#parenting-season-banner .psb-lead {
+  margin: 0.75rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: #4a4038;
+  word-break: keep-all;
+}
+
+#parenting-season-banner .psb-meta {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+#parenting-season-banner .psb-meta li {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #3e362e;
+  padding: 0.4rem 0.75rem;
+  border-radius: 9999px;
+  background: #fff;
+  border: 1px solid rgba(184, 145, 112, 0.35);
+  box-shadow: 0 1px 2px rgba(62, 54, 46, 0.04);
+}
+
+#parenting-season-banner .psb-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: #8a7a6b;
+  word-break: keep-all;
+}
+
+#parenting-season-banner .psb-actions {
+  margin-top: 1.15rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+}
+
+@media (min-width: 480px) {
+  #parenting-season-banner .psb-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+#parenting-season-banner .psb-btn {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+  word-break: keep-all;
+}
+
+#parenting-season-banner .psb-btn--primary {
+  border: none;
+  background: #3e362e;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(62, 54, 46, 0.2);
+}
+
+#parenting-season-banner .psb-btn--primary:hover {
+  background: #2d2822;
+  transform: translateY(-1px);
+}
+
+#parenting-season-banner .psb-btn--secondary {
+  border: 1.5px solid rgba(184, 145, 112, 0.55);
+  background: #fff;
+  color: #3e362e;
+}
+
+#parenting-season-banner .psb-btn--secondary:hover {
+  background: #eee2d5;
+}
+
+#parenting-season-banner .psb-dismiss {
+  margin-top: 0.85rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #aa9889;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  word-break: keep-all;
+}
+
+#parenting-season-banner .psb-dismiss:hover {
+  color: #3e362e;
+}
