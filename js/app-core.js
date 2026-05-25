@@ -41,6 +41,13 @@ function syncSectionHash(sectionId, payload = null, replaceHash = false) {
 function renderSection(sectionId, payload = null, options = {}) {
     const { syncHash = true, replaceHash = false } = options;
     const previousSection = state.currentSection;
+    const activeFocus = String(payload?.focus || '').trim();
+    const isParentingFocusedView = (
+        sectionId === 'apply' || sectionId === 'thankyou'
+    ) && (
+        activeFocus === 'parenting_workshop' || activeFocus === 'parents_workshop'
+    );
+    document.body.classList.toggle('parenting-focused-apply', isParentingFocusedView);
     // Preserve 진단 iframe across navigation: detach before main.innerHTML replaces DOM.
     if (previousSection === 'test' && sectionId !== 'test') {
         const iframe = document.getElementById('adaptive-test-iframe');
