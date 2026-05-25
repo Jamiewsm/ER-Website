@@ -332,11 +332,12 @@ function renderNoticeDetail(payload) {
 
     const isParentsWorkshop = String(n.id) === '4';
     const applyOnclick = isParentsWorkshop
-        ? "renderSection('apply', { track: 'paid', focus: 'parents_workshop' })"
+        ? "renderSection('apply', { track: 'paid', focus: 'parenting_workshop' })"
         : "renderSection('apply', { track: 'paid' })";
     const applyLabel = isParentsWorkshop ? '워크샵 신청하기' : '상담 신청하기';
     const brochureCta = isParentsWorkshop
-        ? `<a href="/parents-brochure.html" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">모바일 브로셔</a>`
+        ? `<a href="/parenting-workshop.html" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">워크샵 안내</a>
+                            <a href="/parents-brochure.html" class="px-6 py-2.5 border border-er-accent/40 text-er-dark rounded-full text-sm font-bold hover:bg-er-accentLight/30 transition-all w-full md:w-auto text-center">모바일 브로셔</a>`
         : '';
 
     return `
@@ -374,7 +375,7 @@ function renderNoticeDetail(payload) {
                     
                     <div class="mt-10 p-5 bg-er-base rounded-2xl border border-er-primary/10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
                         <div>
-                            <p class="text-sm font-bold text-er-dark">${isParentsWorkshop ? '워크샵을 신청하거나 브로셔를 확인해 보세요.' : '문의하거나 신청하시겠어요?'}</p>
+                            <p class="text-sm font-bold text-er-dark">${isParentsWorkshop ? '안내 페이지·브로셔를 보거나 바로 신청할 수 있습니다.' : '문의하거나 신청하시겠어요?'}</p>
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                             ${brochureCta}

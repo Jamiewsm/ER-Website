@@ -1,10 +1,10 @@
-# 모바일 브로셔 제작 PRD — Enneagram for Parents
+# 모바일 브로셔 제작 PRD — Enneagram for Parenting
 
 > 구현 카피 SSOT: [COPY.md](./COPY.md) · 디자인: [DESIGN.md](./DESIGN.md) · 체크리스트: [CHECKLIST.md](./CHECKLIST.md) ·보내기: [EXPORT.md](./EXPORT.md)
 
 ## 1. 제작 목적
 
-ER **Enneagram for Parents** 4주 워크샵 홍보용 모바일 디지털 브로셔. 핸드폰에서 내용 확인 후 신청 링크·QR로 신청까지 연결.
+ER **Enneagram for Parenting** 4주 워크샵 홍보용 모바일 디지털 브로셔. 핸드폰에서 내용 확인 후 웹 랜딩·신청 링크·QR로 연결.
 
 1. 부모의 반복적 반응·어려움 공감  
 2. ER 복음적 에니어그램·워크샵 차별성 전달  
@@ -34,7 +34,7 @@ ER **Enneagram for Parents** 4주 워크샵 홍보용 모바일 디지털 브로
 
 ## 7. 기능
 
-- Page 6: 신청 버튼 → `/#apply?track=paid&focus=parents_workshop`  
+- Page 6: 신청 버튼 → `/#apply?track=paid&focus=parenting_workshop` · QR → `parenting-workshop.html`  
 - QR → 동일 URL  
 - Email: restoration.son@gmail.com (mailto)  
 - Instagram: @enneagram_for_restoration (링크)

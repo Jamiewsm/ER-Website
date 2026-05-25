@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Enneagram for Parents — 4주 자녀양육 워크샵</title>
+  <title>Enneagram for Parenting — 4주 자녀양육 워크샵</title>
   <meta name="description" content="나를 알고, 아이를 이해하는 4주 자녀양육 워크샵. 양육의 변화는 부모의 자기이해에서 시작됩니다." />
-  <meta property="og:title" content="Enneagram for Parents" />
+  <meta property="og:title" content="Enneagram for Parenting" />
   <meta property="og:description" content="4주 자녀양육 워크샵 — ER 복음적 에니어그램 심화 과정" />
   <meta name="theme-color" content="#F7EEE4" />
   <link rel="preload" href="assets/parents-brochure/bg-01-cover.jpg" as="image" />
@@ -21,7 +21,7 @@
       <section class="pb-slide pb-slide--cover pb-slide--p1" data-page="1" aria-label="표지">
         <div class="pb-slide-inner">
           <p class="pb-eyebrow">Enneagram for Restoration</p>
-          <h1 class="pb-title">Enneagram for Parents</h1>
+          <h1 class="pb-title">Enneagram for Parenting</h1>
           <p class="pb-subtitle">나를 알고, 아이를 이해하는<br />4주 자녀양육 워크샵</p>
           <p class="pb-hero-line">양육의 변화는 부모의 자기이해에서 시작됩니다.</p>
           <div class="pb-pills">
@@ -169,7 +169,7 @@
         </p>
         <div class="pb-qr-block">
           <img src="assets/parents-brochure/qr-apply.png" width="400" height="400" alt="워크샵 신청 QR 코드" />
-          <p class="pb-qr-caption">QR코드를 스캔하시면 워크샵 신청 안내 페이지로 연결됩니다.</p>
+          <p class="pb-qr-caption">QR코드를 스캔하시면 워크샵 안내(웹 랜딩) 페이지로 연결됩니다.</p>
         </div>
         </div>
       </section>
@@ -188,10 +188,11 @@
   <script>
     (function () {
       var PRODUCTION_ORIGIN = 'https://er-coaching.com';
-      var applyPath = '/#apply?track=paid&focus=parents_workshop';
+      var applyPath = '/#apply?track=paid&focus=parenting_workshop';
       var origin = window.location.origin;
       var isLocal = /^localhost$|^127\.0\.0\.1$/.test(window.location.hostname);
-      var applyUrl = (isLocal ? origin : PRODUCTION_ORIGIN) + applyPath;
+      var base = isLocal ? origin : PRODUCTION_ORIGIN;
+      var applyUrl = base + applyPath;
 
       var cta = document.getElementById('pb-apply-cta');
       if (cta) cta.href = applyUrl;

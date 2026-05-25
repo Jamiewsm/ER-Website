@@ -1,4 +1,4 @@
-# Enneagram for Parents — Brochure Copy (SSOT)
+# Enneagram for Parenting — Brochure Copy (SSOT)
 
 페이지별 카피 정본. `parents-brochure.html` 과 Canva/PDF 제작 시 이 파일을 기준으로 합니다.
 
@@ -6,7 +6,7 @@
 
 ## Page 1 — 표지
 
-**Title:** Enneagram for Parents
+**Title:** Enneagram for Parenting
 
 **Subtitle:** 나를 알고, 아이를 이해하는 4주 자녀양육 워크샵
 
