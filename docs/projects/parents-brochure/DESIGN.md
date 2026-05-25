@@ -52,15 +52,15 @@ Font Awesome 6 (CDN): `users`, `chalkboard-user`, `bullseye`, `cross`, `calendar
 
 ## Imagery
 
-Each slide uses a **full-bleed Unsplash photo** (warm, natural, no face close-ups) with cream gradient overlay + **glass** content cards (`backdrop-filter`).
+Each slide uses a **full-bleed photo** from `assets/parents-brochure/bg-*.jpg` (committed JPEGs, originally from Unsplash) with cream gradient overlay + **glass** cards.
 
-| Page | Photo theme |
-|------|-------------|
-| 1 표지 | Family walk, golden light (backs) |
-| 2 공감 | Parent–child closeness |
-| 3 ER 관점 | Warm home / window light |
-| 4 특징 | Coffee & journal (reflection) |
-| 5 커리큘럼 | Reading together |
-| 6 신청 | Family on beach (backs) |
+| File | Page |
+|------|------|
+| `bg-01-cover.jpg` | 1 표지 |
+| `bg-02-empathy.jpg` | 2 공감 |
+| `bg-03-vision.jpg` | 3 ER 관점 |
+| `bg-04-features.jpg` | 4 특징 |
+| `bg-05-curriculum.jpg` | 5 커리큘럼 |
+| `bg-06-apply.jpg` | 6 신청 |
 
-Replace URLs in `css/parents-brochure.css` (`.pb-slide--p1` … `--p6`) for custom photography. Credit photographers per [Unsplash License](https://unsplash.com/license).
+Swap these files to use ER-owned photography; keep filenames or update `css/parents-brochure.css`.
