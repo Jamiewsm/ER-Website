@@ -1,16 +1,16 @@
 # 로컬 PC / VS Code에서 ER Website 열기
 
-## ★ 배경 사진 넣는 곳 (가장 중요)
-
-저장소를 clone 하면 **루트에 이 폴더가 생깁니다:**
+## ★ Parenting 브로셔 PNG (디자인 정본)
 
 ```
-ER-Website/photos-put-here/
+ER-Website/parenting-workshop/mb1.png … mb6.png
 ```
 
-VS Code 왼쪽 파일 트리 **맨 위**에서 `photos-put-here` → `읽어주세요.md` 를 읽고, 같은 폴더의 JPG 세 장을 교체하세요.
+목업 PNG = 최종 디자인. `/parents-brochure.html` 은 6장 스와이프만 합니다. **사이트 메뉴·공지에 브로셔 버튼 없음.**
 
-루트에 [`사진-넣는-곳.md`](../사진-넣는-곳.md) 파일도 안내용으로 있습니다.
+mb6 QR: Canva에 `assets/parents-brochure/qr-apply.png` 포함 후 보내기.
+
+[`parenting-workshop/읽어주세요.md`](../parenting-workshop/읽어주세요.md)
 
 ---
 
@@ -30,8 +30,8 @@ VS Code: **File → Open Folder** → 방금 만든 `ER-Website` 폴더.
 
 | 용도 | 경로 |
 |------|------|
-| **배경 사진 (여기만 수정)** | `photos-put-here/*.jpg` |
-| 모바일 브로셔 HTML | `parents-brochure.html` |
+| **브로셔 PNG** | `parenting-workshop/mb1.png` … `mb6.png` |
+| (선택) PNG 뷰어 URL | `parents-brochure.html` |
 | 웹 랜딩 | `parenting-workshop.html` |
 | 홈 배너 | `js/parents-workshop-promo.js` |
 

@@ -50,16 +50,10 @@
 
 Font Awesome 6 (CDN): `users`, `chalkboard-user`, `bullseye`, `cross`, `calendar`, `video`
 
-## Imagery
+## Imagery (PNG 정본)
 
-Each slide uses a **full-bleed photo** from repo root [`photos-put-here/`](../../../photos-put-here/) with cream gradient overlay + **glass** cards. `ER-logo-header.png` appears in the fixed brand bar.
+[`parenting-workshop/mb1.png` … `mb6.png`](../../../parenting-workshop/) — Canva 목업 = 배포용 최종. HTML 재구현 없음.
 
-| File | Page |
-|------|------|
-| `hero-home.jpg` | 1 표지, 3 ER 관점, 6 신청 (homepage hero match) |
-| `warm-hand.jpg` | 2 공감 |
-| `warm-candles.jpg` | 4 특징, 5 커리큘럼 |
+QR: `assets/parents-brochure/qr-apply.png` 를 mb6에 Canva에서 포함.
 
-인쇄용 복사본: `bash scripts/sync-photos-to-brochure.sh` → `assets/parents-brochure/bg-*.jpg`
-
-**배경 사진 교체:** [`photos-put-here/읽어주세요.md`](../../../photos-put-here/읽어주세요.md)
+웹 뷰어: `parents-brochure.html` (사이트 네비·공지 버튼 없음).
