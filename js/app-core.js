@@ -42,12 +42,22 @@ function renderSection(sectionId, payload = null, options = {}) {
     const { syncHash = true, replaceHash = false } = options;
     const previousSection = state.currentSection;
     const activeFocus = String(payload?.focus || '').trim();
-    const isParentingFocusedView = (
+    const isParentingFocus = activeFocus === 'parenting_workshop' || activeFocus === 'parents_workshop';
+    const isJulyBasicFocus = (
+        activeFocus === 'enneagram_basic_july'
+        || activeFocus === 'basic_course_july'
+        || activeFocus === 'enneagram_basic'
+    );
+    const isFocusedApplyJourney = (
         sectionId === 'apply' || sectionId === 'thankyou'
     ) && (
-        activeFocus === 'parenting_workshop' || activeFocus === 'parents_workshop'
+        isParentingFocus || isJulyBasicFocus
     );
+    const isParentingFocusedView = (
+        sectionId === 'apply' || sectionId === 'thankyou'
+    ) && isParentingFocus;
     document.body.classList.toggle('parenting-focused-apply', isParentingFocusedView);
+    document.body.classList.toggle('course-focused-apply', isFocusedApplyJourney);
     // Preserve 진단 iframe across navigation: detach before main.innerHTML replaces DOM.
     if (previousSection === 'test' && sectionId !== 'test') {
         const iframe = document.getElementById('adaptive-test-iframe');
