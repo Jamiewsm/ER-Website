@@ -1,0 +1,26 @@
+/* Focused course application routes. */
+
+body.course-focused-apply footer,
+body.course-focused-apply #navbar .desktop-nav,
+body.course-focused-apply #navbar .parenting-hide-on-focused {
+  display: none;
+}
+
+body.course-focused-apply #navbar > div > div {
+  justify-content: center;
+}
+
+body.course-focused-apply .course-apply-page section,
+body.course-focused-apply .parenting-apply-page section {
+  min-width: 0;
+}
+
+body.course-focused-apply .course-apply-poster {
+  object-position: center top;
+}
+
+@media (min-width: 1024px) {
+  body.course-focused-apply .course-apply-poster {
+    object-position: center top;
+  }
+}

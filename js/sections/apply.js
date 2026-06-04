@@ -3,6 +3,13 @@ function isParentingWorkshopFocus(focus) {
     return normalizedFocus === 'parenting_workshop' || normalizedFocus === 'parents_workshop';
 }
 
+function isJulyBasicCourseFocus(focus) {
+    const normalizedFocus = String(focus || '').trim();
+    return normalizedFocus === 'enneagram_basic_july'
+        || normalizedFocus === 'basic_course_july'
+        || normalizedFocus === 'enneagram_basic';
+}
+
 function renderParentingWorkshopApply(submitSource) {
     return `
         <div class="parenting-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
@@ -92,6 +99,101 @@ function renderParentingWorkshopApply(submitSource) {
     `;
 }
 
+function renderJulyBasicCourseApply(submitSource) {
+    return `
+        <div class="course-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
+            <div class="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[minmax(300px,0.92fr)_minmax(430px,1fr)] lg:items-start">
+                <section class="overflow-hidden rounded-lg border border-er-accentLight bg-white shadow-soft">
+                    <div class="grid gap-0 md:grid-cols-[0.78fr_1fr] lg:grid-cols-1">
+                        <div class="course-apply-poster-wrap bg-[#f7f0e3]">
+                            <img
+                                src="/assets/er-visual/enneagram-basic-july-2026.jpg"
+                                alt="에니어그램 기본과정 8주 안내 이미지"
+                                class="course-apply-poster h-48 w-full object-cover object-top sm:h-60 md:h-full lg:h-[28rem]"
+                            />
+                        </div>
+                        <div class="p-5 sm:p-6">
+                            <h1 class="text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl">에니어그램 기본과정 8주</h1>
+                            <p class="mt-2 text-base font-semibold leading-relaxed text-er-primary break-keep">
+                                관계 속에서 드러나는 나를 이해하는 시간
+                            </p>
+                            <p class="mt-4 text-sm leading-relaxed text-gray-600 break-keep">
+                                내 안의 패턴을 이해하고, 하나님 안에서 본래의 나로 회복되는 여정을 시작합니다.
+                            </p>
+                            <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-er-accentLight pt-4 text-sm text-er-dark">
+                                <p><span class="block text-[11px] text-er-muted">기간</span>7-8월 · 총 8주</p>
+                                <p><span class="block text-[11px] text-er-muted">방식</span>온라인 Zoom</p>
+                                <p><span class="block text-[11px] text-er-muted">구성</span>강의 + 1:1 멘토링</p>
+                                <p><span class="block text-[11px] text-er-muted">수강료</span>$300</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rounded-lg border border-er-accentLight bg-white p-5 shadow-soft sm:p-7">
+                    <h2 class="text-lg font-bold text-er-dark">기본과정 신청 정보</h2>
+                    <p class="mb-6 mt-2 text-sm leading-relaxed text-er-primary break-keep">
+                        아래 내용을 남겨주시면 일정, 결제, 참여 안내를 보내드립니다.
+                    </p>
+
+                    <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_july' })">
+                        <input type="hidden" name="category" value="에니어그램 기본과정 8주 ($300)">
+
+                        <div>
+                            <label class="mb-2 block text-sm font-bold text-gray-700">이름</label>
+                            <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="성함을 남겨주세요">
+                        </div>
+
+                        <div>
+                            <label class="mb-2 block text-sm font-bold text-gray-700">연락받으실 곳</label>
+                            <input type="text" name="contact" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="전화번호 또는 이메일">
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">거주 국가 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="country" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: USA, Korea">
+                            </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">희망 시간대 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="preferred_time" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: Dallas PM">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="mb-2 block text-sm font-bold text-gray-700">전하고 싶은 내용 <span class="font-normal text-gray-400">(선택)</span></label>
+                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="궁금한 점이나 함께 나누고 싶은 내용을 적어주세요."></textarea>
+                        </div>
+
+                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                            <p class="mb-1 text-xs font-bold text-gray-600">보안 확인</p>
+                            <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 신청 버튼을 눌러 주세요.</p>
+                            <p id="apply-turnstile-status" class="mb-2 hidden text-xs text-gray-500 break-keep" role="status" aria-live="polite"></p>
+                            <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
+                            <button type="button" id="apply-turnstile-retry" class="mt-2 hidden w-full rounded-lg border border-er-accent/40 py-2 text-xs font-bold text-er-dark hover:bg-er-accentLight/30" onclick="initApplyTurnstile()">
+                                보안 확인 다시 불러오기
+                            </button>
+                            <input type="hidden" name="turnstile_token" id="apply-turnstile-token" value="">
+                        </div>
+
+                        <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
+                        <button id="apply-submit-btn" type="submit" data-default-label="에니어그램 기본과정 신청하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
+                            에니어그램 기본과정 신청하기
+                        </button>
+                    </form>
+
+                    <p class="mt-6 border-t border-gray-100 pt-5 text-center text-xs text-er-primary">
+                        신청 전 문의
+                        <a href="mailto:json@er-coaching.com" class="ml-2 font-bold underline">Email</a>
+                        <span class="mx-2 text-er-muted">|</span>
+                        <a href="https://www.instagram.com/enneagram_for_restoration/" target="_blank" rel="noopener noreferrer" class="font-bold underline">Instagram</a>
+                    </p>
+                </section>
+            </div>
+        </div>
+    `;
+}
+
 function renderApply(payload = null) {
     const fromTest = payload?.source === 'test';
     let focus = String(payload?.focus || '').trim();
@@ -114,6 +216,15 @@ function renderApply(payload = null) {
             bannerBody: '에니어그램 입문 과정이 아닌 심화 과정입니다. 6월 셋째 주–7월 둘째 주, 소규모 선착순 모집($120). 일정은 인원 확정 후 안내드립니다.',
             category: 'Enneagram for Parenting 4주 ($120)',
             message: 'Enneagram for Parenting 4주 워크샵 신청합니다.'
+        },
+        enneagram_basic_july: {
+            track: 'paid',
+            title: '에니어그램 기본과정 8주 신청',
+            desc: '7-8월 온라인 기본과정 신청을 남겨 주세요.',
+            bannerTitle: '에니어그램 기본과정 8주',
+            bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
+            category: '에니어그램 기본과정 8주 ($300)',
+            message: '에니어그램 기본과정 8주 신청합니다.'
         },
         couple: {
             track: 'paid',
@@ -157,6 +268,9 @@ function renderApply(payload = null) {
     if (isParentingWorkshopFocus(focus)) {
         return renderParentingWorkshopApply(submitSource);
     }
+    if (isJulyBasicCourseFocus(focus)) {
+        return renderJulyBasicCourseApply(submitSource);
+    }
     const testSummary = state.latestTestResult
         ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 하위유형 ${state.latestTestResult.subtypeSummary}, 본능 ${state.latestTestResult.instinctSummary}`
         : '';
@@ -186,7 +300,7 @@ function renderApply(payload = null) {
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
             : isOrgTrack
                 ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '자녀 양육 코칭 문의', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)', 'Enneagram for Parenting 4주 ($120)'];
+                : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '에니어그램 기본과정 8주 ($300)', '자녀 양육 코칭 문의', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)', 'Enneagram for Parenting 4주 ($120)'];
     const defaultPaidCategory = '정체성 발견 세션 ($100)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
@@ -324,6 +438,30 @@ function renderThankYou(payload = null) {
                     <h2 class="mb-3 text-xl font-bold text-er-dark">신청이 접수되었습니다</h2>
                     <p class="text-sm leading-relaxed text-er-primary break-keep">
                         남겨주신 연락처로 일정과 참여 안내를 보내드리겠습니다.<br>
+                        보통 24시간 이내에 연락드립니다.
+                    </p>
+                    <div class="mt-8 grid gap-3">
+                        <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
+                            ER 홈페이지로 돌아가기
+                        </button>
+                        <a href="https://www.instagram.com/enneagram_for_restoration/" target="_blank" rel="noopener noreferrer" class="w-full rounded-lg border border-er-accentLight py-3 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">
+                            Instagram 보기
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    if (isJulyBasicCourseFocus(payload?.focus)) {
+        return `
+            <div class="min-h-screen bg-er-base px-4 py-14">
+                <div class="mx-auto max-w-md rounded-lg border border-er-accentLight bg-white p-8 text-center shadow-soft">
+                    <div class="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-green-50 text-xl text-green-600">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 class="mb-3 text-xl font-bold text-er-dark">기본과정 신청이 접수되었습니다</h2>
+                    <p class="text-sm leading-relaxed text-er-primary break-keep">
+                        남겨주신 연락처로 7월 기본과정 일정, 결제, 참여 안내를 보내드리겠습니다.<br>
                         보통 24시간 이내에 연락드립니다.
                     </p>
                     <div class="mt-8 grid gap-3">

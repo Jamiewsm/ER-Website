@@ -6,6 +6,7 @@ import vm from 'node:vm';
 const applySource = readFileSync(new URL('../js/sections/apply.js', import.meta.url), 'utf8');
 const apiSource = readFileSync(new URL('../js/api.js', import.meta.url), 'utf8');
 const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url), 'utf8');
+const courseCssSource = readFileSync(new URL('../css/course-application.css', import.meta.url), 'utf8');
 
 function loadApplyRenderer() {
   const context = {
@@ -44,6 +45,38 @@ test('generic paid apply route keeps its selectable application categories', () 
   assert.match(html, /희망하는 세션/);
   assert.match(html, /<select name="category"/);
   assert.doesNotMatch(html, /assets\/er-visual\/hero-home\.jpg/);
+});
+
+test('July Enneagram basic course link renders a dedicated direct application form', () => {
+  const renderer = loadApplyRenderer();
+  const html = renderer.renderApply({
+    track: 'paid',
+    focus: 'enneagram_basic_july',
+    apply_source: 'instagram'
+  });
+
+  assert.match(html, /에니어그램 기본과정 8주/);
+  assert.match(html, /관계 속에서 드러나는 나를 이해하는 시간/);
+  assert.match(html, /assets\/er-visual\/enneagram-basic-july-2026\.jpg/);
+  assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$300\)"/);
+  assert.match(html, /에니어그램 기본과정 신청하기/);
+  assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_july:instagram', \{ focus: 'enneagram_basic_july' \}\)/);
+  assert.doesNotMatch(html, /희망하는 세션|<select/);
+});
+
+test('July Enneagram basic course confirmation uses course-specific response copy', () => {
+  const renderer = loadApplyRenderer();
+  const html = renderer.renderThankYou({ focus: 'enneagram_basic_july' });
+
+  assert.match(html, /기본과정 신청이 접수되었습니다/);
+  assert.match(html, /7월 기본과정 일정, 결제, 참여 안내/);
+  assert.match(html, /24시간 이내/);
+});
+
+test('focused course application CSS hides global distractions and allows mobile shrink', () => {
+  assert.match(courseCssSource, /body\.course-focused-apply footer/);
+  assert.match(courseCssSource, /\.course-apply-page section[\s\S]*min-width:\s*0/);
+  assert.match(courseCssSource, /\.parenting-apply-page section[\s\S]*min-width:\s*0/);
 });
 
 test('parenting workshop confirmation uses course-specific response copy', () => {
@@ -87,6 +120,36 @@ test('router preserves parenting focus while rendering the confirmation view', (
 
   assert.equal(hasFocusedClass, true);
   assert.equal(thankYouPayload?.focus, 'parenting_workshop');
+});
+
+test('router applies quiet focused shell to July basic course routes', () => {
+  const toggles = {};
+  const mainContent = { innerHTML: '' };
+  const context = {
+    state: { currentSection: 'apply', currentPayload: null },
+    document: {
+      body: {
+        classList: {
+          toggle(className, enabled) { toggles[className] = enabled; }
+        }
+      },
+      getElementById(id) {
+        if (id === 'main-content') return mainContent;
+        if (id === 'mobile-menu') return { classList: { add() {} } };
+        return null;
+      }
+    },
+    window: { scrollTo() {} },
+    renderThankYou() { return '<p>confirmation</p>'; },
+    setTimeout() {}
+  };
+  vm.createContext(context);
+  vm.runInContext(appCoreSource, context, { filename: 'js/app-core.js' });
+
+  context.renderSection('thankyou', { focus: 'enneagram_basic_july' }, { syncHash: false });
+
+  assert.equal(toggles['course-focused-apply'], true);
+  assert.equal(toggles['parenting-focused-apply'], false);
 });
 
 test('successful focused submission carries parenting focus into confirmation', async () => {
