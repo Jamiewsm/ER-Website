@@ -426,9 +426,8 @@ function getOptionText(item, side) {
 }
 
 function getChoiceOptionText(option) {
-  const label = pageLang === 'en' ? option.labelEn : option.label;
   const text = pageLang === 'en' ? option.textEn : option.text;
-  return `<span class="font-bold text-[#4a4540]">${label}</span><br>${text}`;
+  return text;
 }
 
 const arrowLines = {1:{stress:4,growth:7},2:{stress:8,growth:4},3:{stress:9,growth:6},4:{stress:2,growth:1},5:{stress:7,growth:8},6:{stress:3,growth:9},7:{stress:1,growth:5},8:{stress:5,growth:2},9:{stress:6,growth:3}};
