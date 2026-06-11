@@ -61,7 +61,10 @@ test('July Enneagram basic course link renders a dedicated direct application fo
   assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$300\)"/);
   assert.match(html, /에니어그램 기본과정 신청하기/);
   assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_july:instagram', \{ focus: 'enneagram_basic_july' \}\)/);
-  assert.doesNotMatch(html, /희망하는 세션|<select/);
+  assert.match(html, /name="enneagram_experience"/);
+  assert.match(html, /name="referral_source"/);
+  assert.match(html, /name="covenant_agree"[^>]*required/);
+  assert.doesNotMatch(html, /희망하는 세션|<select name="category"/);
 });
 
 test('July Enneagram basic course confirmation uses course-specific response copy', () => {

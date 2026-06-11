@@ -20,11 +20,25 @@
     '정체성 회복 코칭': 'identity_session',
     '관계 패턴 코칭': 'coaching_single',
     'ER 전문가 양성반': 'coach_training',
+    '에니어그램 기본과정 8주': 'basic_course',
     '커리어/소명 코칭': 'identity_session',
     '리더십/소명 코칭': 'coach_training',
     '회복 여정 8회': 'recovery_journey_8',
     '회복 여정 4회': 'recovery_journey_4'
   };
+
+  const JULY_BASIC_RECRUITMENT_END = '2026-07-05T23:59:59-07:00';
+
+  function isJulyBasicRecruitmentOpen() {
+    return Date.now() <= Date.parse(JULY_BASIC_RECRUITMENT_END);
+  }
+
+  function withJulyBasicBoost(programNames) {
+    if (!isJulyBasicRecruitmentOpen()) return programNames || [];
+    const names = Array.from(programNames || []);
+    const filtered = names.filter((name) => resolveKey(name) !== 'basic_course');
+    return ['에니어그램 기본과정 8주', ...filtered].slice(0, 3);
+  }
 
   const PROGRAMS = {
     identity_session: {
@@ -114,9 +128,10 @@
       category: '에니어그램 기본과정 8주 ($300)',
       track: 'paid',
       focus: 'enneagram_basic_july',
-      outcome: '9유형의 핵심 동기와 관계·회복 관점을 배우는 온라인 과정입니다.',
-      reasonPrimary: '유형 이해의 기초를 체계적으로 쌓기 좋습니다.',
-      reasonSecondary: '혼자 읽은 결과를 더 깊은 학습으로 확장하기 좋습니다.',
+      featured: true,
+      outcome: '7월 개강 · 8주 온라인 + 1:1 멘토링 · 얼리버드 $270 (6/24까지)',
+      reasonPrimary: '무료 진단 결과를 체계적인 8주 학습으로 확장하기 좋은 시점입니다.',
+      reasonSecondary: '9유형의 핵심 동기와 회복 관점을 깊이 배우기 좋습니다.',
       applyMessage: '에니어그램 기본과정 8주 신청합니다.'
     },
     coach_training: {
@@ -162,7 +177,7 @@
   }
 
   function buildNextSteps(programNames) {
-    return (programNames || []).map((name, index) => {
+    return withJulyBasicBoost(programNames).map((name, index) => {
       const key = resolveKey(name);
       const prog = get(key);
       const priceNote = prog.price ? prog.price.label : '';
@@ -204,6 +219,8 @@
     get,
     buildApplyPayload,
     buildNextSteps,
+    withJulyBasicBoost,
+    isJulyBasicRecruitmentOpen,
     getPaidCategoryOptions,
     getRecoveryPackageCopy,
     perSession
