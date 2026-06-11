@@ -2033,6 +2033,107 @@ function scheduleEmbedResize() {
   setTimeout(notifyEmbedResize, 480);
 }
 
+function isTestEmbedded() {
+  try {
+    return window.parent && window.parent !== window;
+  } catch (_err) {
+    return false;
+  }
+}
+
+function buildTestResultSummary(model) {
+  return {
+    source: 'test',
+    finalLabel: model.display && model.display.final ? model.display.final : '',
+    coreType: model.core,
+    wingLabel: model.display && model.display.wing ? model.display.wing : '',
+    subtypeSummary: model.display && model.display.subtype ? model.display.subtype : '',
+    instinctSummary: model.instinctCode || '',
+    confidence: model.display && model.display.confidence ? model.display.confidence : '',
+    reportKey: model.reportKey || ''
+  };
+}
+
+function persistTestResultSummary(summary) {
+  if (!summary) return;
+  try {
+    sessionStorage.setItem('er_latest_test_result', JSON.stringify(summary));
+  } catch (_err) {
+    // ignore storage failures
+  }
+  if (!isTestEmbedded()) return;
+  try {
+    window.parent.postMessage({ type: 'er-test-result', result: summary }, '*');
+  } catch (_err) {
+    // ignore cross-origin failures
+  }
+}
+
+function navigateFromTest(action) {
+  if (!action) return;
+  if (action.type === 'section') {
+    const section = action.section || 'programs';
+    const payload = action.payload || {};
+    if (isTestEmbedded()) {
+      try {
+        window.parent.postMessage({ type: 'er-test-navigate', section, payload }, '*');
+      } catch (_err) {}
+      return;
+    }
+    const params = new URLSearchParams();
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && String(value) !== '') params.set(key, String(value));
+    });
+    const query = params.toString();
+    window.location.href = `${window.location.origin}/#${section}${query ? `?${query}` : ''}`;
+    return;
+  }
+  const payload = action.payload || { track: 'paid', focus: 'identity_session', source: 'test' };
+  if (isTestEmbedded()) {
+    try {
+      window.parent.postMessage({ type: 'er-test-navigate', section: 'apply', payload }, '*');
+    } catch (_err) {}
+    return;
+  }
+  const params = new URLSearchParams();
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && String(value) !== '') params.set(key, String(value));
+  });
+  const query = params.toString();
+  window.location.href = `${window.location.origin}/#apply${query ? `?${query}` : ''}`;
+}
+
+function bindReportApplyNavigation(root) {
+  if (!root) return;
+  const wireNav = (el, action) => {
+    if (!el || !action) return;
+    const go = () => navigateFromTest(action);
+    el.addEventListener('click', (event) => {
+      event.preventDefault();
+      go();
+    });
+    el.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        go();
+      }
+    });
+  };
+  root.querySelectorAll('[data-report-program-key]').forEach((el) => {
+    const key = el.getAttribute('data-report-program-key');
+    if (!key || !window.ERProgramCatalog) return;
+    wireNav(el, window.ERProgramCatalog.buildApplyPayload(key));
+  });
+  root.querySelectorAll('[data-report-section-nav]').forEach((el) => {
+    const section = el.getAttribute('data-report-section-nav') || 'programs';
+    wireNav(el, {
+      type: 'section',
+      section,
+      payload: { source: 'test', apply_source: 'report_footer' }
+    });
+  });
+}
+
 function buildWingMetrics(core, wingScores) {
   const left = core === 1 ? 9 : core - 1;
   const right = core === 9 ? 1 : core + 1;
@@ -2170,14 +2271,23 @@ function renderPremiumReport(model) {
       <p>${escapeReportHtml(item)}</p>
     </li>
   `).join('');
-  const nextSteps = (c.nextSteps || []).map((step, index) => `
-    <article class="er-report-next-card${index === 0 ? ' is-primary' : ''}">
+  const primaryProgramKey = (c.nextSteps && c.nextSteps[0] && c.nextSteps[0].programKey) || 'identity_session';
+  const nextSteps = (c.nextSteps || []).map((step, index) => {
+    const programKey = step.programKey || '';
+    const priceLine = step.priceLabel
+      ? `<em class="er-report-next-price">${escapeReportHtml(step.priceLabel)}</em>`
+      : '';
+    return `
+    <article class="er-report-next-card is-clickable${index === 0 ? ' is-primary' : ''}" data-report-program-key="${escapeReportHtml(programKey)}" tabindex="0" role="link" aria-label="${escapeReportHtml(step.program)} 신청">
       <span>${index === 0 ? '가장 추천' : `${step.rank}순위`}</span>
       <h3>${escapeReportHtml(step.program)}</h3>
+      ${priceLine}
       <p>${escapeReportHtml(step.reason)}</p>
       <small>${escapeReportHtml(step.outcome)}</small>
+      <span class="er-report-next-cta">신청하기</span>
     </article>
-  `).join('');
+  `;
+  }).join('');
   const actionRows = (c.actionPlan || []).map((item, index) => `
     <label class="er-report-action-row">
       <input type="checkbox" data-report-action="${index}" aria-label="Action Plan ${index + 1}">
@@ -2330,13 +2440,14 @@ function renderPremiumReport(model) {
         <div class="er-report-next-grid">${nextSteps}</div>
         <div id="experiment-result-panel" class="hidden"></div>
         <div id="cta-consulting" class="hidden er-report-low-confidence">
-          <p id="consult-cta-text">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.</p>
-          <a id="consult-cta-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer">무료 1:1 세션 신청</a>
+          <p id="consult-cta-text">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 정체성 발견 세션($100)에서 인터뷰 기반 타이핑으로 함께 확인해 드립니다.</p>
+          <a id="consult-cta-btn" href="#" data-report-program-key="identity_session">정체성 발견 세션 신청</a>
         </div>
         <div class="er-report-final-cta">
           <h2>${escapeReportHtml(c.gospel.declaration || c.heroStatement)}</h2>
           <p>결과지는 끝이 아니라, 오늘 하나의 작은 회복을 시작하는 지도입니다.</p>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSf1OoNECd6jP3t2KWy5UdHPNLEalAZ6ejCqI0tt0DId3xwxhA/viewform" target="_blank" rel="noopener noreferrer">나의 회복 여정 다음 단계 보기</a>
+          <a href="#" class="er-report-final-primary" data-report-program-key="${escapeReportHtml(primaryProgramKey)}">나의 회복 여정 다음 단계 신청</a>
+          <a href="#" class="er-report-final-secondary" data-report-section-nav="programs">전체 프로그램 보기</a>
           <div class="er-report-tools">
             <button type="button" onclick="shareTestResult()">결과 공유하기</button>
             <button type="button" id="download-pdf-btn" onclick="downloadResultPdf()">결과 PDF 다운로드</button>
@@ -2348,6 +2459,8 @@ function renderPremiumReport(model) {
     </article>
   `;
   bindPremiumReportInteractions(model);
+  bindReportApplyNavigation(host);
+  persistTestResultSummary(buildTestResultSummary(model));
   scheduleEmbedResize();
 }
 
@@ -2543,7 +2656,6 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     responses: snapshotAllDiagnosticResponses()
   });
   renderPremiumReport(premiumModel);
-  scheduleEmbedResize();
 
   if (confidence === '낮음') {
     const consult = document.getElementById('cta-consulting');

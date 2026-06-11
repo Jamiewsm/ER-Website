@@ -26,12 +26,39 @@ function applyAdaptiveTestIframeHeight(height) {
     }
 }
 
+function restoreSavedTestResult() {
+    if (state.latestTestResult) return;
+    try {
+        const raw = sessionStorage.getItem('er_latest_test_result');
+        if (raw) state.latestTestResult = JSON.parse(raw);
+    } catch (_err) {
+        // ignore parse failures
+    }
+}
+
 if (typeof window !== 'undefined') {
     window.addEventListener('message', (event) => {
         const data = event && event.data;
-        if (!data || data.type !== 'er-test-embed-resize') return;
-        applyAdaptiveTestIframeHeight(data.height);
+        if (!data || !data.type) return;
+        if (data.type === 'er-test-embed-resize') {
+            applyAdaptiveTestIframeHeight(data.height);
+            return;
+        }
+        if (data.type === 'er-test-result' && data.result) {
+            state.latestTestResult = data.result;
+            try {
+                sessionStorage.setItem('er_latest_test_result', JSON.stringify(data.result));
+            } catch (_err) {}
+            return;
+        }
+        if (data.type === 'er-test-navigate' && typeof renderSection === 'function') {
+            if (data.result) state.latestTestResult = data.result;
+            const section = data.section || 'apply';
+            const payload = data.payload || null;
+            renderSection(section, payload);
+        }
     });
+    restoreSavedTestResult();
 }
 
 function mountAdaptiveTestIframe() {
