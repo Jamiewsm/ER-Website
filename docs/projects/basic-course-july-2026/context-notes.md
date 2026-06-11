@@ -46,10 +46,19 @@
 - `js/sections/apply.js` — 기본과정 폼에 1단계 필드 3종 추가 (경험/경로/약속 동의).
 - `js/api.js` — 신규 필드를 접수 메시지에 합성 (다른 폼과 하위 호환).
 
+## Phase 2·3 구현 (2026-06-11)
+
+- `program_applications` 테이블 + 헤드 코치 RPC (`admin_list_program_applications`, `admin_update_program_application_status`).
+- Edge Functions: `submit-application` (접수·메일), `notify-program-application` (결제/성찰/수료 메일).
+- 코치 포털 **코치 승인** 화면에 7월 기본과정 신청 목록·상태·메일 버튼.
+- 운영 문서: `OPS_WORKFLOW.md`, `PRE_SURVEY_QUESTIONS.md`, `EDGE_FUNCTIONS_SETUP.md`.
+- 랜딩: 수료생 이야기, 8주 다음 양성반 6기 안내 섹션.
+
 ## 미확정 · 후속 확인 필요
 
 - **8주 여정 개요**(랜딩의 1-2주/3-6주/7-8주 구분)는 합리적 추정 — 실제 커리큘럼과 대조해 대표 확인 필요.
-- Supabase Edge Function `submit-application`이 알림/자동 회신 메일을 보내는지 미확인 (함수 코드가 레포에 없음, 대시보드 확인 필요).
+- Edge Function **배포** 및 Resend/PayPal/Zelle **Secrets** 설정 (대표·인프라).
+- Google Form URL 생성 후 `BASIC_COURSE_PRE_SURVEY_URL` secret 등록.
 - PayPal Business 계정 개설 여부 (대표 액션).
 - 홈 공지·결과지 추천 부스트는 사용자의 미커밋 작업(js/strings.js, index.html)과 겹쳐서 보류 — 그 작업이 커밋된 뒤 진행.
 - 전문가 양성반 5기(7월)와 동시 모집 — 노출 지점마다 대상 구분 문구 필요.

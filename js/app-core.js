@@ -157,7 +157,10 @@ function renderSection(sectionId, payload = null, options = {}) {
         }, 0);
     }
     if(sectionId === 'coach_portal') setTimeout(() => loadCoachPortalDashboard(), 0);
-    if(sectionId === 'coach_admin') setTimeout(() => loadCoachAdminUsers(), 0);
+    if(sectionId === 'coach_admin') setTimeout(() => {
+        loadCoachAdminUsers();
+        if (typeof loadProgramApplications === 'function') loadProgramApplications();
+    }, 0);
     if(sectionId === 'coach_tasks') setTimeout(() => loadCoachTasks(), 0);
     if(sectionId === 'coach_materials') setTimeout(() => loadCoachMaterials(), 0);
     if(sectionId === 'coach_schedule') setTimeout(() => loadCoachSchedules(), 0);

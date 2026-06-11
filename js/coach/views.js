@@ -59,8 +59,13 @@ function renderCoachAdmin() {
                     </div>
                     <div class="flex gap-2">
                         <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
-                        <button onclick="loadCoachAdminUsers()" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
+                        <button onclick="loadCoachAdminUsers(); loadProgramApplications();" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
                     </div>
+                </div>
+                <div class="bg-white border border-gray-100 rounded-3xl p-6">
+                    <h3 class="text-base font-bold text-er-dark mb-1">7월 기본과정 신청</h3>
+                    <p class="text-xs text-gray-500 mb-4">접수 → 연락 → 결제 대기 → 등록 확정. 등록 확정 후 사전 성찰 메일을 보내세요.</p>
+                    <div id="coach-admin-applications-list" class="space-y-3 text-sm text-gray-500">${renderListSkeleton(3)}</div>
                 </div>
                 <div class="bg-white border border-gray-100 rounded-3xl p-6">
                     <h3 class="text-base font-bold text-er-dark mb-4">가입자 목록</h3>
