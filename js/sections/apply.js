@@ -147,11 +147,13 @@ function renderJulyBasicCourseApply(submitSource) {
                                 내 안의 패턴을 이해하고, 하나님 안에서 본래의 나로 회복되는 여정을 시작합니다.
                             </p>
                             <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-er-accentLight pt-4 text-sm text-er-dark">
-                                <p><span class="block text-[11px] text-er-muted">기간</span>7-8월 · 총 8주</p>
+                                <p><span class="block text-[11px] text-er-muted">기간</span>2026년 7월 개강 · 8주</p>
                                 <p><span class="block text-[11px] text-er-muted">방식</span>온라인 Zoom</p>
-                                <p><span class="block text-[11px] text-er-muted">구성</span>강의 + 1:1 멘토링</p>
-                                <p><span class="block text-[11px] text-er-muted">수강료</span>$300</p>
+                                <p><span class="block text-[11px] text-er-muted">구성</span>교재 + 강의 + 1:1 멘토링</p>
+                                <p><span class="block text-[11px] text-er-muted">정원</span>최대 10명</p>
+                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료</span>$300 / ₩400,000 <span class="text-xs text-er-muted">· 6/24까지 얼리버드 $270</span></p>
                             </div>
+                            <a href="/basic-course.html" class="mt-4 inline-block text-xs font-bold text-er-dark underline">과정 상세 안내 보기 →</a>
                         </div>
                     </div>
                 </section>
@@ -187,9 +189,52 @@ function renderJulyBasicCourseApply(submitSource) {
                         </div>
 
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">전하고 싶은 내용 <span class="font-normal text-gray-400">(선택)</span></label>
-                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="궁금한 점이나 함께 나누고 싶은 내용을 적어주세요."></textarea>
+                            <label class="mb-2 block text-sm font-bold text-gray-700">에니어그램을 어느 정도 접해보셨나요?</label>
+                            <div class="relative">
+                                <select name="enneagram_experience" required class="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                    <option value="" disabled selected>선택해 주세요</option>
+                                    <option>처음 접합니다</option>
+                                    <option>책이나 글을 읽어본 적이 있습니다</option>
+                                    <option>강의를 들어본 적이 있습니다</option>
+                                    <option>코칭 또는 타이핑을 받아본 적이 있습니다</option>
+                                    <option>어느 정도 공부해본 경험이 있습니다</option>
+                                </select>
+                                <div class="pointer-events-none absolute right-4 top-3.5 text-gray-400"><i class="fas fa-chevron-down"></i></div>
+                            </div>
                         </div>
+
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">어디서 알게 되셨나요?</label>
+                                <div class="relative">
+                                    <select name="referral_source" required class="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                        <option value="" disabled selected>선택해 주세요</option>
+                                        <option>인스타그램</option>
+                                        <option>유튜브·영상</option>
+                                        <option>웹사이트·검색</option>
+                                        <option>지인 소개</option>
+                                        <option>교회·사역자 소개</option>
+                                        <option>ER 강의·세미나·워크샵</option>
+                                        <option>기타</option>
+                                    </select>
+                                    <div class="pointer-events-none absolute right-4 top-3.5 text-gray-400"><i class="fas fa-chevron-down"></i></div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">소개해 주신 분 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="referral_name" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="지인·사역자 소개인 경우">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="mb-2 block text-sm font-bold text-gray-700">전하고 싶은 내용 <span class="font-normal text-gray-400">(선택)</span></label>
+                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="신청 동기나 궁금한 점을 편하게 적어주세요."></textarea>
+                        </div>
+
+                        <label class="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 cursor-pointer">
+                            <input type="checkbox" name="covenant_agree" required class="mt-0.5 h-4 w-4 shrink-0 accent-[#B89170]">
+                            <span class="text-xs leading-relaxed text-gray-600 break-keep">수업과 멘토링에서 나눈 개인 이야기를 외부에 공유하지 않으며, 서로 존중하는 안전한 공동체를 만드는 데 협력하고, 강의와 멘토링에 성실히 참여하겠습니다.</span>
+                        </label>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
                             <p class="mb-1 text-xs font-bold text-gray-600">보안 확인</p>

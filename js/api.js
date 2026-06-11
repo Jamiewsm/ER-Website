@@ -152,9 +152,16 @@ async function handleApplySubmit(event, source, successPayload) {
   var preferredTime = (formData.get('preferred_time') || '').toString().trim();
   var category = (formData.get('category') || '').toString().trim();
   var rawMessage = (formData.get('message') || '').toString().trim();
+  var experience = (formData.get('enneagram_experience') || '').toString().trim();
+  var referralSource = (formData.get('referral_source') || '').toString().trim();
+  var referralName = (formData.get('referral_name') || '').toString().trim();
+  var covenantAgree = formData.get('covenant_agree') ? '동의함' : '';
   var extraLines = [];
   if (country) extraLines.push('거주 국가: ' + country);
   if (preferredTime) extraLines.push('희망 시간대: ' + preferredTime);
+  if (experience) extraLines.push('에니어그램 경험: ' + experience);
+  if (referralSource) extraLines.push('신청 경로: ' + referralSource + (referralName ? ' — ' + referralName : ''));
+  if (covenantAgree) extraLines.push('공동체 약속: ' + covenantAgree);
   var message = extraLines.length
     ? (extraLines.join('\n') + (rawMessage ? '\n\n' + rawMessage : ''))
     : rawMessage;
