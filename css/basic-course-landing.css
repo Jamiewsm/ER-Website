@@ -1,0 +1,38 @@
+/* 에니어그램 기본과정 8주 랜딩 전용 스타일 (parenting 랜딩과 같은 미감, bc- 프리픽스로 분리) */
+
+.bc-landing {
+  font-family: "Pretendard", system-ui, sans-serif;
+  color: #5c4f44;
+  background: #f7eee4;
+}
+
+.bc-landing .bc-hero-bg {
+  background-image: radial-gradient(
+      circle at 50% 14%,
+      rgba(255, 251, 246, 0.82) 0%,
+      rgba(255, 251, 246, 0.45) 33%,
+      rgba(247, 238, 228, 0.08) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(247, 238, 228, 0.7) 0%,
+      rgba(247, 238, 228, 0.38) 44%,
+      rgba(255, 251, 246, 0.92) 72%,
+      #f7eee4 100%
+    ),
+    url("/assets/er-visual/hero-home.jpg");
+  background-size: cover;
+  background-position: center 60%;
+}
+
+.bc-glass {
+  background: rgba(255, 251, 246, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+.bc-poster-frame {
+  background: #f1e7d8;
+  border: 1px solid rgba(184, 145, 112, 0.25);
+}
