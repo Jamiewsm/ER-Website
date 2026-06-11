@@ -7,6 +7,10 @@ window.SUPABASE_CONFIG = {
   anonKey: window.__ER_SUPABASE_ANON_KEY || ""
 };
 window.COACH_APP_URL = "https://coach.er-coaching.com";
+window.ER_SOCIAL = {
+  instagram: "https://www.instagram.com/er_coaching_kr/",
+  instagramHandle: "er_coaching_kr"
+};
 /** 코치앱과 동일: 멘토링 주간 week_key는 양성반 1~8주차 (CoachPortal EXPERT_COHORT_MENTORING) */
 window.ER_EXPERT_COHORT_MENTORING = {
   week1Monday: "2026-02-23",

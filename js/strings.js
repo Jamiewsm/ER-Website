@@ -29,6 +29,8 @@
       contact: 'Contact',
       partnership: 'Partnership',
       mail: '문의 메일',
+      instagram: 'Instagram',
+      instagramHandle: '@er_coaching_kr',
       inquiry: '상담·협력 문의',
       place: 'Korea | USA',
       hours: 'Mon–Fri 10:00 – 17:00',
