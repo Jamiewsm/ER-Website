@@ -2078,7 +2078,7 @@ function buildPremiumReportModel(resultData) {
     ? contentApi.getContent(resultData.core, subtypeCode, selectedWing)
     : null;
   const fallbackContent = reportContent || {
-    heroStatement: '하나님 앞에서 나를 더 진실하게 보는 여정',
+    heroStatement: '나를 더 진실하게 마주하는 여정',
     coreName: `${resultData.core}번`,
     subtypeLabel: `${subtypeCode} ${resultData.core}번`,
     definition: '진단 결과를 바탕으로 현재 반복 패턴과 회복 방향을 정리합니다.',
@@ -2087,9 +2087,9 @@ function buildPremiumReportModel(resultData) {
     cycle: [],
     falseSelf: [],
     restoredSelf: [],
-    career: [],
-    relationship: [],
-    parenting: [],
+    career: { strength: [], watch: [], practice: [] },
+    relationship: { strength: [], watch: [], practice: [] },
+    parenting: { strength: [], watch: [], practice: [] },
     stress: [],
     recovery: [],
     roadmap: [],
@@ -2158,6 +2158,12 @@ function renderPremiumReport(model) {
     `;
   }).join('');
   const list = (items) => (items || []).map((item) => `<li>${escapeReportHtml(item)}</li>`).join('');
+  const lifeBlock = (data) => {
+    if (!data) return '';
+    if (Array.isArray(data)) return `<ul>${list(data)}</ul>`;
+    const sub = (label, items) => (items && items.length) ? `<h4>${label}</h4><ul>${list(items)}</ul>` : '';
+    return `${sub('강점', data.strength)}${sub('함께 살펴볼 점', data.watch)}${sub('오늘부터 이렇게', data.practice)}`;
+  };
   const roadmap = (items) => (items || []).map((item, index) => `
     <li>
       <span>${index + 1}</span>
@@ -2282,10 +2288,10 @@ function renderPremiumReport(model) {
           <h2>일, 관계, 양육에서 드러나는 패턴</h2>
         </div>
         <div class="er-report-life-grid">
-          <article><h3>일과 커리어</h3><ul>${list(c.career)}</ul></article>
-          <article><h3>관계 패턴</h3><ul>${list(c.relationship)}</ul></article>
-          <article><h3>부모/양육</h3><ul>${list(c.parenting)}</ul></article>
-          <article><h3>스트레스와 회복 신호</h3><h4>스트레스</h4><ul>${list(c.stress)}</ul><h4>회복</h4><ul>${list(c.recovery)}</ul></article>
+          <article><h3>일과 커리어</h3>${lifeBlock(c.career)}</article>
+          <article><h3>관계에서</h3>${lifeBlock(c.relationship)}</article>
+          <article><h3>자녀 양육에서</h3>${lifeBlock(c.parenting)}</article>
+          <article><h3>스트레스와 회복 신호</h3><h4>스트레스를 받을 때</h4><ul>${list(c.stress)}</ul><h4>회복으로 가는 길</h4><ul>${list(c.recovery)}</ul></article>
         </div>
       </section>
 
@@ -2301,15 +2307,16 @@ function renderPremiumReport(model) {
           <p class="er-report-action-done hidden">작은 순종이 회복의 방향을 만듭니다.</p>
         </div>
         <div class="er-report-gospel">
-          <h3>복음 안에서의 회복 방향</h3>
+          <h3>더 깊은 회복으로의 초대</h3>
+          <p class="er-report-gospel-intro">아래는 신앙 안에서 더 깊은 회복을 원하는 분을 위한 안내입니다. 부담 없이, 마음이 머무는 문장만 가져가셔도 좋습니다.</p>
           <dl>
-            <dt>내려놓아야 할 거짓 믿음</dt>
+            <dt>내려놓아도 되는 거짓 믿음</dt>
             <dd>${escapeReportHtml(c.gospel.falseBelief || '')}</dd>
-            <dt>붙잡아야 할 진리</dt>
+            <dt>기억하면 좋은 진실</dt>
             <dd>${escapeReportHtml(c.gospel.truth || '')}</dd>
-            <dt>회개의 방향</dt>
+            <dt>마음을 돌이키는 방향</dt>
             <dd>${escapeReportHtml(c.gospel.repentance || '')}</dd>
-            <dt>기도문</dt>
+            <dt>마음의 기도</dt>
             <dd>${escapeReportHtml(c.gospel.prayer || '')}</dd>
           </dl>
         </div>
