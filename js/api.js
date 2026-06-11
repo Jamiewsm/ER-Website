@@ -198,6 +198,9 @@ async function handleApplySubmit(event, source, successPayload) {
   }
   setApplySubmitStatus('신청 내용을 접수하고 있습니다.', null);
 
+  var programKey = successPayload && successPayload.focus
+    ? String(successPayload.focus).trim()
+    : '';
   var payload = {
     name: name,
     contact: contact,
@@ -205,7 +208,14 @@ async function handleApplySubmit(event, source, successPayload) {
     message: message,
     source: source,
     user_id: (window.state && window.state.user) ? window.state.user.id : null,
-    turnstile_token: turnstileToken
+    turnstile_token: turnstileToken,
+    program_key: programKey || undefined,
+    country: country || undefined,
+    preferred_time: preferredTime || undefined,
+    enneagram_experience: experience || undefined,
+    referral_source: referralSource || undefined,
+    referral_name: referralName || undefined,
+    covenant_agreed: Boolean(formData.get('covenant_agree'))
   };
   try {
     var response = await fetch(config.url + '/functions/v1/submit-application', {

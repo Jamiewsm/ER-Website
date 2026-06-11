@@ -18,13 +18,14 @@
 
 ## Phase 2 — 운영
 
-- [ ] PayPal Business 계정 개설 (대표)
-- [ ] 등록 안내 메일 템플릿 (결제 안내 + 환불 규정 동봉)
-- [ ] `submit-application` Edge Function의 알림 메일 여부 확인 → 없으면 Resend 연동
-- [ ] 2단계 사전 성찰 설문 제작 (첫 기수 구글폼) + 결제 확정자 발송 플로우
-- [ ] 신청 상태 관리 (접수 → 연락 → 결제 대기 → 확정) — Supabase 컬럼 또는 시트
+- [ ] PayPal Business 계정 개설 (대표) — env `PAYPAL_BUSINESS_EMAIL`
+- [x] 등록 안내 메일 템플릿 (결제 안내 + 환불 규정) — `supabase/functions/_shared/email-templates.ts`
+- [x] `submit-application` Edge Function + Resend 연동 — 레포에 추가, **배포·secrets 필요**
+- [x] 2단계 사전 성찰 설문 질문 목록 — `PRE_SURVEY_QUESTIONS.md` (Google Form URL은 대표 생성)
+- [x] 결제 확정자 사전 성찰 발송 — `notify-program-application` + 코치 승인 UI 버튼
+- [x] 신청 상태 관리 — `program_applications` 테이블 + 코치 승인 화면 (`js/coach/applications.js`)
 
 ## Phase 3 — 수료 후
 
-- [ ] 수료 시점 전문가 양성반 6기(9월) 안내 연결
-- [ ] 수료생 후기 수집 → 다음 기수 랜딩 반영
+- [x] 수료 시점 전문가 양성반 6기(9월) 안내 — 랜딩 `8주 다음에는` + 수료 메일 템플릿
+- [x] 수료생 후기 수집 훅 — 랜딩 수료생 이야기 + mailto 후기 + 수료 메일 CTA

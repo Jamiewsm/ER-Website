@@ -569,8 +569,8 @@ function renderThankYou(payload = null) {
                     </div>
                     <h2 class="mb-3 text-xl font-bold text-er-dark">기본과정 신청이 접수되었습니다</h2>
                     <p class="text-sm leading-relaxed text-er-primary break-keep">
-                        남겨주신 연락처로 7월 기본과정 일정, 결제, 참여 안내를 보내드리겠습니다.<br>
-                        보통 24시간 이내에 연락드립니다.
+                        이메일을 남겨주셨다면 접수 확인·결제 안내 메일이 곧 발송됩니다. 스팸함도 확인해 주세요.<br>
+                        자리 확정은 <strong>결제 완료 순</strong>이며, 등록 확정 후 사전 성찰 설문 링크를 보내드립니다.
                     </p>
                     <div class="mt-8 grid gap-3">
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">

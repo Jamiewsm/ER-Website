@@ -1,0 +1,7 @@
+# Supabase 로컬/배포 설정 (Edge Functions)
+
+[functions.submit-application]
+verify_jwt = false
+
+[functions.notify-program-application]
+verify_jwt = true
