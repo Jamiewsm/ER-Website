@@ -100,6 +100,7 @@ function renderHome() {
                             나와 타인의 반복되는 패턴을 이해하고<br class="hidden md:block">
                             더 자유롭고 건강한 사랑으로 자라가도록 돕습니다.
                         </p>
+                        ${typeof renderBasicCourseSeasonBanner === 'function' ? renderBasicCourseSeasonBanner() : ''}
                         ${typeof renderParentingSeasonBanner === 'function' ? renderParentingSeasonBanner() : ''}
                     </div>
 

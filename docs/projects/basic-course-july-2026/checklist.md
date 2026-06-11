@@ -10,9 +10,11 @@
 - [x] 신청 폼 1단계 보강 — 에니어그램 경험 / 신청 경로 / 공동체 약속 동의 (`js/sections/apply.js`, `js/api.js`)
 - [x] 스크립트 캐시 버전 범프 (`index.html`)
 - [ ] 8주 여정 개요 문구 대표 확인 (실제 커리큘럼과 대조)
-- [ ] 홈 공지에 기본과정 모집 추가 (사용자 미커밋 strings.js 작업 커밋 후)
-- [ ] 결과지 "다음 단계" 추천에서 7월 한정 기본과정 부스트
-- [ ] 인스타 바이오/포스트용 어트리뷰션 링크 발급 (`basic-course.html?apply_source=instagram` 등)
+- [x] 홈 공지에 기본과정 모집 추가 (`strings.js` + Supabase migration)
+- [x] 홈 히어로 기본과정 모집 배너 (`js/basic-course-promo.js`)
+- [x] 결제 USD 단일화 · PayPal·Zelle 공지 (`basic-course.html`, `apply.js`)
+- [x] 결과지 "다음 단계" 추천에서 7월 한정 기본과정 부스트 (`program-catalog.js`)
+- [x] 인스타/카톡 어트리뷰션 링크 — `basic-course.html?apply_source=instagram` (랜딩 CTA가 신청 폼까지 전달)
 
 ## Phase 2 — 운영
 

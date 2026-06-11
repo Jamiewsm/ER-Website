@@ -151,7 +151,7 @@ function renderJulyBasicCourseApply(submitSource) {
                                 <p><span class="block text-[11px] text-er-muted">방식</span>온라인 Zoom</p>
                                 <p><span class="block text-[11px] text-er-muted">구성</span>교재 + 강의 + 1:1 멘토링</p>
                                 <p><span class="block text-[11px] text-er-muted">정원</span>최대 10명</p>
-                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료</span>$300 / ₩400,000 <span class="text-xs text-er-muted">· 6/24까지 얼리버드 $270</span></p>
+                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료 (USD)</span>$300 <span class="text-xs text-er-muted">· 6/24까지 얼리버드 $270 · PayPal·Zelle</span></p>
                             </div>
                             <a href="/basic-course.html" class="mt-4 inline-block text-xs font-bold text-er-dark underline">과정 상세 안내 보기 →</a>
                         </div>
