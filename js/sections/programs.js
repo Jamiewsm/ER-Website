@@ -80,7 +80,7 @@ function updateProgramView(filterType) {
             cards: [
                 { b: 'Step 1', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$100', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
                 { b: 'Step 2', t: '개별 코칭 (1회 세션)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$80 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
-                { b: 'Step 3', t: '회복 여정 패키지', d: '4회 패키지: $260\n8회 패키지: $600', p: '가장 많이 선택', o: '감정·관계·실행 루틴까지 이어지는 지속적 변화 정착', i: 'fas fa-layer-group', featured: true }
+                { b: 'Step 3', t: '회복 여정 패키지', d: (typeof window !== 'undefined' && window.ERProgramCatalog) ? window.ERProgramCatalog.getRecoveryPackageCopy() : '4회 패키지: $300 (회당 $75)\n8회 패키지: $480 (회당 $60 · 가장 많이 선택)', p: '8회 $480 · 가장 많이 선택', o: '감정·관계·실행 루틴까지 이어지는 지속적 변화 정착', i: 'fas fa-layer-group', featured: true, applyFocus: 'recovery_journey_8' }
             ]
         },
         church: {
@@ -161,7 +161,7 @@ function updateProgramView(filterType) {
                 <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
                 <p class="text-sm font-extrabold text-er-dark mb-5">${c.p || ''}</p>
                 <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">기대 효과:</span> ${c.o || ''}</p>
-                <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}' })" class="w-full py-2.5 rounded-xl ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
+                <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}'${c.applyFocus ? `, focus: '${c.applyFocus}', source: 'programs'` : ''} })" class="w-full py-2.5 rounded-xl ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
                     신청/문의
                 </button>
             </div>

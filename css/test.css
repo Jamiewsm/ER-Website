@@ -591,6 +591,41 @@ body {
   background: linear-gradient(180deg, #fff, #fdf6ec);
 }
 
+.er-report-next-card.is-clickable {
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.er-report-next-card.is-clickable:hover,
+.er-report-next-card.is-clickable:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(74, 69, 64, 0.12);
+  border-color: rgba(176, 138, 102, 0.55);
+  outline: none;
+}
+
+.er-report-next-price {
+  display: block;
+  margin: 2px 0 8px;
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--er-report-gold-strong);
+}
+
+.er-report-next-cta {
+  display: inline-flex;
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--er-report-dark);
+}
+
+.er-report-next-card.is-primary .er-report-next-cta {
+  color: #8a5a28;
+}
+
 .er-report-next-card h3 {
   margin: 6px 0 6px;
   font-size: 18px;
@@ -651,7 +686,7 @@ body {
   color: rgba(255, 255, 255, 0.78);
 }
 
-.er-report-final-cta > a {
+.er-report-final-cta > a.er-report-final-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -662,8 +697,27 @@ body {
   text-decoration: none;
 }
 
-.er-report-final-cta > a:hover {
+.er-report-final-cta > a.er-report-final-primary:hover {
   background: var(--er-report-gold-strong);
+}
+
+.er-report-final-cta > a.er-report-final-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.er-report-final-cta > a.er-report-final-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .er-report-tools {

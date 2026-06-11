@@ -10,6 +10,32 @@ function isJulyBasicCourseFocus(focus) {
         || normalizedFocus === 'enneagram_basic';
 }
 
+function getPaidApplyCategoryOptions() {
+    if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.getPaidCategoryOptions === 'function') {
+        return window.ERProgramCatalog.getPaidCategoryOptions();
+    }
+    return [
+        '정체성 발견 세션 ($100)',
+        '개별 코칭 1회 ($80)',
+        '에니어그램 기본과정 8주 ($300)',
+        '자녀 양육 코칭 문의',
+        '회복 여정 4회 ($300)',
+        '회복 여정 8회 ($480)',
+        '부부 코칭 1회 ($220)',
+        'Enneagram for Parenting 4주 ($120)'
+    ];
+}
+
+function hydrateLatestTestResult() {
+    if (state.latestTestResult) return;
+    try {
+        const raw = sessionStorage.getItem('er_latest_test_result');
+        if (raw) state.latestTestResult = JSON.parse(raw);
+    } catch (_err) {
+        // ignore parse failures
+    }
+}
+
 function renderParentingWorkshopApply(submitSource) {
     return `
         <div class="parenting-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
@@ -195,6 +221,7 @@ function renderJulyBasicCourseApply(submitSource) {
 }
 
 function renderApply(payload = null) {
+    hydrateLatestTestResult();
     const fromTest = payload?.source === 'test';
     let focus = String(payload?.focus || '').trim();
     if (focus === 'parents_workshop') focus = 'parenting_workshop';
@@ -252,6 +279,42 @@ function renderApply(payload = null) {
             bannerBody: '교회의 규모와 현재 고민, 리더 구성과 일정에 맞춰 공동체 회복 프로그램과 리더십 워크숍 방향을 함께 정리합니다.',
             category: '교회 워크숍 문의',
             message: '우리 교회의 공동체/리더십 회복을 위한 상담을 원합니다.'
+        },
+        identity_session: {
+            track: 'paid',
+            title: '정체성 발견 세션 신청',
+            desc: '90분 심층 세션에서 사전 설문·인터뷰 기반 타이핑과 핵심 동기·방어 패턴을 함께 정리합니다.',
+            bannerTitle: '테스트 후 추천 — 정체성 발견',
+            bannerBody: '약식 테스트 결과를 바탕으로, 인터뷰 기반 타이핑으로 코어·날개·하위유형을 함께 확인합니다.',
+            category: '정체성 발견 세션 ($100)',
+            message: '정체성 발견 세션 신청합니다.'
+        },
+        coaching_single: {
+            track: 'paid',
+            title: '개별 코칭 1회 신청',
+            desc: '60분 실전 코칭으로 관계·감정의 막힌 지점을 실제 장면에 적용합니다.',
+            bannerTitle: '개별 코칭 신청',
+            bannerBody: '결과지에서 읽은 패턴을 일상 관계 장면에 바로 연결하는 1회 세션입니다.',
+            category: '개별 코칭 1회 ($80)',
+            message: '개별 코칭 1회 신청합니다.'
+        },
+        recovery_journey_4: {
+            track: 'paid',
+            title: '회복 여정 패키지 (4회) 신청',
+            desc: '4회 집중 코스로 패턴 인식부터 실행 루틴까지 이어갑니다. 회당 $75 (단회 $80 대비 소폭 할인).',
+            bannerTitle: '회복 여정 4회',
+            bannerBody: '짧은 기간에 집중적으로 회복 방향을 정착시키고 싶을 때 추천합니다.',
+            category: '회복 여정 4회 ($300)',
+            message: '회복 여정 4회 패키지 신청합니다.'
+        },
+        recovery_journey_8: {
+            track: 'paid',
+            title: '회복 여정 패키지 (8회) 신청',
+            desc: '8회 심화 코스로 감정·관계·실행 루틴까지 이어지는 지속적 변화를 돕습니다. 회당 $60.',
+            bannerTitle: '회복 여정 8회 — 가장 많이 선택',
+            bannerBody: '단회 대비 가장 경제적이며, 회복이 습관으로 정착하기 좋은 패키지입니다.',
+            category: '회복 여정 8회 ($480)',
+            message: '회복 여정 8회 패키지 신청합니다.'
         }
     };
 
@@ -300,7 +363,7 @@ function renderApply(payload = null) {
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
             : isOrgTrack
                 ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '에니어그램 기본과정 8주 ($300)', '자녀 양육 코칭 문의', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)', 'Enneagram for Parenting 4주 ($120)'];
+                : getPaidApplyCategoryOptions();
     const defaultPaidCategory = '정체성 발견 세션 ($100)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
