@@ -58,7 +58,7 @@
             <li>정원 10명</li>
             <li>얼리버드 $270</li>
           </ul>
-          <p class="psb-note">결제는 PayPal·Zelle(USD)로 안내드립니다. 6월 24일까지 얼리버드, 결제 완료 순 확정.</p>
+          <p class="psb-note">수강료 USD · PayPal·Zelle 송금. 승인 후 결제 안내 메일 발송. 6/24까지 얼리버드, 입금 확인 순 확정.</p>
           <div class="psb-actions">
             <button type="button" class="psb-btn psb-btn--primary" onclick="basicCourseBannerGoDetail()">과정 안내 보기</button>
             <button type="button" class="psb-btn psb-btn--secondary" onclick="basicCourseBannerGoApply()">바로 신청하기</button>

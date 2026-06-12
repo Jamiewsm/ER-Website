@@ -1,48 +1,41 @@
-# Edge Functions 배포 — 신청·메일 (Phase 2)
+# Edge Functions 배포 — 신청·수동 결제 안내 (Phase 2)
 
-## 함수
+| 함수 | JWT | 역할 |
+|------|-----|------|
+| `submit-application` | off | 신청 접수 → DB + Resend (신청자·json@) |
+| `notify-program-application` | on (헤드 코치) | 결제 안내·사전 성찰·수료 메일 |
 
-| 함수 | 역할 |
-|------|------|
-| `submit-application` | 신청 DB 저장 + 관리자 알림 + 신청자 접수/결제 안내 메일 |
-| `notify-program-application` | 헤드 코치: 결제 안내·사전 성찰·수료 안내 메일 수동 발송 |
+`create-program-checkout`, `stripe-webhook` 은 배포되어 있어도 **사용하지 않습니다**. Stripe 미사용 정책 (2026-06-12).
 
-## Supabase CLI
+## CLI 배포 (선택)
 
 ```bash
-cd "/path/to/ER-Website"
-supabase link --project-ref osdynbadhtfgoxilgmpy
-supabase db push
 supabase functions deploy submit-application --no-verify-jwt
 supabase functions deploy notify-program-application
 ```
 
-`submit-application` 은 Turnstile 검증만 하고 JWT는 사용하지 않으므로 `--no-verify-jwt` 가 일반적입니다. (대시보드에서 Verify JWT 끄기와 동일)
+## Secrets (Supabase Dashboard → Edge Functions → Secrets)
 
-## Secrets (Dashboard → Edge Functions → Secrets)
-
-| Key | 설명 |
-|-----|------|
-| `RESEND_API_KEY` | Resend API 키 |
-| `APPLICATION_FROM_EMAIL` | 예: `ER <enrollment@er-coaching.com>` (Resend verified domain) |
-| `APPLICATION_NOTIFY_EMAIL` | 관리자 수신 (기본 json@er-coaching.com) |
+| Secret | 용도 |
+|--------|------|
+| `RESEND_API_KEY` | 이메일 발송 |
+| `APPLICATION_FROM_EMAIL` | 발신 (기본 `ER <enrollment@er-coaching.com>`) |
+| `APPLICATION_NOTIFY_EMAIL` | 신규 신청 알림 (기본 `json@er-coaching.com`) |
 | `APPLICATION_REPLY_TO` | 회신 주소 |
-| `TURNSTILE_SECRET_KEY` | Cloudflare Turnstile secret |
-| `PAYPAL_BUSINESS_EMAIL` | PayPal Business 이메일 |
-| `ZELLE_CONTACT` | Zelle 이메일 또는 전화 |
-| `BASIC_COURSE_PRE_SURVEY_URL` | Google Form URL |
-| `BASIC_COURSE_TESTIMONIAL_URL` | 후기 Form 또는 mailto URL (선택) |
-| `EXPERT_COHORT_APPLY_URL` | 양성반 신청 링크 (기본 `https://er-coaching.com/#apply?track=paid`) |
+| `TURNSTILE_SECRET_KEY` | 신청 폼 봇 방지 |
+| `BASIC_COURSE_PAYPAL_EMAIL` | 결제 안내 메일 — PayPal (기본 `json@er-coaching.com`) |
+| `BASIC_COURSE_ZELLE_EMAIL` | Zelle 이메일 (기본 `campus.12000@gmail.com`) |
+| `BASIC_COURSE_ZELLE_PHONE` | Zelle 전화번호 (해당 시) |
+| `BASIC_COURSE_BANK_INSTRUCTIONS` | 은행 송금 안내 (여러 줄 텍스트, 선택) |
+| `BASIC_COURSE_PRE_SURVEY_URL` | 사전 성찰 Google Form URL |
+| `EXPERT_COHORT_APPLY_URL` | 수료·양성반 CTA (선택) |
+| `BASIC_COURSE_TESTIMONIAL_URL` | 수료 후기 링크 (선택) |
 
-`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY` 는 배포 시 자동 주입됩니다.
+PayPal·Zelle·은행 계좌는 **Secrets에만** 넣고, 공개 페이지에는 “PayPal·Zelle 가능” 정도만 안내합니다.
 
-## Resend 도메인
+## 스모크 테스트
 
-`er-coaching.com` 발신 도메인을 Resend에서 verify 한 뒤 `APPLICATION_FROM_EMAIL` 을 설정하세요.
-
-## 테스트
-
-1. `test.html` 또는 `/#apply?focus=enneagram_basic_july` 에서 테스트 신청
-2. `program_applications` 테이블에 row 생성 확인
-3. 관리자·신청자 메일 수신 확인
-4. 코치 포털 → 코치 승인 → 상태 변경·메일 버튼 테스트
+1. `test.html` 또는 `/#apply?focus=enneagram_basic_july` 로 테스트 신청
+2. 코치 포털 → **결제 안내 메일**
+3. 메일에 PayPal·Zelle 안내 확인
+4. 입금 확인 후 상태 **등록 확정** + 사전 성찰 메일
