@@ -32,31 +32,6 @@ SPECS = {
             "_shared/head-coach.ts",
         ],
     },
-    "create-program-checkout": {
-        "entrypoint_path": "create-program-checkout/index.ts",
-        "verify_jwt": True,
-        "files": [
-            "create-program-checkout/index.ts",
-            "_shared/cors.ts",
-            "_shared/email-templates.ts",
-            "_shared/resend.ts",
-            "_shared/program-pricing.ts",
-            "_shared/stripe.ts",
-            "_shared/head-coach.ts",
-        ],
-    },
-    "stripe-webhook": {
-        "entrypoint_path": "stripe-webhook/index.ts",
-        "verify_jwt": False,
-        "files": [
-            "stripe-webhook/index.ts",
-            "_shared/cors.ts",
-            "_shared/email-templates.ts",
-            "_shared/resend.ts",
-            "_shared/program-pricing.ts",
-            "_shared/stripe.ts",
-        ],
-    },
 }
 
 

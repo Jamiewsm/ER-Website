@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 // submit-application·notify-program-application Edge Function 배포
 import { readFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
+const FN_ROOT = join(ROOT, 'supabase', 'functions');
 const PROJECT_REF = 'osdynbadhtfgoxilgmpy';
 const ACCESS_TOKEN = process.env.SUPABASE_ACCESS_TOKEN;
 
@@ -14,12 +15,47 @@ if (!ACCESS_TOKEN) {
   process.exit(1);
 }
 
-const FUNCTIONS = ['submit-application', 'notify-program-application'];
+const FUNCTIONS = {
+  'submit-application': {
+    entrypoint_path: 'submit-application/index.ts',
+    verify_jwt: false,
+    files: [
+      'submit-application/index.ts',
+      '_shared/cors.ts',
+      '_shared/email-templates.ts',
+      '_shared/resend.ts',
+      '_shared/turnstile.ts',
+    ],
+  },
+  'notify-program-application': {
+    entrypoint_path: 'notify-program-application/index.ts',
+    verify_jwt: true,
+    files: [
+      'notify-program-application/index.ts',
+      '_shared/cors.ts',
+      '_shared/email-templates.ts',
+      '_shared/program-pricing.ts',
+      '_shared/resend.ts',
+      '_shared/head-coach.ts',
+    ],
+  },
+};
 
-for (const name of FUNCTIONS) {
-  const payload = JSON.parse(
-    readFileSync(join(ROOT, '.mcp-deploy-stripe', `${name}.json`), 'utf8'),
-  );
+function buildPayload(name) {
+  const spec = FUNCTIONS[name];
+  return {
+    name,
+    entrypoint_path: spec.entrypoint_path,
+    verify_jwt: spec.verify_jwt,
+    files: spec.files.map((fileName) => ({
+      name: fileName,
+      content: readFileSync(join(FN_ROOT, fileName), 'utf8'),
+    })),
+  };
+}
+
+for (const name of Object.keys(FUNCTIONS)) {
+  const payload = buildPayload(name);
   const body = {
     name: payload.name,
     entrypoint_path: payload.entrypoint_path,
