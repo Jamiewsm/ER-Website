@@ -91,16 +91,20 @@ Deno.serve(async (req) => {
         },
         payment: basicCourseManualPaymentFromEnv(app.name),
       });
-      await supabase
+      const { error: updateError } = await supabase
         .from('program_applications')
         .update({
           status: 'payment_pending',
           payment_amount_usd: pricing.amountUsd,
-          payment_method: null,
-          checkout_url: null,
-          checkout_expires_at: null,
         })
         .eq('id', applicationId);
+      if (updateError) {
+        console.error('status update failed', updateError);
+        return new Response(JSON.stringify({ error: 'status_update_failed' }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
     } else if (event === 'pre_survey') {
       const preSurveyUrl = Deno.env.get('BASIC_COURSE_PRE_SURVEY_URL') || '';
       if (!preSurveyUrl) {
