@@ -11,14 +11,12 @@
 
 ## 설계 결정과 근거
 
-### 결제 (Phase 1 — 7월 기수, 2026-06-11 확정)
-- **USD 단일 가격** — $300 정가, 얼리버드 $270 (6/24까지 결제 완료). 원화 고정가 없음.
-- **PayPal Business 송장(invoice)** — 전 세계 카드·PayPal 결제. 수수료 약 4.4%+고정 ($300 기준 약 $14/인).
-- **Zelle** — 대표 미국 계좌 보유. USD 송금 (등록 안내 메일로 Zelle 정보 발송).
-- Stripe는 한국 사업자 미지원이라 제외. 규모 커지면 포트원 경유 해외카드 PG(Eximbay 등) 또는 Paddle(MoR) 검토.
-- 결제 안내는 사이트에 계좌/링크를 공개하지 않고 **신청 접수 후 등록 안내 메일로 발송**.
-- **자리 확정 = 결제 완료 순** (선착순 10명).
-- 세무: 현금영수증/면세 여부는 세무사 확인 필요 (보류).
+### 결제 (Phase 2 — 수동 PayPal·Zelle, 2026-06-12 확정)
+- **USD 단일 가격** — $300 정가, 얼리버드 $270 (6/24까지 입금 완료).
+- 미국 사업자 등록 없이 Stripe 운영이 어려워 **수동 입금으로 회귀** (2026-06-12).
+- 헤드 코치 **결제 안내 메일** → PayPal·Zelle·(선택) 은행 송금 → 입금 확인 후 **등록 확정**.
+- **자리 확정 = 입금 확인 순** (선착순 10명).
+- 결제 계좌는 Supabase Secrets (`BASIC_COURSE_PAYPAL_EMAIL`, `BASIC_COURSE_ZELLE_*`, `BASIC_COURSE_BANK_INSTRUCTIONS`).
 
 ### 가격 · 얼리버드
 - 정가 **$300 USD**.
@@ -54,10 +52,19 @@
 - 운영 문서: `OPS_WORKFLOW.md`, `PRE_SURVEY_QUESTIONS.md`, `EDGE_FUNCTIONS_SETUP.md`.
 - 랜딩: 수료생 이야기, 8주 다음 양성반 6기 안내 섹션.
 
+## 프로덕션 검증 (2026-06-11)
+
+- DB: `program_applications` 테이블·컬럼 OK. RPC `admin_list_program_applications` / `admin_update_program_application_status` 동작 확인.
+- Edge: `submit-application` v7 (verify_jwt false), `notify-program-application` v1 (verify_jwt true) ACTIVE.
+- `submit-application` OPTIONS 200, 빈 POST → `missing_required_fields` (정상).
+- `notify-program-application` 은 **apikey + Bearer** 필요. 코치 UI `applications.js`에 apikey 헤더 추가 (20260611b).
+- 공지: Supabase `public_notices` 에 7월 기본과정 모집 공지 존재.
+- 랜딩: er-coaching.com/basic-course 에 수료생·양성반 섹션 노출 확인.
+
 ## 미확정 · 후속 확인 필요
 
 - **8주 여정 개요**(랜딩의 1-2주/3-6주/7-8주 구분)는 합리적 추정 — 실제 커리큘럼과 대조해 대표 확인 필요.
-- Edge Function **배포** 및 Resend/PayPal/Zelle **Secrets** 설정 (대표·인프라).
+- Resend **Secrets** 설정 (대표·인프라) — 미설정 시 메일은 skip, DB 접수는 정상.
 - Google Form URL 생성 후 `BASIC_COURSE_PRE_SURVEY_URL` secret 등록.
 - PayPal Business 계정 개설 여부 (대표 액션).
 - 홈 공지·결과지 추천 부스트는 사용자의 미커밋 작업(js/strings.js, index.html)과 겹쳐서 보류 — 그 작업이 커밋된 뒤 진행.

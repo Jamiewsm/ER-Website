@@ -6,6 +6,7 @@ import vm from 'node:vm';
 const applySource = readFileSync(new URL('../js/sections/apply.js', import.meta.url), 'utf8');
 const apiSource = readFileSync(new URL('../js/api.js', import.meta.url), 'utf8');
 const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url), 'utf8');
+const applicationsSource = readFileSync(new URL('../js/coach/applications.js', import.meta.url), 'utf8');
 const courseCssSource = readFileSync(new URL('../css/course-application.css', import.meta.url), 'utf8');
 
 function loadApplyRenderer() {
@@ -72,8 +73,10 @@ test('July Enneagram basic course confirmation uses course-specific response cop
   const html = renderer.renderThankYou({ focus: 'enneagram_basic_july' });
 
   assert.match(html, /기본과정 신청이 접수되었습니다/);
-  assert.match(html, /7월 기본과정 일정, 결제, 참여 안내/);
   assert.match(html, /24시간 이내/);
+  assert.match(html, /PayPal·Zelle/);
+  assert.doesNotMatch(html, /Stripe/);
+  assert.doesNotMatch(html, /접수 확인·결제 안내 메일이 곧 발송/);
 });
 
 test('focused course application CSS hides global distractions and allows mobile shrink', () => {
@@ -291,4 +294,12 @@ test('Turnstile init mounts the explicit widget without calling ready on an asyn
   assert.doesNotThrow(() => context.initApplyTurnstile());
   assert.equal(readyCalls, 0);
   assert.equal(renderCalls, 1);
+});
+
+test('coach registration email uses notify-program-application with apikey header', () => {
+  assert.match(applicationsSource, /notify-program-application/);
+  assert.match(applicationsSource, /apikey:\s*config\.anonKey/);
+  assert.match(applicationsSource, /sendRegistrationPaymentEmail/);
+  assert.match(applicationsSource, /event:\s*'registration'/);
+  assert.doesNotMatch(applicationsSource, /create-program-checkout/);
 });

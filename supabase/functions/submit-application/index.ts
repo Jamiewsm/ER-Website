@@ -4,7 +4,7 @@ import { corsHeaders } from '../_shared/cors.ts';
 import {
   adminApplicationNoticeHtml,
   applicantReceivedHtml,
-  basicCourseRegistrationHtml,
+  basicCourseApplicantReceivedHtml,
 } from '../_shared/email-templates.ts';
 import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
 import { verifyTurnstileToken } from '../_shared/turnstile.ts';
@@ -127,58 +127,45 @@ Deno.serve(async (req) => {
     const notifyEmail = Deno.env.get('APPLICATION_NOTIFY_EMAIL') || 'json@er-coaching.com';
     const replyTo = Deno.env.get('APPLICATION_REPLY_TO') || 'json@er-coaching.com';
     const label = programLabel(programKey, category);
-
-    await sendResendEmail({
-      apiKey: resendKey,
-      from: fromEmail,
-      to: notifyEmail,
-      replyTo: contact,
-      subject: `[ER 신청] ${label} — ${name}`,
-      html: adminApplicationNoticeHtml({
-        name,
-        contact,
-        programKey,
-        category,
-        message,
-        source,
-        applicationId: row.id,
-      }),
-    });
-
     const applicantEmail = extractEmailFromContact(contact);
-    if (applicantEmail) {
-      const isBasic = programKey === 'enneagram_basic_july';
-      const paypalEmail = Deno.env.get('PAYPAL_BUSINESS_EMAIL') || '';
-      const zelleContact = Deno.env.get('ZELLE_CONTACT') || '';
-      const sendRegistrationNow = isBasic && paypalEmail && zelleContact;
 
+    try {
       await sendResendEmail({
         apiKey: resendKey,
         from: fromEmail,
-        to: applicantEmail,
-        replyTo,
-        subject: sendRegistrationNow
-          ? '[ER] 7월 기본과정 등록·결제 안내'
-          : `[ER] ${label} 신청 접수 확인`,
-        html: sendRegistrationNow
-          ? basicCourseRegistrationHtml({
-            name,
-            payment: {
-              paypalBusinessEmail: paypalEmail,
-              zelleContact,
-              earlyBirdDeadline: '2026년 6월 24일(수)',
-              regularPriceUsd: 300,
-              earlyBirdPriceUsd: 270,
-            },
-          })
-          : applicantReceivedHtml({ name, programLabel: label }),
+        to: notifyEmail,
+        replyTo: applicantEmail || undefined,
+        subject: `[ER 신청] ${label} — ${name}`,
+        html: adminApplicationNoticeHtml({
+          name,
+          contact,
+          programKey,
+          category,
+          message,
+          source,
+          applicationId: row.id,
+        }),
       });
+    } catch (emailErr) {
+      console.error('admin notify email failed', emailErr);
+    }
 
-      if (sendRegistrationNow) {
-        await supabase
-          .from('program_applications')
-          .update({ status: 'payment_pending' })
-          .eq('id', row.id);
+    if (applicantEmail) {
+      const isBasic = programKey === 'enneagram_basic_july';
+
+      try {
+        await sendResendEmail({
+          apiKey: resendKey,
+          from: fromEmail,
+          to: applicantEmail,
+          replyTo,
+          subject: `[ER] ${label} 신청 접수 확인`,
+          html: isBasic
+            ? basicCourseApplicantReceivedHtml({ name, programLabel: label })
+            : applicantReceivedHtml({ name, programLabel: label }),
+        });
+      } catch (emailErr) {
+        console.error('applicant receipt email failed', emailErr);
       }
     }
 

@@ -1,4 +1,4 @@
-// 헤드 코치: 등록 확정·수료 안내 등 후속 메일 발송
+// 헤드 코치: 등록·결제 안내·사전 성찰·수료 안내 메일 발송
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
 import { corsHeaders } from '../_shared/cors.ts';
 import {
@@ -6,6 +6,11 @@ import {
   basicCoursePreSurveyHtml,
   basicCourseRegistrationHtml,
 } from '../_shared/email-templates.ts';
+import { requireHeadCoach } from '../_shared/head-coach.ts';
+import {
+  basicCourseJulyPricing,
+  basicCourseManualPaymentFromEnv,
+} from '../_shared/program-pricing.ts';
 import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
 
 type NotifyEvent = 'registration' | 'pre_survey' | 'graduation';
@@ -14,42 +19,6 @@ type NotifyPayload = {
   application_id?: string;
   event?: NotifyEvent;
 };
-
-async function requireHeadCoach(req: Request, supabaseUrl: string, anonKey: string) {
-  const authHeader = req.headers.get('Authorization') || '';
-  if (!authHeader.startsWith('Bearer ')) {
-    throw new Response(JSON.stringify({ error: 'unauthorized' }), {
-      status: 401,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  }
-
-  const userClient = createClient(supabaseUrl, anonKey, {
-    global: { headers: { Authorization: authHeader } },
-  });
-  const { data: userData, error: userError } = await userClient.auth.getUser();
-  if (userError || !userData.user) {
-    throw new Response(JSON.stringify({ error: 'unauthorized' }), {
-      status: 401,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  }
-
-  const { data: profile, error: profileError } = await userClient
-    .from('coach_profiles')
-    .select('role, is_active')
-    .eq('user_id', userData.user.id)
-    .maybeSingle();
-
-  if (profileError || !profile || profile.role !== 'head_coach' || !profile.is_active) {
-    throw new Response(JSON.stringify({ error: 'forbidden' }), {
-      status: 403,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  }
-
-  return userData.user;
-}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -109,25 +78,33 @@ Deno.serve(async (req) => {
     let html = '';
 
     if (event === 'registration') {
-      const paypalEmail = Deno.env.get('PAYPAL_BUSINESS_EMAIL') || '';
-      const zelleContact = Deno.env.get('ZELLE_CONTACT') || '';
-      if (!paypalEmail || !zelleContact) {
-        return new Response(JSON.stringify({ error: 'payment_env_missing' }), {
+      const pricing = basicCourseJulyPricing();
+      subject = '[ER] 7월 기본과정 등록·결제 안내';
+      html = basicCourseRegistrationHtml({
+        name: app.name,
+        pricing: {
+          earlyBirdDeadline: pricing.earlyBirdDeadlineLabel,
+          regularPriceUsd: pricing.regularPriceUsd,
+          earlyBirdPriceUsd: pricing.earlyBirdPriceUsd,
+          amountUsd: pricing.amountUsd,
+          isEarlyBird: pricing.isEarlyBird,
+        },
+        payment: basicCourseManualPaymentFromEnv(app.name),
+      });
+      const { error: updateError } = await supabase
+        .from('program_applications')
+        .update({
+          status: 'payment_pending',
+          payment_amount_usd: pricing.amountUsd,
+        })
+        .eq('id', applicationId);
+      if (updateError) {
+        console.error('status update failed', updateError);
+        return new Response(JSON.stringify({ error: 'status_update_failed' }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      subject = '[ER] 7월 기본과정 등록·결제 안내';
-      html = basicCourseRegistrationHtml({
-        name: app.name,
-        payment: {
-          paypalBusinessEmail: paypalEmail,
-          zelleContact,
-          earlyBirdDeadline: '2026년 6월 24일(수)',
-          regularPriceUsd: 300,
-          earlyBirdPriceUsd: 270,
-        },
-      });
     } else if (event === 'pre_survey') {
       const preSurveyUrl = Deno.env.get('BASIC_COURSE_PRE_SURVEY_URL') || '';
       if (!preSurveyUrl) {

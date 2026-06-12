@@ -12,15 +12,15 @@
 - [ ] 8주 여정 개요 문구 대표 확인 (실제 커리큘럼과 대조)
 - [x] 홈 공지에 기본과정 모집 추가 (`strings.js` + Supabase migration)
 - [x] 홈 히어로 기본과정 모집 배너 (`js/basic-course-promo.js`)
-- [x] 결제 USD 단일화 · PayPal·Zelle 공지 (`basic-course.html`, `apply.js`)
+- [x] 결제 USD 단일화 · PayPal·Zelle 공지 (사이트만, 계정은 개별 연락)
 - [x] 결과지 "다음 단계" 추천에서 7월 한정 기본과정 부스트 (`program-catalog.js`)
 - [x] 인스타/카톡 어트리뷰션 링크 — `basic-course.html?apply_source=instagram` (랜딩 CTA가 신청 폼까지 전달)
 
 ## Phase 2 — 운영
 
-- [ ] PayPal Business 계정 개설 (대표) — env `PAYPAL_BUSINESS_EMAIL`
+- [x] PayPal·Zelle — 사이트 공지만, 결제는 담당자 개별 연락
 - [x] 등록 안내 메일 템플릿 (결제 안내 + 환불 규정) — `supabase/functions/_shared/email-templates.ts`
-- [x] `submit-application` Edge Function + Resend 연동 — 레포에 추가, **배포·secrets 필요**
+- [x] `submit-application` Edge Function + Resend 연동 — 프로덕션 v7 배포 완료 (secrets는 대표 설정)
 - [x] 2단계 사전 성찰 설문 질문 목록 — `PRE_SURVEY_QUESTIONS.md` (Google Form URL은 대표 생성)
 - [x] 결제 확정자 사전 성찰 발송 — `notify-program-application` + 코치 승인 UI 버튼
 - [x] 신청 상태 관리 — `program_applications` 테이블 + 코치 승인 화면 (`js/coach/applications.js`)

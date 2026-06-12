@@ -1,5 +1,9 @@
 // Resend API 발송 헬퍼
 
+function isValidReplyToEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+}
+
 export async function sendResendEmail(input: {
   apiKey: string;
   from: string;
@@ -24,7 +28,7 @@ export async function sendResendEmail(input: {
       to: Array.isArray(input.to) ? input.to : [input.to],
       subject: input.subject,
       html: input.html,
-      reply_to: input.replyTo,
+      reply_to: input.replyTo && isValidReplyToEmail(input.replyTo) ? input.replyTo : undefined,
     }),
   });
 
