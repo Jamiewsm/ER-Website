@@ -13,6 +13,8 @@
 - 기존 Enneagram Phase 1-6 자동화는 완료/paused 상태입니다.
 - 스코어링, 27 subtype, 기본 프리미엄 결과지 렌더러는 이미 존재합니다.
 - 이번 작업은 신규 Phase 7 성격입니다: 프리미엄 결과지 콘텐츠 시스템 + 골드 샘플 + 에디토리얼 렌더링.
+- `sx_7_w8` 골드 샘플은 JSON으로 저장되었고, 결과지 화면의 "이 조합만의 화학" 섹션에 연결되었습니다.
+- `js/report-chemistry-data.js`는 `docs/report-content/chemistry/*.json`에서 생성되는 런타임 파일입니다.
 
 ## Phase 7 목표
 
@@ -31,7 +33,9 @@
 - Create `docs/report-content/LANGUAGE_LAYERS.md`
 - Create `docs/report-content/chemistry/sx_7_w8.json`
 - Create `scripts/verify_report_content.mjs`
+- Create `scripts/build_report_chemistry_data.mjs`
 - Verify JSON and language constraints.
+- Verify generated runtime data stays in sync with JSON.
 
 ### Task 7.1 — Renderer Integration
 
@@ -52,6 +56,7 @@
 - Use the `sx_7_w8` card as the golden pattern.
 - Build 7-type batch first: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`.
 - Then expand by high-value coaching combinations before filling the full 54.
+- Track progress with `node scripts/verify_report_content.mjs --coverage`.
 
 ## User Requests I Will Make
 
@@ -66,4 +71,6 @@
 - Report renderer shows a polished chemistry section for that result.
 - Existing Node tests pass.
 - `node scripts/verify_report_content.mjs` passes.
+- `node scripts/verify_report_content.mjs --coverage` reports the expected prepared/total count.
+- `node scripts/build_report_chemistry_data.mjs --check` confirms runtime data is generated from JSON.
 - User can open the result page and judge the actual product feel, not just the text.

@@ -27,8 +27,22 @@ const REQUIRED_TOP_LEVEL = [
 
 const REQUIRED_DISPLAY = ['one_page_title', 'one_page_body', 'pull_quote', 'bullets'];
 const INSTINCTS = new Set(['sp', 'sx', 'so']);
+const INSTINCT_EXPANSION_ORDER = ['sx', 'so', 'sp'];
+const WINGS_BY_CORE = {
+  1: [9, 2],
+  2: [1, 3],
+  3: [2, 4],
+  4: [3, 5],
+  5: [4, 6],
+  6: [5, 7],
+  7: [8, 6],
+  8: [7, 9],
+  9: [8, 1],
+};
+const TYPE_7_BATCH = ['sx_7_w8', 'sx_7_w6', 'so_7_w8', 'so_7_w6', 'sp_7_w8', 'sp_7_w6'];
 const NON_FAITH_BANNED = ['복음', '죄', '회개', '거짓 자아'];
 const TYPO_BANNED = ['격과지', '길이 다루며'];
+const SHOW_COVERAGE = process.argv.includes('--coverage');
 
 function fail(errors, message) {
   errors.push(message);
@@ -117,6 +131,32 @@ function checkCard(filePath) {
   return errors;
 }
 
+function buildExpectedCombinationKeys() {
+  return Object.entries(WINGS_BY_CORE).flatMap(([core, wings]) => (
+    INSTINCT_EXPANSION_ORDER.flatMap((instinct) => wings.map((wing) => `${instinct}_${core}_w${wing}`))
+  ));
+}
+
+function reportCoverage(cards) {
+  const expectedKeys = buildExpectedCombinationKeys();
+  const expectedSet = new Set(expectedKeys);
+  const presentKeys = cards.map((card) => card.combination_key).filter(Boolean);
+  const unexpectedKeys = presentKeys.filter((key) => !expectedSet.has(key));
+
+  if (unexpectedKeys.length > 0) {
+    console.error(`FAIL: unexpected chemistry combination key(s): ${unexpectedKeys.join(', ')}`);
+    process.exit(1);
+  }
+
+  console.log(`Coverage: ${presentKeys.length}/${expectedKeys.length} chemistry combinations`);
+
+  const presentSet = new Set(presentKeys);
+  const nextType7 = TYPE_7_BATCH.filter((key) => !presentSet.has(key));
+  if (nextType7.length > 0) {
+    console.log(`Next type 7 batch: ${nextType7.join(', ')}`);
+  }
+}
+
 function main() {
   if (!fs.existsSync(CHEMISTRY_DIR)) {
     console.error(`Missing directory: ${path.relative(ROOT, CHEMISTRY_DIR)}`);
@@ -139,6 +179,10 @@ function main() {
   }
 
   console.log(`OK: report content verified (${files.length} chemistry file(s))`);
+  if (SHOW_COVERAGE) {
+    const cards = files.map((filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8')));
+    reportCoverage(cards);
+  }
 }
 
 main();

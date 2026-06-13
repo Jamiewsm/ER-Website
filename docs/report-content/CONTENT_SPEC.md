@@ -18,7 +18,7 @@
 Format:
 
 ```text
-<dominant_instinct>_<core>w<wing>
+<dominant_instinct>_<core>_w<wing>
 ```
 
 Examples:

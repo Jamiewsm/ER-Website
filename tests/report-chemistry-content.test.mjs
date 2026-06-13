@@ -1,6 +1,7 @@
 // 프리미엄 결과지 화학 카드 데이터 회귀 테스트
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -30,4 +31,30 @@ test('test page loads chemistry data before the result renderer', () => {
 
   assert.ok(chemistryIdx > 0, 'chemistry data script should be present');
   assert.ok(testIdx > chemistryIdx, 'test.js should load after chemistry data');
+});
+
+test('browser runtime chemistry data is generated from content JSON', () => {
+  const result = spawnSync(
+    process.execPath,
+    ['scripts/build_report_chemistry_data.mjs', '--check'],
+    { cwd: rootDir, encoding: 'utf8' }
+  );
+
+  assert.equal(
+    result.status,
+    0,
+    `runtime chemistry data should match JSON\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
+  );
+});
+
+test('content verifier reports 54-combination coverage', () => {
+  const result = spawnSync(
+    process.execPath,
+    ['scripts/verify_report_content.mjs', '--coverage'],
+    { cwd: rootDir, encoding: 'utf8' }
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /Coverage: 1\/54 chemistry combinations/);
+  assert.match(result.stdout, /Next type 7 batch: sx_7_w6, so_7_w8, so_7_w6, sp_7_w8, sp_7_w6/);
 });

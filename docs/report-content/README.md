@@ -15,6 +15,7 @@
 - `CONTENT_SPEC.md` — 조각 블록, 화학 카드, 화면 표시 필드 스키마
 - `LANGUAGE_LAYERS.md` — 일반 사용자용 회복 언어 + 신앙 선택 문장 규칙
 - `chemistry/*.json` — 조합별 화학 카드. 현재 골드 샘플: `sx_7_w8.json`
+- `../../js/report-chemistry-data.js` — 브라우저 런타임 데이터. 직접 수정하지 않고 생성합니다.
 
 ## 현재 우선순위
 
@@ -27,4 +28,25 @@
 
 ```bash
 node scripts/verify_report_content.mjs
+node scripts/build_report_chemistry_data.mjs --check
+node scripts/verify_report_content.mjs --coverage
+```
+
+## 런타임 데이터 생성
+
+화학 카드의 원본은 항상 `docs/report-content/chemistry/*.json`입니다.
+브라우저에서 읽는 `js/report-chemistry-data.js`는 원본 JSON의 화면용 필드만 담은 생성 파일입니다.
+
+```bash
+node scripts/build_report_chemistry_data.mjs
+```
+
+새 카드나 문구 수정 후에는 위 명령을 실행하고, `--check`가 통과하는지 확인합니다.
+
+## 확장 진행률
+
+54개 조합의 현재 진행률과 다음 Type 7 배치는 아래 명령으로 확인합니다.
+
+```bash
+node scripts/verify_report_content.mjs --coverage
 ```
