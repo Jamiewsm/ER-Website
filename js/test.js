@@ -2440,8 +2440,8 @@ function renderPremiumReport(model) {
         <div class="er-report-next-grid">${nextSteps}</div>
         <div id="experiment-result-panel" class="hidden"></div>
         <div id="cta-consulting" class="hidden er-report-low-confidence">
-          <p id="consult-cta-text">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 정체성 발견 세션($100)에서 인터뷰 기반 타이핑으로 함께 확인해 드립니다.</p>
-          <a id="consult-cta-btn" href="#" data-report-program-key="identity_session">정체성 발견 세션 신청</a>
+          <p id="consult-cta-text">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 유형(Typing) 상담($100)에서 인터뷰 기반 타이핑으로 함께 확인해 드립니다.</p>
+          <a id="consult-cta-btn" href="#" data-report-program-key="identity_session">유형(Typing) 상담 신청</a>
         </div>
         <div class="er-report-final-cta">
           <h2>${escapeReportHtml(c.gospel.declaration || c.heroStatement)}</h2>

@@ -34,7 +34,7 @@ function renderHome() {
     ];
 
     const stats = [
-        { value: '12,500+', label: '누적 수강생' },
+        { value: '400+', label: '누적 수강생' },
         { value: '98%', label: '만족도' },
         { value: '10년+', label: '전문가 경험' },
         { value: '4.9/5', label: '후기 평점' }
@@ -70,19 +70,19 @@ function renderHome() {
         },
         {
             badge: '상담',
-            title: '1:1 개인 상담',
-            text: '전문 상담사와 함께하는 맞춤 상담',
-            price: '$150부터',
+            title: '1:1 유형(Typing) 상담',
+            text: '인터뷰 기반 타이핑과 핵심 동기·방어 패턴 확인',
+            price: '$100',
             image: 'green and seat.png',
             position: 'center',
-            action: "renderSection('apply', { track: 'paid', focus: 'individual' })"
+            action: "renderSection('apply', { track: 'paid', focus: 'identity_session' })"
         }
     ];
 
     const testimonials = [
         { story: parentingStory, label: '에니어그램 기본과정 수강' },
         { story: coupleStory, label: '심화과정 수강' },
-        { story: teamStory, label: '개인 상담 진행' }
+        { story: teamStory, label: 'Typing 상담' }
     ];
 
     const footerBenefits = [

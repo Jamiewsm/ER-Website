@@ -15,7 +15,7 @@ function getPaidApplyCategoryOptions() {
         return window.ERProgramCatalog.getPaidCategoryOptions();
     }
     return [
-        '정체성 발견 세션 ($100)',
+        '유형(Typing) 상담 ($100)',
         '개별 코칭 1회 ($80)',
         '에니어그램 기본과정 8주 ($300)',
         '자녀 양육 코칭 문의',
@@ -327,12 +327,12 @@ function renderApply(payload = null) {
         },
         identity_session: {
             track: 'paid',
-            title: '정체성 발견 세션 신청',
+            title: '유형(Typing) 상담 신청',
             desc: '90분 심층 세션에서 사전 설문·인터뷰 기반 타이핑과 핵심 동기·방어 패턴을 함께 정리합니다.',
-            bannerTitle: '테스트 후 추천 — 정체성 발견',
+            bannerTitle: '테스트 후 추천 — Typing 상담',
             bannerBody: '약식 테스트 결과를 바탕으로, 인터뷰 기반 타이핑으로 코어·날개·하위유형을 함께 확인합니다.',
-            category: '정체성 발견 세션 ($100)',
-            message: '정체성 발견 세션 신청합니다.'
+            category: '유형(Typing) 상담 ($100)',
+            message: '유형(Typing) 상담 신청합니다.'
         },
         coaching_single: {
             track: 'paid',
@@ -409,12 +409,12 @@ function renderApply(payload = null) {
             : isOrgTrack
                 ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
                 : getPaidApplyCategoryOptions();
-    const defaultPaidCategory = '정체성 발견 세션 ($100)';
+    const defaultPaidCategory = '유형(Typing) 상담 ($100)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
         : defaultPaidCategory;
     const seededMessage = fromTest && testSummary
-        ? `${testSummary}\n${selectedFocus?.message || '정체성 발견 세션 신청합니다.'}`
+        ? `${testSummary}\n${selectedFocus?.message || '유형(Typing) 상담 신청합니다.'}`
         : (selectedFocus?.message || '');
     const bannerTitle = selectedFocus?.bannerTitle || (
         fromTest
@@ -429,7 +429,7 @@ function renderApply(payload = null) {
     );
     const bannerBody = selectedFocus?.bannerBody || (
         fromTest
-            ? '약식 테스트 결과를 바탕으로 정체성 발견 세션에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.'
+            ? '약식 테스트 결과를 바탕으로 유형(Typing) 상담에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.'
             : isSupportTrack
                 ? '후원 문의, 교회·기관 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.'
                 : isMinistryTrack
