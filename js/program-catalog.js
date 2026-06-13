@@ -18,6 +18,8 @@
 
   const PROGRAM_ALIAS = {
     '정체성 회복 코칭': 'identity_session',
+    '정체성 발견 세션': 'identity_session',
+    '유형(Typing) 상담': 'identity_session',
     '관계 패턴 코칭': 'coaching_single',
     'ER 전문가 양성반': 'coach_training',
     '에니어그램 기본과정 8주': 'basic_course',
@@ -43,16 +45,16 @@
   const PROGRAMS = {
     identity_session: {
       key: 'identity_session',
-      title: '정체성 발견 세션',
-      shortTitle: '정체성 발견',
+      title: '유형(Typing) 상담',
+      shortTitle: 'Typing 상담',
       price: PRICING.identity_session,
-      category: '정체성 발견 세션 ($100)',
+      category: '유형(Typing) 상담 ($100)',
       track: 'paid',
       focus: 'identity_session',
       outcome: '사전 설문·인터뷰 기반 타이핑과 핵심 동기·방어 패턴을 함께 정리합니다.',
       reasonPrimary: '현재 반복 패턴의 중심 동기와 가장 직접적으로 연결됩니다.',
       reasonSecondary: '결과지를 읽은 뒤 실제 타이핑·동기 확인으로 이어가기 좋습니다.',
-      applyMessage: '정체성 발견 세션 신청합니다.'
+      applyMessage: '유형(Typing) 상담 신청합니다.'
     },
     coaching_single: {
       key: 'coaching_single',
