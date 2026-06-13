@@ -50,6 +50,7 @@
 - Force or simulate a `sx_7_w8` result.
 - Check desktop/mobile layout.
 - Download PDF and verify section break, overflow, typography, and button behavior.
+- Run `node scripts/qa_premium_report_pdf.mjs` to verify the debug report renders to PDF with the chemistry section present and console errors clean.
 
 ### Task 7.3 — Expansion Batch
 
@@ -73,4 +74,5 @@
 - `node scripts/verify_report_content.mjs` passes.
 - `node scripts/verify_report_content.mjs --coverage` reports the expected prepared/total count.
 - `node scripts/build_report_chemistry_data.mjs --check` confirms runtime data is generated from JSON.
+- `node scripts/qa_premium_report_pdf.mjs` renders the `sx_7_w8` PDF QA artifact successfully.
 - User can open the result page and judge the actual product feel, not just the text.

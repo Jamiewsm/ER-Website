@@ -30,6 +30,7 @@
 node scripts/verify_report_content.mjs
 node scripts/build_report_chemistry_data.mjs --check
 node scripts/verify_report_content.mjs --coverage
+node scripts/qa_premium_report_pdf.mjs
 ```
 
 ## 런타임 데이터 생성
@@ -50,3 +51,14 @@ node scripts/build_report_chemistry_data.mjs
 ```bash
 node scripts/verify_report_content.mjs --coverage
 ```
+
+## PDF QA
+
+`sx_7_w8` 골드 샘플 결과지를 PDF로 렌더링하고, 화학 섹션/다운로드 버튼/콘솔 error/PDF 파일을 확인합니다.
+
+```bash
+node scripts/qa_premium_report_pdf.mjs
+```
+
+기본 산출물은 `/tmp/er-premium-report-sx-7-w8.pdf`입니다.
+필요하면 `--output /path/to/file.pdf`로 위치를 지정합니다.
