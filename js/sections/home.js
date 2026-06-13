@@ -48,15 +48,17 @@ function renderHome() {
             price: '$300',
             image: 'background.png',
             position: 'center',
+            button: '자세히 보기',
             action: "window.location.href='/basic-course.html'"
         },
         {
             badge: '추천',
             title: 'Enneagram for Parenting',
-            text: '부모의 반응 패턴과 아이의 욕구를 이해하는 4주 과정',
+            text: '부모의 반응 패턴과 아이의 기질을 이해하는 4주 과정',
             price: '$120',
-            image: 'living room.png',
-            position: 'center',
+            image: 'home-parent-child-photo.jpg',
+            position: 'center top',
+            button: '자세히 보기',
             action: "window.location.href='/parenting-workshop.html'"
         },
         {
@@ -66,6 +68,7 @@ function renderHome() {
             price: '무료',
             image: 'hands and green.png',
             position: 'center',
+            button: '검사하기',
             action: "renderSection('test')"
         },
         {
@@ -73,16 +76,32 @@ function renderHome() {
             title: '1:1 유형(Typing) 상담',
             text: '인터뷰 기반 타이핑과 핵심 동기·방어 패턴 확인',
             price: '$100',
-            image: 'green and seat.png',
-            position: 'center',
+            image: 'home-couple-photo.jpg',
+            position: 'center top',
+            button: '상담 신청하기',
             action: "renderSection('apply', { track: 'paid', focus: 'identity_session' })"
         }
     ];
 
     const testimonials = [
-        { story: parentingStory, label: '에니어그램 기본과정 수강' },
-        { story: coupleStory, label: '심화과정 수강' },
-        { story: teamStory, label: 'Typing 상담' }
+        {
+            quote: '제 자녀를 같은 방식으로 양육하면 된다고 생각했는데, 아이마다 필요한 반응이 달라 계속 부딪혔습니다. 상담을 통해 부모의 반응 패턴과 아이들의 기질 차이를 함께 이해하면서, 각 아이에게 맞는 양육 언어를 적용할 수 있게 되었습니다.',
+            person: parentingStory.person || '김OO 님',
+            label: '에니어그램 기본과정 수강',
+            avatar: '김'
+        },
+        {
+            quote: '아내와의 차이를 자꾸 문제로 해석하다 보니 대화가 반복해서 막혔습니다. 부부가 함께 심리를 배우며 서로의 기질 차이를 이해하게 되었고, 상대를 바꾸려 하기보다 존중하는 대화 방식으로 전환할 수 있었습니다.',
+            person: coupleStory.person || '이OO 님',
+            label: '심화과정 수강',
+            avatar: '이'
+        },
+        {
+            quote: '제 성향이 왜 상황마다 달라 보이는지 스스로도 설명하기 어려웠습니다. 상담을 통해 고유한 강점과 약점 패턴을 분리해서 보게 되었고, 사역 현장에서 제 리더십과 소통 방식을 더 명확하게 조정할 수 있었습니다.',
+            person: teamStory.person || '박OO 님',
+            label: '개인 상담 진행',
+            avatar: '박'
+        }
     ];
 
     const footerBenefits = [
@@ -90,6 +109,46 @@ function renderHome() {
         { icon: 'fa-regular fa-clipboard', title: '체계적인 시스템', text: '검증된 프로그램과 단계별 학습' },
         { icon: 'fa-brands fa-pagelines', title: '지속적인 지원', text: '수료 후에도 계속되는 커뮤니티와 지원' },
         { icon: 'fa-solid fa-hand-holding-dollar', title: '합리적인 가격', text: '가치 있는 변화의 여정을 합리적인 가격으로' }
+    ];
+
+    const restorationCards = [
+        {
+            eyebrow: '부모와 자녀',
+            title: '아이를 바꾸기 전에, 아이를 이해하는 눈이 필요합니다',
+            text: '아이의 행동 뒤에는 각자의 두려움과 욕구가 있고, 부모의 반응 뒤에도 익숙한 패턴이 있습니다.',
+            image: 'home-parent-child-photo.jpg',
+            position: 'center top',
+            caption: '행동보다 마음을 이해하는 부모교육',
+            points: ['부모의 유형과 양육 패턴', '자녀의 기질과 반응 이해', '반복되는 부모-자녀 갈등 분석'],
+            action: "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'home_relationship_parent' })"
+        },
+        {
+            eyebrow: '부부와 가정',
+            title: '판단을 멈추고, 긍휼과 은혜로 다시 연결되기',
+            text: '부부 갈등은 한 번의 사건보다 말투와 침묵, 통제와 회피, 인정 욕구가 반복되며 만들어지는 패턴일 때가 많습니다.',
+            image: 'home-couple-photo.jpg',
+            position: 'center top',
+            caption: '상대를 고치려는 자리에서, 이해하는 자리로',
+            points: ['같은 문제로 반복되는 갈등 이해', '배우자의 방어기제를 자극하지 않는 대화', '복음 안에서 안전한 관계 다시 세우기'],
+            action: "renderSection('apply', { track: 'paid', focus: 'couple', apply_source: 'home_relationship_couple' })"
+        },
+        {
+            eyebrow: '사역팀과 리더십',
+            title: '강점과 소통 방식을 이해하고, 복음 안에서 진정한 연합으로',
+            text: '사역 현장의 오해는 헌신이 부족해서가 아니라, 일하는 동기와 방식의 차이에서 비롯될 때가 많습니다.',
+            image: 'home-team-photo.jpg',
+            position: 'center top',
+            caption: '강점과 소통 방식을 이해할 때, 팀은 경쟁이 아니라 동역을 배웁니다',
+            points: ['사역자의 강점과 리더십 스타일', '팀 안의 소통 방식과 의사결정 패턴', '오해를 줄이는 협업 언어 만들기'],
+            action: "renderSection('apply', { track: 'org', focus: 'team', apply_source: 'home_relationship_team' })"
+        }
+    ];
+
+    const recommendationItems = [
+        '깨어진 관계로 고통 중에 계신 분',
+        '배우자와의 관계를 더 건강히 세우고 싶은 분',
+        '아이의 기질을 이해하고 맞춤육아를 하고 싶은 분',
+        '하나님이 창조하신 진짜 나를 발견하고 성장하고 싶은 분'
     ];
 
     return `
@@ -164,86 +223,159 @@ function renderHome() {
                 </div>
             </section>
 
-            <section class="mx-auto grid max-w-[1480px] gap-4 px-4 pb-12 pt-6 sm:px-6 lg:grid-cols-[1fr_1fr] lg:px-8 lg:pb-16">
-                <div class="rounded-2xl border border-[#e7ddcd] bg-white p-6 shadow-sm sm:p-8 lg:p-10">
-                    <div class="text-center">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-[#68785a]">ER의 대표 프로그램</p>
-                        <h2 class="mt-3 text-2xl font-black tracking-[-0.01em] text-[#202219] break-keep sm:text-3xl">당신의 변화를 위한 맞춤 여정</h2>
-                        <p class="mt-2 text-sm font-medium text-[#78776d] break-keep">검증된 프로그램으로 더 나은 나와 관계를 만들어보세요.</p>
+            <section class="mx-auto max-w-[1480px] px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
+                <div class="rounded-2xl border border-[#e2d8c8] bg-[#faf7f0] p-5 shadow-sm sm:p-8 lg:p-10">
+                    <div class="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-end">
+                        <div>
+                            <div class="flex items-center gap-4">
+                                <img src="home-er-logo-stacked.png" alt="Enneagram for Restoration" class="h-16 w-auto object-contain opacity-90">
+                                <div class="h-px flex-1 bg-[#ddd2bf]"></div>
+                            </div>
+                            <p class="mt-7 text-sm font-black text-[#657453]">회복의 도구, 에니어그램</p>
+                            <h2 class="mt-3 max-w-xl text-3xl font-black leading-tight tracking-[-0.02em] text-[#30322d] break-keep sm:text-4xl">
+                                같은 자리에서 반복되는 갈등을<br>
+                                <span class="text-[#657453]">다른 시선으로 봅니다</span>
+                            </h2>
+                            <p class="mt-5 max-w-2xl text-sm font-medium leading-8 text-[#65675f] break-keep sm:text-base">
+                                ER은 갈등을 단순한 성격 차이로만 설명하지 않습니다. 그 안에 숨어 있는 두려움, 욕구, 방어 방식, 상처와 관계 패턴을 복음 안에서 조명하고 회복의 방향을 함께 찾아갑니다.
+                            </p>
+                        </div>
+
+                        <div class="rounded-2xl border border-[#e0d5c3] bg-[#f4efe6] p-5 sm:p-6">
+                            <h3 class="text-lg font-black text-[#30322d] break-keep">이런 분께 추천합니다</h3>
+                            <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                                ${recommendationItems.map((item) => `
+                                    <div class="flex items-start gap-3 rounded-xl bg-[#fffdf8]/80 p-3 ring-1 ring-[#e7dcc9]">
+                                        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e7efdc] text-[10px] text-[#657453]">
+                                            <i class="fas fa-check" aria-hidden="true"></i>
+                                        </span>
+                                        <p class="text-sm font-bold leading-6 text-[#44473f] break-keep">${item}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 lg:grid-cols-2">
-                        ${programCards.map((card) => `
-                            <article class="overflow-hidden rounded-xl border border-[#e6dece] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                                <div class="relative aspect-[4/3] overflow-hidden bg-[#f2ede2]">
-                                    <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 hover:scale-105" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
-                                    <span class="absolute left-3 top-3 rounded-full bg-[#eef1df] px-3 py-1 text-[10px] font-extrabold text-[#667554]">${card.badge}</span>
+                    <div class="mt-8 grid gap-6 lg:grid-cols-3">
+                        ${restorationCards.map((card) => `
+                            <article class="group rounded-2xl border border-[#dfd4c4] bg-[#fffdf8] p-4 shadow-[0_16px_45px_rgba(84,72,52,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(84,72,52,0.12)]">
+                                <div class="rounded-[1.15rem] bg-[#f0eadf] p-2 ring-1 ring-[#e5dac8]">
+                                    <div class="aspect-[16/10] overflow-hidden rounded-xl bg-[#e8dfd1]">
+                                        <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]" style="object-position:${card.position}; filter:saturate(0.96) brightness(1.04);">
+                                    </div>
                                 </div>
-                                <div class="p-4">
-                                    <h3 class="text-sm font-black text-[#202219] break-keep">${card.title}</h3>
-                                    <p class="mt-2 min-h-[2.55rem] text-xs font-medium leading-relaxed text-[#73756b] break-keep">${card.text}</p>
-                                    <p class="mt-4 text-sm font-black text-[#202219]">${card.price}</p>
-                                    <button onclick="${card.action}" class="mt-3 w-full rounded-lg border border-[#ded6c8] bg-[#fffdf8] px-4 py-2.5 text-xs font-extrabold text-[#202219] transition-colors hover:border-[#7f8b68] hover:bg-[#657453] hover:text-white">자세히 보기</button>
+                                <div class="px-2 pb-2 pt-5">
+                                    <p class="inline-flex rounded-full bg-[#eef3e6] px-3 py-1 text-xs font-black text-[#657453] ring-1 ring-[#dce5ce]">${card.eyebrow}</p>
+                                    <p class="mt-4 rounded-xl bg-[#f4efe6] px-3.5 py-3 text-sm font-extrabold leading-6 text-[#536149] break-keep">${card.caption}</p>
+                                    <h3 class="mt-4 text-xl font-black leading-snug tracking-[-0.01em] text-[#30322d] break-keep">${card.title}</h3>
+                                    <p class="mt-3 text-sm font-medium leading-7 text-[#65675f] break-keep">${card.text}</p>
+                                    <ul class="mt-5 space-y-2.5">
+                                        ${card.points.map((point) => `
+                                            <li class="flex items-start gap-2 text-sm font-semibold text-[#44473f] break-keep">
+                                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8a956f]"></span>
+                                                <span>${point}</span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                    <button onclick="${card.action}" class="mt-6 inline-flex min-h-[2.95rem] w-full items-center justify-center gap-2 rounded-xl bg-[#657453] px-5 py-3 text-sm font-extrabold text-[#fffdf8] shadow-[0_14px_28px_rgba(101,116,83,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#566647]">
+                                        상담/워크숍 문의
+                                        <i class="fas fa-arrow-right text-xs opacity-80" aria-hidden="true"></i>
+                                    </button>
                                 </div>
                             </article>
                         `).join('')}
                     </div>
-
-                    <div class="mt-7 text-center">
-                        <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3rem] items-center justify-center gap-2 rounded-lg bg-[#657453] px-8 py-3 text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(101,116,83,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#566647]">
-                            전체 프로그램 보기
-                            <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
-                        </button>
-                    </div>
                 </div>
+            </section>
 
-                <div class="space-y-4">
-                    <div class="rounded-2xl border border-[#e7ddcd] bg-white p-6 shadow-sm sm:p-8 lg:p-10">
-                        <div class="text-center">
-                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-[#7a766a]">함께한 사람들의 이야기</p>
-                            <h2 class="mt-3 text-2xl font-black tracking-[-0.01em] text-[#202219] break-keep sm:text-3xl">변화를 경험한 사람들의 진솔한 후기</h2>
+            <section class="mx-auto max-w-[1480px] px-4 pb-12 pt-6 sm:px-6 lg:px-8 lg:pb-16">
+                <div class="rounded-2xl border border-[#e2d8c8] bg-[#fffdf8] p-5 shadow-sm sm:p-8 lg:p-10">
+                    <div class="grid gap-10 lg:grid-cols-[minmax(0,1.28fr)_minmax(410px,0.88fr)] lg:gap-12">
+                        <div>
+                            <p class="text-sm font-black text-[#657453]">ER의 대표 프로그램</p>
+                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-[#30322d] break-keep sm:text-3xl lg:text-[2rem]">당신의 변화를 위한 맞춤 여정</h2>
+                            <p class="mt-3 text-sm font-semibold leading-7 text-[#6f7068] break-keep">검증된 프로그램으로 더 나은 나와 관계를 만들어보세요.</p>
+
+                            <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                                ${programCards.map((card) => `
+                                    <article class="group flex min-h-[24rem] flex-col rounded-2xl border border-[#e2d8c8] bg-[#fbf8f1] p-4 shadow-[0_14px_40px_rgba(94,77,47,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(94,77,47,0.11)]">
+                                        <div class="rounded-2xl bg-[#f0eadf] p-2 ring-1 ring-[#e5dac8]">
+                                            <div class="relative aspect-[1.45] overflow-hidden rounded-xl bg-[#e8dfd1]">
+                                                <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
+                                                <span class="absolute left-3 top-3 rounded-full bg-[#657453] px-3 py-1 text-[10px] font-black text-[#fffdf8] shadow-sm">${card.badge}</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-1 flex-col pt-5">
+                                            <h3 class="text-[1.05rem] font-black leading-snug tracking-[-0.01em] text-[#30322d] break-keep">${card.title}</h3>
+                                            <p class="mt-3 text-sm font-medium leading-7 text-[#696a62] break-keep">${card.text}</p>
+                                            <div class="mt-auto pt-6">
+                                                <p class="text-lg font-black text-[#30322d]">${card.price}</p>
+                                                <button onclick="${card.action}" class="mt-4 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl border border-[#dccfbc] bg-[#fffdf8] px-4 py-3 text-sm font-extrabold text-[#30322d] transition-all hover:border-[#657453] hover:bg-[#657453] hover:text-[#fffdf8]">${card.button}</button>
+                                            </div>
+                                        </div>
+                                    </article>
+                                `).join('')}
+                            </div>
+
+                            <div class="mt-9 text-center">
+                                <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.6rem] min-w-[18rem] items-center justify-center gap-3 rounded-xl bg-[#657453] px-9 py-4 text-base font-black text-[#fffdf8] shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-[#566647]">
+                                    전체 프로그램 보기
+                                    <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="mt-8 grid gap-4 md:grid-cols-3 lg:grid-cols-3">
-                            ${testimonials.map(({ story, label }) => `
-                                <article class="rounded-xl border border-[#e9e0d2] bg-[#fffdf8] p-5 shadow-sm">
-                                    <div class="text-right text-3xl font-black leading-none text-[#d8d0bf]">”</div>
-                                    <p class="-mt-2 text-sm font-semibold leading-relaxed text-[#34362f] break-keep">“${story.quote}”</p>
-                                    <div class="mt-5 flex items-center gap-3">
-                                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#eef1df] text-[11px] font-black text-[#667554]">${initials(story.person)}</div>
-                                        <div>
-                                            <p class="text-xs font-black text-[#202219]">${story.person}</p>
-                                            <p class="text-[10px] font-semibold text-[#878477]">${label}</p>
+                        <div class="lg:border-l lg:border-[#e2d8c8] lg:pl-12">
+                            <p class="text-sm font-black text-[#7a766a]">함께한 사람들의 이야기</p>
+                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-[#30322d] break-keep sm:text-3xl lg:text-[2rem]">변화를 경험한 사람들의 진솔한 후기</h2>
+
+                            <div class="mt-7 space-y-5">
+                                ${testimonials.map((item) => `
+                                    <article class="relative rounded-2xl border border-[#e2d8c8] bg-[#fbf8f1] p-5 pr-16 shadow-[0_14px_38px_rgba(94,77,47,0.06)] sm:p-6 sm:pr-20">
+                                        <div class="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#f1eadf] text-3xl font-black leading-none text-[#cabc9e]">
+                                            &rdquo;
                                         </div>
-                                    </div>
-                                </article>
-                            `).join('')}
+                                        <p class="text-sm font-bold leading-8 text-[#3e4039] break-keep">“${item.quote}”</p>
+                                        <div class="mt-5 flex items-end justify-between gap-4 border-t border-[#eadfce] pt-4">
+                                            <p class="text-sm font-extrabold text-[#6f7068] break-keep">${item.person} <span class="mx-2 text-[#cfc5b6]">|</span> ${item.label}</p>
+                                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e7efdc] text-sm font-black text-[#657453] ring-4 ring-[#fffdf8]">${item.avatar}</div>
+                                        </div>
+                                    </article>
+                                `).join('')}
+                            </div>
+
+                            <div class="mt-5 flex items-center justify-center gap-4 text-[#b8ad9d]" aria-hidden="true">
+                                <i class="fas fa-chevron-left text-xs"></i>
+                                <span class="h-2.5 w-2.5 rounded-full bg-[#657453]"></span>
+                                <span class="h-2.5 w-2.5 rounded-full bg-[#d9d1c5]"></span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="overflow-hidden rounded-2xl border border-[#7d886b]/25 bg-[#657453] text-white shadow-[0_24px_60px_rgba(101,116,83,0.18)]">
-                        <div class="relative px-6 py-9 text-center sm:px-10">
-                            <div class="absolute inset-0 opacity-45" style="background-image:url('green and seat.png'); background-size:cover; background-position:center;"></div>
-                            <div class="absolute inset-0 bg-[rgba(95,112,78,0.78)]"></div>
-                            <div class="relative">
-                                <h2 class="text-2xl font-black tracking-[-0.01em] break-keep sm:text-3xl">지금, 당신의 변화를 시작하세요</h2>
-                                <p class="mt-3 text-sm font-medium leading-relaxed text-white/82 break-keep">작은 용기가 큰 변화를 만듭니다.<br>ER이 당신의 여정을 함께할게요.</p>
-                                <div class="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-                                    <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-[3rem] items-center justify-center rounded-lg bg-[#fffdf8] px-8 py-3 text-sm font-extrabold text-[#667554] transition-all hover:-translate-y-0.5 hover:bg-white">상담 신청하기</button>
-                                    <button onclick="renderSection('test')" class="inline-flex min-h-[3rem] items-center justify-center rounded-lg border border-white/35 bg-white/5 px-8 py-3 text-sm font-extrabold text-white transition-all hover:-translate-y-0.5 hover:bg-white/12">무료 검사로 시작하기</button>
+                    <div class="mt-10 overflow-hidden rounded-2xl border border-[#d8cbb8] bg-[#657453] text-[#fffdf8] shadow-[0_24px_60px_rgba(101,116,83,0.18)]">
+                        <div class="relative min-h-[21rem] px-6 py-10 sm:px-10 lg:px-20 lg:py-14">
+                            <img src="green and seat.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center right; filter:saturate(0.94) brightness(0.92);">
+                            <div class="absolute inset-0 bg-gradient-to-r from-[#30451f] via-[#3f5530]/88 to-[#30451f]/12"></div>
+                            <div class="relative max-w-xl">
+                                <h2 class="text-3xl font-black leading-tight tracking-[-0.02em] break-keep sm:text-4xl">지금, 당신의 변화를 시작하세요</h2>
+                                <p class="mt-5 text-base font-bold leading-8 text-[#fffdf8]/88 break-keep">작은 용기가 큰 변화를 만듭니다.<br>ER이 당신의 여정을 함께할게요.</p>
+                                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+                                    <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl bg-[#fffdf8] px-8 py-4 text-sm font-black text-[#30322d] shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:bg-[#f5efe5]">상담 신청하기</button>
+                                    <button onclick="renderSection('test')" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl border border-[#fffdf8]/42 bg-[#fffdf8]/5 px-8 py-4 text-sm font-black text-[#fffdf8] transition-all hover:-translate-y-0.5 hover:bg-[#fffdf8]/12">무료 검사로 시작하기</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="grid gap-0 bg-[#fffdf8] text-[#202219] md:grid-cols-4">
+                        <div class="grid gap-0 bg-[#fffdf8] text-[#30322d] sm:grid-cols-2 lg:grid-cols-4">
                             ${footerBenefits.map((item, index) => `
-                                <div class="flex items-start gap-3 px-5 py-5 ${index > 0 ? 'md:border-l md:border-[#ebe2d4]' : ''}">
-                                    <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#f2eedf] text-[#68785a]">
+                                <div class="flex items-start gap-4 px-6 py-6 ${index > 0 ? 'lg:border-l lg:border-[#ebe2d4]' : ''}">
+                                    <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#f2eedf] text-xl text-[#657453]">
                                         <i class="${item.icon}" aria-hidden="true"></i>
                                     </span>
                                     <span>
-                                        <span class="block text-sm font-black break-keep">${item.title}</span>
-                                        <span class="mt-1 block text-xs font-medium leading-relaxed text-[#73756b] break-keep">${item.text}</span>
+                                        <span class="block text-base font-black break-keep">${item.title}</span>
+                                        <span class="mt-1.5 block text-sm font-medium leading-relaxed text-[#73756b] break-keep">${item.text}</span>
                                     </span>
                                 </div>
                             `).join('')}
