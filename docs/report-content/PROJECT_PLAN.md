@@ -1,0 +1,69 @@
+<!-- ER 프리미엄 진단 결과지 업그레이드 PM 실행 계획 -->
+# Premium Report Upgrade Plan
+
+## PM 원칙
+
+- 사용자는 방향, 자료, 승인, 계정 권한처럼 사람만 할 수 있는 일만 돕습니다.
+- Codex PM은 계획, 파일화, 구현 단위 분리, 검증, 다음 요청 정리를 책임집니다.
+- Cursor는 실제 코드 반영과 PR/배포의 중심으로 유지합니다.
+- Anara와 ChatGPT 결과물은 최종본이 되면 반드시 이 리포의 파일 또는 Supabase 데이터로 저장합니다.
+
+## 현재 상태
+
+- 기존 Enneagram Phase 1-6 자동화는 완료/paused 상태입니다.
+- 스코어링, 27 subtype, 기본 프리미엄 결과지 렌더러는 이미 존재합니다.
+- 이번 작업은 신규 Phase 7 성격입니다: 프리미엄 결과지 콘텐츠 시스템 + 골드 샘플 + 에디토리얼 렌더링.
+
+## Phase 7 목표
+
+1. 콘텐츠 SSOT 구축: `docs/report-content/`에 스펙, 언어 규칙, 조합별 JSON 저장.
+2. 골드 샘플 구축: `sx_7_w8` 화학 카드와 화면용 압축본 확정.
+3. 렌더링 연결: `buildPremiumReportModel()`과 `renderPremiumReport()`가 화학 카드 섹션을 표시.
+4. PDF/화면 검증: 1개 조합이 웹과 PDF에서 프리미엄 결과지처럼 보이는지 확인.
+5. 확장 전략: 54개 조합을 `blocks + chemistry + display` 방식으로 점진 확장.
+6. DB 전환: 파일 기반이 안정되면 Supabase `report_*` 테이블로 이전.
+
+## 작업 단위
+
+### Task 7.0 — Content SSOT
+
+- Create `docs/report-content/CONTENT_SPEC.md`
+- Create `docs/report-content/LANGUAGE_LAYERS.md`
+- Create `docs/report-content/chemistry/sx_7_w8.json`
+- Create `scripts/verify_report_content.mjs`
+- Verify JSON and language constraints.
+
+### Task 7.1 — Renderer Integration
+
+- Load chemistry content in `js/diagnostic-report-content.js` or a new browser-safe data module.
+- Add `chemistry` to the premium report model.
+- Add a section in `renderPremiumReport()` titled "이 조합만의 화학".
+- Keep fallback behavior when no chemistry card exists.
+
+### Task 7.2 — Browser/PDF QA
+
+- Run the local test page.
+- Force or simulate a `sx_7_w8` result.
+- Check desktop/mobile layout.
+- Download PDF and verify section break, overflow, typography, and button behavior.
+
+### Task 7.3 — Expansion Batch
+
+- Use the `sx_7_w8` card as the golden pattern.
+- Build 7-type batch first: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`.
+- Then expand by high-value coaching combinations before filling the full 54.
+
+## User Requests I Will Make
+
+- Approve or edit the `sx_7_w8` gold text after seeing it on the page.
+- Provide Anara exports for the next batch when I ask for a specific combination list.
+- Provide GitHub/Cursor PR permissions only if PR creation or merge is blocked.
+- Decide whether Supabase is required in the first production release or after file-based proof.
+
+## Done Criteria For First Milestone
+
+- `sx_7_w8` gold sample is stored as JSON.
+- Report renderer shows a polished chemistry section for that result.
+- Existing Node tests pass.
+- `node scripts/verify_report_content.mjs` passes.
+- User can open the result page and judge the actual product feel, not just the text.

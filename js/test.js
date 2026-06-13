@@ -2169,6 +2169,14 @@ function buildReportMetricBar(row, options) {
   `;
 }
 
+function getReportChemistryCard(key) {
+  const chemistryApi = window.ERReportChemistry;
+  if (!key || !chemistryApi) return null;
+  if (typeof chemistryApi.get === 'function') return chemistryApi.get(key);
+  if (chemistryApi.cards) return chemistryApi.cards[key] || null;
+  return null;
+}
+
 function buildPremiumReportModel(resultData) {
   const contentApi = window.ERDiagnosticReportContent || {};
   const subtypeCode = getFinalSubtypeCode(resultData.instinctCode);
@@ -2206,12 +2214,16 @@ function buildPremiumReportModel(resultData) {
     ...row,
     active: selectedWing && Number(row.wing) === Number(selectedWing)
   }));
+  const reportKey = selectedWing ? `${subtypeCode}_${resultData.core}w${selectedWing}` : `${subtypeCode}_${resultData.core}`;
+  const chemistryKey = selectedWing ? `${subtypeCode}_${resultData.core}_w${selectedWing}` : `${subtypeCode}_${resultData.core}`;
 
   return {
     ...resultData,
     subtypeCode,
     selectedWing,
-    reportKey: selectedWing ? `${subtypeCode}_${resultData.core}w${selectedWing}` : `${subtypeCode}_${resultData.core}`,
+    reportKey,
+    chemistryKey,
+    chemistry: getReportChemistryCard(chemistryKey),
     content: fallbackContent,
     instinctRows,
     wingRows,
@@ -2294,6 +2306,28 @@ function renderPremiumReport(model) {
       <span>${escapeReportHtml(item)}</span>
     </label>
   `).join('');
+  const chemistry = model.chemistry && model.chemistry.display ? model.chemistry : null;
+  const chemistryDisplay = chemistry ? chemistry.display : null;
+  const chemistryBody = chemistryDisplay
+    ? (chemistryDisplay.one_page_body || []).map((item) => `<p>${escapeReportHtml(item)}</p>`).join('')
+    : '';
+  const chemistryBullets = chemistryDisplay
+    ? (chemistryDisplay.bullets || []).map((item) => `<li>${escapeReportHtml(item)}</li>`).join('')
+    : '';
+  const chemistrySection = chemistryDisplay ? `
+      <section id="report-chemistry" class="er-report-section er-report-chemistry">
+        <div class="er-report-section-head">
+          <span>Chemistry</span>
+          <h2>${escapeReportHtml(chemistryDisplay.one_page_title || '이 조합만의 화학')}</h2>
+        </div>
+        <div class="er-report-chemistry-card">
+          <p class="er-report-chemistry-identity">${escapeReportHtml(chemistry.identity_sentence || '')}</p>
+          <blockquote>${escapeReportHtml(chemistryDisplay.pull_quote || '')}</blockquote>
+          <div class="er-report-chemistry-body">${chemistryBody}</div>
+          <ul class="er-report-chemistry-bullets">${chemistryBullets}</ul>
+        </div>
+      </section>
+  ` : '';
 
   host.innerHTML = `
     <article class="er-premium-report" data-report-key="${escapeReportHtml(model.reportKey)}">
@@ -2316,6 +2350,7 @@ function renderPremiumReport(model) {
 
       <nav class="er-report-nav" aria-label="결과지 섹션 이동">
         <a href="#report-summary">요약</a>
+        ${chemistryDisplay ? '<a href="#report-chemistry">화학</a>' : ''}
         <a href="#report-pattern">패턴</a>
         <a href="#report-life">삶</a>
         <a href="#report-growth">회복</a>
@@ -2342,6 +2377,8 @@ function renderPremiumReport(model) {
           <p>${escapeReportHtml(c.wingNote || '')}</p>
         </div>
       </section>
+
+      ${chemistrySection}
 
       <section class="er-report-section er-report-visuals">
         <div class="er-report-section-head">
@@ -2503,6 +2540,67 @@ function bindPremiumReportInteractions(model) {
 if (typeof window !== 'undefined') {
   window.buildPremiumReportModel = buildPremiumReportModel;
   window.renderPremiumReport = renderPremiumReport;
+}
+
+function renderDebugPremiumReportFromQuery() {
+  if (params.get('debugReport') !== 'sx_7_w8') return false;
+
+  const scores = { 1: 5, 2: 4, 3: 8, 4: 3, 5: 7, 6: 12, 7: 42, 8: 27, 9: 5 };
+  const model = buildPremiumReportModel({
+    final: scores,
+    evidence: {
+      7: [
+        { text: '새로운 가능성과 전환으로 에너지를 회복하려는 응답이 반복되었습니다.', points: 4 },
+        { text: '불편한 감정 앞에서 머무르기보다 움직이려는 경향이 나타났습니다.', points: 3 }
+      ],
+      8: [{ text: '답답한 상황에서 주도권을 회복하려는 신호가 보였습니다.', points: 2 }],
+      6: [{ text: '불확실성에 대비하려는 보조 신호가 일부 있었습니다.', points: 1 }]
+    },
+    ranked: [
+      { type: 7, score: 42 },
+      { type: 8, score: 27 },
+      { type: 6, score: 12 }
+    ],
+    top3: [
+      { type: 7, score: 42 },
+      { type: 8, score: 27 },
+      { type: 6, score: 12 }
+    ],
+    top3Total: 81,
+    confidence: '높음',
+    coreResolved: true,
+    core: 7,
+    second: { type: 8, score: 27 },
+    diff: 0.36,
+    phase4: { subtypeCode: 'sx', subtypeLabel: '성적/일대일', wingNum: 8 },
+    postTieApplied: false,
+    recentStress: null,
+    instinctCode: 'sx',
+    instinctLabel: '성적/일대일',
+    instinctMetrics: [
+      { code: 'sx', label: '성적/일대일', score: 90 },
+      { code: 'so', label: '사회적', score: 80 },
+      { code: 'sp', label: '자기보존', score: 20 }
+    ],
+    wingMetrics: [
+      { wing: 6, label: '7w6', score: 14, percent: 42 },
+      { wing: 8, label: '7w8', score: 33, percent: 100 }
+    ],
+    wing: '8번 날개',
+    wingCode: '7w8',
+    wingNum: 8,
+    coreDisplay: '7번',
+    responses: {}
+  });
+
+  ['phase1-form', 'phase2-form', 'phase3-form', 'phase4-form', 'progress-container'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  });
+  const resultView = document.getElementById('result-view');
+  if (resultView) resultView.classList.remove('hidden');
+  renderPremiumReport(model);
+  return true;
 }
 
 function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, sxBoost, counterSignals, phase4, postTieApplied }) {
@@ -2795,6 +2893,7 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
 localizeStaticTestPage();
 renderQuestions('phase1-container', q1, 'p1');
 setProgress(50);
+renderDebugPremiumReportFromQuery();
 requestAnimationFrame(revealTestPageAfterLoad);
 
 if (typeof window !== 'undefined' && window.parent !== window && typeof ResizeObserver === 'function') {

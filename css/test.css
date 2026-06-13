@@ -258,6 +258,83 @@ body {
   word-break: keep-all;
 }
 
+.er-report-chemistry {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(176, 138, 102, 0.18), transparent 34%),
+    var(--er-report-cream);
+}
+
+.er-report-chemistry-card {
+  border: 1px solid rgba(176, 138, 102, 0.26);
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fffaf3 0%, #fff 100%);
+  padding: 24px;
+  box-shadow: var(--er-report-shadow);
+}
+
+.er-report-chemistry-identity {
+  margin: 0 0 18px;
+  color: var(--er-report-dark);
+  font-family: "Noto Serif KR", Georgia, serif;
+  font-size: clamp(19px, 5vw, 26px);
+  line-height: 1.45;
+  font-weight: 700;
+  word-break: keep-all;
+}
+
+.er-report-chemistry-card blockquote {
+  margin: 0 0 22px;
+  border-left: 4px solid var(--er-report-gold);
+  padding: 14px 0 14px 18px;
+  color: var(--er-report-gold-strong);
+  font-family: "Noto Serif KR", Georgia, serif;
+  font-size: clamp(17px, 4vw, 22px);
+  line-height: 1.55;
+  font-weight: 700;
+  word-break: keep-all;
+}
+
+.er-report-chemistry-body {
+  display: grid;
+  gap: 14px;
+  color: var(--er-report-text);
+}
+
+.er-report-chemistry-body p {
+  margin: 0;
+  word-break: keep-all;
+}
+
+.er-report-chemistry-bullets {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.er-report-chemistry-bullets li {
+  position: relative;
+  border-radius: 14px;
+  background: rgba(176, 138, 102, 0.11);
+  padding: 12px 14px 12px 34px;
+  color: var(--er-report-text);
+  font-size: 14px;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+.er-report-chemistry-bullets li::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  left: 16px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--er-report-gold);
+}
+
 .er-report-note {
   margin-top: 16px;
   background: var(--er-report-parchment);
