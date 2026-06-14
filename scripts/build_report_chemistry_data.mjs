@@ -31,6 +31,7 @@ function readChemistryCards() {
           wing: card.wing,
           status: card.status,
           identity_sentence: card.identity_sentence,
+          practical_insights: card.practical_insights,
           display: card.display,
         },
       ];

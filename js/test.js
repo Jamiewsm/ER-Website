@@ -2314,6 +2314,39 @@ function renderPremiumReport(model) {
   const chemistryBullets = chemistryDisplay
     ? (chemistryDisplay.bullets || []).map((item) => `<li>${escapeReportHtml(item)}</li>`).join('')
     : '';
+  const practicalInsights = chemistry && chemistry.practical_insights ? chemistry.practical_insights : null;
+  const insightList = (items) => (items || []).map((item) => `<li>${escapeReportHtml(item)}</li>`).join('');
+  const practicalSection = practicalInsights ? `
+          <div class="er-report-practical">
+            <h3>강점과 적합 환경</h3>
+            <div class="er-report-practical-grid">
+              <section>
+                <span>Strengths</span>
+                <h4>핵심 강점</h4>
+                <ul>${insightList(practicalInsights.strengths)}</ul>
+              </section>
+              <section>
+                <span>Risk</span>
+                <h4>과사용 리스크</h4>
+                <ul>${insightList(practicalInsights.overuse_risks)}</ul>
+              </section>
+              <section>
+                <span>Fit</span>
+                <h4>잘 맞는 환경</h4>
+                <ul>${insightList(practicalInsights.work_fit)}</ul>
+              </section>
+              <section>
+                <span>Drain</span>
+                <h4>소모되는 환경</h4>
+                <ul>${insightList(practicalInsights.draining_contexts)}</ul>
+              </section>
+            </div>
+            <div class="er-report-coaching-questions">
+              <h4>코칭 질문</h4>
+              <ol>${insightList(practicalInsights.coaching_questions)}</ol>
+            </div>
+          </div>
+  ` : '';
   const chemistrySection = chemistryDisplay ? `
       <section id="report-chemistry" class="er-report-section er-report-chemistry">
         <div class="er-report-section-head">
@@ -2325,6 +2358,7 @@ function renderPremiumReport(model) {
           <blockquote>${escapeReportHtml(chemistryDisplay.pull_quote || '')}</blockquote>
           <div class="er-report-chemistry-body">${chemistryBody}</div>
           <ul class="er-report-chemistry-bullets">${chemistryBullets}</ul>
+          ${practicalSection}
         </div>
       </section>
   ` : '';

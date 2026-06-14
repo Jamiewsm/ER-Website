@@ -15,7 +15,9 @@
 - 이번 작업은 신규 Phase 7 성격입니다: 프리미엄 결과지 콘텐츠 시스템 + 골드 샘플 + 에디토리얼 렌더링.
 - `sx_7_w8` 골드 샘플은 JSON으로 저장되었고, 결과지 화면의 "조합별 심층 해석" 섹션에 연결되었습니다.
 - Type 7 나머지 5개 조합은 `draft` 상태로 추가되었습니다: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`.
-- 현재 콘텐츠 coverage는 `6/54`입니다. `sx_7_w8` 외 5개 Type 7 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
+- Countertype 6개 조합은 `draft` 상태로 추가되었습니다: `sx_6_w5`, `sx_6_w7`, `sp_3_w2`, `sp_3_w4`, `sp_4_w3`, `sp_4_w5`.
+- 현재 콘텐츠 coverage는 `12/54`입니다. `sx_7_w8` 외 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
+- 고객용 JSON에는 `source_note`, 검색 태그, 페이지 번호를 저장하지 않습니다. 연구 메타데이터는 원문 초안에만 둡니다.
 - `js/report-chemistry-data.js`는 `docs/report-content/chemistry/*.json`에서 생성되는 런타임 파일입니다.
 
 ## Phase 7 목표
@@ -24,7 +26,7 @@
 2. 골드 샘플 구축: `sx_7_w8` 조합 해석 카드와 화면용 압축본 확정.
 3. 렌더링 연결: `buildPremiumReportModel()`과 `renderPremiumReport()`가 조합 해석 카드 섹션을 표시.
 4. PDF/화면 검증: 1개 조합이 웹과 PDF에서 프리미엄 결과지처럼 보이는지 확인.
-5. 확장 전략: 54개 조합을 `blocks + chemistry + display` 방식으로 점진 확장.
+5. 확장 전략: 54개 조합을 `blocks + chemistry + practical_insights + display` 방식으로 점진 확장.
 6. DB 전환: 파일 기반이 안정되면 Supabase `report_*` 테이블로 이전.
 
 ## 작업 단위
@@ -58,15 +60,16 @@
 
 - Use the `sx_7_w8` card as the golden pattern.
 - Build 7-type batch first: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`.
+- Build countertype draft batch: `sx_6_w5`, `sx_6_w7`, `sp_3_w2`, `sp_3_w4`, `sp_4_w3`, `sp_4_w5`.
 - Then expand by high-value coaching combinations before filling the full 54.
 - Track progress with `node scripts/verify_report_content.mjs --coverage`.
 
 Current checkpoint:
 
-- Type 7 batch exists as JSON and browser runtime data.
+- Type 7 batch and first countertype batch exist as JSON and browser runtime data.
 - `sx_7_w8` remains the only `gold_sample`.
-- The other Type 7 cards remain `draft` until source review and user tone approval.
-- Next recommended expansion target: countertype set or user-provided Anara exports.
+- The other cards remain `draft` until source review and user tone approval.
+- Next recommended expansion target: high-value coaching combinations or user-provided Anara exports.
 
 ## User Requests I Will Make
 

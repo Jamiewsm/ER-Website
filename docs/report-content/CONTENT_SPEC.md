@@ -12,6 +12,7 @@
 | Core blocks | 9유형의 기본 동기, 두려움, 방어, 회복 방향 | Existing KB + `diagnostic-report-content.js` |
 | Domain blocks | 관계, 일, 양육, 스트레스, 실천 같은 삶의 영역 | Existing report content + Anara |
 | Chemistry cards | 특정 `instinct + core + wing` 조합에서만 생기는 고유 패턴과 오해 | Anara + ChatGPT final edit |
+| Practical insight blocks | 유료 결과지의 강점, 리스크, 적합 환경, 코칭 질문 | ChatGPT final edit from approved chemistry cards |
 
 ## Chemistry Card Key
 
@@ -48,7 +49,22 @@ Examples:
 | `stress_chemistry` | string[] | 스트레스 때 과장되는 반응 |
 | `recovery_hook` | string[] | 회복의 첫걸음 |
 | `faith_optional` | string[] | 신앙 있는 사용자가 선택적으로 읽는 문장 |
+| `practical_insights` | object | 강점, 과사용 리스크, 적합 환경, 소모 환경, 코칭 질문 |
 | `display` | object | 웹/PDF 1페이지 압축 표시용 |
+
+Source-only notes, page numbers, and retrieval tags must not be stored in customer-facing JSON. Keep research citations in private draft material, not in `chemistry/*.json`.
+
+## Practical Insights Object
+
+`practical_insights` is what makes the report feel like a paid coaching artifact rather than a generic type description.
+
+| Field | Type | Purpose |
+|---|---|---|
+| `strengths` | string[] | 핵심 강점과 기여 방식 |
+| `overuse_risks` | string[] | 강점이 과사용될 때 생기는 리스크 |
+| `work_fit` | string[] | 잘 맞는 역할, 업무, 조직 환경 |
+| `draining_contexts` | string[] | 에너지를 소모하거나 왜곡을 키우는 환경 |
+| `coaching_questions` | string[] | 자기 점검과 코칭 대화를 여는 질문 |
 
 ## Display Object
 
@@ -69,6 +85,7 @@ Examples:
 - `contrast_pair`는 반드시 대비 대상을 명시합니다.
 - 기본 본문에는 교회 내부 용어를 강하게 쓰지 않습니다. 신앙 문장은 `faith_optional`로 분리합니다.
 - 웹/PDF에는 `display` 압축본을 먼저 쓰고, 긴 전문은 심화 섹션이나 PDF 확장 페이지에 사용할 수 있습니다.
+- `source_note`, `<sources>`, 페이지 번호 같은 연구 메타데이터는 고객용 JSON에 넣지 않습니다.
 
 ## Expansion Strategy
 
@@ -77,6 +94,6 @@ Examples:
 그 다음 순서는 다음을 권장합니다.
 
 1. Type 7 전체: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`
-2. Countertype 9개
+2. Countertype 9개: 우선 `sx_6_w5`, `sx_6_w7`, `sp_3_w2`, `sp_3_w4`, `sp_4_w3`, `sp_4_w5`
 3. 코칭 수요가 높은 조합 12개
 4. 나머지 54 조합 채우기

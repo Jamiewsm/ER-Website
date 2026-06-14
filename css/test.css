@@ -358,6 +358,77 @@ body {
   background: var(--er-report-green);
 }
 
+.er-report-practical {
+  margin-top: 26px;
+  border-top: 1px solid var(--er-report-line);
+  padding-top: 24px;
+}
+
+.er-report-practical h3 {
+  margin: 0 0 16px;
+  color: var(--er-report-dark);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.er-report-practical-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.er-report-practical-grid section,
+.er-report-coaching-questions {
+  border: 1px solid #d8e3e3;
+  border-radius: 8px;
+  background: #fbfdfd;
+  padding: 16px;
+}
+
+.er-report-practical-grid span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--er-report-blue);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.er-report-practical h4,
+.er-report-coaching-questions h4 {
+  margin: 0 0 10px;
+  color: var(--er-report-dark);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.er-report-practical ul,
+.er-report-coaching-questions ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--er-report-text);
+  font-size: 13.5px;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+.er-report-practical li::marker {
+  color: var(--er-report-green);
+}
+
+.er-report-coaching-questions {
+  margin-top: 12px;
+  background: var(--er-report-blue-soft);
+  border-color: rgba(0, 95, 147, 0.22);
+}
+
+.er-report-coaching-questions ol {
+  padding-left: 20px;
+}
+
 .er-report-note {
   margin-top: 16px;
   background: var(--er-report-parchment);
@@ -850,7 +921,8 @@ body {
   .er-report-summary-grid,
   .er-report-visual-grid,
   .er-report-life-grid,
-  .er-report-next-grid {
+  .er-report-next-grid,
+  .er-report-practical-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .er-report-tools {
@@ -873,6 +945,14 @@ body {
   .er-report-section,
   .er-report-hero {
     break-inside: avoid;
+  }
+  .er-report-practical {
+    break-before: page;
+  }
+  .er-report-practical-grid section,
+  .er-report-coaching-questions {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .er-report-hero {
     border-top: 8px solid #005f93;

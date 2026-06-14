@@ -22,6 +22,29 @@ test('sx_7_w8 chemistry JSON has matching browser runtime card', () => {
   assert.equal(runtimeCard.identity_sentence, sourceCard.identity_sentence);
   assert.equal(runtimeCard.display.pull_quote, sourceCard.display.pull_quote);
   assert.deepEqual(runtimeCard.display.bullets, sourceCard.display.bullets);
+  assert.deepEqual(runtimeCard.practical_insights, sourceCard.practical_insights);
+  assert.equal(runtimeCard.source_note, undefined);
+});
+
+test('practical insights use paid-report customer-facing fields', () => {
+  const runtime = require('../js/report-chemistry-data.js');
+  const card = runtime.get('sx_7_w8');
+  const insights = card.practical_insights;
+
+  assert.ok(insights, 'runtime card should include practical_insights');
+  assert.deepEqual(Object.keys(insights).sort(), [
+    'coaching_questions',
+    'draining_contexts',
+    'overuse_risks',
+    'strengths',
+    'work_fit',
+  ]);
+
+  for (const [key, value] of Object.entries(insights)) {
+    assert.ok(Array.isArray(value), `${key} should be an array`);
+    assert.ok(value.length >= 2, `${key} should contain paid-report detail`);
+    assert.ok(value.every((item) => typeof item === 'string' && item.length >= 12), `${key} should contain customer copy`);
+  }
 });
 
 test('test page loads chemistry data before the result renderer', () => {
@@ -55,6 +78,6 @@ test('content verifier reports 54-combination coverage', () => {
   );
 
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /Coverage: 6\/54 chemistry combinations/);
+  assert.match(result.stdout, /Coverage: 12\/54 chemistry combinations/);
   assert.doesNotMatch(result.stdout, /Next type 7 batch:/);
 });

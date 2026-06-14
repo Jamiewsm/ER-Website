@@ -22,10 +22,18 @@ const REQUIRED_TOP_LEVEL = [
   'stress_chemistry',
   'recovery_hook',
   'faith_optional',
+  'practical_insights',
   'display',
 ];
 
 const REQUIRED_DISPLAY = ['one_page_title', 'one_page_body', 'pull_quote', 'bullets'];
+const REQUIRED_PRACTICAL_INSIGHTS = [
+  'strengths',
+  'overuse_risks',
+  'work_fit',
+  'draining_contexts',
+  'coaching_questions',
+];
 const INSTINCTS = new Set(['sp', 'sx', 'so']);
 const INSTINCT_EXPANSION_ORDER = ['sx', 'so', 'sp'];
 const WINGS_BY_CORE = {
@@ -68,6 +76,21 @@ function checkArray(errors, card, key, minLength) {
   });
 }
 
+function checkStringArray(errors, card, owner, key, value, minLength) {
+  if (!Array.isArray(value)) {
+    fail(errors, `${card.combination_key || 'unknown'}: ${owner}.${key} must be an array`);
+    return;
+  }
+  if (value.length < minLength) {
+    fail(errors, `${card.combination_key || 'unknown'}: ${owner}.${key} must contain at least ${minLength} item(s)`);
+  }
+  value.forEach((item, index) => {
+    if (typeof item !== 'string' || item.trim().length < 8) {
+      fail(errors, `${card.combination_key || 'unknown'}: ${owner}.${key}[${index}] is too short`);
+    }
+  });
+}
+
 function checkCard(filePath) {
   const errors = [];
   const raw = fs.readFileSync(filePath, 'utf8');
@@ -105,6 +128,18 @@ function checkCard(filePath) {
   checkArray(errors, card, 'recovery_hook', 1);
   checkArray(errors, card, 'faith_optional', 1);
 
+  if (!card.practical_insights || typeof card.practical_insights !== 'object' || Array.isArray(card.practical_insights)) {
+    fail(errors, `${card.combination_key}: practical_insights must be an object`);
+  } else {
+    for (const key of REQUIRED_PRACTICAL_INSIGHTS) {
+      if (!(key in card.practical_insights)) {
+        fail(errors, `${card.combination_key}: practical_insights missing ${key}`);
+        continue;
+      }
+      checkStringArray(errors, card, 'practical_insights', key, card.practical_insights[key], 2);
+    }
+  }
+
   if (!card.display || typeof card.display !== 'object') {
     fail(errors, `${card.combination_key}: display must be an object`);
   } else {
@@ -124,6 +159,10 @@ function checkCard(filePath) {
     if (nonFaith.includes(word)) fail(errors, `${card.combination_key}: non-faith content contains "${word}"`);
   }
   const fullText = JSON.stringify(card);
+  if ('source_note' in card) fail(errors, `${card.combination_key}: source_note must stay out of customer-facing JSON`);
+  if (fullText.includes('<sources') || fullText.includes('</source>')) {
+    fail(errors, `${card.combination_key}: source tags must stay out of customer-facing JSON`);
+  }
   for (const word of TYPO_BANNED) {
     if (fullText.includes(word)) fail(errors, `${card.combination_key}: typo banned term "${word}" found`);
   }
