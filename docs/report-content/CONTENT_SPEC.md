@@ -11,7 +11,7 @@
 |---|---|---|
 | Core blocks | 9유형의 기본 동기, 두려움, 방어, 회복 방향 | Existing KB + `diagnostic-report-content.js` |
 | Domain blocks | 관계, 일, 양육, 스트레스, 실천 같은 삶의 영역 | Existing report content + Anara |
-| Chemistry cards | 특정 `instinct + core + wing` 조합에서만 생기는 긴장과 오해 | Anara + ChatGPT final edit |
+| Chemistry cards | 특정 `instinct + core + wing` 조합에서만 생기는 고유 패턴과 오해 | Anara + ChatGPT final edit |
 
 ## Chemistry Card Key
 
@@ -41,7 +41,7 @@ Examples:
 | `status` | string | `draft`, `reviewed`, `gold_sample`, `approved` |
 | `identity_sentence` | string | 한 문장 정체성 |
 | `core_tension` | string[] | 이 조합의 핵심 긴장 |
-| `chemistry_story` | string[] | core + instinct + wing의 화학 작용 설명 |
+| `chemistry_story` | string[] | core + instinct + wing의 조합 고유 패턴 설명 |
 | `distinctive_signs` | string[] | 관찰 가능한 특징 3-5개 |
 | `contrast_pair` | string[] | 비슷한 조합과의 차이 |
 | `misread_pattern` | string[] | 타인이 오해하기 쉬운 점 |

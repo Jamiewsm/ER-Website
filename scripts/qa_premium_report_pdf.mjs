@@ -140,7 +140,7 @@ async function main() {
   try {
     runRequiredPwcli(pwcliPath, session, 'open debug report', ['open', url], outputDir);
     const chemistrySnapshot = runRequiredPwcli(pwcliPath, session, 'snapshot chemistry section', ['snapshot', CHEMISTRY_SELECTOR], outputDir);
-    assertOutputContains(chemistrySnapshot, '이 조합만의 화학', 'Chemistry snapshot');
+    assertOutputContains(chemistrySnapshot, '조합별 심층 해석', 'Chemistry snapshot');
     assertOutputContains(chemistrySnapshot, '더 많이 밀어붙이는 힘보다', 'Chemistry snapshot');
     const buttonSnapshot = runRequiredPwcli(pwcliPath, session, 'snapshot PDF button', ['snapshot', PDF_BUTTON_SELECTOR], outputDir);
     assertOutputContains(buttonSnapshot, '결과 PDF 다운로드', 'PDF button snapshot');

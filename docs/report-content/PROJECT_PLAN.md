@@ -13,7 +13,7 @@
 - 기존 Enneagram Phase 1-6 자동화는 완료/paused 상태입니다.
 - 스코어링, 27 subtype, 기본 프리미엄 결과지 렌더러는 이미 존재합니다.
 - 이번 작업은 신규 Phase 7 성격입니다: 프리미엄 결과지 콘텐츠 시스템 + 골드 샘플 + 에디토리얼 렌더링.
-- `sx_7_w8` 골드 샘플은 JSON으로 저장되었고, 결과지 화면의 "이 조합만의 화학" 섹션에 연결되었습니다.
+- `sx_7_w8` 골드 샘플은 JSON으로 저장되었고, 결과지 화면의 "조합별 심층 해석" 섹션에 연결되었습니다.
 - Type 7 나머지 5개 조합은 `draft` 상태로 추가되었습니다: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`.
 - 현재 콘텐츠 coverage는 `6/54`입니다. `sx_7_w8` 외 5개 Type 7 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
 - `js/report-chemistry-data.js`는 `docs/report-content/chemistry/*.json`에서 생성되는 런타임 파일입니다.
@@ -21,8 +21,8 @@
 ## Phase 7 목표
 
 1. 콘텐츠 SSOT 구축: `docs/report-content/`에 스펙, 언어 규칙, 조합별 JSON 저장.
-2. 골드 샘플 구축: `sx_7_w8` 화학 카드와 화면용 압축본 확정.
-3. 렌더링 연결: `buildPremiumReportModel()`과 `renderPremiumReport()`가 화학 카드 섹션을 표시.
+2. 골드 샘플 구축: `sx_7_w8` 조합 해석 카드와 화면용 압축본 확정.
+3. 렌더링 연결: `buildPremiumReportModel()`과 `renderPremiumReport()`가 조합 해석 카드 섹션을 표시.
 4. PDF/화면 검증: 1개 조합이 웹과 PDF에서 프리미엄 결과지처럼 보이는지 확인.
 5. 확장 전략: 54개 조합을 `blocks + chemistry + display` 방식으로 점진 확장.
 6. DB 전환: 파일 기반이 안정되면 Supabase `report_*` 테이블로 이전.
@@ -43,7 +43,7 @@
 
 - Load chemistry content in `js/diagnostic-report-content.js` or a new browser-safe data module.
 - Add `chemistry` to the premium report model.
-- Add a section in `renderPremiumReport()` titled "이 조합만의 화학".
+- Add a section in `renderPremiumReport()` titled "조합별 심층 해석".
 - Keep fallback behavior when no chemistry card exists.
 
 ### Task 7.2 — Browser/PDF QA

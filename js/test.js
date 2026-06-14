@@ -2317,8 +2317,8 @@ function renderPremiumReport(model) {
   const chemistrySection = chemistryDisplay ? `
       <section id="report-chemistry" class="er-report-section er-report-chemistry">
         <div class="er-report-section-head">
-          <span>Chemistry</span>
-          <h2>${escapeReportHtml(chemistryDisplay.one_page_title || '이 조합만의 화학')}</h2>
+          <span>Profile</span>
+          <h2>${escapeReportHtml(chemistryDisplay.one_page_title || '조합별 심층 해석')}</h2>
         </div>
         <div class="er-report-chemistry-card">
           <p class="er-report-chemistry-identity">${escapeReportHtml(chemistry.identity_sentence || '')}</p>
@@ -2350,7 +2350,7 @@ function renderPremiumReport(model) {
 
       <nav class="er-report-nav" aria-label="결과지 섹션 이동">
         <a href="#report-summary">요약</a>
-        ${chemistryDisplay ? '<a href="#report-chemistry">화학</a>' : ''}
+        ${chemistryDisplay ? '<a href="#report-chemistry">조합</a>' : ''}
         <a href="#report-pattern">패턴</a>
         <a href="#report-life">삶</a>
         <a href="#report-growth">회복</a>

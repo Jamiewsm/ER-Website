@@ -1,4 +1,4 @@
-// 프리미엄 결과지 화학 카드 데이터 회귀 테스트
+// 프리미엄 결과지 조합 해석 카드 데이터 회귀 테스트
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';

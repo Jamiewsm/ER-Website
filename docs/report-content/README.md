@@ -7,14 +7,14 @@
 
 - Anara에서 만든 근거 기반 초안과 ChatGPT 편집본을 채팅에 흩어두지 않고 파일로 고정합니다.
 - Cursor/Codex/Claude는 이 폴더의 스펙과 JSON을 읽고 웹 결과지, PDF, DB 전환을 구현합니다.
-- 54개 조합을 단순 조립하지 않고 `core + instinct + wing`이 만나 생기는 화학 작용을 별도 데이터로 관리합니다.
+- 54개 조합을 단순 조립하지 않고 `core + instinct + wing`이 만나 생기는 고유 패턴을 별도 데이터로 관리합니다.
 
 ## 파일
 
 - `PROJECT_PLAN.md` — PM 진행 계획, 단계, 사용자에게 요청할 일
-- `CONTENT_SPEC.md` — 조각 블록, 화학 카드, 화면 표시 필드 스키마
+- `CONTENT_SPEC.md` — 조각 블록, 조합 해석 카드, 화면 표시 필드 스키마
 - `LANGUAGE_LAYERS.md` — 일반 사용자용 회복 언어 + 신앙 선택 문장 규칙
-- `chemistry/*.json` — 조합별 화학 카드. 현재 골드 샘플: `sx_7_w8.json`; Type 7 나머지 5개는 `draft`
+- `chemistry/*.json` — 조합별 해석 카드. 현재 골드 샘플: `sx_7_w8.json`; Type 7 나머지 5개는 `draft`
 - `../../js/report-chemistry-data.js` — 브라우저 런타임 데이터. 직접 수정하지 않고 생성합니다.
 
 ## 현재 우선순위
@@ -35,7 +35,7 @@ node scripts/qa_premium_report_pdf.mjs
 
 ## 런타임 데이터 생성
 
-화학 카드의 원본은 항상 `docs/report-content/chemistry/*.json`입니다.
+조합 해석 카드의 원본은 항상 `docs/report-content/chemistry/*.json`입니다.
 브라우저에서 읽는 `js/report-chemistry-data.js`는 원본 JSON의 화면용 필드만 담은 생성 파일입니다.
 
 ```bash
@@ -54,7 +54,7 @@ node scripts/verify_report_content.mjs --coverage
 
 ## PDF QA
 
-`sx_7_w8` 골드 샘플 결과지를 PDF로 렌더링하고, 화학 섹션/다운로드 버튼/콘솔 error/PDF 파일을 확인합니다.
+`sx_7_w8` 골드 샘플 결과지를 PDF로 렌더링하고, 조합 해석 섹션/다운로드 버튼/콘솔 error/PDF 파일을 확인합니다.
 
 ```bash
 node scripts/qa_premium_report_pdf.mjs
