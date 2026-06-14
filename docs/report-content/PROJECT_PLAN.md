@@ -14,6 +14,8 @@
 - 스코어링, 27 subtype, 기본 프리미엄 결과지 렌더러는 이미 존재합니다.
 - 이번 작업은 신규 Phase 7 성격입니다: 프리미엄 결과지 콘텐츠 시스템 + 골드 샘플 + 에디토리얼 렌더링.
 - `sx_7_w8` 골드 샘플은 JSON으로 저장되었고, 결과지 화면의 "이 조합만의 화학" 섹션에 연결되었습니다.
+- Type 7 나머지 5개 조합은 `draft` 상태로 추가되었습니다: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`.
+- 현재 콘텐츠 coverage는 `6/54`입니다. `sx_7_w8` 외 5개 Type 7 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
 - `js/report-chemistry-data.js`는 `docs/report-content/chemistry/*.json`에서 생성되는 런타임 파일입니다.
 
 ## Phase 7 목표
@@ -58,6 +60,13 @@
 - Build 7-type batch first: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`.
 - Then expand by high-value coaching combinations before filling the full 54.
 - Track progress with `node scripts/verify_report_content.mjs --coverage`.
+
+Current checkpoint:
+
+- Type 7 batch exists as JSON and browser runtime data.
+- `sx_7_w8` remains the only `gold_sample`.
+- The other Type 7 cards remain `draft` until source review and user tone approval.
+- Next recommended expansion target: countertype set or user-provided Anara exports.
 
 ## User Requests I Will Make
 

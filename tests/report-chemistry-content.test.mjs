@@ -55,6 +55,6 @@ test('content verifier reports 54-combination coverage', () => {
   );
 
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /Coverage: 1\/54 chemistry combinations/);
-  assert.match(result.stdout, /Next type 7 batch: sx_7_w6, so_7_w8, so_7_w6, sp_7_w8, sp_7_w6/);
+  assert.match(result.stdout, /Coverage: 6\/54 chemistry combinations/);
+  assert.doesNotMatch(result.stdout, /Next type 7 batch:/);
 });
