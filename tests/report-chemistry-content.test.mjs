@@ -10,6 +10,14 @@ import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
+const NEXT_COUNTERTYPE_BATCH = [
+  'sx_1_w9',
+  'sx_1_w2',
+  'sp_2_w1',
+  'sp_2_w3',
+  'sx_5_w4',
+  'sx_5_w6',
+];
 
 test('sx_7_w8 chemistry JSON has matching browser runtime card', () => {
   const jsonPath = path.join(rootDir, 'docs/report-content/chemistry/sx_7_w8.json');
@@ -47,6 +55,23 @@ test('practical insights use paid-report customer-facing fields', () => {
   }
 });
 
+test('next countertype batch is customer-ready in JSON and runtime data', () => {
+  const runtime = require('../js/report-chemistry-data.js');
+
+  for (const key of NEXT_COUNTERTYPE_BATCH) {
+    const jsonPath = path.join(rootDir, `docs/report-content/chemistry/${key}.json`);
+    assert.ok(fs.existsSync(jsonPath), `${key} JSON should exist`);
+
+    const sourceCard = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+    const runtimeCard = runtime.get(key);
+    assert.equal(runtimeCard.combination_key, key);
+    assert.equal(runtimeCard.identity_sentence, sourceCard.identity_sentence);
+    assert.deepEqual(runtimeCard.practical_insights, sourceCard.practical_insights);
+    assert.equal(runtimeCard.source_note, undefined);
+    assert.doesNotMatch(JSON.stringify(sourceCard), /source_note|<sources|<\/source>|Complete Enneagram|Chestnut|pp\./);
+  }
+});
+
 test('test page loads chemistry data before the result renderer', () => {
   const html = fs.readFileSync(path.join(rootDir, 'test.html'), 'utf8');
   const chemistryIdx = html.indexOf('js/report-chemistry-data.js');
@@ -78,6 +103,6 @@ test('content verifier reports 54-combination coverage', () => {
   );
 
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /Coverage: 12\/54 chemistry combinations/);
+  assert.match(result.stdout, /Coverage: 18\/54 chemistry combinations/);
   assert.doesNotMatch(result.stdout, /Next type 7 batch:/);
 });
