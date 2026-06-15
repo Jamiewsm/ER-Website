@@ -14,13 +14,13 @@
 - `PROJECT_PLAN.md` — PM 진행 계획, 단계, 사용자에게 요청할 일
 - `CONTENT_SPEC.md` — 조각 블록, 조합 해석 카드, 화면 표시 필드 스키마
 - `LANGUAGE_LAYERS.md` — 일반 사용자용 회복 언어 + 신앙 선택 문장 규칙
-- `chemistry/*.json` — 조합별 해석 카드. 현재 골드 샘플: `sx_7_w8.json`; Type 7 나머지 5개와 countertype wing batch 16개는 `draft`
+- `chemistry/*.json` — 조합별 해석 카드. 현재 골드 샘플: `sx_7_w8.json`; Type 7 나머지 5개, countertype wing batch 16개, high-value batch 6개는 `draft`
 - `../../js/report-chemistry-data.js` — 브라우저 런타임 데이터. 직접 수정하지 않고 생성합니다.
 
 ## 현재 우선순위
 
 1. `sx_7_w8.json` 골드 샘플과 실전 섹션을 사용자가 실제 결과지/PDF에서 검토합니다.
-2. Type 7 draft batch 5개와 countertype wing draft batch 16개를 source/tone review 후 승격합니다.
+2. Type 7 draft batch 5개, countertype wing draft batch 16개, high-value draft batch 6개를 source/tone review 후 승격합니다.
 3. 다음 확장 배치를 코칭 수요가 높은 조합 또는 사용자 제공 Anara exports로 정합니다.
 4. 같은 스키마로 나머지 조합을 배치 작업으로 확장합니다.
 
@@ -46,7 +46,7 @@ node scripts/build_report_chemistry_data.mjs
 
 ## 확장 진행률
 
-54개 조합의 현재 진행률은 아래 명령으로 확인합니다. 현재 Type 7 전체 6개와 countertype wing batch 16개가 준비되어 `22/54`를 기대합니다.
+54개 조합의 현재 진행률은 아래 명령으로 확인합니다. 현재 Type 7 전체 6개, countertype wing batch 16개, high-value batch 6개가 준비되어 `28/54`를 기대합니다.
 
 ```bash
 node scripts/verify_report_content.mjs --coverage

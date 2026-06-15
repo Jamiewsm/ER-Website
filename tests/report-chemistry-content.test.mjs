@@ -24,6 +24,14 @@ const FINAL_COUNTERTYPE_BATCH = [
   'so_9_w8',
   'so_9_w1',
 ];
+const HIGH_VALUE_BATCH = [
+  'sx_2_w3',
+  'sx_2_w1',
+  'so_3_w2',
+  'so_3_w4',
+  'sx_4_w3',
+  'sx_4_w5',
+];
 
 test('sx_7_w8 chemistry JSON has matching browser runtime card', () => {
   const jsonPath = path.join(rootDir, 'docs/report-content/chemistry/sx_7_w8.json');
@@ -61,10 +69,10 @@ test('practical insights use paid-report customer-facing fields', () => {
   }
 });
 
-test('next countertype batch is customer-ready in JSON and runtime data', () => {
+test('expansion batches are customer-ready in JSON and runtime data', () => {
   const runtime = require('../js/report-chemistry-data.js');
 
-  for (const key of [...NEXT_COUNTERTYPE_BATCH, ...FINAL_COUNTERTYPE_BATCH]) {
+  for (const key of [...NEXT_COUNTERTYPE_BATCH, ...FINAL_COUNTERTYPE_BATCH, ...HIGH_VALUE_BATCH]) {
     const jsonPath = path.join(rootDir, `docs/report-content/chemistry/${key}.json`);
     assert.ok(fs.existsSync(jsonPath), `${key} JSON should exist`);
 
@@ -109,6 +117,6 @@ test('content verifier reports 54-combination coverage', () => {
   );
 
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /Coverage: 22\/54 chemistry combinations/);
+  assert.match(result.stdout, /Coverage: 28\/54 chemistry combinations/);
   assert.doesNotMatch(result.stdout, /Next type 7 batch:/);
 });
