@@ -18,7 +18,8 @@
 - Countertype 16개 조합은 `draft` 상태로 추가되었습니다: `sx_1_w9`, `sx_1_w2`, `sp_2_w1`, `sp_2_w3`, `sp_3_w2`, `sp_3_w4`, `sp_4_w3`, `sp_4_w5`, `sx_5_w4`, `sx_5_w6`, `sx_6_w5`, `sx_6_w7`, `so_8_w7`, `so_8_w9`, `so_9_w8`, `so_9_w1`.
 - High-value 6개 조합은 `draft` 상태로 추가되었습니다: `sx_2_w3`, `sx_2_w1`, `so_3_w2`, `so_3_w4`, `sx_4_w3`, `sx_4_w5`.
 - Type 1/2 structure-checked 6개 조합은 `draft` 상태로 추가되었습니다: `sp_1_w9`, `sp_1_w2`, `so_1_w9`, `so_1_w2`, `so_2_w1`, `so_2_w3`.
-- 현재 콘텐츠 coverage는 `34/54`입니다. `sx_7_w8` 외 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
+- Type 3/4/5 follow-up 6개 조합은 `draft` 상태로 추가되었습니다: `sx_3_w2`, `sx_3_w4`, `so_4_w3`, `so_4_w5`, `so_5_w4`, `so_5_w6`.
+- 현재 콘텐츠 coverage는 `40/54`입니다. `sx_7_w8` 외 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
 - 고객용 JSON에는 `source_note`, 검색 태그, 페이지 번호를 저장하지 않습니다. 연구 메타데이터는 원문 초안에만 둡니다.
 - `js/report-chemistry-data.js`는 `docs/report-content/chemistry/*.json`에서 생성되는 런타임 파일입니다.
 
@@ -67,12 +68,13 @@
 - Build final social countertype wing batch from user-provided Anara exports: `so_8_w7`, `so_8_w9`, `so_9_w8`, `so_9_w1`.
 - Build high-value coaching batch from user-provided Anara exports: `sx_2_w3`, `sx_2_w1`, `so_3_w2`, `so_3_w4`, `sx_4_w3`, `sx_4_w5`.
 - Build Type 1/2 structure-checked batch from user-provided Anara exports after local KB validation: `sp_1_w9`, `sp_1_w2`, `so_1_w9`, `so_1_w2`, `so_2_w1`, `so_2_w3`.
+- Build Type 3/4/5 follow-up batch from user-provided Anara exports after local KB validation: `sx_3_w2`, `sx_3_w4`, `so_4_w3`, `so_4_w5`, `so_5_w4`, `so_5_w6`.
 - Then expand by high-value coaching combinations before filling the full 54.
 - Track progress with `node scripts/verify_report_content.mjs --coverage`.
 
 Current checkpoint:
 
-- Type 7 batch, all non-Type 7 countertype wing batches, first high-value coaching batch, and Type 1/2 structure-checked batch exist as JSON and browser runtime data.
+- Type 7 batch, all non-Type 7 countertype wing batches, first high-value coaching batch, Type 1/2 structure-checked batch, and Type 3/4/5 follow-up batch exist as JSON and browser runtime data.
 - `sx_7_w8` remains the only `gold_sample`.
 - The other cards remain `draft` until source review and user tone approval.
 - Next recommended expansion target: remaining high-value coaching combinations or user-provided Anara exports.
