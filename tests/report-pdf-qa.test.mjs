@@ -2,6 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -56,4 +57,13 @@ test('premium report review bundle script advertises representative cards', () =
   assert.match(result.stdout, /so_8_w7/);
   assert.match(result.stdout, /sp_9_w1/);
   assert.match(result.stdout, /output\/pdf\/review-bundle/);
+});
+
+test('debug report review copy stays customer-facing', () => {
+  const source = fs.readFileSync(path.join(rootDir, 'js/test.js'), 'utf8');
+
+  assert.doesNotMatch(source, /디버그 리뷰 샘플/);
+  assert.doesNotMatch(source, /표시 품질을 확인/);
+  assert.doesNotMatch(source, /보조 패턴으로 설정/);
+  assert.doesNotMatch(source, /비교 기준으로 낮게 설정/);
 });

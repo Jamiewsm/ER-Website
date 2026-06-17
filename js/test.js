@@ -2610,7 +2610,7 @@ function getDebugInstinctMetrics(instinct) {
   }));
 }
 
-function buildDebugPremiumReportPayload(debugKey, parsed) {
+function buildDebugPremiumReportPayload(parsed) {
   const scores = {};
   for (let type = 1; type <= 9; type += 1) scores[type] = 5;
   scores[parsed.core] = 42;
@@ -2621,11 +2621,11 @@ function buildDebugPremiumReportPayload(debugKey, parsed) {
     final: scores,
     evidence: {
       [parsed.core]: [
-        { text: `${parsed.core}번의 핵심 동기가 가장 강하게 반복된 디버그 리뷰 샘플입니다.`, points: 4 },
-        { text: `${debugKey} 조합의 결과지/PDF 표시 품질을 확인하기 위한 샘플입니다.`, points: 3 }
+        { text: `${parsed.core}번의 핵심 동기가 가장 강하게 반복해서 나타났습니다.`, points: 4 },
+        { text: `${getDebugInstinctLabel(parsed.instinct)} 본능과 ${parsed.wing}번 날개가 함께 작동하는 패턴이 확인되었습니다.`, points: 3 }
       ],
-      [parsed.wing]: [{ text: `${parsed.wing}번 날개 신호가 보조 패턴으로 설정되었습니다.`, points: 2 }],
-      [parsed.otherWing]: [{ text: `${parsed.otherWing}번 날개는 비교 기준으로 낮게 설정되었습니다.`, points: 1 }]
+      [parsed.wing]: [{ text: `${parsed.wing}번 날개의 에너지가 보조 방향으로 함께 나타났습니다.`, points: 2 }],
+      [parsed.otherWing]: [{ text: `${parsed.otherWing}번 날개 신호도 일부 보이지만 주된 방향은 ${parsed.wing}번 날개에 더 가깝습니다.`, points: 1 }]
     },
     ranked: [
       { type: parsed.core, score: 42 },
@@ -2666,7 +2666,7 @@ function renderDebugPremiumReportFromQuery() {
   const parsed = parseDebugReportKey(debugKey);
   if (!parsed || !getReportChemistryCard(debugKey)) return false;
 
-  const model = buildPremiumReportModel(buildDebugPremiumReportPayload(debugKey, parsed));
+  const model = buildPremiumReportModel(buildDebugPremiumReportPayload(parsed));
 
   ['phase1-form', 'phase2-form', 'phase3-form', 'phase4-form', 'progress-container'].forEach((id) => {
     const el = document.getElementById(id);
