@@ -2661,6 +2661,17 @@ function buildDebugPremiumReportPayload(parsed) {
   };
 }
 
+function getPremiumReportVersion() {
+  return params.get('reportVersion') === 'v2' ? 'v2' : 'v1';
+}
+
+function renderSelectedPremiumReport(model) {
+  if (getPremiumReportVersion() === 'v2' && window.ERRenderPremiumReportV2) {
+    return window.ERRenderPremiumReportV2(model);
+  }
+  return renderPremiumReport(model);
+}
+
 function renderDebugPremiumReportFromQuery() {
   const debugKey = params.get('debugReport');
   const parsed = parseDebugReportKey(debugKey);
@@ -2674,7 +2685,9 @@ function renderDebugPremiumReportFromQuery() {
   });
   const resultView = document.getElementById('result-view');
   if (resultView) resultView.classList.remove('hidden');
-  renderPremiumReport(model);
+  renderSelectedPremiumReport(model);
+  const pdfButton = document.getElementById('download-pdf-btn');
+  if (pdfButton) pdfButton.onclick = downloadResultPdf;
   return true;
 }
 
@@ -2828,7 +2841,7 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     coreDisplay,
     responses: snapshotAllDiagnosticResponses()
   });
-  renderPremiumReport(premiumModel);
+  renderSelectedPremiumReport(premiumModel);
 
   if (confidence === '낮음') {
     const consult = document.getElementById('cta-consulting');

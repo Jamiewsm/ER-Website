@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 
 const ROOT = process.cwd();
 const DEFAULT_OUTPUT_DIR = path.join(ROOT, 'output/pdf/review-bundle');
+const DEFAULT_VERSION = 'v1';
 const DEFAULT_KEYS = [
   'sx_7_w8',
   'so_8_w7',
@@ -20,8 +21,15 @@ function getArgValue(name) {
   return index >= 0 ? process.argv[index + 1] : null;
 }
 
+function getReportVersion() {
+  const version = getArgValue('--version') || DEFAULT_VERSION;
+  if (version === 'v1' || version === 'v2') return version;
+  console.error(`Unknown report version: ${version}`);
+  process.exit(1);
+}
+
 function printHelp() {
-  console.log(`Usage: node scripts/render_report_review_bundle.mjs [--keys <comma_list>] [--output-dir <dir>]
+  console.log(`Usage: node scripts/render_report_review_bundle.mjs [--keys <comma_list>] [--version <v1|v2>] [--output-dir <dir>]
 
 Renders representative premium report PDFs for visual/tone review.
 
@@ -31,8 +39,11 @@ Default keys:
 Default output:
 - output/pdf/review-bundle
 
+V2 first-slice output example:
+- output/pdf/review-bundle/sx_7_w8-v2.pdf
+
 Each PDF is rendered through:
-  node scripts/qa_premium_report_pdf.mjs --key <key> --output <output-dir>/<key>.pdf`);
+  node scripts/qa_premium_report_pdf.mjs --key <key> --version <v1|v2> --output <output-dir>/<key>[-v2].pdf`);
 }
 
 function readChemistryCard(key) {
@@ -41,17 +52,18 @@ function readChemistryCard(key) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
-function getKeys() {
+function getKeys(version) {
   const raw = getArgValue('--keys');
+  if (!raw && version === 'v2') return ['sx_7_w8'];
   if (!raw) return DEFAULT_KEYS;
   return raw.split(',').map((key) => key.trim()).filter(Boolean);
 }
 
-function writeManifest(outputDir, rendered) {
+function writeManifest(outputDir, rendered, version) {
   const lines = [
     '# Premium Report Review Bundle',
     '',
-    'Generated representative PDFs for editorial/design review.',
+    `Generated representative PDFs for editorial/design review (${version}).`,
     '',
     '| Key | Status | Identity | PDF |',
     '|---|---|---|---|',
@@ -64,6 +76,7 @@ function writeManifest(outputDir, rendered) {
     '- The chemistry section fits the paid-report promise.',
     '- PDF spacing, hierarchy, and page breaks feel polished.',
     '- No source notes, awkward translation residue, or harsh labels are visible.',
+    '- For V2, pages add distinct interpretive value without repeated filler.',
     '',
   ];
   fs.writeFileSync(path.join(outputDir, 'README.md'), lines.join('\n'));
@@ -75,7 +88,8 @@ function main() {
     return;
   }
 
-  const keys = getKeys();
+  const version = getReportVersion();
+  const keys = getKeys(version);
   const outputDir = path.resolve(getArgValue('--output-dir') || DEFAULT_OUTPUT_DIR);
   fs.mkdirSync(outputDir, { recursive: true });
 
@@ -87,18 +101,19 @@ function main() {
       process.exit(1);
     }
 
-    const pdfPath = path.join(outputDir, `${key}.pdf`);
-    console.log(`Render review PDF: ${key}`);
+    const suffix = version === 'v2' ? '-v2' : '';
+    const pdfPath = path.join(outputDir, `${key}${suffix}.pdf`);
+    console.log(`Render review PDF: ${key} ${version}`);
     const result = spawnSync(
       process.execPath,
-      ['scripts/qa_premium_report_pdf.mjs', '--key', key, '--output', pdfPath],
+      ['scripts/qa_premium_report_pdf.mjs', '--key', key, '--version', version, '--output', pdfPath],
       { cwd: ROOT, encoding: 'utf8', stdio: 'inherit' }
     );
     if (result.status !== 0) process.exit(result.status || 1);
     rendered.push({ key, card, pdfPath });
   }
 
-  writeManifest(outputDir, rendered);
+  writeManifest(outputDir, rendered, version);
   console.log(`OK: review bundle rendered (${path.relative(ROOT, outputDir)})`);
 }
 

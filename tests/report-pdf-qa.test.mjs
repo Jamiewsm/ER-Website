@@ -34,6 +34,19 @@ test('premium report PDF QA script advertises configurable chemistry keys', () =
   assert.match(result.stdout, /test\.html\?debugReport=<combination_key>/);
 });
 
+test('premium report PDF QA script advertises premium report v2 flow', () => {
+  const result = spawnSync(
+    process.execPath,
+    ['scripts/qa_premium_report_pdf.mjs', '--help'],
+    { cwd: rootDir, encoding: 'utf8' }
+  );
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /--version <v1\|v2>/);
+  assert.match(result.stdout, /test\.html\?debugReport=sx_7_w8&reportVersion=v2/);
+  assert.match(result.stdout, /\.er-report-v2/);
+});
+
 test('premium report PDF QA script rejects unknown chemistry keys before browser QA', () => {
   const result = spawnSync(
     process.execPath,
@@ -60,6 +73,15 @@ test('premium report PDF QA script checks for mostly blank trailing pages', () =
   assert.match(source, /assertNoMostlyBlankTrailingPage/);
 });
 
+test('premium report PDF QA script enforces v2 page count and text quality', () => {
+  const source = fs.readFileSync(path.join(rootDir, 'scripts/qa_premium_report_pdf.mjs'), 'utf8');
+
+  assert.match(source, /report-text-quality\.mjs/);
+  assert.match(source, /assertReportTextQuality/);
+  assert.match(source, /pageCount\s*<\s*18/);
+  assert.match(source, /pageCount\s*>\s*22/);
+});
+
 test('premium report print CSS keeps web-only ending out of the PDF flow', () => {
   const css = fs.readFileSync(path.join(rootDir, 'css/test.css'), 'utf8');
   const printCss = css.slice(css.indexOf('@media print'));
@@ -84,6 +106,8 @@ test('premium report review bundle script advertises representative cards', () =
   assert.match(result.stdout, /sx_7_w8/);
   assert.match(result.stdout, /so_8_w7/);
   assert.match(result.stdout, /sp_9_w1/);
+  assert.match(result.stdout, /--version <v1\|v2>/);
+  assert.match(result.stdout, /sx_7_w8-v2\.pdf/);
   assert.match(result.stdout, /output\/pdf\/review-bundle/);
 });
 
