@@ -14,20 +14,21 @@
 - `PROJECT_PLAN.md` — PM 진행 계획, 단계, 사용자에게 요청할 일
 - `CONTENT_SPEC.md` — 조각 블록, 조합 해석 카드, 화면 표시 필드 스키마
 - `LANGUAGE_LAYERS.md` — 일반 사용자용 회복 언어 + 신앙 선택 문장 규칙
-- `chemistry/*.json` — 조합별 해석 카드. 현재 골드 샘플: `sx_7_w8.json`; Type 7 나머지 5개, countertype wing batch 16개, high-value batch 6개, Type 1/2 structure-checked batch 6개, Type 3/4/5 follow-up batch 6개, Type 5/6 follow-up batch 6개, final Type 8/9 batch 8개는 `draft`
+- `chemistry/*.json` — 조합별 해석 카드. 현재 골드 샘플: `sx_7_w8.json`; 나머지 53개 조합은 local KB motif/tone review gate를 통과해 `reviewed`
+- `../../scripts/review_report_content.mjs` — 조합별 subtype motif, 고객용 금칙어, PDF 압축 필드 일관성을 확인하고 `draft`를 `reviewed`로 승격하는 검수 gate
 - `../../js/report-chemistry-data.js` — 브라우저 런타임 데이터. 직접 수정하지 않고 생성합니다.
 
 ## 현재 우선순위
 
 1. `sx_7_w8.json` 골드 샘플과 실전 섹션을 사용자가 실제 결과지/PDF에서 검토합니다.
-2. Type 7 draft batch 5개, countertype wing draft batch 16개, high-value draft batch 6개, Type 1/2 structure-checked draft batch 6개, Type 3/4/5 follow-up draft batch 6개, Type 5/6 follow-up draft batch 6개, final Type 8/9 draft batch 8개를 source/tone review 후 승격합니다.
-3. 54개 조합 전체가 준비되었으므로 다음 단계는 신규 확장이 아니라 실제 결과지/PDF 기준의 source/tone review와 `reviewed` 승격입니다.
-4. 같은 스키마를 유지하면서 Supabase 전환 또는 편집 워크플로우를 설계합니다.
+2. 실제 결과지/PDF에서 대표 조합을 확인하고, 사용자 tone approval을 받은 카드를 `approved`로 승격합니다.
+3. 같은 스키마를 유지하면서 Supabase 전환 또는 편집 워크플로우를 설계합니다.
 
 ## 검증
 
 ```bash
 node scripts/verify_report_content.mjs
+node scripts/review_report_content.mjs
 node scripts/build_report_chemistry_data.mjs --check
 node scripts/verify_report_content.mjs --coverage
 node scripts/qa_premium_report_pdf.mjs
@@ -46,10 +47,16 @@ node scripts/build_report_chemistry_data.mjs
 
 ## 확장 진행률
 
-54개 조합의 현재 진행률은 아래 명령으로 확인합니다. 현재 Type 7 전체 6개, countertype wing batch 16개, high-value batch 6개, Type 1/2 structure-checked batch 6개, Type 3/4/5 follow-up batch 6개, Type 5/6 follow-up batch 6개, final Type 8/9 batch 8개가 준비되어 `54/54`를 기대합니다.
+54개 조합의 현재 진행률은 아래 명령으로 확인합니다. 현재 전체 조합이 준비되어 `54/54`를 기대합니다.
 
 ```bash
 node scripts/verify_report_content.mjs --coverage
+```
+
+검수 승격 상태는 아래 명령으로 확인합니다. 현재 `gold_sample=1`, `reviewed=53`을 기대합니다.
+
+```bash
+node scripts/review_report_content.mjs
 ```
 
 ## PDF QA

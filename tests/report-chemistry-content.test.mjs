@@ -162,3 +162,19 @@ test('content verifier reports 54-combination coverage', () => {
   assert.match(result.stdout, /Coverage: 54\/54 chemistry combinations/);
   assert.doesNotMatch(result.stdout, /Next type 7 batch:/);
 });
+
+test('content review gate passes all chemistry cards before reviewed promotion', () => {
+  const result = spawnSync(
+    process.execPath,
+    ['scripts/review_report_content.mjs'],
+    { cwd: rootDir, encoding: 'utf8' }
+  );
+
+  assert.equal(
+    result.status,
+    0,
+    `review gate should pass before reviewed promotion\nstdout:\n${result.stdout}\nstderr:\n${result.stderr}`
+  );
+  assert.match(result.stdout, /Review gate: 54\/54 chemistry cards pass/);
+  assert.match(result.stdout, /Status counts: gold_sample=1, reviewed=53/);
+});

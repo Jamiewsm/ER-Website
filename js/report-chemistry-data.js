@@ -12,7 +12,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 2,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "사람을 돕고 가르치며 더 나은 공동체를 만들려는 원칙 있는 멘토",
       "practical_insights": {
         "strengths": [
@@ -63,7 +63,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 9,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "차분한 모범으로 원칙과 평화를 함께 세우려는 사람",
       "practical_insights": {
         "strengths": [
@@ -114,7 +114,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 1,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "그룹의 필요를 읽고 올바른 영향력으로 사람을 세우려는 조력자",
       "practical_insights": {
         "strengths": [
@@ -165,7 +165,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 3,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "사람과 성과를 연결해 그룹 안에서 빛나는 기여자가 되려는 사람",
       "practical_insights": {
         "strengths": [
@@ -216,7 +216,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 2,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "성공과 따뜻한 매력을 함께 보여 주며 모두에게 사랑받는 사람으로 남고 싶은 사람",
       "practical_insights": {
         "strengths": [
@@ -267,7 +267,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 4,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "성공하되 자신만의 색깔과 스타일로 인정받고 싶은 사람",
       "practical_insights": {
         "strengths": [
@@ -318,7 +318,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 3,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "자신의 결핍과 감정을 표현하면서도 인정받는 모습으로 빚어내려는 사람",
       "practical_insights": {
         "strengths": [
@@ -369,7 +369,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 5,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "결핍과 외로움을 깊이 해석하며 조심스럽게 나누려는 사람",
       "practical_insights": {
         "strengths": [
@@ -420,7 +420,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 4,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "독창적인 지식과 깊은 관점으로 의미 있는 그룹에 기여하려는 사람",
       "practical_insights": {
         "strengths": [
@@ -471,7 +471,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 6,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "공동의 지식과 가치를 검증하고 지키려는 신중한 전문가",
       "practical_insights": {
         "strengths": [
@@ -522,7 +522,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 5,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "규칙과 시스템을 깊이 이해해야 안전하다고 느끼는 신중한 분석가",
       "practical_insights": {
         "strengths": [
@@ -573,7 +573,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 7,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "규칙 안에서 안전을 찾으면서도 밝은 가능성으로 불안을 낮추려는 사람",
       "practical_insights": {
         "strengths": [
@@ -624,7 +624,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 6,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "좋은 사람, 좋은 팀, 좋은 목적 안에서 자기 즐거움을 안전하게 허락받으려는 사람",
       "practical_insights": {
         "strengths": [
@@ -675,7 +675,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 8,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "좋은 이상과 더 큰 목적을 위해 사람들을 움직이되, 그 헌신 안에 자기 비전과 주도권도 강하게 담는 사람",
       "practical_insights": {
         "strengths": [
@@ -726,7 +726,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 7,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "에너지 넘치는 수호자처럼 사람을 모으고 즐겁게 만들며 부당함 앞에서는 즉시 나서는 사람",
       "practical_insights": {
         "strengths": [
@@ -777,7 +777,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 9,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "큰 힘을 고요하게 품고 있다가 지켜야 할 사람과 기준 앞에서는 흔들림 없이 나서는 사람",
       "practical_insights": {
         "strengths": [
@@ -828,7 +828,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 1,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "이상적인 공동체를 위해 조용히 일하며 자기 자신은 뒤로 미루기 쉬운 사람",
       "practical_insights": {
         "strengths": [
@@ -879,7 +879,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 8,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "조용히 공동체를 위해 일하다가 필요할 때는 가장 먼저 일어서는 사람",
       "practical_insights": {
         "strengths": [
@@ -930,7 +930,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 2,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "사람을 세심하게 돕되 올바른 방향까지 책임지려는 따뜻한 점검자",
       "practical_insights": {
         "strengths": [
@@ -981,7 +981,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 9,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "조용히 기준을 지키며 갈등 없이 책임을 완성하려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1032,7 +1032,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 1,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "사랑받기 위해 착하고 도움이 되며 흠잡을 데 없어야 한다고 믿는 사람",
       "practical_insights": {
         "strengths": [
@@ -1083,7 +1083,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 3,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "사랑받기 위해 매력적이고 유능한 사람으로 보이려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1134,7 +1134,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 2,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "겸손하게 일하고 돕는 방식으로 자신의 가치와 안전을 증명하려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1185,7 +1185,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 4,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "탁월함으로 안전을 만들고 싶지만, 그 성취 안에 진짜 나의 깊이도 담고 싶은 사람",
       "practical_insights": {
         "strengths": [
@@ -1236,7 +1236,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 3,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "아픔을 쉽게 드러내지 않고, 결과와 성취로 자신의 깊이를 증명하려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1287,7 +1287,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 5,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "고통을 깊이 느끼지만, 그것을 분석과 통찰로 혼자 견디려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1338,7 +1338,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 4,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "자기만의 조용한 세계를 지키며 깊이와 독창성을 쌓아 가는 사람",
       "practical_insights": {
         "strengths": [
@@ -1389,7 +1389,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 6,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "자기 공간과 자원을 지키며 위험을 분석하고 대비하려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1440,7 +1440,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 5,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "따뜻한 신뢰를 원하지만 먼저 관찰하고 검증해야 안전한 사람",
       "practical_insights": {
         "strengths": [
@@ -1491,7 +1491,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 7,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "따뜻한 관계망과 밝은 활동으로 불안을 낮추려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1542,7 +1542,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 6,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "좋은 사람들과 안전한 기회를 모아, 불안을 즐거운 계획과 든든한 네트워크로 바꾸려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1593,7 +1593,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 8,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "기회와 사람과 자원을 빠르게 모아 자기만의 풍요로운 판을 만들고 지키려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1644,7 +1644,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 7,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "필요한 자원과 기회를 빠르게 확보해 자기 영역을 넓히는 사람",
       "practical_insights": {
         "strengths": [
@@ -1695,7 +1695,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 9,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "조용히 자기 영역과 자원을 지키는 단단한 현실주의자",
       "practical_insights": {
         "strengths": [
@@ -1746,7 +1746,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 1,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "정돈된 루틴과 조용한 질서 안에서 평화를 유지하려는 사람",
       "practical_insights": {
         "strengths": [
@@ -1797,7 +1797,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 8,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "익숙한 루틴과 자기 공간을 단단히 지키는 사람",
       "practical_insights": {
         "strengths": [
@@ -1848,7 +1848,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 2,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "사람을 더 나은 방향으로 이끌고 싶은 열정을 돌봄과 헌신으로 표현하는 사람",
       "practical_insights": {
         "strengths": [
@@ -1899,7 +1899,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 9,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "온화해 보이지만 자신이 옳다고 믿는 이상을 향해 끈질기게 움직이는 사람",
       "practical_insights": {
         "strengths": [
@@ -1950,7 +1950,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 1,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "사랑을 통해 상대가 더 좋은 사람이 되기를 바라며 돌봄과 기준을 함께 주는 사람",
       "practical_insights": {
         "strengths": [
@@ -2001,7 +2001,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 3,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "사랑받기 위해 가장 매력적이고 유능한 파트너가 되려는 사람",
       "practical_insights": {
         "strengths": [
@@ -2052,7 +2052,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 2,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "중요한 사람 앞에서 매력과 헌신을 모두 증명하려는 사람",
       "practical_insights": {
         "strengths": [
@@ -2103,7 +2103,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 4,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "매력적인 모습과 진짜 내면을 동시에 인정받고 싶은 사람",
       "practical_insights": {
         "strengths": [
@@ -2154,7 +2154,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 3,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "결핍과 비교의 고통을 경쟁심과 성취 에너지로 바꾸는 사람",
       "practical_insights": {
         "strengths": [
@@ -2205,7 +2205,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 5,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "내면의 격렬한 감정을 깊이 분석하고 창작으로 승화하지만 직접 나누기는 어려운 사람",
       "practical_insights": {
         "strengths": [
@@ -2256,7 +2256,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 4,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "깊고 완전한 연결을 꿈꾸지만 현실의 불완전함 앞에서 쉽게 물러나는 사람",
       "practical_insights": {
         "strengths": [
@@ -2307,7 +2307,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 6,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "완전한 신뢰를 원하지만 상대를 충분히 검증하기 전에는 마음을 열기 어려운 사람",
       "practical_insights": {
         "strengths": [
@@ -2358,7 +2358,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 5,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "두려움을 정면으로 마주하되, 분석과 전략으로 자신을 지키려는 사람",
       "practical_insights": {
         "strengths": [
@@ -2409,7 +2409,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 7,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "두려움을 스릴과 유머로 바꾸며, 위험 속에서도 안전을 확인받고 싶은 사람",
       "practical_insights": {
         "strengths": [
@@ -2460,7 +2460,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 6,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "강렬한 가능성에 매료되면서도, 그 가능성이 안전한 관계와 확인 속에서 유지되기를 바라는 사람",
       "practical_insights": {
         "strengths": [
@@ -2562,7 +2562,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 7,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "강렬한 관계와 자유로운 경험을 모두 붙잡으려는 사람",
       "practical_insights": {
         "strengths": [
@@ -2613,7 +2613,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 9,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "겉은 차분하지만 가까운 관계에서는 깊고 단단하게 붙드는 사람",
       "practical_insights": {
         "strengths": [
@@ -2664,7 +2664,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 1,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "이상적인 관계를 위해 자신을 맞추고 조화를 지키려는 사람",
       "practical_insights": {
         "strengths": [
@@ -2715,7 +2715,7 @@
       "secondary_instinct": null,
       "blind_instinct": null,
       "wing": 8,
-      "status": "draft",
+      "status": "reviewed",
       "identity_sentence": "가까운 사람과 깊이 연결되면서도 관계를 단단히 지키려는 사람",
       "practical_insights": {
         "strengths": [

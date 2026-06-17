@@ -14,14 +14,9 @@
 - 스코어링, 27 subtype, 기본 프리미엄 결과지 렌더러는 이미 존재합니다.
 - 이번 작업은 신규 Phase 7 성격입니다: 프리미엄 결과지 콘텐츠 시스템 + 골드 샘플 + 에디토리얼 렌더링.
 - `sx_7_w8` 골드 샘플은 JSON으로 저장되었고, 결과지 화면의 "조합별 심층 해석" 섹션에 연결되었습니다.
-- Type 7 나머지 5개 조합은 `draft` 상태로 추가되었습니다: `sx_7_w6`, `so_7_w8`, `so_7_w6`, `sp_7_w8`, `sp_7_w6`.
-- Countertype 16개 조합은 `draft` 상태로 추가되었습니다: `sx_1_w9`, `sx_1_w2`, `sp_2_w1`, `sp_2_w3`, `sp_3_w2`, `sp_3_w4`, `sp_4_w3`, `sp_4_w5`, `sx_5_w4`, `sx_5_w6`, `sx_6_w5`, `sx_6_w7`, `so_8_w7`, `so_8_w9`, `so_9_w8`, `so_9_w1`.
-- High-value 6개 조합은 `draft` 상태로 추가되었습니다: `sx_2_w3`, `sx_2_w1`, `so_3_w2`, `so_3_w4`, `sx_4_w3`, `sx_4_w5`.
-- Type 1/2 structure-checked 6개 조합은 `draft` 상태로 추가되었습니다: `sp_1_w9`, `sp_1_w2`, `so_1_w9`, `so_1_w2`, `so_2_w1`, `so_2_w3`.
-- Type 3/4/5 follow-up 6개 조합은 `draft` 상태로 추가되었습니다: `sx_3_w2`, `sx_3_w4`, `so_4_w3`, `so_4_w5`, `so_5_w4`, `so_5_w6`.
-- Type 5/6 follow-up 6개 조합은 `draft` 상태로 추가되었습니다: `sp_5_w4`, `sp_5_w6`, `so_6_w5`, `so_6_w7`, `sp_6_w5`, `sp_6_w7`.
-- Final Type 8/9 8개 조합은 `draft` 상태로 추가되었습니다: `sx_8_w7`, `sx_8_w9`, `sp_8_w7`, `sp_8_w9`, `sx_9_w8`, `sx_9_w1`, `sp_9_w8`, `sp_9_w1`.
-- 현재 콘텐츠 coverage는 `54/54`입니다. `sx_7_w8` 외 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
+- Type 7 batch, countertype wing batch, high-value coaching batch, Type 1/2 structure-checked batch, Type 3/4/5 follow-up batch, Type 5/6 follow-up batch, final Type 8/9 batch까지 전체 54개 조합이 추가되었습니다.
+- `scripts/review_report_content.mjs` 검수 gate가 추가되었고, subtype motif/tone/PDF 압축 필드 검수를 통과한 53개 조합은 `reviewed`로 승격되었습니다.
+- 현재 콘텐츠 coverage는 `54/54`입니다. 현재 상태는 `gold_sample=1`, `reviewed=53`입니다. 사용자 tone approval을 받은 카드는 이후 `approved`로 승격합니다.
 - 고객용 JSON에는 `source_note`, 검색 태그, 페이지 번호를 저장하지 않습니다. 연구 메타데이터는 원문 초안에만 둡니다.
 - `js/report-chemistry-data.js`는 `docs/report-content/chemistry/*.json`에서 생성되는 런타임 파일입니다.
 
@@ -73,7 +68,7 @@
 - Build Type 3/4/5 follow-up batch from user-provided Anara exports after local KB validation: `sx_3_w2`, `sx_3_w4`, `so_4_w3`, `so_4_w5`, `so_5_w4`, `so_5_w6`.
 - Build Type 5/6 follow-up batch from user-provided Anara exports after local KB validation: `sp_5_w4`, `sp_5_w6`, `so_6_w5`, `so_6_w7`, `sp_6_w5`, `sp_6_w7`.
 - Build final Type 8/9 batch from user-provided Anara exports after local KB validation: `sx_8_w7`, `sx_8_w9`, `sp_8_w7`, `sp_8_w9`, `sx_9_w8`, `sx_9_w1`, `sp_9_w8`, `sp_9_w1`.
-- All 54 combinations are now represented; continue with source/tone review, status promotion, and production data workflow.
+- All 54 combinations are now represented and 53 non-gold cards have been promoted to `reviewed`; continue with production data workflow and user approval.
 - Track progress with `node scripts/verify_report_content.mjs --coverage`.
 
 Current checkpoint:
@@ -81,8 +76,8 @@ Current checkpoint:
 - Type 7 batch, all non-Type 7 countertype wing batches, first high-value coaching batch, Type 1/2 structure-checked batch, Type 3/4/5 follow-up batch, Type 5/6 follow-up batch, and final Type 8/9 batch exist as JSON and browser runtime data.
 - All 54 chemistry card combinations are present in the content SSOT.
 - `sx_7_w8` remains the only `gold_sample`.
-- The other cards remain `draft` until source review and user tone approval.
-- Next recommended target: sample PDF review across a few representative cards, then source/tone review and promotion from `draft` to `reviewed`.
+- The other 53 cards are `reviewed` after local subtype motif/tone gate.
+- Next recommended target: sample PDF review across representative cards, then user tone approval and selected promotion from `reviewed` to `approved`.
 
 ## User Requests I Will Make
 
@@ -98,6 +93,7 @@ Current checkpoint:
 - Existing Node tests pass.
 - `node scripts/verify_report_content.mjs` passes.
 - `node scripts/verify_report_content.mjs --coverage` reports the expected prepared/total count.
+- `node scripts/review_report_content.mjs` reports the expected review status count.
 - `node scripts/build_report_chemistry_data.mjs --check` confirms runtime data is generated from JSON.
 - `node scripts/qa_premium_report_pdf.mjs` renders the `sx_7_w8` PDF QA artifact successfully.
 - User can open the result page and judge the actual product feel, not just the text.
