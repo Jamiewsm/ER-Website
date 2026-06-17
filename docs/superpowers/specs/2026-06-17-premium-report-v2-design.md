@@ -7,9 +7,9 @@ Status: User-approved direction, ready for implementation planning after review
 
 Build the ER Enneagram result into a true premium PDF report, not a web result page exported as PDF.
 
-The target is a 16-20 page Korean-first report that combines:
+The target is an 18-22 page Korean-first report that combines:
 
-- the visual warmth and botanical editorial direction from the user's `mockup1.png` through `mockup6.png`,
+- the visual warmth and botanical editorial direction from the user's `mockup1.png` through `mockup10.png`,
 - the product depth and information architecture strengths observed in the HAN_JEEMIN Birkman reference reports,
 - ER's own theological and restoration-centered interpretation of Enneagram patterns,
 - the existing 54 chemistry cards, scoring data, wing data, instinct data, and program recommendations already built in this branch.
@@ -32,8 +32,12 @@ Current visual mockups:
 - `mockup4.png` - strengths and fit page with four quadrant cards and coaching questions.
 - `mockup5.png` - score-flow page with instinct bars, wing donut, direction cards, and top-three type rows.
 - `mockup6.png` - cycle page with numbered vertical timeline, formation story, distorted-self list, and restoration preview.
+- `mockup7.png` - application page for work, relationships, and parenting, with stress/recovery signal panel.
+- `mockup8.png` - core motivation and core fear page with two-column explanation and balancing recommendations.
+- ` mockup9.png` - possibility-unlocking page. The current filename includes a leading space; implementation should either handle this exact path during reference review or the file should be renamed to `mockup9.png` before scripted processing.
+- `mockup10.png` - sustainable growth and change page with principles, recommendations, journey note, scenic image panel, and next-step cards.
 
-If the user adds `mockup7.png`, `mockup8.png`, or later files before implementation planning, those files must be inspected and mapped into the page plan before writing code.
+If the user adds `mockup11.png` or later files before implementation planning, those files must be inspected and mapped into the page plan before writing code.
 
 ### HAN_JEEMIN Reference Reports
 
@@ -94,7 +98,7 @@ The visual result should be closer to an editorial coaching dossier than a web d
 
 ## Report Information Architecture
 
-Target length: 16-20 PDF pages for the first V2 release.
+Target length: 18-22 PDF pages for the first V2 release. The first ten pages should follow the user's mockup sequence closely enough that the user can recognize their design direction in the generated PDF.
 
 ### Page 1 - Premium Cover
 
@@ -183,32 +187,78 @@ Content:
 
 Visual basis: `mockup6.png`.
 
-### Pages 7-8 - Core Type Pattern
+### Page 7 - Life Application Patterns
 
-Purpose: establish type-level depth beyond the chemistry card.
+Purpose: translate the result into daily life.
+
+Content:
+
+- Work and career.
+- Relationships.
+- Parenting or mentoring.
+- For each context: strengths, what to watch together, and "starting today" practices.
+- Stress signals and recovery signals in a horizontal panel.
+
+Visual basis: `mockup7.png`.
+
+### Page 8 - Core Motivation And Fear
+
+Purpose: name the engine and the drain behind the pattern.
+
+Content:
+
+- Core motivation.
+- Core fear.
+- Healthy use of the motivation.
+- Ways the fear appears as lost opportunity, restriction, failure, or evaluation.
+- Balancing practices.
+
+Visual basis: `mockup8.png`.
+
+### Page 9 - Keys That Open Possibility
+
+Purpose: help the user see internal resources and practical growth keys.
+
+Content:
+
+- Unique resources already present in the person.
+- Growth keys that open larger possibility.
+- Five-step next action sequence.
+- Encouraging closing quote.
+
+Visual basis: ` mockup9.png`.
+
+### Page 10 - Sustainable Growth And Change
+
+Purpose: make the report end-user actionable without sounding like homework.
+
+Content:
+
+- Principles of sustainable growth.
+- Personalized growth recommendations.
+- Journey note.
+- Visual image panel or soft landscape block.
+- Next-step cards.
+- Closing quote.
+
+Visual basis: `mockup10.png`.
+
+### Pages 11-12 - Core Type, Instinct, And Stack
+
+Purpose: establish type-level and instinct-level depth beyond the chemistry card.
 
 Content:
 
 - Core desire and core fear.
 - Passion/automatic emotional habit.
 - Defense pattern.
-- What others may experience.
-- What this type often misreads.
-- Healthy expression and unhealthy expression.
-
-### Pages 9-10 - Instinct And Stack
-
-Purpose: explain the dominant instinct and the 1-2-3 instinct stack.
-
-Content:
-
 - Dominant instinct in ordinary language.
 - Secondary instinct as support.
 - Blind/repressed instinct as missing area.
 - How the stack appears in relationships, work, decision-making, and spiritual formation.
 - Small triangular or three-column stack visualization.
 
-### Page 11 - Wing And Adjacent Types
+### Page 13 - Wing And Adjacent Types
 
 Purpose: explain why this result is not just the core type.
 
@@ -220,7 +270,7 @@ Content:
 - What the wing can distort.
 - Why the runner-up type may appear.
 
-### Pages 12-13 - Work, Vocation, And Team Fit
+### Pages 14-15 - Work, Vocation, And Team Fit
 
 Purpose: bring over the strongest "career exploration" value without overclaiming.
 
@@ -236,7 +286,7 @@ Content:
 
 This section should be fit-pattern based, not a formal career inventory.
 
-### Pages 14-15 - Relationships, Family, And Conflict
+### Pages 16-17 - Relationships, Family, And Conflict
 
 Purpose: make the report emotionally useful.
 
@@ -249,7 +299,7 @@ Content:
 - Repair moves.
 - Conversation prompts.
 
-### Page 16 - Stress And Restoration Plan
+### Page 18 - Stress And Restoration Plan
 
 Purpose: practical next steps.
 
@@ -261,7 +311,7 @@ Content:
 - Weekly reflection.
 - Small action plan.
 
-### Page 17 - Faith And Restoration
+### Page 19 - Faith And Restoration
 
 Purpose: keep ER's distinctive Christian restoration frame.
 
@@ -275,7 +325,7 @@ Content:
 
 This page must be optional in tone, not coercive. It should feel like invitation, not pressure.
 
-### Page 18 - Summary And Next Steps
+### Page 20 - Summary And Next Steps
 
 Purpose: close like a professional report, then offer next steps.
 
@@ -343,7 +393,7 @@ Recommended rollout:
 ## PDF Requirements
 
 - Letter portrait output.
-- Target 16-20 pages for the V2 premium sample.
+- Target 18-22 pages for the V2 premium sample.
 - No mostly blank final page.
 - Page header and footer discipline on all internal pages.
 - Page numbers visible and consistent.
@@ -359,8 +409,8 @@ The first V2 sample is `sx_7_w8`, because it is the current gold sample.
 Acceptance criteria:
 
 - `sx_7_w8` V2 PDF renders successfully.
-- PDF page count is between 16 and 20 pages.
-- The first six pages visually match the intent of `mockup1.png` through `mockup6.png`.
+- PDF page count is between 18 and 22 pages.
+- The first ten pages visually match the intent of `mockup1.png` through `mockup10.png`.
 - The report includes a one-page dashboard comparable in density to `HAN_JEEMIN_G6VDFM-AdvSumm.pdf`, but visually ER-branded.
 - The report includes practical sections comparable in usefulness to the Career and Signature reports: work fit, relationship fit, stress behavior, how others may experience the pattern, and next steps.
 - No internal review notes, source notes, raw JSON labels, or Anara drafting artifacts appear.
@@ -384,8 +434,8 @@ node scripts/qa_premium_report_pdf.mjs --key sx_7_w8 --output output/pdf/review-
 Recommended approach: full V2, built in slices.
 
 1. Create the V2 renderer shell and CSS using `sx_7_w8` only.
-2. Implement pages 1-6 from the user's mockups.
-3. Add type, instinct, wing, work, relationship, stress, and faith pages using structured data.
+2. Implement pages 1-10 from the user's mockups.
+3. Add deeper type, instinct, wing, work, relationship, stress, and faith pages using structured data.
 4. Extend QA to validate V2 page count and no blank trailing page.
 5. Generate a review bundle for six representative combinations.
 6. Promote V2 to default only after visual review.
@@ -394,6 +444,6 @@ This avoids a risky all-at-once rewrite while still moving toward the full premi
 
 ## Open User Inputs Before Implementation Plan
 
-The user has already approved the full Premium V2 direction and supplied mockups 1-6. Before implementation planning begins, check whether the user has added `mockup7.png` or later files. If present, inspect and incorporate them. If absent, proceed with the 18-page design above.
+The user has already approved the full Premium V2 direction and supplied mockups 1-10. Before implementation planning begins, check whether the user has added `mockup11.png` or later files. If present, inspect and incorporate them. If absent, proceed with the 20-page design above.
 
 No additional content from Anara is required before the first V2 implementation slice. Anara may be useful later for deeper type-level copy, but the first slice can be built from existing ER content plus the current chemistry cards.
