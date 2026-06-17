@@ -72,6 +72,7 @@ Strengths not to adopt:
 - Provide enough structure that a coach can use the PDF in a follow-up session.
 - Convert from free/self-test curiosity into coaching, typing consultation, or ER programs without making the report feel like a sales page.
 - Make the report visually strong enough to compare favorably with the user's Birkman examples.
+- Make every page add a new interpretive angle. The report must not repeat the same insight with different wording just to fill pages.
 
 ## Non-Goals
 
@@ -95,6 +96,19 @@ The V2 visual system follows the user's mockups:
 - Icons should be simple line icons in circular badges. Use the existing icon approach or a small inline icon set; avoid busy illustrations.
 
 The visual result should be closer to an editorial coaching dossier than a web dashboard.
+
+## Content Depth And Non-Repetition Standard
+
+Premium V2 must avoid filler. A repeated idea is acceptable only when the second appearance changes the user's task: for example, a pattern named on Page 3 may reappear on Page 7 only if it is translated into work, relationship, or parenting behavior.
+
+Rules:
+
+- Each page needs a unique job: overview, evidence, interpretation, application, restoration, or next step.
+- Avoid reusing the same sentence stem across pages, especially phrases such as "가능성을 열다", "현재에 머무르다", "작은 회복", and "자유와 가능성" unless the page gives a materially different action.
+- No paragraph may simply restate the headline.
+- No more than one quote-style closing sentence may carry the same theological or motivational claim.
+- Life-application sections must differ by context. Work, relationship, and parenting copy should not share the same bullet structure with only nouns swapped.
+- QA should include a text repetition check for repeated long Korean phrases and obvious duplicate page conclusions.
 
 ## Report Information Architecture
 
