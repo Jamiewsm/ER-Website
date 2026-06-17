@@ -20,7 +20,8 @@
 - Type 1/2 structure-checked 6개 조합은 `draft` 상태로 추가되었습니다: `sp_1_w9`, `sp_1_w2`, `so_1_w9`, `so_1_w2`, `so_2_w1`, `so_2_w3`.
 - Type 3/4/5 follow-up 6개 조합은 `draft` 상태로 추가되었습니다: `sx_3_w2`, `sx_3_w4`, `so_4_w3`, `so_4_w5`, `so_5_w4`, `so_5_w6`.
 - Type 5/6 follow-up 6개 조합은 `draft` 상태로 추가되었습니다: `sp_5_w4`, `sp_5_w6`, `so_6_w5`, `so_6_w7`, `sp_6_w5`, `sp_6_w7`.
-- 현재 콘텐츠 coverage는 `46/54`입니다. `sx_7_w8` 외 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
+- Final Type 8/9 8개 조합은 `draft` 상태로 추가되었습니다: `sx_8_w7`, `sx_8_w9`, `sp_8_w7`, `sp_8_w9`, `sx_9_w8`, `sx_9_w1`, `sp_9_w8`, `sp_9_w1`.
+- 현재 콘텐츠 coverage는 `54/54`입니다. `sx_7_w8` 외 초안은 Anara/source review 후 `reviewed` 또는 `approved`로 승격합니다.
 - 고객용 JSON에는 `source_note`, 검색 태그, 페이지 번호를 저장하지 않습니다. 연구 메타데이터는 원문 초안에만 둡니다.
 - `js/report-chemistry-data.js`는 `docs/report-content/chemistry/*.json`에서 생성되는 런타임 파일입니다.
 
@@ -71,15 +72,17 @@
 - Build Type 1/2 structure-checked batch from user-provided Anara exports after local KB validation: `sp_1_w9`, `sp_1_w2`, `so_1_w9`, `so_1_w2`, `so_2_w1`, `so_2_w3`.
 - Build Type 3/4/5 follow-up batch from user-provided Anara exports after local KB validation: `sx_3_w2`, `sx_3_w4`, `so_4_w3`, `so_4_w5`, `so_5_w4`, `so_5_w6`.
 - Build Type 5/6 follow-up batch from user-provided Anara exports after local KB validation: `sp_5_w4`, `sp_5_w6`, `so_6_w5`, `so_6_w7`, `sp_6_w5`, `sp_6_w7`.
-- Then expand by high-value coaching combinations before filling the full 54.
+- Build final Type 8/9 batch from user-provided Anara exports after local KB validation: `sx_8_w7`, `sx_8_w9`, `sp_8_w7`, `sp_8_w9`, `sx_9_w8`, `sx_9_w1`, `sp_9_w8`, `sp_9_w1`.
+- All 54 combinations are now represented; continue with source/tone review, status promotion, and production data workflow.
 - Track progress with `node scripts/verify_report_content.mjs --coverage`.
 
 Current checkpoint:
 
-- Type 7 batch, all non-Type 7 countertype wing batches, first high-value coaching batch, Type 1/2 structure-checked batch, Type 3/4/5 follow-up batch, and Type 5/6 follow-up batch exist as JSON and browser runtime data.
+- Type 7 batch, all non-Type 7 countertype wing batches, first high-value coaching batch, Type 1/2 structure-checked batch, Type 3/4/5 follow-up batch, Type 5/6 follow-up batch, and final Type 8/9 batch exist as JSON and browser runtime data.
+- All 54 chemistry card combinations are present in the content SSOT.
 - `sx_7_w8` remains the only `gold_sample`.
 - The other cards remain `draft` until source review and user tone approval.
-- Next recommended expansion target: remaining high-value coaching combinations or user-provided Anara exports.
+- Next recommended target: sample PDF review across a few representative cards, then source/tone review and promotion from `draft` to `reviewed`.
 
 ## User Requests I Will Make
 

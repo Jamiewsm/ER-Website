@@ -56,6 +56,16 @@ const TYPE_5_6_FOLLOWUP_BATCH = [
   'sp_6_w5',
   'sp_6_w7',
 ];
+const FINAL_COMPLETION_BATCH = [
+  'sx_8_w7',
+  'sx_8_w9',
+  'sp_8_w7',
+  'sp_8_w9',
+  'sx_9_w8',
+  'sx_9_w1',
+  'sp_9_w8',
+  'sp_9_w1',
+];
 
 test('sx_7_w8 chemistry JSON has matching browser runtime card', () => {
   const jsonPath = path.join(rootDir, 'docs/report-content/chemistry/sx_7_w8.json');
@@ -103,6 +113,7 @@ test('expansion batches are customer-ready in JSON and runtime data', () => {
     ...STRUCTURE_CHECKED_BATCH,
     ...HIGH_VALUE_FOLLOWUP_BATCH,
     ...TYPE_5_6_FOLLOWUP_BATCH,
+    ...FINAL_COMPLETION_BATCH,
   ]) {
     const jsonPath = path.join(rootDir, `docs/report-content/chemistry/${key}.json`);
     assert.ok(fs.existsSync(jsonPath), `${key} JSON should exist`);
@@ -148,6 +159,6 @@ test('content verifier reports 54-combination coverage', () => {
   );
 
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /Coverage: 46\/54 chemistry combinations/);
+  assert.match(result.stdout, /Coverage: 54\/54 chemistry combinations/);
   assert.doesNotMatch(result.stdout, /Next type 7 batch:/);
 });
