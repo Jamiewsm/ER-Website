@@ -5,6 +5,7 @@ import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
+import { hasMostlyBlankTrailingPage } from './lib/pdf-page-guards.mjs';
 
 const ROOT = process.cwd();
 const DEFAULT_KEY = 'sx_7_w8';
@@ -125,17 +126,37 @@ function assertNoConsoleErrors(result) {
   }
 }
 
-function getPdfPageCount(outputPath) {
+function getPdfPageTextLengths(outputPath) {
   const result = spawnSync('python3', ['-c', [
+    'import json',
     'import sys',
     'try:',
     '    from pypdf import PdfReader',
     'except Exception:',
     '    sys.exit(2)',
-    'print(len(PdfReader(sys.argv[1]).pages))',
+    'reader = PdfReader(sys.argv[1])',
+    'print(json.dumps([len((page.extract_text() or "").strip()) for page in reader.pages]))',
   ].join('\n'), outputPath], { encoding: 'utf8' });
   if (result.status !== 0) return null;
-  return Number.parseInt(result.stdout.trim(), 10);
+  try {
+    return JSON.parse(result.stdout);
+  } catch {
+    return null;
+  }
+}
+
+function assertNoMostlyBlankTrailingPage(outputPath) {
+  const pageTextLengths = getPdfPageTextLengths(outputPath);
+  if (!pageTextLengths) return null;
+  if (hasMostlyBlankTrailingPage(pageTextLengths)) {
+    const pageCount = pageTextLengths.length;
+    const lastLength = pageTextLengths.at(-1);
+    const previousLength = pageTextLengths.at(-2);
+    throw new Error(
+      `PDF has a mostly blank trailing page: page ${pageCount} text length ${lastLength}, previous page text length ${previousLength}`
+    );
+  }
+  return pageTextLengths;
 }
 
 async function main() {
@@ -177,7 +198,8 @@ async function main() {
     const consoleErrors = runRequiredPwcli(pwcliPath, session, 'check console errors', ['console', 'error'], outputDir);
     assertNoConsoleErrors(consoleErrors);
     assertPdfLooksValid(outputPath);
-    const pageCount = getPdfPageCount(outputPath);
+    const pageTextLengths = assertNoMostlyBlankTrailingPage(outputPath);
+    const pageCount = pageTextLengths ? pageTextLengths.length : null;
     if (pageCount != null && pageCount < 2) throw new Error(`PDF page count is unexpectedly low: ${pageCount}`);
     process.stdout.write(result.stdout || '');
     if (result.stderr) process.stderr.write(result.stderr);

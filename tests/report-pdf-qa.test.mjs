@@ -45,6 +45,34 @@ test('premium report PDF QA script rejects unknown chemistry keys before browser
   assert.match(result.stderr, /Unknown chemistry combination key: sx_99_w1/);
 });
 
+test('premium report PDF guard detects mostly blank trailing pages', async () => {
+  const { hasMostlyBlankTrailingPage } = await import('../scripts/lib/pdf-page-guards.mjs');
+
+  assert.equal(hasMostlyBlankTrailingPage([1800, 1520, 54]), true);
+  assert.equal(hasMostlyBlankTrailingPage([1800, 1520, 167]), true);
+  assert.equal(hasMostlyBlankTrailingPage([1800, 1520, 380]), false);
+  assert.equal(hasMostlyBlankTrailingPage([1800]), false);
+});
+
+test('premium report PDF QA script checks for mostly blank trailing pages', () => {
+  const source = fs.readFileSync(path.join(rootDir, 'scripts/qa_premium_report_pdf.mjs'), 'utf8');
+
+  assert.match(source, /assertNoMostlyBlankTrailingPage/);
+});
+
+test('premium report print CSS keeps web-only ending out of the PDF flow', () => {
+  const css = fs.readFileSync(path.join(rootDir, 'css/test.css'), 'utf8');
+  const printCss = css.slice(css.indexOf('@media print'));
+
+  assert.notEqual(printCss, css, 'missing @media print block');
+  assert.match(printCss, /\.er-report-final-cta\s*\{[^}]*background:\s*#fff/);
+  assert.match(printCss, /\.er-report-next-grid\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(printCss, /\.er-report-final-cta\s*>\s*a[^{]*\{[^}]*display:\s*none/);
+  assert.match(printCss, /\.er-report-final-cta\s*>\s*a\.er-report-final-primary[^{]*\{[^}]*display:\s*none/);
+  assert.match(printCss, /\.er-report-final-cta\s*>\s*a\.er-report-final-secondary[^{]*\{[^}]*display:\s*none/);
+  assert.match(printCss, /#result-disclaimer[^{]*\{[^}]*display:\s*none/);
+});
+
 test('premium report review bundle script advertises representative cards', () => {
   const result = spawnSync(
     process.execPath,

@@ -942,6 +942,10 @@ body {
   .er-report-tools {
     display: none;
   }
+  #report-next {
+    break-inside: auto;
+    page-break-inside: auto;
+  }
   .er-report-section,
   .er-report-hero {
     break-inside: avoid;
@@ -967,5 +971,56 @@ body {
   .er-report-cycle li,
   .er-report-roadmap li {
     box-shadow: none;
+  }
+  .er-report-next-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .er-report-next-card {
+    padding: 16px;
+  }
+  .er-report-next-card h3 {
+    font-size: 16px;
+    line-height: 1.36;
+  }
+  .er-report-next-card p,
+  .er-report-next-card small {
+    font-size: 12px;
+    line-height: 1.58;
+  }
+  .er-report-next-price {
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .er-report-next-cta {
+    margin-top: 8px;
+    font-size: 11px;
+  }
+  .er-report-final-cta {
+    margin-top: 14px;
+    border: 1px solid var(--er-report-line);
+    background: #fff;
+    padding: 18px 20px;
+    color: var(--er-report-dark);
+    text-align: left;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none;
+  }
+  .er-report-final-cta h2 {
+    font-size: 20px;
+    color: var(--er-report-dark);
+  }
+  .er-report-final-cta p {
+    margin-top: 8px;
+    color: var(--er-report-muted);
+  }
+  .er-report-final-cta > a,
+  .er-report-final-cta > a.er-report-final-primary,
+  .er-report-final-cta > a.er-report-final-secondary {
+    display: none;
+  }
+  #result-disclaimer {
+    display: none;
   }
 }
