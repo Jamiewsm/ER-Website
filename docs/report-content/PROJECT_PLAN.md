@@ -77,12 +77,12 @@ Current checkpoint:
 - All 54 chemistry card combinations are present in the content SSOT.
 - `sx_7_w8` remains the only `gold_sample`.
 - The other 53 cards are `reviewed` after local subtype motif/tone gate.
-- Next recommended target: sample PDF review across representative cards, then user tone approval and selected promotion from `reviewed` to `approved`.
+- Representative PDF review bundle generation is available through `scripts/render_report_review_bundle.mjs`.
+- Next recommended target: user tone/design approval from `output/pdf/review-bundle/`, then selected promotion from `reviewed` to `approved`.
 
 ## User Requests I Will Make
 
-- Approve or edit the `sx_7_w8` gold text after seeing it on the page.
-- Provide Anara exports for the next batch when I ask for a specific combination list.
+- Review the representative PDF bundle and approve or mark wording/design changes.
 - Provide GitHub/Cursor PR permissions only if PR creation or merge is blocked.
 - Decide whether Supabase is required in the first production release or after file-based proof.
 
@@ -96,4 +96,5 @@ Current checkpoint:
 - `node scripts/review_report_content.mjs` reports the expected review status count.
 - `node scripts/build_report_chemistry_data.mjs --check` confirms runtime data is generated from JSON.
 - `node scripts/qa_premium_report_pdf.mjs` renders the `sx_7_w8` PDF QA artifact successfully.
+- `node scripts/render_report_review_bundle.mjs` renders representative PDFs for user review.
 - User can open the result page and judge the actual product feel, not just the text.

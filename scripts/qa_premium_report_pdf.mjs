@@ -7,21 +7,26 @@ import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 
 const ROOT = process.cwd();
-const DEFAULT_OUTPUT = path.join(os.tmpdir(), 'er-premium-report-sx-7-w8.pdf');
-const REPORT_ROUTE = '/test.html?debugReport=sx_7_w8';
+const DEFAULT_KEY = 'sx_7_w8';
+const CHEMISTRY_DIR = path.join(ROOT, 'docs/report-content/chemistry');
 const CHEMISTRY_SELECTOR = '#report-chemistry';
 const PDF_BUTTON_SELECTOR = '#download-pdf-btn';
 const args = new Set(process.argv.slice(2));
 
 function printHelp() {
-  console.log(`Usage: node scripts/qa_premium_report_pdf.mjs [--output <file>]
+  console.log(`Usage: node scripts/qa_premium_report_pdf.mjs [--key <combination_key>] [--output <file>]
 
 Validates the premium report PDF render flow:
-- opens ${REPORT_ROUTE}
+- opens /test.html?debugReport=<combination_key>
 - verifies ${CHEMISTRY_SELECTOR} is rendered
 - checks the page includes ${PDF_BUTTON_SELECTOR}
 - renders the page to PDF through the Codex Playwright CLI wrapper
 - saves and checks the PDF artifact
+
+Defaults:
+- key: ${DEFAULT_KEY}
+- output: ${path.join(os.tmpdir(), 'er-premium-report-<combination_key>.pdf')}
+- default route: ${getReportRoute(DEFAULT_KEY)}
 
 Requires the Codex Playwright CLI wrapper at:
   $PWCLI or ~/.codex/skills/playwright/scripts/playwright_cli.sh`);
@@ -30,6 +35,21 @@ Requires the Codex Playwright CLI wrapper at:
 function getArgValue(name) {
   const index = process.argv.indexOf(name);
   return index >= 0 ? process.argv[index + 1] : null;
+}
+
+function getReportRoute(key) {
+  return `/test.html?debugReport=${encodeURIComponent(key)}`;
+}
+
+function getDefaultOutputPath(key) {
+  return path.join(os.tmpdir(), `er-premium-report-${key.replaceAll('_', '-')}.pdf`);
+}
+
+function readChemistryCard(key) {
+  if (!/^(sp|sx|so)_[1-9]_w[1-9]$/.test(key)) return null;
+  const filePath = path.join(CHEMISTRY_DIR, `${key}.json`);
+  if (!fs.existsSync(filePath)) return null;
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
 function getPwcliPath() {
@@ -124,7 +144,14 @@ async function main() {
     return;
   }
 
-  const outputPath = path.resolve(getArgValue('--output') || DEFAULT_OUTPUT);
+  const chemistryKey = getArgValue('--key') || DEFAULT_KEY;
+  const chemistryCard = readChemistryCard(chemistryKey);
+  if (!chemistryCard) {
+    console.error(`Unknown chemistry combination key: ${chemistryKey}`);
+    process.exit(1);
+  }
+
+  const outputPath = path.resolve(getArgValue('--output') || getDefaultOutputPath(chemistryKey));
   const outputDir = path.dirname(outputPath);
   fs.mkdirSync(outputDir, { recursive: true });
   const pwcliPath = getPwcliPath();
@@ -134,14 +161,14 @@ async function main() {
   }
 
   const { child: server, port } = await startStaticServer(ROOT);
-  const url = `http://127.0.0.1:${port}${REPORT_ROUTE}`;
+  const url = `http://127.0.0.1:${port}${getReportRoute(chemistryKey)}`;
   const session = `er-report-pdf-${Date.now()}`;
 
   try {
     runRequiredPwcli(pwcliPath, session, 'open debug report', ['open', url], outputDir);
     const chemistrySnapshot = runRequiredPwcli(pwcliPath, session, 'snapshot chemistry section', ['snapshot', CHEMISTRY_SELECTOR], outputDir);
-    assertOutputContains(chemistrySnapshot, '조합별 심층 해석', 'Chemistry snapshot');
-    assertOutputContains(chemistrySnapshot, '더 많이 밀어붙이는 힘보다', 'Chemistry snapshot');
+    assertOutputContains(chemistrySnapshot, chemistryCard.display.one_page_title, 'Chemistry snapshot');
+    assertOutputContains(chemistrySnapshot, chemistryCard.display.pull_quote, 'Chemistry snapshot');
     assertOutputContains(chemistrySnapshot, '강점과 적합 환경', 'Chemistry snapshot');
     assertOutputContains(chemistrySnapshot, '코칭 질문', 'Chemistry snapshot');
     const buttonSnapshot = runRequiredPwcli(pwcliPath, session, 'snapshot PDF button', ['snapshot', PDF_BUTTON_SELECTOR], outputDir);
@@ -155,7 +182,7 @@ async function main() {
     process.stdout.write(result.stdout || '');
     if (result.stderr) process.stderr.write(result.stderr);
     if (pageCount != null) console.log(`PDF pages: ${pageCount}`);
-    console.log(`OK: premium report PDF QA passed (${path.relative(ROOT, outputPath)})`);
+    console.log(`OK: premium report PDF QA passed for ${chemistryKey} (${path.relative(ROOT, outputPath)})`);
   } finally {
     runPwcli(pwcliPath, session, ['close'], outputDir);
     server.kill('SIGTERM');

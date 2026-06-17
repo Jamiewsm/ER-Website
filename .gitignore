@@ -8,3 +8,6 @@ supabase/migrations/*_remote_schema.sql
 .DS_Store
 **/.DS_Store
 .wrangler/
+
+# Generated premium report review artifacts
+output/pdf/review-bundle/

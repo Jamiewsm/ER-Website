@@ -2576,56 +2576,97 @@ if (typeof window !== 'undefined') {
   window.renderPremiumReport = renderPremiumReport;
 }
 
-function renderDebugPremiumReportFromQuery() {
-  if (params.get('debugReport') !== 'sx_7_w8') return false;
+function parseDebugReportKey(key) {
+  const match = String(key || '').match(/^(sp|sx|so)_([1-9])_w([1-9])$/);
+  if (!match) return null;
+  const core = Number(match[2]);
+  const wing = Number(match[3]);
+  const leftWing = core === 1 ? 9 : core - 1;
+  const rightWing = core === 9 ? 1 : core + 1;
+  if (wing !== leftWing && wing !== rightWing) return null;
+  return { instinct: match[1], core, wing, otherWing: wing === leftWing ? rightWing : leftWing };
+}
 
-  const scores = { 1: 5, 2: 4, 3: 8, 4: 3, 5: 7, 6: 12, 7: 42, 8: 27, 9: 5 };
-  const model = buildPremiumReportModel({
+function getDebugInstinctLabel(instinct) {
+  return {
+    sp: '자기보존',
+    sx: '성적/일대일',
+    so: '사회적'
+  }[instinct] || instinct;
+}
+
+function getDebugInstinctMetrics(instinct) {
+  const labels = {
+    sp: '자기보존',
+    sx: '성적/일대일',
+    so: '사회적'
+  };
+  const scores = { sp: 42, sx: 42, so: 42 };
+  scores[instinct] = 90;
+  return ['sx', 'so', 'sp'].map((code) => ({
+    code,
+    label: labels[code],
+    score: scores[code]
+  }));
+}
+
+function buildDebugPremiumReportPayload(debugKey, parsed) {
+  const scores = {};
+  for (let type = 1; type <= 9; type += 1) scores[type] = 5;
+  scores[parsed.core] = 42;
+  scores[parsed.wing] = 27;
+  scores[parsed.otherWing] = 12;
+
+  return {
     final: scores,
     evidence: {
-      7: [
-        { text: '새로운 가능성과 전환으로 에너지를 회복하려는 응답이 반복되었습니다.', points: 4 },
-        { text: '불편한 감정 앞에서 머무르기보다 움직이려는 경향이 나타났습니다.', points: 3 }
+      [parsed.core]: [
+        { text: `${parsed.core}번의 핵심 동기가 가장 강하게 반복된 디버그 리뷰 샘플입니다.`, points: 4 },
+        { text: `${debugKey} 조합의 결과지/PDF 표시 품질을 확인하기 위한 샘플입니다.`, points: 3 }
       ],
-      8: [{ text: '답답한 상황에서 주도권을 회복하려는 신호가 보였습니다.', points: 2 }],
-      6: [{ text: '불확실성에 대비하려는 보조 신호가 일부 있었습니다.', points: 1 }]
+      [parsed.wing]: [{ text: `${parsed.wing}번 날개 신호가 보조 패턴으로 설정되었습니다.`, points: 2 }],
+      [parsed.otherWing]: [{ text: `${parsed.otherWing}번 날개는 비교 기준으로 낮게 설정되었습니다.`, points: 1 }]
     },
     ranked: [
-      { type: 7, score: 42 },
-      { type: 8, score: 27 },
-      { type: 6, score: 12 }
+      { type: parsed.core, score: 42 },
+      { type: parsed.wing, score: 27 },
+      { type: parsed.otherWing, score: 12 }
     ],
     top3: [
-      { type: 7, score: 42 },
-      { type: 8, score: 27 },
-      { type: 6, score: 12 }
+      { type: parsed.core, score: 42 },
+      { type: parsed.wing, score: 27 },
+      { type: parsed.otherWing, score: 12 }
     ],
     top3Total: 81,
     confidence: '높음',
     coreResolved: true,
-    core: 7,
-    second: { type: 8, score: 27 },
+    core: parsed.core,
+    second: { type: parsed.wing, score: 27 },
     diff: 0.36,
-    phase4: { subtypeCode: 'sx', subtypeLabel: '성적/일대일', wingNum: 8 },
+    phase4: { subtypeCode: parsed.instinct, subtypeLabel: getDebugInstinctLabel(parsed.instinct), wingNum: parsed.wing },
     postTieApplied: false,
     recentStress: null,
-    instinctCode: 'sx',
-    instinctLabel: '성적/일대일',
-    instinctMetrics: [
-      { code: 'sx', label: '성적/일대일', score: 90 },
-      { code: 'so', label: '사회적', score: 80 },
-      { code: 'sp', label: '자기보존', score: 20 }
-    ],
+    instinctCode: parsed.instinct,
+    instinctLabel: getDebugInstinctLabel(parsed.instinct),
+    instinctMetrics: getDebugInstinctMetrics(parsed.instinct),
     wingMetrics: [
-      { wing: 6, label: '7w6', score: 14, percent: 42 },
-      { wing: 8, label: '7w8', score: 33, percent: 100 }
+      { wing: parsed.otherWing, label: `${parsed.core}w${parsed.otherWing}`, score: 14, percent: 42 },
+      { wing: parsed.wing, label: `${parsed.core}w${parsed.wing}`, score: 33, percent: 100 }
     ],
-    wing: '8번 날개',
-    wingCode: '7w8',
-    wingNum: 8,
-    coreDisplay: '7번',
+    wing: `${parsed.wing}번 날개`,
+    wingCode: `${parsed.core}w${parsed.wing}`,
+    wingNum: parsed.wing,
+    coreDisplay: `${parsed.core}번`,
     responses: {}
-  });
+  };
+}
+
+function renderDebugPremiumReportFromQuery() {
+  const debugKey = params.get('debugReport');
+  const parsed = parseDebugReportKey(debugKey);
+  if (!parsed || !getReportChemistryCard(debugKey)) return false;
+
+  const model = buildPremiumReportModel(buildDebugPremiumReportPayload(debugKey, parsed));
 
   ['phase1-form', 'phase2-form', 'phase3-form', 'phase4-form', 'progress-container'].forEach((id) => {
     const el = document.getElementById(id);

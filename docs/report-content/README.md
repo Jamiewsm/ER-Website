@@ -61,11 +61,19 @@ node scripts/review_report_content.mjs
 
 ## PDF QA
 
-`sx_7_w8` 골드 샘플 결과지를 PDF로 렌더링하고, 조합 해석 섹션/다운로드 버튼/콘솔 error/PDF 파일을 확인합니다.
+`sx_7_w8` 골드 샘플 결과지를 PDF로 렌더링하고, 조합 해석 섹션/다운로드 버튼/콘솔 error/PDF 파일을 확인합니다. 특정 조합을 확인하려면 `--key`를 사용합니다.
 
 ```bash
 node scripts/qa_premium_report_pdf.mjs
+node scripts/qa_premium_report_pdf.mjs --key sx_9_w1 --output /tmp/er-premium-report-sx-9-w1.pdf
 ```
 
-기본 산출물은 `/tmp/er-premium-report-sx-7-w8.pdf`입니다.
-필요하면 `--output /path/to/file.pdf`로 위치를 지정합니다.
+기본 산출물은 `/tmp/er-premium-report-<combination_key>.pdf`입니다. 필요하면 `--output /path/to/file.pdf`로 위치를 지정합니다.
+
+대표 조합 6개의 리뷰 번들은 아래 명령으로 생성합니다. 산출물은 로컬 `output/pdf/review-bundle/`에 저장되며 Git에는 포함하지 않습니다.
+
+```bash
+node scripts/render_report_review_bundle.mjs
+```
+
+기본 대표 조합은 `sx_7_w8`, `so_8_w7`, `sx_8_w9`, `sx_9_w1`, `sp_9_w1`, `so_3_w4`입니다.
