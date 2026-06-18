@@ -93,7 +93,7 @@ ER은 에니어그램을 단순한 성격 분석 도구로 보지 않습니다.
 
 **Contact:**  
 Email: restoration.son@gmail.com  
-Instagram: @er_coaching_kr
+Instagram: @er_parenting
 
 **Closing:**
 

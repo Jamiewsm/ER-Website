@@ -66,8 +66,8 @@ values (
   6,
   '안내',
   'ER 인스타그램 공식 런칭',
-  '코칭·강의·회복 사역 소식을 더 가깝게 — @er_coaching_kr',
-  '<p class="text-gray-600 leading-relaxed break-keep">ER 인스타그램 계정이 공식 런칭되었습니다. 코칭·강의 일정, 회복 사역 인사이트, 짧은 묵상과 현장 소식을 더 자주 전해 드립니다.</p><p class="mt-4 text-sm text-gray-600 leading-relaxed break-keep">관심 있으시면 팔로우해 주세요. 새 소식과 모집 안내도 인스타그램에서 함께 나눕니다.</p><p class="mt-6 flex flex-wrap gap-3"><a href="https://www.instagram.com/er_coaching_kr/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors"><i class="fab fa-instagram"></i> @er_coaching_kr 팔로우하기</a></p>',
+  '코칭·강의·회복 사역 소식을 더 가깝게 — @er_official_Korea',
+  '<p class="text-gray-600 leading-relaxed break-keep">ER 인스타그램 계정이 공식 런칭되었습니다. 코칭·강의 일정, 회복 사역 인사이트, 짧은 묵상과 현장 소식을 더 자주 전해 드립니다.</p><p class="mt-4 text-sm text-gray-600 leading-relaxed break-keep">관심 있으시면 팔로우해 주세요. 새 소식과 모집 안내도 인스타그램에서 함께 나눕니다.</p><p class="mt-6 flex flex-wrap gap-3"><a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors"><i class="fab fa-instagram"></i> @er_official_Korea 팔로우하기</a></p>',
   true,
   date '2026-06-11'
 )

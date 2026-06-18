@@ -117,7 +117,7 @@ function renderParentingWorkshopApply(submitSource) {
                         신청 전 문의
                         <a href="mailto:restoration.son@gmail.com" class="ml-2 font-bold underline">Email</a>
                         <span class="mx-2 text-er-muted">|</span>
-                        <a href="https://www.instagram.com/er_coaching_kr/" target="_blank" rel="noopener noreferrer" class="font-bold underline">Instagram</a>
+                        <a href="https://www.instagram.com/er_parenting/" target="_blank" rel="noopener noreferrer" class="font-bold underline">Instagram</a>
                     </p>
                 </section>
             </div>
@@ -257,7 +257,7 @@ function renderJulyBasicCourseApply(submitSource) {
                         신청 전 문의
                         <a href="mailto:json@er-coaching.com" class="ml-2 font-bold underline">Email</a>
                         <span class="mx-2 text-er-muted">|</span>
-                        <a href="https://www.instagram.com/er_coaching_kr/" target="_blank" rel="noopener noreferrer" class="font-bold underline">Instagram</a>
+                        <a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="font-bold underline">Instagram</a>
                     </p>
                 </section>
             </div>
@@ -552,7 +552,7 @@ function renderThankYou(payload = null) {
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
                             ER 홈페이지로 돌아가기
                         </button>
-                        <a href="https://www.instagram.com/er_coaching_kr/" target="_blank" rel="noopener noreferrer" class="w-full rounded-lg border border-er-accentLight py-3 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">
+                        <a href="https://www.instagram.com/er_parenting/" target="_blank" rel="noopener noreferrer" class="w-full rounded-lg border border-er-accentLight py-3 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">
                             Instagram 보기
                         </a>
                     </div>
@@ -576,7 +576,7 @@ function renderThankYou(payload = null) {
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
                             ER 홈페이지로 돌아가기
                         </button>
-                        <a href="https://www.instagram.com/er_coaching_kr/" target="_blank" rel="noopener noreferrer" class="w-full rounded-lg border border-er-accentLight py-3 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">
+                        <a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="w-full rounded-lg border border-er-accentLight py-3 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">
                             Instagram 보기
                         </a>
                     </div>
