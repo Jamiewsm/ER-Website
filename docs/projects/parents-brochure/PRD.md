@@ -37,7 +37,7 @@ ER **Enneagram for Parenting** 4주 워크샵 홍보용 모바일 디지털 브�
 - Page 6: 신청 버튼 → `/#apply?track=paid&focus=parenting_workshop` · QR → `parenting-workshop.html`  
 - QR → 동일 URL  
 - Email: restoration.son@gmail.com (mailto)  
-- Instagram: @er_coaching_kr (링크)
+- Instagram: @er_parenting (링크)
 
 ## 8. 페이지별 콘텐츠
 
