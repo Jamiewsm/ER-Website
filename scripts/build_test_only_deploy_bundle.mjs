@@ -4,20 +4,9 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import http from 'node:http';
 import https from 'node:https';
+import { DEFAULT_SITE, TEST_RUNTIME_ALLOWLIST } from './deploy-tracks.mjs';
 
-const DEFAULT_SITE = 'https://er-coaching.com';
-const TEST_FILE_ALLOWLIST = [
-  'test.html',
-  'css/test.css',
-  'js/test.js',
-  'js/diagnostic-experiment.js',
-  'js/diagnostic-report-content.js',
-  'js/report-support-materials.js',
-  'test-results/background.png',
-  'test-results/background_card.png',
-  'test-results/background_vase.png',
-  'test-results/backgrdound_road.png'
-];
+const TEST_FILE_ALLOWLIST = TEST_RUNTIME_ALLOWLIST;
 
 function usage() {
   return [
@@ -141,8 +130,8 @@ async function main() {
 
   const copied = copyAllowlistedTestFiles(source, out);
   console.log(`OK: built test-only deploy bundle at ${out}`);
-  console.log(`Preserved live files: index.html, js/sections/home.js`);
-  console.log(`Overlayed test files: ${copied.join(', ')}`);
+  console.log(`Preserved live landing: index.html, js/sections/home.js`);
+  console.log(`Overlayed premium test files from source: ${copied.join(', ')}`);
 }
 
 main().catch((err) => {

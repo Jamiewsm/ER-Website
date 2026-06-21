@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
 const buildScript = fileURLToPath(new URL('../scripts/build_test_only_deploy_bundle.mjs', import.meta.url));
+const siteBuildScript = fileURLToPath(new URL('../scripts/build_site_only_deploy_bundle.mjs', import.meta.url));
 const verifyScript = fileURLToPath(new URL('../scripts/verify_live_test_deploy.mjs', import.meta.url));
 const execFileAsync = promisify(execFile);
 
@@ -39,7 +40,7 @@ function makeBuildFixture() {
   writeFile(source, 'js/sections/home.js', 'SOURCE HOME MUST NOT DEPLOY');
   writeFile(source, 'test.html', '<script src="js/test.js"></script>');
   writeFile(source, 'css/test.css', '.er-report-application-map{}');
-  writeFile(source, 'js/test.js', 'const marker = "tb_2_9_1 er-report-application-map";');
+  writeFile(source, 'js/test.js', 'buildResponseQualitySnapshot center_auto_1 instinct_attention_1 SUBTYPE_BEHAVIOR_ITEMS tb_2_9_1 er-report-application-map');
   writeFile(source, 'js/diagnostic-experiment.js', 'const marker = "experiment_payload";');
   writeFile(source, 'js/diagnostic-report-content.js', 'window.content = true;');
   writeFile(source, 'js/report-support-materials.js', 'window.support = true;');
@@ -60,7 +61,7 @@ function makeVerifyFixture({ omitTestMarker = false } = {}) {
   writeFile(root, 'js/sections/home.js', 'home-parent-child-photo.jpg home-couple-photo.jpg home-team-photo.jpg hands and green.png green and seat.png');
   writeFile(root, 'child-type-test/child-type-test.html', 'child type page is present');
   writeFile(root, 'test.html', 'css/test.css js/diagnostic-experiment.js js/report-support-materials.js js/test.js');
-  writeFile(root, 'js/test.js', omitTestMarker ? 'missing test marker' : 'buildResponseQualitySnapshot buildConfidenceExplanation tb_2_9_1 er-report-application-map');
+  writeFile(root, 'js/test.js', omitTestMarker ? 'missing test marker' : 'buildResponseQualitySnapshot buildConfidenceExplanation center_auto_1 instinct_attention_1 SUBTYPE_BEHAVIOR_ITEMS tb_2_9_1 er-report-application-map');
   writeFile(root, 'js/diagnostic-experiment.js', 'buildExperimentAnalyticsPayload experiment_payload feedback_detail');
   writeFile(root, 'css/test.css', 'background_vase.png er-report-application-map er-report-application-map-card');
   writeFile(root, 'test-results/background.png', 'png');
@@ -116,7 +117,7 @@ test('live deployment verifier follows production redirects', async () => {
     '/js/sections/home.js': 'home-parent-child-photo.jpg home-couple-photo.jpg home-team-photo.jpg hands and green.png green and seat.png',
     '/child-type-test/child-type-test.html': 'child type page is present',
     '/test.html': 'css/test.css js/diagnostic-experiment.js js/report-support-materials.js js/test.js',
-    '/js/test.js': 'buildResponseQualitySnapshot buildConfidenceExplanation tb_2_9_1 er-report-application-map',
+    '/js/test.js': 'buildResponseQualitySnapshot buildConfidenceExplanation center_auto_1 instinct_attention_1 SUBTYPE_BEHAVIOR_ITEMS tb_2_9_1 er-report-application-map',
     '/js/diagnostic-experiment.js': 'buildExperimentAnalyticsPayload experiment_payload feedback_detail',
     '/css/test.css': 'background_vase.png er-report-application-map er-report-application-map-card',
     '/test-results/background.png': 'png'
@@ -149,4 +150,45 @@ test('live deployment verifier follows production redirects', async () => {
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
+});
+
+test('site-only deploy bundle preserves live test runtime and deploys site from source', () => {
+  const root = makeDir('er-site-deploy-');
+  const source = join(root, 'source');
+  const live = join(root, 'live');
+  const out = join(root, 'out');
+
+  writeFile(source, 'index.html', 'NEW SITE LANDING');
+  writeFile(source, 'js/sections/home.js', 'NEW HOME');
+  writeFile(source, 'test.html', 'LEGACY TEST FROM SOURCE MUST NOT WIN');
+  writeFile(source, 'js/test.js', "id:'t2', triad:[2,3,4] LEGACY");
+  writeFile(source, 'css/test.css', 'legacy css');
+  writeFile(source, 'js/diagnostic-experiment.js', 'legacy exp');
+  writeFile(source, 'js/diagnostic-report-content.js', 'legacy content');
+  writeFile(source, 'js/report-support-materials.js', 'legacy support');
+  writeFile(source, 'test-results/background.png', 'live-png');
+
+  writeFile(live, 'test.html', 'LIVE TEST');
+  writeFile(live, 'js/test.js', 'buildResponseQualitySnapshot center_auto_1 instinct_attention_1 SUBTYPE_BEHAVIOR_ITEMS tb_2_9_1 er-report-application-map');
+  writeFile(live, 'css/test.css', 'live css');
+  writeFile(live, 'js/diagnostic-experiment.js', 'buildExperimentAnalyticsPayload experiment_payload feedback_detail');
+  writeFile(live, 'js/diagnostic-report-content.js', 'live content');
+  writeFile(live, 'js/report-support-materials.js', 'live support');
+  writeFile(live, 'test-results/background.png', 'live-png');
+  writeFile(live, 'test-results/background_card.png', 'live-png');
+  writeFile(live, 'test-results/background_vase.png', 'live-png');
+  writeFile(live, 'test-results/backgrdound_road.png', 'live-png');
+
+  const output = execFileSync(process.execPath, [
+    siteBuildScript,
+    '--source', source,
+    '--out', out,
+    '--site', `file://${live}`
+  ], { encoding: 'utf8', timeout: 5000 });
+
+  assert.match(output, /OK: built site-only deploy bundle/);
+  assert.equal(readFileSync(join(out, 'index.html'), 'utf8'), 'NEW SITE LANDING');
+  assert.equal(readFileSync(join(out, 'js/sections/home.js'), 'utf8'), 'NEW HOME');
+  assert.equal(readFileSync(join(out, 'js/test.js'), 'utf8'), readFileSync(join(live, 'js/test.js'), 'utf8'));
+  assert.doesNotMatch(readFileSync(join(out, 'js/test.js'), 'utf8'), /id:'t2'/);
 });

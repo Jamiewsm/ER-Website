@@ -1,20 +1,12 @@
-.git/
-.git
-.git/**
-.wrangler/
-.wrangler
-.claude/
-.claude
-.cursor/
-.cursor
-.playwright-cli/
-.playwright-cli
-.assetsignore
-.gitignore
-ops/
-docs/
-supabase/
-tests/
-**/.DS_Store
-*.md
-*.bak
+# Premium test runtime — NEVER deploy from site/full-repo wrangler.
+# Updated only via scripts/build_test_only_deploy_bundle.mjs + deploy-production test job.
+test.html
+css/test.css
+js/test.js
+js/diagnostic-experiment.js
+js/diagnostic-report-content.js
+js/report-support-materials.js
+test-results/background.png
+test-results/background_card.png
+test-results/background_vase.png
+test-results/backgrdound_road.png

@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import http from 'node:http';
 import https from 'node:https';
+import { assertPremiumTestSource } from './deploy-tracks.mjs';
 
 const DEFAULT_SITE = 'https://er-coaching.com';
 
@@ -126,6 +127,13 @@ async function main() {
   for (const check of CHECKS) {
     const body = await readSiteText(args.site, check.path);
     requireMarkers(body, check);
+    if (check.path === 'js/test.js') {
+      const testHtml = await readSiteText(args.site, 'test.html');
+      const legacyErrors = assertPremiumTestSource(body, testHtml);
+      if (legacyErrors.length) {
+        throw new Error(`Live js/test.js failed premium guard: ${legacyErrors.join('; ')}`);
+      }
+    }
     console.log(`OK ${check.path}: ${check.label}`);
   }
 

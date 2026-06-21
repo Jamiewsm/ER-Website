@@ -1,0 +1,54 @@
+name: Deploy Request
+description: Codex/Claude가 Cursor/CI 배포를 요청할 때 사용
+title: "[deploy] "
+labels: ["deploy-request"]
+body:
+  - type: dropdown
+    id: track
+    attributes:
+      label: Deploy track
+      options:
+        - test
+        - site
+        - both
+    validations:
+      required: true
+  - type: input
+    id: ref
+    attributes:
+      label: Git ref
+      placeholder: main
+      value: main
+    validations:
+      required: true
+  - type: dropdown
+    id: requested_by
+    attributes:
+      label: Requested by
+      options:
+        - codex
+        - claude
+        - cursor-sub
+        - human
+    validations:
+      required: true
+  - type: input
+    id: pr
+    attributes:
+      label: Related PR number
+      placeholder: "59"
+  - type: textarea
+    id: reason
+    attributes:
+      label: Reason
+      description: 왜 배포가 필요한지 (merge 완료 여부 포함)
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        Issue 생성 후 아래 댓글로도 트리거 가능합니다.
+        `/deploy test` · `/deploy site` · `/deploy both`
+
+        또는 CLI:
+        `node scripts/submit_deploy_request.mjs --track test --by codex --reason "..."`
