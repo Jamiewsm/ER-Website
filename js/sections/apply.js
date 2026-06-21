@@ -37,6 +37,37 @@ function hydrateLatestTestResult() {
     }
 }
 
+function hydrateChildTypeTestResult() {
+    try {
+        const raw = sessionStorage.getItem('er_child_type_result');
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed?.source === 'child_type_test' ? parsed : null;
+    } catch (_err) {
+        return null;
+    }
+}
+
+function formatChildTypeTestSummary(summary) {
+    if (!summary) return '';
+    const top = Array.isArray(summary.topTypes)
+        ? summary.topTypes.filter((t) => t !== summary.coreType).map((t) => `${t}번`).join(', ')
+        : '';
+    const parts = [
+        `부모 관찰형 검사 결과: ${summary.finalLabel}`,
+        `코어 ${summary.coreType}번${summary.coreTitle ? ` (${summary.coreTitle})` : ''}`,
+        `날개 ${summary.wingLabel}`,
+        `본능 ${summary.instinctSummary} (${summary.subtypeSummary})`,
+        `점수 확신도 ${summary.confidenceLabel}`,
+        `관찰 신뢰도 ${summary.reliabilityLabel}`,
+    ];
+    if (top) parts.push(`보조 후보 ${top}`);
+    if (summary.selectedSituations?.length) {
+        parts.push(`관찰 상황 ${summary.selectedSituations.length}건`);
+    }
+    return parts.join(', ');
+}
+
 function renderParentingWorkshopApply(submitSource) {
     return `
         <div class="parenting-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
@@ -269,6 +300,8 @@ function renderJulyBasicCourseApply(submitSource) {
 function renderApply(payload = null) {
     hydrateLatestTestResult();
     const fromTest = payload?.source === 'test';
+    const fromChildTypeTest = payload?.apply_source === 'child_type_test';
+    const childTypeResult = fromChildTypeTest ? hydrateChildTypeTestResult() : null;
     let focus = String(payload?.focus || '').trim();
     if (focus === 'parents_workshop') focus = 'parenting_workshop';
     const focusConfig = {
@@ -379,7 +412,7 @@ function renderApply(payload = null) {
     const isSupportTrack = track === 'support';
     const isMinistryTrack = track === 'ministry';
     const isOrgTrack = track === 'org';
-    const applyAttribution = fromTest ? 'test' : (payload?.apply_source || '');
+    const applyAttribution = fromTest ? 'test' : (fromChildTypeTest ? 'child_type_test' : (payload?.apply_source || ''));
     const submitSource = typeof buildApplySubmitSource === 'function'
         ? buildApplySubmitSource(track, focus, applyAttribution)
         : (fromTest ? 'test' : (focus ? `${track}:${focus}` : track));
@@ -389,9 +422,9 @@ function renderApply(payload = null) {
     if (isJulyBasicCourseFocus(focus)) {
         return renderJulyBasicCourseApply(submitSource);
     }
-    const testSummary = state.latestTestResult
+    const testSummary = fromTest && state.latestTestResult
         ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 하위유형 ${state.latestTestResult.subtypeSummary}, 본능 ${state.latestTestResult.instinctSummary}`
-        : '';
+        : (fromChildTypeTest && childTypeResult ? formatChildTypeTestSummary(childTypeResult) : '');
 
     const trackTitle = selectedFocus?.title || (
         isSupportTrack
@@ -423,7 +456,7 @@ function renderApply(payload = null) {
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
         : defaultPaidCategory;
-    const seededMessage = fromTest && testSummary
+    const seededMessage = (fromTest || fromChildTypeTest) && testSummary
         ? `${testSummary}\n${selectedFocus?.message || '유형(Typing) 상담 신청합니다.'}`
         : (selectedFocus?.message || '');
     const bannerTitle = selectedFocus?.bannerTitle || (

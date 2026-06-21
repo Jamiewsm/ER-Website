@@ -175,9 +175,11 @@
 
 <script src="../js/child-type-data.js"></script>
 <script src="../js/child-type-scoring.js"></script>
+<script src="../js/child-type-session.js"></script>
 <script>
 const { TYPES, INSTINCTS, PAIRS, WINGS, SITUATIONS, SCALE, PER_PAGE, REVERSE_INDEX } = ChildTypeData;
 const Scoring = ChildTypeScoring;
+const Session = ChildTypeSession;
 
 /* ============================================================
    상태
@@ -192,7 +194,14 @@ const state = {
 for(let t=1;t<=9;t++) state.type[t]=Array(8).fill(null);
 for(const k of ['SP','SO','SX']) state.inst[k]=Array(8).fill(null);
 
-const POOL = Scoring.buildQuestionPool(ChildTypeData, true);
+let savedProgress = Session.loadProgress();
+let POOL = (()=>{
+  if(savedProgress?.poolRefs){
+    const restored = Session.deserializePool(savedProgress.poolRefs, ChildTypeData);
+    if(restored) return restored;
+  }
+  return Scoring.buildQuestionPool(ChildTypeData, true);
+})();
 const PAGES = Math.ceil(POOL.length/PER_PAGE);
 
 function poolVal(it){ return Scoring.poolVal(state, it); }
@@ -204,6 +213,36 @@ for(let p=0;p<PAGES;p++) STEPS.push('q'+p);
 STEPS.push('transition','confusion','wing','result');
 let stepIdx = 0;
 let cache = {};
+
+function applySavedProgress(){
+  if(!savedProgress) return;
+  const s = savedProgress.state;
+  state.situations = s.situations;
+  for(let t=1;t<=9;t++) state.type[t] = s.type[t].slice();
+  state.conf = Object.assign({}, s.conf);
+  state.wing = s.wing;
+  for(const k of ['SP','SO','SX']) state.inst[k] = s.inst[k].slice();
+  stepIdx = Math.min(savedProgress.stepIdx, STEPS.length - 1);
+  savedProgress = null;
+}
+
+function resetAllProgress(){
+  Session.clearProgress();
+  savedProgress = null;
+  state.situations = new Set();
+  for(let t=1;t<=9;t++) state.type[t] = Array(8).fill(null);
+  state.conf = {};
+  state.wing = null;
+  for(const k of ['SP','SO','SX']) state.inst[k] = Array(8).fill(null);
+  POOL = Scoring.buildQuestionPool(ChildTypeData, true);
+  stepIdx = 0;
+  cache = {};
+}
+
+function persistProgress(){
+  if(stepIdx <= 0) return;
+  Session.saveProgress({ stepIdx, state, pool: POOL });
+}
 
 const app = document.getElementById('app');
 const nav = document.getElementById('nav');
@@ -265,7 +304,7 @@ function navButtons(opts){
   // opts: {back:bool, nextLabel, nextEnabled, onNext}
   if(opts.back!==false){
     const b=document.createElement('button'); b.className='btn ghost'; b.textContent='이전';
-    b.onclick=()=>{stepIdx--;render();};
+    b.onclick=()=>{stepIdx--; persistProgress(); render();};
     nav.appendChild(b);
   }
   const n=document.createElement('button'); n.className='btn primary';
@@ -292,8 +331,30 @@ function renderIntro(){
     <div class="disc">소요 시간 약 10–15분 · 평소 아이의 모습을 떠올리며 관찰 문항과 비교 문항에 답해주세요.</div>
     <p class="intro-exit"><a href="../index.html">메인으로 돌아가기</a></p>
   `;
+  if(savedProgress && savedProgress.stepIdx > 0){
+    const resume=document.createElement('div');
+    resume.className='reliability mid';
+    resume.style.marginTop='16px';
+    const when=savedProgress.savedAt ? new Date(savedProgress.savedAt).toLocaleString('ko-KR') : '이전 세션';
+    const label=stepLabel(STEPS[Math.min(savedProgress.stepIdx, STEPS.length-1)]);
+    resume.innerHTML=`<h3>저장된 진행이 있어요</h3>
+      <p class="small" style="margin:0 0 10px;">${when} · <strong>${label}</strong> 단계까지 저장되어 있습니다. 이어서 작성하거나 처음부터 다시 시작할 수 있습니다.</p>`;
+    c.appendChild(resume);
+    app.appendChild(c);
+    const resumeBtn=document.createElement('button'); resumeBtn.className='btn primary';
+    resumeBtn.textContent='이어서 작성하기';
+    resumeBtn.onclick=()=>{ applySavedProgress(); persistProgress(); render(); };
+    const freshBtn=document.createElement('button'); freshBtn.className='btn ghost';
+    freshBtn.textContent='처음부터';
+    freshBtn.onclick=()=>{
+      if(confirm('저장된 응답을 지우고 처음부터 다시 시작할까요?')){ resetAllProgress(); render(); }
+    };
+    nav.appendChild(freshBtn);
+    nav.appendChild(resumeBtn);
+    return;
+  }
   app.appendChild(c);
-  navButtons({back:false, nextLabel:'관찰형 검사 시작하기', onNext:()=>{stepIdx++;render();}});
+  navButtons({back:false, nextLabel:'관찰형 검사 시작하기', onNext:()=>{stepIdx++; persistProgress(); render();}});
 }
 
 function renderSituation(){
@@ -316,6 +377,7 @@ function renderSituation(){
     row.innerHTML=`<span class="box">${state.situations.has(i)?'✓':''}</span><span class="t">${i+1}. ${s}</span>`;
     row.onclick=()=>{
       if(state.situations.has(i)) state.situations.delete(i); else state.situations.add(i);
+      persistProgress();
       render(false);
     };
     list.appendChild(row);
@@ -335,14 +397,14 @@ function renderQuestions(pageIdx){
   items.forEach((it,k)=>{
     const num = start+k+1;
     c.appendChild(questionBlock(`${num}. ${it.text}`, poolVal(it), (v)=>{
-      setPoolVal(it, v); render(false);
+      setPoolVal(it, v); persistProgress(); render(false);
     }));
   });
   app.appendChild(c);
   const last = (pageIdx===PAGES-1);
   navButtons({nextLabel:(last?'응답 마치기':'다음'), onNext:()=>{
     if(!items.every(it=> poolVal(it)!==null)){ warn.classList.add('show'); return; }
-    stepIdx++; render();
+    stepIdx++; persistProgress(); render();
   }});
 }
 
@@ -354,7 +416,7 @@ function renderTransition(){
     <p class="lead">마지막으로, 아이의 모습을 더 또렷하게 구분하기 위한 <strong>비교 문항</strong> 몇 개만 골라주시면 결과를 보여드릴게요.</p>
     <p class="small">두 가지 설명 중 우리 아이에게 더 가까운 쪽을 고르는 방식이에요. 오래 고민하지 말고 첫 느낌으로 선택해주세요.</p>`;
   app.appendChild(c);
-  navButtons({nextLabel:'비교 문항 시작', onNext:()=>{stepIdx++;render();}});
+  navButtons({nextLabel:'비교 문항 시작', onNext:()=>{stepIdx++; persistProgress(); render();}});
 }
 
 function renderConfusion(){
@@ -374,13 +436,13 @@ function renderConfusion(){
       const o=document.createElement('div');
       o.className='opt'+(state.conf[p.idx]===key?' on':'');
       o.innerHTML=`<div class="txt">${txt}</div>`;
-      o.onclick=()=>{ state.conf[p.idx]=key; render(false); };
+      o.onclick=()=>{ state.conf[p.idx]=key; persistProgress(); render(false); };
       ab.appendChild(o);
     });
     c.appendChild(ab);
   });
   app.appendChild(c);
-  navButtons({nextLabel:'다음', onNext:()=>{ cache=compute(); stepIdx++; render(); }});
+  navButtons({nextLabel:'다음', onNext:()=>{ cache=compute(); stepIdx++; persistProgress(); render(); }});
 }
 
 function renderWing(){
@@ -393,11 +455,11 @@ function renderWing(){
     const w=document.createElement('div');
     w.className='wing'+(state.wing===wn?' on':'');
     w.innerHTML=`<div class="wd" style="font-size:15px;color:var(--ink);">${wd}</div>`;
-    w.onclick=()=>{ state.wing=wn; render(false); };
+    w.onclick=()=>{ state.wing=wn; persistProgress(); render(false); };
     c.appendChild(w);
   });
   app.appendChild(c);
-  navButtons({nextLabel:'결과 보기', onNext:()=>{stepIdx++;render();}});
+  navButtons({nextLabel:'결과 보기', onNext:()=>{stepIdx++; persistProgress(); render();}});
 }
 
 
@@ -510,7 +572,11 @@ function renderResult(){
   cta.textContent='결과 해석상담 신청하기 · 1시간 $50';
   cta.onmouseenter=()=>cta.style.background='#a85a30';
   cta.onmouseleave=()=>cta.style.background='var(--clay)';
-  cta.onclick=()=>{ window.location.href='../index.html#apply?focus=result_consult'; };
+  const resultSummary = Session.buildResultSummary(state, cache, ChildTypeData);
+  Session.persistResultSummary(resultSummary);
+  cta.onclick=()=>{
+    window.location.href='../index.html#apply?focus=result_consult&apply_source=child_type_test';
+  };
   c5.appendChild(cta);
   app.appendChild(c5);
 
@@ -520,7 +586,9 @@ function renderResult(){
   const b2=document.createElement('button'); b2.className='btn primary'; b2.textContent='결과 인쇄 / PDF 저장';
   b2.onclick=()=>window.print();
   const b3=document.createElement('button'); b3.className='btn ghost'; b3.textContent='처음부터';
-  b3.onclick=()=>{ if(confirm('모든 응답을 지우고 처음부터 다시 시작할까요?')) location.reload(); };
+  b3.onclick=()=>{
+    if(confirm('모든 응답을 지우고 처음부터 다시 시작할까요?')){ resetAllProgress(); render(); }
+  };
   nav.appendChild(b1); nav.appendChild(b2); nav.appendChild(b3);
 }
 

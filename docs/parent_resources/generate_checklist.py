@@ -1,0 +1,732 @@
+# 부모 배포용 '아이 유형 관찰 체크리스트' PDF의 원본 HTML을 생성하는 스크립트
+# 웹 관찰형 검사(96문항) SSOT: js/child-type-data.js → scripts/sync_child_type_observation_from_data.mjs
+# -*- coding: utf-8 -*-
+import html as _html
+
+OUT = "child_type_checklist.html"
+
+# 에니어그램 세 중심(장형/가슴형/머리형)별 색상 팔레트
+CENTER = {
+    "gut":   {"ac": "#A85D32", "ac2": "#8A4B27", "soft": "#FAF3EC", "bd": "#ECD7C4"},
+    "heart": {"ac": "#A24E70", "ac2": "#86405D", "soft": "#FBEFF4", "bd": "#ECD2DD"},
+    "head":  {"ac": "#2E6A8E", "ac2": "#275A78", "soft": "#EDF3F8", "bd": "#D1E0EC"},
+}
+CENTER_LABEL = {
+    "gut":   ("장형 · 본능중심", "분노"),
+    "heart": ("가슴형 · 감정중심", "수치심"),
+    "head":  ("머리형 · 이성중심", "두려움"),
+}
+
+
+def esc(s):
+    return _html.escape(s, quote=False)
+
+
+def md(s):
+    """원문의 **강조**를 굵게 처리하고 HTML 이스케이프."""
+    s = esc(s)
+    out, bold = [], False
+    i = 0
+    while i < len(s):
+        if s[i:i + 2] == "**":
+            out.append("</b>" if bold else "<b>")
+            bold = not bold
+            i += 2
+        else:
+            out.append(s[i])
+            i += 1
+    if bold:
+        out.append("</b>")
+    return "".join(out)
+
+
+TYPES = [
+    {
+        "num": "1", "center": "gut",
+        "name": "올바른 사람 / 완벽주의자",
+        "emotion": "분노(억압형)",
+        "desire": "선하고 올바르며 완전한 존재가 되는 것",
+        "fear": "결함 있고 악한 존재가 되는 것, 잘못된 사람이 되는 것",
+        "behaviors": [
+            "숙제나 그림에서 실수한 부분을 유난히 신경 쓰고 지우개로 반복해서 고친다",
+            "놀이 규칙이나 약속을 엄격하게 지키려 하고, 남이 어기면 지적한다",
+            "스스로에게 “이래야 해”, “이게 맞아”라는 말을 자주 한다",
+            "칭찬을 들어도 “아직 부족해”라며 인정하지 못하거나 다른 잘못된 점을 찾는다",
+            "정리정돈에 민감해 자기 물건이 제자리에 있지 않으면 불편해한다",
+        ],
+        "stress": [
+            "사소한 일에도 짜증이나 불평을 반복하며 예민해진다",
+            "더 완벽하게 통제하려고 집착하거나 되풀이 확인한다",
+            "감정을 억누르다가 갑자기 폭발하거나 울음을 터뜨린다",
+        ],
+        "inner": [
+            "“실수하면 안 돼. 실수하는 나는 나쁜 아이야.”",
+            "“옳은 일을 해야 사랑받을 수 있어.”",
+            "“모든 걸 제대로 해야 해. 그래야 안심이 돼.”",
+        ],
+        "misunderstand": [
+            "“엄격하고 규칙적이니 문제가 없겠다”고 생각하지만, 내면에서는 자기 비판과 불안이 심할 수 있다",
+            "“고집이 세고 남을 지적한다”는 행동 이면에 “옳은 것이 아니면 모든 것이 무너질 것”이라는 두려움이 있다",
+        ],
+        "questions": [
+            "아이가 실수했을 때 스스로를 어떻게 말하나요? (“괜찮아” vs “내가 왜 그랬지?”)",
+            "아이가 가장 긴장을 푸는 순간은 언제인가요?",
+            "아이가 “공평하지 않아”라고 말할 때, 무엇에 가장 예민하게 반응하나요?",
+        ],
+        "helpful": [
+            "“괜찮아, 실수해도 넌 사랑받는 아이야”라고 완벽하지 않아도 괜찮다는 메시지를 자주 준다",
+            "아이가 잘한 구체적인 부분을 칭찬한다 (“100점”보다 “이 문제를 끝까지 포기하지 않은 것”)",
+            "부모 자신도 실수를 인정하고 솔직하게 말하는 모델을 보여준다",
+        ],
+        "hurtful": [
+            "“또 실수했어?”, “네가 이걸 틀리다니” — 실수를 나쁜 것으로 고정하는 말",
+            "“좀 더 잘할 수 있잖아” — 이미 최선을 다한 아이에게 더를 요구하는 태도",
+            "부모가 아이 앞에서 타인을 엄격히 비판하는 모습 — 아이의 내면 비판자를 강화한다",
+        ],
+        "caution": "1번 아이는 초등 고학년으로 갈수록 더 강해 보일 수 있지만, 이는 또래 관계에서의 사회화 과정일 수도 있습니다. 질서를 좋아하는 기질과 1번의 동기(두려움 기반 완벽주의)를 구분해야 합니다. 또한 하위유형 중 자기보존 1번과 사회적 1번은 같은 1번이라도 관찰되는 행동이 크게 다릅니다.",
+    },
+    {
+        "num": "2", "center": "heart",
+        "name": "도움 주는 사람 / 사람을 기쁘게 하는 사람",
+        "emotion": "수치심",
+        "desire": "사랑받고 있다고 느끼는 것, 사랑받는 사람이 되는 것",
+        "fear": "아무도 자신을 사랑하지 않고 원하지 않는 것, 필요 없는 사람이 되는 것",
+        "behaviors": [
+            "친구나 가족이 속상해하면 자기가 나서서 달래주거나 문제를 해결해주려 한다",
+            "자기가 도움을 준 일에 대해 “고마워”라는 반응을 기대하고 서운해한다",
+            "자기가 싫거나 힘들어도 “나는 괜찮아”라며 웃으려고 한다",
+            "다른 아이의 필요를 먼저 챙기고 자기 몫은 뒤로 미룬다",
+            "거절하거나 싫은 표현을 잘 못하고, 상대방 기분을 맞추려고 애쓴다",
+        ],
+        "stress": [
+            "더 과도하게 남을 챙기며 “내가 없으면 안 돼” 행동이 심해진다",
+            "티 내지 않고 서운함을 쌓다가 감정적으로 폭발하거나 울음을 터뜨린다",
+            "상대를 죄책감이 들게 하는 말을 한다 (“내가 이렇게 했는데 너는…”)",
+        ],
+        "inner": [
+            "“내가 도와야 사람들이 나를 좋아해.”",
+            "“내가 필요하면 사랑받을 수 있어. 필요 없으면 버림받아.”",
+            "“내가 아프다고 말하면 귀찮아할 거야. 참자.”",
+        ],
+        "misunderstand": [
+            "“착하고 배려심이 많아서 문제없다”고 생각하지만, 아이는 “내가 도움을 주지 않으면 사랑받을 자격이 없다”고 느낄 수 있다",
+            "“자기 일도 잘 챙기는데?”라고 보이지만, 타인의 필요를 채우는 데 몰두한 나머지 정작 자기의 진짜 욕구를 모를 수 있다",
+        ],
+        "questions": [
+            "아이가 다른 사람을 도운 후, 어떤 표정과 말투를 보이나요? (“해줘서 기뻐” vs “고맙단 말은?”)",
+            "아이가 “싫어” 또는 “하기 싫어”라고 솔직하게 말할 수 있는 상황인가요?",
+            "아이가 아플 때 “괜찮아”를 먼저 말하나요, 아픔을 표현하나요?",
+        ],
+        "helpful": [
+            "“받는 연습”을 시킨다 — “네가 원하는 게 뭔지 말해줘, 엄마가 해줄게”",
+            "아이가 도움을 주지 않아도 “네가 그냥 있어도 사랑해”라는 메시지를 반복한다",
+            "아이의 말과 반대되는 감정을 읽어주고 표현해준다 (“힘들었구나, 그런데 참은 거지?”)",
+        ],
+        "hurtful": [
+            "아이의 도움을 당연하게 받고 “고맙다”는 표현을 생략하는 태도",
+            "“넌 착하니까 괜찮지?” — 아이가 거절할 권리를 무시하는 말",
+            "“네가 없으면 우리 집이 안 굴러가” — 아이의 존재 가치를 도움과 연결시키는 말",
+        ],
+        "caution": "2번 아이는 반항기(사춘기)에 “더 이상 도움받지 않겠다”며 반대로 행동할 수 있습니다. 또한 모든 아이가 때로는 남을 돕고 배려하는 행동을 보이므로, **거절에 대한 두려움과 인정 욕구가 동기인지** 관찰해야 합니다. 2번과 9번은 둘 다 자기 욕구를 뒤로 미룬다는 점에서 혼동될 수 있는데, 9번이 “평화 유지”가 목적이라면 2번은 “관계 유지를 통한 사랑 확보”가 목적입니다.",
+    },
+    {
+        "num": "3", "center": "heart",
+        "name": "성취하는 사람 / 이미지 지향",
+        "emotion": "수치심",
+        "desire": "가치 있는 사람으로 인정받고 존경과 찬사를 받는 것",
+        "fear": "쓸모없는 사람이나 실패자가 되는 것, 아무것도 아닌 사람으로 여겨지는 것",
+        "behaviors": [
+            "“내가 1등 했어”, “내가 제일 잘했지” 등 성과를 자랑하고 인정받으려 한다",
+            "지거나 실패할 가능성이 있는 일은 회피하거나 변명한다",
+            "경쟁 상황에서 승부욕이 강해 지려고 하지 않는다",
+            "친구들 앞에서 자기의 좋은 모습만 보여주려고 애쓰고 약한 모습은 숨긴다",
+            "새로운 일을 빠르게 배우고 해내지만, 깊이 파고들기보다 결과를 빨리 내는 쪽에 집중한다",
+        ],
+        "stress": [
+            "더 과도하게 공부나 연습에 몰두하며 쉬지 못한다",
+            "실패 가능성이 있는 일은 아예 시작하지 않거나 핑계를 댄다",
+            "감정을 닫고 더 기계적인 태도로 변한다 (“몰라, 상관없어”)",
+        ],
+        "inner": [
+            "“내가 잘해야 사랑받을 수 있어. 잘하지 못하면 가치 없는 아이야.”",
+            "“지면 안 돼. 지는 건 실패하는 거야.”",
+            "“사람들이 나를 어떻게 볼까? 멋져 보여야 해.”",
+        ],
+        "misunderstand": [
+            "“야무지고 목표 의식이 확실하니 앞으로 잘하겠다”고 생각하지만, 실패에 대한 두려움이 성취 동기의 전부일 수 있다",
+            "“자존감이 높아 보인다”고 생각하지만, 자존감이 성과에 완전히 연결되어 있어 실패 시 큰 타격을 받을 수 있다",
+        ],
+        "questions": [
+            "아이가 시험에서 100점을 받지 못했을 때, 스스로를 어떻게 대하나요?",
+            "아이가 “잘하는 것” 이야기 외에 “좋아하는 것”이나 “재미있는 것”도 자주 말하나요?",
+            "아이가 실패한 경험을 솔직하게 이야기할 수 있는 분위기가 만들어져 있나요?",
+        ],
+        "helpful": [
+            "결과보다 과정과 노력을 구체적으로 인정해준다 (“1등이 아니라, 포기하지 않고 끝까지 한 게 대단해”)",
+            "아이가 잘하지 못하는 모습을 보여도 변함없이 사랑한다는 태도를 일관되게 보인다",
+            "아이의 성취를 축하해주되, 성취 여부와 상관없이 존재 자체를 인정해주는 시간을 따로 만든다",
+        ],
+        "hurtful": [
+            "“1등 했어? 몇 명이나 있었는데?” — 성과를 조건적으로 평가하는 말",
+            "형제자매나 타인과의 비교 (“네 동생은 ~하는데 너는?”)",
+            "아이의 실패에 실망하는 표정이나 태도 — 아이는 “내가 실패해서 엄마의 사랑을 잃었구나”라고 느낀다",
+        ],
+        "caution": "한국 교육 환경에서는 많은 아이들이 3번처럼 보일 수 있습니다. 성취를 강조하는 문화 속에서 일시적으로 3번적 행동이 강화될 수 있으며, 이는 진정한 3번의 동기(무가치 두려움)와 다를 수 있습니다. 또한 1번과 3번은 모두 성취 지향적으로 보일 수 있으나, 1번은 “완벽함” 자체에, 3번은 “인정과 이미지”에 더 동기화되어 있습니다.",
+    },
+    {
+        "num": "4", "center": "heart",
+        "name": "개성 있는 사람 / 낭만적",
+        "emotion": "수치심",
+        "desire": "진정성, 독특함, 개인적인 의미를 갖는 것",
+        "fear": "자신만의 정체성이 없거나 중요하지 않은 존재가 되는 것",
+        "behaviors": [
+            "“나만 특별한 게 없어”, “다른 애들은 다 있는데 나는 없어”라며 결핍을 자주 표현한다",
+            "옷, 소지품, 취미에서 “남과 다른 나만의 것”을 원한다",
+            "감정 기복이 크고, 이유 없이 갑자기 슬퍼지거나 예민해진다",
+            "상상이나 그림, 글쓰기 등 창의적인 표현에서 자기만의 독특한 세계를 드러낸다",
+            "과거 일이나 잃어버린 관계에 대한 그리움을 자주 표현한다 (“예전에는 좋았는데…”)",
+        ],
+        "stress": [
+            "더 우울하고 냉소적인 태도로 변하며 “왜 나만 이래”라는 말을 반복한다",
+            "혼자 있고 싶어 하고 방에 틀어박힌다",
+            "남을 부러워하거나 시기하는 말을 자주 한다 (“~는 좋겠다”)",
+        ],
+        "inner": [
+            "“나는 뭔가 부족해. 다른 아이들은 다 있는데 나만 없어.”",
+            "“평범한 건 의미 없어. 나는 특별해야 해.”",
+            "“아무도 나를 진짜로 이해하지 못해.”",
+        ],
+        "misunderstand": [
+            "“감정 기복이 심하고 까다롭다”고 느끼지만, 이는 아이가 진정성과 의미를 추구하는 방식일 수 있다",
+            "“더 노력하면 행복해질 텐데”라고 생각하지만, 아이는 “부족함”을 느끼는 데서 정체성의 일부를 얻고 있어 변화를 두려워할 수 있다",
+        ],
+        "questions": [
+            "아이가 “심심해” 또는 “재미없어”라고 말할 때, 단순한 지루함인가요, 더 깊은 의미를 갈망하는 것인가요?",
+            "아이가 가장 생기를 되찾는 순간은 언제인가요? (창작? 인정? 관계?)",
+            "아이가 다른 친구나 형제를 부러워할 때, 무엇을 부러워하나요? (능력? 관계? 물건?)",
+        ],
+        "helpful": [
+            "아이의 감정을 “틀렸다”고 하지 않고 그대로 인정해준다 (“속상하구나, 그럴 수 있어”)",
+            "“넌 특별하지 않아도 충분히 의미 있는 존재야”라는 메시지를 행동으로 보여준다",
+            "아이의 창의성과 독특함을 진심으로 인정해주되, “특별해야 사랑받는다”는 연결을 만들지 않는다",
+        ],
+        "hurtful": [
+            "“또 우울해?”, “왜 항상 부정적이야?” — 감정을 병리화하는 태도",
+            "“다 똑같은데 뭐가 달라?” — 아이의 독특함에 대한 욕구를 무시하는 말",
+            "“네 동생처럼 좀 밝게 살면 안 되겠니?” — 타인과의 비교로 아이의 기질을 부정하는 말",
+        ],
+        "caution": "사춘기 청소년은 정체성 형성 과정에서 일시적으로 4번적 특성(특별함 추구, 우울감, 남과 다르고 싶은 마음)을 보일 수 있습니다. 이는 발달 과정의 일부일 뿐 핵심 유형이 아닐 수 있습니다. 또한 4번은 하위유형과 건강도에 따라 외향적이고 창의적으로 보일 수도, 내성적이고 우울해 보일 수도 있어 같은 4번이라도 표면 행동이 매우 다릅니다.",
+    },
+    {
+        "num": "5", "center": "head",
+        "name": "탐구하는 사람 / 관찰자",
+        "emotion": "두려움",
+        "desire": "능력과 지식을 갖추고 스스로 충분하다는 감각을 갖는 것",
+        "fear": "압도당하거나 침범당하거나 무능력해지는 것",
+        "behaviors": [
+            "혼자 있는 시간을 유난히 필요로 하고, 방해받는 것을 싫어한다",
+            "관심 있는 분야는 깊이 파고들지만, 관심 없는 일에는 무관심하다",
+            "감정 표현이나 신체 접촉에 어색해하고 거리를 둔다",
+            "질문을 많이 하지만, 결정을 요구하면 “생각해볼게”라며 미룬다",
+            "사람 많은 곳이나 새로운 환경에서 한참 관찰한 후에야 움직이기 시작한다",
+        ],
+        "stress": [
+            "더 깊이 고립되고 말수가 줄어든다",
+            "불필요한 정보 수집에 빠져서 실제 해야 할 일은 미룬다",
+            "예민해져서 작은 요구나 침범에도 강하게 저항하거나 회피한다",
+        ],
+        "inner": [
+            "“세상은 너무 많은 걸 요구해. 나는 혼자 있고 싶어.”",
+            "“모르는 건 창피한 거야. 충분히 알 때까지 숨겨야 해.”",
+            "“내 자원(시간, 에너지, 공간)은 한정되어 있어. 아껴야 해.”",
+        ],
+        "misunderstand": [
+            "“혼자 있는 걸 좋아하니 문제없다”고 생각하지만, 고립이 지나치면 사회적 기술이 위축될 수 있다",
+            "“똑똑하고 조용히 잘한다”고 생각하지만, 내면에서는 “무능력해질까 봐” 불안해하며 완벽하게 준비되지 않으면 행동으로 옮기지 못할 수 있다",
+        ],
+        "questions": [
+            "아이가 새로운 활동을 시작할 때, 얼마나 오래 관찰하고 준비하나요?",
+            "아이가 방해받는 것을 가장 싫어하는 순간은 언제인가요?",
+            "아이가 자신이 아는 것에 대해 이야기할 때와 감정에 대해 이야기할 때, 어느 쪽에서 더 편안해하나요?",
+        ],
+        "helpful": [
+            "혼자 있는 시간을 존중해주고, 아이가 준비될 때까지 기다려준다",
+            "질문에 진지하게 답해주고 모르는 것은 “같이 알아보자”고 한다",
+            "감정을 직접 묻기보다 활동(함께 걷기, 그림 그리기)을 통해 자연스럽게 표현할 기회를 만든다",
+        ],
+        "hurtful": [
+            "“왜 방에만 있어? 나와서 좀 놀아” — 혼자 있는 필요를 부정하는 태도",
+            "아이의 물건이나 공간을 허락 없이 만지거나 정리하는 행동",
+            "“넌 왜 이렇게 감정 표현이 없어?” — 기질적 차이를 무시하는 지적",
+        ],
+        "caution": "5번 아이는 조용해서 문제를 일으키지 않아 부모가 유형을 눈치채지 못하는 경우가 많습니다. 내향적인 성격(I)과 5번의 동기(압도에 대한 두려움 기반 자원 보존 전략)를 구분해야 합니다. 또한 한국 문화에서 5번적 성향은 “사회성이 부족하다”는 평가를 받기 쉬워 아이가 자신의 기질을 부정적으로 인식할 위험이 있습니다.",
+    },
+    {
+        "num": "6", "center": "head",
+        "name": "충성하는 사람 / 의심하는 사람",
+        "emotion": "두려움",
+        "desire": "안전, 안내, 지지를 받는 것",
+        "fear": "위험에 노출되는 것, 아무도 자신을 지지해주지 않는 것",
+        "behaviors": [
+            "“만약에…하면 어쩌지?”라는 걱정이나 최악의 시나리오를 자주 말한다",
+            "새로운 상황이나 낯선 사람 앞에서 경계심이 강하고 쉽게 신뢰하지 않는다",
+            "결정을 잘 못하고 여러 번 확인하거나 부모의 의견을 반복해서 묻는다",
+            "한번 믿은 사람이나 관계에는 강한 충성심을 보인다",
+            "권위(선생님, 부모)에게 순종적이면서도 동시에 의심하는 태도를 보인다",
+        ],
+        "stress": [
+            "부모나 선생님에게 더 심하게 매달리거나 반대로 밀쳐낸다",
+            "불안이 극심해져서 예민하게 반응하거나 공격적으로 변한다",
+            "모든 결정을 더 유보하고, “몰라”, “아무거나”로 회피한다",
+        ],
+        "inner": [
+            "“이게 정말 안전한 걸까? 확인해야 해.”",
+            "“누구도 진짜로 믿을 수 없어. 나도 내가 한 선택을 믿지 못하겠어.”",
+            "“내가 이렇게 하면 어떻게 될까? 최악의 경우를 대비해야 해.”",
+        ],
+        "misunderstand": [
+            "“불안이 많고 소심하다”고만 보지만, 이는 아이가 세상을 인식하고 안전을 확보하는 방식이다",
+            "“반항적이고 말을 안 듣는다”고 느낄 수 있지만, 두려움과 불신이 표면화된 모습일 수 있다",
+        ],
+        "questions": [
+            "아이가 가장 불안해하는 상황은 어떤 때인가요? (시험? 새 학기? 관계 갈등?)",
+            "아이가 안심하고 의지할 수 있는 사람이나 대상은 무엇인가요?",
+            "아이가 결정을 미룰 때, 그 이유가 “더 나은 선택” 때문인가요, “잘못될지도 모른다”는 두려움 때문인가요?",
+        ],
+        "helpful": [
+            "아이의 걱정을 가볍게 넘기지 말고 진지하게 들어주고 함께 대비책을 생각해준다",
+            "예측 가능하고 일관된 환경을 제공하며, 약속을 꼭 지킨다",
+            "아이가 스스로 결정했을 때 “잘했어, 네 선택을 믿어”라며 내면 권위를 키워준다",
+        ],
+        "hurtful": [
+            "“또 걱정이야?”, “네가 왜 이렇게 예민해?” — 아이의 두려움을 하찮게 여기는 태도",
+            "부모가 감정적으로 예측 불가능하게 행동하는 것 (아이의 불안을 강화한다)",
+            "“네 판단을 믿어”라고 말하면서도 아이가 선택한 결과에 대해 비판하는 모순된 태도",
+        ],
+        "caution": "6번은 공포형(자주 불안을 표현)과 반공포형(두려움을 정면돌파하거나 오히려 반항적으로 보임)으로 나뉘어 표면 행동이 완전히 다를 수 있습니다. 반공포형 6번은 8번이나 3번처럼 용기 있고 도전적으로 보여 오해되기 쉽습니다. 또한 불안은 청소년에게 흔한 정서이므로, 불안의 내용이 “위험 탐지 — 안전 확인 — 신뢰 검증”이라는 6번의 패턴을 보이는지 관찰해야 합니다.",
+    },
+    {
+        "num": "7", "center": "head",
+        "name": "열정적인 사람 / 즐거움 추구자",
+        "emotion": "두려움",
+        "desire": "자유, 만족, 즐거움을 경험하는 것",
+        "fear": "고통이나 결핍 속에 갇히는 것, 내면의 공허함을 마주하는 것",
+        "behaviors": [
+            "새로운 활동이나 취미에 쉽게 빠졌다가 금방 싫증을 낸다",
+            "지루해하는 것을 가장 싫어하고 항상 “다음 재미있는 것”을 찾는다",
+            "불편하거나 속상한 이야기는 농담이나 가벼운 말로 돌리거나 회피한다",
+            "계획과 아이디어는 많지만 끝까지 해내는 경우가 적다",
+            "선택지를 제한받거나 통제받는 상황에서 강한 거부감을 보인다",
+        ],
+        "stress": [
+            "더 산만해지고 이것저것 동시에 시작하지만 끝내지 못한다",
+            "충동적인 결정을 내리거나 무리한 계획을 세운다",
+            "감정을 직면하지 못하고 활동이나 음식, 게임 등으로 도피한다",
+        ],
+        "inner": [
+            "“지루해 죽겠어. 재미있는 게 필요해.”",
+            "“아프거나 슬픈 건 생각하지 말자. 그냥 즐거운 일만 생각할래.”",
+            "“이것만 끝나면 진짜 행복해질 거야… 아, 다음 것도 재밌어 보인다.”",
+        ],
+        "misunderstand": [
+            "“밝고 활발해서 좋다”고 생각하지만, 그 밝음 이면에 고통과 불편한 감정을 회피하는 전략이 있을 수 있다",
+            "“끈기가 부족하고 변덕스럽다”고만 보지만, 아이에게 멈추는 것(＝고통 마주하기)이 더 두려울 수 있다",
+        ],
+        "questions": [
+            "아이가 슬프거나 속상한 일이 있을 때 어떻게 표현하나요? 회피하나요, 마주하나요?",
+            "아이가 가장 오래 집중하는 활동은 무엇인가요? 그 활동이 주는 만족은 무엇일까요?",
+            "아이가 “심심해”라고 말할 때, 단순히 지루한 것인가요, 불편한 감정을 피하려는 것인가요?",
+        ],
+        "helpful": [
+            "아이가 불편한 감정을 느껴도 안전하게 머물 수 있도록 도와준다 (“속상한 일이 있었구나, 엄마가 같이 있어줄게”)",
+            "새로 시작한 활동에 대해 끝까지 해낸 경험을 작게라도 만들어준다",
+            "아이가 선택지를 좁히는 데 익숙해지도록 “딱 하나만 골라보자”고 도와준다",
+        ],
+        "hurtful": [
+            "“또 그거야? 너는 항상 시작만 하고 끝이 없어” — 아이의 본질적 패턴을 비난하는 말",
+            "“가만히 좀 있어 봐” — 아이의 에너지 자체를 억압하는 태도",
+            "아이가 슬픔이나 아픔을 표현할 때 “밝게 생각해”라며 긍정을 강요하는 말",
+        ],
+        "caution": "모든 아이가 즐거움을 추구하고 지루함을 싫어합니다. 7번의 핵심은 **고통을 회피하는 전략**으로서의 즐거움 추구입니다. “힘들지만 마주함”보다 “더 재미있는 것”으로 도피하는 패턴이 반복되는지 봐야 합니다. 또한 한국 교육 시스템에서 7번은 “산만하다”, “끈기 없다”는 평가를 받기 쉬우나, 이는 아이의 인지 스타일(다중 가능성 탐색)의 차이일 수 있습니다.",
+    },
+    {
+        "num": "8", "center": "gut",
+        "name": "도전하는 사람 / 보호자",
+        "emotion": "분노(표출형)",
+        "desire": "자율성, 힘, 통제 — 스스로 인생의 주도권을 쥐는 것",
+        "fear": "상처받거나, 통제당하거나, 배신당하는 것, 약해지는 것",
+        "behaviors": [
+            "자기 의견이 강하고, 결정을 남이 내리는 것을 참지 못한다",
+            "약해 보이거나 불공평한 상황을 보면 참지 못하고 나선다",
+            "싸움이나 논쟁에서 지지 않으려 하고, 직설적인 표현을 쓴다",
+            "감정적으로 취약해 보이는 것을 싫어해 “괜찮아”, “신경 안 써”를 자주 말한다",
+            "친구나 동생을 보호하는 역할을 자처하고, 자신의 “사람들”에게는 강한 충성심을 보인다",
+        ],
+        "stress": [
+            "더 공격적이고 싸움을 걸거나 대들기 시작한다",
+            "통제력을 잡으려고 더 완고해지고 타협하지 않는다",
+            "속마음과 반대로 강한 척하거나, “상관없어”로 일관한다",
+        ],
+        "inner": [
+            "“내가 강해야 아무도 나를 건드리지 못해.”",
+            "“약해 보이면 당하기 마련이야. 절대 약한 모습을 보여주면 안 돼.”",
+            "“내 결정과 선택을 존중해줘. 통제당하는 건 못 참아.”",
+        ],
+        "misunderstand": [
+            "“반항적이고 통제가 안 된다”고만 느끼지만, 아이가 진짜 원하는 것은 **존중과 자율성**이지 지배가 아니다",
+            "“강해 보이고 당당하니 문제없겠다”고 생각하기 쉬우나, 그 강함 뒤에 상처받을지도 모른다는 두려움이 숨겨져 있다",
+        ],
+        "questions": [
+            "아이가 “안 돼!”라고 말할 때, 그 이유는 통제당하는 것이 싫어서인가요, 아니면 더 나은 방법을 알기 때문인가요?",
+            "아이가 가장 부드러워지는 순간은 언제인가요? (동생 돌볼 때? 동물과 있을 때?)",
+            "아이가 화가 났을 때 그 감정 뒤에 숨겨진 더 약한 감정(서운함, 상처, 두려움)은 무엇일까요?",
+        ],
+        "helpful": [
+            "힘 대 힘으로 맞서기보다 아이의 의견을 진지하게 듣고 존중해준다 (“그렇구나, 네 생각이 그렇구나”)",
+            "아이가 약한 모습을 보여도 안전하다는 경험을 작은 것부터 만들어준다",
+            "아이의 강한 에너지를 보호나 리더십 같은 긍정적인 방향으로 인정해준다 (“네가 동생을 지켜줘서 든든하구나”)",
+        ],
+        "hurtful": [
+            "“지금 나한테 대드는 거야?” — 권위로 눌러 통제하려는 태도 (아이의 반항을 더 키운다)",
+            "아이 앞에서 부부나 다른 어른의 불공평한 굴종이나 약함을 이용하는 모습",
+            "“너는 남자니까/언니니까 강해야지” — 감정을 억압하는 성역할 고정관념",
+        ],
+        "caution": "8번 아이는 사춘기에 권위에 도전하는 모습이 두드러져 “문제아”로 오해될 위험이 있습니다. 그러나 이는 건강한 자율성 발달과 혼동될 수 있습니다. 또한 자기보존 8번은 사회적 8번에 비해 훨씬 조용하고 내향적으로 보여 8번으로 인식되지 않을 수 있습니다. 8번의 핵심은 **취약함에 대한 두려움**이므로, “강한 척 뒤에 무엇을 두려워하는가”를 관찰해야 합니다.",
+    },
+    {
+        "num": "9", "center": "gut",
+        "name": "평화로운 사람 / 중재자",
+        "emotion": "분노(회피형)",
+        "desire": "평화, 안정, 조화",
+        "fear": "갈등, 분리, 단절 — 관계가 깨지거나 자신이 무시되는 것",
+        "behaviors": [
+            "갈등 상황에서 자기 의견을 명확히 말하지 못하고 “아무거나”, “상관없어”를 자주 쓴다",
+            "친구나 가족 사이에서 중재자 역할을 하거나 편 가르기를 싫어한다",
+            "해야 할 일을 미루고, 하루 종일 별로 한 것 없이 시간이 간다고 느낀다",
+            "자기만의 취향이나 의견이 있어도 상대방에게 맞춘다",
+            "리듬과 일상을 중요시하고, 갑작스러운 변화에 적응하는 데 시간이 걸린다",
+        ],
+        "stress": [
+            "더 수동적이고 무기력해져서 아무것도 하지 않으려 한다",
+            "평소에는 참다가 갑자기 폭발하거나 냉랭해진다",
+            "TV, 게임, 폰, 음식 등으로 무감각해지려고 한다",
+        ],
+        "inner": [
+            "“의견이 달라서 싸우는 건 정말 싫어. 그냥 다 같이 평온한 게 좋아.”",
+            "“상대방의 기분이 나쁠 것 같아. 내 의견은 참을게.”",
+            "“내가 원하는 게 뭔지 모르겠어. 중요하지도 않은 것 같고…”",
+        ],
+        "misunderstand": [
+            "“순하고 싸움도 안 하니 속 편한 아이”라고 생각하지만, 아이는 자기 주장과 욕구를 억누르고 있을 수 있다",
+            "“게으르고 의욕이 없다”고 느끼지만, 이는 갈등을 피하거나 우선순위를 정하지 못하는 패턴의 결과일 수 있다",
+        ],
+        "questions": [
+            "아이가 “아무거나”라고 말할 때, 진짜 의견이 없어서인가요, 아니면 상대방을 맞추기 위해서인가요?",
+            "아이가 가장 자신의 의견을 또렷이 말하는 순간은 언제인가요?",
+            "아이가 스트레스를 받을 때 어떤 방식으로 회피하나요? (게임? 수면? 먹기? 반복적인 활동?)",
+        ],
+        "helpful": [
+            "아이에게 선택권을 주고 기다려준다 (“천천히 생각해봐, 네 의견이 궁금해”)",
+            "아이가 의견을 표현했을 때 적극적으로 인정해준다 (“그렇게 생각하는구나, 좋은 의견이야”)",
+            "갈등이 있어도 관계가 깨지지 않는다는 경험을 모델링해준다",
+        ],
+        "hurtful": [
+            "“넌 왜 매번 우유부단해?” — 아이의 기질적 패턴을 성격 결함으로 지적하는 말",
+            "부모의 갈등을 아이 앞에서 격렬하게 표현하면서도 해결되지 않은 상태로 두는 것",
+            "아이의 의견을 묻고도 무시하거나 “그건 아니야”라고 바로 반려하는 태도",
+        ],
+        "caution": "9번 아이는 적응력이 높아 가정이나 학교에서 “문제없는 아이”로 지나치기 쉽습니다. 그러나 바로 그 이유로 아이의 진짜 욕구와 정체성이 발현될 기회를 놓칠 수 있습니다. 또한 9번은 스트레스 상황에서 6번처럼 불안해하거나 특정 영역에서는 3번처럼 완벽주의적으로 보일 수 있어 다른 유형과 혼동될 수 있습니다. 평화 유지가 아니라 **자기 망각**의 패턴이 반복되는지 관찰하는 것이 중요합니다.",
+    },
+]
+
+
+def li(items, cls=""):
+    return "".join(f'<li class="{cls}">{md(x)}</li>' for x in items)
+
+
+def check_rows(items):
+    rows = ""
+    for x in items:
+        rows += f'<div class="row"><span class="cb"></span><span class="it">{md(x)}</span></div>'
+    return rows
+
+
+def render_type(t):
+    c = t["center"]
+    cl, _emo = CENTER_LABEL[c]
+    return f'''
+<section class="type {c}">
+  <div class="t-head">
+    <div class="badge">{t["num"]}</div>
+    <div class="t-titlewrap">
+      <div class="t-title">{esc(t["name"])}</div>
+      <div class="t-meta"><b>{esc(cl)}</b>&nbsp;&nbsp;·&nbsp;&nbsp;핵심 감정 <b>{esc(t["emotion"])}</b></div>
+    </div>
+  </div>
+  <div class="t-rule"></div>
+
+  <div class="core">
+    <div class="box"><div class="lab">핵심 욕구</div><div class="val">{esc(t["desire"])}</div></div>
+    <div class="box"><div class="lab">핵심 두려움</div><div class="val">{esc(t["fear"])}</div></div>
+  </div>
+
+  <div class="sec-lab"><span class="mk mk-check">✓</span><span class="tx">관찰 체크리스트</span><span class="sub">평소 반복되는 행동</span></div>
+  <div class="check">{check_rows(t["behaviors"])}</div>
+
+  <div class="sec-lab"><span class="mk mk-check">✓</span><span class="tx">스트레스 신호</span><span class="sub">스트레스 받을 때 나타나는 반응</span></div>
+  <div class="check">{check_rows(t["stress"])}</div>
+
+  <div class="sec-lab"><span class="mk"></span><span class="tx">부모가 오해하기 쉬운 지점</span></div>
+  <div class="callout"><ul class="dl">{li(t["misunderstand"])}</ul></div>
+
+  <div class="refs">
+    <div class="ref-col">
+      <div class="ref-h"><span class="dot"></span>아이 속마음</div>
+      <ul class="ref-list">{li(t["inner"])}</ul>
+      <div class="ref-h"><span class="dot"></span>관찰 질문</div>
+      <ul class="ref-list">{li(t["questions"])}</ul>
+    </div>
+    <div class="ref-col">
+      <div class="ref-h"><span class="dot"></span>도움이 되는 부모의 반응</div>
+      <ul class="ref-list">{li(t["helpful"])}</ul>
+      <div class="ref-h"><span class="dot"></span>상처가 되는 말·태도</div>
+      <ul class="ref-list">{li(t["hurtful"])}</ul>
+    </div>
+  </div>
+
+  <div class="note">
+    <div class="note-lab">단정하기 어려운 주의점</div>
+    <div class="note-tx">{md(t["caution"])}</div>
+  </div>
+</section>'''
+
+
+COVER = '''
+<section class="cover">
+  <div class="cover-top">
+    <div class="kicker">ENNEAGRAM&nbsp;FOR&nbsp;RESTORATION</div>
+    <div class="org-ko">에니어그램 포 레스토레이션 (ER)</div>
+  </div>
+  <div class="cover-mid">
+    <div class="cover-title">아이 유형 관찰<br>체크리스트</div>
+    <div class="cover-sub">에니어그램 관점에서 보는 아홉 가지 마음</div>
+    <div class="cover-line"></div>
+    <div class="cover-desc">아이의 성격을 한 유형으로 단정하기 위한 것이 아니라,<br>
+      여러 상황에 걸쳐 반복되는 마음의 패턴을 관찰하기 위한 부모용 자료입니다.</div>
+  </div>
+  <div class="cover-bottom">
+    <div class="cover-tag">부모용 관찰 자료</div>
+    <div class="cover-legend">
+      <span class="lg gut"><span class="sw"></span>장형 · 분노</span>
+      <span class="lg heart"><span class="sw"></span>가슴형 · 수치심</span>
+      <span class="lg head"><span class="sw"></span>머리형 · 두려움</span>
+    </div>
+  </div>
+</section>'''
+
+
+INTRO = '''
+<section class="intro">
+  <h2 class="page-h">시작하기 전에</h2>
+
+  <div class="readbox">
+    <div class="readbox-lab">꼭 읽어주세요</div>
+    <p>이 체크리스트는 자녀를 하나의 유형에 “가두기 위한” 도구가 아닙니다. 아이의 성격은 성인보다
+    유동적이며, 날개, 건강도, 하위유형, 성장 환경에 따라 같은 번호 안에서도 다양하게 나타납니다.</p>
+    <p>아래 항목들은 “진단”이 아니라 “반복 패턴을 관찰하기 위한 렌즈”로만 사용해주세요. 한두 가지
+    항목이 맞는다고 유형을 단정하지 말고, 여러 상황에 걸쳐 반복되는 경향성을 살펴보는 것이 중요합니다.</p>
+  </div>
+
+  <h3 class="sub-h">이 자료를 보는 법</h3>
+  <div class="guide-grid">
+    <div class="gcard"><div class="gn">①</div><div><b>핵심 욕구·두려움</b><br><span>유형의 동기를 한눈에 보여줍니다.</span></div></div>
+    <div class="gcard"><div class="gn">②</div><div><b>관찰 체크리스트</b><br><span>평소 반복되는 행동을 ☐에 체크합니다.</span></div></div>
+    <div class="gcard"><div class="gn">③</div><div><b>스트레스 신호</b><br><span>힘들 때 나타나는 반응을 체크합니다.</span></div></div>
+    <div class="gcard"><div class="gn">④</div><div><b>아이 속마음·관찰 질문</b><br><span>겉행동 아래의 마음을 이해합니다.</span></div></div>
+    <div class="gcard"><div class="gn">⑤</div><div><b>도움이 되는 반응·상처 주는 말</b><br><span>부모가 무엇을 하고 무엇을 피할지.</span></div></div>
+    <div class="gcard"><div class="gn">⑥</div><div><b>단정하기 어려운 주의점</b><br><span>혼동·예외를 함께 기억합니다.</span></div></div>
+  </div>
+
+  <h3 class="sub-h">세 가지 중심과 색 구분</h3>
+  <div class="center-legend">
+    <div class="cl gut"><div class="cl-bar"></div><div class="cl-tx"><b>장형 · 본능중심</b><span>1 · 8 · 9 유형 — 핵심 감정 <em>분노</em></span></div></div>
+    <div class="cl heart"><div class="cl-bar"></div><div class="cl-tx"><b>가슴형 · 감정중심</b><span>2 · 3 · 4 유형 — 핵심 감정 <em>수치심</em></span></div></div>
+    <div class="cl head"><div class="cl-bar"></div><div class="cl-tx"><b>머리형 · 이성중심</b><span>5 · 6 · 7 유형 — 핵심 감정 <em>두려움</em></span></div></div>
+  </div>
+</section>'''
+
+
+GUIDE = '''
+<section class="guide">
+  <h2 class="page-h">체크리스트 사용 가이드</h2>
+
+  <h3 class="sub-h gut-h">관찰 방법</h3>
+  <ul class="guide-list">
+    <li>한 번에 모든 항목을 체크하려 하지 말고, 1~2주 정도 아이의 일상 속에서 자연스럽게 관찰하세요.</li>
+    <li>아이가 스트레스를 받을 때, 편안할 때, 친구와 있을 때, 가족과 있을 때로 상황을 나눠 관찰하면 패턴이 더 선명하게 보입니다.</li>
+    <li>관찰 결과를 “우리 아이는 X번이다”라는 결론이 아니라 “X번적인 패턴이 자주 보인다”는 가설로만 삼으세요.</li>
+  </ul>
+
+  <h3 class="sub-h heart-h">유의사항</h3>
+  <ul class="guide-list">
+    <li>모든 아이는 여러 유형의 특성을 상황에 따라 보입니다. 중요한 것은 <b>반복성과 동기</b>입니다.</li>
+    <li>성인보다 유동적인 아이의 특성상, 1년 후나 2년 후에 다시 체크리스트를 사용해보면 다른 패턴이 관찰될 수 있습니다.</li>
+    <li>하위유형(자기보존 / 사회적 / 성적)과 날개에 따라 같은 번호 안에서도 행동 표현이 크게 다릅니다.</li>
+    <li>이 체크리스트는 아이를 “진단”하거나 “분류”하기 위한 것이 아닙니다. 아이의 내면 동기를 이해하고, 부모가 더 적절히 반응할 수 있도록 돕기 위한 도구입니다.</li>
+  </ul>
+
+  <div class="closing">
+    이 자료가 아이의 마음을 더 깊이 이해하고, 더 따뜻하게 반응하는 데 도움이 되기를 바랍니다.
+    <span class="closing-org">— Enneagram for Restoration (ER)</span>
+  </div>
+</section>'''
+
+
+def build():
+    types_html = "".join(render_type(t) for t in TYPES)
+    doc = f'''<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>아이 유형 관찰 체크리스트 — Enneagram for Restoration</title>
+<style>
+{CSS}
+</style>
+</head>
+<body>
+<div class="footer">Enneagram&nbsp;for&nbsp;Restoration&nbsp;(ER)&nbsp;&nbsp;·&nbsp;&nbsp;아이 유형 관찰 체크리스트</div>
+{COVER}
+{INTRO}
+{types_html}
+{GUIDE}
+</body>
+</html>'''
+    with open(OUT, "w", encoding="utf-8") as f:
+        f.write(doc)
+    print("wrote", OUT, len(doc), "bytes")
+
+
+CSS = r'''
+@page { size: A4; margin: 13mm 14mm 16mm 14mm; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  color: #2b3441; font-size: 9.6pt; line-height: 1.46;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+b { font-weight: 700; }
+
+/* center palettes */
+.gut   { --ac:#A85D32; --ac2:#8A4B27; --soft:#FAF3EC; --bd:#ECD7C4; }
+.heart { --ac:#A24E70; --ac2:#86405D; --soft:#FBEFF4; --bd:#ECD2DD; }
+.head  { --ac:#2E6A8E; --ac2:#275A78; --soft:#EDF3F8; --bd:#D1E0EC; }
+
+.footer {
+  position: fixed; left: 0; right: 0; bottom: 6.5mm; text-align: center;
+  font-size: 7.6pt; letter-spacing: .03em; color: #b6bcc6;
+}
+
+/* ---------- COVER ---------- */
+.cover { break-after: page; min-height: 252mm; display: flex; flex-direction: column; padding-top: 10mm; }
+.cover-top { }
+.kicker { font-size: 9.5pt; letter-spacing: .34em; color: #8a93a0; font-weight: 600; }
+.org-ko { font-size: 9pt; color: #aab0ba; margin-top: 5px; letter-spacing: .02em; }
+.cover-mid { margin-top: 46mm; }
+.cover-title { font-size: 41pt; font-weight: 800; line-height: 1.16; color: #232c38; letter-spacing: -.01em; }
+.cover-sub { font-size: 13.5pt; color: #5a6472; margin-top: 14px; font-weight: 500; }
+.cover-line { width: 64px; height: 3px; background: #A85D32; margin: 22px 0; border-radius: 3px; }
+.cover-desc { font-size: 10.5pt; color: #717a87; line-height: 1.75; }
+.cover-bottom { margin-top: auto; }
+.cover-tag { font-size: 9.5pt; font-weight: 700; color: #4a5360; letter-spacing: .02em; }
+.cover-legend { margin-top: 12px; display: flex; gap: 20px; }
+.cover-legend .lg { font-size: 9pt; color: #6b7480; display: inline-flex; align-items: center; gap: 7px; font-weight: 500; }
+.cover-legend .sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+.cover-legend .gut   .sw { background: #A85D32; }
+.cover-legend .heart .sw { background: #A24E70; }
+.cover-legend .head  .sw { background: #2E6A8E; }
+
+/* ---------- shared page headings ---------- */
+.page-h { font-size: 19pt; font-weight: 800; color: #232c38; margin: 2mm 0 6mm; letter-spacing: -.01em; }
+.sub-h { font-size: 11.5pt; font-weight: 700; color: #36404d; margin: 7mm 0 3.5mm; }
+
+/* ---------- INTRO ---------- */
+.intro { break-after: page; }
+.readbox { background: #f7f8fa; border: 1px solid #e7e9ee; border-left: 3px solid #A85D32; border-radius: 0 11px 11px 0; padding: 13px 17px 9px; }
+.readbox-lab { font-size: 8.4pt; font-weight: 800; letter-spacing: .08em; color: #A85D32; margin-bottom: 6px; }
+.readbox p { margin: 0 0 8px; font-size: 9.9pt; color: #4f5763; line-height: 1.68; }
+.readbox p:last-child { margin-bottom: 0; }
+
+.guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 16px; }
+.gcard { display: flex; gap: 10px; align-items: flex-start; padding: 8px 4px; border-bottom: 1px solid #eef0f3; }
+.gcard .gn { font-size: 13pt; font-weight: 800; color: #c2a98f; line-height: 1; width: 18px; flex: 0 0 auto; }
+.gcard b { font-size: 9.8pt; color: #2f3845; }
+.gcard span { font-size: 8.9pt; color: #828b97; }
+
+.center-legend { display: flex; flex-direction: column; gap: 8px; }
+.cl { display: flex; align-items: stretch; gap: 12px; background: var(--soft); border: 1px solid var(--bd); border-radius: 10px; padding: 11px 14px; }
+.cl-bar { width: 5px; border-radius: 4px; background: var(--ac); flex: 0 0 auto; }
+.cl-tx b { font-size: 10.4pt; color: var(--ac2); }
+.cl-tx span { display: block; font-size: 9pt; color: #6f7884; margin-top: 2px; }
+.cl-tx em { font-style: normal; font-weight: 700; color: var(--ac); }
+
+/* ---------- TYPE PAGE ---------- */
+.type { break-before: page; break-after: page; padding-top: 1mm; }
+.t-head { display: flex; align-items: center; gap: 13px; }
+.badge {
+  width: 38px; height: 38px; border-radius: 10px; background: var(--ac); color: #fff;
+  font-weight: 800; font-size: 19pt; display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+}
+.t-title { font-size: 16pt; font-weight: 800; color: #262f3b; line-height: 1.12; letter-spacing: -.01em; }
+.t-meta { font-size: 8.8pt; color: #828b97; margin-top: 3px; }
+.t-meta b { color: var(--ac2); font-weight: 700; }
+.t-rule { height: 2.5px; background: var(--ac); margin: 8px 0 11px; border-radius: 3px; }
+
+.core { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.core .box { background: var(--soft); border: 1px solid var(--bd); border-radius: 10px; padding: 9px 12px; }
+.core .lab { font-size: 8pt; font-weight: 800; letter-spacing: .05em; color: var(--ac2); margin-bottom: 3px; }
+.core .val { font-size: 9.7pt; color: #313a47; line-height: 1.42; }
+
+.sec-lab { display: flex; align-items: center; gap: 8px; margin: 9.5px 0 5px; }
+.sec-lab .mk { width: 13px; height: 13px; border-radius: 4px; background: var(--ac); flex: 0 0 auto; }
+.sec-lab .mk-check { color: #fff; font-size: 8.5pt; font-weight: 800; display: flex; align-items: center; justify-content: center; line-height: 1; }
+.sec-lab .tx { font-size: 10.8pt; font-weight: 800; color: #2c3540; letter-spacing: -.005em; }
+.sec-lab .sub { font-size: 8.3pt; color: #9aa2ad; font-weight: 500; margin-left: 1px; }
+
+.check { background: var(--soft); border: 1px solid var(--bd); border-radius: 11px; padding: 1px 13px; }
+.check .row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--bd); }
+.check .row:last-child { border-bottom: none; }
+.cb { width: 14.5px; height: 14.5px; border: 1.6px solid var(--ac); border-radius: 4px; background: #fff; flex: 0 0 auto; margin-top: 1.5px; }
+.check .it { font-size: 9.7pt; color: #313a47; line-height: 1.44; }
+
+.callout { background: var(--soft); border-left: 3px solid var(--ac); border-radius: 0 9px 9px 0; padding: 7px 14px; }
+.dl { margin: 0; padding: 0; list-style: none; }
+.dl li { position: relative; padding: 3px 0 3px 13px; font-size: 9.3pt; color: #3c4552; line-height: 1.5; }
+.dl li::before { content: ''; position: absolute; left: 0; top: 9.5px; width: 5px; height: 5px; border-radius: 50%; background: var(--ac); }
+
+.refs { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 20px; margin-top: 10px; }
+.ref-h { font-size: 9.4pt; font-weight: 800; color: var(--ac2); margin: 6px 0 4px; display: flex; align-items: center; gap: 7px; }
+.ref-h:first-child { margin-top: 0; }
+.ref-h .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ac); flex: 0 0 auto; }
+.ref-list { margin: 0; padding: 0; list-style: none; }
+.ref-list li { position: relative; padding: 2.5px 0 2.5px 11px; font-size: 8.9pt; color: #404956; line-height: 1.46; }
+.ref-list li::before { content: ''; position: absolute; left: 1px; top: 8.5px; width: 3.5px; height: 3.5px; border-radius: 50%; background: #b9c0ca; }
+
+.note { margin-top: 10px; background: #f6f7f9; border: 1px solid #e9ebef; border-radius: 10px; padding: 9px 14px; }
+.note-lab { font-size: 8pt; font-weight: 800; letter-spacing: .04em; color: #8a93a0; margin-bottom: 3px; }
+.note-tx { font-size: 8.7pt; color: #5e6773; line-height: 1.55; }
+.note-tx b { color: #495260; }
+
+/* ---------- GUIDE ---------- */
+.guide { }
+.sub-h.gut-h { color: #8A4B27; }
+.sub-h.heart-h { color: #86405D; }
+.guide-list { margin: 0; padding: 0; list-style: none; }
+.guide-list li { position: relative; padding: 6px 0 6px 16px; font-size: 10pt; color: #3f4854; line-height: 1.62; border-bottom: 1px solid #eef0f3; }
+.guide-list li::before { content: ''; position: absolute; left: 0; top: 12px; width: 5px; height: 5px; border-radius: 50%; background: #c2c8d0; }
+.closing { margin-top: 10mm; background: #f7f8fa; border: 1px solid #e9ebef; border-radius: 12px; padding: 16px 20px; font-size: 10pt; color: #4f5763; line-height: 1.7; text-align: center; }
+.closing-org { display: block; margin-top: 8px; font-size: 9pt; font-weight: 700; color: #8a93a0; letter-spacing: .01em; }
+'''
+
+if __name__ == "__main__":
+    build()
