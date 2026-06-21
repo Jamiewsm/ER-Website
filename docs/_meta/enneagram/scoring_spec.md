@@ -30,6 +30,7 @@ retrieval_tags:
 - **Center triad 가중치** — `center_auto_1`~`center_auto_3`, `center_situation_1`~`center_situation_3` 강제선택 응답이 선택된 센터의 3 type 에 동일 가산. 센터 문항은 문항 간 상관성을 줄이기 위해 6개로 축소했고, 문항당 가중치는 `0.6`으로 낮게 유지한다.
 - **Instinct attention-bias 가중치** — `instinct_attention_1`은 `sp/sx/so` 중 실제로 먼저 주의를 두는 대상을 고르는 상황형 문항이며 선택된 본능에 `3.0`을 가산한다. 기존 리커트 본능 문항 9개는 유지한다.
 - **State stress adjustment** — `state_2w`, `state_defensive`, `state_unusual` 평균이 높고 6번이 1/5/9와 근접하면 6번 과대확정을 줄이기 위해 `appendStateAnxietyTieBreakersForType6`와 `applyStateStressAdjustment`를 적용한다.
+- **Dedicated high-risk tie-breakers** — 1↔6, 2↔9, 4↔7, 5↔9는 일반 `tbCustomMap` fallback보다 먼저 전용 상황형 문항을 연다. 특히 2↔9는 "필요한 존재로 남고 싶은 맞춤"과 "관계 긴장을 낮추기 위한 맞춤"을 분리한다.
 - **내부 점수 축 분리** — 운영 결과 모델에 `buildScoringAxesSnapshot`이 `centerScore`, `harmonicScore`, `hornevianScore`, `coreTypeScore`, `instinctScore`, `stateStressAdjustment`를 분리해 보관한다.
 - **Response quality snapshot** — `buildResponseQualitySnapshot`이 너무 빠른 응답, 직선 응답, `U` 과다, 센터-코어 불일치, 본능 불명확성을 판정한다. 이 값은 점수를 바꾸지 않고 결과 모델과 실험 데이터에 해석 품질 메타데이터로만 저장한다.
 - **Confidence explanation** — `buildConfidenceExplanation`이 1-2위 격차, 본능 선명도, 응답 품질, 센터-코어 일치 여부, 타이브레이커 적용 여부를 자연어 근거와 상담 확인 질문으로 변환한다.
@@ -95,6 +96,59 @@ retrieval_tags:
 ```
 
 초기 상담 확인 질문 맵은 `1↔6`, `2↔9`, `3↔6`, `3↔9`, `4↔7`, `5↔9`, `6↔8`, `7↔9`를 포함한다. 이 설명은 결과 점수를 수정하지 않고, 결과지의 `report-confidence` 섹션과 실험 row의 `result_summary.confidence_explanation`에 저장된다.
+
+### 2.0.2 운영 추가: Automatic-Reaction Copy Guardrail
+
+`docs/diagnostic_test_question_bank_full.md`에는 `자동반응 리라이팅 후보` audit 섹션을 둔다. 이 섹션은 production scoring을 바꾸지 않고, 다음 copy pass에서 검토할 위험 문항과 수정 방향을 관리한다.
+
+현재 guardrail 원칙:
+
+- Type 3: "가치" 일반어보다 `무능해 보였을까`, `결과로 유능함을 증명`, `실패 장면 replay` 언어를 우선한다.
+- Type 4: "자극/깊이 선호"보다 `결핍`, `빠진 느낌`, `감정 동일시`, `온전히 속하지 못함` 언어를 우선한다.
+- Type 6: "생각 많음"보다 `확인해야 안심`, `빠진 위험`, `다른 사람은 넘어가도 한 번 더` 언어를 우선한다.
+- Type 9: "착함/평화"보다 `불편함을 낮추기`, `미루기/흐리기`, `내 입장보다 긴장 완충` 언어를 우선한다.
+
+문항 copy 변경과 weight 변경은 같은 patch에서 처리하지 않는다. `tests/question-copy-regression.test.mjs`는 해당 audit 섹션과 우선순위 유형의 퇴보 표현을 회귀 검증한다.
+
+### 2.0.3 운영 추가: Situational Tie-breaker Coverage
+
+전용 타이브레이커는 상위 두 유형이 근접한 경우에만 노출된다. 현재 운영 경로는 다음 고위험 혼동쌍을 일반 fallback보다 먼저 처리한다.
+
+| Pair | State key | Question set | 분리 축 |
+|---|---|---|---|
+| 1↔6 | `t16` | `tb16` | 기준 미달을 바로잡으려는 반응 vs 빠진 위험을 확인해야 안심되는 반응 |
+| 2↔9 | `t29` | `tb29` | 필요한 존재/특별한 관계 의미 vs 마찰 완충/긴장 저하 |
+| 4↔7 | `t47` | `tb47` | 결핍과 감정 안으로 들어감 vs 갇힘을 피하고 가능성으로 전환 |
+| 5↔9 | `t59` | `tb59` | 에너지와 경계 보존 vs 관계 긴장 완충 |
+
+`tests/tie-breaker-routing.test.mjs`는 전용 routing, scoring, 결과 로그 문구가 유지되는지 검증한다.
+
+### 2.0.4 운영 추가: Experiment Analytics Payload
+
+실험 모드(`?experiment=1`) 제출 row는 Supabase 스키마 변경 없이 기존 JSON 필드인 `result_summary.experiment_payload`에 분석용 payload를 보존한다.
+
+```js
+{
+  result: { core, subtype, wing, confidence, coreResolved, reportKey },
+  rankedTop3: [{ type, score, share }],
+  topPair: { first, second, diff },
+  responseQuality,
+  scoringAxes,
+  tieBreakersUsed: [{ key, weight, margin, typeA, typeB }],
+  stateStressAdjustment,
+  phase4Result,
+  timings
+}
+```
+
+피드백 UI는 기존 자기평가/상담 확정 유형에 더해 다음 구조를 `result_summary.feedback_detail`로 저장한다.
+
+- `confirmed_type`: 상담자가 확정한 core/subtype/wing
+- `accurate_parts`: 결과에서 맞았던 부분
+- `inaccurate_parts`: 결과에서 틀렸던 부분
+- `consultation_check`: 상담에서 꼭 확인해야 할 것
+
+`tests/experiment-payload.test.mjs`는 이 payload와 피드백 구조가 유지되는지 검증한다.
 
 ### 2.1 Wing % 공식
 

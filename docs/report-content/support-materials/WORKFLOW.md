@@ -55,10 +55,24 @@ raw test result
   -> instinct percent rows 정규화
   -> detectRepressedInstinct()
   -> selectSupportMaterials()
+  -> application layer: 필요 / 욕구 / 강점 / 방어 / 힘들 때 도움 / 타인을 도울 방법
   -> 결과지 섹션별 content brief 생성
   -> 고객용 문장으로 재작성
   -> source note / internal path 제거 QA
 ```
+
+## 5-1. Application Layer 원칙
+
+결과지는 “나는 N번입니다”에서 끝나지 않고, 실제 관계와 상담/스쿨 전환으로 자연스럽게 이어져야 합니다. 운영 결과지의 `report-application` 섹션은 다음 6개 축을 반드시 보여줍니다.
+
+- 나의 필요
+- 나의 욕구
+- 강점
+- 방어/약점
+- 내가 힘들 때 필요한 도움
+- 가족·동료·리더가 나를 도울 방법
+
+이 섹션은 하드 세일즈 블록이 아닙니다. 사용자가 자기 이해를 얻은 뒤, 다른 사람의 필요와 약점까지 읽고 실제로 도울 언어가 필요하다는 흐름으로 상담과 스쿨 이유를 연결합니다.
 
 ## 6. QA 체크리스트
 

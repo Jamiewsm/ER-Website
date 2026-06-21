@@ -11,7 +11,7 @@ retrieval_tags:
   - lock_state
   - project_complete
 current_phase: 7
-current_task: "Task 3: c1~c9 / deep item automatic-reaction rewrite audit"
+current_task: "manual evolution batch complete; ready for review/deploy"
 checkpoint_plan: []
 checkpoint: null
 paused: true
@@ -44,17 +44,19 @@ project_status: "manual_updates_after_phase_6"
 
 ## 현재 활성 우선순위
 
-1. c1~c9/deep 자동반응 리라이팅 audit
-2. 상황형 타이브레이커 audit/extension
-3. Experiment 데이터 수집 upgrade
-4. Weight recalibration workflow
-5. Countertype performance audit 후 확장 여부 결정
-6. 결과지 business/application layer 강화
+1. Review production test report
+2. Collect experiment rows before weight changes
 
 완료된 활성 계획 항목:
 
 - 응답 품질 체크 1차 구현 — `responseQuality`/`responseTiming` 생성, premium model 전달, experiment payload 전달, Supabase row JSON 보존.
 - Confidence 설명 카드 + 상담 확인 질문 — `confidenceExplanation` 생성, 결과지 `report-confidence` 섹션 렌더, experiment payload/row JSON 보존.
+- c1~c9/deep 자동반응 리라이팅 audit — `diagnostic_test_question_bank_full.md`에 리라이팅 후보 표를 추가하고, `tests/question-copy-regression.test.mjs`로 퇴보 표현을 회귀 검증한다. Production 문항/weight는 아직 변경하지 않았다.
+- 상황형 타이브레이커 audit/extension — 1↔6, 4↔7, 5↔9 전용 라우팅 회귀 테스트를 추가하고, 2↔9 전용 상황형 타이브레이커(`tb29`/`t29`)를 운영 코드와 질문 뱅크에 추가했다.
+- Experiment 데이터 수집 upgrade — `result_summary.experiment_payload`에 result, rankedTop3, topPair, responseQuality, scoringAxes, tieBreakersUsed, stateStressAdjustment, phase4Result, timings를 구조화해 보존한다. 피드백 UI에는 결과에서 맞았던 부분, 틀렸던 부분, 상담에서 꼭 확인해야 할 것을 추가했다.
+- Weight recalibration workflow — `scripts/analyze_diagnostic_experiments.mjs`로 predicted/confirmed core·subtype confusion, low-confidence accuracy, quality-flag accuracy, tie-pair miss rate, countertype miss rate를 산출한다. `WEIGHT_CALIBRATION_WORKFLOW.md`에 100 usable rows / affected pair 20 rows / replay 검증 gate를 명시했다.
+- Countertype performance audit — `COUNTERTYPE_PERFORMANCE_AUDIT.md`에 기존 9개 countertype 필터, 후보 유형 기반 trigger, core/instinct 분리 scoring, 확장 금지 조건을 정리했다. `tests/countertype-routing.test.mjs`가 9개 필터와 routing/scoring/log를 회귀 검증한다.
+- 결과지 business/application layer 강화 — `report-application` 섹션에 나의 필요, 나의 욕구, 강점, 방어/약점, 내가 힘들 때 필요한 도움, 가족·동료·리더가 나를 도울 방법 6개 축을 추가했다. 상담/스쿨 hook은 하드 세일즈가 아니라 실제 적용 필요에서 자연스럽게 이어지도록 유지했다.
 
 ## 자동화 종료 상태
 
@@ -92,6 +94,19 @@ project_status: "manual_updates_after_phase_6"
 - 주의: 현재 premium 결과지는 `js/test-result-renderer.js`가 아니라 `js/test.js` 내부 renderer 중심으로 동작한다.
 
 ## 검증
+
+### 2026-06-21 수동 개선 배치 완료 후
+
+```
+node --check js/test.js
+OK
+
+node --check js/diagnostic-experiment.js
+OK
+
+node --test tests/confidence-card.test.mjs tests/response-quality.test.mjs tests/test-scoring.test.mjs tests/render-smoke.test.mjs tests/report-support-materials.test.mjs tests/report-support-wiring.test.mjs tests/phase4-options-render.test.mjs tests/question-copy-regression.test.mjs tests/tie-breaker-routing.test.mjs tests/experiment-payload.test.mjs tests/weight-calibration-workflow.test.mjs tests/countertype-routing.test.mjs
+79/79 tests pass
+```
 
 ### 2026-06-21 Confidence 설명 카드 구현 후
 

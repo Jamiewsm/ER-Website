@@ -35,6 +35,11 @@ test('premium report renderer includes support materials section and nav link', 
 test('premium report renderer includes application hook before next-step CTA', () => {
   assert.match(testJs, /id="report-application"/);
   assert.match(testJs, /이해에서 끝나지 않고, 실제 관계를 돕는 지도/);
+  assert.match(testJs, /er-report-application-map/);
+  assert.match(testJs, /나의 필요/);
+  assert.match(testJs, /나의 욕구/);
+  assert.match(testJs, /내가 힘들 때 필요한 도움/);
+  assert.match(testJs, /가족·동료·리더가 나를 도울 방법/);
   assert.match(testJs, /상담과 스쿨이 필요한 이유/);
   assert.match(testJs, /data-core-tone/);
 });
@@ -126,6 +131,8 @@ test('premium report styles use uploaded backgrounds and one report font family'
   assert.match(testCss, /background_vase\.png/);
   assert.match(testCss, /backgrdound_road\.png/);
   assert.match(testCss, /\.er-report-application/);
+  assert.match(testCss, /\.er-report-application-map/);
+  assert.match(testCss, /\.er-report-application-map-card/);
   assert.match(testCss, /\.er-report-next-rationale/);
   assert.doesNotMatch(testCss, /Noto Serif KR/);
   assert.doesNotMatch(testCss, /ui-monospace/);

@@ -538,6 +538,7 @@ const testState = {
     t24: {enabled:false,weight:0,margin:null},
     t26: {enabled:false,weight:0,margin:null},
     t28: {enabled:false,weight:0,margin:null},
+    t29: {enabled:false,weight:0,margin:null},
     t89: {enabled:false,weight:0,margin:null},
     tGeneric: {enabled:false,typeA:null,typeB:null,weight:0},
     t7wing: {enabled:false,weight:0,margin:null}
@@ -1499,6 +1500,11 @@ const tb28 = [
   {id:'tb_2_8_2',format:'ab',leftType:2,rightType:8,q:'내가 아끼는 사람들을 대할 때, 내 태도는 어느 쪽에 더 가까운가?',a:'그들의 세세한 감정과 필요를 파악하고, 깊이 교감하며 정서적으로 밀착하려 한다.',b:'그들이 억울한 일을 당하지 않게 내 울타리 안에서 확실히 보호하고 끌어주려 한다.'},
   {id:'tb_2_8_3',format:'ab',leftType:2,rightType:8,q:'관계에서 내가 영향력을 행사하거나 상황을 내 뜻대로 이끌고 싶을 때, 주로 쓰는 방식은?',a:'내가 상대를 위해 얼마나 수고하고 헌신하고 있는지 은연중에 느끼게 만든다.',b:'상황을 정리할 명확한 방향을 제시하고, 굽히지 않는 강한 태도로 밀어붙인다.'}
 ];
+const tb29 = [
+  {id:'tb_2_9_1',format:'ab',leftType:2,rightType:9,q:'상대에게 맞춰주거나 양보할 때, 더 가까운 속마음은?',a:'내가 필요한 존재이고 관계 안에서 의미 있는 사람으로 남고 싶다.',b:'마찰이 커지지 않고 분위기가 편안하게 유지되면 좋겠다.'},
+  {id:'tb_2_9_2',format:'ab',leftType:2,rightType:9,q:'거절이나 거리감이 생겼을 때, 더 먼저 흔들리는 것은?',a:'내가 더 이상 상대에게 특별히 필요하지 않은 사람처럼 느껴지는 것',b:'관계 안의 불편한 긴장이 오래 이어지는 것'},
+  {id:'tb_2_9_3',format:'ab',leftType:2,rightType:9,q:'내 필요를 뒤로 미룰 때, 더 자주 일어나는 패턴은?',a:'상대가 나의 헌신과 필요를 알아봐 주기를 은근히 기대한다.',b:'내 필요를 분명히 말하면 분위기가 불편해질 것 같아 흐리게 넘긴다.'}
+];
 const tb39 = [
   {id:'tb_3_9_1',format:'ab',leftType:3,rightType:9,q:'여러 사람과 있을 때, 상황이나 분위기에 나를 맞추는 밑바탕의 심리는 어느 쪽인가?',a:'이 상황에서 가장 괜찮고 유능해 보이는 역할이 뭘까?',b:'어떻게 해야 튀지 않고 무난하게 이 분위기에 스며들까?'},
   {id:'tb_3_9_2',format:'ab',leftType:3,rightType:9,q:'사람들이 나를 주목할 때, 내 안에서 드는 자연스러운 감정은?',a:'부담스러울 때도 있지만, 속으로는 내가 돋보이고 인정받는 것 같아 에너지가 돈다.',b:'그냥 조용히 내 자리에 있고 싶은데, 시선을 받는 것 자체가 불편하고 피곤하다.'},
@@ -2349,6 +2355,9 @@ function submitPhase1() {
     } else if (typeA === 2 && typeB === 8) {
       testState.tie.t28 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb28.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb28);
+    } else if (typeA === 2 && typeB === 9) {
+      testState.tie.t29 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.near / Math.max(tb29.length, 1), margin: top2Diff };
+      testState.phase2Questions = testState.phase2Questions.concat(tb29);
     } else if (typeA === 1 && typeB === 7) {
       testState.tie.t71 = { enabled: true, weight: TEST_CONFIG.weights.tieBreaker.type71Default / Math.max(tb71.length, 1), margin: top2Diff };
       testState.phase2Questions = testState.phase2Questions.concat(tb71);
@@ -2451,6 +2460,7 @@ function submitPhase2() {
       else if (q.id.startsWith('tb_2_4_') && testState.tie.t24.enabled) w = testState.tie.t24.weight;
       else if (q.id.startsWith('tb_2_6_') && testState.tie.t26.enabled) w = testState.tie.t26.weight;
       else if (q.id.startsWith('tb_2_8_') && testState.tie.t28.enabled) w = testState.tie.t28.weight;
+      else if (q.id.startsWith('tb_2_9_') && testState.tie.t29.enabled) w = testState.tie.t29.weight;
       else if (q.id.startsWith('tb_3_6') && testState.tie.t36.enabled) w = testState.tie.t36.weight;
       else if (q.id.startsWith('tb_5_6') && testState.tie.t56.enabled) w = testState.tie.t56.weight;
       else if (q.id.startsWith('tb_5_8_') && testState.tie.t58.enabled) w = testState.tie.t58.weight;
@@ -2496,6 +2506,7 @@ function submitPhase2() {
     else if (q.id.startsWith('tb_2_4_') && testState.tie.t24.enabled) w = testState.tie.t24.weight;
     else if (q.id.startsWith('tb_2_6_') && testState.tie.t26.enabled) w = testState.tie.t26.weight;
     else if (q.id.startsWith('tb_2_8_') && testState.tie.t28.enabled) w = testState.tie.t28.weight;
+    else if (q.id.startsWith('tb_2_9_') && testState.tie.t29.enabled) w = testState.tie.t29.weight;
     else if (q.id.startsWith('tb_5_6') && testState.tie.t56.enabled) w = testState.tie.t56.weight;
     else if (q.id.startsWith('tb_5_8_') && testState.tie.t58.enabled) w = testState.tie.t58.weight;
     else if (q.id.startsWith('tb_5_9_') && testState.tie.t59.enabled) w = testState.tie.t59.weight;
@@ -2950,6 +2961,7 @@ function renderSupportMaterialsSection(selection) {
 function renderGuidedApplicationSection(model) {
   const c = model.content || {};
   const coreName = c.coreName || `${model.core}번`;
+  const firstOf = (items, fallback) => (Array.isArray(items) && items[0]) ? items[0] : fallback;
   const relationshipPractice = c.relationship && c.relationship.practice && c.relationship.practice[0]
     ? c.relationship.practice[0]
     : '상대가 원하는 도움의 방식과 내가 주고 싶은 도움의 방식을 구분해 보세요.';
@@ -2959,6 +2971,59 @@ function renderGuidedApplicationSection(model) {
   const parentingPractice = c.parenting && c.parenting.practice && c.parenting.practice[0]
     ? c.parenting.practice[0]
     : '가까운 사람에게 필요한 반응을 먼저 묻고, 내 자동반응을 조절해 보세요.';
+  const primaryWatch = firstOf(
+    [
+      ...(c.relationship && c.relationship.watch ? c.relationship.watch : []),
+      ...(c.career && c.career.watch ? c.career.watch : []),
+      ...(c.falseSelf || [])
+    ].filter(Boolean),
+    '강점이 과해지는 순간에는 내가 지키려는 필요와 두려움을 함께 확인해야 합니다.'
+  );
+  const recoveryHelp = firstOf(
+    c.recovery,
+    '압박이 커질수록 혼자 결론내리기보다, 안전한 대화 안에서 내 자동반응을 천천히 확인하는 도움이 필요합니다.'
+  );
+
+  const applicationMap = [
+    {
+      label: 'Need',
+      title: '나의 필요',
+      body: c.fear
+        ? `불안과 방어가 올라올 때 ${escapeReportHtml(coreName)}이 붙잡고 있는 핵심 필요를 보여줍니다.`
+        : '불안과 방어가 올라올 때 내가 진짜로 필요로 하는 것을 분리해 봅니다.',
+      value: c.fear || '내가 위협으로 느끼는 장면과 보호받아야 할 필요를 확인하기'
+    },
+    {
+      label: 'Desire',
+      title: '나의 욕구',
+      body: '내가 반복해서 추구하는 방향입니다. 이것은 나쁜 것이 아니라, 성숙하게 다루어야 할 에너지입니다.',
+      value: c.motivation || '내가 얻고 싶어 하는 인정, 안정, 자유, 연결, 의미의 방향 확인하기'
+    },
+    {
+      label: 'Strength',
+      title: '강점',
+      body: '건강할 때 자연스럽게 드러나는 기여 방식입니다.',
+      value: careerStrength
+    },
+    {
+      label: 'Shadow',
+      title: '방어/약점',
+      body: '스트레스에서 강점이 굳어지거나 과해질 때 나타나는 반복 패턴입니다.',
+      value: primaryWatch
+    },
+    {
+      label: 'Support',
+      title: '내가 힘들 때 필요한 도움',
+      body: '좋은 조언보다 먼저 필요한 것은 내 패턴에 맞는 회복 조건입니다.',
+      value: recoveryHelp
+    },
+    {
+      label: 'Guide',
+      title: '가족·동료·리더가 나를 도울 방법',
+      body: '나를 바꾸려 하기보다, 내가 안전하게 반응을 조절할 수 있는 환경을 만드는 방식입니다.',
+      value: relationshipPractice || parentingPractice
+    }
+  ];
 
   const steps = [
     {
@@ -2989,6 +3054,14 @@ function renderGuidedApplicationSection(model) {
       <ul>${buildReportListItems(step.bullets.filter(Boolean))}</ul>
     </article>
   `).join('');
+  const applicationMapCards = applicationMap.map((item) => `
+    <article class="er-report-application-map-card">
+      <span>${escapeReportHtml(item.label)}</span>
+      <h3>${escapeReportHtml(item.title)}</h3>
+      <p>${item.body}</p>
+      <strong>${escapeReportHtml(item.value)}</strong>
+    </article>
+  `).join('');
 
   return `
     <section id="report-application" class="er-report-section er-report-application">
@@ -2999,6 +3072,7 @@ function renderGuidedApplicationSection(model) {
       <div class="er-report-application-hero">
         <p>결과지는 “나는 이런 사람이구나”에서 멈추면 얕아집니다. 다음 단계는 내 성향과 필요, 욕구, 강점을 이해하고, 다른 사람의 성향과 필요, 약점까지 읽어 실제로 돕는 언어를 배우는 것입니다.</p>
       </div>
+      <div class="er-report-application-map">${applicationMapCards}</div>
       <div class="er-report-bridge-grid">${cards}</div>
     </section>
   `;
@@ -3816,6 +3890,7 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
     if (testState.tie.t24.enabled) log += `<br><br><span class="text-xs">* 필요확인형/정서공명형(2-4) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t26.enabled) log += `<br><br><span class="text-xs">* 필요존재형/안전연대형(2-6) 동기 타이브레이커 적용</span>`;
     if (testState.tie.t28.enabled) log += `<br><br><span class="text-xs">* 정서부채형/주도권장악형(2-8) 동기 타이브레이커 적용</span>`;
+    if (testState.tie.t29.enabled) log += `<br><br><span class="text-xs">* 필요존재형/긴장완충형(2-9) 동기 타이브레이커 적용</span>`;
     if (testState.tie.tGeneric.enabled) log += `<br><br><span class="text-xs">* ${testState.tie.tGeneric.typeA}-${testState.tie.tGeneric.typeB}번 공용 타이브레이커 적용</span>`;
     if (testState.tie.t7wing.enabled && core===7) log += `<br><br><span class="text-xs">* 전환형 하위패턴 보정 적용</span>`;
     if (phase4) log += `<br><br><span class="text-xs">* 확정 코어 기반 Phase 4 하위유형/날개 강제선택 적용</span>`;

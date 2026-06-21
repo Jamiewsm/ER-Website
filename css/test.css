@@ -740,6 +740,56 @@ body {
   word-break: keep-all;
 }
 
+.er-report-application-map {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.er-report-application-map-card {
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.13);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  padding: 16px;
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.er-report-application-map-card > span {
+  display: block;
+  margin-bottom: 7px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.er-report-application-map-card h3 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.er-report-application-map-card p {
+  margin: 0 0 10px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 13px;
+  line-height: 1.58;
+  word-break: keep-all;
+}
+
+.er-report-application-map-card strong {
+  display: block;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
 .er-report-bridge-grid {
   display: grid;
   gap: 16px;
@@ -1077,6 +1127,7 @@ body {
   .er-report-summary-grid,
   .er-report-visual-grid,
   .er-report-life-grid,
+  .er-report-application-map,
   .er-report-support-grid,
   .er-report-next-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

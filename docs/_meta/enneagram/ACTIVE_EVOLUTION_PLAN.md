@@ -216,7 +216,7 @@ Expected: all pass.
 - Modify after approval: `js/test.js`
 - Test: `tests/question-copy-regression.test.mjs`
 
-- [ ] **Step 1: Audit current 1단계 and deep items**
+- [x] **Step 1: Audit current 1단계 and deep items**
 
 Focus:
 
@@ -225,7 +225,7 @@ Focus:
 - Type 6: avoid generic "생각 많음"; prefer "확인해야 안심", "빠진 위험", "다른 사람은 넘어가도 한 번 더".
 - Type 9: avoid generic "착함/평화"; prefer "불편함을 낮추기", "미루기/흐리기", "내 입장보다 긴장 완충".
 
-- [ ] **Step 2: Create copy proposal before code changes**
+- [x] **Step 2: Create copy proposal before code changes**
 
 Output section in `diagnostic_test_question_bank_full.md`:
 
@@ -240,7 +240,7 @@ Output section in `diagnostic_test_question_bank_full.md`:
 
 Do not alter weights in the same patch. Copy change and weight change must be separate.
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify audit guardrail**
 
 Run:
 
@@ -256,7 +256,7 @@ node --test tests/report-support-wiring.test.mjs tests/phase4-options-render.tes
 - Create: `tests/tie-breaker-routing.test.mjs`
 - Update: `docs/_meta/enneagram/scoring_spec.md`
 
-- [ ] **Step 1: Confirm existing routing**
+- [x] **Step 1: Confirm existing routing**
 
 Already present and must be tested before adding more:
 
@@ -264,9 +264,9 @@ Already present and must be tested before adding more:
 - `tb47` / `t47`: 4↔7
 - `tb59` / `t59`: 5↔9
 
-- [ ] **Step 2: Add missing 2↔9 only if routing test shows gap**
+- [x] **Step 2: Add missing 2↔9 only if routing test shows gap**
 
-Proposed 2↔9 questions:
+Implemented 2↔9 questions:
 
 ```js
 const tb29 = [
@@ -300,7 +300,7 @@ const tb29 = [
 ];
 ```
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 Run:
 
@@ -317,7 +317,7 @@ node --test tests/tie-breaker-routing.test.mjs tests/report-support-wiring.test.
 - Create: `tests/experiment-payload.test.mjs`
 - Update if needed: Supabase migration for `diagnostic_experiment_sessions`
 
-- [ ] **Step 1: Expand payload**
+- [x] **Step 1: Expand payload**
 
 Required fields inside stored JSON payload:
 
@@ -335,7 +335,7 @@ Required fields inside stored JSON payload:
 }
 ```
 
-- [ ] **Step 2: Improve feedback UI**
+- [x] **Step 2: Improve feedback UI**
 
 Keep current fields and add:
 
@@ -344,7 +344,7 @@ Keep current fields and add:
 - "결과에서 틀렸던 부분"
 - "상담에서 꼭 확인해야 할 것"
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 Run:
 
@@ -359,7 +359,7 @@ node --test tests/experiment-payload.test.mjs
 - Create: `scripts/analyze_diagnostic_experiments.mjs`
 - Create: `docs/_meta/enneagram/WEIGHT_CALIBRATION_WORKFLOW.md`
 
-- [ ] **Step 1: Export confusion matrix**
+- [x] **Step 1: Export confusion matrix**
 
 Required outputs:
 
@@ -372,7 +372,7 @@ tie_pair miss rate
 countertype miss rate
 ```
 
-- [ ] **Step 2: Define rule for weight changes**
+- [x] **Step 2: Define rule for weight changes**
 
 No production weight change unless:
 
@@ -380,7 +380,7 @@ No production weight change unless:
 - At least 20 rows for the affected confusion pair, or a clear qualitative review reason
 - A before/after replay test shows improvement without increasing adjacent regressions
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 Run:
 
@@ -394,7 +394,7 @@ node scripts/analyze_diagnostic_experiments.mjs --fixture tests/fixtures/diagnos
 - Create: `docs/_meta/enneagram/COUNTERTYPE_PERFORMANCE_AUDIT.md`
 - Create: `tests/countertype-routing.test.mjs`
 
-- [ ] **Step 1: Document existing countertype coverage**
+- [x] **Step 1: Document existing countertype coverage**
 
 Current code already has countertype questions for 9 countertypes. Audit should answer:
 
@@ -403,7 +403,7 @@ Current code already has countertype questions for 9 countertypes. Audit should 
 - Which countertypes are often misclassified as another core?
 - Which misses are caused by wording, trigger, or weight?
 
-- [ ] **Step 2: Do not add 9 new countertype questions yet**
+- [x] **Step 2: Do not add 9 new countertype questions yet**
 
 Expansion rule:
 
@@ -418,7 +418,7 @@ Expansion rule:
 - Modify: `css/test.css`
 - Update: `docs/report-content/support-materials/WORKFLOW.md`
 
-- [ ] **Step 1: Add "나를 돕는 법 / 타인을 돕는 법" structure**
+- [x] **Step 1: Add "나를 돕는 법 / 타인을 돕는 법" structure**
 
 Required sections:
 
@@ -430,7 +430,7 @@ Required sections:
 - 가족/동료/리더가 나를 도울 방법
 - 상담/스쿨에서 확인하면 좋은 주제
 
-- [ ] **Step 2: Keep hook smooth**
+- [x] **Step 2: Keep hook smooth**
 
 Do not render a hard sales block. The CTA should follow naturally from uncertainty, growth need, and relational application.
 
