@@ -81,6 +81,7 @@ git fetch origin main && git checkout main && git pull
 
 - **Cloudflare Pages** — `main` 머지 시 자동 배포
 - 확인 URL: `https://er-coaching.com/…`
+- 테스트 결과지 파일만 수동 배포할 때는 [DEPLOYMENT_SAFETY.md](./DEPLOYMENT_SAFETY.md)를 먼저 따른다. 브랜치 전체를 production에 덮어쓰지 않고, current live landing/menu를 보존한 test-only bundle을 만든 뒤 배포한다.
 
 ## 사용자에게 보고할 때
 

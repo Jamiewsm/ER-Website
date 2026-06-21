@@ -57,6 +57,7 @@ project_status: "manual_updates_after_phase_6"
 - Weight recalibration workflow — `scripts/analyze_diagnostic_experiments.mjs`로 predicted/confirmed core·subtype confusion, low-confidence accuracy, quality-flag accuracy, tie-pair miss rate, countertype miss rate를 산출한다. `WEIGHT_CALIBRATION_WORKFLOW.md`에 100 usable rows / affected pair 20 rows / replay 검증 gate를 명시했다.
 - Countertype performance audit — `COUNTERTYPE_PERFORMANCE_AUDIT.md`에 기존 9개 countertype 필터, 후보 유형 기반 trigger, core/instinct 분리 scoring, 확장 금지 조건을 정리했다. `tests/countertype-routing.test.mjs`가 9개 필터와 routing/scoring/log를 회귀 검증한다.
 - 결과지 business/application layer 강화 — `report-application` 섹션에 나의 필요, 나의 욕구, 강점, 방어/약점, 내가 힘들 때 필요한 도움, 가족·동료·리더가 나를 도울 방법 6개 축을 추가했다. 상담/스쿨 hook은 하드 세일즈가 아니라 실제 적용 필요에서 자연스럽게 이어지도록 유지했다.
+- 배포 안전 guardrail — `scripts/build_test_only_deploy_bundle.mjs`, `scripts/verify_live_test_deploy.mjs`, `tests/deploy-safety.test.mjs`, `docs/_meta/DEPLOYMENT_SAFETY.md`를 추가해 current live landing/menu 보존 + test runtime allowlist overlay + post-deploy marker 검증을 자동화했다.
 
 ## 자동화 종료 상태
 
@@ -106,6 +107,25 @@ OK
 
 node --test tests/confidence-card.test.mjs tests/response-quality.test.mjs tests/test-scoring.test.mjs tests/render-smoke.test.mjs tests/report-support-materials.test.mjs tests/report-support-wiring.test.mjs tests/phase4-options-render.test.mjs tests/question-copy-regression.test.mjs tests/tie-breaker-routing.test.mjs tests/experiment-payload.test.mjs tests/weight-calibration-workflow.test.mjs tests/countertype-routing.test.mjs
 79/79 tests pass
+```
+
+### 2026-06-21 배포 안전 guardrail 추가 후
+
+```
+node scripts/verify_live_test_deploy.mjs --site https://er-coaching.com
+OK: production deployment guard passed for https://er-coaching.com
+
+node --check scripts/build_test_only_deploy_bundle.mjs
+OK
+
+node --check scripts/verify_live_test_deploy.mjs
+OK
+
+node --test tests/deploy-safety.test.mjs
+3/3 tests pass
+
+node --test tests/confidence-card.test.mjs tests/response-quality.test.mjs tests/test-scoring.test.mjs tests/render-smoke.test.mjs tests/report-support-materials.test.mjs tests/report-support-wiring.test.mjs tests/phase4-options-render.test.mjs tests/question-copy-regression.test.mjs tests/tie-breaker-routing.test.mjs tests/experiment-payload.test.mjs tests/weight-calibration-workflow.test.mjs tests/countertype-routing.test.mjs tests/deploy-safety.test.mjs
+82/82 tests pass
 ```
 
 ### 2026-06-21 Confidence 설명 카드 구현 후
