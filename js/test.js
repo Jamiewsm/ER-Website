@@ -134,20 +134,19 @@ function localizeStaticTestPage() {
 
 // Minimal English question/option texts (ported from adaptiveQuestionEn in index.html)
 const questionTextEn = {
-  t2: "After a social setting ends, I tend to automatically replay how I came across to others.",
-  t2_eval: "When I feel embarrassed or negatively judged in front of people, the scene tends to stay with me and replay later.",
-  t5: "When something unexpected happens, I need to understand what is happening first before my emotions can move.",
-  t5_var: "In uncertain situations, I feel more settled when I can check possible variables and exceptions in advance.",
-  t8: "When I see something out of line, tension or friction rises in my body before I even start thinking.",
   c1: "Even when others say it is enough, I do not feel settled if my inner standard says it is not done yet.",
-  c2: "After helping someone, if they show little appreciation, subtle disappointment or hurt tends to rise in me.",
+  c2: "When I feel someone no longer needs me, a stronger emptiness or anxiety rises than I expected.",
   c3: "After producing a result, it is hard for me to feel this is enough regardless of how others respond.",
-  c4: "When stable, ordinary routines continue for a long time, I feel a pull toward stronger stimulation.",
-  c4_unique: "When I feel I am not very different from others, discomfort arises as if my uniqueness is fading.",
+  c2_recall: "When the role I can offer in a relationship disappears, I have felt shaken about what I mean to that person.",
+  c3_recall: "After making a mistake in a meeting or conversation, I have replayed the scene for days because I may have looked incapable.",
+  c4: "Even in happy moments, a sense that something is still missing does not easily disappear.",
+  c4_pain: "When a difficult feeling comes up, I tend to stay with it as if it explains something true about me.",
+  c4_unique: "Even when I am fitting in well with people, a sense remains that I alone do not fully belong.",
   c5: "After long interaction with people, I first feel the need to recover my energy and thinking space.",
   c6: "Before an important decision, even after checking risks, a thought comes up again that I may still be missing something.",
   c7: "When heavy feelings seem like they will continue, my mind moves to other possibilities or plans even without a conscious decision.",
   c8: "When my people or vulnerable people are treated unfairly, my body reacts first that I need to step in directly.",
+  c8_recall: "When I see a power imbalance between people, I tend to step in even if nobody asked me to.",
   c9: "When conflict starts building, the urge to end the discomfort quickly comes before clarifying my position.",
   f_2_3: "Under pressure, which response tends to come out first in me automatically?",
   f_3_6: "When anxiety rises, which first strategy do I rely on more?",
@@ -181,8 +180,8 @@ const questionTextEn = {
   i_so_3: "As much as personal comfort or closeness, it matters to me where I stand within a larger flow or group.",
   d1_1: "Even after I decide the work is done, a fresh urge rises to check again whether it truly meets my standard.",
   d1_2: "When something feels off, it keeps catching in my mind even when I try to let it pass.",
-  d2_1: "Caring for or helping others is relatively familiar, but directly stating my own needs and asking for help feels uncomfortable.",
-  d2_2: "Even when I want something, I tend to wait for the other person to notice and fill it rather than saying it directly.",
+  d2_1: "When I feel I am no longer needed in a relationship, I tend to feel more shaken or empty than expected.",
+  d2_2: "When the role or care I can offer disappears, I want to confirm what I still mean to that person.",
   d3_1: "My value feels clearer when I have produced visible results or achievement.",
   d3_2: "When I sense the possibility of failing or looking incompetent, tension rises strongly even before the work actually begins.",
   d4_1: "Even when I am with people, I tend to feel distance, as if I am the only one not fully understood.",
@@ -435,7 +434,9 @@ const arrowLines = {1:{stress:4,growth:7},2:{stress:8,growth:4},3:{stress:9,grow
 const TEST_CONFIG = {
   weights: {
     phase1Core: 1.5,
+    phase1CenterChoice: 0.6,
     phase1Binary: 1.8,
+    instinctAttentionChoice: 3.0,
     phase2Base: 2.0,
     postTieBreak: 6.0,
     tieBreaker: {
@@ -476,7 +477,8 @@ const TEST_CONFIG = {
     coreReserveDiff: 0.04,
     stressCorrectionStart: 5,
     stressCorrectionMargin: 6.0,
-    wingActivationRatio: 0.85
+    wingActivationRatio: 0.85,
+    stateAnxietySixRivalMargin: 0.18
   },
   corrections: {
     sxDampFactor: 0.45,
@@ -485,6 +487,9 @@ const TEST_CONFIG = {
     sxBoostCap: 1.5,
     stressType1Damp: 1.0,
     stressType7Boost: 0.6,
+    stateAnxietyType6Damp: 0.9,
+    stateAnxietyType6MaxDampRatio: 0.12,
+    stateAnxietyTieWeightBoost: 1.15,
     soPenaltyHighLead: 2,
     soPenaltyLowLead: 1,
     soPenaltyHigh: 2.0,
@@ -498,6 +503,14 @@ const testState = {
   phase3Question: null,
   phase4Questions: [],
   pendingResult: null,
+  responseTiming: {
+    startedAt: null,
+    firstAnswerAt: {},
+    completedAt: null,
+    totalSeconds: 0,
+    answeredCount: 0,
+    avgSecondsPerAnswered: 0
+  },
   tie: {
     t36: {enabled:false,weight:0,margin:null},
     t56: {enabled:false,weight:0,margin:null},
@@ -532,20 +545,181 @@ const testState = {
 };
 
 const q1 = [
-  { id:'t2', triad:[2,3,4], triadWeight:0.5, q:'모임이 끝나고 혼자 있을 때, 내가 어떻게 보였을지를 자동으로 되짚어보는 편이다.' },
-  { id:'t2_eval', triad:[2,3,4], triadWeight:0.5, q:'사람들 앞에서 민망하거나 부정적으로 평가받았다고 느끼면, 그 장면이 오래 남아 반복해서 떠오르는 편이다.' },
-  { id:'t5', triad:[5,6,7], triadWeight:0.5, q:'예상 밖의 상황이 생기면, 감정 반응보다 이게 어떤 상황인지 먼저 이해해야 마음이 움직이는 편이다.' },
-  { id:'t5_var', triad:[5,6,7], triadWeight:0.5, q:'불확실한 상황에서는 가능한 변수와 예외를 미리 점검해야 마음이 놓이는 편이다.' },
-  { id:'t8', triad:[8,9,1], q:'관계나 일에서 기준에 어긋난 장면을 보면, 생각하기 전에 몸 어딘가에서 긴장이나 마찰감이 먼저 올라오는 편이다.' },
+  {
+    id: 'center_auto_1',
+    format: 'abc',
+    centerChoice: true,
+    q: '압박이나 예상 밖의 일이 생긴 직후, 의식적으로 고르기 전에 더 먼저 붙잡는 것은?',
+    qEn: 'Right after pressure or an unexpected situation appears, what do you tend to grab first before you consciously choose?',
+    options: [
+      {
+        value: 'heart',
+        types: [2, 3, 4],
+        text: '이 일이 나를 어떤 사람으로 보이게 만들지, 내가 부족하거나 무능해 보였는지가 먼저 걸린다.',
+        textEn: 'I first get caught on how this may make me look, or whether I looked lacking or incapable.'
+      },
+      {
+        value: 'head',
+        types: [5, 6, 7],
+        text: '무슨 일이 벌어졌는지 이해해야 마음이 진정되고, 놓친 위험이 없는지 한 번 더 확인하게 된다.',
+        textEn: 'I calm down when I understand what happened, and I tend to check again for risks I may have missed.'
+      },
+      {
+        value: 'body',
+        types: [8, 9, 1],
+        text: '몸이 먼저 긴장하거나 굳는다. 무엇을 해야 할지 생각하기 전에 몸이 먼저 반응한다.',
+        textEn: 'My body tenses or stiffens first. Before I know what to do, my body has already reacted.'
+      }
+    ]
+  },
+  {
+    id: 'center_auto_2',
+    format: 'abc',
+    centerChoice: true,
+    q: '갈등 기류가 생기거나 서로의 입장이 부딪힐 때, 더 먼저 올라오는 반응은?',
+    qEn: 'When conflict begins to form or positions collide, which response comes up first?',
+    options: [
+      {
+        value: 'heart',
+        types: [2, 3, 4],
+        text: '내 말투나 태도가 어떻게 보였는지, 내 진심이 왜곡되어 보였는지가 먼저 걸린다.',
+        textEn: 'I first get caught on how my tone or posture came across, and whether my intent looked distorted.'
+      },
+      {
+        value: 'head',
+        types: [5, 6, 7],
+        text: '왜 이렇게 되었는지 이해해야 안심되고, 문제가 커지지 않게 확인할 것을 찾는다.',
+        textEn: 'I feel safer when I understand why this happened, and I look for what to verify so it does not escalate.'
+      },
+      {
+        value: 'body',
+        types: [8, 9, 1],
+        text: '몸이 먼저 조이거나 굳는다. 말보다 자세, 목소리, 거리감이 먼저 달라진다.',
+        textEn: 'My body tightens or stiffens first. My posture, voice, or distance shifts before my words do.'
+      }
+    ]
+  },
+  {
+    id: 'center_auto_3',
+    format: 'abc',
+    centerChoice: true,
+    q: '칭찬이나 좋은 평가를 받을 때, 가장 먼저 의식되는 것은?',
+    qEn: 'When you receive praise or a positive evaluation, what do you notice first?',
+    options: [
+      {
+        value: 'heart',
+        types: [2, 3, 4],
+        text: '내가 어떤 사람으로 인정받았는지, 그 이미지가 계속 유지될지 신경이 간다.',
+        textEn: 'I notice what kind of person I was recognized as, and whether that image can be maintained.'
+      },
+      {
+        value: 'head',
+        types: [5, 6, 7],
+        text: '왜 그렇게 평가받았는지 이해해야 편하고, 다음에도 그 기대를 맞출 수 있을지 확인한다.',
+        textEn: 'I feel more settled when I understand why I was evaluated that way, and I check whether I can meet that expectation again.'
+      },
+      {
+        value: 'body',
+        types: [8, 9, 1],
+        text: '몸이 먼저 반응한다. 편해지거나 어색하게 굳고, 말보다 자세와 거리감이 먼저 바뀐다.',
+        textEn: 'My body responds first. I relax or stiffen awkwardly, and my posture or distance shifts before my words do.'
+      }
+    ]
+  },
+  {
+    id: 'center_situation_1',
+    format: 'abc',
+    centerChoice: true,
+    q: '회의나 대화에서 내 의견이 충분히 받아들여지지 않았을 때, 가장 먼저 가까운 반응은?',
+    qEn: 'When your opinion is not received enough in a meeting or conversation, which first response is closest?',
+    options: [
+      {
+        value: 'heart',
+        types: [2, 3, 4],
+        text: '내가 어떤 사람으로 보였는지, 내 말이 가볍게 여겨진 건 아닌지가 오래 남는다.',
+        textEn: 'What stays with me is how I looked, and whether my words were treated as light or unimportant.'
+      },
+      {
+        value: 'head',
+        types: [5, 6, 7],
+        text: '왜 그런 반응이 나왔는지 이해하고, 다음에는 어떤 정보나 근거를 더 준비해야 할지 생각한다.',
+        textEn: 'I try to understand why that reaction happened, then think about what information or support I need next time.'
+      },
+      {
+        value: 'body',
+        types: [8, 9, 1],
+        text: '말보다 몸이 먼저 긴장하거나 굳는다. 바로 밀어붙이거나, 조용히 물러나거나, 거리감이 달라진다.',
+        textEn: 'My body tenses or stiffens before words. I may push, quietly step back, or shift my distance.'
+      }
+    ]
+  },
+  {
+    id: 'center_situation_2',
+    format: 'abc',
+    centerChoice: true,
+    q: '누군가 나를 예상보다 차갑게 대하거나 거절했을 때, 먼저 올라오는 반응은?',
+    qEn: 'When someone treats you more coldly than expected or rejects you, what comes up first?',
+    options: [
+      {
+        value: 'heart',
+        types: [2, 3, 4],
+        text: '그 거절이 나에 대한 평가처럼 느껴지고, 내가 어떻게 받아들여졌는지 곱씹게 된다.',
+        textEn: 'The rejection feels like an evaluation of me, and I replay how I was received.'
+      },
+      {
+        value: 'head',
+        types: [5, 6, 7],
+        text: '왜 그런 반응이 나왔는지 이유를 파악해야 마음이 진정되고, 다음 가능성을 계산하게 된다.',
+        textEn: 'I calm down only after I understand why they reacted that way, then I calculate the next possibilities.'
+      },
+      {
+        value: 'body',
+        types: [8, 9, 1],
+        text: '몸이 먼저 닫히거나 굳는다. 말수가 줄거나, 거리를 두거나, 불편한 긴장이 먼저 올라온다.',
+        textEn: 'My body closes or stiffens first. I speak less, create distance, or feel uncomfortable tension first.'
+      }
+    ]
+  },
+  {
+    id: 'center_situation_3',
+    format: 'abc',
+    centerChoice: true,
+    q: '일이 예상과 다르게 틀어졌을 때, 가장 먼저 반복되는 패턴은?',
+    qEn: 'When something goes differently than expected, which pattern repeats first?',
+    options: [
+      {
+        value: 'heart',
+        types: [2, 3, 4],
+        text: '결과보다 내가 실패한 사람처럼 보였을까 봐 그 장면이 오래 남는다.',
+        textEn: 'More than the result itself, I replay whether I looked like someone who failed.'
+      },
+      {
+        value: 'head',
+        types: [5, 6, 7],
+        text: '무엇이 잘못됐는지 이해해야 진정되고, 다음에는 같은 위험을 막기 위해 확인한다.',
+        textEn: 'I calm down when I understand what went wrong, then check how to prevent the same risk next time.'
+      },
+      {
+        value: 'body',
+        types: [8, 9, 1],
+        text: '몸에 힘이 빠지거나 굳는다. 생각보다 감각 반응이 먼저 내려앉거나 올라온다.',
+        textEn: 'My body loses force or stiffens. Sensation drops or rises before I can fully think it through.'
+      }
+    ]
+  },
   { id:'c1', type:1, q:'남이 충분하다고 해도, 내 안의 기준이 아직 안 됐다고 느끼면 마음이 놓이지 않는 편이다.' },
-  { id:'c2', type:2, q:'누군가를 도와주었는데 상대가 특별히 고마워하지 않거나 챙겨주지 않을 때, 은근한 서운함이나 실망이 올라오는 편이다.' },
+  { id:'c2', type:2, q:'누군가가 더 이상 나를 필요로 하지 않는다고 느껴질 때, 생각보다 큰 허전함이나 불안이 올라오는 편이다.' },
+  { id:'c2_recall', type:2, scoreWeight:0.8, q:'관계에서 내가 줄 수 있는 역할이 사라지면, 내가 그 사람에게 어떤 의미인지 흔들리는 느낌이 든 적이 있다.' },
   { id:'c3', type:3, q:'어떤 결과물을 내놓았을 때, 주변 반응과 무관하게 스스로 이 정도면 됐다고 느끼는 순간이 잘 오지 않는 편이다.' },
-  { id:'c4', type:4, scoreWeight:0.5, q:'안정적이고 무난한 일상이 오래 이어지면, 내 안에서 다른 자극이 필요하다는 당김이 올라오는 편이다.' },
-  { id:'c4_unique', type:4, scoreWeight:0.5, q:'남들과 크게 다르지 않다고 느껴질 때, 내 고유함이 흐려진 듯한 불편함이 생기는 편이다.' },
+  { id:'c3_recall', type:3, scoreWeight:0.8, q:'회의나 대화에서 실수한 뒤, 무능해 보였을까 봐 며칠 동안 그 장면을 반복해서 떠올린 적이 있다.' },
+  { id:'c4', type:4, scoreWeight:0.7, q:'행복한 순간에도, 어딘가 빠져 있는 것이 있다는 느낌이 쉽게 사라지지 않는 편이다.' },
+  { id:'c4_pain', type:4, scoreWeight:0.8, q:'힘든 감정이 올라오면 빨리 털어내기보다, 그 감정이 나를 설명하는 것 같아 오래 붙들게 되는 편이다.' },
+  { id:'c4_unique', type:4, scoreWeight:0.5, q:'사람들과 잘 어울리고 있어도, 마음 한쪽에는 나만 온전히 속하지 못한다는 감각이 남아 있는 편이다.' },
   { id:'c5', type:5, q:'사람들과 오래 있고 나면, 감정 정리보다 내 에너지와 생각을 회수하고 싶다는 느낌이 먼저 오는 편이다.' },
   { id:'c6', type:6, q:'중요한 결정을 앞두고 위험 요소를 확인할 때, 다 확인했어도 혹시 빠진 게 있지 않을까 하는 생각이 한 번 더 올라오는 편이다.' },
   { id:'c7', type:7, q:'무겁거나 답답한 감정이 오래 이어질 것 같으면, 의식적으로 결심하지 않아도 다른 가능성이나 계획으로 생각이 이동하는 편이다.' },
   { id:'c8', type:8, q:'내 사람이나 약자가 부당한 대우를 받으면, 올바른 처신을 떠나 내가 직접 막아야 한다는 반응이 몸에서 먼저 올라오는 편이다.' },
+  { id:'c8_recall', type:8, scoreWeight:0.8, q:'사람들 사이에 힘의 불균형이 보이면, 요청받지 않아도 개입하게 되는 편이다.' },
   { id:'c9', type:9, q:'갈등 기류가 생기면, 내 입장을 세우는 것보다 이 불편함을 빨리 끝내고 싶다는 충동이 먼저 오는 편이다.' },
   { id:'f_2_3', format:'ab', leftType:2,rightType:3,weight:2.2,q:'압박이 올 때, 내 안에서 자동으로 먼저 나오는 반응에 더 가까운 쪽은?',a:'상대에게 더 적극적으로 다가가거나 도움이 되려 움직인다.',b:'눈에 보이는 결과나 행동으로 빠르게 상황을 만들어낸다.' },
   { id:'f_3_6', format:'ab', leftType:3,rightType:6,weight:2.2,q:'상황이 흔들리거나 불안정하다고 느껴질 때, 내 안에서 먼저 나오는 반응에 더 가까운 쪽은?',a:'빠르게 행동하거나 결과를 만들어서 상황을 안정시키려 한다.',b:'빠진 것이나 위험 요소를 먼저 확인하고 대비책을 세워야 마음이 놓인다.' },
@@ -556,6 +730,18 @@ const q1 = [
   { id:'state_2w', state:true, q:'최근 2주 동안, 일상 전반에서 느낀 압박과 스트레스 수준은 어느 정도였나요? (1=매우 안정적이었다, 6=거의 버티기 어려울 정도였다)' },
   { id:'state_defensive', state:true, q:'최근 2주 동안, 평소의 나보다 예민하거나 방어적으로 반응하는 일이 얼마나 늘었나요? (1=거의 없었다, 6=거의 계속 그랬다)' },
   { id:'state_unusual', state:true, q:"최근 2주 동안, 내 본래 성향보다 상황 대응이 우선되어 '평소 같지 않다'고 느낀 적이 얼마나 있었나요? (1=전혀 없었다, 6=거의 항상 그랬다)" },
+  {
+    id:'instinct_attention_1',
+    format:'abc',
+    instinctChoice:true,
+    q:'낯선 장소나 새로운 모임에 들어갔을 때, 가장 먼저 눈에 들어오는 것은?',
+    qEn:'When you enter an unfamiliar place or new gathering, what catches your attention first?',
+    options:[
+      { value:'sp', inst:'sp', text:'어디서 쉬고, 먹고, 이동하고, 몸을 편하게 유지할 수 있는지 본다.', textEn:'I notice where I can rest, eat, move around, and keep my body comfortable.' },
+      { value:'sx', inst:'sx', text:'누가 강하게 끌리거나 에너지가 집중되는 대상인지 먼저 감지한다.', textEn:'I first sense who or what has strong pull or concentrated energy.' },
+      { value:'so', inst:'so', text:'누가 영향력이 있고, 관계 흐름이 어떻게 움직이는지 먼저 읽는다.', textEn:'I first read who has influence and how the relational flow is moving.' }
+    ]
+  },
   { id:'i_sp_1', inst:'sp', q:'낯선 환경에서도 가장 먼저 확인하게 되는 것은 내 몸 상태, 휴식 가능성, 생활 리듬이 유지되는지 여부다.' },
   { id:'i_sp_2', inst:'sp', q:'시간, 에너지, 돈이 어디서 새고 있는지 파악되지 않으면 마음이 불편해지는 편이다.' },
   { id:'i_sp_3', inst:'sp', q:'중요한 선택을 할 때, 흥미나 관계보다 생활의 안정성과 지속 가능성을 먼저 따지게 되는 편이다.' },
@@ -569,7 +755,7 @@ const q1 = [
 
 const deep = {
   1:[{id:'d1_1',type:1,q:'일을 다 끝냈다고 스스로 판단한 뒤에도, 정말 기준에 맞게 했는지 확인하고 싶은 충동이 다시 올라오는 편이다.'},{id:'d1_2',type:1,q:'무언가 이건 아닌데라는 느낌이 들면, 그냥 지나치려 해도 머릿속 어딘가에서 계속 걸리는 편이다.'}],
-  2:[{id:'d2_1',type:2,q:'남을 챙기거나 도와주는 것은 비교적 익숙하지만, 내가 먼저 필요를 말하고 도움을 요청하는 일은 불편한 편이다.'},{id:'d2_2',type:2,q:'내가 원하는 것이 있어도, 그것을 직접 말하기보다 상대가 먼저 알아채고 채워주기를 기다리는 편이다.'}],
+  2:[{id:'d2_1',type:2,q:'관계에서 내가 더 이상 필요한 존재가 아닌 것처럼 느껴지면, 예상보다 크게 흔들리거나 허전해지는 편이다.'},{id:'d2_2',type:2,q:'내가 줄 수 있는 역할이나 돌봄의 자리가 사라지면, 그 사람에게 내가 어떤 의미인지 자꾸 확인하고 싶어진다.'}],
   3:[{id:'d3_1',type:3,q:'내 가치가 분명해지는 순간은, 눈에 보이는 결과나 성과를 만들었을 때인 편이다.'},{id:'d3_2',type:3,q:'실패하거나 무능해 보일 가능성이 느껴지면, 실제 일이 시작되기 전부터 긴장이 크게 올라오는 편이다.'}],
   4:[{id:'d4_1',type:4,q:'사람들과 함께 있어도, 나만 완전히 이해받지 못한다는 거리감을 느끼는 편이다.'},{id:'d4_2',type:4,q:'반복적이고 평탄한 흐름이 길어지면 정서적으로 무뎌지고, 감정의 깊이가 느껴질 때 비로소 내가 살아나는 편이다.'}],
   5:[{id:'d5_1',type:5,q:'문제나 상황 한가운데 뛰어들기보다, 한 걸음 물러서서 전체를 파악하고 나서야 마음이 안정되는 편이다.'},{id:'d5_2',type:5,q:'예고 없는 감정 요구나 갑작스러운 침범이 들어오면, 먼저 에너지를 닫고 물러나 정리하려는 반응이 나온다.'}],
@@ -665,8 +851,8 @@ const counterTypeQuestions = {
     inst: 'sp',
     counterType: true,
     label: 'SP 2',
-    q: '나는 남을 챙기는 편이지만, 정작 내 필요는 직접 말하기보다 상대가 먼저 알아채고 챙겨주길 기대하는 편이다.',
-    qEn: 'I tend to care for others, but when it comes to my own needs, I often hope the other person notices and takes care of them before I say them directly.'
+    q: '가까운 관계에서 내가 특별히 귀엽고 챙김받을 만한 존재로 느껴지길 바라며, 상대가 나를 필요로 하고 돌봐주는 신호에 민감한 편이다.',
+    qEn: 'In close relationships, I want to feel especially lovable and worth caring for, and I am sensitive to signs that the other person needs me and cares for me.'
   },
   3: {
     id: 'ct_3_sp',
@@ -1123,6 +1309,154 @@ const phase4TypeSets = {
   }
 };
 
+const SUBTYPE_BEHAVIOR_ITEMS = {
+  1: [
+    { q: '기준이 어긋난 장면을 본 뒤 실제 반응에 더 가까운 것은?', sp: '겉으로 크게 말하기보다 집에 와서 내가 놓친 것과 내 책임을 다시 점검한다.', so: '사람들이 같은 기준을 따르지 않는 것이 답답해서, 올바른 방식이 무엇인지 설명하게 된다.', sx: '가까운 사람이나 현장에 바로 말하고, 관계가 거칠어져도 고쳐야 한다고 느낀다.' },
+    { q: '실수 가능성이 보일 때 더 자주 하는 행동은?', sp: '내가 실수하지 않도록 준비물, 순서, 마감 기준을 반복해서 확인한다.', so: '팀이나 공동체가 기준 없이 움직이면 규칙과 방향을 정리해 주려 한다.', sx: '상대의 태도나 습관이 기준에 어긋나면 직접 지적하고 바꾸도록 압박한다.' },
+    { q: '화가 올라온 뒤 남는 패턴에 가까운 것은?', sp: '내가 더 잘했어야 했다는 생각이 오래 남아 스스로를 몰아붙인다.', so: '왜 사람들이 기본을 지키지 않는지 답답해하며 기준을 세우려 한다.', sx: '참다가 넘기는 것보다 즉시 고치게 만들 때 마음이 풀린다.' }
+  ],
+  2: [
+    { q: '관계에서 필요를 느낄 때 실제 행동에 가까운 것은?', sp: '직접 요구하기보다 귀엽거나 약한 신호를 보내 상대가 먼저 알아주길 기다린다.', so: '중요한 사람들과 연결되고 모임에서 필요한 조력자가 되기 위해 움직인다.', sx: '특정 사람이 나를 강하게 원하게 만들려고 매력과 관심을 집중한다.' },
+    { q: '서운함이 생겼을 때 더 자주 나타나는 방식은?', sp: '괜찮은 척하지만 속으로는 왜 나를 챙겨주지 않는지 오래 섭섭해한다.', so: '내가 이 그룹에 얼마나 기여했는지 인정받지 못하면 힘이 빠진다.', sx: '상대가 내 마음을 몰라주면 더 가까이 밀고 들어가거나 강하게 확인하려 한다.' },
+    { q: '도움이 필요한 사람이 보일 때 자동으로 하는 행동은?', sp: '상대에게 기대고 싶은 마음을 숨긴 채 먼저 다정하게 챙긴다.', so: '조직 안에서 필요한 일을 맡고 사람들을 연결해 영향력을 만든다.', sx: '한 사람에게 집중해 특별한 관계가 되도록 에너지를 쏟는다.' }
+  ],
+  3: [
+    { q: '성과를 보여줘야 할 때 실제로 더 자주 하는 행동은?', sp: '티 내기보다 꾸준하고 성실하게 결과를 내서 믿을 만한 사람으로 보이려 한다.', so: '사람들이 알아볼 수 있는 자리, 스펙, 성과를 분명하게 만들려 한다.', sx: '특정 대상이나 주변 사람이 원하는 이상적 모습에 맞춰 나를 세팅한다.' },
+    { q: '실패하거나 부족해 보일 수 있을 때 더 가까운 반응은?', sp: '겉으로 드러내기보다 더 안정적인 결과와 책임감으로 만회하려 한다.', so: '평판이나 지위가 떨어지지 않도록 빠르게 성과 이미지를 회복하려 한다.', sx: '매력, 유능함, 외형, 태도를 조정해 상대가 실망하지 않게 만든다.' },
+    { q: '인정을 얻기 위해 반복되는 행동은?', sp: '묵묵히 잘해내는 사람이라는 신뢰를 쌓는다.', so: '무대 중앙이나 공개된 지표에서 뛰어난 사람으로 보이려 한다.', sx: '상대가 바라는 완성형 이미지에 맞춰 나를 바꾼다.' }
+  ],
+  4: [
+    { q: '마음이 힘들 때 고통을 다루는 실제 방식은?', sp: '힘든 일이 있어도 주변에 거의 말하지 않고 혼자 버틴 뒤 나중에 지친다.', so: '나만 뒤처진 느낌이나 비교되는 감정을 말하거나 드러내고 싶어진다.', sx: '부러운 사람을 보면 슬픔보다 경쟁심과 날 선 반응이 먼저 올라온다.' },
+    { q: '결핍감이 올라올 때 더 가까운 행동은?', sp: '아픈 티를 내지 않으려고 버티며, 혼자 견디는 데 자존심을 둔다.', so: '내 부족함이나 수치심을 누군가 알아주길 바라며 표현하게 된다.', sx: '내가 밀렸다고 느끼면 이기거나 압도해서 결핍감을 뒤집으려 한다.' },
+    { q: '행복하거나 평온한 상황에서도 반복되는 패턴은?', sp: '겉으로는 괜찮아 보여도 혼자만의 고통을 계속 견디고 있다.', so: '다른 사람들은 온전해 보이는데 나만 빠진 것 같다는 감각이 올라온다.', sx: '내게 없는 것을 가진 사람을 보면 비교보다 경쟁 행동으로 반응한다.' }
+  ],
+  5: [
+    { q: '사람과 요구가 한꺼번에 들어올 때 실제 행동은?', sp: '내 공간과 시간을 지키기 위해 문을 닫고 접근을 줄인다.', so: '일반적인 교류보다 전문 지식이나 특별한 그룹 안에서만 연결된다.', sx: '대부분과는 거리를 두지만 깊이 신뢰하는 한 대상에게만 강하게 열린다.' },
+    { q: '에너지가 부족할 때 회복 방식은?', sp: '물리적 공간, 루틴, 혼자 있는 시간을 확보한다.', so: '내가 가치 있게 여기는 지식/분야 안에서 의미를 찾는다.', sx: '단 한 사람 또는 이상과 깊이 통하는 느낌을 찾는다.' },
+    { q: '관계에서 가까워질 때 반복되는 패턴은?', sp: '상대가 내 시간과 공간을 침범하지 않는지 먼저 본다.', so: '전문성이나 관심사가 맞을 때 제한적으로 가까워진다.', sx: '절대적으로 신뢰할 수 있다고 느끼면 예상보다 깊이 몰입한다.' }
+  ],
+  6: [
+    { q: '불안하거나 위협을 느낄 때 실제로 하는 행동은?', sp: '친절하고 무해하게 보이며 내 편과 보호망을 만든다.', so: '명확한 규칙, 권위, 매뉴얼을 찾아 그대로 따르며 안심한다.', sx: '두려워 보이지 않으려고 먼저 강하게 나가거나 맞선다.' },
+    { q: '사람을 믿어야 할 때 더 자주 하는 행동은?', sp: '상대가 나를 지켜줄 수 있는지 따뜻한 관계를 만들어 확인한다.', so: '공식 기준과 책임 구조가 있는지 확인한다.', sx: '상대를 찔러보거나 강하게 반응해 믿을 만한지 시험한다.' },
+    { q: '불확실성이 커질 때 에너지가 향하는 곳은?', sp: '안전한 사람들과 일상의 안정망을 확보한다.', so: '규칙과 의무를 분명히 해 모호함을 줄인다.', sx: '위협을 제거하기 위해 먼저 힘을 보여준다.' }
+  ],
+  7: [
+    { q: '욕구와 책임이 부딪힐 때 실제로 더 자주 하는 행동은?', sp: '나와 내 사람에게 이익이 되는 기회와 정보를 빠르게 챙긴다.', so: '내가 하고 싶은 일을 미루고 공동 일정이나 사람들 기대를 먼저 처리한다.', sx: '평범한 재미보다 강렬한 의미와 이상을 줄 대상을 찾아 몰입한다.' },
+    { q: '지루함이나 결핍감이 올라올 때 에너지가 향하는 곳은?', sp: '실용적인 네트워크, 자원, 선택지를 넓히는 쪽으로 움직인다.', so: '내 즐거움을 바로 챙기기보다 좋은 사람으로 남기 위해 역할을 맡는다.', sx: '현실이 얕게 느껴지면 더 강한 끌림이나 본질적인 가능성을 찾아간다.' },
+    { q: '사람들 앞에서 욕심 있어 보일 수 있을 때 반응은?', sp: '필요한 것을 영리하게 확보하되 내 사람들과 나눌 계산을 한다.', so: '내 욕구를 앞세우는 것이 이기적으로 보일까 봐 먼저 양보하거나 참여한다.', sx: '한 대상이나 아이디어가 이상적으로 느껴지면 현실 조건보다 그 가능성에 빨려 들어간다.' }
+  ],
+  8: [
+    { q: '힘이나 통제권이 걸린 장면에서 실제 행동은?', sp: '시끄럽게 싸우기보다 내 자원과 영역을 조용히 단단하게 확보한다.', so: '사람들 사이에 힘의 불균형이 보이면, 요청받지 않아도 개입하게 된다.', sx: '상대와 공간의 주도권을 내가 쥐기 위해 강하게 밀고 들어간다.' },
+    { q: '부당함을 봤을 때 더 가까운 반응은?', sp: '내 생존과 실속에 직접 관련된 영역부터 강하게 지킨다.', so: '내 사람이나 팀이 당하고 있으면 개인 이익과 무관해도 나선다.', sx: '상대가 물러설 때까지 강도를 높이며 기선을 잡는다.' },
+    { q: '내 힘을 쓰는 방식에 가까운 것은?', sp: '필요한 자원과 만족을 놓치지 않도록 현실적으로 장악한다.', so: '개인 과시보다 무리 안의 의리와 보호를 위해 쓴다.', sx: '상대에게 강렬한 인상을 남기고 관계의 판을 장악한다.' }
+  ],
+  9: [
+    { q: '내 문제와 욕구를 미루게 될 때 실제 행동은?', sp: '먹기, 영상, 잠, 반복 루틴 같은 몸의 편안함으로 복잡한 문제를 덮는다.', so: '모임 일이 굴러가지 않으면 내 필요를 미루고 빈자리를 메운다.', sx: '중요한 사람의 의견과 목표를 내 것처럼 받아들이며 내 목소리를 줄인다.' },
+    { q: '갈등이나 불편한 결정을 피할 때 더 가까운 방식은?', sp: '익숙한 일상 활동에 들어가 감각을 무디게 만든다.', so: '바쁘게 참여하고 돕느라 내 문제를 볼 시간을 없앤다.', sx: '상대와 맞추는 쪽으로 흘러가며 독립적인 입장을 흐린다.' },
+    { q: '에너지가 부족해도 계속 하게 되는 행동은?', sp: '몸이 편해지는 작은 습관으로 현실의 압박을 낮춘다.', so: '그룹이나 주변 사람이 필요로 하면 내 한계를 넘겨서라도 움직인다.', sx: '가까운 사람의 리듬에 맞추며 내 우선순위를 뒤로 보낸다.' }
+  ]
+};
+
+const WING_BEHAVIOR_PROMPTS = {
+  1: ['실제로 했던 행동은 잘못된 부분을 고치거나 기준을 세우는 쪽에 가까웠다.', '압박이 있을 때 원칙, 절차, 정확성을 먼저 확인했다.', '관계가 불편해져도 무엇이 옳은지 분명히 하려 했다.'],
+  2: ['실제로 했던 행동은 상대의 필요를 먼저 챙기거나 관계를 회복하는 쪽에 가까웠다.', '내 필요보다 상대가 무엇을 원하는지 먼저 살폈다.', '상대에게 필요한 사람이 되기 위해 먼저 움직였다.'],
+  3: ['실제로 했던 행동은 결과를 만들거나 유능해 보이도록 역할을 조정하는 쪽에 가까웠다.', '성과나 이미지가 흔들리지 않게 빠르게 만회하려 했다.', '사람들이 기대하는 역할에 맞춰 행동을 바꿨다.'],
+  4: ['실제로 했던 행동은 감정의 결이나 빠진 느낌을 오래 붙드는 쪽에 가까웠다.', '불편한 감정을 빨리 넘기기보다 그 의미를 계속 생각했다.', '평범하게 지나가는 것보다 내 고유한 감정이 흐려지는 것이 더 불편했다.'],
+  5: ['실제로 했던 행동은 물러나서 생각할 공간과 에너지를 확보하는 쪽에 가까웠다.', '즉시 반응하기보다 정보를 모으고 혼자 정리했다.', '요구가 많아질수록 접촉을 줄이고 내 공간을 지키려 했다.'],
+  6: ['실제로 했던 행동은 위험을 확인하고 안전망을 만드는 쪽에 가까웠다.', '다른 사람이 넘어간 부분도 다시 확인했다.', '믿을 만한 사람, 규칙, 대비책을 찾은 뒤 움직였다.'],
+  7: ['실제로 했던 행동은 막힌 흐름에서 다른 가능성이나 선택지를 여는 쪽에 가까웠다.', '무거운 분위기에 오래 머물기보다 전환할 계획을 찾았다.', '답답한 제약이 보이면 새 길이나 더 나은 옵션을 떠올렸다.'],
+  8: ['실제로 했던 행동은 경계를 세우고 주도권을 되찾는 쪽에 가까웠다.', '누군가 선을 넘는다고 느끼면 직접 개입했다.', '내가 밀린다고 느끼는 순간 힘을 더 분명하게 냈다.'],
+  9: ['실제로 했던 행동은 긴장을 낮추고 상황을 부드럽게 지나가게 하는 쪽에 가까웠다.', '분명히 말하기보다 분위기가 거칠어지지 않게 조절했다.', '갈등이 커질 것 같으면 일단 늦추거나 우회했다.']
+};
+
+function buildSubtypeBehaviorQuestions(core) {
+  const set = phase4TypeSets[core];
+  const items = SUBTYPE_BEHAVIOR_ITEMS[core];
+  if (!set || !set.subtype) return [];
+  if (!items) return [set.subtype];
+  return items.map((item, index) => ({
+    id: `${set.subtype.id}_behavior_${index + 1}`,
+    format: 'abc',
+    subtypeChoice: true,
+    q: item.q,
+    qEn: set.subtype.qEn,
+    options: set.subtype.options.map((option) => ({
+      ...option,
+      text: item[option.value] || option.text,
+      textEn: item[`${option.value}En`] || option.textEn
+    }))
+  }));
+}
+
+function buildWingQuestionSet(core) {
+  const set = phase4TypeSets[core];
+  if (!set || !set.wing) return [];
+  const base = set.wing;
+  const leftPrompts = WING_BEHAVIOR_PROMPTS[base.leftWing] || [base.a, base.a, base.a];
+  const rightPrompts = WING_BEHAVIOR_PROMPTS[base.rightWing] || [base.b, base.b, base.b];
+  return [0, 1, 2].map((index) => ({
+    id: `${base.id}_behavior_${index + 1}`,
+    format: 'ab',
+    wingChoice: true,
+    leftWing: base.leftWing,
+    rightWing: base.rightWing,
+    q: index === 0
+      ? '다음 중 최근 실제로 했던 행동에 더 가까운 것은?'
+      : '압박이 있거나 에너지가 흔들릴 때 더 자주 반복된 행동은?',
+    qEn: base.qEn,
+    a: leftPrompts[index] || base.a,
+    b: rightPrompts[index] || base.b,
+    aEn: base.aEn,
+    bEn: base.bEn
+  }));
+}
+
+function resolvePhase4Subtype(subtypeQuestions) {
+  const votes = { sp: 0, so: 0, sx: 0 };
+  const order = [];
+  subtypeQuestions.forEach((question) => {
+    if (!question.subtypeChoice) return;
+    const value = document.querySelector(`input[name="${question.id}"]:checked`)?.value;
+    if (!value || votes[value] === undefined) return;
+    votes[value] += 1;
+    if (!order.includes(value)) order.push(value);
+  });
+  const subtypeCode = ['sp', 'so', 'sx'].sort((a, b) => {
+    const diff = votes[b] - votes[a];
+    if (diff !== 0) return diff;
+    const ai = order.includes(a) ? order.indexOf(a) : 99;
+    const bi = order.includes(b) ? order.indexOf(b) : 99;
+    return ai - bi;
+  })[0];
+  const option = subtypeQuestions[0]?.options?.find((candidate) => candidate.value === subtypeCode);
+  return {
+    subtypeCode,
+    subtypeLabel: option ? (pageLang === 'en' ? option.labelEn : option.label) : subtypeCode,
+    subtypeVotes: votes
+  };
+}
+
+function resolvePhase4Wing(wingQuestions) {
+  const votes = {};
+  const evidence = [];
+  wingQuestions.forEach((question) => {
+    if (!question.wingChoice) return;
+    const choice = document.querySelector(`input[name="${question.id}"]:checked`)?.value;
+    if (!choice) return;
+    const wing = choice === 'A' ? question.leftWing : question.rightWing;
+    votes[wing] = (votes[wing] || 0) + 1;
+    evidence.push(choice === 'A' ? getOptionText(question, 'a') : getOptionText(question, 'b'));
+  });
+  const ranked = Object.keys(votes)
+    .map((wing) => ({ wing: Number(wing), count: votes[wing] }))
+    .sort((a, b) => b.count - a.count);
+  return {
+    wingNum: ranked[0] ? ranked[0].wing : null,
+    wingVotes: votes,
+    wingText: evidence.join(' / ')
+  };
+}
+
 const tb14 = [
   {id:'tb_1_4_1',format:'ab',leftType:1,rightType:4,q:'내 안에서 마음에 들지 않는 부족함을 발견했을 때, 내 반응은 어느 쪽에 가까운가?',a:'"이걸 어떻게 고치고 나아질 수 있을까?"라며 기준을 높이고 나를 채찍질한다.',b:'"왜 나는 남들처럼 자연스럽지 못할까?"라며 그 결핍감과 우울감 안으로 깊이 빠져든다.'},
   {id:'tb_1_4_2',format:'ab',leftType:1,rightType:4,q:'마음속에 불편하고 무거운 감정이 올라올 때, 내 자동 반응은 어느 쪽에 가까운가?',a:'이런 감정에 휘둘리는 것은 옳지 않다고 느끼며, 감정을 누르고 이성적으로 통제하려 한다.',b:'이 감정이 진짜 나를 보여준다고 느끼며, 일부러 떨쳐내기보다 그 안에 오래 머무르려 한다.'},
@@ -1302,12 +1636,166 @@ function renderQuestions(containerId, items, prefix) {
         </fieldset>
       </div>`;
   });
+  bindResponseTimingForRenderedQuestions(root, items, prefix);
 }
 
 function toScore(raw) {
   if (raw === 'U' || raw === undefined || raw === null) return null;
   const n = Number(raw);
   return Number.isFinite(n) ? n : null;
+}
+
+function getIsoNow() {
+  return new Date().toISOString();
+}
+
+function ensureResponseTimingStarted() {
+  if (!testState.responseTiming.startedAt) {
+    testState.responseTiming.startedAt = getIsoNow();
+  }
+}
+
+function recordResponseFirstAnswer(questionId) {
+  if (!questionId) return;
+  ensureResponseTimingStarted();
+  if (!testState.responseTiming.firstAnswerAt[questionId]) {
+    testState.responseTiming.firstAnswerAt[questionId] = getIsoNow();
+  }
+}
+
+function bindResponseTimingForRenderedQuestions(root, items, prefix) {
+  if (!root || !items || !items.length) return;
+  if (prefix === 'p1') ensureResponseTimingStarted();
+  items.forEach((item) => {
+    const inputs = root.querySelectorAll ? root.querySelectorAll(`input[name="${item.id}"]`) : [];
+    Array.from(inputs || []).forEach((input) => {
+      if (input.dataset && input.dataset.responseTimingBound === 'true') return;
+      if (input.dataset) input.dataset.responseTimingBound = 'true';
+      input.addEventListener('change', () => recordResponseFirstAnswer(item.id));
+    });
+  });
+}
+
+function buildTimingSnapshot(responses) {
+  const answeredIds = Object.keys(responses || {}).filter((id) => responses[id] !== undefined && responses[id] !== null && responses[id] !== '');
+  const startedAt = testState.responseTiming.startedAt || getIsoNow();
+  const completedAt = getIsoNow();
+  const startMs = Date.parse(startedAt);
+  const endMs = Date.parse(completedAt);
+  const totalSeconds = Number.isFinite(startMs) && Number.isFinite(endMs)
+    ? Math.max(0, Math.round((endMs - startMs) / 1000))
+    : 0;
+  const answeredCount = answeredIds.length;
+  const avgSecondsPerAnswered = answeredCount > 0
+    ? Math.round((totalSeconds / answeredCount) * 10) / 10
+    : 0;
+  testState.responseTiming.completedAt = completedAt;
+  testState.responseTiming.totalSeconds = totalSeconds;
+  testState.responseTiming.answeredCount = answeredCount;
+  testState.responseTiming.avgSecondsPerAnswered = avgSecondsPerAnswered;
+  return {
+    startedAt,
+    firstAnswerAt: { ...testState.responseTiming.firstAnswerAt },
+    completedAt,
+    totalSeconds,
+    answeredCount,
+    avgSecondsPerAnswered
+  };
+}
+
+function getCenterForType(type) {
+  const n = Number(type);
+  if ([2, 3, 4].includes(n)) return 'heart';
+  if ([5, 6, 7].includes(n)) return 'head';
+  if ([8, 9, 1].includes(n)) return 'body';
+  return null;
+}
+
+function getDominantCenter(centerScore) {
+  const entries = Object.entries(centerScore || {}).filter(([, value]) => Number.isFinite(Number(value)));
+  if (!entries.length) return null;
+  entries.sort((a, b) => Number(b[1]) - Number(a[1]));
+  return entries[0][0] || null;
+}
+
+function getLikertResponseStats(responses) {
+  const values = Object.values(responses || {}).filter((raw) => raw !== 'A' && raw !== 'B' && raw !== 'heart' && raw !== 'head' && raw !== 'body' && raw !== 'sp' && raw !== 'sx' && raw !== 'so');
+  const likert = values.filter((raw) => raw !== 'U' && Number.isFinite(Number(raw))).map((raw) => String(raw));
+  const unknownCount = values.filter((raw) => raw === 'U').length;
+  const totalCount = likert.length + unknownCount;
+  const counts = likert.reduce((out, value) => {
+    out[value] = (out[value] || 0) + 1;
+    return out;
+  }, {});
+  const maxSameCount = Object.values(counts).reduce((maxValue, count) => Math.max(maxValue, count), 0);
+  return {
+    likertCount: likert.length,
+    unknownCount,
+    totalCount,
+    straightLineRatio: likert.length ? maxSameCount / likert.length : 0,
+    unknownRatio: totalCount ? unknownCount / totalCount : 0
+  };
+}
+
+function addQualityFlag(flags, code, severity, label, evidence) {
+  flags.push({ code, severity, label, evidence });
+}
+
+function buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked, instinctPct, confidence }) {
+  const flags = [];
+  const responseStats = getLikertResponseStats(responses || {});
+  const timing = timings || {};
+  const avgSecondsPerAnswered = Number(timing.avgSecondsPerAnswered) || 0;
+  const answeredCount = Number(timing.answeredCount) || 0;
+  const topType = ranked && ranked[0] ? Number(ranked[0].type) : null;
+  const coreCenter = getCenterForType(topType);
+  const dominantCenter = getDominantCenter(scoringAxes && scoringAxes.centerScore);
+  const centerCoreAligned = !coreCenter || !dominantCenter || coreCenter === dominantCenter;
+  const instinctValues = ['sp', 'sx', 'so']
+    .map((code) => Number(instinctPct && instinctPct[code]) || 0)
+    .sort((a, b) => b - a);
+  const instinctTop = instinctValues[0] || 0;
+  const instinctSecond = instinctValues[1] || 0;
+  const instinctGap = Math.max(0, instinctTop - instinctSecond);
+
+  if (answeredCount >= 20 && avgSecondsPerAnswered > 0 && avgSecondsPerAnswered < 4) {
+    addQualityFlag(flags, 'too_fast_total', 'caution', '응답 시간이 매우 짧음', `${answeredCount}문항 평균 ${avgSecondsPerAnswered.toFixed(1)}초`);
+  }
+  if (responseStats.likertCount >= 8 && responseStats.straightLineRatio >= 0.75) {
+    addQualityFlag(flags, 'straight_lining', 'low', '같은 점수 반복이 많음', `리커트 응답의 ${Math.round(responseStats.straightLineRatio * 100)}%가 같은 값입니다.`);
+  }
+  if (responseStats.totalCount >= 8 && responseStats.unknownRatio >= 0.25) {
+    addQualityFlag(flags, 'unknown_overuse', 'caution', '비채점 응답이 많음', `리커트 응답 중 ${Math.round(responseStats.unknownRatio * 100)}%가 잘 모르겠다/상황 따라 다름입니다.`);
+  }
+  if (!centerCoreAligned && confidence !== '높음') {
+    addQualityFlag(flags, 'center_core_mismatch', 'caution', '센터 응답과 코어 결과가 충돌함', `센터는 ${dominantCenter}, 코어 ${topType}번은 ${coreCenter} 센터입니다.`);
+  }
+  if (instinctTop < 35 || instinctGap < 10) {
+    addQualityFlag(flags, 'instinct_unclear', 'caution', '본능 점수가 선명하지 않음', `최상위 본능 ${instinctTop}%, 2순위와 차이 ${instinctGap}%`);
+  }
+
+  const level = flags.some((flag) => flag.severity === 'low')
+    ? 'low'
+    : flags.length
+      ? 'caution'
+      : 'good';
+
+  return {
+    level,
+    flags,
+    metrics: {
+      totalSeconds: Number(timing.totalSeconds) || 0,
+      avgSecondsPerAnswered,
+      answeredCount,
+      straightLineRatio: Math.round(responseStats.straightLineRatio * 1000) / 1000,
+      unknownRatio: Math.round(responseStats.unknownRatio * 1000) / 1000,
+      centerCoreAligned,
+      dominantCenter,
+      coreCenter,
+      instinctGap,
+      instinctTop
+    }
+  };
 }
 
 function getCoreResolution(final) {
@@ -1331,12 +1819,202 @@ function getRecentStatePressure() {
   return values.reduce((sum, score) => sum + score, 0) / values.length;
 }
 
+function addInstinctScoresFromResponses(responses, instinctScores) {
+  q1.forEach((item) => {
+    if (item.inst) {
+      const score = toScore(responses[item.id]);
+      if (score !== null) instinctScores[item.inst] += score;
+      return;
+    }
+    if (item.format === 'abc' && item.instinctChoice) {
+      const raw = responses[item.id];
+      const option = (item.options || []).find((candidate) => candidate.value === raw);
+      const code = option && (option.inst || option.value);
+      if (code && Object.prototype.hasOwnProperty.call(instinctScores, code)) {
+        const points = Number.isFinite(Number(option.points))
+          ? Number(option.points)
+          : TEST_CONFIG.weights.instinctAttentionChoice;
+        instinctScores[code] += points;
+      }
+    }
+  });
+  return instinctScores;
+}
+
+function appendQuestionsOnce(target, questions) {
+  const existing = new Set(target.map((question) => question.id));
+  questions.forEach((question) => {
+    if (!existing.has(question.id)) {
+      target.push(question);
+      existing.add(question.id);
+    }
+  });
+}
+
+function appendStateAnxietyTieBreakersForType6(ranked, topTypes, recentStress) {
+  if (recentStress < TEST_CONFIG.thresholds.stressCorrectionStart) return false;
+  const scoreByType = ranked.reduce((out, row) => {
+    out[row.type] = row.score;
+    return out;
+  }, {});
+  const sixScore = scoreByType[6] || 0;
+  const sixRank = ranked.findIndex((row) => row.type === 6);
+  if (!sixScore || (sixRank > 2 && !topTypes.includes(6))) return false;
+
+  const pairSpecs = [
+    { rival: 1, key: 't16', questions: tb16 },
+    { rival: 5, key: 't56', questions: tb56 },
+    { rival: 9, key: 't69', questions: tb69 }
+  ].map((spec) => {
+    const rivalScore = scoreByType[spec.rival] || 0;
+    const margin = Math.abs(sixScore - rivalScore) / Math.max(sixScore, rivalScore, 1);
+    return { ...spec, rivalScore, margin };
+  });
+
+  let selectedPairs = pairSpecs.filter((spec) => (
+    spec.rivalScore > 0 &&
+    spec.margin <= TEST_CONFIG.thresholds.stateAnxietySixRivalMargin
+  ));
+  if (!selectedPairs.length) {
+    selectedPairs = pairSpecs.sort((a, b) => b.rivalScore - a.rivalScore).slice(0, 1);
+  }
+
+  selectedPairs.forEach((spec) => {
+    if (testState.tie[spec.key] && !testState.tie[spec.key].enabled) {
+      testState.tie[spec.key] = {
+        enabled: true,
+        weight: (TEST_CONFIG.weights.tieBreaker.near * TEST_CONFIG.corrections.stateAnxietyTieWeightBoost) / Math.max(spec.questions.length, 1),
+        margin: spec.margin
+      };
+      appendQuestionsOnce(testState.phase2Questions, spec.questions);
+    }
+  });
+
+  return selectedPairs.length > 0;
+}
+
+function calculateStateStressAdjustment(final, recentStress) {
+  const base = {
+    applied: false,
+    recentStress,
+    type6Damp: 0,
+    rivalType: null,
+    rivalMargin: null
+  };
+  if (recentStress < TEST_CONFIG.thresholds.stressCorrectionStart) return base;
+  const type6Score = Number(final && final[6]) || 0;
+  if (type6Score <= 0) return base;
+
+  const rivals = [1, 5, 9]
+    .map((type) => ({ type, score: Number(final[type]) || 0 }))
+    .sort((a, b) => b.score - a.score);
+  const strongest = rivals[0];
+  const margin = Math.abs(type6Score - strongest.score) / Math.max(type6Score, strongest.score, 1);
+  if (strongest.score <= 0 || (type6Score < strongest.score && margin > TEST_CONFIG.thresholds.stateAnxietySixRivalMargin)) {
+    return { ...base, rivalType: strongest.type, rivalMargin: margin };
+  }
+
+  const stressScale = recentStress - (TEST_CONFIG.thresholds.stressCorrectionStart - 1);
+  const type6Damp = Math.min(
+    type6Score * TEST_CONFIG.corrections.stateAnxietyType6MaxDampRatio,
+    stressScale * TEST_CONFIG.corrections.stateAnxietyType6Damp
+  );
+  if (type6Damp <= 0) return { ...base, rivalType: strongest.type, rivalMargin: margin };
+  return {
+    applied: true,
+    recentStress,
+    type6Damp,
+    rivalType: strongest.type,
+    rivalMargin: margin
+  };
+}
+
+function applyStateStressAdjustment(final, evidence, recentStress) {
+  const adjustment = calculateStateStressAdjustment(final, recentStress);
+  if (!adjustment.applied) return adjustment;
+  final[6] = Math.max(0, final[6] - adjustment.type6Damp);
+  if (evidence && evidence[6]) {
+    evidence[6].push({
+      points: -adjustment.type6Damp,
+      text: '[상태성 불안 보정] 최근 2주 상태 문항이 높아 6번의 위험 확인 반응을 그대로 확정하지 않고 1/5/9 감별 기준으로 보정했습니다.'
+    });
+  }
+  return adjustment;
+}
+
+function buildAxisScore(typeScores, groups) {
+  return Object.keys(groups).reduce((out, key) => {
+    out[key] = groups[key].reduce((sum, type) => sum + (Number(typeScores[type]) || 0), 0);
+    return out;
+  }, {});
+}
+
+function buildScoringAxesSnapshot({ coreTypeScore, instinctScore, stateStressAdjustment }) {
+  const coreScores = { ...(coreTypeScore || {}) };
+  return {
+    centerScore: buildAxisScore(coreScores, {
+      body: [8, 9, 1],
+      heart: [2, 3, 4],
+      head: [5, 6, 7]
+    }),
+    harmonicScore: buildAxisScore(coreScores, {
+      positive: [2, 7, 9],
+      reactive: [4, 6, 8],
+      competency: [1, 3, 5]
+    }),
+    hornevianScore: buildAxisScore(coreScores, {
+      assertive: [3, 7, 8],
+      compliant: [1, 2, 6],
+      withdrawn: [4, 5, 9]
+    }),
+    coreTypeScore: coreScores,
+    instinctScore: { ...(instinctScore || {}) },
+    stateStressAdjustment: stateStressAdjustment || { applied: false }
+  };
+}
+
+function scorePhase1Item(item, raw, addScore) {
+  if (!item || raw === undefined || raw === null) return;
+
+  if (item.format === 'ab') {
+    const type = raw === 'A' ? item.leftType : item.rightType;
+    const text = raw === 'A' ? item.a : item.b;
+    addScore(type, TEST_CONFIG.weights.phase1Binary, item.id, text);
+    return;
+  }
+
+  if (item.format === 'abc' && item.centerChoice) {
+    const option = (item.options || []).find((candidate) => candidate.value === raw);
+    if (!option || !Array.isArray(option.types)) return;
+    const points = Number.isFinite(Number(option.points))
+      ? Number(option.points)
+      : TEST_CONFIG.weights.phase1CenterChoice;
+    const text = getChoiceOptionText(option);
+    option.types.forEach((type) => addScore(type, points, item.id, text));
+    return;
+  }
+
+  if (item.format === 'abc' && item.instinctChoice) return;
+
+  const score = toScore(raw);
+  if (score === null) return;
+  if (item.triad) {
+    item.triad.forEach((type) => addScore(type, score * (item.triadWeight || 1), item.id));
+  }
+  if (item.id && item.id.startsWith('c')) {
+    addScore(item.type, score * TEST_CONFIG.weights.phase1Core * (item.scoreWeight || 1), item.id);
+  }
+}
+
 function maybeShowPhase4(resultData) {
   const resolution = getCoreResolution(resultData.final);
   const phase4Set = resolution.coreResolved ? phase4TypeSets[resolution.core] : null;
   if (!phase4Set) return false;
 
-  testState.phase4Questions = [phase4Set.subtype, phase4Set.wing];
+  testState.phase4Questions = [
+    ...buildSubtypeBehaviorQuestions(resolution.core),
+    ...buildWingQuestionSet(resolution.core)
+  ];
   testState.pendingResult = resultData;
   renderQuestions('phase4-container', testState.phase4Questions, 'p4');
   document.getElementById('phase1-form').classList.add('hidden');
@@ -1574,19 +2252,9 @@ function submitPhase1() {
     const sel = document.querySelector(`input[name="${item.id}"]:checked`);
     const raw = sel.value;
     testState.phase1Responses[item.id] = raw;
-
-    if (item.format === 'ab') {
-      const t = raw === 'A' ? item.leftType : item.rightType;
-      center[t] += TEST_CONFIG.weights.phase1Binary;
-      return;
-    }
-
-    const score = toScore(raw);
-    if (score === null) return;
-    if (item.triad) {
-      item.triad.forEach((type) => { center[type] += score * (item.triadWeight || 1); });
-    }
-    if (item.id.startsWith('c')) center[item.type] += score * TEST_CONFIG.weights.phase1Core * (item.scoreWeight || 1);
+    scorePhase1Item(item, raw, (type, points) => {
+      center[type] += points;
+    });
   });
 
   const ranked = Object.keys(center).map((k)=>({type:parseInt(k,10), score:center[k]})).sort((a,b)=>b.score-a.score);
@@ -1715,12 +2383,10 @@ function submitPhase1() {
       testState.phase2Questions = testState.phase2Questions.concat(genericTb);
     }
   }
+  appendStateAnxietyTieBreakersForType6(ranked, topTypes, getRecentStatePressure());
 
   const inst = {sp:0,sx:0,so:0};
-  q1.filter((q)=>q.inst).forEach((q)=>{
-    const score = toScore(testState.phase1Responses[q.id]);
-    if (score !== null) inst[q.inst] += score;
-  });
+  addInstinctScoresFromResponses(testState.phase1Responses, inst);
   const s3 = center[3];
   const m3top = top>0 ? (top-s3)/top : 1;
   const e3sx = topTypes.includes(3) &&
@@ -1768,16 +2434,7 @@ function submitPhase2() {
   const recentStress = getRecentStatePressure();
 
   q1.forEach((q) => {
-    if (q.format === 'ab') {
-      const choice = testState.phase1Responses[q.id];
-      const chosen = choice === 'A' ? q.leftType : q.rightType;
-      addScore(chosen, TEST_CONFIG.weights.phase1Binary, q.id, choice === 'A' ? q.a : q.b);
-      return;
-    }
-    const score = toScore(testState.phase1Responses[q.id]);
-    if (score === null) return;
-    if (q.triad) q.triad.forEach((type) => addScore(type, score * (q.triadWeight || 1), q.id));
-    if (q.id.startsWith('c')) addScore(q.type, score * TEST_CONFIG.weights.phase1Core * (q.scoreWeight || 1), q.id);
+    scorePhase1Item(q, testState.phase1Responses[q.id], addScore);
   });
 
   testState.phase2Questions.forEach((q) => {
@@ -1881,6 +2538,7 @@ function submitPhase2() {
       final[7] += (TEST_CONFIG.corrections.stressType7Boost * stressScale);
     }
   }
+  const stateStressAdjustment = applyStateStressAdjustment(final, evidence, recentStress);
 
   const ranked = Object.keys(final).map((k)=>({type:parseInt(k,10), score:final[k]})).sort((a,b)=>b.score-a.score);
   const max = ranked[0].score;
@@ -1893,7 +2551,7 @@ function submitPhase2() {
     const typeA = ranked[0].type;
     const typeB = ranked[1].type;
     testState.phase3Question = buildPostTieQuestion(typeA, typeB);
-    testState.pendingResult = { final, evidence, recentStress, tb7w6, tb7w8, sxBoost, counterSignals };
+    testState.pendingResult = { final, evidence, recentStress, stateStressAdjustment, tb7w6, tb7w8, sxBoost, counterSignals };
     renderQuestions('phase3-container', [testState.phase3Question], 'p3');
     document.getElementById('phase2-form').classList.add('hidden');
     document.getElementById('phase3-form').classList.remove('hidden');
@@ -1905,7 +2563,7 @@ function submitPhase2() {
     return;
   }
 
-  const resultData = { final, evidence, recentStress, tb7w6, tb7w8, sxBoost, counterSignals, phase4: null, postTieApplied: false };
+  const resultData = { final, evidence, recentStress, stateStressAdjustment, tb7w6, tb7w8, sxBoost, counterSignals, phase4: null, postTieApplied: false };
   if (maybeShowPhase4(resultData)) return;
   renderResultFromScores(resultData);
 }
@@ -1938,20 +2596,18 @@ function submitPhase4() {
   if (!validate(testState.phase4Questions, 'p4', 'validation-msg-4')) return;
   if (!testState.pendingResult) return;
 
-  const subtypeQuestion = testState.phase4Questions.find((q) => q.format === 'abc');
-  const wingQuestion = testState.phase4Questions.find((q) => q.format === 'ab');
-  const subtypeCode = document.querySelector(`input[name="${subtypeQuestion.id}"]:checked`)?.value || null;
-  const wingChoice = document.querySelector(`input[name="${wingQuestion.id}"]:checked`)?.value || null;
-  const subtypeOption = subtypeQuestion.options.find((option) => option.value === subtypeCode);
-  const wingNum = wingChoice === 'A' ? wingQuestion.leftWing : wingQuestion.rightWing;
+  const subtypeResult = resolvePhase4Subtype(testState.phase4Questions.filter((q) => q.subtypeChoice));
+  const wingResult = resolvePhase4Wing(testState.phase4Questions.filter((q) => q.wingChoice));
 
   renderResultFromScores({
     ...testState.pendingResult,
     phase4: {
-      subtypeCode,
-      subtypeLabel: subtypeOption ? (pageLang === 'en' ? subtypeOption.labelEn : subtypeOption.label) : subtypeCode,
-      wingNum,
-      wingText: wingChoice === 'A' ? getOptionText(wingQuestion, 'a') : getOptionText(wingQuestion, 'b')
+      subtypeCode: subtypeResult.subtypeCode,
+      subtypeLabel: subtypeResult.subtypeLabel,
+      subtypeVotes: subtypeResult.subtypeVotes,
+      wingNum: wingResult.wingNum,
+      wingVotes: wingResult.wingVotes,
+      wingText: wingResult.wingText
     }
   });
 }
@@ -1990,6 +2646,31 @@ function normalizeMetricRows(rows) {
     ...row,
     percent: clampReportPercent((Math.max(0, Number(row.score) || 0) / max) * 100)
   }));
+}
+
+function buildInstinctPctFromScores(instinctScores) {
+  const maxByInstinct = { sp: 0, sx: 0, so: 0 };
+  q1.forEach((question) => {
+    if (question.inst && Object.prototype.hasOwnProperty.call(maxByInstinct, question.inst)) {
+      maxByInstinct[question.inst] += 6;
+      return;
+    }
+    if (question.format === 'abc' && question.instinctChoice) {
+      (question.options || []).forEach((option) => {
+        const code = option.inst || option.value;
+        if (Object.prototype.hasOwnProperty.call(maxByInstinct, code)) {
+          maxByInstinct[code] += Number.isFinite(Number(option.points))
+            ? Number(option.points)
+            : TEST_CONFIG.weights.instinctAttentionChoice;
+        }
+      });
+    }
+  });
+  return ['sp', 'sx', 'so'].reduce((out, code) => {
+    const max = Math.max(1, maxByInstinct[code] || 0);
+    out[code] = Math.round(clampReportPercent((Number(instinctScores[code]) || 0) / max * 100));
+    return out;
+  }, {});
 }
 
 function getFinalSubtypeCode(instinctCode) {
@@ -2169,6 +2850,347 @@ function buildReportMetricBar(row, options) {
   `;
 }
 
+function isTruthyReportParam(names) {
+  return names.some((name) => {
+    const value = params.get(name);
+    return value === '1' || value === 'true' || value === 'yes' || value === 'y';
+  });
+}
+
+function getNumericReportParam(names) {
+  for (const name of names) {
+    const value = params.get(name);
+    if (value === null || value === '') continue;
+    const number = Number(value);
+    if (Number.isInteger(number) && number >= 1 && number <= 9) return number;
+  }
+  return null;
+}
+
+function getReportAudience() {
+  const raw = (params.get('audience') || params.get('reportAudience') || '').trim();
+  if (['adult', 'parent', 'child_report', 'coach', 'couple'].includes(raw)) return raw;
+  if (isTruthyReportParam(['parent', 'parentContext', 'hasChildren'])) return 'parent';
+  if (isTruthyReportParam(['childReport'])) return 'child_report';
+  return 'adult';
+}
+
+function buildReportListItems(items) {
+  return (items || []).map((item) => `<li>${escapeReportHtml(item)}</li>`).join('');
+}
+
+function buildReportSupportSelection(resultData, instinctRows) {
+  const supportApi = window.ERReportSupportMaterials;
+  if (!supportApi || typeof supportApi.selectSupportMaterials !== 'function') {
+    return { materials: [], pendingMaterials: [], recommendedSlots: [], repressedInstinct: { code: null } };
+  }
+  return supportApi.selectSupportMaterials({
+    audience: getReportAudience(),
+    adultType: resultData.core,
+    coreType: resultData.core,
+    childType: getNumericReportParam(['childType', 'childCoreType', 'child']),
+    hasChildren: isTruthyReportParam(['hasChildren', 'parent']),
+    parentContext: isTruthyReportParam(['parentContext', 'parent']),
+    includeChildMaterials: isTruthyReportParam(['includeChildMaterials', 'childMaterials']),
+    hasMultipleChildren: isTruthyReportParam(['hasMultipleChildren', 'siblings', 'sibling']),
+    needsSiblingMediation: isTruthyReportParam(['needsSiblingMediation', 'siblingConflict']),
+    instinctPct: resultData.instinctPct || null,
+    instinctRows
+  });
+}
+
+function getReportCoreTone(coreType) {
+  const core = Number(coreType);
+  if ([1, 8, 9].includes(core)) return 'body';
+  if ([2, 3, 4].includes(core)) return 'heart';
+  if ([5, 6, 7].includes(core)) return 'head';
+  return 'neutral';
+}
+
+function renderSupportMaterialsSection(selection) {
+  const materials = selection && Array.isArray(selection.materials) ? selection.materials : [];
+  if (!materials.length) return '';
+  const cards = materials.map((material) => {
+    const isSuppression = Boolean(material.suppressionCode);
+    const kicker = isSuppression ? '낮은 본능 보조 해석' : '추천 보조자료';
+    const title = material.typeTitle || material.displayName;
+    const focus = material.focusAreas && material.focusAreas.length
+      ? `<h4>중점적으로 볼 부분</h4><ul>${buildReportListItems(material.focusAreas)}</ul>`
+      : '';
+    const practice = material.practicePrompts && material.practicePrompts.length
+      ? `<h4>바로 적용할 질문</h4><ul>${buildReportListItems(material.practicePrompts)}</ul>`
+      : '';
+    return `
+      <article class="er-report-support-card${isSuppression ? ' is-suppression' : ''}">
+        <span>${escapeReportHtml(kicker)}</span>
+        <h3>${escapeReportHtml(title)}</h3>
+        <p class="er-report-support-source">${escapeReportHtml(material.displayName)}</p>
+        <p>${escapeReportHtml(material.reportSummary || '')}</p>
+        ${focus}
+        ${practice}
+      </article>
+    `;
+  }).join('');
+  const repressed = selection.repressedInstinct && selection.repressedInstinct.code
+    ? `<p class="er-report-support-intro">현재 결과에서는 <strong>${escapeReportHtml(selection.repressedInstinct.label || selection.repressedInstinct.code)}</strong> 본능이 낮은 본능 보조 해석 기준에 들어왔습니다. 이는 하위유형을 바꾸는 판정이 아니라, 놓치기 쉬운 삶의 영역을 보완하는 안내입니다.</p>`
+    : '<p class="er-report-support-intro">아래 자료는 결과지의 핵심 유형과 현재 선택된 맥락에 따라 추가로 참고하면 좋은 보조자료입니다.</p>';
+
+  return `
+    <section id="report-support" class="er-report-section er-report-support">
+      <div class="er-report-section-head">
+        <span>Support Materials</span>
+        <h2>결과에 따라 함께 보면 좋은 자료</h2>
+      </div>
+      ${repressed}
+      <div class="er-report-support-grid">${cards}</div>
+    </section>
+  `;
+}
+
+function renderGuidedApplicationSection(model) {
+  const c = model.content || {};
+  const coreName = c.coreName || `${model.core}번`;
+  const relationshipPractice = c.relationship && c.relationship.practice && c.relationship.practice[0]
+    ? c.relationship.practice[0]
+    : '상대가 원하는 도움의 방식과 내가 주고 싶은 도움의 방식을 구분해 보세요.';
+  const careerStrength = c.career && c.career.strength && c.career.strength[0]
+    ? c.career.strength[0]
+    : '나의 강점이 어떤 장면에서 건강하게 드러나는지 구체적으로 확인해 보세요.';
+  const parentingPractice = c.parenting && c.parenting.practice && c.parenting.practice[0]
+    ? c.parenting.practice[0]
+    : '가까운 사람에게 필요한 반응을 먼저 묻고, 내 자동반응을 조절해 보세요.';
+
+  const steps = [
+    {
+      label: 'Self',
+      title: '나를 이해하는 단계',
+      body: `${escapeReportHtml(coreName)}의 핵심 동기와 두려움을 알면, 반복되는 감정과 선택이 더 이상 막연한 성격 문제가 아니라 해석 가능한 패턴이 됩니다.`,
+      bullets: [c.motivation, c.fear, careerStrength]
+    },
+    {
+      label: 'Others',
+      title: '타인을 이해하는 단계',
+      body: '에니어그램의 실제 가치는 나를 설명하는 데서 끝나지 않고, 배우자·자녀·동료가 무엇을 필요로 하고 무엇에 약해지는지 읽는 데서 시작됩니다.',
+      bullets: [relationshipPractice, parentingPractice, '상대의 약점 뒤에 있는 필요와 두려움을 먼저 읽는 연습']
+    },
+    {
+      label: 'Practice',
+      title: '관계 안에서 돕는 단계',
+      body: '혼자 읽은 통찰은 금방 흐려집니다. 상담과 스쿨은 내 패턴을 실제 대화, 갈등, 양육, 리더십 장면에 적용하도록 피드백을 제공합니다.',
+      bullets: ['내 자동반응을 한 박자 먼저 알아차리는 훈련', '다른 유형에게 맞는 언어와 도움 방식을 배우는 과정', '가족·팀·사역 현장에서 반복 가능한 적용 루틴 만들기']
+    }
+  ];
+
+  const cards = steps.map((step) => `
+    <article class="er-report-bridge-card">
+      <span>${escapeReportHtml(step.label)}</span>
+      <h3>${escapeReportHtml(step.title)}</h3>
+      <p>${step.body}</p>
+      <ul>${buildReportListItems(step.bullets.filter(Boolean))}</ul>
+    </article>
+  `).join('');
+
+  return `
+    <section id="report-application" class="er-report-section er-report-application">
+      <div class="er-report-section-head">
+        <span>Application</span>
+        <h2>이해에서 끝나지 않고, 실제 관계를 돕는 지도</h2>
+      </div>
+      <div class="er-report-application-hero">
+        <p>결과지는 “나는 이런 사람이구나”에서 멈추면 얕아집니다. 다음 단계는 내 성향과 필요, 욕구, 강점을 이해하고, 다른 사람의 성향과 필요, 약점까지 읽어 실제로 돕는 언어를 배우는 것입니다.</p>
+      </div>
+      <div class="er-report-bridge-grid">${cards}</div>
+    </section>
+  `;
+}
+
+const CONSULTATION_QUESTION_MAP = {
+  '1_6': [
+    '계속 확인하는 이유가 기준 미달을 고치려는 것인가요, 빠진 위험을 막으려는 것인가요?',
+    '불확실할 때 분노가 먼저 오나요, 불안이 먼저 오나요?'
+  ],
+  '2_9': [
+    '맞춰주는 이유가 필요한 존재가 되고 싶어서인가요, 마찰을 줄이고 싶어서인가요?',
+    '거절이 올 때 존재 의미가 흔들리나요, 긴장이 커지는 것이 부담스럽나요?'
+  ],
+  '3_6': [
+    '압박에서 빠르게 성과를 만들어 안정시키나요, 빠진 위험을 확인해야 안정되나요?',
+    '실패 가능성이 보일 때 무능해 보일까 봐 긴장하나요, 대비가 부족할까 봐 긴장하나요?'
+  ],
+  '3_9': [
+    '적응의 목적이 성과/이미지 유지인가요, 마찰 없는 흐름 유지인가요?',
+    '압박에서 더 밀어붙이나요, 흐름을 낮추고 미루나요?'
+  ],
+  '4_7': [
+    '무거운 감정이 올라올 때 그 감정 안으로 더 들어가나요, 아니면 다른 가능성으로 전환하나요?',
+    '반복적 일상에서 공허함이 먼저 오나요, 갇힘과 지루함이 먼저 오나요?'
+  ],
+  '5_9': [
+    '물러나는 이유가 에너지 보존인가요, 관계 긴장 완충인가요?',
+    '침묵할 때 내 공간을 지키는 느낌인가요, 분위기를 덮는 느낌인가요?'
+  ],
+  '6_8': [
+    '강하게 맞설 때 검증하려는 마음인가요, 주도권을 되찾으려는 마음인가요?',
+    '갈등 뒤에 재점검이 남나요, 정리됐다는 느낌이 남나요?'
+  ],
+  '7_9': [
+    '불편함을 피할 때 다른 가능성으로 전환하나요, 긴장을 낮추고 흐름을 흐리게 만드나요?',
+    '갈등 뒤에 새 계획으로 빨리 이동하나요, 아무 일 없던 것처럼 덮고 싶어지나요?'
+  ]
+};
+
+function uniqueStrings(items) {
+  return Array.from(new Set((items || []).filter(Boolean)));
+}
+
+function getTypePairKey(typeA, typeB) {
+  const a = Number(typeA);
+  const b = Number(typeB);
+  if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+  return [a, b].sort((x, y) => x - y).join('_');
+}
+
+function getPairLabel(pairKey) {
+  return pairKey ? pairKey.replace('_', '↔') : '';
+}
+
+function isTieEnabledForPair(pairKey, tieState) {
+  if (!pairKey || !tieState) return false;
+  const [a, b] = pairKey.split('_');
+  const directKey = `t${a}${b}`;
+  if (tieState[directKey] && tieState[directKey].enabled) return true;
+  const generic = tieState.tGeneric;
+  if (!generic || !generic.enabled) return false;
+  return getTypePairKey(generic.typeA, generic.typeB) === pairKey;
+}
+
+function getInstinctClarity(instinctPct, responseQuality) {
+  const values = ['sp', 'sx', 'so']
+    .map((code) => Number(instinctPct && instinctPct[code]) || 0)
+    .sort((a, b) => b - a);
+  const top = responseQuality && responseQuality.metrics && Number.isFinite(Number(responseQuality.metrics.instinctTop))
+    ? Number(responseQuality.metrics.instinctTop)
+    : (values[0] || 0);
+  const gap = responseQuality && responseQuality.metrics && Number.isFinite(Number(responseQuality.metrics.instinctGap))
+    ? Number(responseQuality.metrics.instinctGap)
+    : Math.max(0, (values[0] || 0) - (values[1] || 0));
+  return { top, gap, clear: top >= 35 && gap >= 10 };
+}
+
+function buildConfidenceExplanation({ confidence, diff, core, second, instinctPct, responseQuality, tieState, stateStressAdjustment }) {
+  const label = `신뢰도: ${confidence || '보통'}`;
+  const tone = confidence === '높음' ? 'high' : confidence === '낮음' ? 'low' : 'medium';
+  const secondType = second && second.type ? Number(second.type) : null;
+  const pairKey = getTypePairKey(core, secondType);
+  const pairLabel = getPairLabel(pairKey);
+  const reasons = [];
+  const consultationQuestions = CONSULTATION_QUESTION_MAP[pairKey]
+    ? [...CONSULTATION_QUESTION_MAP[pairKey]]
+    : [];
+  const gapPct = Math.max(0, (Number(diff) || 0) * 100);
+  const quality = responseQuality || {};
+  const qualityFlags = Array.isArray(quality.flags) ? quality.flags : [];
+  const qualityLabels = qualityFlags.map((flag) => flag.label || flag.code).filter(Boolean);
+  const instinctClarity = getInstinctClarity(instinctPct, quality);
+
+  if (secondType) {
+    if (gapPct < 8) {
+      reasons.push(`${core}번과 ${secondType}번 점수 차이가 ${gapPct.toFixed(1)}%로 근접합니다.`);
+    } else if (gapPct >= 20) {
+      reasons.push(`${core}번이 ${secondType}번보다 ${gapPct.toFixed(1)}% 앞서 결과가 비교적 선명합니다.`);
+    } else {
+      reasons.push(`${core}번이 1순위지만 ${secondType}번 영향도 함께 확인할 필요가 있습니다.`);
+    }
+  }
+
+  reasons.push(instinctClarity.clear
+    ? '본능 점수는 비교적 선명합니다.'
+    : `본능 점수가 선명하지 않습니다. 1위 본능 ${instinctClarity.top}%, 2순위와 차이 ${instinctClarity.gap}%입니다.`);
+
+  if (quality.metrics && quality.metrics.centerCoreAligned === false) {
+    reasons.push('센터 응답과 코어 결과가 충돌합니다. 상담에서 어느 자동반응이 더 반복적인지 확인이 필요합니다.');
+  } else if (quality.metrics && quality.metrics.centerCoreAligned === true) {
+    reasons.push('센터 응답은 코어 결과와 대체로 일치합니다.');
+  }
+
+  if (quality.level === 'low') {
+    reasons.push(`응답 품질 체크에서 해석 주의 신호가 있습니다${qualityLabels.length ? `: ${qualityLabels.join(', ')}` : '.'}`);
+  } else if (qualityFlags.length) {
+    reasons.push(`응답 품질 체크에서 확인할 항목이 있습니다: ${qualityLabels.join(', ')}`);
+  } else {
+    reasons.push('응답 품질 체크에서 큰 왜곡 신호는 보이지 않습니다.');
+  }
+
+  if (pairLabel && isTieEnabledForPair(pairKey, tieState)) {
+    reasons.push(`${pairLabel} 감별 문항이 적용되었습니다.`);
+  } else if (pairLabel && consultationQuestions.length && tone !== 'high') {
+    reasons.push(`${pairLabel} 감별은 상담에서 한 번 더 확인하는 것이 좋습니다.`);
+  }
+
+  if (stateStressAdjustment && stateStressAdjustment.applied) {
+    reasons.push('최근 스트레스가 6번 관련 불안/확인 반응을 키울 수 있어 상태성 보정을 적용했습니다.');
+  }
+
+  if (!consultationQuestions.length) {
+    consultationQuestions.push(
+      `${core}번 결과가 실제 반복 패턴인지 보려면, 압박이 올 때 먼저 지키려는 것이 무엇인지 확인해 보세요.`
+    );
+    if (secondType) {
+      consultationQuestions.push(`${secondType}번과 헷갈린다면, 그 반응이 오래 반복되는 성향인지 최근 상황 반응인지 구분해 보세요.`);
+    }
+  }
+
+  const requiresCare = tone === 'low' || quality.level === 'low';
+  const summary = requiresCare
+    ? '해석 주의: 결과를 확정값으로 보기보다, 아래 질문을 통해 상담에서 확인하는 것이 좋습니다.'
+    : tone === 'high'
+      ? '현재 응답 패턴은 핵심 유형과 보조 지표가 비교적 일관되게 모입니다.'
+      : '결과 방향은 보이지만, 가까운 후보와 특정 지표는 상담에서 확인하면 더 정확해집니다.';
+
+  return {
+    label,
+    tone,
+    summary,
+    requiresCare,
+    pairLabel,
+    reasons: uniqueStrings(reasons),
+    consultationQuestions: uniqueStrings(consultationQuestions).slice(0, 3)
+  };
+}
+
+function renderConfidenceExplanationSection(explanation) {
+  if (!explanation) return '';
+  const reasons = (explanation.reasons || [])
+    .map((reason) => `<li>${escapeReportHtml(reason)}</li>`)
+    .join('');
+  const questions = (explanation.consultationQuestions || [])
+    .map((question) => `<li>${escapeReportHtml(question)}</li>`)
+    .join('');
+  return `
+    <section id="report-confidence" class="er-report-section er-report-confidence-section is-${escapeReportHtml(explanation.tone || 'medium')}">
+      <div class="er-report-section-head">
+        <span>Confidence</span>
+        <h2>왜 이 결과를 이렇게 해석하는가</h2>
+      </div>
+      <div class="er-report-confidence-grid">
+        <article class="er-report-confidence-status">
+          <span>Diagnostic Confidence</span>
+          <h3>${escapeReportHtml(explanation.label)}</h3>
+          <p>${escapeReportHtml(explanation.summary)}</p>
+        </article>
+        <article>
+          <h3>판정 근거</h3>
+          <ul>${reasons}</ul>
+        </article>
+        <article>
+          <h3>상담에서 확인할 질문</h3>
+          <ol>${questions}</ol>
+        </article>
+      </div>
+    </section>
+  `;
+}
+
 function buildPremiumReportModel(resultData) {
   const contentApi = window.ERDiagnosticReportContent || {};
   const subtypeCode = getFinalSubtypeCode(resultData.instinctCode);
@@ -2202,19 +3224,33 @@ function buildPremiumReportModel(resultData) {
     ...row,
     active: index === 0 || row.code === subtypeCode
   }));
+  const supportMaterials = buildReportSupportSelection(resultData, instinctRows);
   const wingRows = (resultData.wingMetrics || []).map((row) => ({
     ...row,
     active: selectedWing && Number(row.wing) === Number(selectedWing)
   }));
+  const confidenceExplanation = buildConfidenceExplanation({
+    confidence: resultData.confidence,
+    diff: resultData.diff,
+    core: resultData.core,
+    second: resultData.second,
+    instinctPct: resultData.instinctPct,
+    responseQuality: resultData.responseQuality,
+    tieState: resultData.tieState,
+    stateStressAdjustment: resultData.stateStressAdjustment
+  });
 
   return {
     ...resultData,
     subtypeCode,
     selectedWing,
+    coreTone: getReportCoreTone(resultData.core),
     reportKey: selectedWing ? `${subtypeCode}_${resultData.core}w${selectedWing}` : `${subtypeCode}_${resultData.core}`,
     content: fallbackContent,
     instinctRows,
     wingRows,
+    supportMaterials,
+    confidenceExplanation,
     display: {
       headline: formatReportHeadline(resultData),
       final: `${subtypeCode} ${resultData.wingCode}`,
@@ -2294,9 +3330,13 @@ function renderPremiumReport(model) {
       <span>${escapeReportHtml(item)}</span>
     </label>
   `).join('');
+  const supportMaterialsHtml = renderSupportMaterialsSection(model.supportMaterials);
+  const supportNav = supportMaterialsHtml ? '<a href="#report-support">자료</a>' : '';
+  const applicationHtml = renderGuidedApplicationSection(model);
+  const confidenceExplanationHtml = renderConfidenceExplanationSection(model.confidenceExplanation);
 
   host.innerHTML = `
-    <article class="er-premium-report" data-report-key="${escapeReportHtml(model.reportKey)}">
+    <article class="er-premium-report" data-report-key="${escapeReportHtml(model.reportKey)}" data-core-tone="${escapeReportHtml(model.coreTone)}">
       <section class="er-report-hero">
         <div class="er-report-hero-inner">
           <p class="er-report-kicker">ER Enneagram Premium Report</p>
@@ -2316,8 +3356,11 @@ function renderPremiumReport(model) {
 
       <nav class="er-report-nav" aria-label="결과지 섹션 이동">
         <a href="#report-summary">요약</a>
+        <a href="#report-confidence">신뢰</a>
         <a href="#report-pattern">패턴</a>
         <a href="#report-life">삶</a>
+        <a href="#report-application">적용</a>
+        ${supportNav}
         <a href="#report-growth">회복</a>
         <a href="#report-next">다음</a>
       </nav>
@@ -2342,6 +3385,8 @@ function renderPremiumReport(model) {
           <p>${escapeReportHtml(c.wingNote || '')}</p>
         </div>
       </section>
+
+      ${confidenceExplanationHtml}
 
       <section class="er-report-section er-report-visuals">
         <div class="er-report-section-head">
@@ -2405,7 +3450,11 @@ function renderPremiumReport(model) {
         </div>
       </section>
 
-      <section id="report-growth" class="er-report-section">
+      ${applicationHtml}
+
+      ${supportMaterialsHtml}
+
+      <section id="report-growth" class="er-report-section er-report-growth">
         <div class="er-report-section-head">
           <span>Restoration</span>
           <h2>변화 로드맵과 오늘의 실천</h2>
@@ -2435,7 +3484,11 @@ function renderPremiumReport(model) {
       <section id="report-next" class="er-report-section er-report-next">
         <div class="er-report-section-head">
           <span>Next Step</span>
-          <h2>나에게 맞는 다음 단계</h2>
+          <h2>혼자 읽고 끝내지 않기 위한 다음 단계</h2>
+        </div>
+        <div class="er-report-next-rationale">
+          <h3>상담과 스쿨이 필요한 이유</h3>
+          <p>진단은 방향을 보여주지만, 변화는 반복되는 실제 장면에서 일어납니다. 상담은 내 결과가 정말 맞는지 확인하고, 스쿨은 9유형의 언어를 배워 내 주변 사람을 더 정확히 이해하고 돕도록 설계되어 있습니다.</p>
         </div>
         <div class="er-report-next-grid">${nextSteps}</div>
         <div id="experiment-result-panel" class="hidden"></div>
@@ -2505,7 +3558,7 @@ if (typeof window !== 'undefined') {
   window.renderPremiumReport = renderPremiumReport;
 }
 
-function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, sxBoost, counterSignals, phase4, postTieApplied }) {
+function renderResultFromScores({ final, evidence, recentStress, stateStressAdjustment, tb7w6, tb7w8, sxBoost, counterSignals, phase4, postTieApplied }) {
   const ranked = Object.keys(final).map((k)=>({type:parseInt(k,10), score:final[k]})).sort((a,b)=>b.score-a.score);
   const core = ranked[0].type;
   const second = ranked[1];
@@ -2536,10 +3589,7 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   const instName = pageLang === 'en'
     ? { sp: 'Self-preservation', sx: 'One-to-one', so: 'Social' }
     : { sp:'자기보존', sx:'성적(일대일)', so:'사회적' };
-  q1.filter((q)=>q.inst).forEach((q)=>{
-    const score = toScore(testState.phase1Responses[q.id]);
-    if (score !== null) inst[q.inst] += score;
-  });
+  addInstinctScoresFromResponses(testState.phase1Responses, inst);
   if (counterSignals && counterSignals[core]) {
     inst.sp += counterSignals[core].sp || 0;
     inst.sx += counterSignals[core].sx || 0;
@@ -2554,6 +3604,7 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     else if (soLead >= TEST_CONFIG.corrections.soPenaltyLowLead) soPenalty = TEST_CONFIG.corrections.soPenaltyLow;
     if (soPenalty > 0) inst.so -= soPenalty;
   }
+  const instinctPct = buildInstinctPctFromScores(inst);
 
   const instRank = Object.keys(inst).map((k)=>({code:k,name:instName[k],score:inst[k]})).sort((a,b)=>b.score-a.score);
   let instinctCode = instRank[0].code;
@@ -2584,18 +3635,9 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
   } else {
     const ps = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
     q1.forEach((q) => {
-      if (q.triad) {
-        const score = toScore(testState.phase1Responses[q.id]) || 0;
-        q.triad.forEach((type) => { ps[type] += score * (q.triadWeight || 1); });
-      }
-      if (q.id && q.id.startsWith('c')) {
-        ps[q.type] += (toScore(testState.phase1Responses[q.id]) || 0) * TEST_CONFIG.weights.phase1Core * (q.scoreWeight || 1);
-      }
-      if (q.format === 'ab') {
-        const c = testState.phase1Responses[q.id];
-        const t = c === 'A' ? q.leftType : q.rightType;
-        ps[t] += TEST_CONFIG.weights.phase1Binary;
-      }
+      scorePhase1Item(q, testState.phase1Responses[q.id], (type, points) => {
+        ps[type] += points;
+      });
     });
     if (core === 7 && testState.tie.t7wing.enabled) { ps[6] += tb7w6 * testState.tie.t7wing.weight; ps[8] += tb7w8 * testState.tie.t7wing.weight; }
     wingMetrics = buildWingMetrics(core, ps);
@@ -2631,6 +3673,22 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     score: row.score,
     caption: row.code === getFinalSubtypeCode(instinctCode) ? '결과지의 주 본능' : ''
   }));
+  const scoringAxes = buildScoringAxesSnapshot({
+    coreTypeScore: final,
+    instinctScore: inst,
+    stateStressAdjustment
+  });
+  const allResponses = snapshotAllDiagnosticResponses();
+  const responseTiming = buildTimingSnapshot(allResponses);
+  const responseQuality = buildResponseQualitySnapshot({
+    responses: allResponses,
+    timings: responseTiming,
+    scoringAxes,
+    ranked,
+    instinctPct,
+    confidence
+  });
+  const tieSnapshot = JSON.parse(JSON.stringify(testState.tie));
   const premiumModel = buildPremiumReportModel({
     final,
     evidence,
@@ -2645,15 +3703,21 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
     phase4,
     postTieApplied,
     recentStress,
+    stateStressAdjustment,
+    scoringAxes,
+    responseQuality,
+    responseTiming,
+    tieState: tieSnapshot,
     instinctCode,
     instinctLabel,
+    instinctPct,
     instinctMetrics,
     wingMetrics,
     wing,
     wingCode,
     wingNum,
     coreDisplay,
-    responses: snapshotAllDiagnosticResponses()
+    responses: allResponses
   });
   renderPremiumReport(premiumModel);
 
@@ -2676,10 +3740,15 @@ function renderResultFromScores({ final, evidence, recentStress, tb7w6, tb7w8, s
       phase4,
       postTieApplied,
       recentStress,
+      stateStressAdjustment,
+      scoringAxes,
+      responseQuality,
+      responseTiming,
+      confidenceExplanation: premiumModel.confidenceExplanation,
       instinctMetrics,
       wingMetrics,
       reportKey: premiumModel.reportKey,
-      tieSnapshot: JSON.parse(JSON.stringify(testState.tie)),
+      tieSnapshot,
       responses: premiumModel.responses
     });
   }

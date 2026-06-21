@@ -3,7 +3,7 @@
 kb_id: enneagram_test_meta.simulation_report
 title: "Test Simulation Report — Bug Audit + Accuracy Check"
 created_at: "2026-05-19"
-last_updated: "2026-05-19"
+last_updated: "2026-06-20"
 retrieval_tags:
   - simulation
   - bug_audit
@@ -16,6 +16,8 @@ retrieval_tags:
 # Test Simulation Report
 
 [`tests/simulate.mjs`](../../../tests/simulate.mjs) 의 35 케이스 실행 결과.
+
+2026-06-20 운영 코드 기준 주의: 이 보고서는 Phase 3~6 helper/data 모듈의 정확도 검증 기록이다. 현재 `test.html`은 `js/test-scoring.js`, `js/subtypes-27-data.js`, `js/test-result-renderer.js`, `js/test-charts.js`를 로드하지 않고, 운영 결과지는 `js/test.js` 내부 premium renderer와 `js/diagnostic-report-content.js`, `js/report-support-materials.js` 중심으로 생성된다. 따라서 아래 "개선 기회" 중 운영 코드에 아직 연결되지 않은 항목은 [CODE_GAP_AUDIT.md](./CODE_GAP_AUDIT.md)에 gap으로 추적한다.
 
 ## 요약
 
@@ -74,17 +76,19 @@ retrieval_tags:
 
 ## 발견된 개선 기회 (코드 버그 아님, 향후 보완)
 
-### 1. 27 subtype 깊이 판별 보강 가능
+### 1. 27 subtype 깊이 판별 보강 가능 — 2026-06-20 일부 반영
 
-현재 27 subtype 결정은 **9 본능 문항 (i_sp_1-3, i_sx_1-3, i_so_1-3) 의 합산** 만으로 함. 응답이 본능 간 비슷하면 결과 정확도가 떨어질 수 있음.
+초기 보고서 작성 당시 27 subtype 결정은 **9 본능 문항 (i_sp_1-3, i_sx_1-3, i_so_1-3) 의 합산** 만으로 했다. 응답이 본능 간 비슷하면 결과 정확도가 떨어질 수 있었다.
 
-**보강 아이디어** — 같은 코어 안에서 sp/sx/so subtype 끼리의 감별 질문을 추가. 예시 — `tb_sp1_so1`, `tb_so1_sx1`, etc. 9 코어 × 3 본능 쌍 = 27 잠재 질문. 최소 9개 (countertype 9개 식별용) 만 추가해도 진단 강화 가능.
+2026-06-20 현재 운영 코드에는 코어 확정 후 `buildSubtypeBehaviorQuestions(core)`가 생성하는 하위유형 행동문항 3개가 추가되어, 단일 설명문 선택 대신 행동 기반 다수결로 하위유형을 보정한다.
+
+남은 보강 아이디어 — 본능 점수 근접 상황에서만 추가로 여는 pairwise 질문. 예시 — `tb_sp1_so1`, `tb_so1_sx1`, etc. 9 코어 × 3 본능 쌍 = 27 잠재 질문.
 
 이는 Phase 1 [korean_test_copy_guide.md](../knowledge_base/enneagram/complete_enneagram/korean_test_copy_guide.md) 의 27 subtype 시드 단어 + Phase 2 [subtypes_27.md](../knowledge_base/enneagram/complete_enneagram/subtypes_27.md) 의 sisterDifferences 기반으로 작성 가능.
 
 ### 2. Wing 강도 시각화 클리어
 
-`wing(0%)` 출력 시 사용자는 "wing 없음" 인지 "균등" 인지 혼동 가능. 결과지에 명시적 문구 "두 wing 균등 — 순수 type 표현 우세" 추가가 좋음. 현재 `js/test-result-renderer.js` 에 이미 처리되어 있으나 강화 가능.
+`wing(0%)` 출력 시 사용자는 "wing 없음" 인지 "균등" 인지 혼동 가능. 결과지에 명시적 문구 "두 wing 균등 — 순수 type 표현 우세" 추가가 좋음. helper 모듈인 `js/test-result-renderer.js`에는 관련 처리가 있으나, 현재 운영 `test.html` 경로에는 이 renderer가 연결되어 있지 않다.
 
 ### 3. Confidence 시각화 미흡
 
@@ -92,7 +96,7 @@ retrieval_tags:
 
 ### 4. 27 subtype lookup 의 빈 데이터 처리
 
-`computeResult` 가 dominant instinct null 이면 subtype null. 결과지에서 "본능 응답 부족 — 진단 보류" 안내 카드가 명확하게 노출되어야 함. 현재 `js/test-result-renderer.js` 가 처리하지만 메시지 강화 가능.
+`computeResult` 가 dominant instinct null 이면 subtype null. 결과지에서 "본능 응답 부족 — 진단 보류" 안내 카드가 명확하게 노출되어야 함. helper 모듈에는 처리 경로가 있으나, 현재 운영 `js/test.js` 결과지에는 동일한 guardrail이 완전히 연결되어 있지 않다.
 
 ## 결론
 
