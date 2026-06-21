@@ -133,3 +133,92 @@ test('Phase 4 subtype choices show descriptions without English subtype labels',
   assert.match(html, /deep essence and a perfect ideal/);
   assert.doesNotMatch(html, /Self-preservation 7|Social 7|One-to-one 7/);
 });
+
+test('Phase 4 uses three behavior subtype questions and three wing questions', () => {
+  const { context } = loadTestScript();
+
+  const result = vm.runInContext(`(() => {
+    const subtypeQuestions = buildSubtypeBehaviorQuestions(7);
+    const subtypeQuestions8 = buildSubtypeBehaviorQuestions(8);
+    const wingQuestions = buildWingQuestionSet(7);
+    return {
+      subtypeCount: subtypeQuestions.length,
+      wingCount: wingQuestions.length,
+      subtypeChoiceCount: subtypeQuestions.filter((q) => q.subtypeChoice === true).length,
+      wingQuestionCount: wingQuestions.filter((q) => q.wingChoice === true).length,
+      subtypeText: subtypeQuestions.map((q) => q.options.map((o) => o.text).join(' ')).join(' '),
+      subtype8Text: subtypeQuestions8.map((q) => q.options.map((o) => o.text).join(' ')).join(' '),
+      wingText: wingQuestions.map((q) => [q.a, q.b].join(' ')).join(' ')
+    };
+  })()`, context);
+
+  assert.equal(result.subtypeCount, 3);
+  assert.equal(result.wingCount, 3);
+  assert.equal(result.subtypeChoiceCount, 3);
+  assert.equal(result.wingQuestionCount, 3);
+  assert.match(result.subtypeText, /내가 하고 싶은 일을 미루고/);
+  assert.match(result.subtype8Text, /요청받지 않아도 개입/);
+  assert.doesNotMatch(result.subtypeText, /헌신|약자를 보호|미덕/);
+  assert.match(result.wingText, /실제로 했던 행동/);
+});
+
+test('state stress adjustment damps type 6 when recent anxiety is high and rivals are close', () => {
+  const { context } = loadTestScript();
+
+  const result = vm.runInContext(`(() => {
+    const final = {1: 25, 2: 4, 3: 4, 4: 4, 5: 24, 6: 27, 7: 4, 8: 4, 9: 23};
+    const evidence = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []};
+    const adjustment = applyStateStressAdjustment(final, evidence, 5.7);
+    return {
+      adjustment,
+      type6: final[6],
+      evidence6: evidence[6].map((item) => item.text).join(' ')
+    };
+  })()`, context);
+
+  assert.equal(result.adjustment.applied, true);
+  assert.ok(result.adjustment.type6Damp > 0);
+  assert.ok(result.type6 < 27);
+  assert.match(result.evidence6, /상태성 불안 보정/);
+});
+
+test('instinct attention-bias question contributes to instinct scores and pct denominator', () => {
+  const { context } = loadTestScript();
+
+  const result = vm.runInContext(`(() => {
+    const scores = { sp: 0, sx: 0, so: 0 };
+    addInstinctScoresFromResponses({ instinct_attention_1: 'sx' }, scores);
+    return {
+      scores,
+      pct: buildInstinctPctFromScores({ sp: 0, sx: TEST_CONFIG.weights.instinctAttentionChoice, so: 0 })
+    };
+  })()`, context);
+
+  assert.equal(result.scores.sx, 3);
+  assert.equal(result.scores.sp, 0);
+  assert.equal(result.scores.so, 0);
+  assert.ok(result.pct.sx > 0 && result.pct.sx < 100);
+});
+
+test('scoring axes snapshot separates core, triad, instinct, and state adjustment fields', () => {
+  const { context } = loadTestScript();
+
+  const result = vm.runInContext(`(() => buildScoringAxesSnapshot({
+    coreTypeScore: {1: 3, 2: 4, 3: 5, 4: 6, 5: 7, 6: 8, 7: 9, 8: 10, 9: 11},
+    instinctScore: { sp: 3, sx: 2, so: 1 },
+    stateStressAdjustment: { applied: true, type6Damp: 1.2 }
+  }))()`, context);
+
+  assert.deepEqual(Object.keys(result), [
+    'centerScore',
+    'harmonicScore',
+    'hornevianScore',
+    'coreTypeScore',
+    'instinctScore',
+    'stateStressAdjustment'
+  ]);
+  assert.equal(result.centerScore.body, 24);
+  assert.equal(result.centerScore.heart, 15);
+  assert.equal(result.centerScore.head, 24);
+  assert.equal(result.stateStressAdjustment.type6Damp, 1.2);
+});

@@ -4,11 +4,12 @@ kb_id: enneagram_test_meta.context
 title: "ER Enneagram Test 발전 프로젝트 — 설계 컨텍스트"
 project_owner: jamiewsm
 created_at: "2026-05-06"
-last_updated: "2026-05-06"
-status: design_approved
+last_updated: "2026-06-21"
+status: manual_updates_after_phase_6
 related_files:
+  - ACTIVE_EVOLUTION_PLAN.md
   - WORK_STATUS.md
-  - PHASE_PLAN.md
+  - CODE_GAP_AUDIT.md
   - HANDOFF.md
   - HISTORY.md
   - ../../knowledge_base/enneagram/complete_enneagram/
@@ -36,6 +37,29 @@ retrieval_tags:
 
 **원칙** — 유료 결과지가 갖춰야 할 깊이와 정확도를 위해 단순화/반복/얕음을 거부한다. 문제가 늘어나는 것은 문제가 아니다. 깊이가 줄어드는 것이 문제다.
 
+## 0.1 2026-06-20 현재 운영 기준
+
+- 현재 운영 진입점은 `test.html` -> `js/test.js`다.
+- 현재 `test.html`은 `js/test-scoring.js`, `js/test-shared.js`, `js/test-charts.js`, `js/test-result-renderer.js`, `js/subtypes-27-data.js`를 로드하지 않는다.
+- 최신 1단계는 39문항이며, 센터 판별은 `center_auto_1`~`center_auto_3` + `center_situation_1`~`center_situation_3`의 6개 강제선택 문항으로 운영된다.
+- 본능 판별은 기존 리커트 9개 문항에 `instinct_attention_1` attention-bias 상황형 1문항을 더해 운영된다.
+- 최근 2주 상태 문항이 높고 6번이 1/5/9와 근접하면 상태성 불안 보정과 6번 관련 타이브레이커 강화가 적용된다.
+- 최신 4단계는 하위유형 설명문 1개 + 날개 1개가 아니라, 하위유형 행동문항 3개 + 날개 행동문항 3개를 생성해 다수결로 판정한다.
+- 응답 품질 체크는 scoring modifier가 아니라 해석 메타데이터다. `responseQuality`는 너무 빠른 응답, 직선 응답, `U` 과다, 센터-코어 불일치, 본능 불명확성을 표시하고 결과지/상담 확인 질문/실험 분석에 사용한다.
+- Confidence Card는 사용자가 결과를 신뢰하거나 상담에서 확인할 이유를 설명하는 층이다. `confidenceExplanation`은 점수를 바꾸지 않고, 1-2위 격차와 응답 품질을 근거 문장 및 상담 확인 질문으로 변환한다.
+- 결과지는 `js/test.js`, `js/diagnostic-report-content.js`, `js/report-support-materials.js`, `css/test.css` 중심으로 생성된다.
+- 현재 발전 작업의 활성 계획은 [ACTIVE_EVOLUTION_PLAN.md](./ACTIVE_EVOLUTION_PLAN.md)이다.
+- 과거 phase 문서와 현재 운영 코드의 차이 및 적용 금지 항목은 [CODE_GAP_AUDIT.md](./CODE_GAP_AUDIT.md)에 추적한다.
+
+## 0.2 현재 문서 권한 체계
+
+| 문서 | 권한 |
+|---|---|
+| [ACTIVE_EVOLUTION_PLAN.md](./ACTIVE_EVOLUTION_PLAN.md) | 현재/미래 구현 계획의 SSOT |
+| [WORK_STATUS.md](./WORK_STATUS.md) | 현재 운영 코드 스냅샷과 우선순위 |
+| [CODE_GAP_AUDIT.md](./CODE_GAP_AUDIT.md) | 오래된 문서/모듈 적용 금지 guardrail |
+| [PHASE_PLAN.md](./PHASE_PLAN.md), `PHASE_2_PLAN.md`~`PHASE_6_PLAN.md` | archive. 새 작업에 실행 지시로 사용 금지 |
+
 ## 1. 5 단계 phase 플랜
 
 | Phase | 목적 | 주요 산출물 |
@@ -46,7 +70,7 @@ retrieval_tags:
 | 4 | 코드베이스 정리 | `js/test.js` ↔ `js/app-adaptive.js` 중복 해소 |
 | 5 | 결과 출력 포맷 | 최종 결과지 디자인 + 27 subtype 콘텐츠 통합 |
 
-각 phase 의 task 분해 + 의존성은 [PHASE_PLAN.md](./PHASE_PLAN.md) 에서 관리. 진행 상태는 [WORK_STATUS.md](./WORK_STATUS.md). 자동 재개 protocol 은 [HANDOFF.md](./HANDOFF.md). 작업 로그는 [HISTORY.md](./HISTORY.md).
+과거 phase 의 task 분해 + 의존성은 archive로 보존한다. 현재 진행 상태는 [WORK_STATUS.md](./WORK_STATUS.md), 현재 구현 계획은 [ACTIVE_EVOLUTION_PLAN.md](./ACTIVE_EVOLUTION_PLAN.md), 자동 재개 protocol 은 [HANDOFF.md](./HANDOFF.md), 작업 로그는 [HISTORY.md](./HISTORY.md)에서 관리한다.
 
 ## 2. 설계 섹션 1 — 세션 연속성 인프라
 
@@ -56,11 +80,13 @@ retrieval_tags:
 
 ```
 docs/_meta/enneagram/
-├── CONTEXT.md       # 본 문서. 설계 + 결정 로그 + 용어집 (SSOT)
-├── WORK_STATUS.md   # frontmatter 기반 현재 상태 (phase / task / paused / locked / checkpoint)
-├── PHASE_PLAN.md    # 5 phase 의 모든 task 평탄 리스트 + 의존성 + self-contained 명세
-├── HANDOFF.md       # 새 AI cold-start 5단계 protocol + wakeup prompt
-└── HISTORY.md       # 완료 task 1줄 로그 (어느 AI / 언제 / 무엇 / 토큰 사용량)
+├── ACTIVE_EVOLUTION_PLAN.md # 현재 구현 계획 SSOT
+├── CODE_GAP_AUDIT.md        # archive/legacy 적용 금지 guardrail
+├── CONTEXT.md               # 본 문서. 설계 + 결정 로그 + 용어집
+├── WORK_STATUS.md           # 현재 운영 코드 스냅샷 + 우선순위
+├── HANDOFF.md               # 새 AI cold-start protocol
+├── HISTORY.md               # 완료 task 1줄 로그
+└── PHASE*_PLAN.md           # archive. 새 작업 실행 금지
 ```
 
 ### 2.2 멀티-AI 진입점

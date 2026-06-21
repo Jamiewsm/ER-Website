@@ -4,8 +4,9 @@ kb_id: enneagram_test_meta.phase_4_plan
 title: "Phase 4 Implementation Plan — Codebase Cleanup (pragmatic scope)"
 phase: 4
 created_at: "2026-05-07"
-last_updated: "2026-05-07"
-status: ready_to_execute
+last_updated: "2026-06-20"
+status: archived_do_not_execute
+superseded_by: ACTIVE_EVOLUTION_PLAN.md
 total_tasks: 6
 estimated_total_minutes: "120-180"
 related_files:
@@ -22,6 +23,8 @@ retrieval_tags:
 ---
 
 # ER Enneagram Test — Phase 4 (Codebase Cleanup) Implementation Plan
+
+> **ARCHIVED — DO NOT EXECUTE.** 이 문서는 2026-05 자동화 Phase 4 기록 보존용이다. 현재 운영 경로는 `test.html -> js/test.js`이며 legacy `js/app-adaptive*.js`를 되살리는 방식은 금지한다. 공통 상수 추출은 가능하지만, 현재 테스트 문항/결과지 흐름을 과거 구조로 되돌리면 안 된다.
 
 > **For agentic workers:** [HANDOFF.md](./HANDOFF.md) 의 5단계 protocol 따름. 매 task 종료 시 `node docs/_meta/enneagram/verify.mjs <task_id>` + `node --test tests/test-scoring.test.mjs` 통과 확인 후 commit.
 

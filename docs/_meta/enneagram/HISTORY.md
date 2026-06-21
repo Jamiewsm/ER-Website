@@ -3,7 +3,7 @@
 kb_id: enneagram_test_meta.history
 title: "Work History Log"
 created_at: "2026-05-06"
-last_updated: "2026-05-06"
+last_updated: "2026-06-21"
 retrieval_tags:
   - history
   - audit_log
@@ -14,6 +14,12 @@ retrieval_tags:
 
 | Timestamp (UTC) | Agent | Task | Event | Tokens | Note |
 |---|---|---|---|---:|---|
+| 2026-06-21T04:05:00Z | codex | confidence_explanation_card | complete | - | `buildConfidenceExplanation` + `report-confidence` 섹션 구현. 1-2위 격차, 본능 선명도, 응답 품질, 센터-코어 일치, 타이브레이커를 근거 문장으로 설명하고 1↔6/2↔9/3↔6/3↔9/4↔7/5↔9/6↔8/7↔9 상담 확인 질문을 자동 생성. `confidenceExplanation`은 experiment row JSON에도 보존. 70/70 tests pass. |
+| 2026-06-21T03:40:00Z | codex | response_quality_engine | complete | - | `buildResponseQualitySnapshot` + `responseTiming` 구현. 너무 빠른 응답, 직선 응답, U 과다, 센터-코어 불일치, 본능 불명확성 flag를 생성하고 premium model, experiment payload, Supabase row JSON(`result_summary.response_quality`, `tie_break_log.response_timing`)에 보존. |
+| 2026-06-20T22:20:00Z | codex | active_evolution_docs | complete | - | 과거 PHASE_* plan 전부 `archived_do_not_execute`로 격리, `ACTIVE_EVOLUTION_PLAN.md` 신규 작성, `CODE_GAP_AUDIT.md`를 적용 금지/선별 적용 guardrail로 재정의. 현재 우선순위는 응답 품질 체크 → confidence 설명 카드 → 상담 확인 질문 → 자동반응 리라이팅/상황형 TB → experiment 데이터/weight calibration. |
+| 2026-06-20T21:50:28Z | codex | accuracy_structure_update | complete | - | ER 진단테스트 정확도 개선 — `center_auto_1~3` 유지 + `center_situation_1~3` 교체, 2번/4번 문항 보강, `instinct_attention_1` 채점 연결, 6번 상태성 불안 보정/타이브레이커 강화, scoring axes snapshot 추가. 63/63 tests pass. |
+| 2026-06-20T00:20:00Z | codex | accuracy_improvement | complete | - | Self-report 편향 보정 — 센터 문항 10→6 축소, 행동 회상형 core 문항 4개 추가, 4번 고통 동일시 문항 강화, Phase 4 하위유형/날개를 각각 3개 행동문항 다수결로 변경. |
+| 2026-06-20T00:00:00Z | codex | docs_code_sync | complete | - | 운영 코드 기준 문서 동기화 — 1단계 38문항/센터 10문항 상태 반영, `test_dup_audit.md` 갱신, `CODE_GAP_AUDIT.md` 신규 작성. 현재 `test.html`은 `js/test.js` 중심이며 Phase 3~6 helper 모듈 일부는 운영 경로에 미연결 상태로 추적. |
 | 2026-05-19T05:05:00Z | claude-manual-bootstrap | project | complete | - | 🎉 **프로젝트 완료.** 5 Phase 모두 종료. current_phase = 6, paused = true. verify all 29 files OK + 26/26 unit test. 결과지 — 27 subtype × 7 슬롯 lookup + wing/instinct % 시각화 + countertype 안내 + Korean 카피. |
 | 2026-05-19T05:00:00Z | claude-manual-bootstrap | 5.5 | complete | - | Task 5.5 완료 — WORK_STATUS current_phase=6, paused=true. 스케줄 task 보존 (사용자 결정). 최종 verify + 26 unit test 통과. |
 | 2026-05-19T05:00:00Z | claude-manual-bootstrap | 5.2-5.4 | complete | - | Tasks 5.2-5.4 완료 (combined) — test-result-renderer.js (174줄, 9 카드 빌더) + test.html `#res-subtype-cards` 컨테이너 + script 로드 + js/test.js 와이어링 + share text subtype 한국어 이름 추가. PDF 는 html2canvas 가 신규 카드 자동 캡처. |

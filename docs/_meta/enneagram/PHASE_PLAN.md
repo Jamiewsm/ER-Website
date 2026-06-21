@@ -4,8 +4,9 @@ kb_id: enneagram_test_meta.phase_plan
 title: "Phase 1 Implementation Plan — KB Foundation"
 phase: 1
 created_at: "2026-05-06"
-last_updated: "2026-05-06"
-status: ready_to_execute
+last_updated: "2026-06-20"
+status: archived_do_not_execute
+superseded_by: ACTIVE_EVOLUTION_PLAN.md
 total_tasks: 9
 estimated_total_minutes: "220-330"
 related_files:
@@ -22,6 +23,8 @@ retrieval_tags:
 ---
 
 # ER Enneagram Test — Phase 1 (KB Foundation) Implementation Plan
+
+> **ARCHIVED — DO NOT EXECUTE.** 이 문서는 2026-05 자동화 Phase 1 기록 보존용이다. 현재 운영 코드 발전 작업은 [ACTIVE_EVOLUTION_PLAN.md](./ACTIVE_EVOLUTION_PLAN.md)를 기준으로 진행한다. 이 문서의 task, worktree, script load 지시는 현재 운영 코드보다 오래되어 새 작업에 관여하면 안 된다.
 
 > **For agentic workers:** This plan executes via hard-auto scheduled wakeup OR manual session. Before executing any task: read [HANDOFF.md](./HANDOFF.md), follow the 5-step protocol, then locate the task ID in this file and execute its Steps in order. Each Step's checkbox (`- [ ]`) is marked completed in WORK_STATUS, not by editing this file.
 

@@ -13,16 +13,19 @@
 
 서브 에이전트(Task/explore) 결과는 메인 agent가 통합·커밋·PR까지 이어갑니다.
 
-## 활성 자동화 작업 — ER Enneagram Test 발전 프로젝트
+## 활성 수동 개선 작업 — ER Enneagram Test 발전 프로젝트
 
-현재 진행 중인 다단계 자동화 작업이 있습니다. AI 에이전트로 이 리포에서 작업을 시작한다면 먼저 다음을 읽으세요.
+현재 예약 자동화 Phase 1~6은 archive 상태입니다. AI 에이전트로 이 리포에서 에니어그램 테스트 작업을 시작한다면 먼저 다음을 읽으세요.
 
 1. [docs/_meta/enneagram/HANDOFF.md](./docs/_meta/enneagram/HANDOFF.md) — cold-start 5단계 protocol
 2. [docs/_meta/enneagram/WORK_STATUS.md](./docs/_meta/enneagram/WORK_STATUS.md) — 현재 진행 상태 SSOT
-3. [docs/_meta/enneagram/CONTEXT.md](./docs/_meta/enneagram/CONTEXT.md) — 설계 + 결정 로그
-4. [docs/_meta/enneagram/PHASE_PLAN.md](./docs/_meta/enneagram/PHASE_PLAN.md) — 모든 task 정의
+3. [docs/_meta/enneagram/CODE_GAP_AUDIT.md](./docs/_meta/enneagram/CODE_GAP_AUDIT.md) — 오래된 문서/모듈 적용 금지 guardrail
+4. [docs/_meta/enneagram/ACTIVE_EVOLUTION_PLAN.md](./docs/_meta/enneagram/ACTIVE_EVOLUTION_PLAN.md) — 현재 구현 계획 SSOT
+5. [docs/_meta/enneagram/CONTEXT.md](./docs/_meta/enneagram/CONTEXT.md) — 설계 + 결정 로그
 
-이 작업은 하드-오토 스케줄 (Anthropic scheduled-tasks, 6시간 주기) 로도 진행됩니다. 사용자가 명시적으로 "에니어그램 작업 일시정지" 라고 말하면 `WORK_STATUS.paused = true` 로 설정하고 `HISTORY.md` 에 기록.
+`PHASE_PLAN.md`, `PHASE_2_PLAN.md`, `PHASE_3_PLAN.md`, `PHASE_4_PLAN.md`, `PHASE_5_PLAN.md`, `PHASE_6_PLAN.md` 는 historical archive 입니다. 새 기능 구현 지시로 사용하지 마세요.
+
+예약 자동화는 `WORK_STATUS.paused = true`, `current_phase >= 6`이면 종료합니다. 사용자가 직접 요청한 수동 작업은 `ACTIVE_EVOLUTION_PLAN.md` 기준으로 진행할 수 있습니다. 사용자가 명시적으로 "에니어그램 작업 일시정지" 라고 말하면 `WORK_STATUS.paused = true` 로 설정하고 `HISTORY.md` 에 기록.
 
 ## 그 외 작업
 

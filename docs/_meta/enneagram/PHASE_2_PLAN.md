@@ -4,8 +4,9 @@ kb_id: enneagram_test_meta.phase_2_plan
 title: "Phase 2 Implementation Plan — 27 Subtypes Depth Content"
 phase: 2
 created_at: "2026-05-06"
-last_updated: "2026-05-06"
-status: ready_to_execute
+last_updated: "2026-06-20"
+status: archived_do_not_execute
+superseded_by: ACTIVE_EVOLUTION_PLAN.md
 total_tasks: 11
 estimated_total_minutes: "270-410"
 related_files:
@@ -22,6 +23,8 @@ retrieval_tags:
 ---
 
 # ER Enneagram Test — Phase 2 (27 Subtypes Depth) Implementation Plan
+
+> **ARCHIVED — DO NOT EXECUTE.** 이 문서는 2026-05 자동화 Phase 2 기록 보존용이다. 현재 운영 코드 발전 작업은 [ACTIVE_EVOLUTION_PLAN.md](./ACTIVE_EVOLUTION_PLAN.md)를 기준으로 진행한다. 27 subtype 자료는 참고 원천으로만 사용하고, 현재 premium 결과지에 그대로 덮어쓰면 안 된다.
 
 > **For agentic workers:** 본 plan 은 Phase 1 의 [PHASE_PLAN.md](./PHASE_PLAN.md) 와 동일한 형식. 매 task 시작 전 [HANDOFF.md](./HANDOFF.md) 의 5단계 protocol 따르기. 검증은 `node docs/_meta/enneagram/verify.mjs <task_id>`.
 

@@ -4,8 +4,9 @@ kb_id: enneagram_test_meta.phase_6_plan
 title: "Phase 6 Implementation Plan — Premium Visual Polish ($100 Result Page)"
 phase: 6
 created_at: "2026-05-19"
-last_updated: "2026-05-19"
-status: ready_to_execute
+last_updated: "2026-06-20"
+status: archived_do_not_execute
+superseded_by: ACTIVE_EVOLUTION_PLAN.md
 total_tasks: 5
 estimated_total_minutes: "180-280"
 related_files:
@@ -23,6 +24,8 @@ retrieval_tags:
 ---
 
 # ER Enneagram Test — Phase 6 (Premium Visual Polish) Implementation Plan
+
+> **ARCHIVED — DO NOT EXECUTE.** 이 문서는 2026-05 자동화 Phase 6 기록 보존용이다. 현재 visual/result work는 업로드된 mockup/background/logo와 `css/test.css`의 premium v2 방향을 기준으로 한다. Chart.js/old 15-section 구조를 그대로 복구하는 방식은 현재 결과지 품질을 떨어뜨릴 수 있다.
 
 > Reference — `/Users/Joeyswoo/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Visual Studio Code/test-results/HAN_JEEMIN_G6VDFM-Signature.pdf` (32 페이지 Birkman 디자인).
 

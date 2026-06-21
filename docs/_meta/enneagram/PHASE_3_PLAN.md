@@ -4,8 +4,9 @@ kb_id: enneagram_test_meta.phase_3_plan
 title: "Phase 3 Implementation Plan — Scoring Accuracy"
 phase: 3
 created_at: "2026-05-07"
-last_updated: "2026-05-07"
-status: ready_to_execute
+last_updated: "2026-06-20"
+status: archived_do_not_execute
+superseded_by: ACTIVE_EVOLUTION_PLAN.md
 total_tasks: 9
 estimated_total_minutes: "240-360"
 related_files:
@@ -25,6 +26,8 @@ retrieval_tags:
 ---
 
 # ER Enneagram Test — Phase 3 (Scoring Accuracy) Implementation Plan
+
+> **ARCHIVED — DO NOT EXECUTE.** 이 문서는 2026-05 자동화 Phase 3 기록 보존용이다. 현재 운영 `test.html`은 `js/test-scoring.js`를 로드하지 않으며, 현재 스코어링은 `js/test.js`의 최신 39문항/상황형 타이브레이커/Phase 4 다문항 판정 흐름을 기준으로 한다. `js/test-scoring.js`를 현재 운영 로직의 대체재로 다시 연결하면 최신 기능이 빠질 수 있다.
 
 > **For agentic workers:** [HANDOFF.md](./HANDOFF.md) 의 5단계 protocol 따름. 각 task 시작 시 `WORK_STATUS.locked_task` 갱신, 완료 시 `node docs/_meta/enneagram/verify.mjs <task_id>` 통과 확인 후 commit.
 
