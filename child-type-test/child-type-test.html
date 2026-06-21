@@ -131,6 +131,16 @@
   .pill{background:var(--green-bg);color:var(--green-d);border-radius:30px;padding:6px 14px;font-size:13px;font-weight:700;}
 
   .disc{background:var(--clay-bg);border-left:4px solid var(--clay);border-radius:0 12px 12px 0;padding:14px 16px;font-size:13.5px;color:#7a4a2a;margin-top:18px;}
+  .reliability{background:#F7F8F2;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:16px;}
+  .reliability h3{font-size:15px;color:var(--green-d);margin:0 0 8px;font-family:inherit;font-weight:800;}
+  .reliability ul{margin:0;padding:0 0 0 18px;font-size:13.5px;color:var(--muted);}
+  .reliability li{margin-bottom:6px;}
+  .reliability.low{border-color:#E8C9B0;background:#FDF6F0;}
+  .reliability.mid{border-color:#E6DFC8;background:#FBF9F2;}
+  .sit-list{margin:8px 0 0;padding:0;list-style:none;}
+  .sit-list li{font-size:13.5px;color:var(--muted);padding:6px 0;border-bottom:1px dashed var(--line);}
+  .sit-list li:last-child{border-bottom:0;}
+  .conf-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;}
   .interp{font-size:14.5px;color:var(--muted);}
   .interp .q-shift{color:var(--green-d);font-weight:700;}
 
@@ -378,20 +388,74 @@ function ranked(){
 }
 function confidence(r){
   const gap = r[0].total - r[1].total;
-  if(gap>=8) return {gap, level:'high', label:'확신도 높음'};
-  if(gap>=4) return {gap, level:'mid',  label:'확신도 보통'};
-  return {gap, level:'low', label:'확신도 낮음'};
+  if(gap>=8) return {gap, level:'high', label:'점수 차이 확신도 높음'};
+  if(gap>=4) return {gap, level:'mid',  label:'점수 차이 확신도 보통'};
+  return {gap, level:'low', label:'점수 차이 확신도 낮음'};
 }
-function instTotal(k){ return state.inst[k].reduce((s,v)=> s+(v||0),0); }
+function instTotal(k){
+  return state.inst[k].reduce((s,v)=> (v===null||v===0) ? s : s+v, 0);
+}
+
+function observationalReliability(relPairs){
+  const typeStats=[];
+  for(let t=1;t<=9;t++){
+    let zeros=0, answered=0;
+    for(let i=0;i<8;i++){
+      const v=state.type[t][i];
+      if(v===null) continue;
+      answered++;
+      if(v===0) zeros++;
+    }
+    typeStats.push({t, zeros, answered, zeroRate: answered ? zeros/answered : 0});
+  }
+
+  let allZeros=0, allAnswered=0;
+  POOL.forEach(it=>{
+    const v=poolVal(it);
+    if(v===null) return;
+    allAnswered++;
+    if(v===0) allZeros++;
+  });
+
+  const overallZeroRate=allAnswered ? allZeros/allAnswered : 0;
+  const underobservedTypes=typeStats
+    .filter(s=> s.zeros>=4 || (s.answered>=3 && s.zeroRate>=0.5))
+    .map(s=>s.t)
+    .sort((a,b)=>a-b);
+
+  let level='high';
+  if(overallZeroRate>=0.25 || underobservedTypes.length>=3) level='low';
+  else if(overallZeroRate>=0.15 || underobservedTypes.length>=1) level='mid';
+
+  const labels={high:'관찰 신뢰도 높음', mid:'관찰 신뢰도 보통', low:'관찰 신뢰도 낮음'};
+  const reasons=[];
+  if(allAnswered && overallZeroRate>=0.12){
+    reasons.push(`전체 ${allAnswered}개 응답 중 ${allZeros}개(${Math.round(overallZeroRate*100)}%)가 관찰부족(0)입니다.`);
+  }
+  if(underobservedTypes.length){
+    const nums=underobservedTypes.map(t=>{
+      const s=typeStats.find(x=>x.t===t);
+      return `${t}번(${s.zeros}회)`;
+    }).join(', ');
+    reasons.push(`${nums} 관련 문항에서 관찰부족이 많아 해당 유형 가능성은 과소평가되었을 수 있습니다.`);
+  }
+  const skippedPairs=(relPairs||[]).filter(p=>!state.conf[p.idx]).length;
+  if(skippedPairs>0) reasons.push(`비교 문항 ${skippedPairs}개를 선택하지 않아 유형 구분 신뢰도가 낮아질 수 있습니다.`);
+  if(!state.wing) reasons.push('날개 비교를 선택하지 않아 날개 가설은 미확정입니다.');
+
+  return {typeStats, underobservedTypes, overallZeroRate, allZeros, allAnswered, level, label:labels[level], reasons};
+}
 
 function compute(){
   const r = ranked();
-  const conf = confidence(r);
   const top3 = r.slice(0,3).map(x=>x.t);
 
   // 혼동쌍: 상위 후보끼리만
   const relPairs = PAIRS.map((p,idx)=>({...p,idx}))
     .filter(p=> top3.includes(p.a) && top3.includes(p.b));
+
+  const conf = confidence(r);
+  const reliability = observationalReliability(relPairs);
 
   // 혼동쌍 승점
   const wins = {}; top3.forEach(t=>wins[t]=0);
@@ -414,7 +478,9 @@ function compute(){
   const inst = [['SP',instTotal('SP')],['SO',instTotal('SO')],['SX',instTotal('SX')]]
     .sort((a,b)=> b[1]-a[1] || 0);
 
-  return {r, conf, top3, relPairs, wins, main, inst};
+  const selectedSituations=[...state.situations].sort((a,b)=>a-b).map(i=>SITUATIONS[i]);
+
+  return {r, conf, reliability, top3, relPairs, wins, main, inst, selectedSituations};
 }
 
 /* ============================================================
@@ -523,7 +589,7 @@ function renderSituation(){
       <li>그 상황을 <strong>피하거나 자리를 뜬다</strong> (숨거나, 다른 곳으로 가거나, 딴짓으로 주의를 돌린다)</li>
     </ul>
     <p class="small">아래 중 우리 아이가 <strong>유독 자주·크게 이렇게 반응하는 장면</strong>을 모두 골라주세요.</p>
-    <p class="legend">여러 개 선택 가능 · 참고용이며 점수에는 반영되지 않습니다.</p>`;
+    <p class="legend">여러 개 선택 가능 · 결과지에 관찰 맥락으로 표시됩니다 (점수에는 반영되지 않음)</p>`;
   const list=document.createElement('div');
   SITUATIONS.forEach((s,i)=>{
     const row=document.createElement('div');
@@ -618,7 +684,7 @@ function renderWing(){
 
 function renderResult(){
   cache=compute();
-  const {r,conf,top3,inst,main,wins}=cache;
+  const {r,conf,reliability,top3,inst,main,selectedSituations}=cache;
   const wing = state.wing;
   const dom = inst[0][0];
   const wingStr = wing? main+'w'+wing : main+'w?';
@@ -632,8 +698,35 @@ function renderResult(){
     <div class="vmain">${headline}</div>
     <div class="vlead">우리 아이는 현재 관찰상, <strong>${dom} ${wingStr}</strong> 성향으로 해석될 가능성이 가장 높습니다.</div>
     <div class="vtail">${instLabel} · ${main}번 ${TYPES[main].title}${wing?` · ${main}w${wing} 날개`:''}</div>
-    <div><span class="conf ${conf.level}" style="margin-top:16px;">${conf.label}</span></div>`;
+    <div class="conf-row">
+      <span class="conf ${conf.level}">${conf.label}</span>
+      <span class="conf ${reliability.level}">${reliability.label}</span>
+    </div>`;
   c.appendChild(v);
+
+  // 신뢰도·관찰 맥락
+  const rel=document.createElement('div');
+  rel.className='reliability'+(reliability.level!=='high'?' '+reliability.level:'');
+  let relHtml=`<h3>관찰 신뢰도 안내</h3>`;
+  if(reliability.level==='low'){
+    relHtml+=`<p class="small" style="margin:0 0 8px;color:var(--clay);font-weight:700;">관찰부족 응답이 많아 결과 신뢰도가 낮을 수 있습니다.</p>`;
+  }
+  if(reliability.reasons.length){
+    relHtml+=`<ul>${reliability.reasons.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+  }else{
+    relHtml+=`<p class="small" style="margin:0;">관찰부족(0) 응답이 적고 비교 문항도 충분히 응답되었습니다.</p>`;
+  }
+  rel.innerHTML=relHtml;
+  c.appendChild(rel);
+
+  if(selectedSituations.length){
+    const sit=document.createElement('div');
+    sit.style.marginTop='14px';
+    sit.innerHTML=`<p class="small" style="margin:0 0 6px;font-weight:700;color:var(--green-d);">관찰하신 주요 상황</p>
+      <ul class="sit-list">${selectedSituations.map(s=>`<li>${s}</li>`).join('')}</ul>
+      <p class="small" style="margin:8px 0 0;">이 상황들에서의 반응은 발달 단계·피로·관계 맥락과 섞일 수 있습니다. 유형 가설과 함께 참고하세요.</p>`;
+    c.appendChild(sit);
+  }
 
   // 후보 안내
   const cand=document.createElement('p'); cand.className='small'; cand.style.marginTop='14px';
