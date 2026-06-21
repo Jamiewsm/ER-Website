@@ -219,7 +219,7 @@ function renderTypesGuide() {
             <div class="max-w-6xl mx-auto">
                 <div class="mb-8 flex items-center justify-between animate-fade-in-up">
                     <button onclick="renderSection('test')" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm flex items-center gap-1 transition-all">
-                        <i class="fas fa-arrow-left"></i> 진단 테스트로
+                        <i class="fas fa-arrow-left"></i> 프리미엄 검사로
                     </button>
                     <h2 class="text-lg font-bold text-gray-900">9가지 유형별 회복의 길</h2>
                     <div class="w-12"></div>

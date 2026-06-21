@@ -119,7 +119,7 @@ function renderSection(sectionId, payload = null, options = {}) {
         const sectionLabels = {
             home: '홈',
             about: 'ER 소개',
-            test: '진단 테스트',
+            test: '프리미엄 검사',
             types_guide: '유형 안내',
             programs: '서비스 안내',
             coaches: 'ER 대표 소개',
