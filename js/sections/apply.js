@@ -15,6 +15,7 @@ function getPaidApplyCategoryOptions() {
         return window.ERProgramCatalog.getPaidCategoryOptions();
     }
     return [
+        '테스트 결과지 해석상담 ($50)',
         '유형(Typing) 상담 ($100)',
         '개별 코칭 1회 ($80)',
         '에니어그램 기본과정 8주 ($300)',
@@ -333,6 +334,15 @@ function renderApply(payload = null) {
             bannerBody: '약식 테스트 결과를 바탕으로, 인터뷰 기반 타이핑으로 코어·날개·하위유형을 함께 확인합니다.',
             category: '유형(Typing) 상담 ($100)',
             message: '유형(Typing) 상담 신청합니다.'
+        },
+        result_consult: {
+            track: 'paid',
+            title: '테스트 결과지 해석상담 신청',
+            desc: '아이유형 테스트 결과지를 코치와 함께 보며, 아이의 욕구·두려움과 집에서 적용할 양육 방향을 1시간 동안 정리합니다. (1시간 $50)',
+            bannerTitle: '아이유형 테스트 후 추천 — 결과지 해석상담',
+            bannerBody: '결과지는 진단이 아니라 “현재 관찰상의 가설”입니다. 상담에서 결과가 우리 아이의 실제 모습과 맞는지 함께 확인하고, 욕구·두려움을 더 건강하게 돌보는 양육 방향을 정리합니다. (1시간 $50)',
+            category: '테스트 결과지 해석상담 ($50)',
+            message: '아이유형 테스트 결과지 해석상담 신청합니다.'
         },
         coaching_single: {
             track: 'paid',

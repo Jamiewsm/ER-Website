@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>부모 관찰형 · 우리 아이 유형 관찰 테스트</title>
+<style>
+  :root{
+    --ink:#2C2E24; --muted:#6B6E5A; --soft:#9A9C88;
+    --green:#6E7A35; --green-d:#4C5524; --green-bg:#EEF0DF;
+    --clay:#BC6A3D; --clay-bg:#F6EBE1; --gold:#BE9430;
+    --line:#E6E2D6; --cream:#FAF7EF; --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    color:var(--ink); background:var(--cream);
+    line-height:1.7; word-break:keep-all;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 80px;}
+
+  /* top bar */
+  .bar{position:sticky;top:0;z-index:20;background:rgba(250,247,239,.92);
+    backdrop-filter:saturate(140%) blur(6px);padding:14px 0 10px;border-bottom:1px solid var(--line);}
+  .bar .rainbow{height:4px;border-radius:4px;
+    background:linear-gradient(90deg,#B0573B,#C99A3C,#6E8B6A,#2F8F87,#4E7C9B,#7E6BA6,#C77E9A);opacity:.9;margin-bottom:10px;}
+  .bar-row{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:0 auto;padding:0 18px;}
+  .kicker{font-size:11px;letter-spacing:.28em;color:var(--green);font-weight:800;text-transform:uppercase;}
+  .step-meta{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap;}
+  .pbar{height:6px;background:var(--green-bg);border-radius:6px;overflow:hidden;max-width:760px;margin:10px auto 0;}
+  .pbar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .35s ease;}
+
+  /* cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 24px;margin-top:22px;
+    box-shadow:0 8px 30px -22px rgba(44,46,36,.4);}
+  h1{font-family:"AppleMyungjo",serif;font-weight:400;font-size:27px;line-height:1.34;color:#343A1B;margin:4px 0 14px;letter-spacing:.01em;}
+  h2{font-family:"AppleMyungjo",serif;font-weight:400;font-size:21px;color:var(--green-d);margin:0 0 6px;}
+  .rule{width:48px;height:3px;background:var(--gold);border-radius:3px;margin:0 0 18px;}
+  p{margin:0 0 .7em;}
+  .lead{font-size:15px;color:var(--muted);}
+  .small{font-size:13px;color:var(--soft);}
+  strong{color:var(--green-d);font-weight:700;}
+  .core-q{background:var(--green-bg);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--green-d);font-weight:600;margin-bottom:6px;}
+  .type-cap{font-size:12px;letter-spacing:.2em;color:var(--clay);font-weight:800;text-transform:uppercase;}
+
+  /* guide list */
+  ul.guide{list-style:none;padding:0;margin:8px 0 0;}
+  ul.guide li{position:relative;padding:8px 0 8px 26px;border-bottom:1px dashed var(--line);font-size:14px;color:var(--muted);}
+  ul.guide li:before{content:"";position:absolute;left:6px;top:15px;width:7px;height:7px;border-radius:50%;background:var(--gold);}
+
+  /* situations */
+  .chk{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:9px;cursor:pointer;background:#fff;transition:.15s;}
+  .chk:hover{border-color:var(--green);}
+  .chk.on{background:var(--green-bg);border-color:var(--green);}
+  .chk .box{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:2px solid var(--soft);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;}
+  .chk.on .box{background:var(--green);border-color:var(--green);}
+  .chk span.t{font-size:14.5px;}
+
+  /* questions */
+  .q{padding:16px 0;border-bottom:1px solid var(--line);}
+  .q:last-child{border-bottom:0;}
+  .q .qt{font-size:15px;margin-bottom:11px;}
+  .q .qt .rev{display:inline-block;font-size:11px;color:#fff;background:var(--clay);border-radius:6px;padding:1px 7px;margin-left:6px;font-weight:700;vertical-align:middle;}
+  .scale{display:flex;gap:7px;flex-wrap:wrap;}
+  .scale button{flex:1 1 0;min-width:42px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 4px 7px;cursor:pointer;font-family:inherit;color:var(--muted);transition:.12s;}
+  .scale button .n{display:block;font-size:16px;font-weight:800;color:var(--ink);line-height:1.1;}
+  .scale button .l{display:block;font-size:10px;margin-top:3px;color:var(--soft);}
+  .scale button:hover{border-color:var(--green);}
+  .scale button.sel{background:var(--green);border-color:var(--green-d);}
+  .scale button.sel .n,.scale button.sel .l{color:#fff;}
+  .scale button.sel0{background:var(--soft);border-color:var(--soft);}
+  .scale button.sel0 .n,.scale button.sel0 .l{color:#fff;}
+  .legend{font-size:12px;color:var(--soft);margin-top:4px;}
+
+  /* AB choice */
+  .ab{display:grid;gap:12px;margin-top:8px;}
+  .ab .opt{border:1px solid var(--line);border-radius:14px;padding:15px 16px;cursor:pointer;background:#fff;transition:.15s;}
+  .ab .opt:hover{border-color:var(--green);}
+  .ab .opt.on{background:var(--green-bg);border-color:var(--green);}
+  .ab .opt .tag{font-size:12px;font-weight:800;color:var(--clay);letter-spacing:.06em;}
+  .ab .opt .txt{font-size:14.5px;margin-top:3px;}
+  .pair-h{font-weight:800;color:var(--green-d);margin:20px 0 8px;font-size:15px;}
+  .pair-h:first-child{margin-top:4px;}
+
+  /* wings */
+  .wing{border:1px solid var(--line);border-radius:14px;padding:15px 16px;cursor:pointer;margin-bottom:10px;background:#fff;transition:.15s;}
+  .wing:hover{border-color:var(--green);}
+  .wing.on{background:var(--clay-bg);border-color:var(--clay);}
+  .wing .wn{font-weight:800;color:var(--clay);font-size:15px;}
+  .wing .wd{font-size:14px;color:var(--muted);margin-top:2px;}
+
+  /* nav */
+  .nav{display:flex;gap:12px;margin-top:24px;}
+  .btn{flex:1;border:0;border-radius:13px;padding:15px;font-family:inherit;font-size:15.5px;font-weight:800;cursor:pointer;transition:.15s;}
+  .btn.primary{background:var(--green-d);color:#fff;}
+  .btn.primary:hover{background:var(--green);}
+  .btn.primary:disabled{background:#C7CBB4;cursor:not-allowed;}
+  .btn.ghost{flex:0 0 auto;background:#fff;border:1px solid var(--line);color:var(--muted);padding:15px 22px;}
+  .btn.ghost:hover{border-color:var(--green);color:var(--green-d);}
+
+  .warn{font-size:13px;color:var(--clay);margin-top:10px;display:none;}
+  .warn.show{display:block;}
+
+  /* results */
+  .verdict{background:linear-gradient(135deg,#343A1B,#4C5524);color:#fff;border-radius:18px;padding:28px 24px;text-align:center;margin-bottom:8px;}
+  .verdict .vk{font-size:12px;letter-spacing:.26em;opacity:.8;font-weight:700;text-transform:uppercase;}
+  .verdict .vmain{font-family:"AppleMyungjo",serif;font-size:40px;margin:10px 0 6px;letter-spacing:.02em;}
+  .verdict .vtail{font-size:15px;opacity:.9;}
+  .conf{display:inline-block;margin-top:14px;padding:6px 16px;border-radius:30px;font-size:13px;font-weight:800;}
+  .conf.high{background:var(--green-bg);color:var(--green-d);}
+  .conf.mid{background:#FBF1D6;color:#8a6a18;}
+  .conf.low{background:var(--clay-bg);color:var(--clay);}
+
+  table.scores{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px;}
+  table.scores th,table.scores td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;}
+  table.scores th{font-size:12px;color:var(--soft);font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+  table.scores td.num{text-align:right;font-weight:800;font-variant-numeric:tabular-nums;}
+  table.scores tr.top1 td{background:var(--green-bg);}
+  .barcell{position:relative;}
+  .barcell i{display:block;height:8px;border-radius:6px;background:linear-gradient(90deg,var(--green),var(--gold));}
+
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .pill{background:var(--green-bg);color:var(--green-d);border-radius:30px;padding:6px 14px;font-size:13px;font-weight:700;}
+
+  .disc{background:var(--clay-bg);border-left:4px solid var(--clay);border-radius:0 12px 12px 0;padding:14px 16px;font-size:13.5px;color:#7a4a2a;margin-top:18px;}
+  .interp{font-size:14.5px;color:var(--muted);}
+  .interp .q-shift{color:var(--green-d);font-weight:700;}
+
+  @media (max-width:520px){
+    h1{font-size:23px;} .verdict .vmain{font-size:32px;}
+    .scale button .l{display:none;}
+    .scale button{padding:11px 4px;}
+  }
+  @media print{
+    .bar,.nav,.btn{display:none !important;}
+    body{background:#fff;} .card{box-shadow:none;border:1px solid #ddd;page-break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="bar-row">
+    <span class="kicker">ER · 부모 관찰형</span>
+    <span class="step-meta" id="stepMeta"></span>
+  </div>
+  <div class="pbar"><i id="pbar"></i></div>
+</div>
+
+<div class="wrap">
+  <div id="app"></div>
+  <div class="nav" id="nav"></div>
+  <div class="warn" id="warn">아직 응답하지 않은 문항이 있어요. <strong>잘 모르겠으면 “0 · 관찰부족”</strong>을 선택해 주세요.</div>
+</div>
+
+<script>
+/* ============================================================
+   데이터 (V1 명세 그대로)
+   ============================================================ */
+const TYPES = {
+  1:{title:'기준과 원칙', core:'이 아이는 실수하거나 잘못되는 것을 견디기 어려워하는가?', q:[
+    '규칙이나 약속이 지켜지지 않으면 불편해하고 바로잡으려 한다.',
+    '“그건 틀렸어”, “이렇게 해야 해”라는 말을 자주 한다.',
+    '실수하거나 지적받은 뒤, 스스로를 오래 꾸짖거나 위축된다.',
+    '공정하지 않은 상황을 보면 쉽게 화가 나거나 항의한다.',
+    '자기 기준에 맞지 않으면 즐거운 상황에서도 긴장을 풀기 어렵다.',
+    '속상함을 바로 표현하기보다 참고 있다가 갑자기 짜증이나 분노가 터진다.',
+    '다른 사람이 대충 하거나 책임감 없이 행동하면 강하게 불편해한다.',
+    '실수해도 금방 웃어넘기고 다음 일로 넘어간다.' ]},
+  2:{title:'도움과 사랑', core:'이 아이는 사랑받기 위해 필요한 사람이 되려 하는가?', q:[
+    '주변 사람의 기분 변화를 잘 알아차린다.',
+    '가족이나 친구를 챙기고 도와주려는 행동이 자주 보인다.',
+    '“고마워”, “네가 있어서 좋다”는 말을 들으면 매우 기뻐한다.',
+    '누군가 자신을 필요로 하지 않으면 서운해하거나 불안해한다.',
+    '자기 필요보다 다른 사람의 필요를 먼저 맞추려는 편이다.',
+    '좋아하는 사람에게 특별히 가까이 가고, 더 많이 챙기려 한다.',
+    '도움을 주었는데 반응이 없으면 상처받거나 삐치는 모습이 있다.',
+    '다른 사람이 자신을 필요로 하지 않아도 편안하게 자기 시간을 보낸다.' ]},
+  3:{title:'성취와 인정', core:'이 아이는 인정받기 위해 잘하고 성공하려 하는가?', q:[
+    '목표를 세우고 성과를 내는 것에 관심이 많다.',
+    '칭찬, 상장, 점수, 순위, 결과에 민감하다.',
+    '다른 아이와 비교될 때 자존심이 크게 흔들린다.',
+    '실패하거나 못한다는 말을 들으면 강하게 위축되거나 방어한다.',
+    '감정보다 해야 할 일, 결과, 효율을 먼저 생각하는 편이다.',
+    '사람들 앞에서 좋은 모습으로 보이고 싶어 한다.',
+    '잘하지 못할 것 같은 일은 피하거나, 반대로 지나치게 애쓴다.',
+    '결과보다 과정 자체를 즐기고, 인정받지 않아도 크게 흔들리지 않는다.' ]},
+  4:{title:'특별함과 의미', core:'이 아이는 자신만의 특별함과 깊은 감정 세계를 중요하게 여기는가?', q:[
+    '자신만의 취향, 감정, 스타일을 강하게 표현하려 한다.',
+    '감정이 깊고, 슬픔이나 서운함에 오래 머무는 편이다.',
+    '“나는 다른 아이들과 달라”라는 느낌을 자주 드러낸다.',
+    '평범하게 대우받거나 묻히는 것을 싫어한다.',
+    '예술, 음악, 글쓰기, 상상놀이처럼 자기표현 활동에 끌린다.',
+    '자신이 이해받지 못한다고 느낄 때 크게 상처받는다.',
+    '부족함, 외로움, 그리움 같은 감정을 자주 표현한다.',
+    '남들과 비슷하게 지내는 것을 편안하게 느낀다.' ]},
+  5:{title:'지식과 자율성', core:'이 아이는 압도당하지 않기 위해 혼자 알고 준비하려 하는가?', q:[
+    '혼자만의 시간과 공간을 강하게 필요로 한다.',
+    '관심 있는 분야는 깊이 파고들지만, 관심 없는 일에는 에너지를 거의 쓰지 않는다.',
+    '갑작스럽게 감정 표현이나 신체 접촉을 요구받으면 불편해한다.',
+    '질문은 많이 하지만, 바로 참여하거나 결정하는 것은 미룬다.',
+    '충분히 알기 전에는 나서지 않으려 한다.',
+    '사람이 많거나 요구가 많은 상황 뒤에 혼자 회복하는 시간이 필요하다.',
+    '자기 생각과 내면 세계 안에 있을 때 가장 안정되어 보인다.',
+    '여러 사람과 오래 어울릴수록 에너지가 살아난다.' ]},
+  6:{title:'안전과 신뢰', core:'이 아이는 불안을 줄이기 위해 확인하고 대비하려 하는가?', q:[
+    '새로운 상황에서 먼저 주변을 살피고 경계한다.',
+    '“만약에 그러면 어떡해?”라는 걱정을 자주 한다.',
+    '신뢰하는 어른이나 친구에게 확인받고 싶어 한다.',
+    '갑작스러운 변화나 예측 불가능한 상황에 불안해한다.',
+    '결정하기 전에 여러 번 확인하거나 조언을 구한다.',
+    '안전장치나 계획이 있어야 마음이 놓인다.',
+    '믿을 수 있는 규칙, 권위, 시스템 안에서 안정감을 느낀다.',
+    '새로운 위험이나 도전을 별 걱정 없이 즐긴다.' ]},
+  7:{title:'자유와 즐거움', core:'이 아이는 불편한 감정을 피하기 위해 재미와 가능성으로 이동하는가?', q:[
+    '새로운 활동, 장소, 경험을 적극적으로 찾는다.',
+    '지루하거나 답답한 상황을 견디기 어려워한다.',
+    '여러 가지 아이디어와 계획을 동시에 떠올린다.',
+    '슬프거나 힘든 감정이 생기면 빨리 다른 재미있는 것으로 주의를 돌린다.',
+    '제한받거나 갇힌 느낌을 매우 싫어한다.',
+    '현재의 즐거움이 충분하지 않으면 쉽게 불안정해진다.',
+    '끝까지 마무리하기보다 새롭고 재미있는 쪽으로 이동하려 한다.',
+    '힘든 감정이나 지루한 과정도 차분히 견디는 편이다.' ]},
+  8:{title:'힘과 보호', core:'이 아이는 약해지거나 통제당하지 않기 위해 강하게 버티는가?', q:[
+    '원하는 것이 있으면 직접적으로 요구한다.',
+    '부당하거나 불공평한 상황을 보면 강하게 맞선다.',
+    '약한 친구나 동생을 보호하려는 모습이 있다.',
+    '갈등 상황에서 물러서기보다 맞서는 편이다.',
+    '누군가 자신을 통제하려 하면 강하게 반발한다.',
+    '약하게 보이거나 무시당하는 것을 매우 싫어한다.',
+    '겁을 내기보다 먼저 행동하고 밀고 나가는 편이다.',
+    '상황에 맞추거나 순응하는 것이 더 편안하다.' ]},
+  9:{title:'평화와 조화', core:'이 아이는 갈등과 단절을 피하기 위해 자기 욕구를 접는가?', q:[
+    '갈등이 생기면 피하거나 조용히 넘기려 한다.',
+    '“상관없어”, “아무거나 괜찮아”라는 말을 자주 한다.',
+    '다른 사람의 의견이나 일정에 쉽게 맞춘다.',
+    '자기 의견을 말하기보다 분위기를 먼저 살핀다.',
+    '불편한 일이 있어도 바로 표현하지 않고 속으로 참는 편이다.',
+    '익숙하고 편안한 환경을 강하게 선호한다.',
+    '갈등이 생기면 마음속으로 크게 힘들어하지만 겉으로는 괜찮은 척한다.',
+    '갈등 상황에서도 자기 입장을 분명하게 밝히는 편이다.' ]},
+};
+// 각 유형 8번 문항은 역점수
+const REVERSE_INDEX = 7;
+
+const SITUATIONS = [
+  '혼나거나 지적받을 때','다른 아이와 비교당할 때','거절당하거나 배제될 때','새로운 환경에 들어갈 때',
+  '친구와 갈등이 생길 때','원하는 것을 못 하게 될 때','실수했을 때','관심을 충분히 받지 못할 때',
+  '갑자기 규칙이나 루틴이 바뀔 때','피곤하거나 배고플 때'];
+
+const INSTINCTS = {
+  SP:{name:'자기보존 본능 (SP)', core:'이 아이는 몸, 루틴, 환경, 안정감에 민감한가?', q:[
+    '배고픔, 피곤함, 체온, 옷감 같은 신체 감각에 민감하다.',
+    '익숙한 장소, 물건, 루틴이 바뀌면 불안정해진다.',
+    '자기만의 안전한 공간이나 물건을 중요하게 여긴다.',
+    '잠, 식사, 휴식 리듬이 깨지면 감정도 쉽게 흔들린다.',
+    '새로운 환경에 적응하는 데 시간이 필요하다.',
+    '위험하거나 다칠 수 있는 상황을 조심하는 편이다.',
+    '편안함이 충족되면 정서적으로도 안정된다.',
+    '미래의 준비물, 돈, 음식, 물건 같은 자원에 관심을 보인다.' ]},
+  SO:{name:'사회적 본능 (SO)', core:'이 아이는 자신이 그룹 안에서 어디에 속하는지 민감하게 보는가?', q:[
+    '친구 관계, 반 분위기, 그룹 안의 위치에 관심이 많다.',
+    '“우리 반”, “우리 팀”, “우리 가족” 같은 소속 표현에 의미를 둔다.',
+    '집단에서 자신의 역할이나 책임을 중요하게 여긴다.',
+    '누가 누구와 친한지, 누가 빠졌는지 잘 알아차린다.',
+    '그룹에서 배제되거나 무시당한다고 느끼면 크게 흔들린다.',
+    '사회적 규칙, 분위기, 암묵적 기준을 잘 의식한다.',
+    '친구나 공동체 안에서 인정받고 소속되는 것을 중요하게 여긴다.',
+    '혼자 잘하는 것보다 함께 속해서 움직일 때 더 안정된다.' ]},
+  SX:{name:'일대일 / 몰입 본능 (SX)', core:'이 아이는 특정 사람, 활동, 대상에 강하게 꽂히고 깊이 몰입하는가?', q:[
+    '좋아하는 대상이나 활동에 빠지면 시간 가는 줄 모른다.',
+    '여러 사람과 넓게 지내기보다 특정한 한두 사람과 깊이 연결되려 한다.',
+    '관심이 생기면 강하게 몰입하지만, 식으면 급격히 멀어진다.',
+    '평범한 반복보다 강렬하고 특별한 경험을 원한다.',
+    '특정 친구, 캐릭터, 활동, 주제에 강한 애착을 보인다.',
+    '감정의 강도가 높고 좋아함/싫어함이 분명하다.',
+    '일대일 관계에서 가장 생생하고 진짜다운 모습이 나온다.',
+    '흥미와 끌림이 없으면 집중을 유지하기 어렵다.' ]},
+};
+
+const PAIRS = [
+  {a:1,b:3,A:'잘못되거나 틀리는 것을 견디기 어려워한다.',B:'실패하거나 인정받지 못하는 것을 견디기 어려워한다.'},
+  {a:1,b:6,A:'“이건 옳지 않아”라는 기준 때문에 불편해한다.',B:'“이러면 위험할 수 있어”라는 불안 때문에 불편해한다.'},
+  {a:1,b:8,A:'옳고 그름의 기준 때문에 강하게 말한다.',B:'통제당하거나 무시당하기 싫어서 강하게 말한다.'},
+  {a:1,b:9,A:'갈등이 생겨도 옳은 것은 바로잡으려 한다.',B:'갈등이 커지는 것이 싫어서 자기 의견을 접는다.'},
+  {a:2,b:3,A:'사랑받기 위해 필요한 사람이 되려 한다.',B:'인정받기 위해 잘하는 사람이 되려 한다.'},
+  {a:2,b:4,A:'상대의 필요에 맞추어 자신을 조정한다.',B:'자신의 특별한 감정과 정체성을 이해받고 싶어 한다.'},
+  {a:2,b:9,A:'관계를 붙잡기 위해 상대를 챙기고 도와준다.',B:'갈등을 피하기 위해 상대에게 맞춘다.'},
+  {a:3,b:6,A:'실패자로 보이는 것이 두렵다.',B:'잘못될 가능성이 불안하다.'},
+  {a:3,b:7,A:'목표와 성과를 위해 움직인다.',B:'즐거움과 가능성을 위해 움직인다.'},
+  {a:3,b:8,A:'성공과 인정으로 자신을 증명하려 한다.',B:'힘과 주도권으로 자신을 지키려 한다.'},
+  {a:4,b:9,A:'자기 감정을 깊이 느끼고 표현하려 한다.',B:'자기 감정을 누르고 평화를 유지하려 한다.'},
+  {a:5,b:6,A:'혼자 알고 준비하면 안정된다.',B:'믿을 수 있는 사람이나 체계가 있어야 안정된다.'},
+  {a:5,b:9,A:'혼자 있는 이유가 에너지와 자율성을 지키기 위해서다.',B:'혼자 있는 이유가 갈등과 요구를 피하기 위해서다.'},
+  {a:6,b:7,A:'불안을 줄이기 위해 확인하고 대비한다.',B:'불안을 피하기 위해 재미있는 것으로 이동한다.'},
+  {a:6,b:9,A:'걱정이 많아지고 대비하려 한다.',B:'걱정을 덮고 “괜찮겠지” 하며 넘기려 한다.'},
+  {a:7,b:8,A:'제한받기 싫고 자유롭게 즐기고 싶어 한다.',B:'통제당하기 싫고 주도권을 갖고 싶어 한다.'},
+  {a:7,b:9,A:'불편함을 재미와 자극으로 피한다.',B:'불편함을 무시하거나 조용히 덮어둔다.'},
+  {a:8,b:6,A:'두려워도 약해 보이지 않으려고 강하게 맞선다.',B:'불안해서 먼저 대비하거나 확인하려 한다.'},
+  {a:8,b:9,A:'선을 넘으면 바로 맞서고 힘으로 버틴다.',B:'선을 넘어도 오래 참고 갈등을 피하려 한다.'},
+];
+
+const WINGS = {
+  1:[[9,'조용하고 차분하게 원칙을 지키려 한다.'],[2,'사람을 돕고 챙기면서 옳은 방향으로 이끌려 한다.']],
+  2:[[1,'도움을 주되 옳고 그름의 기준이 강하다.'],[3,'도움을 주되 인정과 좋은 이미지에도 민감하다.']],
+  3:[[2,'성취하면서 사람들과의 관계와 호감을 적극 활용한다.'],[4,'성취하면서 자신만의 개성과 특별함도 중요하게 여긴다.']],
+  4:[[3,'감정과 특별함을 표현하면서도 사람들 앞에서 돋보이고 싶어 한다.'],[5,'감정과 특별함을 내면 깊이 간직하고 혼자 탐구하는 경향이 있다.']],
+  5:[[4,'지식과 자율성을 추구하면서 독특한 감성과 표현이 더해진다.'],[6,'지식과 자율성을 추구하면서 안전 확인과 분석이 더해진다.']],
+  6:[[5,'불안을 지식, 분석, 준비로 다루려 한다.'],[7,'불안을 사람, 활동, 재미, 가능성으로 다루려 한다.']],
+  7:[[6,'즐거움과 자유를 추구하지만 안전과 관계 확인도 필요하다.'],[8,'즐거움과 자유를 추구하면서 강한 추진력과 주도성이 있다.']],
+  8:[[7,'힘과 주도권을 추구하면서 활동성과 모험심이 강하다.'],[9,'힘과 주도권을 추구하면서 자기 영역의 안정과 평화도 중요하다.']],
+  9:[[8,'평화를 원하지만 선을 넘으면 강하게 버틴다.'],[1,'평화를 원하지만 속으로는 옳고 그름과 기준을 많이 생각한다.']],
+};
+
+const SCALE = [
+  {v:0,l:'관찰부족'},{v:1,l:'전혀'},{v:2,l:'드물게'},{v:3,l:'상황따라'},{v:4,l:'자주'},{v:5,l:'매우자주'}
+];
+
+/* ============================================================
+   상태
+   ============================================================ */
+const state = {
+  situations:new Set(),
+  type:{},      // {1:[v,...8], ...}
+  conf:{},      // {pairIndex:'A'|'B'}
+  wing:null,
+  inst:{SP:[],SO:[],SX:[]},
+};
+for(let t=1;t<=9;t++) state.type[t]=Array(8).fill(null);
+for(const k of ['SP','SO','SX']) state.inst[k]=Array(8).fill(null);
+
+/* 관찰 문항 풀: 기본유형 72 + 본능 24 = 96문항을 한 덩어리로 무작위 셔플.
+   부모(테스트하는 사람)에게는 유형/번호/날개/본능 정보를 일절 노출하지 않는다. */
+const PER_PAGE = 8;
+const POOL = [];
+for(let t=1;t<=9;t++) TYPES[t].q.forEach((text,i)=> POOL.push({text, kind:'type', t, i}));
+for(const k of ['SP','SO','SX']) INSTINCTS[k].q.forEach((text,i)=> POOL.push({text, kind:'inst', k, i}));
+for(let i=POOL.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const tmp=POOL[i]; POOL[i]=POOL[j]; POOL[j]=tmp; }
+const PAGES = Math.ceil(POOL.length/PER_PAGE);
+
+function poolVal(it){ return it.kind==='type' ? state.type[it.t][it.i] : state.inst[it.k][it.i]; }
+function setPoolVal(it,v){ if(it.kind==='type') state.type[it.t][it.i]=v; else state.inst[it.k][it.i]=v; }
+
+/* 스텝: intro, situation, 관찰문항 페이지 × PAGES, transition, confusion, wing, result */
+const STEPS = ['intro','situation'];
+for(let p=0;p<PAGES;p++) STEPS.push('q'+p);
+STEPS.push('transition','confusion','wing','result');
+let stepIdx = 0;
+let cache = {}; // 계산 결과 캐시
+
+/* ============================================================
+   채점 로직
+   ============================================================ */
+function typeTotal(t){
+  const a = state.type[t]; let sum=0;
+  for(let i=0;i<8;i++){
+    const v=a[i];
+    if(v===null||v===0) continue;        // 0 = 제외
+    sum += (i===REVERSE_INDEX) ? (6-v) : v; // 역점수 1↔5
+  }
+  return sum;
+}
+function ranked(){
+  const arr=[];
+  for(let t=1;t<=9;t++) arr.push({t, total:typeTotal(t)});
+  arr.sort((x,y)=> y.total-x.total || x.t-y.t);
+  return arr;
+}
+function confidence(r){
+  const gap = r[0].total - r[1].total;
+  if(gap>=8) return {gap, level:'high', label:'확신도 높음'};
+  if(gap>=4) return {gap, level:'mid',  label:'확신도 보통'};
+  return {gap, level:'low', label:'확신도 낮음'};
+}
+function instTotal(k){ return state.inst[k].reduce((s,v)=> s+(v||0),0); }
+
+function compute(){
+  const r = ranked();
+  const conf = confidence(r);
+  const top3 = r.slice(0,3).map(x=>x.t);
+
+  // 혼동쌍: 상위 후보끼리만
+  const relPairs = PAIRS.map((p,idx)=>({...p,idx}))
+    .filter(p=> top3.includes(p.a) && top3.includes(p.b));
+
+  // 혼동쌍 승점
+  const wins = {}; top3.forEach(t=>wins[t]=0);
+  relPairs.forEach(p=>{
+    const c = state.conf[p.idx];
+    if(c==='A') wins[p.a]++;
+    else if(c==='B') wins[p.b]++;
+  });
+
+  // 최종 메인유형 결정
+  let main;
+  if(conf.level==='high'){
+    main = r[0].t;                       // 확신도 높으면 점수 1위 확정
+  }else{
+    // 보통/낮음: 혼동쌍 승점 최다 → 동점이면 점수순
+    main = top3.slice().sort((x,y)=>
+      (wins[y]-wins[x]) || (typeTotal(y)-typeTotal(x)) || (x-y))[0];
+  }
+
+  const inst = [['SP',instTotal('SP')],['SO',instTotal('SO')],['SX',instTotal('SX')]]
+    .sort((a,b)=> b[1]-a[1] || 0);
+
+  return {r, conf, top3, relPairs, wins, main, inst};
+}
+
+/* ============================================================
+   렌더 헬퍼
+   ============================================================ */
+const app = document.getElementById('app');
+const nav = document.getElementById('nav');
+const warn = document.getElementById('warn');
+
+function scaleRow(answeredVal, onPick){
+  const wrapEl=document.createElement('div'); wrapEl.className='scale';
+  SCALE.forEach(s=>{
+    const b=document.createElement('button');
+    b.innerHTML='<span class="n">'+s.v+'</span><span class="l">'+s.l+'</span>';
+    if(answeredVal===s.v) b.className = s.v===0?'sel0':'sel';
+    b.onclick=()=>onPick(s.v);
+    wrapEl.appendChild(b);
+  });
+  return wrapEl;
+}
+
+function questionBlock(text, isRev, val, onPick){
+  const q=document.createElement('div'); q.className='q';
+  const qt=document.createElement('div'); qt.className='qt';
+  qt.innerHTML = text + (isRev?'<span class="rev">역점수</span>':'');
+  q.appendChild(qt);
+  q.appendChild(scaleRow(val,onPick));
+  return q;
+}
+
+/* ============================================================
+   각 스텝 렌더
+   ============================================================ */
+function render(scroll){
+  const step = STEPS[stepIdx];
+  app.innerHTML=''; nav.innerHTML=''; warn.classList.remove('show');
+  if(scroll!==false) window.scrollTo({top:0,behavior:'auto'});
+
+  // progress
+  document.getElementById('pbar').style.width = (stepIdx/(STEPS.length-1)*100)+'%';
+  document.getElementById('stepMeta').textContent = stepLabel(step);
+
+  if(step==='intro')        renderIntro();
+  else if(step==='situation') renderSituation();
+  else if(step[0]==='q' && step.length>1) renderQuestions(+step.slice(1));
+  else if(step==='transition') renderTransition();
+  else if(step==='confusion') renderConfusion();
+  else if(step==='wing')    renderWing();
+  else if(step==='result')  renderResult();
+}
+
+function stepLabel(step){
+  if(step==='intro') return '시작';
+  if(step==='situation') return '상황 관찰';
+  if(step[0]==='q' && step.length>1) return '관찰 문항 '+(+step.slice(1)+1)+'/'+PAGES;
+  if(step==='transition') return '거의 다 됐어요';
+  if(step==='confusion') return '비교 문항';
+  if(step==='wing') return '마지막 비교';
+  if(step==='result') return '결과';
+}
+
+function navButtons(opts){
+  // opts: {back:bool, nextLabel, nextEnabled, onNext}
+  if(opts.back!==false){
+    const b=document.createElement('button'); b.className='btn ghost'; b.textContent='이전';
+    b.onclick=()=>{stepIdx--;render();};
+    nav.appendChild(b);
+  }
+  const n=document.createElement('button'); n.className='btn primary';
+  n.textContent=opts.nextLabel||'다음';
+  n.onclick=opts.onNext;
+  nav.appendChild(n);
+}
+
+function renderIntro(){
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`
+    <span class="type-cap">부모 관찰형 · V1</span>
+    <h1>우리 아이 유형 관찰 테스트</h1>
+    <div class="rule"></div>
+    <p class="lead">이 관찰지는 아이를 하나의 번호로 단정하기 위한 도구가 아닙니다. 아이의 <strong>반복되는 행동과 정서 반응</strong>을 관찰하여, 아이가 어떤 욕구와 두려움 안에서 움직이는지 이해하기 위한 부모용 체크리스트입니다.</p>
+    <h2 style="margin-top:18px;">작성 전 안내</h2>
+    <ul class="guide">
+      <li>최소 <strong>1–2주 동안</strong> 여러 상황에서 관찰한 뒤 작성합니다.</li>
+      <li>한두 가지 행동만으로 유형을 정하지 않습니다.</li>
+      <li>아이가 “왜 그랬는지” 확실하지 않으면 <strong>0 · 관찰부족</strong>을 선택합니다.</li>
+      <li>결과는 진단이 아니라 <strong>유형 가설</strong>입니다.</li>
+      <li>최종 해석은 아이와의 대화, 추가 관찰, 전문가 상담으로 보완합니다.</li>
+    </ul>
+    <div class="disc">소요 시간 약 10–15분 · 평소 아이의 모습을 떠올리며 관찰 문항과 비교 문항에 답해주세요.</div>
+  `;
+  app.appendChild(c);
+  navButtons({back:false, nextLabel:'관찰 시작하기', onNext:()=>{stepIdx++;render();}});
+}
+
+function renderSituation(){
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<span class="type-cap">상황 관찰</span><h2>아이가 무너지는 상황 찾기</h2>
+    <div class="rule"></div>
+    <p class="small">여기서 <strong>‘무너진다’</strong>는 건 아이가 그 상황을 견디기 힘들어, 평소와 달리 이렇게 반응하는 모습을 말해요:</p>
+    <ul class="guide" style="margin-bottom:14px;">
+      <li><strong>울음·떼·고집</strong>으로 터진다 (울거나, 떼쓰거나, 막무가내가 된다)</li>
+      <li><strong>짜증·화·공격성</strong>이 올라온다 (소리치거나, 던지거나, 대든다)</li>
+      <li>반대로 <strong>몸이 굳고 말이 없어진다</strong> (위축되거나, 멍해지거나, 입을 닫는다)</li>
+      <li>그 상황을 <strong>피하거나 도망친다</strong> (숨거나, 자리를 뜨거나, 딴짓으로 돌린다)</li>
+    </ul>
+    <p class="small">아래 중 우리 아이가 <strong>유독 자주·크게 이렇게 반응하는 장면</strong>을 모두 골라주세요.</p>
+    <p class="legend">여러 개 선택 가능 · 참고용이며 점수에는 반영되지 않습니다.</p>`;
+  const list=document.createElement('div');
+  SITUATIONS.forEach((s,i)=>{
+    const row=document.createElement('div');
+    row.className='chk'+(state.situations.has(i)?' on':'');
+    row.innerHTML=`<span class="box">${state.situations.has(i)?'✓':''}</span><span class="t">${i+1}. ${s}</span>`;
+    row.onclick=()=>{
+      if(state.situations.has(i)) state.situations.delete(i); else state.situations.add(i);
+      render(false);
+    };
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  app.appendChild(c);
+  navButtons({nextLabel:'관찰 문항 시작', onNext:()=>{stepIdx++;render();}});
+}
+
+function renderQuestions(pageIdx){
+  const start = pageIdx*PER_PAGE;
+  const items = POOL.slice(start, start+PER_PAGE);
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<span class="type-cap">관찰 문항 · ${pageIdx+1} / ${PAGES}</span>
+    <h2>평소 우리 아이의 모습과 얼마나 가까운가요?</h2><div class="rule"></div>
+    <p class="legend">0 관찰부족 · 1 전혀 아니다 · 2 드물다 · 3 상황에 따라 · 4 자주 · 5 매우 자주</p>`;
+  items.forEach((it,k)=>{
+    const num = start+k+1;
+    c.appendChild(questionBlock(`${num}. ${it.text}`, false, poolVal(it), (v)=>{
+      setPoolVal(it, v); render(false);
+    }));
+  });
+  app.appendChild(c);
+  const last = (pageIdx===PAGES-1);
+  navButtons({nextLabel:(last?'응답 마치기':'다음'), onNext:()=>{
+    if(!items.every(it=> poolVal(it)!==null)){ warn.classList.add('show'); return; }
+    stepIdx++; render();
+  }});
+}
+
+function renderTransition(){
+  cache = compute();
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<span class="type-cap">거의 다 됐어요</span>
+    <h2>관찰 응답이 모두 기록되었어요</h2><div class="rule"></div>
+    <p class="lead">마지막으로, 아이의 모습을 더 또렷하게 구분하기 위한 <strong>비교 문항</strong> 몇 개만 골라주시면 결과를 보여드릴게요.</p>
+    <p class="small">두 가지 설명 중 우리 아이에게 더 가까운 쪽을 고르는 방식이에요. 오래 고민하지 말고 첫 느낌으로 선택해주세요.</p>`;
+  app.appendChild(c);
+  navButtons({nextLabel:'비교 문항 시작', onNext:()=>{stepIdx++;render();}});
+}
+
+function renderConfusion(){
+  cache = compute();
+  const {relPairs}=cache;
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<span class="type-cap">비교 문항</span><h2>둘 중 더 가까운 쪽은?</h2><div class="rule"></div>
+    <p class="small">각 묶음에서 우리 아이에게 <strong>더 가까운 설명</strong> 하나를 골라주세요.</p>`;
+  if(relPairs.length===0){
+    c.innerHTML+=`<p style="margin-top:10px;color:var(--muted);">추가로 구분할 비교 문항이 없어요. 바로 다음으로 진행해주세요.</p>`;
+  }
+  relPairs.forEach((p,n)=>{
+    const h=document.createElement('div'); h.className='pair-h'; h.textContent=`비교 ${n+1}`;
+    c.appendChild(h);
+    const ab=document.createElement('div'); ab.className='ab';
+    [['A',p.A],['B',p.B]].forEach(([key,txt])=>{
+      const o=document.createElement('div');
+      o.className='opt'+(state.conf[p.idx]===key?' on':'');
+      o.innerHTML=`<div class="txt">${txt}</div>`;
+      o.onclick=()=>{ state.conf[p.idx]=key; render(false); };
+      ab.appendChild(o);
+    });
+    c.appendChild(ab);
+  });
+  app.appendChild(c);
+  navButtons({nextLabel:'다음', onNext:()=>{ cache=compute(); stepIdx++; render(); }});
+}
+
+function renderWing(){
+  cache=compute();
+  const main=cache.main;
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<span class="type-cap">마지막 비교</span><h2>둘 중 아이에게 더 가까운 쪽은?</h2><div class="rule"></div>
+    <p class="small">마지막으로 두 가지 설명 중 우리 아이에게 더 가까운 쪽을 골라주세요. (잘 모르겠으면 선택하지 않고 넘어가도 됩니다.)</p>`;
+  WINGS[main].forEach(([wn,wd])=>{
+    const w=document.createElement('div');
+    w.className='wing'+(state.wing===wn?' on':'');
+    w.innerHTML=`<div class="wd" style="font-size:15px;color:var(--ink);">${wd}</div>`;
+    w.onclick=()=>{ state.wing=wn; render(false); };
+    c.appendChild(w);
+  });
+  app.appendChild(c);
+  navButtons({nextLabel:'결과 보기', onNext:()=>{stepIdx++;render();}});
+}
+
+
+function renderResult(){
+  cache=compute();
+  const {r,conf,top3,inst,main,wins}=cache;
+  const wing = state.wing;
+  const dom = inst[0][0];
+  const wingStr = wing? main+'w'+wing : main+'w?';
+  const headline = `${dom} ${wingStr}`;
+
+  const c=document.createElement('div'); c.className='card';
+  // verdict
+  const v=document.createElement('div'); v.className='verdict';
+  v.innerHTML=`<div class="vk">현재 관찰상</div>
+    <div class="vmain">${headline}</div>
+    <div class="vtail">${dom} 본능 · ${main}번 ${TYPES[main].title}${wing?` · ${main}w${wing} 날개`:''} 가능성이 높습니다</div>
+    <div><span class="conf ${conf.level}" style="margin-top:16px;">${conf.label}</span></div>`;
+  c.appendChild(v);
+
+  // 후보 안내
+  const cand=document.createElement('p'); cand.className='small'; cand.style.marginTop='14px';
+  cand.innerHTML = conf.level==='high'
+    ? `1위 유형이 뚜렷하여 <strong>${main}번</strong>을 우선 가설로 봅니다.`
+    : `상위 후보가 가까워 혼동쌍 비교를 반영했습니다. 보조 후보: <strong>${top3.filter(t=>t!==main).map(t=>t+'번').join(', ')}</strong> 도 함께 관찰하세요.`;
+  c.appendChild(cand);
+  app.appendChild(c);
+
+  // 기본유형 점수표
+  const c2=document.createElement('div'); c2.className='card';
+  const max=r[0].total||1; let rows='';
+  r.forEach((x,i)=>{
+    rows+=`<tr class="${x.t===main?'top1':''}"><td>${i+1}</td><td><strong>${x.t}번</strong> ${TYPES[x.t].title}</td>
+      <td class="barcell"><i style="width:${Math.round(x.total/max*100)}%"></i></td><td class="num">${x.total}</td></tr>`;
+  });
+  c2.innerHTML=`<h2>기본유형 점수</h2><div class="rule"></div>
+    <table class="scores"><thead><tr><th>순위</th><th>유형</th><th>분포</th><th>총점</th></tr></thead><tbody>${rows}</tbody></table>`;
+  app.appendChild(c2);
+
+  // 본능 순서
+  const c3=document.createElement('div'); c3.className='card';
+  const im=inst[0][1]||1;
+  let irows='';
+  inst.forEach(([k,val])=>{
+    irows+=`<tr class="${k===dom?'top1':''}"><td><strong>${k}</strong></td><td>${INSTINCTS[k].name.split(' (')[0]}</td>
+      <td class="barcell"><i style="width:${Math.round(val/im*100)}%"></i></td><td class="num">${val}</td></tr>`;
+  });
+  c3.innerHTML=`<h2>본능 순서</h2><div class="rule"></div>
+    <table class="scores"><thead><tr><th>본능</th><th>이름</th><th>분포</th><th>점수</th></tr></thead><tbody>${irows}</tbody></table>
+    <div class="pill-row"><span class="pill">${inst.map(x=>x[0]).join(' > ')}</span></div>`;
+  app.appendChild(c3);
+
+  // 해석 (Part 8)
+  const c4=document.createElement('div'); c4.className='card';
+  c4.innerHTML=`<span class="type-cap">Part 8</span><h2>부모를 위한 해석</h2><div class="rule"></div>
+    <p class="interp">이 결과는 아이를 고정하는 이름표가 아닙니다. 오히려 부모가 아이를 더 깊이 이해하기 위한 <strong>질문</strong>입니다.</p>
+    <p class="interp">“왜 저렇게 행동하지?” 에서<br>
+      <span class="q-shift">“무엇이 저 아이를 불안하게 만들까?”</span><br>
+      <span class="q-shift">“무엇이 저 아이에게 사랑과 안정감을 느끼게 할까?”</span><br>
+      <span class="q-shift">“어떤 방식으로 하나님이 주신 아이의 본래 모습을 회복시킬 수 있을까?”</span> 로 이동하는 것이 이 관찰지의 목적입니다.</p>
+    <p class="interp">아이의 유형을 아는 목적은 아이를 조종하기 위함이 아니라, 아이의 <strong>두려움 뒤에 있는 욕구</strong>를 이해하고, 그 욕구를 더 건강한 방식으로 돌보도록 돕기 위함입니다.</p>
+    <div class="disc"><strong>이 결과는 진단이 아니라 ‘현재 관찰상의 가설’입니다.</strong> 아이는 성장하며 다르게 보일 수 있습니다. 아이와의 대화, 추가 관찰, 전문가 상담을 통해 보완해 주세요.</div>`;
+  app.appendChild(c4);
+
+  // 결과지 해석상담 CTA
+  const c5=document.createElement('div'); c5.className='card';
+  c5.style.background='linear-gradient(135deg,#F6EBE1,#FAF7EF)';
+  c5.style.borderColor='var(--clay)';
+  c5.innerHTML=`<span class="type-cap">다음 단계 · 선택</span>
+    <h2>결과지, 혼자 해석하기 어려우신가요?</h2><div class="rule"></div>
+    <p class="interp">이 결과는 <strong>‘현재 관찰상의 가설’</strong>입니다. 코치와 1:1로 결과지를 함께 보며, 이 유형이 우리 아이의 실제 모습과 맞는지 확인하고 아이의 욕구·두려움을 더 건강하게 돌보는 <strong>양육 방향</strong>을 정리해 드립니다.</p>
+    <div class="pill-row" style="margin:12px 0 2px;">
+      <span class="pill">1:1 온라인 상담</span>
+      <span class="pill">약 1시간</span>
+      <span class="pill" style="background:var(--clay);color:#fff;">$50</span>
+    </div>`;
+  const cta=document.createElement('button');
+  cta.className='btn primary';
+  cta.style.width='100%'; cta.style.display='block'; cta.style.marginTop='16px';
+  cta.style.background='var(--clay)';
+  cta.textContent='결과지 해석상담 신청하기 · 1시간 $50';
+  cta.onmouseenter=()=>cta.style.background='#a85a30';
+  cta.onmouseleave=()=>cta.style.background='var(--clay)';
+  cta.onclick=()=>{ window.location.href='../index.html#apply?focus=result_consult'; };
+  c5.appendChild(cta);
+  app.appendChild(c5);
+
+  // 액션
+  const b1=document.createElement('button'); b1.className='btn ghost'; b1.textContent='이전';
+  b1.onclick=()=>{stepIdx--;render();};
+  const b2=document.createElement('button'); b2.className='btn primary'; b2.textContent='결과 인쇄 / PDF 저장';
+  b2.onclick=()=>window.print();
+  const b3=document.createElement('button'); b3.className='btn ghost'; b3.textContent='처음부터';
+  b3.onclick=()=>{ if(confirm('모든 응답을 지우고 처음부터 다시 시작할까요?')) location.reload(); };
+  nav.appendChild(b1); nav.appendChild(b2); nav.appendChild(b3);
+}
+
+render();
+</script>
+</body>
+</html>

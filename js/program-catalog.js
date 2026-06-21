@@ -7,7 +7,8 @@
     recovery_journey_8: { total: 480, sessions: 8, label: '$480' },
     couple_coaching: { total: 220, sessions: 1, label: '$220' },
     parenting_workshop: { total: 120, sessions: 4, label: '$120' },
-    basic_course: { total: 300, sessions: 8, label: '$300' }
+    basic_course: { total: 300, sessions: 8, label: '$300' },
+    result_consult: { total: 50, sessions: 1, label: '$50 / 1시간' }
   };
 
   function perSession(price) {
@@ -55,6 +56,19 @@
       reasonPrimary: '현재 반복 패턴의 중심 동기와 가장 직접적으로 연결됩니다.',
       reasonSecondary: '결과지를 읽은 뒤 실제 타이핑·동기 확인으로 이어가기 좋습니다.',
       applyMessage: '유형(Typing) 상담 신청합니다.'
+    },
+    result_consult: {
+      key: 'result_consult',
+      title: '테스트 결과지 해석상담',
+      shortTitle: '결과지 해석상담',
+      price: PRICING.result_consult,
+      category: '테스트 결과지 해석상담 ($50)',
+      track: 'paid',
+      focus: 'result_consult',
+      outcome: '아이유형 테스트 결과지를 함께 보며 아이의 욕구·두려움과 양육 방향을 1시간 동안 정리합니다.',
+      reasonPrimary: '결과지에 나온 가능성 높은 유형이 우리 아이의 실제 모습과 맞는지 함께 확인합니다.',
+      reasonSecondary: '관찰된 패턴을 집에서 바로 적용할 수 있는 양육 언어로 풀어 드립니다.',
+      applyMessage: '아이유형 테스트 결과지 해석상담 신청합니다.'
     },
     coaching_single: {
       key: 'coaching_single',
@@ -197,6 +211,7 @@
 
   function getPaidCategoryOptions() {
     return [
+      PROGRAMS.result_consult.category,
       PROGRAMS.identity_session.category,
       PROGRAMS.coaching_single.category,
       PROGRAMS.basic_course.category,
