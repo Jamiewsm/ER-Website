@@ -27,7 +27,13 @@
   .bar .rainbow{height:4px;border-radius:4px;
     background:linear-gradient(90deg,#B0573B,#C99A3C,#6E8B6A,#2F8F87,#4E7C9B,#7E6BA6,#C77E9A);opacity:.9;margin-bottom:10px;}
   .bar-row{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:760px;margin:0 auto;padding:0 18px;}
+  .bar-left{display:flex;align-items:center;gap:12px;min-width:0;}
+  .bar-home{font-size:13px;font-weight:700;color:var(--muted);text-decoration:none;white-space:nowrap;}
+  .bar-home:hover{color:var(--green-d);}
   .kicker{font-size:11px;letter-spacing:.28em;color:var(--green);font-weight:800;text-transform:uppercase;}
+  .intro-exit{margin-top:18px;font-size:13px;}
+  .intro-exit a{color:var(--muted);font-weight:600;text-decoration:none;}
+  .intro-exit a:hover{color:var(--green-d);text-decoration:underline;}
   .step-meta{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap;}
   .pbar{height:6px;background:var(--green-bg);border-radius:6px;overflow:hidden;max-width:760px;margin:10px auto 0;}
   .pbar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .35s ease;}
@@ -62,7 +68,6 @@
   .q{padding:16px 0;border-bottom:1px solid var(--line);}
   .q:last-child{border-bottom:0;}
   .q .qt{font-size:15px;margin-bottom:11px;}
-  .q .qt .rev{display:inline-block;font-size:11px;color:#fff;background:var(--clay);border-radius:6px;padding:1px 7px;margin-left:6px;font-weight:700;vertical-align:middle;}
   .scale{display:flex;gap:7px;flex-wrap:wrap;}
   .scale button{flex:1 1 0;min-width:42px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 4px 7px;cursor:pointer;font-family:inherit;color:var(--muted);transition:.12s;}
   .scale button .n{display:block;font-size:16px;font-weight:800;color:var(--ink);line-height:1.1;}
@@ -107,7 +112,8 @@
   .verdict{background:linear-gradient(135deg,#343A1B,#4C5524);color:#fff;border-radius:18px;padding:28px 24px;text-align:center;margin-bottom:8px;}
   .verdict .vk{font-size:12px;letter-spacing:.26em;opacity:.8;font-weight:700;text-transform:uppercase;}
   .verdict .vmain{font-family:"AppleMyungjo",serif;font-size:40px;margin:10px 0 6px;letter-spacing:.02em;}
-  .verdict .vtail{font-size:15px;opacity:.9;}
+  .verdict .vlead{font-size:16px;line-height:1.55;margin:8px 0 4px;opacity:.95;}
+  .verdict .vtail{font-size:14px;opacity:.85;}
   .conf{display:inline-block;margin-top:14px;padding:6px 16px;border-radius:30px;font-size:13px;font-weight:800;}
   .conf.high{background:var(--green-bg);color:var(--green-d);}
   .conf.mid{background:#FBF1D6;color:#8a6a18;}
@@ -129,7 +135,7 @@
   .interp .q-shift{color:var(--green-d);font-weight:700;}
 
   @media (max-width:520px){
-    h1{font-size:23px;} .verdict .vmain{font-size:32px;}
+    h1{font-size:23px;} .verdict .vmain{font-size:32px;} .verdict .vlead{font-size:14px;}
     .scale button .l{display:none;}
     .scale button{padding:11px 4px;}
   }
@@ -142,7 +148,10 @@
 <body>
 <div class="bar">
   <div class="bar-row">
-    <span class="kicker">ER · 부모 관찰형</span>
+    <div class="bar-left">
+      <a href="../index.html" class="bar-home">← ER 홈</a>
+      <span class="kicker">부모 관찰형</span>
+    </div>
     <span class="step-meta" id="stepMeta"></span>
   </div>
   <div class="pbar"><i id="pbar"></i></div>
@@ -241,7 +250,7 @@ const TYPES = {
     '갈등이 생기면 마음속으로 크게 힘들어하지만 겉으로는 괜찮은 척한다.',
     '갈등 상황에서도 자기 입장을 분명하게 밝히는 편이다.' ]},
 };
-// 각 유형 8번 문항은 역점수
+// 각 유형 8번 문항은 채점 시에만 역전환 (UI 미노출)
 const REVERSE_INDEX = 7;
 
 const SITUATIONS = [
@@ -357,7 +366,7 @@ function typeTotal(t){
   for(let i=0;i<8;i++){
     const v=a[i];
     if(v===null||v===0) continue;        // 0 = 제외
-    sum += (i===REVERSE_INDEX) ? (6-v) : v; // 역점수 1↔5
+    sum += (i===REVERSE_INDEX) ? (6-v) : v; // 역문항 1↔5 반전
   }
   return sum;
 }
@@ -427,10 +436,10 @@ function scaleRow(answeredVal, onPick){
   return wrapEl;
 }
 
-function questionBlock(text, isRev, val, onPick){
+function questionBlock(text, val, onPick){
   const q=document.createElement('div'); q.className='q';
   const qt=document.createElement('div'); qt.className='qt';
-  qt.innerHTML = text + (isRev?'<span class="rev">역점수</span>':'');
+  qt.textContent = text;
   q.appendChild(qt);
   q.appendChild(scaleRow(val,onPick));
   return q;
@@ -496,21 +505,22 @@ function renderIntro(){
       <li>최종 해석은 아이와의 대화, 추가 관찰, 전문가 상담으로 보완합니다.</li>
     </ul>
     <div class="disc">소요 시간 약 10–15분 · 평소 아이의 모습을 떠올리며 관찰 문항과 비교 문항에 답해주세요.</div>
+    <p class="intro-exit"><a href="../index.html">메인으로 돌아가기</a></p>
   `;
   app.appendChild(c);
-  navButtons({back:false, nextLabel:'관찰 시작하기', onNext:()=>{stepIdx++;render();}});
+  navButtons({back:false, nextLabel:'관찰형 검사 시작하기', onNext:()=>{stepIdx++;render();}});
 }
 
 function renderSituation(){
   const c=document.createElement('div'); c.className='card';
-  c.innerHTML=`<span class="type-cap">상황 관찰</span><h2>아이가 무너지는 상황 찾기</h2>
+  c.innerHTML=`<span class="type-cap">상황 관찰</span><h2>아이가 평소보다 크게 흔들리는 상황 찾기</h2>
     <div class="rule"></div>
-    <p class="small">여기서 <strong>‘무너진다’</strong>는 건 아이가 그 상황을 견디기 힘들어, 평소와 달리 이렇게 반응하는 모습을 말해요:</p>
+    <p class="small">여기서 <strong>‘크게 흔들린다’</strong>는 건 아이가 그 상황을 견디기 힘들어, 평소보다 반응이 커지거나 달라지는 모습을 말해요:</p>
     <ul class="guide" style="margin-bottom:14px;">
-      <li><strong>울음·떼·고집</strong>으로 터진다 (울거나, 떼쓰거나, 막무가내가 된다)</li>
-      <li><strong>짜증·화·공격성</strong>이 올라온다 (소리치거나, 던지거나, 대든다)</li>
+      <li><strong>울음, 강한 요구, 고집</strong>처럼 보이는 반응이 나타난다</li>
+      <li><strong>짜증, 화, 강한 반발</strong>이 올라온다 (소리가 커지거나, 물건을 던지거나, 맞서는 모습)</li>
       <li>반대로 <strong>몸이 굳고 말이 없어진다</strong> (위축되거나, 멍해지거나, 입을 닫는다)</li>
-      <li>그 상황을 <strong>피하거나 도망친다</strong> (숨거나, 자리를 뜨거나, 딴짓으로 돌린다)</li>
+      <li>그 상황을 <strong>피하거나 자리를 뜬다</strong> (숨거나, 다른 곳으로 가거나, 딴짓으로 주의를 돌린다)</li>
     </ul>
     <p class="small">아래 중 우리 아이가 <strong>유독 자주·크게 이렇게 반응하는 장면</strong>을 모두 골라주세요.</p>
     <p class="legend">여러 개 선택 가능 · 참고용이며 점수에는 반영되지 않습니다.</p>`;
@@ -539,7 +549,7 @@ function renderQuestions(pageIdx){
     <p class="legend">0 관찰부족 · 1 전혀 아니다 · 2 드물다 · 3 상황에 따라 · 4 자주 · 5 매우 자주</p>`;
   items.forEach((it,k)=>{
     const num = start+k+1;
-    c.appendChild(questionBlock(`${num}. ${it.text}`, false, poolVal(it), (v)=>{
+    c.appendChild(questionBlock(`${num}. ${it.text}`, poolVal(it), (v)=>{
       setPoolVal(it, v); render(false);
     }));
   });
@@ -617,17 +627,19 @@ function renderResult(){
   const c=document.createElement('div'); c.className='card';
   // verdict
   const v=document.createElement('div'); v.className='verdict';
-  v.innerHTML=`<div class="vk">현재 관찰상</div>
+  const instLabel = INSTINCTS[dom].name.split(' (')[0];
+  v.innerHTML=`<div class="vk">현재 관찰에서 가장 두드러진 성향 가설</div>
     <div class="vmain">${headline}</div>
-    <div class="vtail">${dom} 본능 · ${main}번 ${TYPES[main].title}${wing?` · ${main}w${wing} 날개`:''} 가능성이 높습니다</div>
+    <div class="vlead">우리 아이는 현재 관찰상, <strong>${dom} ${wingStr}</strong> 성향으로 해석될 가능성이 가장 높습니다.</div>
+    <div class="vtail">${instLabel} · ${main}번 ${TYPES[main].title}${wing?` · ${main}w${wing} 날개`:''}</div>
     <div><span class="conf ${conf.level}" style="margin-top:16px;">${conf.label}</span></div>`;
   c.appendChild(v);
 
   // 후보 안내
   const cand=document.createElement('p'); cand.className='small'; cand.style.marginTop='14px';
   cand.innerHTML = conf.level==='high'
-    ? `1위 유형이 뚜렷하여 <strong>${main}번</strong>을 우선 가설로 봅니다.`
-    : `상위 후보가 가까워 혼동쌍 비교를 반영했습니다. 보조 후보: <strong>${top3.filter(t=>t!==main).map(t=>t+'번').join(', ')}</strong> 도 함께 관찰하세요.`;
+    ? `관찰 점수 차이가 커서 <strong>${main}번</strong>을 우선 양육 가설로 봅니다. 아이를 번호로 확정하지 마세요.`
+    : `상위 후보가 가까워 비교 문항을 반영했습니다. 보조 가설: <strong>${top3.filter(t=>t!==main).map(t=>t+'번').join(', ')}</strong>도 함께 관찰하세요.`;
   c.appendChild(cand);
   app.appendChild(c);
 
@@ -672,8 +684,8 @@ function renderResult(){
   c5.style.background='linear-gradient(135deg,#F6EBE1,#FAF7EF)';
   c5.style.borderColor='var(--clay)';
   c5.innerHTML=`<span class="type-cap">다음 단계 · 선택</span>
-    <h2>결과지, 혼자 해석하기 어려우신가요?</h2><div class="rule"></div>
-    <p class="interp">이 결과는 <strong>‘현재 관찰상의 가설’</strong>입니다. 코치와 1:1로 결과지를 함께 보며, 이 유형이 우리 아이의 실제 모습과 맞는지 확인하고 아이의 욕구·두려움을 더 건강하게 돌보는 <strong>양육 방향</strong>을 정리해 드립니다.</p>
+    <h2>검사 결과보다 중요한 것은 해석입니다.</h2><div class="rule"></div>
+    <p class="interp">아이의 결과는 번호를 확정하기 위한 것이 아니라, 반복되는 반응 뒤에 있는 <strong>욕구와 두려움</strong>을 이해하기 위한 출발점입니다. 1:1 결과 해석상담에서는 점수, 상위 후보, 본능 성향, 부모의 관찰 편향 가능성을 함께 검토하고, 아이에게 맞는 <strong>양육 방향</strong>을 정리합니다.</p>
     <div class="pill-row" style="margin:12px 0 2px;">
       <span class="pill">1:1 온라인 상담</span>
       <span class="pill">약 1시간</span>
@@ -683,7 +695,7 @@ function renderResult(){
   cta.className='btn primary';
   cta.style.width='100%'; cta.style.display='block'; cta.style.marginTop='16px';
   cta.style.background='var(--clay)';
-  cta.textContent='결과지 해석상담 신청하기 · 1시간 $50';
+  cta.textContent='결과 해석상담 신청하기 · 1시간 $50';
   cta.onmouseenter=()=>cta.style.background='#a85a30';
   cta.onmouseleave=()=>cta.style.background='var(--clay)';
   cta.onclick=()=>{ window.location.href='../index.html#apply?focus=result_consult'; };
