@@ -1,0 +1,67 @@
+# ER premium diagnostic test — PR gate for test-runtime and deploy-safety changes.
+name: ER Test PR Review
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'js/test.js'
+      - 'js/diagnostic-experiment.js'
+      - 'js/diagnostic-report-content.js'
+      - 'js/report-support-materials.js'
+      - 'css/test.css'
+      - 'test.html'
+      - 'test-results/**'
+      - 'tests/**'
+      - 'scripts/build_test_only_deploy_bundle.mjs'
+      - 'scripts/verify_live_test_deploy.mjs'
+      - 'scripts/analyze_diagnostic_experiments.mjs'
+      - '.github/workflows/er-test-pr-review.yml'
+
+jobs:
+  test-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax check
+        run: |
+          node --check js/test.js
+          node --check js/diagnostic-experiment.js
+          node --check scripts/build_test_only_deploy_bundle.mjs
+          node --check scripts/verify_live_test_deploy.mjs
+          if [ -f scripts/analyze_diagnostic_experiments.mjs ]; then
+            node --check scripts/analyze_diagnostic_experiments.mjs
+          fi
+
+      - name: Test suite
+        run: |
+          TESTS=(
+            tests/deploy-safety.test.mjs
+          )
+          for optional in \
+            tests/confidence-card.test.mjs \
+            tests/response-quality.test.mjs \
+            tests/test-scoring.test.mjs \
+            tests/render-smoke.test.mjs \
+            tests/report-support-materials.test.mjs \
+            tests/report-support-wiring.test.mjs \
+            tests/phase4-options-render.test.mjs \
+            tests/question-copy-regression.test.mjs \
+            tests/tie-breaker-routing.test.mjs \
+            tests/experiment-payload.test.mjs \
+            tests/weight-calibration-workflow.test.mjs \
+            tests/countertype-routing.test.mjs
+          do
+            if [ -f "$optional" ]; then TESTS+=("$optional"); fi
+          done
+          node --test "${TESTS[@]}"
+
+  live-deploy-markers:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify production test markers (read-only)
+        run: node scripts/verify_live_test_deploy.mjs --site https://er-coaching.com
