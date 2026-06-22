@@ -371,11 +371,11 @@ function renderApply(payload = null) {
         result_consult: {
             track: 'paid',
             title: '테스트 결과지 해석상담 신청',
-            desc: '아이유형 테스트 결과지를 코치와 함께 보며, 아이의 욕구·두려움과 집에서 적용할 양육 방향을 1시간 동안 정리합니다. (1시간 $50)',
-            bannerTitle: '아이유형 테스트 후 추천 — 결과지 해석상담',
-            bannerBody: '결과지는 진단이 아니라 “현재 관찰상의 가설”입니다. 상담에서 결과가 우리 아이의 실제 모습과 맞는지 함께 확인하고, 욕구·두려움을 더 건강하게 돌보는 양육 방향을 정리합니다. (1시간 $50)',
+            desc: '결과지를 함께 읽으며 핵심 유형, 하위유형, 날개, 신뢰도, 헷갈리는 유형을 1시간 동안 정리합니다. (1시간 $50)',
+            bannerTitle: '프리미엄 테스트 후 추천 — 결과지 해석상담',
+            bannerBody: '결과지는 방향을 보여줍니다. 상담에서는 이 결과가 실제 삶의 반복 장면과 어떻게 연결되는지 함께 확인하고, 다음 적용 방향을 정리합니다. (1시간 $50)',
             category: '테스트 결과지 해석상담 ($50)',
-            message: '아이유형 테스트 결과지 해석상담 신청합니다.'
+            message: '테스트 결과지 해석상담 신청합니다.'
         },
         coaching_single: {
             track: 'paid',
@@ -452,7 +452,7 @@ function renderApply(payload = null) {
             : isOrgTrack
                 ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
                 : getPaidApplyCategoryOptions();
-    const defaultPaidCategory = '유형(Typing) 상담 ($100)';
+    const defaultPaidCategory = '테스트 결과지 해석상담 ($50)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
         : defaultPaidCategory;
