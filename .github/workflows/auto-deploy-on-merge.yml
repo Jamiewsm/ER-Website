@@ -1,0 +1,85 @@
+# PR merge → 자동 production deploy 요청 (Codex/Claude/사용자 개입 없음)
+name: Auto Deploy On Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  pull-requests: read
+  actions: write
+
+concurrency:
+  group: auto-deploy-on-merge-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  dispatch-deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Infer deploy track from merged PR files
+        id: infer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR="${{ github.event.pull_request.number }}"
+          mapfile -t FILES < <(gh api "repos/${{ github.repository }}/pulls/${PR}/files" --paginate --jq '.[].filename')
+          if [ "${#FILES[@]}" -eq 0 ]; then
+            echo 'track=skip' >> "$GITHUB_OUTPUT"
+            echo 'deploy_site=false' >> "$GITHUB_OUTPUT"
+            echo 'deploy_test=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          RESULT=$(node scripts/infer_deploy_track.mjs --files "${FILES[@]}")
+          echo "$RESULT"
+          echo "track=$(echo "$RESULT" | jq -r .track)" >> "$GITHUB_OUTPUT"
+          echo "deploy_site=$(echo "$RESULT" | jq -r .deploySite)" >> "$GITHUB_OUTPUT"
+          echo "deploy_test=$(echo "$RESULT" | jq -r .deployTest)" >> "$GITHUB_OUTPUT"
+
+      - name: Respect deploy/* labels (override path inference)
+        id: labels
+        run: |
+          TRACK="${{ steps.infer.outputs.track }}"
+          LABELS=$(echo '${{ toJson(github.event.pull_request.labels) }}' | jq -r '.[].name')
+          if echo "$LABELS" | grep -qx 'deploy/both'; then TRACK=both; fi
+          if echo "$LABELS" | grep -qx 'deploy/site'; then
+            if [ "$TRACK" = test ]; then TRACK=both; else TRACK=site; fi
+          fi
+          if echo "$LABELS" | grep -qx 'deploy/test'; then
+            if [ "$TRACK" = site ]; then TRACK=both; else TRACK=test; fi
+          fi
+          echo "track=$TRACK" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch Deploy Production workflow
+        if: steps.labels.outputs.track != 'skip'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/${{ github.repository }}/dispatches" \
+            -f event_type=deploy-request \
+            -f "client_payload[track]=${{ steps.labels.outputs.track }}" \
+            -f client_payload[ref]=main \
+            -f client_payload[requested_by]=auto-merge \
+            -f "client_payload[reason]=merged PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+
+      - name: Comment deploy status on PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TRACK="${{ steps.labels.outputs.track }}"
+          PR="${{ github.event.pull_request.number }}"
+          if [ "$TRACK" = skip ]; then
+            BODY="ℹ️ **Auto deploy skipped** — merged files are outside site/test deploy paths (docs-only or supabase-only PR)."
+          else
+            BODY="🚀 **Auto deploy queued** — track=\`${TRACK}\` after merge. Monitor: Actions → Deploy Production."
+          fi
+          gh pr comment "$PR" --body "$BODY"

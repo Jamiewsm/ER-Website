@@ -58,12 +58,10 @@ on:
     types: [deploy-request]
   issue_comment:
     types: [created]
-  pull_request:
-    types: [closed]
 
 concurrency:
   group: deploy-production
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -76,7 +74,13 @@ env:
 
 jobs:
   resolve:
-    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip deploy]')
+    if: |
+      (github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip deploy]')) &&
+      (github.event_name != 'issue_comment' || (
+        github.event.comment.user.type != 'Bot' &&
+        !endsWith(github.event.comment.user.login, '[bot]') &&
+        startsWith(github.event.comment.body, '/deploy ')
+      ))
     runs-on: ubuntu-latest
     outputs:
       track: ${{ steps.resolve.outputs.track }}
@@ -125,55 +129,30 @@ jobs:
             } else if (event === 'issue_comment') {
               const body = (context.payload.comment.body || '').trim();
               const m = body.match(/^\/deploy\s+(site|test|both)\b/i);
-              if (!m) {
-                core.info('Not a /deploy command — skipping.');
-              } else {
-                applyTrack(m[1].toLowerCase());
-                requestedBy = 'issue-comment';
-                reason = `comment by ${context.payload.comment.user.login}`;
-              }
-            } else if (event === 'pull_request') {
-              const pr = context.payload.pull_request;
-              if (!pr.merged) {
-                core.info('PR closed without merge — skipping.');
-              } else {
-                sha = pr.merge_commit_sha || context.sha;
-                const labels = (pr.labels || []).map((l) => l.name);
-                if (labels.includes('deploy/both')) applyTrack('both');
-                else {
-                  if (labels.includes('deploy/site')) deploySite = true;
-                  if (labels.includes('deploy/test')) deployTest = true;
-                  if (deploySite && deployTest) track = 'both';
-                  else if (deploySite) track = 'site';
-                  else if (deployTest) track = 'test';
-                }
-                requestedBy = 'pr-label';
-                reason = `merged PR #${pr.number}`;
-                ref = 'main';
-              }
+              applyTrack(m[1].toLowerCase());
+              requestedBy = 'issue-comment';
+              reason = `comment by ${context.payload.comment.user.login}`;
             } else if (event === 'push') {
               const { execSync } = require('child_process');
               const before = context.payload.before;
               const after = context.sha;
-              let changed = '';
+              let files = [];
               try {
-                changed = execSync(`git diff --name-only ${before} ${after}`, { encoding: 'utf8' });
+                files = execSync(`git diff --name-only ${before} ${after}`, { encoding: 'utf8' })
+                  .split('\n')
+                  .filter(Boolean);
               } catch (e) {
-                changed = '';
+                files = [];
               }
-              const siteRe = /^(index\.html|js\/sections\/|child-type-test\/|css\/style\.css|apply\.html|basic-course|parenting|parents-workshop|js\/parents-workshop|js\/program-catalog|images\/|ER-logo-)/;
-              const testRe = /^(test\.html|css\/test\.css|js\/test\.js|js\/diagnostic-|js\/report-support|test-results\/)/;
-              if (siteRe.test(changed.split('\n').join('\n'))) deploySite = true;
-              for (const line of changed.split('\n')) {
-                if (siteRe.test(line)) deploySite = true;
-                if (testRe.test(line)) deployTest = true;
-              }
+              const inferred = JSON.parse(execSync(
+                `node scripts/infer_deploy_track.mjs --files ${files.map((f) => JSON.stringify(f)).join(' ')}`,
+                { encoding: 'utf8' }
+              ));
+              deploySite = inferred.deploySite;
+              deployTest = inferred.deployTest;
+              track = inferred.track;
               requestedBy = 'main-push';
-              reason = 'auto path filter on main merge';
-              if (deploySite && deployTest) track = 'both';
-              else if (deploySite) track = 'site';
-              else if (deployTest) track = 'test';
-            }
+              reason = 'auto path inference on main push';
 
             core.setOutput('track', track);
             core.setOutput('ref', ref);
@@ -289,6 +268,7 @@ jobs:
             --notes "${{ needs.resolve.outputs.reason }}"
 
       - name: Commit ledger [skip deploy]
+        continue-on-error: true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
