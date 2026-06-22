@@ -171,6 +171,17 @@ function renderHome() {
                             ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.
                         </p>
 
+                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-[#fffdf8]/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <span class="inline-flex rounded-full bg-[#eef3e6] px-2.5 py-1 text-[10px] font-black text-[#657453] ring-1 ring-[#dce7cd]">특별 혜택</span>
+                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-[#202219] break-keep">7월 기본과정 모집 중</p>
+                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">${basicCourseDays} · 정원 10명 · 선착순 마감</p>
+                                </div>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-[#3a332b] px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(58,51,43,0.16)] transition-all active:scale-95">신청</button>
+                            </div>
+                        </div>
+
                         <div class="mt-6 grid max-w-3xl gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
                             ${benefits.map((item) => `
                                 <div class="flex items-start gap-2.5 sm:gap-3">
@@ -228,10 +239,9 @@ function renderHome() {
                     <div class="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-end">
                         <div>
                             <div class="flex items-center gap-4">
-                                <img src="home-er-logo-stacked.png" alt="Enneagram for Restoration" class="h-16 w-auto object-contain opacity-90">
-                                <div class="h-px flex-1 bg-[#ddd2bf]"></div>
+                                <div class="h-px w-24 bg-[#dfd6c2]"></div>
                             </div>
-                            <p class="mt-7 text-sm font-black text-[#657453]">회복의 도구, 에니어그램</p>
+                            <p class="mt-6 text-sm font-black text-[#657453]">회복의 도구, 에니어그램</p>
                             <h2 class="mt-3 max-w-xl text-3xl font-black leading-tight tracking-[-0.02em] text-[#30322d] break-keep sm:text-4xl">
                                 같은 자리에서 반복되는 갈등을<br>
                                 <span class="text-[#657453]">다른 시선으로 봅니다</span>
