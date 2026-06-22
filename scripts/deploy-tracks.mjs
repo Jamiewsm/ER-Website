@@ -63,6 +63,21 @@ export const PREMIUM_TEST_HTML_MARKERS = [
   'js/test.js',
 ];
 
+/** Never upload these paths from deploy bundles (wrangler asset size / secret leak). */
+export const DEPLOY_BUNDLE_EXCLUDE_DIRS = [
+  '.git',
+  'node_modules',
+  '.github',
+  '.claude',
+  '.cursor',
+  '.wrangler',
+  '.playwright-cli',
+  'supabase',
+  'docs',
+  'tests',
+  'scripts',
+];
+
 export function assertPremiumTestSource(testJs, testHtml) {
   const errors = [];
   for (const marker of PREMIUM_TEST_REQUIRED_MARKERS) {

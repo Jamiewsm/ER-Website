@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // Site deploy bundle: source의 landing/site만 반영하고 live test runtime은 그대로 보존
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import http from 'node:http';
 import https from 'node:https';
-import { DEFAULT_SITE, TEST_RUNTIME_ALLOWLIST } from './deploy-tracks.mjs';
+import { DEFAULT_SITE, TEST_RUNTIME_ALLOWLIST, DEPLOY_BUNDLE_EXCLUDE_DIRS } from './deploy-tracks.mjs';
 
 function usage() {
   return [
@@ -88,6 +88,18 @@ async function preserveLiveTestRuntime(site, out) {
   return preserved;
 }
 
+function pruneDeployBundle(out) {
+  DEPLOY_BUNDLE_EXCLUDE_DIRS.forEach((relPath) => {
+    const full = join(out, relPath);
+    if (existsSync(full)) rmSync(full, { recursive: true, force: true });
+  });
+  for (const name of readdirSync(out)) {
+    if (/^\.(mcp|deploy|tmp)-/.test(name) || / 2\.(png|json|mjs|py|md|sql|ts)$/.test(name)) {
+      rmSync(join(out, name), { recursive: true, force: true });
+    }
+  }
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
@@ -105,6 +117,7 @@ async function main() {
 
   rmSync(out, { recursive: true, force: true });
   cpSync(source, out, { recursive: true });
+  pruneDeployBundle(out);
 
   const preserved = await preserveLiveTestRuntime(args.site, out);
   console.log(`OK: built site-only deploy bundle at ${out}`);

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import http from 'node:http';
 import https from 'node:https';
-import { DEFAULT_SITE, TEST_RUNTIME_ALLOWLIST } from './deploy-tracks.mjs';
+import { DEFAULT_SITE, TEST_RUNTIME_ALLOWLIST, DEPLOY_BUNDLE_EXCLUDE_DIRS } from './deploy-tracks.mjs';
 
 const TEST_FILE_ALLOWLIST = TEST_RUNTIME_ALLOWLIST;
 
@@ -98,6 +98,18 @@ function copyAllowlistedTestFiles(source, out) {
   return copied;
 }
 
+function pruneDeployBundle(out) {
+  DEPLOY_BUNDLE_EXCLUDE_DIRS.forEach((relPath) => {
+    const full = join(out, relPath);
+    if (existsSync(full)) rmSync(full, { recursive: true, force: true });
+  });
+  for (const name of readdirSync(out)) {
+    if (/^\.(mcp|deploy|tmp)-/.test(name) || / 2\.(png|json|mjs|py|md|sql|ts)$/.test(name)) {
+      rmSync(join(out, name), { recursive: true, force: true });
+    }
+  }
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
@@ -121,6 +133,7 @@ async function main() {
 
   rmSync(out, { recursive: true, force: true });
   cpSync(base, out, { recursive: true });
+  pruneDeployBundle(out);
 
   const liveIndex = stripCloudflareInjectedScripts(await readLiveText(args.site, 'index.html'));
   const liveHome = await readLiveText(args.site, 'js/sections/home.js');
