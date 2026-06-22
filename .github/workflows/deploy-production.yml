@@ -215,7 +215,7 @@ jobs:
         run: npx --yes wrangler@${{ env.WRANGLER_VERSION }} deploy
 
       - name: Post-deploy verify (premium markers on live)
-        run: node "$GITHUB_WORKSPACE/scripts/verify_live_test_deploy.mjs" --site "$SITE_URL"
+        run: node "$GITHUB_WORKSPACE/scripts/verify_live_test_deploy.mjs" --site "$SITE_URL" --min-child-bytes 25000
 
   deploy-site:
     needs: [resolve, deploy-test]
@@ -260,7 +260,7 @@ jobs:
         run: npx --yes wrangler@${{ env.WRANGLER_VERSION }} deploy
 
       - name: Post-deploy landing verify
-        run: node "$GITHUB_WORKSPACE/scripts/verify_live_test_deploy.mjs" --site "$SITE_URL"
+        run: node "$GITHUB_WORKSPACE/scripts/verify_live_test_deploy.mjs" --site "$SITE_URL" --min-child-bytes 25000
 
   update-ledger:
     needs: [resolve, deploy-site, deploy-test]
