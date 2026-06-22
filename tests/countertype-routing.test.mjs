@@ -37,7 +37,7 @@ test('all 9 countertype filters are declared with expected core and instinct', (
 test('countertype filters are routed for candidate types and scored separately', () => {
   const routing = sliceBetween('testState.phase2Questions = [];', '// 상위 2개 유형 점수 차이가');
   const scoring = sliceBetween('if (q.counterType) {', 'let w = q.weight || TEST_CONFIG.weights.phase2Base;');
-  const reportLog = sliceBetween('const coreCounterTotal = (counterSignals[core].sp || 0)', 'if (soPenalty > 0)');
+  const reportModelInput = sliceBetween('if (counterSignals && counterSignals[core]) {', 'const instinctPct = buildInstinctPctFromScores(inst);');
 
   assert.match(routing, /topTypes\.forEach\(\(t\)=>\{ if \(deep\[t\]\)/);
   assert.match(routing, /topTypes\.forEach\(\(t\) => \{\s*if \(counterTypeQuestions\[t\]\) testState\.phase2Questions\.push\(counterTypeQuestions\[t\]\);/);
@@ -45,5 +45,7 @@ test('countertype filters are routed for candidate types and scored separately',
   assert.match(scoring, /TEST_CONFIG\.weights\.tieBreaker\.counterInstinct/);
   assert.match(scoring, /addScore\(q\.type,\s*coreBoost,\s*q\.id\)/);
   assert.match(scoring, /counterSignals\[q\.type\]\[q\.inst\] \+= instinctBoost/);
-  assert.match(reportLog, /역유형 필터 적용/);
+  assert.match(reportModelInput, /inst\.sp \+= counterSignals\[core\]\.sp \|\| 0/);
+  assert.match(reportModelInput, /inst\.sx \+= counterSignals\[core\]\.sx \|\| 0/);
+  assert.match(reportModelInput, /inst\.so \+= counterSignals\[core\]\.so \|\| 0/);
 });

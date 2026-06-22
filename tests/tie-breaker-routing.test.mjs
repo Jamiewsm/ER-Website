@@ -38,7 +38,10 @@ test('dedicated high-risk tie-breakers remain routed before generic fallback', (
 test('2-9 has a dedicated situation tie-breaker instead of generic fallback only', () => {
   const phase2Routing = sliceBetween('const top2Score1 = ranked[0].score;', 'appendStateAnxietyTieBreakersForType6');
   const abScoring = sliceBetween("if (q.format === 'ab')", "if (q.counterType)");
-  const logBlock = sliceBetween("if (testState.tie.t71.enabled)", "if (testState.tie.tGeneric.enabled)");
+  const confidenceBlock = sliceBetween(
+    "if (pairLabel && isTieEnabledForPair(pairKey, tieState))",
+    "if (stateStressAdjustment && stateStressAdjustment.applied)"
+  );
 
   assert.match(testJs, /t29:\s*\{enabled:false,weight:0,margin:null\}/);
   assert.match(testJs, /const tb29 = \[/);
@@ -48,5 +51,6 @@ test('2-9 has a dedicated situation tie-breaker instead of generic fallback only
   assert.match(phase2Routing, /testState\.tie\.t29\s*=\s*\{\s*enabled:\s*true/);
   assert.match(phase2Routing, /concat\(tb29\)/);
   assert.match(abScoring, /q\.id\.startsWith\('tb_2_9_'\).*testState\.tie\.t29\.enabled/);
-  assert.match(logBlock, /testState\.tie\.t29\.enabled/);
+  assert.match(confidenceBlock, /감별 문항이 적용되었습니다/);
+  assert.match(testJs, /tieState:\s*tieSnapshot/);
 });

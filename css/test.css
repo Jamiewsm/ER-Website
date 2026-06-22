@@ -38,6 +38,8 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
   font-size: 16px;
   line-height: 1.78;
   letter-spacing: -0.003em;
+  background: #fffaf3;
+  box-shadow: 0 28px 90px -54px rgba(62, 54, 46, 0.45);
 }
 
 .er-premium-report[data-core-tone="body"] {
@@ -64,22 +66,22 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
 
 .er-report-hero {
   overflow: hidden;
-  border-radius: 0 0 36px 36px;
+  border-radius: 0;
   background:
-    linear-gradient(90deg, rgba(255, 251, 246, 0.92) 0%, rgba(255, 251, 246, 0.78) 45%, rgba(255, 251, 246, 0.22) 100%),
-    var(--er-report-cover-img) center / cover no-repeat;
+    linear-gradient(90deg, rgba(255, 251, 246, 0.72) 0%, rgba(255, 251, 246, 0.50) 45%, rgba(255, 251, 246, 0.08) 100%),
+    var(--er-report-cover-img) center top / cover no-repeat;
   color: var(--er-report-text);
-  border-bottom: 1px solid rgba(62, 54, 46, 0.08);
+  border-bottom: 1px solid rgba(62, 54, 46, 0.16);
 }
 
 .er-report-hero-inner {
   position: relative;
-  min-height: 420px;
-  padding: 50px 24px 40px;
+  min-height: 560px;
+  padding: 150px 24px 42px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 18px;
+  gap: 16px;
 }
 
 .er-report-kicker,
@@ -92,23 +94,27 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
   text-transform: uppercase;
 }
 
+.er-report-kicker {
+  color: rgba(62, 54, 46, 0.68);
+}
+
 .er-report-hero-type {
   margin: 0;
   max-width: 720px;
-  font-size: clamp(2rem, 8vw, 3.3rem);
+  font-size: clamp(2.2rem, 8vw, 4rem);
   line-height: 1.16;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.02em;
-  color: var(--er-report-accent-strong);
+  color: var(--er-report-dark);
   word-break: keep-all;
 }
 
 .er-report-hero h1 {
   max-width: 720px;
   margin: 0;
-  font-size: clamp(23px, 5vw, 35px);
+  font-size: clamp(25px, 5vw, 38px);
   line-height: 1.32;
-  font-weight: 700;
+  font-weight: 850;
   letter-spacing: -0.01em;
   word-break: keep-all;
   color: var(--er-report-dark);
@@ -118,6 +124,41 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
   max-width: 620px;
   margin: 0;
   color: var(--er-report-muted);
+  word-break: keep-all;
+}
+
+.er-report-hero-answer {
+  max-width: 660px;
+  border-left: 4px solid var(--er-report-accent);
+  background: rgba(255, 251, 246, 0.70);
+  padding: 16px 18px;
+  box-shadow: 0 18px 36px -32px rgba(62, 54, 46, 0.55);
+}
+
+.er-report-hero-answer span {
+  display: block;
+  color: var(--er-report-accent-strong);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.er-report-hero-answer strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--er-report-dark);
+  font-size: 17px;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.er-report-hero-answer small {
+  display: block;
+  margin-top: 6px;
+  color: var(--er-report-muted);
+  font-size: 13px;
+  line-height: 1.55;
   word-break: keep-all;
 }
 
@@ -135,10 +176,10 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
   border: 1px solid rgba(62, 54, 46, 0.12);
   border-radius: 999px;
   padding: 7px 14px;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.84);
   color: var(--er-report-dark);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   box-shadow: 0 8px 18px -16px rgba(62, 54, 46, 0.35);
 }
 
@@ -161,6 +202,8 @@ body {
   position: absolute;
   top: 24px;
   right: 20px;
+  border-color: rgba(62, 54, 46, 0.18);
+  font-weight: 850;
 }
 
 .er-report-nav {
@@ -207,16 +250,16 @@ body {
 }
 
 .er-report-section {
-  padding: 38px 24px;
+  padding: 42px 24px;
   background:
-    linear-gradient(rgba(255, 251, 246, 0.94), rgba(255, 251, 246, 0.94)),
+    linear-gradient(rgba(255, 251, 246, 0.88), rgba(255, 251, 246, 0.92)),
     var(--er-report-card-img) center / cover no-repeat;
   border-bottom: 1px solid var(--er-report-line);
 }
 
 .er-report-section:nth-of-type(even) {
   background:
-    linear-gradient(rgba(247, 238, 228, 0.93), rgba(247, 238, 228, 0.93)),
+    linear-gradient(rgba(247, 238, 228, 0.86), rgba(247, 238, 228, 0.90)),
     var(--er-report-card-img) center / cover no-repeat;
 }
 
@@ -260,14 +303,15 @@ body {
 .er-report-toggle-card,
 .er-report-note {
   border: 1px solid var(--er-report-line);
-  border-radius: 18px;
-  background: #fff;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.88);
   padding: 22px;
   box-shadow: var(--er-report-shadow);
 }
 
 .er-report-summary-grid > div {
-  border-top: 4px solid var(--er-report-accent);
+  min-height: 128px;
+  border-top: 5px solid var(--er-report-accent);
 }
 
 .er-report-summary-grid > div:nth-child(2),
@@ -400,7 +444,7 @@ body {
 
 .er-report-confidence-status h3 {
   margin-top: 6px;
-  font-size: 24px;
+  font-size: 26px;
 }
 
 .er-report-confidence-grid p {
@@ -938,11 +982,11 @@ body {
 
 .er-report-next-rationale {
   margin-bottom: 18px;
-  border-radius: 22px;
+  border-radius: 12px;
   background:
-    linear-gradient(135deg, rgba(62, 54, 46, 0.90), rgba(62, 54, 46, 0.66)),
+    linear-gradient(135deg, rgba(62, 54, 46, 0.84), rgba(62, 54, 46, 0.50)),
     var(--er-report-road-img) center / cover no-repeat;
-  padding: 24px;
+  padding: 28px;
   color: #fff;
   box-shadow: var(--er-report-shadow);
 }
@@ -1041,9 +1085,11 @@ body {
 
 .er-report-final-cta {
   margin-top: 20px;
-  border-radius: 22px;
-  background: var(--er-report-dark);
-  padding: 28px 24px;
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(62, 54, 46, 0.92), rgba(62, 54, 46, 0.72)),
+    var(--er-report-vase-img) center / cover no-repeat;
+  padding: 32px 24px;
   color: #fff;
   text-align: center;
 }
@@ -1118,8 +1164,8 @@ body {
 
 @media (min-width: 720px) {
   .er-report-hero-inner {
-    min-height: 500px;
-    padding: 72px 56px 56px;
+    min-height: 720px;
+    padding: 190px 64px 64px;
   }
   .er-report-section {
     padding: 56px 64px;

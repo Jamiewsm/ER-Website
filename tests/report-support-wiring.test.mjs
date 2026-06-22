@@ -40,7 +40,8 @@ test('premium report renderer includes application hook before next-step CTA', (
   assert.match(testJs, /나의 욕구/);
   assert.match(testJs, /내가 힘들 때 필요한 도움/);
   assert.match(testJs, /가족·동료·리더가 나를 도울 방법/);
-  assert.match(testJs, /상담과 스쿨이 필요한 이유/);
+  assert.match(testJs, /결과지 해석상담이나 기본과정/);
+  assert.match(testJs, /data-report-program-key="result_consult"/);
   assert.match(testJs, /data-core-tone/);
 });
 
