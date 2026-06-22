@@ -1,4 +1,5 @@
 # 부모 배포용 '아이 유형 관찰 체크리스트' PDF의 원본 HTML을 생성하는 스크립트
+# 웹 관찰형 검사(96문항) SSOT: js/child-type-data.js → scripts/sync_child_type_observation_from_data.mjs
 # -*- coding: utf-8 -*-
 import html as _html
 
