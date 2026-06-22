@@ -8,3 +8,21 @@ supabase/migrations/*_remote_schema.sql
 .DS_Store
 **/.DS_Store
 .wrangler/
+
+# Agent / MCP deploy scratch (never commit)
+.mcp-*
+.deploy-*
+.tmp-*
+.playwright-cli/
+.claude/worktrees/
+node_modules/
+
+# Duplicate " 2" copies from iCloud sync
+* 2.*
+* 2.json
+* 2.mjs
+* 2.py
+* 2.md
+* 2.png
+* 2.sql
+* 2.ts

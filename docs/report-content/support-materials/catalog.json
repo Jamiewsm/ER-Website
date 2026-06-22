@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "lastUpdated": "2026-06-19",
+  "purpose": "Internal catalog for selecting premium-report support materials by result type, instinct scores, and family context. Do not expose source notes or file paths in customer-facing reports.",
+  "termMap": {
+    "sp": {
+      "korean": "자기보존",
+      "projectAlias": "자본",
+      "suppressionName": "자본억압형",
+      "status": "available"
+    },
+    "sx": {
+      "korean": "성적/일대일",
+      "projectAlias": "성본",
+      "suppressionName": "성본억압형",
+      "status": "available"
+    },
+    "so": {
+      "korean": "사회적",
+      "projectAlias": "사본",
+      "suppressionName": "사본억압형",
+      "status": "available"
+    }
+  },
+  "thresholds": {
+    "instinctSuppression": {
+      "extremeLowPercentMax": 25,
+      "minimumGapFromMiddle": 20,
+      "requiresLowest": true,
+      "tieTolerancePoints": 3,
+      "description": "Call an instinct repressed only when it is clearly and extremely lower than the other instincts. This avoids over-interpreting normal third-instinct weakness."
+    }
+  },
+  "customerFacingPolicy": {
+    "hideSourceNotes": true,
+    "hideInternalFileNames": true,
+    "avoidDeterministicChildTyping": true,
+    "childCopyFrame": "진단 확정이 아니라 반복 패턴을 관찰하는 렌즈로 제시한다.",
+    "suppressionCopyFrame": "결핍/문제가 아니라 낮은 본능이 만드는 빈자리와 성장 과제로 제시한다."
+  },
+  "resultSlots": {
+    "instinct_profile": "본능 점수와 stack 해석 뒤에 낮은 본능의 빈자리 설명을 추가한다.",
+    "relationship_pattern": "일대일/공동체/갈등에서 반복되는 관계 패턴을 보조 설명한다.",
+    "parenting_pattern": "부모 결과지에서 자녀가 체감하는 부모의 반응 패턴과 연습 문장을 제시한다.",
+    "child_observation": "아이 유형이 알려졌거나 부모가 요청한 경우, 진단이 아닌 관찰 체크리스트로 제공한다.",
+    "child_conversation": "아이 유형에 맞는 피해야 할 말과 존재 확인 문장을 제시한다.",
+    "sibling_mediation": "형제 갈등 상황이 있거나 부모용 패키지일 때 상황별 중재 멘트를 부록으로 연결한다.",
+    "recommended_resources": "결과지 마지막에 개인에게 맞는 추가 PDF/워크시트를 추천한다."
+  },
+  "materials": [
+    {
+      "id": "social_instinct_repressed",
+      "displayName": "사회적 본능 억압형 이해",
+      "suppressionCode": "so",
+      "status": "available",
+      "sourceFile": "/Users/jwoo/Downloads/사본 억압형 가이드.pdf",
+      "audiences": ["adult", "parent", "coach"],
+      "resultSlots": ["instinct_profile", "relationship_pattern", "parenting_pattern", "recommended_resources"],
+      "summary": "사회적 본능이 낮을 때 집단 소속, 역할 감각, 분위기 읽기, 자기 영향력 인식이 약해지는 패턴을 설명한다. 사람을 싫어한다는 뜻이 아니라 집단 조율이 부담스러운 상태로 다룬다.",
+      "useWhen": [
+        "so percent is at or below the suppression threshold",
+        "so is the clear lowest instinct",
+        "the gap between so and the middle instinct is large enough to avoid normal stack variation"
+      ],
+      "doNotUseAs": [
+        "사회성이 부족하다는 낙인",
+        "사람을 싫어한다는 단정",
+        "dominant subtype replacement"
+      ],
+      "typeSpecificTitles": {
+        "1": "더 날것의 비판자",
+        "2": "가까워지면 따뜻하지만, 처음엔 차가워 보이는 사람",
+        "3": "조용히 성취하지만, 주목받기는 싫은 사람",
+        "4": "좋게 보이려 애쓰지 않는 특별한 사람",
+        "5": "혼자 있는 것이 가장 편한 관찰자",
+        "6": "더 의심 많고 반항적인 현실주의자",
+        "7": "내 자유와 계획이 가장 중요한 사람",
+        "8": "더 거칠고 직설적인 도전자",
+        "9": "조용히 사라지는 평화주의자"
+      }
+    },
+    {
+      "id": "sexual_instinct_repressed",
+      "displayName": "성적 본능 억압형 이해",
+      "suppressionCode": "sx",
+      "status": "available",
+      "sourceFile": "/Users/jwoo/Downloads/성본 억압형 가이드2.pdf",
+      "audiences": ["adult", "parent", "couple", "coach"],
+      "resultSlots": ["instinct_profile", "relationship_pattern", "parenting_pattern", "recommended_resources"],
+      "summary": "성적/일대일 본능이 낮을 때 강렬한 끌림, 몰입, 직접 접촉, 갈등 접근, 생동감 표현이 약해지는 패턴을 설명한다. 친밀감을 싫어한다는 뜻이 아니라 강한 일대일 접촉을 오래 유지하는 것이 부담스러운 상태로 다룬다.",
+      "useWhen": [
+        "sx percent is at or below the suppression threshold",
+        "sx is the clear lowest instinct",
+        "the gap between sx and the middle instinct is large enough to avoid normal stack variation"
+      ],
+      "doNotUseAs": [
+        "매력/연애 능력 부족이라는 낙인",
+        "사랑이 없다는 단정",
+        "dominant subtype replacement"
+      ],
+      "typeSpecificTitles": {
+        "1": "분노를 안으로 삼키는 1번",
+        "2": "가까워지고 싶지만 먼저 다가가기 어려운 2번",
+        "3": "조용히 성취를 쌓는 3번",
+        "4": "조용히 아파하는 4번",
+        "5": "더 멀리 물러나는 5번",
+        "6": "더 조심스럽고 확신이 약한 6번",
+        "7": "더 조심스럽고 잘 듣는 7번",
+        "8": "조용하고 덜 침투적인 8번",
+        "9": "더 무기력하고 수동적인 9번"
+      }
+    },
+    {
+      "id": "self_preservation_instinct_repressed",
+      "displayName": "자기보존 본능 억압형 이해",
+      "suppressionCode": "sp",
+      "status": "available",
+      "sourceFile": "/Users/jwoo/Library/Mobile Documents/com~apple~CloudDocs/Desktop/지영/ER/자기보존_본능_억압형.md",
+      "audiences": ["adult", "parent", "coach"],
+      "resultSlots": ["instinct_profile", "relationship_pattern", "parenting_pattern", "recommended_resources"],
+      "summary": "자기보존 본능이 낮을 때 몸, 돈, 시간, 안전, 생활 기반, 개인 경계가 의식 우선순위에서 밀리는 패턴을 설명한다. 살아가는 힘이 없다는 뜻이 아니라 자신을 돌보는 행동으로 연결하는 힘이 약해진 상태로 다룬다.",
+      "useWhen": [
+        "sp percent is at or below the suppression threshold",
+        "sp is the clear lowest instinct",
+        "the gap between sp and the middle instinct is large enough to avoid normal stack variation"
+      ],
+      "doNotUseAs": [
+        "생활 관리 부족이라는 낙인",
+        "게으르거나 무책임하다는 단정",
+        "dominant subtype replacement"
+      ],
+      "typeSpecificTitles": {
+        "1": "타인을 위해 바르게 살지만 자신은 방치하는 사람",
+        "2": "다른 사람에게는 모든 것을 주지만 도움은 받지 않는 사람",
+        "3": "성공의 모습에는 집중하지만 기반은 놓치는 사람",
+        "4": "감정은 자신을 향하지만 에너지는 바깥으로 흩어지는 사람",
+        "5": "머리는 멀리 가지만 몸과 현실은 뒤에 남는 사람",
+        "6": "큰 위험은 걱정하지만 일상의 위험은 놓치는 사람",
+        "7": "가능성은 크게 보지만 비용과 위험은 작게 보는 사람",
+        "8": "강하지만 자기 몸은 돌보지 않는 보호자",
+        "9": "자신을 두 번 잊어버리는 사람"
+      }
+    },
+    {
+      "id": "mother_type_traits",
+      "displayName": "엄마 유형 특징 정리",
+      "status": "available",
+      "sourceFile": "/Users/jwoo/Downloads/ER_엄마유형_특징정리.pdf",
+      "localAsset": "docs/parent_resources/ER_엄마유형_특징정리.pdf",
+      "audiences": ["parent", "coach"],
+      "resultSlots": ["parenting_pattern", "recommended_resources"],
+      "summary": "부모 자신의 핵심 유형을 기준으로 양육 강점, 자녀가 받는 긍정적 영향, 그림자, 스트레스 포인트, 성장 조언, 실천 전략을 제공한다.",
+      "useWhen": [
+        "profile is parent-facing",
+        "adult core type is known"
+      ],
+      "typeSpecificTitles": {
+        "1": "1번 유형 엄마",
+        "2": "2번 유형 엄마",
+        "3": "3번 유형 엄마",
+        "4": "4번 유형 엄마",
+        "5": "5번 유형 엄마",
+        "6": "6번 유형 엄마",
+        "7": "7번 유형 엄마",
+        "8": "8번 유형 엄마",
+        "9": "9번 유형 엄마"
+      }
+    },
+    {
+      "id": "child_observation_checklist",
+      "displayName": "아이 유형 관찰 체크리스트",
+      "status": "available",
+      "sourceFile": "/Users/jwoo/Downloads/ER_아이유형_관찰체크리스트.pdf",
+      "localAsset": "docs/parent_resources/ER_아이유형_관찰체크리스트.pdf",
+      "audiences": ["parent", "child_report", "coach"],
+      "resultSlots": ["child_observation", "recommended_resources"],
+      "summary": "자녀의 핵심 욕구, 두려움, 반복 행동, 스트레스 신호, 관찰 질문, 도움이 되는 반응과 피해야 할 말을 부모가 관찰할 수 있게 정리한다.",
+      "useWhen": [
+        "child type is known or being explored",
+        "parent wants child-facing guidance",
+        "copy is framed as observation, not fixed typing"
+      ],
+      "typeSpecificTitles": {
+        "1": "올바른 사람 / 완벽주의자",
+        "2": "도움 주는 사람 / 사람을 기쁘게 하는 사람",
+        "3": "성취하는 사람 / 이미지 지향",
+        "4": "개성 있는 사람 / 낭만적",
+        "5": "탐구하는 사람 / 관찰자",
+        "6": "충성하는 사람 / 의심하는 사람",
+        "7": "열정적인 사람 / 즐거움 추구자",
+        "8": "도전하는 사람 / 보호자",
+        "9": "평화로운 사람 / 중재자"
+      }
+    },
+    {
+      "id": "child_type_conversation_principles",
+      "displayName": "아이 유형별 대화 원칙",
+      "status": "available",
+      "sourceFile": "/Users/jwoo/Downloads/아이유형별 대화원칙.pdf",
+      "audiences": ["parent", "child_report", "coach"],
+      "resultSlots": ["child_conversation", "recommended_resources"],
+      "summary": "아이 유형별로 핵심 두려움을 자극하는 말을 피하고, 존재 자체를 인정하는 방식으로 대화하도록 돕는 부모용 원칙 자료다.",
+      "useWhen": [
+        "child type is known or being explored",
+        "parenting plan needs concrete language",
+        "child copy must protect identity and avoid shame"
+      ],
+      "typeSpecificTitles": {
+        "1": "완벽을 추구하는 아이",
+        "2": "돕는 아이",
+        "3": "열매 맺는 아이",
+        "4": "아름다운 아이",
+        "5": "관찰하는 아이",
+        "6": "충성스러운 아이",
+        "7": "열정적인 아이",
+        "8": "보호하는 아이",
+        "9": "평화로운 아이"
+      }
+    },
+    {
+      "id": "sibling_conflict_mediation",
+      "displayName": "형제 싸움 중재 멘트 20선",
+      "status": "available",
+      "sourceFile": "/Users/jwoo/Downloads/ER_형제싸움 중재멘트.pdf",
+      "audiences": ["parent", "coach"],
+      "resultSlots": ["sibling_mediation", "recommended_resources"],
+      "summary": "형제 갈등의 순간에 부모가 재판관이 아니라 중재자로 서도록 돕는 상황별 멘트와 4단계 흐름 자료다.",
+      "useWhen": [
+        "parent has more than one child",
+        "sibling conflict is selected as a concern",
+        "report package includes practical parenting appendix"
+      ],
+      "workflowTags": ["stop", "emotion_translation", "boundary", "repair"]
+    }
+  ]
+}

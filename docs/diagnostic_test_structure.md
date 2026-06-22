@@ -4,17 +4,17 @@
 
 기준 파일:
 
-- [test.html](/Users/joeywoo/Desktop/Visual%20Studio%20Code/ER-Website/test.html)
-- [js/test.js](/Users/joeywoo/Desktop/Visual%20Studio%20Code/ER-Website/js/test.js)
-- [js/app-adaptive-data.js](/Users/joeywoo/Desktop/Visual%20Studio%20Code/ER-Website/js/app-adaptive-data.js)
-- [docs/diagnostic_test_questions.txt](/Users/joeywoo/Desktop/Visual%20Studio%20Code/ER-Website/docs/diagnostic_test_questions.txt)
+- [test.html](/Users/jwoo/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/Visual%20Studio%20Code/ER-Website/test.html)
+- [js/test.js](/Users/jwoo/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/Visual%20Studio%20Code/ER-Website/js/test.js)
+- [js/app-adaptive-data.js](/Users/jwoo/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/Visual%20Studio%20Code/ER-Website/js/app-adaptive-data.js)
+- [docs/diagnostic_test_questions.txt](/Users/jwoo/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/Visual%20Studio%20Code/ER-Website/docs/diagnostic_test_questions.txt)
 
 ## 1. 전체 구조 요약
 
 진단테스트는 `4단계 적응형 구조`입니다.
 
 1. 1단계
-- 고정 문항 33개
+- 고정 문항 39개
 - 모든 사용자가 동일하게 응답
 - 기본 유형 후보군과 본능 성향을 1차 산출
 
@@ -26,7 +26,7 @@
 - 상위 2개 유형 점수가 매우 근접할 때만 마지막 1문항 추가
 
 4. 4단계
-- 코어 유형이 확정되면 해당 유형 전용 하위유형 3지 선다와 날개 양자택일 문항 추가
+- 코어 유형이 확정되면 해당 유형 전용 하위유형 행동문항 3개와 날개 행동문항 3개 추가
 
 즉, `문항 풀은 크지만`, 실제 응답자가 보는 문항은 적응적으로 달라집니다.
 
@@ -34,30 +34,30 @@
 
 코드 기준 전체 문항 풀은 아래처럼 나뉩니다.
 
-- 1단계 고정 문항: 33개
+- 1단계 고정 문항: 39개
 - 2단계 유형별 심층 문항: 18개
 - 2단계 전용 타이브레이커: 15개
 - 2단계 일반 쌍별 타이브레이커: 27개 쌍 (정리본)
 - 3단계 최종 타이브레이커: 핵심 3쌍(3_6, 1_8, 7_8) 중 조합에 따라 1개
-- 4단계 하위유형/날개 최종 판별: 9유형 18문항
+- 4단계 하위유형/날개 최종 판별: 9유형 54문항 생성 구조 (코어별 6문항)
 
 참고:
 
-- [docs/diagnostic_test_questions.txt](/Users/joeywoo/Desktop/Visual%20Studio%20Code/ER-Website/docs/diagnostic_test_questions.txt)에는 현재 질문 목록이 `총 97개`로 정리돼 있습니다.
+- [docs/diagnostic_test_questions.txt](/Users/jwoo/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/Visual%20Studio%20Code/ER-Website/docs/diagnostic_test_questions.txt)는 과거 질문 목록 스냅샷입니다. 현재 운영 기준은 `js/test.js`입니다.
 - 실제 코드는 `tbCustomMap`에서 일반 쌍별 감별문항을 관리하며, 현재 정리본 기준 27쌍을 운영합니다.
 
 ## 3. 단계별 동작 방식
 
 ## 3-1. 1단계
 
-1단계에서는 항상 33문항이 표시됩니다.
+1단계에서는 항상 39문항이 표시됩니다.
 
 구성:
 
-- 공통 유형 탐지 문항 15개
+- 공통 유형 탐지 문항 20개
 - A/B 비교 문항 6개
 - 최근 상태 문항 3개
-- 본능 문항 9개
+- 본능 문항 10개
 
 역할:
 
@@ -65,6 +65,7 @@
 - 상위 후보군 3~5개 추출
 - 본능 우세(`sp`, `sx`, `so`) 추정
 - 일부 오타이핑 방지용 타이브레이커 필요 여부 판단
+- 최근 2주 상태 문항이 높고 6번이 1/5/9와 근접하면 상태성 불안 보정과 6번 전용 타이브레이커 강화 적용
 
 ## 3-2. 2단계
 
@@ -92,39 +93,44 @@
 
 ## 3-4. 4단계
 
-코어 유형이 확정되면 해당 유형의 최종 하위유형/날개 문항 2개가 열립니다.
+코어 유형이 확정되면 해당 유형의 최종 하위유형/날개 행동 문항 6개가 열립니다.
 
 구성:
 
-- 하위유형 3지 선다 1개
-- 날개 양자택일 1개
+- 하위유형 행동 회상형 3지 선다 3개
+- 날개 행동 회상형 양자택일 3개
 
 목적:
 
 - 27개 하위유형 중 1개 확정
 - 18개 날개 조합 중 해당 코어의 좌우 날개 확정
 
-## 4. 1단계 고정 문항 33개
+## 4. 1단계 고정 문항 39개
 
-## 4-1. 유형 탐지 기본 문항 15개
+## 4-1. 유형 탐지 기본 문항 20개
 
-`t2`, `t2_eval`, `t5`, `t5_var`, `t8`, `c1`~`c9`, `c4_unique`
+`center_auto_1`~`center_auto_3`, `center_situation_1`~`center_situation_3`, `c1`~`c9`, `c2_recall`, `c3_recall`, `c4_pain`, `c4_unique`, `c8_recall`
 
-1. 사람들과 함께 있을 때, 실제로 느끼는 감정보다 내가 어떻게 보일지를 먼저 의식하며 말과 태도를 조절하는 편이다.
-2. 사람들 앞에서 민망하거나 부정적으로 평가받았다고 느끼면, 그 장면이 오래 남아 반복해서 떠오르는 편이다.
-3. 예상 밖의 상황이 생기면, 감정적으로 바로 반응하기보다 먼저 상황을 머릿속으로 정리하려는 편이다.
-4. 불확실한 상황에서는 가능한 변수와 예외를 미리 점검해야 마음이 놓이는 편이다.
-5. 관계나 일에서 부당하거나 기준에 어긋난 장면을 보면, 그냥 넘기기보다 바로잡고 싶다는 긴장이 빠르게 올라오는 편이다.
-6. 일을 할 때, 외부 요구와 별개로 스스로 정한 기준에 맞춰야 한다는 압박을 자주 느끼는 편이다.
-7. 관계에서 내 필요를 먼저 챙기기보다, 상대에게 도움이 되는 쪽으로 먼저 움직이는 편이다.
-8. 내 가치나 유능함이 실제 성과로 확인될 때 더 안심되는 편이다.
-9. 반복적이고 무난한 흐름이 오래 이어지면 정서적으로 무뎌지는 편이다.
-10. 남들과 크게 다르지 않다고 느껴질 때, 내 고유함이 흐려진 듯한 불편함이 생기는 편이다.
-11. 사람들과 오래 상호작용하면 에너지가 빨리 소진되어, 혼자 거리를 두고 정리하는 시간이 필요한 편이다.
-12. 중요한 결정을 앞두면, 바로 실행하기보다 먼저 위험 요소와 빠진 부분을 확인하게 되는 편이다.
-13. 분위기가 무겁거나 답답해지면, 그 감정에 오래 머물기보다 다른 가능성이나 다음 계획으로 빨리 시선을 돌리는 편이다.
-14. 내 사람이나 약자가 부당한 대우를 받는 것을 보면, 물러서기보다 직접 개입해야 한다는 반응이 먼저 올라오는 편이다.
-15. 갈등 기류가 생기면, 내 입장을 분명히 하기보다 먼저 마찰을 줄이는 쪽으로 움직이는 편이다.
+1. 압박이나 예상 밖의 일이 생긴 직후, 의식적으로 고르기 전에 더 먼저 붙잡는 것은? (가슴형/머리형/장형 강제선택)
+2. 갈등 기류가 생기거나 서로의 입장이 부딪힐 때, 더 먼저 올라오는 반응은? (가슴형/머리형/장형 강제선택)
+3. 칭찬이나 좋은 평가를 받을 때, 가장 먼저 의식되는 것은? (가슴형/머리형/장형 강제선택)
+4. 회의나 대화에서 내 의견이 충분히 받아들여지지 않았을 때, 가장 먼저 가까운 반응은? (가슴형/머리형/장형 강제선택)
+5. 누군가 나를 예상보다 차갑게 대하거나 거절했을 때, 먼저 올라오는 반응은? (가슴형/머리형/장형 강제선택)
+6. 일이 예상과 다르게 틀어졌을 때, 가장 먼저 반복되는 패턴은? (가슴형/머리형/장형 강제선택)
+7. 남이 충분하다고 해도, 내 안의 기준이 아직 안 됐다고 느끼면 마음이 놓이지 않는 편이다.
+8. 누군가가 더 이상 나를 필요로 하지 않는다고 느껴질 때, 생각보다 큰 허전함이나 불안이 올라오는 편이다.
+9. 관계에서 내가 줄 수 있는 역할이 사라지면, 내가 그 사람에게 어떤 의미인지 흔들리는 느낌이 든 적이 있다.
+10. 어떤 결과물을 내놓았을 때, 주변 반응과 무관하게 스스로 이 정도면 됐다고 느끼는 순간이 잘 오지 않는 편이다.
+11. 회의나 대화에서 실수한 뒤, 무능해 보였을까 봐 며칠 동안 그 장면을 반복해서 떠올린 적이 있다.
+12. 행복한 순간에도, 어딘가 빠져 있는 것이 있다는 느낌이 쉽게 사라지지 않는 편이다.
+13. 힘든 감정이 올라오면 빨리 털어내기보다, 그 감정이 나를 설명하는 것 같아 오래 붙들게 되는 편이다.
+14. 사람들과 잘 어울리고 있어도, 마음 한쪽에는 나만 온전히 속하지 못한다는 감각이 남아 있는 편이다.
+15. 사람들과 오래 있고 나면, 감정 정리보다 내 에너지와 생각을 회수하고 싶다는 느낌이 먼저 오는 편이다.
+16. 중요한 결정을 앞두고 위험 요소를 확인할 때, 다 확인했어도 혹시 빠진 게 있지 않을까 하는 생각이 한 번 더 올라오는 편이다.
+17. 무겁거나 답답한 감정이 오래 이어질 것 같으면, 의식적으로 결심하지 않아도 다른 가능성이나 계획으로 생각이 이동하는 편이다.
+18. 내 사람이나 약자가 부당한 대우를 받으면, 올바른 처신을 떠나 내가 직접 막아야 한다는 반응이 몸에서 먼저 올라오는 편이다.
+19. 사람들 사이에 힘의 불균형이 보이면, 요청받지 않아도 개입하게 되는 편이다.
+20. 갈등 기류가 생기면, 내 입장을 세우는 것보다 이 불편함을 빨리 끝내고 싶다는 충동이 먼저 오는 편이다.
 
 ## 4-2. A/B 비교 문항 6개
 
@@ -145,7 +151,14 @@
 2. 최근 2주 동안, 평소의 나보다 예민하거나 방어적으로 반응하는 일이 얼마나 늘었나요? (1=거의 없었다, 6=거의 계속 그랬다)
 3. 최근 2주 동안, 내 본래 성향보다 상황 대응이 우선되어 '평소 같지 않다'고 느낀 적이 얼마나 있었나요? (1=전혀 없었다, 6=거의 항상 그랬다)
 
-## 4-4. 본능 문항 9개
+## 4-4. 본능 문항 10개
+
+attention-bias 상황형 1개:
+
+1. 낯선 장소나 새로운 모임에 들어갔을 때, 가장 먼저 눈에 들어오는 것은?
+- sp: 어디서 쉬고, 먹고, 이동하고, 몸을 편하게 유지할 수 있는지 본다.
+- sx: 누가 강하게 끌리거나 에너지가 집중되는 대상인지 먼저 감지한다.
+- so: 누가 영향력이 있고, 관계 흐름이 어떻게 움직이는지 먼저 읽는다.
 
 자기보존 `sp` 3개:
 
@@ -176,8 +189,8 @@
 
 ## 5-2. 2번 유형
 
-1. 남을 챙기거나 도와주는 것은 비교적 익숙하지만, 내가 먼저 필요를 말하고 도움을 요청하는 일은 불편한 편이다.
-2. 내가 원하는 것을 바로 말하면 관계가 어색해질까 봐, 내 욕구 표현을 미루는 편이다.
+1. 관계에서 내가 더 이상 필요한 존재가 아닌 것처럼 느껴지면, 예상보다 크게 흔들리거나 허전해지는 편이다.
+2. 내가 줄 수 있는 역할이나 돌봄의 자리가 사라지면, 그 사람에게 내가 어떤 의미인지 자꾸 확인하고 싶어진다.
 
 ## 5-3. 3번 유형
 
@@ -311,17 +324,18 @@
 
 대략적인 범위:
 
-- 1단계: 28문항 고정
+- 1단계: 39문항 고정
 - 2단계: 보통 6~10개 심층문항 + 조건부 타이브레이커
 - 3단계: 필요 시 1문항
+- 4단계: 하위유형 3문항 + 날개 3문항
 
-즉, 실제 응답 수는 보통 `35~45문항 전후`가 되지만, 상황에 따라 더 적거나 많을 수 있습니다.
+즉, 실제 응답 수는 보통 `47~56문항 전후`가 되지만, 조건부 타이브레이커 수에 따라 더 적거나 많을 수 있습니다.
 
 ## 10. 바로 확인할 수 있는 참고 파일
 
-- 전체 질문 목록 요약: [diagnostic_test_questions.txt](/Users/joeywoo/Desktop/Visual%20Studio%20Code/ER-Website/docs/diagnostic_test_questions.txt)
-- 실제 실행 로직: [js/test.js](/Users/joeywoo/Desktop/Visual%20Studio%20Code/ER-Website/js/test.js)
-- 구형/공통 adaptive 데이터: [js/app-adaptive-data.js](/Users/joeywoo/Desktop/Visual%20Studio%20Code/ER-Website/js/app-adaptive-data.js)
+- 전체 질문 목록 요약: [diagnostic_test_questions.txt](/Users/jwoo/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/Visual%20Studio%20Code/ER-Website/docs/diagnostic_test_questions.txt)
+- 실제 실행 로직: [js/test.js](/Users/jwoo/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/Visual%20Studio%20Code/ER-Website/js/test.js)
+- 구형/공통 adaptive 데이터: [js/app-adaptive-data.js](/Users/jwoo/Library/Mobile%20Documents/com~apple~CloudDocs/Desktop/Visual%20Studio%20Code/ER-Website/js/app-adaptive-data.js)
 
 필요하면 다음 단계로 아래 중 하나로 더 정리할 수 있습니다.
 
@@ -333,13 +347,15 @@
 
 소스: [docs/knowledge_base/enneagram/complete_enneagram/](knowledge_base/enneagram/complete_enneagram/) (Beatrice Chestnut, *The Complete Enneagram*).
 
+주의: 아래 섹션은 2026-05-05 당시 변경 로그입니다. 현재 운영 코드의 1단계는 `center_auto_1`~`center_auto_3`, `center_situation_1`~`center_situation_3`을 포함한 39문항입니다.
+
 ### 1단계 변경
 
 - `c1` 문구 강화 — "스트레스가 없는 평상시에도 ... 비판적 충동이 일상의 디폴트로 자동 작동" — 코어 1번을 7번 stress arrow와 분리.
 - `c7b` 신규 (Type 7) — SX 7 idealization passion 마커. "어떻게 될 수 있는가에 대한 이상적 비전·미래의 가능성"에 대한 끌림 측정 (Chestnut p184 *Suggestibility*).
 - `state_baseline` AB (7 vs 1) — 평상시 디폴트 마음가짐 분기. SP/SO/SX 7이 스트레스 시 1번 패턴을 표출하는 케이스 분리.
 - `state_ideal_kind` AB (7 vs 1) — "이상"의 시제·정서 차이 (낙관·미래 vs 비판·현재).
-- 1단계 총 31문항 (기존 28 + 신규 3).
+- 당시 1단계 총 31문항 (기존 28 + 신규 3).
 
 ### 2단계 신규 타이브레이커
 

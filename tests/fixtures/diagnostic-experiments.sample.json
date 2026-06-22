@@ -1,0 +1,109 @@
+[
+  {
+    "id": "row_1",
+    "self_assessment": "correct",
+    "self_reported_core": "7",
+    "self_reported_subtype": "sx_7",
+    "self_reported_wing": "7w8",
+    "result_summary": {
+      "experiment_payload": {
+        "result": {
+          "core": 7,
+          "subtype": "sx_7",
+          "wing": 8,
+          "confidence": "높음",
+          "coreResolved": true,
+          "reportKey": "sx_7_7w8"
+        },
+        "topPair": { "first": 7, "second": 3, "diff": 0.14 },
+        "responseQuality": { "level": "good", "flags": [] },
+        "tieBreakersUsed": [],
+        "phase4Result": { "subtypeCode": "sx_7", "wingNum": 8 }
+      },
+      "feedback_detail": {
+        "confirmed_type": { "core": "7", "subtype": "sx_7", "wing": "7w8" }
+      }
+    }
+  },
+  {
+    "id": "row_2",
+    "self_assessment": "incorrect",
+    "self_reported_core": "9",
+    "self_reported_subtype": "sp_9",
+    "self_reported_wing": "9w8",
+    "result_summary": {
+      "experiment_payload": {
+        "result": {
+          "core": 7,
+          "subtype": "sx_7",
+          "wing": 8,
+          "confidence": "낮음",
+          "coreResolved": true,
+          "reportKey": "sx_7_7w8"
+        },
+        "topPair": { "first": 7, "second": 9, "diff": 0.03 },
+        "responseQuality": {
+          "level": "low",
+          "flags": [{ "code": "straight_lining", "severity": "caution" }]
+        },
+        "tieBreakersUsed": [{ "key": "t79", "weight": 1.2, "margin": 0.03 }],
+        "phase4Result": { "subtypeCode": "sx_7", "wingNum": 8 }
+      },
+      "feedback_detail": {
+        "confirmed_type": { "core": "9", "subtype": "sp_9", "wing": "9w8" }
+      }
+    }
+  },
+  {
+    "id": "row_3",
+    "self_assessment": "incorrect",
+    "self_reported_core": "6",
+    "self_reported_subtype": "sx_6",
+    "self_reported_wing": "6w5",
+    "result_summary": {
+      "experiment_payload": {
+        "result": {
+          "core": 8,
+          "subtype": "so_8",
+          "wing": 7,
+          "confidence": "보통",
+          "coreResolved": true,
+          "reportKey": "so_8_8w7"
+        },
+        "topPair": { "first": 8, "second": 6, "diff": 0.05 },
+        "responseQuality": { "level": "caution", "flags": [{ "code": "instinct_unclear" }] },
+        "tieBreakersUsed": [{ "key": "t68", "weight": 1.5, "margin": 0.05 }],
+        "phase4Result": { "subtypeCode": "so_8", "wingNum": 7 }
+      },
+      "feedback_detail": {
+        "confirmed_type": { "core": "6", "subtype": "sx_6", "wing": "6w5" }
+      }
+    }
+  },
+  {
+    "id": "row_4",
+    "self_assessment": "correct",
+    "self_reported_core": "9",
+    "self_reported_subtype": "so_9",
+    "self_reported_wing": "9w1",
+    "result_summary": {
+      "experiment_payload": {
+        "result": {
+          "core": 9,
+          "subtype": "so_9",
+          "wing": 1,
+          "confidence": "보통",
+          "coreResolved": true,
+          "reportKey": "so_9_9w1"
+        },
+        "topPair": { "first": 9, "second": 2, "diff": 0.08 },
+        "responseQuality": { "level": "good", "flags": [] },
+        "tieBreakersUsed": [{ "key": "t29", "weight": 1.5, "margin": 0.08 }],
+        "phase4Result": { "subtypeCode": "so_9", "wingNum": 1 }
+      },
+      "feedback_detail": {
+        "confirmed_type": { "core": "9", "subtype": "so_9", "wing": "9w1" }
+      }
+    }
+  }
+]

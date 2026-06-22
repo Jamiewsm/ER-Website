@@ -4,8 +4,9 @@ kb_id: enneagram_test_meta.phase_5_plan
 title: "Phase 5 Implementation Plan — Result Output Format (Final)"
 phase: 5
 created_at: "2026-05-08"
-last_updated: "2026-05-08"
-status: ready_to_execute
+last_updated: "2026-06-20"
+status: archived_do_not_execute
+superseded_by: ACTIVE_EVOLUTION_PLAN.md
 total_tasks: 6
 estimated_total_minutes: "180-260"
 related_files:
@@ -26,6 +27,8 @@ retrieval_tags:
 ---
 
 # ER Enneagram Test — Phase 5 (Result Output Format) Implementation Plan
+
+> **ARCHIVED — DO NOT EXECUTE.** 이 문서는 2026-05 자동화 Phase 5 기록 보존용이다. 현재 premium 결과지는 `js/test.js`, `js/diagnostic-report-content.js`, `js/report-support-materials.js`, `css/test.css` 중심으로 생성된다. `js/test-result-renderer.js`와 `js/subtypes-27-data.js`를 그대로 운영 결과지에 재연결하면 현재 결과지 품질이 후퇴할 수 있다.
 
 > **For agentic workers:** [HANDOFF.md](./HANDOFF.md) 의 5단계 protocol. 매 task 종료 시 `node docs/_meta/enneagram/verify.mjs <task_id>` + `node --test tests/test-scoring.test.mjs` 통과 확인 후 commit. **마지막 phase** — 종료 시 `current_phase = 6` + 스케줄 task self-delete.
 

@@ -3,7 +3,7 @@
 kb_id: enneagram_test_meta.handoff
 title: "Cold-Start Handoff Protocol"
 created_at: "2026-05-06"
-last_updated: "2026-05-06"
+last_updated: "2026-06-20"
 retrieval_tags:
   - handoff
   - protocol
@@ -13,17 +13,19 @@ retrieval_tags:
 
 # Cold-Start Handoff Protocol
 
-이 문서를 처음 읽는 AI 라면 — 당신은 ER 에니어그램 테스트 발전 프로젝트의 자동 작업을 인계받았습니다. 아래 5단계를 정확히 따르세요.
+이 문서를 처음 읽는 AI 라면 — 먼저 현재 세션이 예약 자동화인지, 사용자가 직접 요청한 수동 작업인지 구분한다. 예약 자동화는 아래 5단계를 엄격히 따른다. 사용자가 직접 요청한 수동 작업은 `WORK_STATUS.paused=true`여도 사용자 요청 범위 안에서 진행할 수 있다.
 
 ## 1단계 — 상태 확인
 
-`docs/_meta/enneagram/WORK_STATUS.md` 의 frontmatter 를 읽는다. 다음 4 조건 중 하나라도 참이면 즉시 종료한다.
+`docs/_meta/enneagram/WORK_STATUS.md` 의 frontmatter 를 읽는다. 예약 자동화에서는 다음 3 조건 중 하나라도 참이면 즉시 종료한다.
 
 - `paused: true`
 - `current_phase >= 6`
 - `locked_task != null` AND `lock_expires_at` 가 현재 시각보다 미래
 
 종료 시 `HISTORY.md` 에 `early_exit` 한 줄 추가.
+
+수동 사용자 요청에서는 `paused: true`와 `current_phase >= 6`을 "예약 자동화가 멈춰 있음"으로만 해석한다. 사용자가 요청한 코드/문서 수정은 진행 가능하다. 단, `locked_task`가 활성이고 같은 파일을 건드려야 하면 충돌 위험을 먼저 확인한다.
 
 ## 2단계 — 락 획득
 
@@ -39,11 +41,18 @@ retrieval_tags:
 
 ## 3단계 — Task 정의 확인
 
-`docs/_meta/enneagram/PHASE_PLAN.md` 에서 `current_task` ID 의 task 섹션을 찾는다 (예 — `## 2. Task 1.0`, `## 3. Task 1.1` 형식). 그 task 의 (a) Files (b) Inputs (c) Definition of Done (d) Steps 를 모두 읽는다. 모호함 발견 시 `CONTEXT.md` 의 결정 로그/거부된 대안을 확인.
+현재 수동 개발 작업은 `docs/_meta/enneagram/ACTIVE_EVOLUTION_PLAN.md`에서 task 섹션을 찾는다. 오래된 `PHASE_PLAN.md`, `PHASE_2_PLAN.md`, `PHASE_3_PLAN.md`, `PHASE_4_PLAN.md`, `PHASE_5_PLAN.md`, `PHASE_6_PLAN.md`는 archive이며 실행 지시로 사용하지 않는다.
+
+작업 전 반드시 함께 확인할 문서:
+
+1. [WORK_STATUS.md](./WORK_STATUS.md) — 현재 운영 코드 스냅샷
+2. [CODE_GAP_AUDIT.md](./CODE_GAP_AUDIT.md) — 적용 금지/선별 적용 항목
+3. [ACTIVE_EVOLUTION_PLAN.md](./ACTIVE_EVOLUTION_PLAN.md) — 현재 task 정의
+4. [CONTEXT.md](./CONTEXT.md) — 설계 결정 로그
 
 ## 4단계 — Task 실행
 
-Steps 를 순서대로 실행. 각 step 완료 시 `WORK_STATUS.checkpoint` 를 step ID 로 즉시 갱신 (예 — `"1.3.4"`). 부분 산출물도 즉시 git stage. 토큰 리밋/오류로 중간 종료해도 다음 wakeup 이 `checkpoint` 다음부터 재개.
+Steps 를 순서대로 실행. 각 step 완료 시 필요하면 `WORK_STATUS.checkpoint` 를 step ID 로 갱신한다. 토큰 리밋/오류로 중간 종료해도 다음 세션이 `checkpoint` 다음부터 재개할 수 있어야 한다.
 
 각 task 시작 시 `WORK_STATUS.checkpoint_plan` 을 step ID 배열로 채운다 (예 — `["1.3.1","1.3.2",...,"1.3.9"]`).
 
@@ -65,7 +74,8 @@ You are continuing automated work on the ER Enneagram test project.
 Required first action: Read docs/_meta/enneagram/HANDOFF.md COMPLETELY.
 Execute the 5-step protocol exactly. Do NOT ask the user questions.
 If WORK_STATUS shows paused=true OR current_phase>=6, log to HISTORY and exit.
-Otherwise complete the next pending task per PHASE_PLAN, update WORK_STATUS + HISTORY, exit.
+Do not execute archived PHASE_* plans.
+Manual/user-requested development should follow ACTIVE_EVOLUTION_PLAN.md, not PHASE_PLAN.md.
 ```
 
 ## 사용자 호출 시
@@ -82,4 +92,6 @@ Otherwise complete the next pending task per PHASE_PLAN, update WORK_STATUS + HI
 
 ## Working Directory
 
-이 프로젝트의 작업 디렉토리는 git 워크트리 — `/Users/Joeyswoo/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Visual Studio Code/ER-Website/.claude/worktrees/musing-taussig-e181fd/` (브랜치 `claude/musing-taussig-e181fd`). 모든 변경은 이 워크트리에서 수행, commit 도 여기서. main 으로의 머지는 사용자가 수동.
+현재 일반 작업 디렉토리는 `/Users/jwoo/Library/Mobile Documents/com~apple~CloudDocs/Desktop/Visual Studio Code/ER-Website`다.
+
+과거 자동화 브랜치/워크트리 기록은 `WORK_STATUS.md`와 `HISTORY.md`에 남아 있으나, 현재 Codex/사용자 수동 작업은 위 일반 워크트리 기준으로 수행한다. 별도 브랜치나 worktree가 필요하면 작업 시작 전에 사용자가 명시한다.

@@ -1,0 +1,501 @@
+# 부모 배포용 '1-9번 엄마 유형 특징 정리' PDF의 원본 HTML을 생성하는 스크립트
+# -*- coding: utf-8 -*-
+import html as _html
+
+OUT = "mom_type_summary.html"
+
+# 에니어그램 세 중심(장형/가슴형/머리형)별 색상 팔레트 — 아이유형 체크리스트와 동일
+CENTER = {
+    "gut":   {"ac": "#A85D32", "ac2": "#8A4B27", "soft": "#FAF3EC", "bd": "#ECD7C4"},
+    "heart": {"ac": "#A24E70", "ac2": "#86405D", "soft": "#FBEFF4", "bd": "#ECD2DD"},
+    "head":  {"ac": "#2E6A8E", "ac2": "#275A78", "soft": "#EDF3F8", "bd": "#D1E0EC"},
+}
+CENTER_LABEL = {
+    "gut":   "장형 · 본능중심",
+    "heart": "가슴형 · 감정중심",
+    "head":  "머리형 · 이성중심",
+}
+EMOTION = {"gut": "분노", "heart": "수치심", "head": "두려움"}
+
+
+def esc(s):
+    return _html.escape(s, quote=False)
+
+
+def md(s):
+    s = esc(s)
+    out, bold = [], False
+    i = 0
+    while i < len(s):
+        if s[i:i + 2] == "**":
+            out.append("</b>" if bold else "<b>")
+            bold = not bold
+            i += 2
+        else:
+            out.append(s[i]); i += 1
+    if bold:
+        out.append("</b>")
+    return "".join(out)
+
+
+TYPES = [
+    {
+        "num": "1", "center": "gut",
+        "quote": "나는 옳고 바르게 살고 싶고, 아이에게도 최선의 삶을 주고 싶어요.",
+        "traits": ["원칙이 확고하고 올바름을 중시", "책임감이 강하고 성실함", "계획적이고 체계적임",
+                   "자기 관리와 절제를 잘함", "완벽한 삶과 가치를 추구"],
+        "positive": ["올바른 가치관과 기준을 배워요.", "책임감과 성실함을 자연스럽게 배워요.",
+                     "목표를 세우고 노력하는 힘이 길러져요.", "신뢰할 수 있고, 약속을 잘 지켜요.",
+                     "도덕적이고 정직한 태도를 배워요."],
+        "shadow": ["너무 높은 기대와 기준을 느껴요.", "부모의 도덕적 우월감을 강요받을 수 있어요.",
+                   "자유로운 생각이나 행동이 제한될 수 있어요.", "실수에 대한 두려움과 죄책감을 느낄 수 있어요.",
+                   "완벽하지 않으면 사랑받지 못할까 봐 불안해요."],
+        "stress": ["실수나 게으름을 보면 매우 불안해요.", "무질서하고 비효율적인 상황을 견디기 힘들어요.",
+                   "자신의 기준에 미치지 못해 좌절해요.", "통제할 수 없는 상황에서 짜증이나 분노가 올라와요."],
+        "advice": ["완벽이 아니라 ‘충분히 좋은’ 부모가 되어도 괜찮아요.", "아이의 실수를 성장의 기회로 바라봐 주세요.",
+                   "다양한 가치관과 방식을 존중하는 연습을 해보세요.", "규칙보다 관계, 결과보다 과정을 더 소중히 여겨요."],
+        "strategy": ["아이의 장점을 구체적으로 칭찬해 주세요.", "기대치를 조금 낮추고, 과정을 인정해 주세요.",
+                     "선택권을 주고, 스스로 결정하게 도와주세요.", "규칙은 분명히 하되, 사랑은 충분히 표현하세요."],
+        "footer": "1번 엄마의 진심은 아이의 삶에 바른 방향과 단단한 신뢰를 선물합니다. 완벽이 아닌 ‘사랑을 전하는 올바름’이 될 때, 아이는 자유롭게 성장합니다.",
+    },
+    {
+        "num": "2", "center": "heart",
+        "quote": "나는 사랑하고 도움을 주며, 사람들의 삶을 더 따뜻하고 행복하게 만들고 싶어요.",
+        "traits": ["따뜻하고 배려심이 많음", "다른 사람의 필요를 잘 알아챔", "사랑과 인정을 베풀고자 함",
+                   "관계 지향적이고 정이 많음", "긍정적이고 낙천적", "거절을 두려워하고 인정을 추구함"],
+        "positive": ["아이에게 따뜻한 사랑과 관심을 주어요.", "아이의 정서적 안정과 자신감을 키워줘요.",
+                     "공감 능력과 배려심을 자연스럽게 배워요.", "타인을 돕는 기쁨과 나눔의 가치를 배워요.",
+                     "가족 간의 유대감과 친밀감을 느껴요."],
+        "shadow": ["과잉보호로 자녀가 의존적이 될 수 있어요.", "아이들은 엄마가 나를 지배하고 조종한다고 느낄 수 있어요.",
+                   "엄마가 부정적인 감정 표현을 어려워함으로써 아이들이 엄마의 감정을 혼란스러워 할 수 있어요.",
+                   "사랑받기 위해 하는 칭찬이 아이에게는 진정성 없는 모습으로 보일 수 있어요.",
+                   "엄마가 인정받지 못한다고 느낄 때 그 감정이 아이들에게 죄책감으로 느껴질 수 있어요."],
+        "stress": ["감사나 인정을 받지 못할 때", "거절당하거나 무시당할 때", "다른 사람의 고통이나 힘든 상황을 볼 때",
+                   "완벽하게 도움을 주지 못한다고 느낄 때", "혼자라고 느낄 때"],
+        "advice": ["당신은 ‘주는 것’ 그 이상으로 가치 있는 존재예요.", "모두를 만족시킬 필요는 없어요.",
+                   "아이를 위한 사랑과 자신을 위한 사랑의 균형을 연습해 보세요.", "거절당해도 관계는 잘 유지될 수 있어요.",
+                   "도움을 주되, 집착하지 않도록 연습해 보세요."],
+        "strategy": ["아이의 감정과 필요를 먼저 묻고 반영해 주세요.", "아이가 스스로 선택하고 결정할 수 있도록 격려하세요.",
+                     "감사 표현을 요구하지 말고, 순수한 마음으로 베풀어 주세요.", "아이의 실패를 이해하고 있는 그대로 존중해 주세요.",
+                     "자신만의 시간과 취미를 통해 에너지를 회복하세요."],
+        "footer": "2번 엄마의 진심은 아이의 마음을 따뜻하게 만들고, 세상을 더 아름답게 만드는 큰 힘이 됩니다. 당신의 사랑은 이미 충분합니다.",
+    },
+    {
+        "num": "3", "center": "heart",
+        "quote": "나는 성취하고 인정받는 모습을 통해 아이에게 더 나은 삶의 모델이 되고 싶어요.",
+        "traits": ["성취 욕구가 강하고 목표 지향적", "효율적이고 실행력이 뛰어남", "인정받고 존경받는 모습을 추구",
+                   "매력적이고 사교적", "경쟁심과 성취 동기가 높음", "최고의 결과와 성공을 지향"],
+        "positive": ["아이에게 꿈과 목표의 중요성을 가르쳐요.", "성취를 위해 노력하는 모습을 보여줘요.",
+                     "자신감 있고 긍정적인 태도를 배워요.", "계획적이고 체계적인 습관을 길러줘요.",
+                     "사회에서 인정받는 경험을 할 기회를 줘요."],
+        "shadow": ["너무 높은 기대를 하여 아이에게 부담을 줄 수 있어요.", "성과나 결과에만 집중하여 과정의 가치를 놓칠 수 있어요.",
+                   "과도한 경쟁심으로 아이가 지치고 불안할 수 있어요.", "아이를 자신의 성공을 위한 수단으로 대할 수 있어요.",
+                   "아이의 감정보다 ‘잘하는 것’에만 관심을 가질 수 있어요."],
+        "stress": ["다른 부모들이 나보다 육아를 더 잘한다고 느낄 때", "나의 조언을 아이들이 무시할 때",
+                   "자녀가 결정을 내리는데 오랜 시간이 걸릴 때", "내 기대만큼 노력하지 않을 때",
+                   "항상 나만 책임을 다한다고 느낄 때", "가족과 함께 보낼 시간이 충분하지 않을 때"],
+        "advice": ["성과보다 존재 자체를 인정하고 사랑한다는 메시지를 자주 전해 주세요.", "결과보다 과정과 노력의 가치를 함께 나눠 주세요.",
+                   "완벽이 아닌 ‘충분히 좋은’ 부모가 되어도 괜찮아요.", "당신의 가치는 성과가 아니라 존재 그 자체에 있습니다."],
+        "strategy": ["아이의 다양한 강점을 발견하고 구체적으로 칭찬해 주세요.", "성취 외에도 감정 표현과 관계의 중요성을 가르쳐 주세요.",
+                     "실패 경험을 자연스럽게 받아들이고 함께 회복하는 연습을 하세요.", "아이의 목표를 아이 스스로 설정하고 결정할 수 있게 도와주세요."],
+        "footer": "3번 엄마의 진심은 아이가 ‘성공한 사람’이 되기를 바라는 것이 아니라, ‘행복하고 가치 있는 삶’을 살기를 바라는 데 있습니다.",
+    },
+    {
+        "num": "4", "center": "heart",
+        "quote": "나는 특별하고 감성이 풍부한 사람, 나만의 방식으로 사랑하고 싶어요.",
+        "traits": ["감수성이 풍부하고 섬세함", "깊은 공감과 진한 사랑", "창의적이고 독창적임",
+                   "진정성과 의미를 추구", "아름다움과 가치를 중시"],
+        "positive": ["아이의 감정을 잘 알아차리고 공감해요.", "아이에게 따뜻하고 깊은 사랑을 줘요.",
+                     "예술적 감각과 창의성으로 아이의 세계를 풍성하게 해줘요.", "진실하고 진정성 있는 관계를 중요하게 여겨요."],
+        "shadow": ["타인과 비교하는 습관으로 인해 내 자녀의 단점만 눈에 들어올 수 있어요.", "결핍의식이 아이에게 전이될 수 있어요.",
+                   "일관성 없는 감정기복이 아이를 지치고 피곤하게 만들 수 있어요."],
+        "stress": ["나만 이해받지 못한다고 느낄 때", "다른 사람과 비교되어 위축될 때", "아이의 행동이 내 감정에 영향을 줄 때",
+                   "나의 특별함이 사라지는 것 같을 때", "창의적 영감이 막혔을 때", "완벽한 분위기나 조건이 갖춰지지 않을 때"],
+        "advice": ["당신의 감성과 특별함은 아주 소중한 자산이에요.", "현실을 있는 그대로 바라보는 연습을 해보세요.",
+                   "감정에 휩쓸리지 말고 하던 일을 묵묵히 계속 하세요.", "취미, 예술 활동 등 창의적인 감정 분출구를 찾으세요.",
+                   "수면, 업무, 운동, 식단의 건강한 균형을 이루세요."],
+        "strategy": ["아이의 감정을 공감하되, 현실적인 해결책도 함께 제시해 주세요.", "일상 속 예술 활동을 함께하며 창의성을 키워주세요.",
+                     "아이가 자신의 감정을 건강하게 표현할 수 있도록 도와주세요.", "너무 완벽하려 하지 말고, ‘충분히 좋은 엄마’가 되어주세요.",
+                     "가족만의 의미 있는 추억을 꾸준히 만들어 주세요."],
+        "footer": "4번 엄마의 사랑은 아이의 마음을 예술처럼 아름답게 만듭니다.",
+    },
+    {
+        "num": "5", "center": "head",
+        "quote": "나는 깊이 이해하고 지혜를 나누는 사람, 아이의 성장을 조용히 돕는 엄마로 살고 싶어요.",
+        "traits": ["지적 호기심이 풍부하고 탐구적", "깊이 있는 사고와 통찰력이 뛰어남", "차분하고 관찰력이 좋음",
+                   "독립적이고 자율성을 중요시", "신중하고 실용적임", "진심이 담긴 헌신을 함"],
+        "positive": ["아이에게 깊이 있는 사고와 지적 호기심을 심어줘요.", "차분하고 안정적인 분위기로 아이에게 심리적 안전감을 줘요.",
+                     "아이의 독립성과 자기주도성을 키워줘요.", "신중하고 실용적인 조언으로 아이에게 현실적인 도움을 줘요.",
+                     "깊이 있는 대화로 아이의 사고력을 키워줘요."],
+        "shadow": ["감정을 표현하는 것이 서툴러 아이가 거리감을 느낄 수 있어요.", "지나치게 혼자만의 시간을 가지면 아이가 소외감을 느낄 수 있어요.",
+                   "완벽한 이해나 준비가 되지 않으면 행동을 미루는 경향이 있어요.", "지식이나 정보에 몰두하느라 아이의 감정이나 상황을 놓칠 수 있어요.",
+                   "과도한 분석과 걱정으로 쉽게 피로감을 느낄 수 있어요."],
+        "stress": ["너무 많은 정보를 처리하느라 지칠 때", "혼자만의 시간이 부족할 때", "아이의 감정 표현을 이해하기 어려울 때",
+                   "불필요한 간섭이라고 느낄 때", "아이의 반복적인 질문이나 요구에 에너지가 고갈될 때", "변화나 예측할 수 없는 상황이 생길 때"],
+        "advice": ["감정을 표현하는 연습이 아이와의 관계를 더 깊게 만들어줘요.", "완벽하지 않아도 지금의 모습으로 충분히 괜찮아요.",
+                   "아이의 감정과 필요에 더 민감하게 귀 기울여 주세요.", "지식만이 아니라 ‘사람’과의 연결에서 에너지를 얻는 연습을 해보세요.",
+                   "작은 순간에도 아이와 함께하는 시간을 소중히 여겨보세요."],
+        "strategy": ["아이의 질문을 귀찮아하지 말고, 함께 탐구하는 시간을 가져요.", "자녀가 따뜻함과 애정을 가슴으로 느낄 수 있도록 표현하세요.",
+                     "아이가 고민이나 감정을 털어놓을 때 들어주고 인정해 주세요.", "내가 지금 무슨 생각과 감정을 느끼는지 가족들에게 말해주세요."],
+        "footer": "5번 엄마의 사랑은 아이의 지적 성장을 깊이 있게 돕고, 아이가 스스로 세상을 이해하는 힘을 길러줍니다.",
+    },
+    {
+        "num": "6", "center": "head",
+        "quote": "나는 우리 가족이 안전하고 믿을 수 있는 환경에서 성장할 수 있도록 지켜주는 엄마이고 싶어요.",
+        "traits": ["책임감이 강하고 의무감이 높음", "가족의 안전과 안정을 최우선", "위험을 미리 예측하고 철저히 대비",
+                   "충성심이 강하고 신뢰를 중요시", "불확실한 상황에서 불안을 느낌", "신중하고 믿음직함"],
+        "positive": ["위기 상황에서도 아이가 안전하다고 느끼며 안정적으로 성장해요.", "신뢰와 약속의 중요성을 자연스럽게 배워요.",
+                     "계획적이고 준비된 환경에서 아이가 자신감을 키울 수 있어요.", "책임감과 성실함을 배우고, 타인을 배려하는 마음이 자라요.",
+                     "어려운 상황을 지혜롭게 대처하는 힘이 길러져요."],
+        "shadow": ["과도한 걱정과 불안이 아이에게 전이될 수 있어요.", "위험을 과장하여 아이의 도전을 막을 수 있어요.",
+                   "신뢰보다 의심이 앞서 아이와의 관계가 경직될 수 있어요.", "완벽한 준비를 요구하여 아이가 위축될 수 있어요.",
+                   "지나친 규칙을 고수하면 자녀의 자발성, 창의성, 세상을 탐구하는 욕구를 억누를 수 있어요."],
+        "stress": ["예상치 못한 일이 발생할 때", "아이의 안전이 위협받을 것 같을 때", "충분한 정보나 시간이 없이 빠른 결정을 내려야 할 때",
+                   "나의 노력을 당연한 것으로 여긴다고 느낄 때", "가족의 미래가 불안하게 느껴질 때", "예측하지 못한 상황이 반복될 때"],
+        "advice": ["불안을 느낄 때 호흡을 깊게 하며 마음을 평온하게 만드세요.", "완벽한 통제보다 ‘적절한 준비’에 집중하세요.",
+                   "신뢰를 기반으로 아이에게 자율성을 점차 넓혀 가세요.", "현재에 집중하고 평범하고 평화로운 순간을 즐기세요.",
+                   "불안을 나누고 지지받을 수 있는 관계를 만드세요."],
+        "strategy": ["통제하려는 태도를 내려놓으세요.", "아이가 가진 열정과 설렘을 먼저 격려하고 인정하세요.",
+                     "결정을 내릴 때 정보 수집 시간을 제한하세요.", "객관적인 사실과 두려움(상상) 리스트를 작성하여 분리하세요."],
+        "footer": "6번 엄마의 사랑은 ‘불안’이 아닌 ‘신뢰’로 자랄 때, 아이는 세상을 믿고 당당하게 나아갈 수 있습니다.",
+    },
+    {
+        "num": "7", "center": "head",
+        "quote": "우리 가족의 매일이 새로운 모험이고, 행복한 추억으로 가득하길 바라요!",
+        "traits": ["밝고 낙천적이며 긍정적임", "새로운 경험을 좋아하고 호기심이 많음", "사람들과 어울리는 것을 즐기고 사교적임",
+                   "재미와 즐거움을 추구함", "자유롭고 유연한 사고방식", "미래 지향적이며 가능성을 봄"],
+        "positive": ["아이에게 긍정적이고 즐거운 에너지를 전달해요.", "아이의 호기심과 탐구심을 자극해요.",
+                     "다양한 경험과 기회를 제공해 아이가 넓은 시야를 갖게 도와요.", "아이와 함께 즐거운 시간을 보내며 추억을 많이 만들어요.",
+                     "아이에게 자유롭고 유연한 사고방식을 길러줘요."],
+        "shadow": ["바쁘고 산만하여 아이에게 일관성이 부족할 수 있어요.", "재미와 즐거움에 집중해 중요한 문제를 회피할 수 있어요.",
+                   "감정의 깊이보다 즉각적인 즐거움을 우선할 수 있어요.", "약속이나 계획을 자주 바꿔 아이가 불안정함을 느낄 수 있어요.",
+                   "아이의 어려운 감정이나 문제 상황을 가볍게 넘길 수 있어요."],
+        "stress": ["지속적이고 규칙적인 일을 해야 할 때", "아이의 부정적인 감정이나 문제 상황을 대할 때",
+                   "현실적이고 무거운 책임감으로 내가 제한당할 때", "삶이 자극, 신선함 없이 흘러갈 때", "취미·사고 등 나의 자유가 제한당할 때"],
+        "advice": ["지금 이 순간에 집중하는 연습을 해보세요.", "감정의 깊이를 인정하고, 어려운 감정도 함께 머물러 주세요.",
+                   "약속과 계획을 소중히 지키는 연습을 통해 신뢰를 쌓아가세요.", "아이의 감정을 가볍게 넘기지 말고, 공감하고 함께 해결해 주세요.",
+                   "작은 일상 속에서 감사와 만족을 찾아보세요."],
+        "strategy": ["아이의 감정을 온전히 담아주세요.", "일상의 루틴을 지켜주세요.", "시작한 일은 끝까지 마무리 하세요.",
+                     "온 마음을 다해 경청하세요.", "가족 모두가 아무것도 하지 않는 쉼의 시간을 일정에 넣으세요."],
+        "footer": "7번 엄마의 사랑은 ‘오늘’을 즐기면서도 ‘내일’을 꿈꾸게 하며, 아이가 세상을 긍정적으로 탐험할 수 있는 용기를 심어줍니다.",
+    },
+    {
+        "num": "8", "center": "gut",
+        "quote": "나는 우리 가족을 누구보다 강하게 지키고, 아이들이 세상에서 당당하게 살아가길 바랍니다.",
+        "traits": ["강인하고 결단력 있음", "보호 본능이 강하고 가족을 지키려 함", "목표지향적이고 실행력이 뛰어남",
+                   "카리스마 있고 영향력이 큼", "공정함을 중요시하고 정의감이 강함", "진심과 의리를 소중히 여김"],
+        "positive": ["단단한 보호와 지지 속에서 안전감을 느껴요.", "자신감 있고 독립적인 아이로 성장해요.",
+                     "어떤 어려움에도 맞설 수 있는 용기와 강한 내면을 길러요.", "목표를 세우고 이루는 힘을 배워요.",
+                     "정의롭고 공정한 가치관을 배우며 바르게 성장해요."],
+        "shadow": ["지나치게 통제하면 아이가 위축되거나 반항심을 가질 수 있어요.", "감정을 강하게 표현해 아이가 위협감을 느낄 수 있어요.",
+                   "약점이나 실수를 용납하지 않으면 아이가 완벽주의에 빠질 수 있어요.", "아이의 의견을 무시하면 소통이 단절될 수 있어요.",
+                   "권위적인 태도가 아이의 자율성과 창의성을 억누를 수 있어요."],
+        "stress": ["지속적인 저항이나 도전을 받을 때", "내 의견이나 결정이 무시당하거나 존중받지 못한다고 느낄 때",
+                   "불공정하거나 부당한 상황을 목격할 때", "통제할 수 없거나 힘이 없다고 느낄 때",
+                   "가족이나 타인에게 의존하거나 약한 모습을 보여야 할 때"],
+        "advice": ["감정을 인식하고 부드럽게 표현하는 연습을 하세요.", "통제보다 신뢰와 위임을 선택하세요.",
+                   "아이의 약점도 인정하고 받아들이세요.", "아이의 감정과 의견을 존중하며 경청하세요.", "완벽보다 과정과 노력을 칭찬하세요."],
+        "strategy": ["자녀와 대화할 때 에너지와 목소리 톤을 낮추세요.", "나의 취약함을 가족과 공유하세요.",
+                     "모든 말다툼에서 반드시 이겨야 한다는 강박을 버리세요.", "가정에서 무언가를 계획할 때 자녀들을 적극적으로 동참시키세요.",
+                     "부드러움은 나약함이 아니라 하나의 강점임을 인정하세요.", "분노가 치밀어 오를 때는 5초간 멈추세요."],
+        "footer": "8번 엄마의 사랑은 ‘강함’ 속의 ‘따뜻함’입니다. 아이는 그 사랑을 통해 세상에서 가장 든든한 용기를 얻습니다.",
+    },
+    {
+        "num": "9", "center": "gut",
+        "quote": "우리 가족의 평화가 내 원동력이에요. 모두가 편안하고 행복하길 바라요.",
+        "traits": ["평화롭고 온화함", "조화를 중요시하고 갈등을 피함", "포용력 있고 이해심이 많음",
+                   "안정과 편안함을 추구함", "긍정적이고 낙관적임", "누구에게나 친절하고 배려심 깊음"],
+        "positive": ["안정감과 편안함 속에서 성장해요.", "모두가 소중한 존재임을 느껴요.",
+                     "다른 사람을 존중하고 배려하는 마음을 배워요.", "가족의 조화와 협력을 중요하게 생각해요.",
+                     "평화로운 환경에서 자신감을 키워요."],
+        "shadow": ["갈등을 피하려다 아이의 문제를 미루거나 회피할 수 있어요.", "아이의 요구에 쉽게 ‘예’라고 하여 일관성이 부족할 수 있어요.",
+                   "자신의 의견보다 남의 의견을 우선할 수 있어요.", "변화를 두려워하고 새로운 도전을 망설일 수 있어요.",
+                   "자신의 감정보다 타인의 감정을 더 중요하게 여길 수 있어요."],
+        "stress": ["갈등이나 대립 상황에 직면할 때", "여러 가지 선택을 해야 할 때", "변화나 새로운 도전을 해야 할 때",
+                   "가족 구성원의 불화나 갈등을 볼 때", "나의 의견이나 감정을 표현해야 할 때"],
+        "advice": ["자신의 감정과 욕구를 인정하고 존중하세요.", "작은 변화부터 천천히 시도해 보세요.", "‘아니요’라고 말하는 연습을 하세요.",
+                   "갈등을 피하기보다 건강하게 해결하는 경험을 쌓으세요.", "자신의 목소리를 내는 것이 가족에게도 도움이 됨을 기억하세요."],
+        "strategy": ["아이의 감정을 충분히 들어주고 공감하세요.", "명확한 규칙과 일관된 기준을 세우세요.",
+                     "가족 회의를 통해 모두의 의견을 나누는 시간을 가지세요.", "아이와 적극적인 놀이를 하거나 밀도 높은 대화에 참여하세요.",
+                     "일상의 작은 성취를 함께 축하하고 인정해 주세요."],
+        "footer": "9번 엄마의 사랑은 ‘평화’ 속의 ‘따뜻함’입니다. 아이는 그 사랑을 통해 세상에서 가장 안전한 쉼터를 경험합니다.",
+    },
+]
+
+
+def chips(items):
+    return "".join(f'<span class="chip">{esc(x)}</span>' for x in items)
+
+
+def bullets(items, cls):
+    return "".join(f'<li>{md(x)}</li>' for x in items)
+
+
+def render_type(t):
+    c = t["center"]
+    return f'''
+<section class="type {c}">
+  <div class="t-head">
+    <div class="badge">{t["num"]}</div>
+    <div class="t-titlewrap">
+      <div class="t-title">{t["num"]}번 유형 엄마</div>
+      <div class="t-meta"><b>{esc(CENTER_LABEL[c])}</b>&nbsp;&nbsp;·&nbsp;&nbsp;핵심 감정 <b>{esc(EMOTION[c])}</b></div>
+    </div>
+  </div>
+  <div class="t-rule"></div>
+  <div class="quote">“{esc(t["quote"])}”</div>
+
+  <div class="sec-lab"><span class="mk"></span><span class="tx">핵심 특징</span></div>
+  <div class="traits">{chips(t["traits"])}</div>
+
+  <div class="sec-lab"><span class="mk"></span><span class="tx">강점과 그림자</span><span class="sub">아이가 받는 영향</span></div>
+  <div class="duo">
+    <div class="col pos">
+      <div class="col-h"><span class="m"></span>아이가 받는 긍정적 영향</div>
+      <ul class="ilist">{bullets(t["positive"], "pos")}</ul>
+    </div>
+    <div class="col shd">
+      <div class="col-h"><span class="m"></span>주의해야 할 그림자</div>
+      <ul class="ilist">{bullets(t["shadow"], "shd")}</ul>
+    </div>
+  </div>
+
+  <div class="sec-lab"><span class="mk"></span><span class="tx">스트레스 &amp; 성장 전략</span></div>
+  <div class="trio">
+    <div class="tcol">
+      <div class="tcol-h"><span class="d"></span>스트레스 포인트</div>
+      <ul class="tlist">{bullets(t["stress"], "t")}</ul>
+    </div>
+    <div class="tcol">
+      <div class="tcol-h"><span class="d"></span>성장을 위한 조언</div>
+      <ul class="tlist">{bullets(t["advice"], "t")}</ul>
+    </div>
+    <div class="tcol">
+      <div class="tcol-h"><span class="d"></span>실천 양육 전략</div>
+      <ul class="tlist">{bullets(t["strategy"], "t")}</ul>
+    </div>
+  </div>
+
+  <div class="summary">{md(t["footer"])}</div>
+</section>'''
+
+
+COVER = '''
+<section class="cover">
+  <div class="cover-top">
+    <div class="kicker">ENNEAGRAM&nbsp;FOR&nbsp;RESTORATION</div>
+    <div class="org-ko">에니어그램 포 레스토레이션 (ER)</div>
+  </div>
+  <div class="cover-mid">
+    <div class="cover-title">엄마 유형<br>특징 정리</div>
+    <div class="cover-sub">에니어그램 1–9번 유형 · 강점과 그림자, 그리고 성장</div>
+    <div class="cover-line"></div>
+    <div class="cover-desc">아홉 가지 엄마의 마음에는 저마다 고유한 빛과 그림자가 있습니다.<br>
+      내 유형의 강점을 살리고 그림자를 보듬으며, 아이에게 더 따뜻하게 다가가기 위한 자료입니다.</div>
+  </div>
+  <div class="cover-bottom">
+    <div class="cover-tag">부모용 자기 이해 자료</div>
+    <div class="cover-legend">
+      <span class="lg gut"><span class="sw"></span>장형 · 분노</span>
+      <span class="lg heart"><span class="sw"></span>가슴형 · 수치심</span>
+      <span class="lg head"><span class="sw"></span>머리형 · 두려움</span>
+    </div>
+  </div>
+</section>'''
+
+
+INTRO = '''
+<section class="intro">
+  <h2 class="page-h">이 자료를 보는 법</h2>
+
+  <div class="readbox">
+    <div class="readbox-lab">먼저 기억해 주세요</div>
+    <p>에니어그램 유형은 사람을 하나의 틀에 가두기 위한 것이 아니라, 나의 마음을 더 잘 이해하기 위한 ‘렌즈’입니다.
+    아래의 ‘그림자’는 나쁜 것이 아니라, 강점이 지나치거나 스트레스를 받을 때 드러나는 또 다른 얼굴일 뿐입니다.</p>
+    <p>각 유형은 ‘N번 유형 엄마의 아름다운 가치’를 담은 한 문장으로 시작하며, 아래 여섯 가지 항목으로 정리되어 있습니다.</p>
+  </div>
+
+  <h3 class="sub-h">각 유형 페이지의 구성</h3>
+  <div class="guide-grid">
+    <div class="gcard"><div class="gn">①</div><div><b>핵심 특징</b><br><span>유형별 엄마의 대표적인 성향.</span></div></div>
+    <div class="gcard"><div class="gn">②</div><div><b>아이가 받는 긍정적 영향</b><br><span>아이가 자연스럽게 받는 강점.</span></div></div>
+    <div class="gcard"><div class="gn">③</div><div><b>주의해야 할 그림자</b><br><span>무의식적으로 나타날 수 있는 부분.</span></div></div>
+    <div class="gcard"><div class="gn">④</div><div><b>스트레스 포인트</b><br><span>엄마가 특히 힘들어지는 상황.</span></div></div>
+    <div class="gcard"><div class="gn">⑤</div><div><b>성장을 위한 조언</b><br><span>더 건강한 양육을 위한 방향.</span></div></div>
+    <div class="gcard"><div class="gn">⑥</div><div><b>실천 양육 전략</b><br><span>오늘부터 적용할 구체적인 방법.</span></div></div>
+  </div>
+
+  <h3 class="sub-h">세 가지 중심과 색 구분</h3>
+  <div class="center-legend">
+    <div class="cl gut"><div class="cl-bar"></div><div class="cl-tx"><b>장형 · 본능중심</b><span>1 · 8 · 9번 유형 — 핵심 감정 <em>분노</em></span></div></div>
+    <div class="cl heart"><div class="cl-bar"></div><div class="cl-tx"><b>가슴형 · 감정중심</b><span>2 · 3 · 4번 유형 — 핵심 감정 <em>수치심</em></span></div></div>
+    <div class="cl head"><div class="cl-bar"></div><div class="cl-tx"><b>머리형 · 이성중심</b><span>5 · 6 · 7번 유형 — 핵심 감정 <em>두려움</em></span></div></div>
+  </div>
+</section>'''
+
+
+CLOSING = '''
+<section class="guide">
+  <h2 class="page-h">마치며</h2>
+  <div class="close-lead">완벽한 엄마는 없습니다. 다만, <b>자신을 이해하는 엄마</b>가 있을 뿐입니다.</div>
+  <ul class="guide-list">
+    <li>모든 유형의 엄마에게는 고유한 <b>빛(강점)</b>과 <b>그림자</b>가 함께 있습니다. 둘 다 나의 일부입니다.</li>
+    <li>그림자를 발견하는 것은 나를 탓하기 위해서가 아니라, 강점을 더 잘 살리기 위해서입니다.</li>
+    <li>‘성장을 위한 조언’과 ‘실천 양육 전략’ 중 <b>오늘 한 가지</b>만 골라 작게 시작해 보세요.</li>
+    <li>유형은 고정된 운명이 아닙니다. 나를 알아차리는 그 순간부터 양육의 방향은 달라집니다.</li>
+  </ul>
+  <div class="closing">
+    당신이 자신의 마음을 이해할수록, 아이의 마음에도 더 깊이 가닿을 수 있습니다.
+    <span class="closing-org">— Enneagram for Restoration (ER)</span>
+  </div>
+</section>'''
+
+
+def build():
+    types_html = "".join(render_type(t) for t in TYPES)
+    doc = f'''<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>1–9번 엄마 유형 특징 정리 — Enneagram for Restoration</title>
+<style>
+{CSS}
+</style>
+</head>
+<body>
+<div class="footer">Enneagram&nbsp;for&nbsp;Restoration&nbsp;(ER)&nbsp;&nbsp;·&nbsp;&nbsp;1–9번 엄마 유형 특징 정리</div>
+{COVER}
+{INTRO}
+{types_html}
+{CLOSING}
+</body>
+</html>'''
+    with open(OUT, "w", encoding="utf-8") as f:
+        f.write(doc)
+    print("wrote", OUT, len(doc), "bytes")
+
+
+CSS = r'''
+@page { size: A4; margin: 13mm 14mm 16mm 14mm; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  color: #2b3441; font-size: 9.9pt; line-height: 1.5;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+b { font-weight: 700; }
+
+.gut   { --ac:#A85D32; --ac2:#8A4B27; --soft:#FAF3EC; --bd:#ECD7C4; }
+.heart { --ac:#A24E70; --ac2:#86405D; --soft:#FBEFF4; --bd:#ECD2DD; }
+.head  { --ac:#2E6A8E; --ac2:#275A78; --soft:#EDF3F8; --bd:#D1E0EC; }
+
+.footer {
+  position: fixed; left: 0; right: 0; bottom: 6.5mm; text-align: center;
+  font-size: 7.6pt; letter-spacing: .03em; color: #b6bcc6;
+}
+
+/* ---------- COVER ---------- */
+.cover { break-after: page; min-height: 252mm; display: flex; flex-direction: column; padding-top: 10mm; }
+.kicker { font-size: 9.5pt; letter-spacing: .34em; color: #8a93a0; font-weight: 600; }
+.org-ko { font-size: 9pt; color: #aab0ba; margin-top: 5px; letter-spacing: .02em; }
+.cover-mid { margin-top: 46mm; }
+.cover-title { font-size: 41pt; font-weight: 800; line-height: 1.16; color: #232c38; letter-spacing: -.01em; }
+.cover-sub { font-size: 13.5pt; color: #5a6472; margin-top: 14px; font-weight: 500; }
+.cover-line { width: 64px; height: 3px; background: #A85D32; margin: 22px 0; border-radius: 3px; }
+.cover-desc { font-size: 10.5pt; color: #717a87; line-height: 1.75; }
+.cover-bottom { margin-top: auto; }
+.cover-tag { font-size: 9.5pt; font-weight: 700; color: #4a5360; letter-spacing: .02em; }
+.cover-legend { margin-top: 12px; display: flex; gap: 20px; }
+.cover-legend .lg { font-size: 9pt; color: #6b7480; display: inline-flex; align-items: center; gap: 7px; font-weight: 500; }
+.cover-legend .sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+.cover-legend .gut   .sw { background: #A85D32; }
+.cover-legend .heart .sw { background: #A24E70; }
+.cover-legend .head  .sw { background: #2E6A8E; }
+
+/* ---------- shared headings ---------- */
+.page-h { font-size: 19pt; font-weight: 800; color: #232c38; margin: 2mm 0 6mm; letter-spacing: -.01em; }
+.sub-h { font-size: 11.5pt; font-weight: 700; color: #36404d; margin: 7mm 0 3.5mm; }
+
+/* ---------- INTRO ---------- */
+.intro { break-after: page; }
+.readbox { background: #f7f8fa; border: 1px solid #e7e9ee; border-left: 3px solid #A85D32; border-radius: 0 11px 11px 0; padding: 13px 17px 9px; }
+.readbox-lab { font-size: 8.4pt; font-weight: 800; letter-spacing: .08em; color: #A85D32; margin-bottom: 6px; }
+.readbox p { margin: 0 0 8px; font-size: 9.9pt; color: #4f5763; line-height: 1.68; }
+.readbox p:last-child { margin-bottom: 0; }
+.guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 16px; }
+.gcard { display: flex; gap: 10px; align-items: flex-start; padding: 8px 4px; border-bottom: 1px solid #eef0f3; }
+.gcard .gn { font-size: 13pt; font-weight: 800; color: #c2a98f; line-height: 1; width: 18px; flex: 0 0 auto; }
+.gcard b { font-size: 9.8pt; color: #2f3845; }
+.gcard span { font-size: 8.9pt; color: #828b97; }
+.center-legend { display: flex; flex-direction: column; gap: 8px; }
+.cl { display: flex; align-items: stretch; gap: 12px; background: var(--soft); border: 1px solid var(--bd); border-radius: 10px; padding: 11px 14px; }
+.cl-bar { width: 5px; border-radius: 4px; background: var(--ac); flex: 0 0 auto; }
+.cl-tx b { font-size: 10.4pt; color: var(--ac2); }
+.cl-tx span { display: block; font-size: 9pt; color: #6f7884; margin-top: 2px; }
+.cl-tx em { font-style: normal; font-weight: 700; color: var(--ac); }
+
+/* ---------- TYPE PAGE ---------- */
+.type { break-before: page; break-after: page; padding-top: 1mm; }
+.t-head { display: flex; align-items: center; gap: 13px; }
+.badge { width: 38px; height: 38px; border-radius: 10px; background: var(--ac); color: #fff;
+  font-weight: 800; font-size: 19pt; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+.t-title { font-size: 16pt; font-weight: 800; color: #262f3b; line-height: 1.12; letter-spacing: -.01em; }
+.t-meta { font-size: 8.8pt; color: #828b97; margin-top: 3px; }
+.t-meta b { color: var(--ac2); font-weight: 700; }
+.t-rule { height: 2.5px; background: var(--ac); margin: 9px 0 11px; border-radius: 3px; }
+
+.quote { background: var(--soft); border-left: 3px solid var(--ac); border-radius: 0 10px 10px 0;
+  padding: 11px 17px; font-size: 11pt; color: var(--ac2); font-weight: 600; line-height: 1.52; }
+
+.sec-lab { display: flex; align-items: center; gap: 8px; margin: 15px 0 7px; }
+.sec-lab .mk { width: 13px; height: 13px; border-radius: 4px; background: var(--ac); flex: 0 0 auto; }
+.sec-lab .tx { font-size: 11pt; font-weight: 800; color: #2c3540; letter-spacing: -.005em; }
+.sec-lab .sub { font-size: 8.5pt; color: #9aa2ad; font-weight: 500; margin-left: 1px; }
+
+.traits { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { background: var(--soft); border: 1px solid var(--bd); color: var(--ac2);
+  font-size: 9.4pt; font-weight: 600; padding: 6px 13px; border-radius: 999px; }
+
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.duo .col { border-radius: 11px; padding: 11px 15px 8px; }
+.duo .pos { background: var(--soft); border: 1px solid var(--bd); }
+.duo .shd { background: #f6f7f9; border: 1px solid #e9ebef; }
+.col-h { font-size: 9.9pt; font-weight: 800; margin: 0 0 6px; display: flex; align-items: center; gap: 7px; }
+.pos .col-h { color: var(--ac2); }
+.shd .col-h { color: #7c828c; }
+.col-h .m { width: 12px; height: 12px; border-radius: 4px; flex: 0 0 auto; }
+.pos .col-h .m { background: var(--ac); }
+.shd .col-h .m { background: #fff; border: 2px solid #bcbfc7; }
+.ilist { margin: 0; padding: 0; list-style: none; }
+.ilist li { position: relative; padding: 4px 0 4px 13px; font-size: 9.4pt; line-height: 1.5; }
+.ilist li::before { content: ''; position: absolute; left: 1px; top: 9.5px; width: 4px; height: 4px; border-radius: 50%; }
+.pos .ilist li { color: #3c4552; }
+.pos .ilist li::before { background: var(--ac); }
+.shd .ilist li { color: #565e6a; }
+.shd .ilist li::before { background: #bcc0c8; }
+
+.trio { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.tcol-h { font-size: 9.4pt; font-weight: 800; color: var(--ac2); margin: 0 0 5px; display: flex; align-items: center; gap: 6px; }
+.tcol-h .d { width: 7px; height: 7px; border-radius: 50%; background: var(--ac); flex: 0 0 auto; }
+.tlist { margin: 0; padding: 0; list-style: none; }
+.tlist li { position: relative; padding: 3.5px 0 3.5px 11px; font-size: 9pt; line-height: 1.48; color: #404956; }
+.tlist li::before { content: ''; position: absolute; left: 0; top: 8.5px; width: 3.5px; height: 3.5px; border-radius: 50%; background: #b9c0ca; }
+
+.summary { margin-top: 15px; background: var(--soft); border: 1px solid var(--bd); border-radius: 11px;
+  padding: 12px 18px; font-size: 9.7pt; color: #4a5460; line-height: 1.6; text-align: center; }
+.summary b { color: var(--ac2); }
+
+/* ---------- CLOSING ---------- */
+.close-lead { font-size: 11.5pt; color: #3c4552; line-height: 1.6; margin-bottom: 6mm; }
+.close-lead b { color: #A85D32; }
+.guide-list { margin: 0; padding: 0; list-style: none; }
+.guide-list li { position: relative; padding: 6px 0 6px 16px; font-size: 10pt; color: #3f4854; line-height: 1.62; border-bottom: 1px solid #eef0f3; }
+.guide-list li::before { content: ''; position: absolute; left: 0; top: 12px; width: 5px; height: 5px; border-radius: 50%; background: #c2c8d0; }
+.guide-list b { color: #36404d; }
+.closing { margin-top: 9mm; background: #f7f8fa; border: 1px solid #e9ebef; border-radius: 12px; padding: 16px 20px; font-size: 10pt; color: #4f5763; line-height: 1.7; text-align: center; }
+.closing-org { display: block; margin-top: 8px; font-size: 9pt; font-weight: 700; color: #8a93a0; letter-spacing: .01em; }
+'''
+
+if __name__ == "__main__":
+    build()

@@ -205,6 +205,32 @@
       txt("알고 있는 타입, 피드백 등", "Known type, feedback, etc.") +
       '"></textarea>' +
       "</div>" +
+      '<div class="grid gap-3 md:grid-cols-3">' +
+      '<div>' +
+      '<label for="experiment-accurate-parts" class="text-xs font-semibold text-gray-700">' +
+      txt("결과에서 맞았던 부분", "What felt accurate") +
+      "</label>" +
+      '<textarea id="experiment-accurate-parts" rows="3" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
+      txt("예: 관계에서 반복되는 패턴", "e.g. the relationship pattern") +
+      '"></textarea>' +
+      "</div>" +
+      '<div>' +
+      '<label for="experiment-inaccurate-parts" class="text-xs font-semibold text-gray-700">' +
+      txt("결과에서 틀렸던 부분", "What felt inaccurate") +
+      "</label>" +
+      '<textarea id="experiment-inaccurate-parts" rows="3" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
+      txt("예: 동기 설명, 하위유형", "e.g. motivation or subtype") +
+      '"></textarea>' +
+      "</div>" +
+      '<div>' +
+      '<label for="experiment-consultation-check" class="text-xs font-semibold text-gray-700">' +
+      txt("상담에서 꼭 확인해야 할 것", "Must-check in consultation") +
+      "</label>" +
+      '<textarea id="experiment-consultation-check" rows="3" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
+      txt("예: 2번과 9번 혼동", "e.g. 2 vs 9 confusion") +
+      '"></textarea>' +
+      "</div>" +
+      "</div>" +
       '<button type="button" id="experiment-submit-btn" class="w-full sm:w-auto bg-[#4a4540] hover:bg-[#3a3530] text-white font-bold py-3 px-8 rounded-full text-sm">' +
       txt("제출하기", "Submit") +
       "</button>" +
@@ -228,6 +254,9 @@
       var knownCore = ((document.getElementById("experiment-known-core") || {}).value || "").trim();
       var knownSubtype = ((document.getElementById("experiment-known-subtype") || {}).value || "").trim();
       var knownWing = ((document.getElementById("experiment-known-wing") || {}).value || "").trim();
+      var accurateParts = ((document.getElementById("experiment-accurate-parts") || {}).value || "").trim();
+      var inaccurateParts = ((document.getElementById("experiment-inaccurate-parts") || {}).value || "").trim();
+      var consultationCheck = ((document.getElementById("experiment-consultation-check") || {}).value || "").trim();
       var meta = getMeta();
       var participantName = meta && typeof meta.participantName === "string"
         ? meta.participantName.trim()
@@ -268,7 +297,12 @@
         note.slice(0, 4000),
         knownCore.slice(0, 30),
         knownSubtype.slice(0, 30),
-        knownWing.slice(0, 30)
+        knownWing.slice(0, 30),
+        {
+          accurateParts: accurateParts.slice(0, 2000),
+          inaccurateParts: inaccurateParts.slice(0, 2000),
+          consultationCheck: consultationCheck.slice(0, 2000),
+        }
       );
       var res = await window.supabaseClient
         .from("diagnostic_experiment_sessions")
@@ -291,13 +325,72 @@
     });
   }
 
-  function buildRow(meta, payload, selfAssessment, selfNote, knownCore, knownSubtype, knownWing) {
+  function roundPercent(value) {
+    if (!Number.isFinite(value)) return 0;
+    return Number(value.toFixed(2));
+  }
+
+  function buildTieBreakersUsed(tieSnapshot) {
+    var tie = tieSnapshot || {};
+    return Object.keys(tie)
+      .filter(function (key) {
+        return tie[key] && tie[key].enabled === true;
+      })
+      .map(function (key) {
+        var item = tie[key] || {};
+        var out = { key: key };
+        if (Number.isFinite(Number(item.weight))) out.weight = Number(item.weight);
+        if (item.margin !== undefined && item.margin !== null) out.margin = item.margin;
+        if (item.typeA !== undefined && item.typeA !== null) out.typeA = item.typeA;
+        if (item.typeB !== undefined && item.typeB !== null) out.typeB = item.typeB;
+        return out;
+      });
+  }
+
+  function buildExperimentAnalyticsPayload(payload) {
+    var ranked = payload.ranked || [];
+    var top3Total = payload.top3Total || 0;
+    var phase4 = payload.phase4 || null;
+    var second = payload.second || ranked[1] || null;
+
+    return {
+      result: {
+        core: payload.core || null,
+        subtype: phase4 && phase4.subtypeCode ? phase4.subtypeCode : null,
+        wing: phase4 && phase4.wingNum ? phase4.wingNum : null,
+        confidence: payload.confidence || payload.confidenceLabel || null,
+        coreResolved: !!payload.coreResolved,
+        reportKey: payload.reportKey || null,
+      },
+      rankedTop3: ranked.slice(0, 3).map(function (x) {
+        return {
+          type: x.type,
+          score: x.score,
+          share: top3Total > 0 ? roundPercent((x.score / top3Total) * 100) : 0,
+        };
+      }),
+      topPair: {
+        first: ranked[0] ? ranked[0].type : payload.core || null,
+        second: second ? second.type : null,
+        diff: payload.diff !== undefined ? payload.diff : null,
+      },
+      responseQuality: payload.responseQuality || null,
+      scoringAxes: payload.scoringAxes || null,
+      tieBreakersUsed: buildTieBreakersUsed(payload.tieSnapshot),
+      stateStressAdjustment: payload.stateStressAdjustment || null,
+      phase4Result: phase4,
+      timings: payload.responseTiming || null,
+    };
+  }
+
+  function buildRow(meta, payload, selfAssessment, selfNote, knownCore, knownSubtype, knownWing, feedbackDetail) {
     var ranked = payload.ranked || [];
     var top3 = ranked.slice(0, 3).map(function (x) {
       var total = payload.top3Total || 0;
       var pct = total > 0 ? ((x.score / total) * 100).toFixed(2) : "0";
       return { type: x.type, score: x.score, relative_pct: pct };
     });
+    var feedback = feedbackDetail || {};
 
     return {
       participant_name: String(meta.participantName || "").trim(),
@@ -320,11 +413,27 @@
         diff_ratio: payload.diff,
         core_resolved: payload.coreResolved,
         phase4: payload.phase4 || null,
+        response_quality: payload.responseQuality || null,
+        confidence_explanation: payload.confidenceExplanation || null,
+        scoring_axes: payload.scoringAxes || null,
+        experiment_payload: buildExperimentAnalyticsPayload(payload),
+        feedback_detail: {
+          confirmed_type: {
+            core: knownCore || null,
+            subtype: knownSubtype || null,
+            wing: knownWing || null,
+          },
+          accurate_parts: feedback.accurateParts || null,
+          inaccurate_parts: feedback.inaccurateParts || null,
+          consultation_check: feedback.consultationCheck || null,
+        },
       },
       tie_break_log: {
         tie: payload.tieSnapshot || {},
         post_tie_applied: !!payload.postTieApplied,
         recent_stress: payload.recentStress,
+        response_timing: payload.responseTiming || null,
+        state_stress_adjustment: payload.stateStressAdjustment || null,
       },
       evidence: payload.evidence || {},
       self_assessment: selfAssessment,
@@ -382,5 +491,9 @@
   window.ERDiagnosticExperiment = {
     isExperimentMode: isExperimentMode,
     onResultReady: onResultReady,
+    _test: {
+      buildExperimentAnalyticsPayload: buildExperimentAnalyticsPayload,
+      buildRow: buildRow,
+    },
   };
 })();

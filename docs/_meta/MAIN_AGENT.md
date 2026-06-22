@@ -5,10 +5,13 @@
 ## Cold-start 체크리스트 (매 세션)
 
 1. `git fetch origin && git branch -a` — 열린 feature 브랜치·최근 커밋
-2. `gh pr list --state open` — 머지 대기 PR (PR **Read & write** 권한 필요)
-3. [docs/_meta/enneagram/WORK_STATUS.md](./enneagram/WORK_STATUS.md) — 에니어그램 자동화 일시정지·락 여부
-4. [docs/_meta/enneagram/HISTORY.md](./enneagram/HISTORY.md) — 최근 10줄 (다른 agent wakeup 로그)
-5. 사용자 **명시 요청** 범위만 구현 (자동화 프로젝트와 충돌 시 WORK_STATUS 확인)
+2. [DEPLOY_LEDGER.md](./DEPLOY_LEDGER.md) — **live vs main drift** (site / test runtime 분리 확인)
+3. [DEPLOY_REQUEST_PROTOCOL.md](./DEPLOY_REQUEST_PROTOCOL.md) — Codex/Claude 배포 요청 (CLI / label / `/deploy` comment)
+4. `gh pr list --state open` — 머지 대기 PR
+5. [docs/_meta/enneagram/WORK_STATUS.md](./enneagram/WORK_STATUS.md) — 에니어그램 자동화 일시정지·락 여부
+6. [docs/_meta/enneagram/HISTORY.md](./enneagram/HISTORY.md) — 최근 10줄 (다른 agent wakeup 로그)
+7. 사용자 **명시 요청** 범위 + deploy **track** (`site` | `test` | `supabase`) 선언
+8. 자동화 프로젝트와 충돌 시 WORK_STATUS 확인. test deploy는 [DEPLOYMENT_SAFETY.md](./DEPLOYMENT_SAFETY.md) 준수
 
 ## 다른 에이전트가 남기는 흔적
 
@@ -79,8 +82,14 @@ git fetch origin main && git checkout main && git pull
 
 ## 배포
 
-- **Cloudflare Pages** — `main` 머지 시 자동 배포
-- 확인 URL: `https://er-coaching.com/…`
+- **GitHub Actions `Deploy Production`** (`.github/workflows/deploy-production.yml`) — **유일한 production deploy 경로**
+  - `main` merge path filter → site full / test-only bundle 자동
+  - `repository_dispatch` / `workflow_dispatch` / PR label `deploy/*` / comment `/deploy test`
+- **Codex/Claude** — merge handoff 후 `node scripts/submit_deploy_request.mjs --track … --by …` ([DEPLOY_REQUEST_PROTOCOL.md](./DEPLOY_REQUEST_PROTOCOL.md))
+- **메인 agent** — PR merge 조율, Actions run 성공 확인, ledger drift 수습. 로컬 wrangler 금지
+- **Secrets (사용자 1회):** `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+- **Cloudflare Pages git auto-deploy** 와 중복되면 하나만 사용 (Actions 권장)
+- 확인: `gh run list --workflow=deploy-production.yml` + `node scripts/verify_live_test_deploy.mjs --site https://er-coaching.com`
 
 ## 사용자에게 보고할 때
 

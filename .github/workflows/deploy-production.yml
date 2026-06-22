@@ -1,0 +1,315 @@
+# ER Website production deploy — site full / test-only bundle / agent deploy requests
+name: Deploy Production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'js/sections/**'
+      - 'child-type-test/**'
+      - 'css/style.css'
+      - 'apply.html'
+      - 'basic-course.html'
+      - 'parenting-workshop.html'
+      - 'parents-workshop.html'
+      - 'js/parents-workshop-promo.js'
+      - 'js/program-catalog.js'
+      - 'images/**'
+      - 'ER-logo-*.png'
+      - 'test.html'
+      - 'css/test.css'
+      - 'js/test.js'
+      - 'js/diagnostic-experiment.js'
+      - 'js/diagnostic-report-content.js'
+      - 'js/report-support-materials.js'
+      - 'test-results/**'
+      - 'wrangler.toml'
+      - 'scripts/build_test_only_deploy_bundle.mjs'
+      - 'scripts/build_site_only_deploy_bundle.mjs'
+      - 'scripts/check_premium_test_markers.mjs'
+      - 'scripts/deploy-tracks.mjs'
+      - 'scripts/verify_live_test_deploy.mjs'
+      - '.assetsignore'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Deploy track'
+        required: true
+        default: both
+        type: choice
+        options:
+          - site
+          - test
+          - both
+      ref:
+        description: 'Git ref to deploy'
+        required: false
+        default: main
+      requested_by:
+        description: 'Who requested (codex/claude/cursor/human)'
+        required: false
+        default: human
+      reason:
+        description: 'Short reason for audit log'
+        required: false
+        default: ''
+  repository_dispatch:
+    types: [deploy-request]
+  issue_comment:
+    types: [created]
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+env:
+  SITE_URL: https://er-coaching.com
+  WRANGLER_VERSION: '4.12.0'
+
+jobs:
+  resolve:
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip deploy]')
+    runs-on: ubuntu-latest
+    outputs:
+      track: ${{ steps.resolve.outputs.track }}
+      ref: ${{ steps.resolve.outputs.ref }}
+      requested_by: ${{ steps.resolve.outputs.requested_by }}
+      reason: ${{ steps.resolve.outputs.reason }}
+      sha: ${{ steps.resolve.outputs.sha }}
+      deploy_site: ${{ steps.resolve.outputs.deploy_site }}
+      deploy_test: ${{ steps.resolve.outputs.deploy_test }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Resolve deploy intent
+        id: resolve
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const event = context.eventName;
+            let track = 'skip';
+            let ref = 'main';
+            let requestedBy = 'github-actions';
+            let reason = '';
+            let deploySite = false;
+            let deployTest = false;
+            let sha = context.sha;
+
+            const applyTrack = (t) => {
+              if (t === 'site') { deploySite = true; track = 'site'; }
+              if (t === 'test') { deployTest = true; track = 'test'; }
+              if (t === 'both') { deploySite = true; deployTest = true; track = 'both'; }
+            };
+
+            if (event === 'workflow_dispatch') {
+              applyTrack(core.getInput('track') || 'both');
+              ref = core.getInput('ref') || 'main';
+              requestedBy = core.getInput('requested_by') || 'human';
+              reason = core.getInput('reason') || '';
+            } else if (event === 'repository_dispatch') {
+              const p = context.payload.client_payload || {};
+              applyTrack(p.track || 'both');
+              ref = p.ref || 'main';
+              requestedBy = p.requested_by || 'unknown';
+              reason = p.reason || '';
+            } else if (event === 'issue_comment') {
+              const body = (context.payload.comment.body || '').trim();
+              const m = body.match(/^\/deploy\s+(site|test|both)\b/i);
+              if (!m) {
+                core.info('Not a /deploy command — skipping.');
+              } else {
+                applyTrack(m[1].toLowerCase());
+                requestedBy = 'issue-comment';
+                reason = `comment by ${context.payload.comment.user.login}`;
+              }
+            } else if (event === 'pull_request') {
+              const pr = context.payload.pull_request;
+              if (!pr.merged) {
+                core.info('PR closed without merge — skipping.');
+              } else {
+                sha = pr.merge_commit_sha || context.sha;
+                const labels = (pr.labels || []).map((l) => l.name);
+                if (labels.includes('deploy/both')) applyTrack('both');
+                else {
+                  if (labels.includes('deploy/site')) deploySite = true;
+                  if (labels.includes('deploy/test')) deployTest = true;
+                  if (deploySite && deployTest) track = 'both';
+                  else if (deploySite) track = 'site';
+                  else if (deployTest) track = 'test';
+                }
+                requestedBy = 'pr-label';
+                reason = `merged PR #${pr.number}`;
+                ref = 'main';
+              }
+            } else if (event === 'push') {
+              const { execSync } = require('child_process');
+              const before = context.payload.before;
+              const after = context.sha;
+              let changed = '';
+              try {
+                changed = execSync(`git diff --name-only ${before} ${after}`, { encoding: 'utf8' });
+              } catch (e) {
+                changed = '';
+              }
+              const siteRe = /^(index\.html|js\/sections\/|child-type-test\/|css\/style\.css|apply\.html|basic-course|parenting|parents-workshop|js\/parents-workshop|js\/program-catalog|images\/|ER-logo-)/;
+              const testRe = /^(test\.html|css\/test\.css|js\/test\.js|js\/diagnostic-|js\/report-support|test-results\/)/;
+              if (siteRe.test(changed.split('\n').join('\n'))) deploySite = true;
+              for (const line of changed.split('\n')) {
+                if (siteRe.test(line)) deploySite = true;
+                if (testRe.test(line)) deployTest = true;
+              }
+              requestedBy = 'main-push';
+              reason = 'auto path filter on main merge';
+              if (deploySite && deployTest) track = 'both';
+              else if (deploySite) track = 'site';
+              else if (deployTest) track = 'test';
+            }
+
+            core.setOutput('track', track);
+            core.setOutput('ref', ref);
+            core.setOutput('requested_by', requestedBy);
+            core.setOutput('reason', reason);
+            core.setOutput('sha', sha);
+            core.setOutput('deploy_site', deploySite ? 'true' : 'false');
+            core.setOutput('deploy_test', deployTest ? 'true' : 'false');
+
+  deploy-test:
+    needs: resolve
+    if: needs.resolve.outputs.track != 'skip' && needs.resolve.outputs.deploy_test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Reject legacy test in repository
+        run: node --test tests/premium-test-guard.test.mjs
+
+      - name: Build test-only bundle
+        run: |
+          node scripts/build_test_only_deploy_bundle.mjs \
+            --base "$GITHUB_WORKSPACE" \
+            --source "$GITHUB_WORKSPACE" \
+            --out "$RUNNER_TEMP/er-deploy-bundle" \
+            --site "$SITE_URL"
+
+      - name: Deploy test-only bundle
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        working-directory: ${{ runner.temp }}/er-deploy-bundle
+        run: npx --yes wrangler@${{ env.WRANGLER_VERSION }} deploy
+
+      - name: Post-deploy verify (premium markers on live)
+        run: node "$GITHUB_WORKSPACE/scripts/verify_live_test_deploy.mjs" --site "$SITE_URL"
+
+  deploy-site:
+    needs: [resolve, deploy-test]
+    if: |
+      always() &&
+      needs.resolve.outputs.track != 'skip' &&
+      needs.resolve.outputs.deploy_site == 'true' &&
+      (needs.deploy-test.result == 'success' || needs.deploy-test.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Reject legacy test in repository
+        run: node --test tests/premium-test-guard.test.mjs
+
+      - name: Require live premium test before site-only deploy
+        if: needs.deploy-test.result == 'skipped'
+        run: |
+          node scripts/check_premium_test_markers.mjs --url "$SITE_URL/js/test.js" || {
+            echo "::error::Live test is legacy. Run deploy with track=test (or both) before site deploy."
+            exit 1
+          }
+
+      - name: Build site-only bundle (preserve live test runtime)
+        run: |
+          node scripts/build_site_only_deploy_bundle.mjs \
+            --source "$GITHUB_WORKSPACE" \
+            --out "$RUNNER_TEMP/er-site-bundle" \
+            --site "$SITE_URL"
+
+      - name: Deploy site-only bundle
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        working-directory: ${{ runner.temp }}/er-site-bundle
+        run: npx --yes wrangler@${{ env.WRANGLER_VERSION }} deploy
+
+      - name: Post-deploy landing verify
+        run: node "$GITHUB_WORKSPACE/scripts/verify_live_test_deploy.mjs" --site "$SITE_URL"
+
+  update-ledger:
+    needs: [resolve, deploy-site, deploy-test]
+    if: |
+      always() &&
+      needs.resolve.outputs.track != 'skip' &&
+      (needs.deploy-site.result == 'success' || needs.deploy-test.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Update deploy ledger
+        run: |
+          TRACK="${{ needs.resolve.outputs.track }}"
+          node scripts/update_deploy_ledger.mjs \
+            --track "$TRACK" \
+            --sha "${{ needs.resolve.outputs.sha }}" \
+            --method "GitHub Actions Deploy Production" \
+            --by "${{ needs.resolve.outputs.requested_by }}" \
+            --notes "${{ needs.resolve.outputs.reason }}"
+
+      - name: Commit ledger [skip deploy]
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/_meta/DEPLOY_LEDGER.md
+          git diff --cached --quiet && echo "No ledger changes" && exit 0
+          git commit -m "chore(deploy): update DEPLOY_LEDGER [skip deploy]"
+          git push
+
+  notify:
+    needs: [resolve, deploy-site, deploy-test, update-ledger]
+    if: always() && needs.resolve.outputs.track != 'skip'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summarize deploy result
+        run: |
+          {
+            echo "## Deploy Production summary"
+            echo "- track: ${{ needs.resolve.outputs.track }}"
+            echo "- requested_by: ${{ needs.resolve.outputs.requested_by }}"
+            echo "- reason: ${{ needs.resolve.outputs.reason }}"
+            echo "- site job: ${{ needs.deploy-site.result }}"
+            echo "- test job: ${{ needs.deploy-test.result }}"
+            echo "- ledger: ${{ needs.update-ledger.result }}"
+          } >> "$GITHUB_STEP_SUMMARY"

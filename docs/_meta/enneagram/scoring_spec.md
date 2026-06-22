@@ -3,7 +3,7 @@
 kb_id: enneagram_test_meta.scoring_spec
 title: "Scoring Specification — Wing %, Instinct %, 27 Subtype"
 created_at: "2026-05-07"
-last_updated: "2026-05-07"
+last_updated: "2026-06-21"
 retrieval_tags:
   - scoring_spec
   - wing_formula
@@ -15,7 +15,9 @@ retrieval_tags:
 
 # Scoring Specification
 
-본 문서는 Phase 3 의 신규 스코어링 공식 + 현재 `js/test.js` 의 audit 입니다. 상세 코드는 [PHASE_3_PLAN.md](./PHASE_3_PLAN.md) §1 의 Conventions 섹션 참조.
+본 문서는 Phase 3 의 신규 스코어링 공식 + `js/test.js` audit 입니다. 상세 코드는 [PHASE_3_PLAN.md](./PHASE_3_PLAN.md) §1 의 Conventions 섹션 참조.
+
+2026-06-20 운영 코드 기준 주의: 현재 `test.html`은 `js/test-scoring.js`를 로드하지 않고, 운영 결과는 `js/test.js` 내부 로직으로 생성된다. 따라서 아래 Phase 3 helper 공식은 검증된 참고 공식이지만, 운영 경로와 완전히 연결된 상태는 아니다. 현재 gap은 [CODE_GAP_AUDIT.md](./CODE_GAP_AUDIT.md)를 기준으로 추적한다.
 
 ## 1. 현재 스코어링 Audit (`js/test.js`)
 
@@ -25,7 +27,13 @@ retrieval_tags:
 - **6 페어 tie-breaker** — 36, 31, 71, 78, 18, 3sx + 7wing. `tbCustomMap` 으로 그 외 페어 fallback.
 - **보정 (corrections)** — sxDamp/sxBoost (Type 3 sx countertype 시드), soPenalty (so 의존 페널티), stressType1Damp/stressType7Boost (state vs trait 분리 시드).
 - **Confidence** — diff/top2Mass 기반 높음/보통/낮음.
-- **Center triad 가중치** — t2/t5/t8 응답이 해당 트라이어드 3 type 에 가산.
+- **Center triad 가중치** — `center_auto_1`~`center_auto_3`, `center_situation_1`~`center_situation_3` 강제선택 응답이 선택된 센터의 3 type 에 동일 가산. 센터 문항은 문항 간 상관성을 줄이기 위해 6개로 축소했고, 문항당 가중치는 `0.6`으로 낮게 유지한다.
+- **Instinct attention-bias 가중치** — `instinct_attention_1`은 `sp/sx/so` 중 실제로 먼저 주의를 두는 대상을 고르는 상황형 문항이며 선택된 본능에 `3.0`을 가산한다. 기존 리커트 본능 문항 9개는 유지한다.
+- **State stress adjustment** — `state_2w`, `state_defensive`, `state_unusual` 평균이 높고 6번이 1/5/9와 근접하면 6번 과대확정을 줄이기 위해 `appendStateAnxietyTieBreakersForType6`와 `applyStateStressAdjustment`를 적용한다.
+- **Dedicated high-risk tie-breakers** — 1↔6, 2↔9, 4↔7, 5↔9는 일반 `tbCustomMap` fallback보다 먼저 전용 상황형 문항을 연다. 특히 2↔9는 "필요한 존재로 남고 싶은 맞춤"과 "관계 긴장을 낮추기 위한 맞춤"을 분리한다.
+- **내부 점수 축 분리** — 운영 결과 모델에 `buildScoringAxesSnapshot`이 `centerScore`, `harmonicScore`, `hornevianScore`, `coreTypeScore`, `instinctScore`, `stateStressAdjustment`를 분리해 보관한다.
+- **Response quality snapshot** — `buildResponseQualitySnapshot`이 너무 빠른 응답, 직선 응답, `U` 과다, 센터-코어 불일치, 본능 불명확성을 판정한다. 이 값은 점수를 바꾸지 않고 결과 모델과 실험 데이터에 해석 품질 메타데이터로만 저장한다.
+- **Confidence explanation** — `buildConfidenceExplanation`이 1-2위 격차, 본능 선명도, 응답 품질, 센터-코어 일치 여부, 타이브레이커 적용 여부를 자연어 근거와 상담 확인 질문으로 변환한다.
 - **wingActivationRatio 0.85** — wing 활성화 임계.
 
 ### 약점 (Phase 3 가 보완)
@@ -39,6 +47,108 @@ retrieval_tags:
 ## 2. 신규 공식
 
 상세 코드는 [PHASE_3_PLAN.md](./PHASE_3_PLAN.md) §1.1 (Conventions/Core Formulas).
+
+### 2.0 운영 추가: Response Quality Snapshot
+
+`buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked, instinctPct, confidence })`는 다음 구조를 반환한다.
+
+```js
+{
+  level: "good" | "caution" | "low",
+  flags: [
+    { code: "too_fast_total", severity: "caution", label: "...", evidence: "..." }
+  ],
+  metrics: {
+    totalSeconds: 0,
+    avgSecondsPerAnswered: 0,
+    straightLineRatio: 0,
+    unknownRatio: 0,
+    centerCoreAligned: true,
+    instinctGap: 0
+  }
+}
+```
+
+현재 운영 기준:
+
+- `too_fast_total`: 20문항 이상 응답했고 문항당 평균 시간이 4초 미만.
+- `straight_lining`: 리커트 응답 중 같은 값 비율이 75% 이상.
+- `unknown_overuse`: `U` 응답 비율이 25% 이상.
+- `center_core_mismatch`: 최강 센터와 최종 코어 유형의 센터가 다르고 confidence가 높음이 아님.
+- `instinct_unclear`: 1위 본능이 35% 미만이거나 1-2위 격차가 10점 미만.
+
+응답 품질은 결과를 차단하거나 점수를 수정하지 않는다. 결과지/상담에서는 "해석 주의"와 확인 질문의 근거로 사용하고, 실험 row에는 `result_summary.response_quality`, `tie_break_log.response_timing`으로 보존한다.
+
+### 2.0.1 운영 추가: Confidence Explanation
+
+`buildConfidenceExplanation({ confidence, diff, core, second, instinctPct, responseQuality, tieState, stateStressAdjustment })`는 다음 구조를 반환한다.
+
+```js
+{
+  label: "신뢰도: 보통",
+  tone: "high" | "medium" | "low",
+  summary: "...",
+  requiresCare: false,
+  pairLabel: "4↔7",
+  reasons: ["4번과 7번 점수 차이가 4.0%로 근접합니다."],
+  consultationQuestions: ["무거운 감정이 올라올 때 ..."]
+}
+```
+
+초기 상담 확인 질문 맵은 `1↔6`, `2↔9`, `3↔6`, `3↔9`, `4↔7`, `5↔9`, `6↔8`, `7↔9`를 포함한다. 이 설명은 결과 점수를 수정하지 않고, 결과지의 `report-confidence` 섹션과 실험 row의 `result_summary.confidence_explanation`에 저장된다.
+
+### 2.0.2 운영 추가: Automatic-Reaction Copy Guardrail
+
+`docs/diagnostic_test_question_bank_full.md`에는 `자동반응 리라이팅 후보` audit 섹션을 둔다. 이 섹션은 production scoring을 바꾸지 않고, 다음 copy pass에서 검토할 위험 문항과 수정 방향을 관리한다.
+
+현재 guardrail 원칙:
+
+- Type 3: "가치" 일반어보다 `무능해 보였을까`, `결과로 유능함을 증명`, `실패 장면 replay` 언어를 우선한다.
+- Type 4: "자극/깊이 선호"보다 `결핍`, `빠진 느낌`, `감정 동일시`, `온전히 속하지 못함` 언어를 우선한다.
+- Type 6: "생각 많음"보다 `확인해야 안심`, `빠진 위험`, `다른 사람은 넘어가도 한 번 더` 언어를 우선한다.
+- Type 9: "착함/평화"보다 `불편함을 낮추기`, `미루기/흐리기`, `내 입장보다 긴장 완충` 언어를 우선한다.
+
+문항 copy 변경과 weight 변경은 같은 patch에서 처리하지 않는다. `tests/question-copy-regression.test.mjs`는 해당 audit 섹션과 우선순위 유형의 퇴보 표현을 회귀 검증한다.
+
+### 2.0.3 운영 추가: Situational Tie-breaker Coverage
+
+전용 타이브레이커는 상위 두 유형이 근접한 경우에만 노출된다. 현재 운영 경로는 다음 고위험 혼동쌍을 일반 fallback보다 먼저 처리한다.
+
+| Pair | State key | Question set | 분리 축 |
+|---|---|---|---|
+| 1↔6 | `t16` | `tb16` | 기준 미달을 바로잡으려는 반응 vs 빠진 위험을 확인해야 안심되는 반응 |
+| 2↔9 | `t29` | `tb29` | 필요한 존재/특별한 관계 의미 vs 마찰 완충/긴장 저하 |
+| 4↔7 | `t47` | `tb47` | 결핍과 감정 안으로 들어감 vs 갇힘을 피하고 가능성으로 전환 |
+| 5↔9 | `t59` | `tb59` | 에너지와 경계 보존 vs 관계 긴장 완충 |
+
+`tests/tie-breaker-routing.test.mjs`는 전용 routing, scoring, 결과 로그 문구가 유지되는지 검증한다.
+
+### 2.0.4 운영 추가: Experiment Analytics Payload
+
+실험 모드(`?experiment=1`) 제출 row는 Supabase 스키마 변경 없이 기존 JSON 필드인 `result_summary.experiment_payload`에 분석용 payload를 보존한다.
+
+```js
+{
+  result: { core, subtype, wing, confidence, coreResolved, reportKey },
+  rankedTop3: [{ type, score, share }],
+  topPair: { first, second, diff },
+  responseQuality,
+  scoringAxes,
+  tieBreakersUsed: [{ key, weight, margin, typeA, typeB }],
+  stateStressAdjustment,
+  phase4Result,
+  timings
+}
+```
+
+피드백 UI는 기존 자기평가/상담 확정 유형에 더해 다음 구조를 `result_summary.feedback_detail`로 저장한다.
+
+- `confirmed_type`: 상담자가 확정한 core/subtype/wing
+- `accurate_parts`: 결과에서 맞았던 부분
+- `inaccurate_parts`: 결과에서 틀렸던 부분
+- `consultation_check`: 상담에서 꼭 확인해야 할 것
+
+`tests/experiment-payload.test.mjs`는 이 payload와 피드백 구조가 유지되는지 검증한다.
 
 ### 2.1 Wing % 공식
 
@@ -120,13 +230,14 @@ retrieval_tags:
 
 countertype 9 개 — sx_1, sp_2, sp_3, sp_4, sx_5, sx_6, so_7, so_8, so_9.
 
-## 4. 마이그레이션 전략
+## 4. 마이그레이션 전략과 현재 상태
 
 - `js/test-scoring.js` 신규 — pure functions, 재사용/테스트 가능.
-- `js/test.js` 의 `renderResultFromScores` 가 `computeResult` 호출.
+- 원래 전략은 `js/test.js` 의 `renderResultFromScores` 가 `computeResult` 를 호출하는 구조였다.
 - 기존 single-instinct 텍스트 (`제 1본능: ...`) + binary wing 표시는 신규 % 형식과 병기 (Phase 5 에서 디자인 정리).
 - 기존 sxBoost/soPenalty 보정은 일단 유지 (Phase 4 에서 정리 검토).
 - Phase 4 가 `js/test.js` ↔ `js/app-adaptive.js` 중복 해소 시 test-scoring.js 가 단일 진입점.
+- 현재 운영 상태: `test.html`은 `js/test-scoring.js`를 로드하지 않으므로, helper를 운영 단일 진입점으로 쓰려면 재연결 작업이 필요하다.
 
 ## 5. 검증 케이스 (Phase 3.7 unit test)
 
