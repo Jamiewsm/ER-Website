@@ -57,7 +57,7 @@ function usage() {
 }
 
 function parseArgs(argv) {
-  const out = { site: DEFAULT_SITE, minChildBytes: 30000 };
+  const out = { site: DEFAULT_SITE, minChildBytes: 25000 };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--site') out.site = argv[++i];
