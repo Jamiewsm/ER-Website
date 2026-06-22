@@ -27,10 +27,10 @@ function renderCommunity() {
 
                 <div class="grid gap-5 md:grid-cols-4 mb-10 animate-fade-in-up">
                     ${[
-                        ['300명+', '지금까지 연결된 참여자'],
+                        ['400+', '지금까지 연결된 참여자'],
                         ['350회+', '누적 상담·코칭 세션'],
                         ['10곳', '협력 교회·기관'],
-                        ['20명+', '훈련·교육 참여자']
+                        ['100+', '훈련·교육 참여자']
                     ].map(([value, label]) => `
                         <div class="rounded-[2rem] border border-white/40 bg-er-base p-6 text-center shadow-soft floating-card">
                             <p class="text-3xl md:text-4xl font-extrabold text-er-dark">${value}</p>

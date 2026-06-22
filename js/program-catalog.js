@@ -29,7 +29,9 @@
     '커리어/소명 코칭': 'identity_session',
     '리더십/소명 코칭': 'coach_training',
     '회복 여정 8회': 'recovery_journey_8',
-    '회복 여정 4회': 'recovery_journey_4'
+    '회복 여정 4회': 'recovery_journey_4',
+    '회복 코칭 8회': 'recovery_journey_8',
+    '회복 코칭 4회': 'recovery_journey_4'
   };
 
   const JULY_BASIC_RECRUITMENT_END = '2026-07-05T23:59:59-07:00';
@@ -87,30 +89,30 @@
     },
     recovery_journey_4: {
       key: 'recovery_journey_4',
-      title: '회복 여정 패키지 (4회)',
-      shortTitle: '회복 여정 4회',
+      title: '회복 코칭 프로그램 (4회)',
+      shortTitle: '회복 코칭 4회',
       price: PRICING.recovery_journey_4,
-      category: '회복 여정 4회 ($300)',
+      category: '회복 코칭 4회 ($300)',
       track: 'paid',
       focus: 'recovery_journey_4',
       outcome: `4회 집중 코스 · 회당 ${perSession(PRICING.recovery_journey_4)} (단회 $80 대비 소폭 할인)`,
       reasonPrimary: '한 달 안에 패턴 인식부터 실행 루틴까지 이어가기 좋습니다.',
       reasonSecondary: '짧은 집중 코스로 회복 방향을 정착시키기 좋습니다.',
-      applyMessage: '회복 여정 4회 패키지 신청합니다.'
+      applyMessage: '회복 코칭 4회 프로그램 신청합니다.'
     },
     recovery_journey_8: {
       key: 'recovery_journey_8',
-      title: '회복 여정 패키지 (8회)',
-      shortTitle: '회복 여정 8회',
+      title: '회복 코칭 프로그램 (8회)',
+      shortTitle: '회복 코칭 8회',
       price: PRICING.recovery_journey_8,
-      category: '회복 여정 8회 ($480)',
+      category: '회복 코칭 8회 ($480)',
       track: 'paid',
       focus: 'recovery_journey_8',
       featured: true,
       outcome: `8회 심화 코스 · 회당 ${perSession(PRICING.recovery_journey_8)} · 가장 많이 선택`,
       reasonPrimary: '감정·관계·실행 루틴까지 이어지는 지속적 변화에 가장 적합합니다.',
       reasonSecondary: '단회 대비 가장 경제적이며, 회복이 습관으로 정착하기 좋습니다.',
-      applyMessage: '회복 여정 8회 패키지 신청합니다.'
+      applyMessage: '회복 코칭 8회 프로그램 신청합니다.'
     },
     couple_coaching: {
       key: 'couple_coaching',

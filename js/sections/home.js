@@ -34,7 +34,7 @@ function renderHome() {
     ];
 
     const stats = [
-        { value: '400+', label: '누적 수강생' },
+        { value: '400+', label: '누적인원' },
         { value: '98%', label: '만족도' },
         { value: '10년+', label: '전문가 경험' },
         { value: '4.9/5', label: '후기 평점' }
