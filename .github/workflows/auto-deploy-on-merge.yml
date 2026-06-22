@@ -7,7 +7,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  pull-requests: write
   actions: write
 
 concurrency:
@@ -58,17 +58,16 @@ jobs:
           fi
           echo "track=$TRACK" >> "$GITHUB_OUTPUT"
 
-      - name: Dispatch Deploy Production workflow
+      - name: Trigger Deploy Production workflow
         if: steps.labels.outputs.track != 'skip'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api "repos/${{ github.repository }}/dispatches" \
-            -f event_type=deploy-request \
-            -f "client_payload[track]=${{ steps.labels.outputs.track }}" \
-            -f client_payload[ref]=main \
-            -f client_payload[requested_by]=auto-merge \
-            -f "client_payload[reason]=merged PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+          gh workflow run deploy-production.yml \
+            -f track="${{ steps.labels.outputs.track }}" \
+            -f ref=main \
+            -f requested_by=auto-merge \
+            -f reason="merged PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
 
       - name: Comment deploy status on PR
         if: always()
