@@ -21,6 +21,8 @@
     '정체성 회복 코칭': 'identity_session',
     '정체성 발견 세션': 'identity_session',
     '유형(Typing) 상담': 'identity_session',
+    '테스트 결과지 해석상담': 'result_consult',
+    '결과지 해석상담': 'result_consult',
     '관계 패턴 코칭': 'coaching_single',
     'ER 전문가 양성반': 'coach_training',
     '에니어그램 기본과정 8주': 'basic_course',
@@ -39,8 +41,8 @@
   function withJulyBasicBoost(programNames) {
     if (!isJulyBasicRecruitmentOpen()) return programNames || [];
     const names = Array.from(programNames || []);
-    const filtered = names.filter((name) => resolveKey(name) !== 'basic_course');
-    return ['에니어그램 기본과정 8주', ...filtered].slice(0, 3);
+    const filtered = names.filter((name) => !['result_consult', 'basic_course'].includes(resolveKey(name)));
+    return ['테스트 결과지 해석상담', '에니어그램 기본과정 8주', ...filtered].slice(0, 3);
   }
 
   const PROGRAMS = {
@@ -65,10 +67,10 @@
       category: '테스트 결과지 해석상담 ($50)',
       track: 'paid',
       focus: 'result_consult',
-      outcome: '아이유형 테스트 결과지를 함께 보며 아이의 욕구·두려움과 양육 방향을 1시간 동안 정리합니다.',
-      reasonPrimary: '결과지에 나온 가능성 높은 유형이 우리 아이의 실제 모습과 맞는지 함께 확인합니다.',
-      reasonSecondary: '관찰된 패턴을 집에서 바로 적용할 수 있는 양육 언어로 풀어 드립니다.',
-      applyMessage: '아이유형 테스트 결과지 해석상담 신청합니다.'
+      outcome: '결과지를 함께 읽으며 핵심 유형, 하위유형, 날개, 신뢰도, 헷갈리는 유형을 1시간 동안 정리합니다.',
+      reasonPrimary: '결과지를 혼자 읽고 끝내지 않고, 내 실제 삶의 장면과 맞는지 가장 먼저 확인하는 단계입니다.',
+      reasonSecondary: '결과지의 핵심 문장과 점수 흐름을 상담자와 함께 정리하기 좋습니다.',
+      applyMessage: '테스트 결과지 해석상담 신청합니다.'
     },
     coaching_single: {
       key: 'coaching_single',

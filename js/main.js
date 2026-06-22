@@ -519,7 +519,7 @@
                             </div>
                             <div class="grid gap-6 md:grid-cols-3">
                                 ${[
-                                    { tag: 'Step 1', title: '정체성 발견 세션', body: '90분 만에 발견하는 나의 핵심 동기 · $100\n심층 인터뷰 + 핵심 동기/방어 패턴 분석' },
+                                    { tag: 'Step 1', title: '결과지 해석상담', body: '1시간 동안 결과지를 함께 읽기 · $50\n핵심 유형 + 하위유형 + 날개 + 신뢰도 정리' },
                                     { tag: 'Step 2', title: '개별 코칭 (1회 세션)', body: '60분 실전 코칭 · $80 / 1회\n관계·감정의 막힌 지점을 풀어내는 적용 코칭' },
                                     { tag: 'Step 3', title: '회복 여정 패키지 (8회)', body: '8회 패키지 · $600\n뿌리부터 바뀌는 지속적 변화 코스' }
                                 ].map(item => `
@@ -2006,7 +2006,9 @@
                     ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
                     : isOrgTrack
                         ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
-                        : ['정체성 발견 세션 ($100)', '개별 코칭 1회 ($80)', '회복 여정 4회 ($260)', '회복 여정 8회 ($600)', '부부 코칭 1회 ($220)'];
+                : (window.ERProgramCatalog && typeof window.ERProgramCatalog.getPaidCategoryOptions === 'function'
+                    ? window.ERProgramCatalog.getPaidCategoryOptions()
+                    : ['테스트 결과지 해석상담 ($50)', '유형(Typing) 상담 ($100)', '개별 코칭 1회 ($80)', '에니어그램 기본과정 8주 ($300)', '회복 여정 4회 ($300)', '회복 여정 8회 ($480)', '부부 코칭 1회 ($220)']);
 
             return `
                 <div class="bg-er-base min-h-screen py-20 px-4">
@@ -2020,7 +2022,7 @@
                             ${fromTest ? `
                                 <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
                                     <p class="text-sm font-bold text-er-dark mb-1">테스트 후 추천 트랙</p>
-                                    <p class="text-xs text-gray-600 break-keep">약식 테스트 결과를 바탕으로 정체성 발견 세션에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.</p>
+                                    <p class="text-xs text-gray-600 break-keep">테스트 결과지를 함께 읽으며 핵심 유형, 하위유형, 날개, 신뢰도, 헷갈리는 유형을 1시간 동안 정리해 드립니다.</p>
                                 </div>
                             ` : isSupportTrack ? `
                                 <div class="mb-6 p-4 rounded-2xl border border-er-accent/30 bg-er-accent/10">
@@ -2081,7 +2083,7 @@
                                 
                                 <div>
                                     <label class="block text-sm font-bold text-gray-700 mb-2">나누고 싶은 이야기</label>
-                                    <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n정체성 발견 세션 신청합니다.` : ""}</textarea>
+                                    <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${fromTest && testSummary ? `${testSummary}\n테스트 결과지 해석상담 신청합니다.` : ""}</textarea>
                                 </div>
 
                                 <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
@@ -3942,7 +3944,7 @@
                         { t: '나를 이해하는 회복 세션', d: '직장·사회관계, 중년/청소년기의 위기에서 내 반응의 뿌리를 이해하고 회복 방향을 함께 설계합니다.', i: 'fas fa-compass', f: 'personal' }
                     ],
                     cards: [
-                        { b: 'Step 1', t: '정체성 발견 세션', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$100', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
+                        { b: 'Step 1', t: '결과지 해석상담', d: '1시간 결과지 해석\n핵심 유형 + 하위유형 + 날개 + 신뢰도 + 헷갈리는 유형 정리', p: '$50', o: '혼자 읽고 끝내지 않고 실제 삶의 장면과 연결', i: 'fas fa-file-signature' },
                         { b: 'Step 2', t: '개별 코칭 (1회 세션)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$80 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
                         { b: 'Step 3', t: '회복 여정 패키지', d: '4회 패키지: $260\n8회 패키지: $600', p: '가장 많이 선택', o: '감정·관계·실행 루틴까지 이어지는 지속적 변화 정착', i: 'fas fa-layer-group', featured: true }
                     ]
