@@ -7,20 +7,19 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 
 ---
 
-## Live state (마지막 확인: 2026-06-21)
+## Live state (마지막 확인: 2026-06-22)
 
 | Surface | Git ref (의도) | Live SHA / fingerprint | Deployed at (UTC) | Method | Notes |
 |---------|----------------|------------------------|-------------------|--------|-------|
-| **Site** (landing, menu, home, child-type-test shell) | `origin/main` @ `6265d41` | landing marker OK (`유형검사`, `프리미엄 검사`, `child-type-test/…`) | 2026-06-21 (PR #60 merge 추정) | Cloudflare Pages — `main` auto-deploy | PR #60 `feat/child-type-test-phase0` merge 이후 |
-| **Test runtime** (`test.html`, `js/test.js`, `css/test.css`, experiment, report assets) | `origin/main` @ `6265d41` | `js/test.js` SHA-256 `f487e762…` (~202KB, legacy `t2` 문항) | 2026-06-21 (PR #60 merge 추정) | Cloudflare Pages — **full branch** | **프리미엄 test upgrade는 live에 없음** |
-| **Test runtime (대기 중)** | `origin/codex/er-test-quality-confidence-v2` @ `7163d0e` | `js/test.js` SHA-256 `8b7e5e4…` (~261KB, `buildResponseQualitySnapshot` 등) | (미배포) | — | PR #59 draft. merge 전 test-only bundle deploy 필요 |
+| **Site** (landing, menu, home, child-type-test shell) | `origin/main` @ `9b2339a` | 새 로고 24,903B, `home.js` mid-section logo 없음 | 2026-06-22 | wrangler site-only bundle (local OAuth) | PR #66 merge 후 복구 deploy |
+| **Test runtime** | `origin/main` @ `9b2339a` | `js/test.js` SHA-256 `81f85306428c…` (premium, `buildResponseQualitySnapshot`) | 2026-06-22 | wrangler test-only bundle (local OAuth) | legacy `t2` triad 없음 |
 | **Supabase Edge** | `main` / 별도 branch | (미기록) | — | `supabase functions deploy` | 웹 wrangler deploy 와 **분리** |
 
 ### Drift 요약
 
-- **Site:** `main` ≈ production (정상).
-- **Test runtime:** production = `main` (legacy). PR #59 프리미엄 test는 **branch에만 존재**.
-- **과거 사고 패턴:** 수동 test-only deploy로 premium test를 live에 올린 뒤, 나중에 `main` full auto-deploy가 legacy `main` test로 **덮어써 롤백**됨. 재발 방지 → [DEPLOYMENT_SAFETY.md](./DEPLOYMENT_SAFETY.md).
+- **Site + Test runtime:** 2026-06-22 local wrangler bundle deploy로 `main` (#66)과 live 동기화됨.
+- **CI deploy:** GitHub Secrets `CLOUDFLARE_API_TOKEN` 아직 없음 → Actions deploy는 secret 설정 후 사용.
+- **과거 사고 패턴:** full deploy / `.assetsignore` test 제외로 test 404 가능 → bundle prune + assetsignore 수정 (#67).
 
 ---
 
