@@ -153,6 +153,7 @@ jobs:
               track = inferred.track;
               requestedBy = 'main-push';
               reason = 'auto path inference on main push';
+            }
 
             core.setOutput('track', track);
             core.setOutput('ref', ref);
