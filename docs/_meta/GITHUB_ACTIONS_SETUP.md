@@ -61,5 +61,7 @@ gh run list --workflow=deploy-production.yml --limit 3
 
 | Workflow | Trigger |
 |----------|---------|
-| `deploy-production.yml` | main push (paths), dispatch, `/deploy`, PR label, `submit_deploy_request.mjs` |
+| `deploy-production.yml` | dispatch, main push (paths), `/deploy` comment |
+| `auto-deploy-on-merge.yml` | PR merged → deploy-request dispatch |
+| `pr-auto-deploy-label.yml` | PR open/sync → `deploy/*` 라벨 자동 |
 | `er-test-pr-review.yml` | PR touching test-runtime paths |

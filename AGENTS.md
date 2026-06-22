@@ -22,11 +22,9 @@
 3. `gh pr list --state open` — stale draft·위험 PR 확인
 4. 작업 **track** 선언: `site` | `test` | `supabase` 중 **하나**
 5. 다른 track 파일 touch 금지 (예: test PR에서 `index.html` / `js/sections/home.js` 수정 금지)
-6. **push·PR까지** — merge는 Cursor Cloud 메인. **배포 요청**은 merge 후 CLI로 CI에 위임 (사용자에게 "배포해줘" 요구 금지)
+6. **push·PR까지** — merge는 Cursor Cloud 메인. **merge 후 production deploy는 CI가 자동** (사용자·Cursor에게 "배포해줘" 금지)
 
-```bash
-node scripts/submit_deploy_request.mjs --track test --by codex --reason "PR #NNN merged"
-```
+PR이 `main`에 merge되면 `Auto Deploy On Merge` workflow가 track을 추론해 `Deploy Production`을 실행한다. Codex/Claude는 `submit_deploy_request.mjs`를 **merge 후 호출할 필요 없음** (복구·브랜치 preview만 예외).
 
 상세: [DEPLOY_REQUEST_PROTOCOL.md](./docs/_meta/DEPLOY_REQUEST_PROTOCOL.md)
 
@@ -38,7 +36,7 @@ node scripts/submit_deploy_request.mjs --track test --by codex --reason "PR #NNN
 | PR 생성 | ✅ | ✅ | ✅ | ✅ |
 | **PR merge** | ❌ | ❌ | **✅** | ❌ (기본) |
 | **`wrangler deploy`** | ❌ | ❌ | ❌ (CI가 실행) | ❌ |
-| **배포 요청 (`submit_deploy_request.mjs`)** | ✅ | ✅ | ✅ | ✅ |
+| **배포 요청 (`submit_deploy_request.mjs`)** | 복구·preview만 | 복구·preview만 | 복구만 | 복구만 |
 | **DEPLOY_LEDGER 갱신** | ❌ | ❌ | CI bot + 확인 | ❌ |
 
 ### Deploy track (PR 범위)

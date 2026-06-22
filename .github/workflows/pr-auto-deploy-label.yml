@@ -1,0 +1,39 @@
+# PR 열릴 때 변경 경로로 deploy/* 라벨 자동 부착 (Codex/Claude 수동 라벨 불필요)
+name: PR Auto Deploy Label
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Infer and apply deploy labels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR="${{ github.event.pull_request.number }}"
+          mapfile -t FILES < <(gh api "repos/${{ github.repository }}/pulls/${PR}/files" --paginate --jq '.[].filename')
+          RESULT=$(node scripts/infer_deploy_track.mjs --files "${FILES[@]}")
+          TRACK=$(echo "$RESULT" | jq -r .track)
+          echo "Inferred track: $TRACK"
+          if [ "$TRACK" = skip ]; then
+            echo "No deploy labels needed."
+            exit 0
+          fi
+          case "$TRACK" in
+            site)  gh pr edit "$PR" --add-label deploy/site ;;
+            test)  gh pr edit "$PR" --add-label deploy/test ;;
+            both)  gh pr edit "$PR" --add-label deploy/both ;;
+          esac
