@@ -91,7 +91,7 @@ test('buildConfidenceExplanation explains medium confidence and pair questions',
     tieState: { t47: { enabled: true } }
   })`, context);
 
-  assert.equal(result.label, '신뢰도: 보통');
+  assert.equal(result.label, '해석 신뢰도: 중간 이상');
   assert.equal(result.tone, 'medium');
   assert.ok(result.reasons.some((reason) => reason.includes('4번과 7번 점수 차이가 4.0%')));
   assert.ok(result.reasons.some((reason) => reason.includes('본능 점수는 비교적 선명합니다')));
@@ -119,10 +119,10 @@ test('buildConfidenceExplanation marks low quality and returns pair verification
     tieState: { t68: { enabled: true } }
   })`, context);
 
-  assert.equal(result.label, '신뢰도: 낮음');
+  assert.equal(result.label, '해석 신뢰도: 확인 필요');
   assert.equal(result.tone, 'low');
   assert.equal(result.requiresCare, true);
-  assert.ok(result.summary.includes('해석 주의'));
+  assert.ok(result.summary.includes('상담에서 함께 확인'));
   assert.ok(result.reasons.some((reason) => reason.includes('응답 품질 체크')));
   assert.ok(result.reasons.some((reason) => reason.includes('센터 응답과 코어 결과가 충돌')));
   assert.ok(result.consultationQuestions.some((question) => question.includes('강하게 맞설 때')));

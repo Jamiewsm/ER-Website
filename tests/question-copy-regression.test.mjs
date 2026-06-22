@@ -39,7 +39,7 @@ test('phase 1 and deep copy still avoids known regression phrases for priority t
 
   assert.doesNotMatch(phase1AndDeep, /자극이 필요|특별한 사람이라서|착한 사람|평화를 좋아해서/);
   assert.match(phase1AndDeep, /무능해 보였을까/);
-  assert.match(phase1AndDeep, /어딘가 빠져 있는 것|온전히 속하지 못한다/);
+  assert.match(phase1AndDeep, /무언가 충분하지 않다|온전히 속하지 못한다/);
   assert.match(phase1AndDeep, /빠진 게 있지 않을까|빠진 부분을 먼저 확인/);
   assert.match(phase1AndDeep, /이 불편함을 빨리 끝내고 싶다|분위기가 더 불편해지기 전에/);
 });

@@ -26,9 +26,9 @@ const TEST_UI = {
     step3Label: '3단계: 최종 타이브레이커',
     step4Label: '4단계: 하위유형 및 날개 확정',
     analysisReportTitle: '분석 리포트',
-    top3Title: '상위 3유형 상대 점유율 및 근거',
-    consultText: '현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 더 정확한 확인을 원하시면 무료 1:1 타이핑 세션에서 함께 정리해 드릴게요.',
-    consultBtn: '무료 1:1 세션 신청',
+    top3Title: '헷갈릴 수 있는 가까운 유형들',
+    consultText: '현재 결과는 1순위/2순위가 근접합니다. 결과지 해석상담에서 핵심 유형, 하위유형, 날개, 신뢰도, 헷갈리는 유형을 함께 정리해 드립니다.',
+    consultBtn: '결과지 해석상담 신청',
     shareBtn: '결과 공유하기',
     downloadPdf: '결과 PDF 다운로드',
     restart: '처음부터 다시하기',
@@ -713,7 +713,7 @@ const q1 = [
   { id:'c2_recall', type:2, scoreWeight:0.8, q:'관계에서 내가 줄 수 있는 역할이 사라지면, 내가 그 사람에게 어떤 의미인지 흔들리는 느낌이 든 적이 있다.' },
   { id:'c3', type:3, q:'어떤 결과물을 내놓았을 때, 주변 반응과 무관하게 스스로 이 정도면 됐다고 느끼는 순간이 잘 오지 않는 편이다.' },
   { id:'c3_recall', type:3, scoreWeight:0.8, q:'회의나 대화에서 실수한 뒤, 무능해 보였을까 봐 며칠 동안 그 장면을 반복해서 떠올린 적이 있다.' },
-  { id:'c4', type:4, scoreWeight:0.7, q:'행복한 순간에도, 어딘가 빠져 있는 것이 있다는 느낌이 쉽게 사라지지 않는 편이다.' },
+  { id:'c4', type:4, scoreWeight:0.7, q:'행복한 순간에도, 마음 한쪽에는 무언가 충분하지 않다는 느낌이 쉽게 사라지지 않는 편이다.' },
   { id:'c4_pain', type:4, scoreWeight:0.8, q:'힘든 감정이 올라오면 빨리 털어내기보다, 그 감정이 나를 설명하는 것 같아 오래 붙들게 되는 편이다.' },
   { id:'c4_unique', type:4, scoreWeight:0.5, q:'사람들과 잘 어울리고 있어도, 마음 한쪽에는 나만 온전히 속하지 못한다는 감각이 남아 있는 편이다.' },
   { id:'c5', type:5, q:'사람들과 오래 있고 나면, 감정 정리보다 내 에너지와 생각을 회수하고 싶다는 느낌이 먼저 오는 편이다.' },
@@ -2890,6 +2890,12 @@ function buildReportListItems(items) {
   return (items || []).map((item) => `<li>${escapeReportHtml(item)}</li>`).join('');
 }
 
+function getReportConfidenceDisplay(confidence) {
+  if (confidence === '높음') return '높음';
+  if (confidence === '낮음') return '확인 필요';
+  return '중간 이상';
+}
+
 function buildReportSupportSelection(resultData, instinctRows) {
   const supportApi = window.ERReportSupportMaterials;
   if (!supportApi || typeof supportApi.selectSupportMaterials !== 'function') {
@@ -3152,7 +3158,8 @@ function getInstinctClarity(instinctPct, responseQuality) {
 }
 
 function buildConfidenceExplanation({ confidence, diff, core, second, instinctPct, responseQuality, tieState, stateStressAdjustment }) {
-  const label = `신뢰도: ${confidence || '보통'}`;
+  const displayConfidence = getReportConfidenceDisplay(confidence || '보통');
+  const label = `해석 신뢰도: ${displayConfidence}`;
   const tone = confidence === '높음' ? 'high' : confidence === '낮음' ? 'low' : 'medium';
   const secondType = second && second.type ? Number(second.type) : null;
   const pairKey = getTypePairKey(core, secondType);
@@ -3216,10 +3223,10 @@ function buildConfidenceExplanation({ confidence, diff, core, second, instinctPc
 
   const requiresCare = tone === 'low' || quality.level === 'low';
   const summary = requiresCare
-    ? '해석 주의: 결과를 확정값으로 보기보다, 아래 질문을 통해 상담에서 확인하는 것이 좋습니다.'
+    ? '핵심 방향은 보이지만, 가까운 후보와 응답 패턴을 상담에서 함께 확인하면 더 안전합니다.'
     : tone === 'high'
       ? '현재 응답 패턴은 핵심 유형과 보조 지표가 비교적 일관되게 모입니다.'
-      : '결과 방향은 보이지만, 가까운 후보와 특정 지표는 상담에서 확인하면 더 정확해집니다.';
+      : '핵심 방향은 선명하지만, 가까운 후보와 본능·날개 해석은 상담에서 정리하면 더 정확해집니다.';
 
   return {
     label,
@@ -3333,7 +3340,7 @@ function buildPremiumReportModel(resultData) {
         ? `하위유형: ${resultData.instinctLabel}`
         : `제 1본능: ${resultData.instinctLabel}`,
       wing: resultData.wing,
-      confidence: resultData.confidence,
+      confidence: getReportConfidenceDisplay(resultData.confidence),
       stressGrowth: resultData.coreResolved
         ? `통합 방향 ${arrowLines[resultData.core].growth}번 · 스트레스 방향 ${arrowLines[resultData.core].stress}번`
         : '코어 확정 후 확인 가능합니다.'
@@ -3417,6 +3424,11 @@ function renderPremiumReport(model) {
           <p class="er-report-hero-type" id="res-final">${escapeReportHtml(model.display.headline)}</p>
           <h1>${escapeReportHtml(c.heroStatement)}</h1>
           <p>${escapeReportHtml(c.definition)}</p>
+          <div class="er-report-hero-answer">
+            <span>Core Interpretation</span>
+            <strong>${escapeReportHtml(c.motivation)}</strong>
+            <small>${escapeReportHtml(c.fear)}</small>
+          </div>
           <div class="er-report-hero-badges" aria-label="진단 결과 요약">
             <span id="res-instincts">${escapeReportHtml(c.subtypeLabel || model.display.subtype)}</span>
             <span id="res-wing">${escapeReportHtml(model.display.wing)}</span>
@@ -3448,7 +3460,7 @@ function renderPremiumReport(model) {
           <div><span>핵심 유형</span><strong id="res-core">${escapeReportHtml(model.display.core)} ${escapeReportHtml(c.coreName || '')}</strong></div>
           <div><span>하위유형</span><strong>${escapeReportHtml(c.subtypeLabel || model.display.subtype)}</strong></div>
           <div><span>날개</span><strong>${escapeReportHtml(model.display.wing)}</strong></div>
-          <div><span>신뢰도</span><strong>${escapeReportHtml(model.display.confidence)}</strong></div>
+          <div><span>해석 신뢰도</span><strong>${escapeReportHtml(model.display.confidence)}</strong></div>
           <div class="is-wide"><span>핵심 동기</span><strong>${escapeReportHtml(c.motivation)}</strong></div>
           <div class="is-wide"><span>핵심 두려움</span><strong>${escapeReportHtml(c.fear)}</strong></div>
           <div class="is-wide"><span>방향</span><strong id="res-arrows">${escapeReportHtml(model.display.stressGrowth)}</strong></div>
@@ -3469,17 +3481,17 @@ function renderPremiumReport(model) {
         </div>
         <div class="er-report-visual-grid">
           <div class="er-report-panel">
-            <h3>하위본능 정도</h3>
+            <h3>내 안에서 가장 강하게 반응한 에너지</h3>
             ${model.instinctRows.map((row) => buildReportMetricBar(row, { tone: 'gold' })).join('')}
           </div>
           <div class="er-report-panel">
-            <h3>날개 사용도</h3>
+            <h3>비슷하게 함께 나타나는 성향</h3>
             ${model.wingRows.map((row) => buildReportMetricBar(row, { tone: 'green' })).join('')}
             <p class="er-report-microcopy">코어 점수 대비 인접 날개 반응의 활성도를 보여줍니다.</p>
           </div>
         </div>
         <div class="er-report-panel">
-          <h3 id="top3-title">상위 3유형 상대 점유율 및 근거</h3>
+          <h3 id="top3-title">헷갈릴 수 있는 가까운 유형들</h3>
           <div id="res-top3" class="er-report-toptypes">${top3Html}</div>
         </div>
       </section>
@@ -3561,19 +3573,19 @@ function renderPremiumReport(model) {
           <h2>혼자 읽고 끝내지 않기 위한 다음 단계</h2>
         </div>
         <div class="er-report-next-rationale">
-          <h3>상담과 스쿨이 필요한 이유</h3>
-          <p>진단은 방향을 보여주지만, 변화는 반복되는 실제 장면에서 일어납니다. 상담은 내 결과가 정말 맞는지 확인하고, 스쿨은 9유형의 언어를 배워 내 주변 사람을 더 정확히 이해하고 돕도록 설계되어 있습니다.</p>
+          <h3>결과지 해석상담이나 기본과정을 추천합니다</h3>
+          <p>결과지는 방향을 보여줍니다. 하지만 변화는 실제 관계 장면에서 시작됩니다. 내가 반복해서 피하는 감정, 가까운 사람에게 보이는 반응, 자녀와 배우자 앞에서 자동으로 나오는 말투는 혼자 읽는 것만으로는 잘 보이지 않습니다. 다음 단계는 더 많은 정보가 아니라, 내 패턴을 실제 삶에서 읽는 훈련입니다.</p>
         </div>
         <div class="er-report-next-grid">${nextSteps}</div>
         <div id="experiment-result-panel" class="hidden"></div>
         <div id="cta-consulting" class="hidden er-report-low-confidence">
-          <p id="consult-cta-text">현재 결과는 1순위/2순위가 매우 근접한 상태입니다. 유형(Typing) 상담($100)에서 인터뷰 기반 타이핑으로 함께 확인해 드립니다.</p>
-          <a id="consult-cta-btn" href="#" data-report-program-key="identity_session">유형(Typing) 상담 신청</a>
+          <p id="consult-cta-text">현재 결과는 1순위/2순위가 근접합니다. 결과지 해석상담에서 핵심 유형, 하위유형, 날개, 신뢰도, 헷갈리는 유형을 함께 정리해 드립니다.</p>
+          <a id="consult-cta-btn" href="#" data-report-program-key="result_consult">결과지 해석상담 신청</a>
         </div>
         <div class="er-report-final-cta">
           <h2>${escapeReportHtml(c.gospel.declaration || c.heroStatement)}</h2>
-          <p>결과지는 끝이 아니라, 오늘 하나의 작은 회복을 시작하는 지도입니다.</p>
-          <a href="#" class="er-report-final-primary" data-report-program-key="${escapeReportHtml(primaryProgramKey)}">나의 회복 여정 다음 단계 신청</a>
+          <p>결과지는 끝이 아니라, 오늘 하나의 작은 회복을 시작하는 지도입니다. 먼저 1시간 결과지 해석상담에서 내 결과가 실제 삶과 어떻게 연결되는지 함께 정리해 보세요.</p>
+          <a href="#" class="er-report-final-primary" data-report-program-key="${escapeReportHtml(primaryProgramKey)}">결과지 해석상담 신청</a>
           <a href="#" class="er-report-final-secondary" data-report-section-nav="programs">전체 프로그램 보기</a>
           <div class="er-report-tools">
             <button type="button" onclick="shareTestResult()">결과 공유하기</button>
