@@ -73,13 +73,13 @@ function renderHome() {
         },
         {
             badge: '상담',
-            title: '1:1 유형(Typing) 상담',
-            text: '인터뷰 기반 타이핑과 핵심 동기·방어 패턴 확인',
-            price: '$100',
+            title: '결과지 해석상담',
+            text: '결과지를 함께 읽으며 핵심 유형·하위유형·날개·신뢰도 정리',
+            price: '$50',
             image: 'home-couple-photo.jpg',
             position: 'center top',
             button: '상담 신청하기',
-            action: "renderSection('apply', { track: 'paid', focus: 'identity_session' })"
+            action: "renderSection('apply', { track: 'paid', focus: 'result_consult' })"
         }
     ];
 

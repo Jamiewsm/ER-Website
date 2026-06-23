@@ -40,10 +40,16 @@
     return Date.now() <= Date.parse(JULY_BASIC_RECRUITMENT_END);
   }
 
-  function withJulyBasicBoost(programNames) {
-    if (!isJulyBasicRecruitmentOpen()) return programNames || [];
+  function withResultConsultPrimary(programNames) {
     const names = Array.from(programNames || []);
-    const filtered = names.filter((name) => !['result_consult', 'basic_course'].includes(resolveKey(name)));
+    const filtered = names.filter((name) => resolveKey(name) !== 'result_consult');
+    return ['테스트 결과지 해석상담', ...filtered].slice(0, 3);
+  }
+
+  function withJulyBasicBoost(programNames) {
+    const primary = withResultConsultPrimary(programNames);
+    if (!isJulyBasicRecruitmentOpen()) return primary;
+    const filtered = primary.filter((name) => !['result_consult', 'basic_course'].includes(resolveKey(name)));
     return ['테스트 결과지 해석상담', '에니어그램 기본과정 8주', ...filtered].slice(0, 3);
   }
 
@@ -240,6 +246,7 @@
     get,
     buildApplyPayload,
     buildNextSteps,
+    withResultConsultPrimary,
     withJulyBasicBoost,
     isJulyBasicRecruitmentOpen,
     getPaidCategoryOptions,
