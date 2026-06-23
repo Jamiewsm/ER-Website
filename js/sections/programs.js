@@ -78,7 +78,7 @@ function updateProgramView(filterType) {
                 { t: '하나님이 창조하신 나의 모습 회복하기', d: '나의 original design, 강점, 거짓말, 취약점을 함께 짚어보고, 직장·사회관계에서 강점에 맞는 일을 찾으며, 관계에서 잘 맞거나 맞지 않을 수 있는 유형의 사람들을 이해하고 소통하는 코칭을 진행합니다.', i: 'fas fa-compass', f: 'personal' }
             ],
             cards: [
-                { b: 'Step 1', t: '유형(Typing) 상담', d: '90분 심층 세션\n사전 설문 + 인터뷰 기반 타이핑 + 핵심 동기/방어패턴 진단', p: '$100', o: '반복되는 삶의 패턴과 무의식적 방어기제 구조화', i: 'fas fa-fingerprint' },
+                { b: 'Step 1', t: '결과지 해석상담', d: '1시간 결과지 해석\n핵심 유형 + 하위유형 + 날개 + 신뢰도 + 헷갈리는 유형 정리', p: '$50', o: '혼자 읽고 끝내지 않고 실제 삶의 장면과 연결', i: 'fas fa-file-signature', applyFocus: 'result_consult' },
                 { b: 'Step 2', t: '개별 코칭 (1회 세션)', d: '60분 실전 코칭\n관계·감정의 막힌 지점을 뚫어내는 적용 코칭', p: '$80 / 1회', o: '실제 관계 장면에서 반응 패턴 교정과 실행 계획 수립', i: 'fas fa-route' },
                 { b: 'Step 3', t: '회복 코칭 프로그램', d: (typeof window !== 'undefined' && window.ERProgramCatalog) ? window.ERProgramCatalog.getRecoveryPackageCopy() : '4회 패키지: $300 (회당 $75)\n8회 패키지: $480 (회당 $60 · 가장 많이 선택)', p: '8회 $480 · 가장 많이 선택', o: '감정·관계·실행 루틴까지 이어지는 지속적 변화 정착', i: 'fas fa-layer-group', featured: true, applyFocus: 'recovery_journey_8' }
             ]
