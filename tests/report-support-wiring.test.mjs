@@ -45,6 +45,13 @@ test('premium report renderer includes application hook before next-step CTA', (
   assert.match(testJs, /data-core-tone/);
 });
 
+test('premium report final consultation CTA always routes to result_consult', () => {
+  assert.match(testJs, /const finalCtaProgramKey = 'result_consult';/);
+  assert.match(testJs, /class="er-report-final-primary" data-report-program-key="\$\{escapeReportHtml\(finalCtaProgramKey\)\}"/);
+  assert.match(testJs, /root\.querySelectorAll\('\[data-report-program-key\]'\)/);
+  assert.match(testJs, /window\.ERProgramCatalog\.buildApplyPayload\(key\)/);
+});
+
 test('phase 1 uses a shorter forced center screen plus behavior-recall type items', () => {
   const q1Start = testJs.indexOf('const q1 = [');
   const firstCoreItem = testJs.indexOf("{ id:'c1'");
