@@ -3388,7 +3388,7 @@ function renderPremiumReport(model) {
       <p>${escapeReportHtml(item)}</p>
     </li>
   `).join('');
-  const primaryProgramKey = (c.nextSteps && c.nextSteps[0] && c.nextSteps[0].programKey) || 'identity_session';
+  const finalCtaProgramKey = 'result_consult';
   const nextSteps = (c.nextSteps || []).map((step, index) => {
     const programKey = step.programKey || '';
     const priceLine = step.priceLabel
@@ -3585,7 +3585,7 @@ function renderPremiumReport(model) {
         <div class="er-report-final-cta">
           <h2>${escapeReportHtml(c.gospel.declaration || c.heroStatement)}</h2>
           <p>결과지는 끝이 아니라, 오늘 하나의 작은 회복을 시작하는 지도입니다. 먼저 1시간 결과지 해석상담에서 내 결과가 실제 삶과 어떻게 연결되는지 함께 정리해 보세요.</p>
-          <a href="#" class="er-report-final-primary" data-report-program-key="${escapeReportHtml(primaryProgramKey)}">결과지 해석상담 신청</a>
+          <a href="#" class="er-report-final-primary" data-report-program-key="${escapeReportHtml(finalCtaProgramKey)}">결과지 해석상담 신청</a>
           <a href="#" class="er-report-final-secondary" data-report-section-nav="programs">전체 프로그램 보기</a>
           <div class="er-report-tools">
             <button type="button" onclick="shareTestResult()">결과 공유하기</button>
