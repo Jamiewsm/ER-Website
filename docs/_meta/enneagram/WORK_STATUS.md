@@ -4,14 +4,14 @@ kb_id: enneagram_test_meta.work_status
 schema_version: 1
 title: "ER Enneagram Test — Work Status"
 created_at: "2026-05-06"
-last_updated: "2026-06-21"
+last_updated: "2026-06-22"
 retrieval_tags:
   - work_status
   - phase_progress
   - lock_state
   - project_complete
 current_phase: 7
-current_task: "manual evolution batch complete; ready for review/deploy"
+current_task: "premium report Phase A QA complete; P2 result_consult PRs pending Cursor merge"
 checkpoint_plan: []
 checkpoint: null
 paused: true
@@ -42,10 +42,25 @@ project_status: "manual_updates_after_phase_6"
 - 현재 발전 계획은 [ACTIVE_EVOLUTION_PLAN.md](./ACTIVE_EVOLUTION_PLAN.md)를 기준으로 한다.
 - 오래된 문서/모듈이 현재 코드에 잘못 적용되지 않도록 [CODE_GAP_AUDIT.md](./CODE_GAP_AUDIT.md)를 guardrail로 사용한다.
 
+## 2026-06-22 수동 이어하기 상태
+
+열린 PR:
+
+- #74 `codex/p2-result-consult-site` — site track. 결과지 해석상담을 7/5 이후에도 permanent primary path로 유지하고, live SPA 홈/프로그램 CTA를 `result_consult`로 연결.
+- #75 `codex/p2-result-consult-test` — test track. premium report final CTA가 추천 목록 상태와 무관하게 `result_consult`로 직접 연결되도록 고정.
+
+Phase A QA:
+
+- 3개 샘플 PDF 생성 완료: `7w8 sx`, `4w5 sp`, `9w8 so`.
+- QA 문서: [PREMIUM_REPORT_PHASE_A_QA_2026-06-22.md](./PREMIUM_REPORT_PHASE_A_QA_2026-06-22.md)
+- 결론: 기능/신뢰도 레이어는 상당히 진행됐지만, $100 유료 결과지로는 paged PDF 제어, page 1 executive summary, 개인별 synthesis copy, graph/summary 시각 위계 재설계가 다음 병목.
+
 ## 현재 활성 우선순위
 
-1. Review production test report
-2. Collect experiment rows before weight changes
+1. Premium report page template redesign — cover, executive summary, confidence, graph/evidence, application, CTA.
+2. Personal synthesis copy — "조합 설명"이 아니라 `core + subtype + wing + confidence`를 통합한 개인별 해석문.
+3. Paged PDF QA — 13페이지를 8-10페이지 수준으로 압축하고 card/section clipping 방지.
+4. Collect experiment rows before weight changes.
 
 완료된 활성 계획 항목:
 
