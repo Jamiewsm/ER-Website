@@ -3341,6 +3341,25 @@ function renderExecutiveSummaryCard(model) {
   `;
 }
 
+function buildReportEvidenceCopy(model) {
+  const c = model.content || {};
+  const synthesis = c.synthesis || {};
+  const top = model.top3 && model.top3[0] ? model.top3[0] : null;
+  const second = model.top3 && model.top3[1] ? model.top3[1] : null;
+  const topShare = model.top3Total && top ? (top.score / model.top3Total) * 100 : null;
+  const secondShare = model.top3Total && second ? (second.score / model.top3Total) * 100 : null;
+  const topLine = top && second && Number.isFinite(topShare) && Number.isFinite(secondShare)
+    ? `${top.type}번이 가장 앞서지만 ${second.type}번 에너지도 함께 올라왔습니다. 이 차이는 결과를 단정하기보다 실제 삶의 반복 장면에서 함께 확인할 근거입니다.`
+    : '점수는 유형 이름을 확정하는 숫자가 아니라, 반복적으로 먼저 켜지는 에너지의 방향을 보여줍니다.';
+
+  return {
+    topLine,
+    instinctLine: synthesis.instinctSignal || '본능 점수는 이 패턴이 어떤 생활 장면에서 가장 먼저 켜지는지를 보여줍니다.',
+    wingLine: synthesis.wingSignal || '날개 점수는 핵심 유형이 밖으로 표현되는 방식을 확인하는 보조 단서입니다.',
+    closeTypeLine: synthesis.closeTypeSignal || '가까운 유형들은 상담에서 헷갈릴 수 있는 반응의 이유를 정리하는 단서입니다.'
+  };
+}
+
 function buildPremiumReportModel(resultData) {
   const contentApi = window.ERDiagnosticReportContent || {};
   const subtypeCode = getFinalSubtypeCode(resultData.instinctCode);
@@ -3375,10 +3394,17 @@ function buildPremiumReportModel(resultData) {
     active: index === 0 || row.code === subtypeCode
   }));
   const supportMaterials = buildReportSupportSelection(resultData, instinctRows);
-  const wingRows = (resultData.wingMetrics || []).map((row) => ({
-    ...row,
-    active: selectedWing && Number(row.wing) === Number(selectedWing)
-  }));
+  const coreScoreForWing = Math.max(1, Number(resultData.final && resultData.final[resultData.core]) || 0);
+  const wingRows = (resultData.wingMetrics || []).map((row) => {
+    const percent = Number.isFinite(Number(row.percent))
+      ? clampReportPercent(Number(row.percent))
+      : clampReportPercent((Math.max(0, Number(row.score) || 0) / coreScoreForWing) * 100);
+    return {
+      ...row,
+      percent,
+      active: selectedWing && Number(row.wing) === Number(selectedWing)
+    };
+  });
   const confidenceExplanation = buildConfidenceExplanation({
     confidence: resultData.confidence,
     diff: resultData.diff,
@@ -3485,6 +3511,8 @@ function renderPremiumReport(model) {
   const applicationHtml = renderGuidedApplicationSection(model);
   const confidenceExplanationHtml = renderConfidenceExplanationSection(model.confidenceExplanation);
   const executiveSummaryHtml = renderExecutiveSummaryCard(model);
+  const synthesis = c.synthesis || {};
+  const evidenceCopy = buildReportEvidenceCopy(model);
 
   host.innerHTML = `
     <article class="er-premium-report" data-report-key="${escapeReportHtml(model.reportKey)}" data-core-tone="${escapeReportHtml(model.coreTone)}">
@@ -3514,8 +3542,9 @@ function renderPremiumReport(model) {
 
       <nav class="er-report-nav" aria-label="결과지 섹션 이동">
         <a href="#report-executive">핵심</a>
-        <a href="#report-summary">상세</a>
+        <a href="#report-summary">해석</a>
         <a href="#report-confidence">신뢰</a>
+        <a href="#report-evidence">근거</a>
         <a href="#report-pattern">패턴</a>
         <a href="#report-life">삶</a>
         <a href="#report-application">적용</a>
@@ -3527,44 +3556,50 @@ function renderPremiumReport(model) {
       <section id="report-summary" class="er-report-section">
         <div class="er-report-section-head">
           <span>Overview</span>
-          <h2>한눈에 보는 나의 결과</h2>
+          <h2>당신의 결과를 한 문장으로 읽으면</h2>
         </div>
-        <div class="er-report-summary-grid">
+        <article class="er-report-synthesis">
+          <span>Personal Synthesis</span>
+          <h3>${escapeReportHtml(synthesis.title || c.heroStatement)}</h3>
+          <p>${escapeReportHtml(synthesis.paragraph || c.definition)}</p>
+          <div class="er-report-synthesis-grid">
+            <div><span>무엇을 지키는가</span><strong>${escapeReportHtml(synthesis.protects || c.motivation)}</strong></div>
+            <div><span>압박에서 과해지는 것</span><strong>${escapeReportHtml(synthesis.overuses || c.fear)}</strong></div>
+            <div><span>가까운 사람이 경험하는 것</span><strong>${escapeReportHtml(synthesis.closePeople || '강점과 방어가 함께 섞인 반복 반응으로 보일 수 있습니다.')}</strong></div>
+            <div><span>상담에서 확인할 것</span><strong>${escapeReportHtml(synthesis.counseling || '실제 삶의 반복 장면과 연결해 결과를 확인합니다.')}</strong></div>
+          </div>
+        </article>
+        <div class="er-report-summary-strip">
           <div><span>핵심 유형</span><strong id="res-core">${escapeReportHtml(model.display.core)} ${escapeReportHtml(c.coreName || '')}</strong></div>
-          <div><span>하위유형</span><strong>${escapeReportHtml(c.subtypeLabel || model.display.subtype)}</strong></div>
-          <div><span>날개</span><strong>${escapeReportHtml(model.display.wing)}</strong></div>
-          <div><span>해석 신뢰도</span><strong>${escapeReportHtml(model.display.confidence)}</strong></div>
-          <div class="is-wide"><span>핵심 동기</span><strong>${escapeReportHtml(c.motivation)}</strong></div>
-          <div class="is-wide"><span>핵심 두려움</span><strong>${escapeReportHtml(c.fear)}</strong></div>
-          <div class="is-wide"><span>방향</span><strong id="res-arrows">${escapeReportHtml(model.display.stressGrowth)}</strong></div>
-        </div>
-        <div class="er-report-note">
-          <strong>하위유형 해석</strong>
-          <p>${escapeReportHtml(c.subtypeInsight || '')}</p>
-          <p>${escapeReportHtml(c.wingNote || '')}</p>
+          <div><span>하위유형 · 날개</span><strong>${escapeReportHtml(c.subtypeLabel || model.display.subtype)} · ${escapeReportHtml(model.display.wing)}</strong></div>
+          <div><span>방향</span><strong id="res-arrows">${escapeReportHtml(model.display.stressGrowth)}</strong></div>
         </div>
       </section>
 
       ${confidenceExplanationHtml}
 
-      <section class="er-report-section er-report-visuals">
+      <section id="report-evidence" class="er-report-section er-report-visuals">
         <div class="er-report-section-head">
-          <span>Signals</span>
-          <h2>시각화로 보는 점수 흐름</h2>
+          <span>Evidence</span>
+          <h2>왜 이 결과가 나왔는가</h2>
+          <p>${escapeReportHtml(evidenceCopy.topLine)}</p>
         </div>
         <div class="er-report-visual-grid">
           <div class="er-report-panel">
             <h3>내 안에서 가장 강하게 반응한 에너지</h3>
+            <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.instinctLine)}</p>
             ${model.instinctRows.map((row) => buildReportMetricBar(row, { tone: 'gold' })).join('')}
           </div>
           <div class="er-report-panel">
             <h3>비슷하게 함께 나타나는 성향</h3>
+            <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.wingLine)}</p>
             ${model.wingRows.map((row) => buildReportMetricBar(row, { tone: 'green' })).join('')}
             <p class="er-report-microcopy">코어 점수 대비 인접 날개 반응의 활성도를 보여줍니다.</p>
           </div>
         </div>
         <div class="er-report-panel">
           <h3 id="top3-title">헷갈릴 수 있는 가까운 유형들</h3>
+          <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.closeTypeLine)}</p>
           <div id="res-top3" class="er-report-toptypes">${top3Html}</div>
         </div>
       </section>

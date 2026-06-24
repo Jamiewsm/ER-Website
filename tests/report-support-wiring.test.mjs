@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 const testHtml = readFileSync(new URL('../test.html', import.meta.url), 'utf8');
 const testJs = readFileSync(new URL('../js/test.js', import.meta.url), 'utf8');
 const testCss = readFileSync(new URL('../css/test.css', import.meta.url), 'utf8');
+const reportContentJs = readFileSync(new URL('../js/diagnostic-report-content.js', import.meta.url), 'utf8');
 
 test('test.html loads report-support-materials before the test renderer', () => {
   const supportIdx = testHtml.indexOf('js/report-support-materials.js');
@@ -55,6 +56,43 @@ test('premium report first screen includes executive summary card', () => {
   assert.match(testCss, /\.er-report-executive/);
   assert.match(testCss, /\.er-report-executive-grid/);
   assert.match(testCss, /\.er-report-executive-focus/);
+});
+
+test('premium report body uses personal synthesis instead of repeated subtype notes', () => {
+  assert.match(testJs, /c\.synthesis/);
+  assert.match(testJs, /class="er-report-synthesis"/);
+  assert.match(testJs, /Personal Synthesis/);
+  assert.match(testJs, /무엇을 지키는가/);
+  assert.match(testJs, /압박에서 과해지는 것/);
+  assert.match(testJs, /가까운 사람이 경험하는 것/);
+  assert.match(testJs, /상담에서 확인할 것/);
+  assert.match(testJs, /class="er-report-summary-strip"/);
+  assert.doesNotMatch(testJs, /<strong>하위유형 해석<\/strong>/);
+  assert.match(testCss, /\.er-report-synthesis/);
+  assert.match(testCss, /\.er-report-summary-strip/);
+});
+
+test('premium report evidence section puts interpretation before score charts', () => {
+  assert.match(testJs, /function buildReportEvidenceCopy/);
+  assert.match(testJs, /id="report-evidence"/);
+  assert.match(testJs, /왜 이 결과가 나왔는가/);
+  assert.match(testJs, /href="#report-evidence"/);
+  assert.match(testJs, /class="er-report-panel-lead"/);
+  assert.match(testJs, /coreScoreForWing/);
+  assert.match(testJs, /Number\.isFinite\(Number\(row\.percent\)\)/);
+  assert.match(testCss, /\.er-report-panel-lead/);
+});
+
+test('diagnostic report content includes synthesis copy for Phase A QA samples', () => {
+  assert.match(reportContentJs, /const CORE_SYNTHESIS/);
+  assert.match(reportContentJs, /const REPORT_SYNTHESIS/);
+  assert.match(reportContentJs, /sx_7w8/);
+  assert.match(reportContentJs, /성적\/일대일 7w8 조합/);
+  assert.match(reportContentJs, /sp_4w5/);
+  assert.match(reportContentJs, /자기보존 4w5 조합/);
+  assert.match(reportContentJs, /so_9w8/);
+  assert.match(reportContentJs, /사회적 9w8 조합/);
+  assert.match(reportContentJs, /getSynthesis/);
 });
 
 test('premium report final consultation CTA always routes to result_consult', () => {
@@ -174,6 +212,7 @@ test('premium report PDF download applies export-only compression styles', () =>
   assert.match(testCss, /\.er-premium-report\.er-pdf-export/);
   assert.match(testCss, /\.er-premium-report\.er-pdf-export \.er-report-nav,[\s\S]*?display:\s*none;/);
   assert.match(testCss, /\.er-premium-report\.er-pdf-export \.er-report-confidence-grid\s*\{[\s\S]*?grid-template-columns:\s*0\.9fr 1\.1fr 1\.1fr/);
+  assert.match(testCss, /\.er-premium-report\.er-pdf-export \.er-report-synthesis-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
 });
 
 test('premium report named background sections override alternating section backgrounds', () => {
