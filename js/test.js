@@ -2123,6 +2123,7 @@ async function downloadResultPdf() {
   const target = document.getElementById('result-view');
   const btn = document.getElementById('download-pdf-btn');
   if (!target || target.classList.contains('hidden')) return;
+  const report = target.querySelector('.er-premium-report');
 
   const prev = btn ? btn.innerText : '';
   if (btn) {
@@ -2137,6 +2138,10 @@ async function downloadResultPdf() {
       throw new Error('PDF library unavailable');
     }
     if (btn) btn.innerText = uiText('pdfGenerating');
+    if (report) {
+      report.classList.add('er-pdf-export');
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
     const canvas = await window.html2canvas(target, {
       scale: 2,
       useCORS: true,
@@ -2172,6 +2177,7 @@ async function downloadResultPdf() {
   } catch (_err) {
     alert(uiText('pdfError'));
   } finally {
+    if (report) report.classList.remove('er-pdf-export');
     if (btn) {
       btn.disabled = false;
       btn.innerText = prev || uiText('downloadPdf');
@@ -3272,6 +3278,69 @@ function renderConfidenceExplanationSection(explanation) {
   `;
 }
 
+function renderExecutiveSummaryCard(model) {
+  if (!model) return '';
+  const c = model.content || {};
+  const topTypes = (model.top3 || [])
+    .slice(0, 3)
+    .map((item) => `${item.type}번`)
+    .join(' / ');
+  const questions = model.confidenceExplanation && model.confidenceExplanation.consultationQuestions
+    ? model.confidenceExplanation.consultationQuestions.slice(0, 2)
+    : [];
+  const focusText = questions.length
+    ? `상담에서는 ${questions.map((q) => `"${q}"`).join('와 ')}를 함께 확인합니다.`
+    : '상담에서는 이 결과가 실제 삶의 반복 장면에서 어떻게 나타나는지 함께 확인합니다.';
+  const subtypeLine = c.subtypeLabel || model.display.subtype;
+  const wingLine = model.selectedWing
+    ? `${model.selectedWing}번 에너지가 핵심 유형의 표현 방식을 바꿉니다.`
+    : '날개보다 핵심 유형의 동기가 더 직접적으로 드러납니다.';
+
+  return `
+    <section id="report-executive" class="er-report-executive" aria-label="결과 핵심 요약">
+      <div class="er-report-executive-head">
+        <span>Executive Summary</span>
+        <h2>이 결과에서 가장 먼저 볼 것</h2>
+        <p>이 결과는 혼자 확정하는 판정이 아니라, 상담에서 실제 삶의 장면과 연결할 때 가장 정확해집니다.</p>
+      </div>
+      <div class="er-report-executive-grid">
+        <article>
+          <span>Core Type</span>
+          <h3>${escapeReportHtml(model.display.core)} ${escapeReportHtml(c.coreName || '')}</h3>
+          <p>${escapeReportHtml(c.motivation || '')}</p>
+        </article>
+        <article>
+          <span>Subtype</span>
+          <h3>${escapeReportHtml(subtypeLine)}</h3>
+          <p>${escapeReportHtml(c.definition || '')}</p>
+        </article>
+        <article>
+          <span>Wing</span>
+          <h3>${escapeReportHtml(model.display.wing)}</h3>
+          <p>${escapeReportHtml(wingLine)}</p>
+        </article>
+        <article>
+          <span>Confidence</span>
+          <h3>해석 신뢰도: ${escapeReportHtml(model.display.confidence)}</h3>
+          <p>${escapeReportHtml(model.confidenceExplanation ? model.confidenceExplanation.summary : '')}</p>
+        </article>
+      </div>
+      <div class="er-report-executive-focus">
+        <div>
+          <span>Close Types</span>
+          <strong>${escapeReportHtml(topTypes || '상담에서 확인')}</strong>
+          <p>헷갈릴 수 있는 가까운 유형들입니다.</p>
+        </div>
+        <div>
+          <span>Counseling Focus</span>
+          <strong>결과지 해석상담에서 확인할 핵심 질문</strong>
+          <p>${escapeReportHtml(focusText)}</p>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
 function buildPremiumReportModel(resultData) {
   const contentApi = window.ERDiagnosticReportContent || {};
   const subtypeCode = getFinalSubtypeCode(resultData.instinctCode);
@@ -3415,6 +3484,7 @@ function renderPremiumReport(model) {
   const supportNav = supportMaterialsHtml ? '<a href="#report-support">자료</a>' : '';
   const applicationHtml = renderGuidedApplicationSection(model);
   const confidenceExplanationHtml = renderConfidenceExplanationSection(model.confidenceExplanation);
+  const executiveSummaryHtml = renderExecutiveSummaryCard(model);
 
   host.innerHTML = `
     <article class="er-premium-report" data-report-key="${escapeReportHtml(model.reportKey)}" data-core-tone="${escapeReportHtml(model.coreTone)}">
@@ -3440,8 +3510,11 @@ function renderPremiumReport(model) {
 
       ${langNotice}
 
+      ${executiveSummaryHtml}
+
       <nav class="er-report-nav" aria-label="결과지 섹션 이동">
-        <a href="#report-summary">요약</a>
+        <a href="#report-executive">핵심</a>
+        <a href="#report-summary">상세</a>
         <a href="#report-confidence">신뢰</a>
         <a href="#report-pattern">패턴</a>
         <a href="#report-life">삶</a>

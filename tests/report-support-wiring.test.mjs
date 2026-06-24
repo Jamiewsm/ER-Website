@@ -45,6 +45,18 @@ test('premium report renderer includes application hook before next-step CTA', (
   assert.match(testJs, /data-core-tone/);
 });
 
+test('premium report first screen includes executive summary card', () => {
+  assert.match(testJs, /function renderExecutiveSummaryCard/);
+  assert.match(testJs, /id="report-executive"/);
+  assert.match(testJs, /이 결과에서 가장 먼저 볼 것/);
+  assert.match(testJs, /Close Types/);
+  assert.match(testJs, /Counseling Focus/);
+  assert.match(testJs, /href="#report-executive"/);
+  assert.match(testCss, /\.er-report-executive/);
+  assert.match(testCss, /\.er-report-executive-grid/);
+  assert.match(testCss, /\.er-report-executive-focus/);
+});
+
 test('premium report final consultation CTA always routes to result_consult', () => {
   assert.match(testJs, /const finalCtaProgramKey = 'result_consult';/);
   assert.match(testJs, /class="er-report-final-primary" data-report-program-key="\$\{escapeReportHtml\(finalCtaProgramKey\)\}"/);
@@ -144,4 +156,28 @@ test('premium report styles use uploaded backgrounds and one report font family'
   assert.match(testCss, /\.er-report-next-rationale/);
   assert.doesNotMatch(testCss, /Noto Serif KR/);
   assert.doesNotMatch(testCss, /ui-monospace/);
+});
+
+test('premium report print styles compress pages without forcing every section to stay intact', () => {
+  assert.match(testCss, /@media print/);
+  assert.match(testCss, /@page\s*\{/);
+  assert.match(testCss, /\.er-report-section\s*\{\s*break-inside:\s*auto;/);
+  assert.match(testCss, /\.er-report-executive-grid article,[\s\S]*?break-inside:\s*avoid;/);
+  assert.match(testCss, /\.er-report-confidence-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+});
+
+test('premium report PDF download applies export-only compression styles', () => {
+  assert.match(testJs, /target\.querySelector\('\.er-premium-report'\)/);
+  assert.match(testJs, /report\.classList\.add\('er-pdf-export'\)/);
+  assert.match(testJs, /requestAnimationFrame/);
+  assert.match(testJs, /report\.classList\.remove\('er-pdf-export'\)/);
+  assert.match(testCss, /\.er-premium-report\.er-pdf-export/);
+  assert.match(testCss, /\.er-premium-report\.er-pdf-export \.er-report-nav,[\s\S]*?display:\s*none;/);
+  assert.match(testCss, /\.er-premium-report\.er-pdf-export \.er-report-confidence-grid\s*\{[\s\S]*?grid-template-columns:\s*0\.9fr 1\.1fr 1\.1fr/);
+});
+
+test('premium report named background sections override alternating section backgrounds', () => {
+  assert.match(testCss, /\.er-report-section\.er-report-application\s*\{/);
+  assert.match(testCss, /\.er-report-section\.er-report-growth\s*\{/);
+  assert.match(testCss, /\.er-report-section\.er-report-next\s*\{/);
 });
