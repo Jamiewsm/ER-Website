@@ -48,6 +48,23 @@ test('generic paid apply route keeps its selectable application categories', () 
   assert.doesNotMatch(html, /assets\/er-visual\/hero-home\.jpg/);
 });
 
+test('child type test result apply shows parenting-context copy, not adult test copy', () => {
+  const renderer = loadApplyRenderer();
+  const html = renderer.renderApply({
+    track: 'paid',
+    focus: 'result_consult',
+    apply_source: 'child_type_test'
+  });
+
+  // 아이 검사에서 넘어온 부모에게는 양육 문맥 배너/타이틀을 노출.
+  assert.match(html, /아이 유형검사 결과 해석상담/);
+  assert.match(html, /아이 검사 후 추천 — 결과 해석상담/);
+  // 성인 테스트용 카피는 노출하지 않음.
+  assert.doesNotMatch(html, /프리미엄 테스트 후 추천/);
+  // 출처 attribution 은 child_type_test 로 유지(상품·가격 무변경).
+  assert.match(html, /handleApplySubmit\(event, 'paid:result_consult:child_type_test'\)/);
+});
+
 test('July Enneagram basic course link renders a dedicated direct application form', () => {
   const renderer = loadApplyRenderer();
   const html = renderer.renderApply({
