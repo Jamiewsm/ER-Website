@@ -6,6 +6,7 @@ import vm from 'node:vm';
 
 const parentingSource = readFileSync(new URL('../js/sections/parenting.js', import.meta.url), 'utf8');
 const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url), 'utf8');
+const programsSource = readFileSync(new URL('../js/sections/programs.js', import.meta.url), 'utf8');
 
 function loadParentingRenderer() {
   const context = {};
@@ -41,13 +42,45 @@ test('renderParenting wires existing flows without rebuilding them', () => {
   assert.match(html, /이해의 가설/);
 });
 
-test('renderParenting guide shows representative parent-child combos', () => {
+test('renderParenting guide shows six representative parent-child combos', () => {
   const { renderParenting } = loadParentingRenderer();
   const html = renderParenting();
 
-  assert.match(html, /원칙을 중시하는 부모/);
-  assert.match(html, /갈등을 피하는 부모/);
-  assert.match(html, /필요한 변화|부모.*아이/s);
+  [
+    '원칙을 중시하는 부모', '갈등을 피하는 부모', '인정을 중요하게 여기는 부모',
+    '확실히 통제하려는 부모', '성취로 사랑을 표현하는 부모', '불안을 대신 해결하는 부모'
+  ].forEach(p => assert.match(html, new RegExp(p)));
+});
+
+test('free articles are clickable and wired to the test funnel', () => {
+  const ctx = loadParentingRenderer();
+  assert.equal(typeof ctx.openParentingArticle, 'function');
+  const html = ctx.renderParenting();
+  const btnCount = (html.match(/openParentingArticle\(/g) || []).length;
+  assert.equal(btnCount, 8, 'all 8 article cards should be clickable');
+  // 모달 아티클 중 최소 1개는 실제 관찰 자료와 연결.
+  assert.match(parentingSource, /child_type_checklist\.html/);
+  // 모달 하단 CTA 는 아이 유형검사 퍼널로 연결.
+  assert.match(parentingSource, /child-type-test\/child-type-test\.html/);
+});
+
+test('parent section has a no-score mini checklist plus a parent resource', () => {
+  const { renderParenting } = loadParentingRenderer();
+  const html = renderParenting();
+
+  assert.match(html, /1분 부모 양육성향 체크/);
+  assert.match(html, /id="parent-check-0"/);
+  assert.match(html, /점수도 결과도 없습니다/);   // 결과 없는 관찰 유도
+  assert.match(html, /mom_type_summary\.html/);   // 기존 자료 연결
+});
+
+test('programs section is relabeled to the locked nav IA and redirects parenting', () => {
+  assert.match(programsSource, /코칭·프로그램 안내/);
+  assert.match(programsSource, /individual:관계·부부/);
+  assert.match(programsSource, /관계·부부 코칭/);
+  assert.match(programsSource, /to: 'parenting'/);
+  assert.match(programsSource, /Parenting에서 자세히 보기/);
+  assert.doesNotMatch(programsSource, /individual:개인\/가정/);
 });
 
 test('router routes parenting and scrolls to the requested focus anchor', () => {
