@@ -39,3 +39,16 @@
 
 ## Parenting focus 앵커
 `parenting?focus=child|parent|guide` → 해당 섹션 id(`parenting-child` 등)로 post-render 스크롤.
+
+## Phase 2 (branch `feat/parenting-phase-2`, MVP PR #80 위 스택)
+MVP를 "보이는 랜딩"에서 "전환되는 여정"으로 다듬음. track: site only.
+
+- **B1 programs 재라벨** (`js/sections/programs.js`): 히어로 "서비스 안내"→"코칭·프로그램 안내", 탭 라벨 개인/가정·기관/교회·기업/팀 → 관계·부부·기관·교회·기업·팀, individual.title→"관계·부부 코칭". individual 문제카드 순서 부부·자기이해 우선, 양육 카드는 `to:'parenting'` 로 Parenting 여정 유도(문제카드 렌더에 `to` 분기 추가).
+- **B2 Parenting 랜딩 polish** (`js/sections/parenting.js`):
+  - 무료 아티클 8개 클릭 가능 → `openParentingArticle(idx)` 모달(짧은 아티클 + 하단 "아이 유형검사 시작하기" 퍼널 CTA). 데이터는 모듈레벨 `PARENTING_ARTICLES`. 실제 자료 연결: "아이의 스트레스 신호"→`docs/parent_resources/child_type_checklist.html`.
+  - 대표 부모–자녀 조합 3 → **6개** (하드코드 예시만, 81엔진은 여전히 차기).
+  - `parenting-parent` 미니 체크 6문항(점수·결과 없음, 관찰 유도) + `docs/parent_resources/mom_type_summary.html` 연결. "엄마유형" 표기는 노출 카피에서 회피("부모 양육성향").
+- **B3 홈 연결** (`js/sections/home.js`): 하단 restorationCards "부모와 자녀" 카드 action을 `apply?focus=parenting_workshop` → `renderSection('parenting')`. **홈 Hero programCards(4장)는 손대지 않음**(site-restructure 원칙). 따라서 홈 상단 "Enneagram for Parenting" 프로그램 카드는 여전히 `/parenting-workshop.html` 로 감 — 차기에 Cursor main이 site-restructure 맥락에서 판단.
+- **B4 푸터**: 이미 잠금 IA와 정합(회복 이야기·사역지원·공지사항 포함) → 변경 없음, 확인만.
+
+테스트: `tests/parenting-render.test.mjs` 에 6조합/아티클 8개/미니체크/ programs 재라벨 assertion 추가. 전체 133 pass. 브라우저로 모달·체크리스트·redirect 확인.

@@ -120,7 +120,7 @@ function renderHome() {
             position: 'center top',
             caption: '행동보다 마음을 이해하는 부모교육',
             points: ['부모의 유형과 양육 패턴', '자녀의 기질과 반응 이해', '반복되는 부모-자녀 갈등 분석'],
-            action: "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'home_relationship_parent' })"
+            action: "renderSection('parenting')"
         },
         {
             eyebrow: '부부와 가정',

@@ -1,6 +1,103 @@
 // Parenting 상위 메뉴 전용 랜딩·가이드 섹션을 렌더링하는 함수
 // 고객 여정: 아이 이해 → 부모 자기이해 → 부모-자녀 차이 → 상황별 실천 가이드
 
+// 무료 양육 아티클 — 인스타 콘텐츠를 웹 자산으로. 일부는 docs/parent_resources 실제 자료와 연결.
+const PARENTING_ARTICLES = [
+    {
+        t: '아이의 스트레스 신호', i: 'fas fa-heart-pulse', tag: '관찰',
+        body: [
+            '아이마다 스트레스를 드러내는 방식이 다릅니다. 어떤 아이는 말과 행동이 많아지고, 어떤 아이는 입을 닫고 혼자 있으려 합니다. 같은 "괜찮아"라는 말도 아이에 따라 전혀 다른 신호일 수 있습니다.',
+            '문제 행동을 고치려 하기 전에, 그 행동이 어떤 불편을 말하고 있는지 먼저 읽어보세요. 신호를 알아차리는 것만으로도 부모의 첫 반응이 달라집니다.'
+        ],
+        link: { label: '아이 관찰 체크리스트 보기', href: 'docs/parent_resources/child_type_checklist.html' }
+    },
+    {
+        t: '아이에게 하지 말아야 할 말', i: 'fas fa-ban', tag: '대화',
+        body: [
+            '"왜 너만 그래?", "형은 안 그러는데" 같은 비교와 단정은 행동을 바꾸기보다 "나는 늘 부족하다"는 메시지로 남습니다.',
+            '바꾸고 싶은 행동이 있다면, 아이의 존재가 아니라 구체적인 상황과 다음 행동을 짚어 말해 주세요.'
+        ]
+    },
+    {
+        t: '칭찬과 훈육', i: 'fas fa-star', tag: '동기',
+        body: [
+            '칭찬은 결과가 아니라 시도와 과정에 할 때 자신감으로 이어집니다. "100점이라서 대단해"보다 "어려운데 끝까지 해봤구나"가 다음 도전을 만듭니다.',
+            '훈육도 마찬가지입니다. 감정을 쏟아내는 대신, 무엇이 문제였고 다음엔 어떻게 할지를 함께 정리할 때 아이가 배웁니다.'
+        ]
+    },
+    {
+        t: '사춘기 자녀와의 대화', i: 'fas fa-comment', tag: '사춘기',
+        body: [
+            '사춘기 아이의 침묵은 거절이 아니라, 자기만의 공간을 지키려는 신호일 때가 많습니다. 다가가려 할수록 더 문을 닫는 것처럼 보일 수 있습니다.',
+            '대답을 재촉하기보다, 혼자 정리할 시간을 먼저 허용하고 짧게 곁을 지켜 주세요. 대화는 타이밍이 절반입니다.'
+        ]
+    },
+    {
+        t: '부모의 스마트폰 사용', i: 'fas fa-mobile-screen', tag: '습관',
+        body: [
+            '아이는 부모의 말보다 부모가 화면을 보는 시간을 더 오래 기억합니다. "스마트폰 그만"이라는 말의 설득력은 부모의 손에서 나옵니다.',
+            '규칙을 정할 때 아이만의 규칙이 아니라 가족 공통의 약속으로 만들면, 통제가 아니라 함께 지키는 일이 됩니다.'
+        ]
+    },
+    {
+        t: '스킨십과 경계', i: 'fas fa-hand', tag: '경계',
+        body: [
+            '어릴 때 좋아하던 포옹을 사춘기 아이가 거절하는 것은 거리감이 아니라 경계의 발달입니다. 거절을 존중받은 아이가 더 안전하게 다가옵니다.',
+            '신체 접촉은 아이의 속도에 맞추고, 거절을 서운함으로 받지 않도록 부모의 마음을 먼저 다독여 주세요.'
+        ]
+    },
+    {
+        t: '공부 동기', i: 'fas fa-book-open', tag: '동기',
+        body: [
+            '동기는 잔소리로 만들어지지 않습니다. 아이가 무엇을 중요하게 느끼는지에 따라 효과적인 말이 다릅니다. 인정이 중요한 아이와 자유가 중요한 아이에게 같은 말은 통하지 않습니다.',
+            '성적이라는 결과보다, 아이가 스스로 정한 작은 목표와 그 과정을 함께 봐주는 것이 더 오래 갑니다.'
+        ]
+    },
+    {
+        t: '돈에 관한 부모의 언어', i: 'fas fa-coins', tag: '가치',
+        body: [
+            '용돈과 소비를 두고 하는 부모의 말에는 불안, 통제, 인정 욕구가 함께 담깁니다. 아이는 돈에 대한 태도를 부모의 말투에서 먼저 배웁니다.',
+            '제한을 둘 때도 이유와 기준을 함께 말해 주면, 돈은 다툼의 주제가 아니라 함께 배우는 주제가 됩니다.'
+        ]
+    }
+];
+
+function openParentingArticle(index) {
+    const a = PARENTING_ARTICLES[index];
+    if (!a) return;
+    const existing = document.getElementById('parenting-article-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'parenting-article-modal';
+    modal.className = 'fixed inset-0 z-[90] flex items-end md:items-center justify-center p-4 bg-black/40 backdrop-blur-sm';
+    modal.innerHTML = `
+        <div class="bg-white rounded-[2rem] w-full max-w-xl max-h-[82vh] overflow-y-auto shadow-2xl animate-fade-in-up">
+            <div class="sticky top-0 bg-white rounded-t-[2rem] px-6 pt-6 pb-4 border-b border-gray-100 flex items-start justify-between gap-3">
+                <div>
+                    <span class="text-er-accent font-bold text-[10px] tracking-widest uppercase">${a.tag}</span>
+                    <h3 class="text-lg font-bold text-er-dark mt-0.5 break-keep">${a.t}</h3>
+                </div>
+                <button onclick="document.getElementById('parenting-article-modal').remove()" class="shrink-0 w-9 h-9 rounded-full bg-er-base flex items-center justify-center text-gray-500 hover:bg-er-dark hover:text-white transition-colors">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                ${a.body.map(p => `<p class="text-sm text-gray-700 leading-relaxed break-keep mb-3">${p}</p>`).join('')}
+                ${a.link ? `<a href="${a.link.href}" class="inline-flex items-center gap-2 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">${a.link.label} <i class="fas fa-arrow-right text-[10px]"></i></a>` : ''}
+                <div class="mt-6 rounded-2xl bg-er-base/60 border border-gray-100 p-5">
+                    <p class="text-xs text-gray-600 break-keep mb-3">우리 아이의 반응이 유난히 이해하기 어렵다면, 행동 뒤에 있는 핵심 욕구를 먼저 확인해 보세요.</p>
+                    <a href="child-type-test/child-type-test.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-er-dark text-white text-xs font-bold hover:bg-gray-800 transition-colors">
+                        아이 유형검사 시작하기 <i class="fas fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    `;
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+}
+
 function renderParenting(payload = null) {
     const problems = [
         ['여러 번 말해야 움직이는 아이 때문에 지칩니다.', 'fas fa-bullhorn'],
@@ -34,6 +131,15 @@ function renderParenting(payload = null) {
         '아이의 불안을 지나치게 대신 해결해 주는가.'
     ];
 
+    const parentMiniCheck = [
+        '아이가 천천히 하면 내가 먼저 답답해서 끼어든다.',
+        '아이가 말을 듣지 않으면 유난히 화가 난다.',
+        '갈등이 생기면 빨리 끝내려고 먼저 양보하는 편이다.',
+        '아이가 잘했을 때 과정보다 결과부터 칭찬한다.',
+        '아이가 불안해하면 내가 먼저 나서서 해결해 준다.',
+        '아이에게 인정받는 사람이 되라고 자주 말한다.'
+    ];
+
     const combos = [
         {
             parent: '원칙을 중시하는 부모',
@@ -55,6 +161,27 @@ function renderParenting(payload = null) {
             tension: '부모는 아이의 침묵을 거리감이나 거절로 느끼고, 아이는 다가오는 관심을 부담으로 받아들여 더 문을 닫을 수 있습니다.',
             parentShift: '반응을 재촉하지 않고 혼자 회복할 시간을 먼저 허용하기',
             childShift: '말이 어려울 땐 짧은 신호로라도 상태를 알리도록 돕기'
+        },
+        {
+            parent: '확실히 통제하려는 부모',
+            child: '예민하게 반응하는 아이',
+            tension: '부모는 분명히 하려고 강하게 지시하고, 아이는 그 강도에 압도되어 더 위축되거나 갑자기 폭발할 수 있습니다.',
+            parentShift: '지시의 강도를 낮추고 선택지를 함께 제시하기',
+            childShift: '압도될 때 "잠깐 멈추고 싶다"고 신호 보내도록 돕기'
+        },
+        {
+            parent: '성취로 사랑을 표현하는 부모',
+            child: '관계가 더 중요한 아이',
+            tension: '부모는 결과와 성취로 마음을 표현하고, 아이는 "있는 그대로는 부족한가"라고 느낄 수 있습니다.',
+            parentShift: '성취와 무관하게 존재 자체를 인정하는 말 늘리기',
+            childShift: '잘하는 것과 좋아하는 것을 부모와 함께 나누도록 돕기'
+        },
+        {
+            parent: '불안을 대신 해결하는 부모',
+            child: '스스로 해보려는 아이',
+            tension: '부모는 빨리 도와 불안을 줄이려 하고, 아이는 "나는 혼자 못 한다"는 메시지를 학습할 수 있습니다.',
+            parentShift: '바로 개입하지 않고 먼저 시도할 시간을 주기',
+            childShift: '도움이 필요할 때 구체적으로 요청하는 법 배우기'
         }
     ];
 
@@ -67,17 +194,6 @@ function renderParenting(payload = null) {
         '성적이 떨어졌을 때',
         '친구에게 거절당했을 때',
         '사춘기 아이가 신체 접촉을 거절할 때'
-    ];
-
-    const resources = [
-        ['아이의 스트레스 신호', 'fas fa-heart-pulse'],
-        ['아이에게 하지 말아야 할 말', 'fas fa-ban'],
-        ['칭찬과 훈육', 'fas fa-star'],
-        ['사춘기 자녀와의 대화', 'fas fa-comment'],
-        ['부모의 스마트폰 사용', 'fas fa-mobile-screen'],
-        ['스킨십과 경계', 'fas fa-hand'],
-        ['공부 동기', 'fas fa-book-open'],
-        ['돈에 관한 부모의 언어', 'fas fa-coins']
     ];
 
     const ladder = [
@@ -199,6 +315,22 @@ function renderParenting(payload = null) {
                                 </li>
                             `).join('')}
                         </ul>
+
+                        <div class="rounded-2xl bg-er-base/40 border border-gray-100 p-5 md:p-6 mb-5">
+                            <h4 class="text-sm font-bold text-er-dark mb-1 break-keep">1분 부모 양육성향 체크</h4>
+                            <p class="text-xs text-gray-500 break-keep mb-4">점수도 결과도 없습니다. 해당되는 항목에 체크하며, 그 반응이 어디서 오는지 관찰해 보세요.</p>
+                            <div class="space-y-2.5">
+                                ${parentMiniCheck.map((q, idx) => `
+                                    <label for="parent-check-${idx}" class="flex items-start gap-3 cursor-pointer rounded-xl px-3 py-2.5 hover:bg-white/70 transition-colors">
+                                        <input type="checkbox" id="parent-check-${idx}" class="mt-0.5 h-4 w-4 shrink-0 accent-er-accent">
+                                        <span class="text-sm text-gray-700 break-keep">${q}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                            <p class="mt-4 text-xs text-gray-500 break-keep">정답은 없습니다. 체크가 많은 항목일수록, 그 반응이 어디서 오는지 검사와 상담에서 더 깊이 살펴볼 수 있습니다.</p>
+                            <a href="docs/parent_resources/mom_type_summary.html" class="mt-3 inline-flex items-center gap-2 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">부모 양육성향 특징 자료 보기 <i class="fas fa-arrow-right text-[10px]"></i></a>
+                        </div>
+
                         <div class="rounded-2xl bg-er-base/50 border border-gray-100 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <p class="text-xs text-gray-500 break-keep">부모 양육성향 검사는 준비 중입니다. 먼저 상담을 통해 나의 양육 패턴을 함께 짚어볼 수 있습니다.</p>
                             <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-er-dark text-er-dark text-xs font-bold hover:bg-er-dark hover:text-white transition-colors">
@@ -252,11 +384,12 @@ function renderParenting(payload = null) {
                         <h3 class="text-xl md:text-2xl font-bold text-er-dark mt-2 break-keep">먼저 읽어보는 양육 이야기</h3>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        ${resources.map(([t, i]) => `
-                            <div class="bg-white rounded-2xl p-5 border border-white/40 shadow-soft floating-card text-center">
-                                <div class="w-10 h-10 rounded-xl bg-er-base text-er-accent flex items-center justify-center mx-auto mb-3"><i class="${i}"></i></div>
-                                <p class="text-xs font-bold text-gray-700 break-keep">${t}</p>
-                            </div>
+                        ${PARENTING_ARTICLES.map((a, idx) => `
+                            <button type="button" onclick="openParentingArticle(${idx})" class="bg-white rounded-2xl p-5 border border-white/40 shadow-soft floating-card text-center hover:border-er-accent/40 transition-colors group">
+                                <div class="w-10 h-10 rounded-xl bg-er-base text-er-accent flex items-center justify-center mx-auto mb-3 group-hover:bg-er-accent group-hover:text-white transition-colors"><i class="${a.i}"></i></div>
+                                <p class="text-xs font-bold text-gray-700 break-keep">${a.t}</p>
+                                <span class="mt-2 inline-block text-[10px] font-bold text-er-accent">읽어보기 <i class="fas fa-arrow-right text-[8px]"></i></span>
+                            </button>
                         `).join('')}
                     </div>
                     <div class="mt-7 rounded-2xl bg-er-dark text-white p-6 text-center">

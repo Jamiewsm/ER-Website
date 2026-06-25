@@ -32,8 +32,18 @@
 - [x] 브라우저: 데스크탑/모바일 메뉴, Parenting 섹션, 앵커 스크롤(96px=scroll-mt-24), 콘솔 에러 없음 확인
 - [x] git status / diff 로 변경 범위 확인 (index.html, app-core.js, parenting.js, parenting-render.test.mjs)
 
-## 차기 (이번 범위 밖, context-notes 참조)
-- [ ] 부모 양육성향 검사 신규 개발 (현재 안내/예약 CTA만)
-- [ ] 81개 부모×아이 조합 엔진 (현재 대표 3개 예시만)
-- [ ] programs 섹션 재라벨(관계·부부 / 조직·리더십) 및 양육 아티클 라이브러리
+## Phase 2 (branch `feat/parenting-phase-2`) — 완료
+- [x] B1 programs 재라벨(관계·부부 / 조직·리더십) + 양육 카드 → Parenting 유도
+- [x] B2 무료 아티클 8개 클릭 가능(모달 + 퍼널 CTA), 실제 자료 1개 연결
+- [x] B2 대표 부모–자녀 조합 3 → 6개
+- [x] B2 부모 미니 양육성향 체크(점수·결과 없음) + 기존 자료 연결
+- [x] B3 홈 하단 부모-자녀 카드 → Parenting 랜딩 (Hero 4카드는 미터치)
+- [x] B4 푸터 IA 정합 확인(변경 없음)
+- [x] tests 133 pass + 브라우저 검증
+
+## 차기 (여전히 범위 밖)
+- [ ] 부모 양육성향 검사 신규 개발(문항·채점) — 현재 미니 체크/안내 CTA만
+- [ ] 81개 부모×아이 조합 엔진 — 현재 대표 6개 예시만
+- [ ] 무료 아티클 stub → 정식 아티클 라이브러리 확장
+- [ ] 홈 Hero "Enneagram for Parenting" 프로그램 카드 라우팅(현재 `/parenting-workshop.html`) — site-restructure 맥락에서 Cursor main 판단
 - [ ] 클린 URL `/parenting/...` (현재 해시 라우팅)
