@@ -41,6 +41,14 @@
 - [x] B4 푸터 IA 정합 확인(변경 없음)
 - [x] tests 133 pass + 브라우저 검증
 
+## Phase 3A (branch `feat/parenting-phase-3-funnel`) — 전환 퍼널 연결
+- [x] F1 홈 Hero 양육 카드 → `renderSection('parenting', {focus:'program'})` (랜딩 경유)
+- [x] F2 상품 계단 섹션에 `id="parenting-program"` 앵커
+- [x] F3 랜딩→apply 출처 `source` → `apply_source: 'parenting'`
+- [x] F4 child-test→apply 배너 부모 문맥 override (상품·가격 무변경)
+- [x] tests 갱신·추가 + 전체 통과 (135 pass)
+- [x] 브라우저 QA(홈 카드→랜딩→상품계단 top=96px 스크롤, child-test 배너, 콘솔 에러 없음)
+
 ## 차기 (여전히 범위 밖)
 - [ ] 부모 양육성향 검사 신규 개발(문항·채점) — 현재 미니 체크/안내 CTA만
 - [ ] 81개 부모×아이 조합 엔진 — 현재 대표 6개 예시만

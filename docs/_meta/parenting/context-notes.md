@@ -52,3 +52,13 @@ MVP를 "보이는 랜딩"에서 "전환되는 여정"으로 다듬음. track: si
 - **B4 푸터**: 이미 잠금 IA와 정합(회복 이야기·사역지원·공지사항 포함) → 변경 없음, 확인만.
 
 테스트: `tests/parenting-render.test.mjs` 에 6조합/아티클 8개/미니체크/ programs 재라벨 assertion 추가. 전체 133 pass. 브라우저로 모달·체크리스트·redirect 확인.
+
+## Phase 3A (branch `feat/parenting-phase-3-funnel`, PR #81 위 스택)
+"전환 퍼널 연결"만. 랜딩·아티클 신규 작성 없음(Phase 3B). track: site only. 사용자 승인(AskUserQuestion): 홈 Hero 카드 랜딩 경유 + in-lane 배선 2건 모두 수정.
+
+- **F1 홈 Hero 양육 카드 → 랜딩 경유** (`js/sections/home.js`): "Enneagram for Parenting" programCard action `'/parenting-workshop.html'` → `renderSection('parenting', { focus: 'program' })`. 홈에서 새 여정으로 진입하고, 4주 워크샵 신청은 랜딩 상품 계단(심화)에서 이어짐. 기존 차기 항목(Cursor main 이관분)을 사용자 명시 승인으로 해소.
+- **F2 랜딩 상품 계단 앵커** (`js/sections/parenting.js`): 상품 계단 `<section>`에 `id="parenting-program" scroll-mt-24` 추가 → app-core focus 훅(`#parenting-<focus>`)을 그대로 재사용.
+- **F3 출처 attribution 정합** (`js/sections/parenting.js`): apply로 넘기던 `source: 'parenting'` → `apply_source: 'parenting'`. apply.js는 `apply_source`만 읽어 기존엔 랜딩발 출처가 유실됨. child-test의 `apply_source:'child_type_test'` 패턴과 통일.
+- **F4 child-test→apply 배너 문맥** (`js/sections/apply.js`): `fromChildTypeTest`일 때 trackTitle/trackDesc/bannerTitle/bannerBody를 부모 문맥으로 override. 성인 "프리미엄 테스트 후 추천" 대신 "아이 검사 후 추천 — 결과 해석상담". 상품·가격($50)·category는 무변경.
+
+테스트: `parenting-render.test.mjs`(line 38 `apply_source`로, `id="parenting-program"`·홈 카드 라우팅 assertion 추가), `apply-workshop-render.test.mjs`(child-test 배너 override test 추가). 전체 통과 + 브라우저 QA.
