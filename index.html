@@ -227,14 +227,19 @@
                </div>
                 
                 <div class="desktop-nav hidden xl:flex space-x-6 items-center">
-                    <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        ER 소개
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
-                    <button onclick="renderSection('coaches')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        코치 소개
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
+                    <div class="relative group py-2">
+                        <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
+                            ER 소개
+                            <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
+                        </button>
+                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[15rem]">
+                            <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
+                                <button onclick="renderSection('about')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">ER 소개</button>
+                                <button onclick="renderSection('coaches')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">코치 소개</button>
+                                <button onclick="renderSection('support')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">사역지원</button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="relative group py-2">
                         <button onclick="renderSection('test')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
                             유형검사
@@ -246,37 +251,66 @@
                                     프리미엄 검사
                                     <span class="block text-[11px] font-normal text-gray-400 mt-0.5">나의 핵심 동기와 유형을 찾는 검사</span>
                                 </button>
-                                <a href="child-type-test/child-type-test.html" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
-                                    아이 유형검사 (부모용)
-                                    <span class="block text-[11px] font-normal text-gray-400 mt-0.5">부모가 관찰해 작성하는 우리 아이 유형</span>
-                                </a>
+                                <button onclick="renderSection('types_guide')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
+                                    유형 알아보기
+                                    <span class="block text-[11px] font-normal text-gray-400 mt-0.5">9가지 유형의 핵심 동기 살펴보기</span>
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <button onclick="renderSection('types_guide')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        유형 알아보기
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
+                    <div class="relative group py-2">
+                        <button onclick="renderSection('parenting')" class="text-sm font-semibold text-er-dark hover:text-er-accent transition-colors flex items-center gap-1 cursor-pointer">
+                            Parenting
+                            <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
+                        </button>
+                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[17rem]">
+                            <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
+                                <button onclick="renderSection('parenting')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
+                                    Parenting 소개
+                                    <span class="block text-[11px] font-normal text-gray-400 mt-0.5">아이와 부모를 함께 보는 양육</span>
+                                </button>
+                                <button onclick="renderSection('parenting', { focus: 'child' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">우리 아이 이해하기</button>
+                                <button onclick="renderSection('parenting', { focus: 'parent' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">부모인 나 이해하기</button>
+                                <button onclick="renderSection('parenting', { focus: 'guide' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">부모–자녀 맞춤 가이드</button>
+                                <div class="my-1 h-px bg-gray-100 mx-3"></div>
+                                <a href="child-type-test/child-type-test.html" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">아이 유형검사</a>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">양육 해석상담</button>
+                                <button onclick="renderSection('apply', { focus: 'parenting_workshop', source: 'parenting' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">부모교육·프로그램</button>
+                            </div>
+                        </div>
+                    </div>
                     <button onclick="renderSection('programs', { tab: 'individual' })" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        서비스 안내
+                        관계·부부
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
+                    <div class="relative group py-2">
+                        <button onclick="renderSection('programs', { tab: 'church' })" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
+                            조직·리더십
+                            <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
+                        </button>
+                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[14rem]">
+                            <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
+                                <button onclick="renderSection('programs', { tab: 'church' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">기관·교회</button>
+                                <button onclick="renderSection('programs', { tab: 'business' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">기업·팀</button>
+                            </div>
+                        </div>
+                    </div>
                     <button onclick="renderSection('coach_training')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        전문가 양성반
+                        전문가 과정
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
-                    <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        회복 이야기
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
-                    <button onclick="renderSection('support')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        사역지원
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
-                    <button onclick="renderSection('notices')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors relative group py-2">
-                        공지사항
-                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
-                    </button>
+                    <div class="relative group py-2">
+                        <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
+                            회복 이야기
+                            <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
+                        </button>
+                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[14rem]">
+                            <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
+                                <button onclick="renderSection('community')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">회복 이야기</button>
+                                <button onclick="renderSection('notices')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">공지사항</button>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="h-4 w-px bg-gray-200 mx-2"></div>
 
@@ -314,17 +348,27 @@
             <div class="px-5 py-6 space-y-2">
                 <button id="mobile-auth-btn" class="block w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
                 <div class="h-px bg-gray-100 my-2 mx-4"></div>
+                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-gray-400">ER 소개</p>
                 <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">ER 소개</button>
                 <button onclick="renderSection('coaches')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">코치 소개</button>
+                <button onclick="renderSection('support')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">사역지원</button>
                 <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-gray-400">유형검사</p>
                 <button onclick="renderSection('test')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">프리미엄 검사</button>
-                <a href="child-type-test/child-type-test.html" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">아이 유형검사 (부모용)</a>
-                <div class="h-px bg-gray-100 my-2 mx-4"></div>
                 <button onclick="renderSection('types_guide')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">유형 알아보기</button>
-                <button onclick="renderSection('programs', { tab: 'individual' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">서비스 안내</button>
-                <button onclick="renderSection('coach_training')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">전문가 양성반</button>
+                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-er-accent">Parenting</p>
+                <button onclick="renderSection('parenting')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Parenting 소개</button>
+                <button onclick="renderSection('parenting', { focus: 'child' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">우리 아이 이해하기</button>
+                <button onclick="renderSection('parenting', { focus: 'parent' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">부모인 나 이해하기</button>
+                <button onclick="renderSection('parenting', { focus: 'guide' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">부모–자녀 맞춤 가이드</button>
+                <a href="child-type-test/child-type-test.html" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">아이 유형검사</a>
+                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">양육 해석상담</button>
+                <button onclick="renderSection('apply', { focus: 'parenting_workshop', source: 'parenting' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">부모교육·프로그램</button>
+                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-gray-400">서비스</p>
+                <button onclick="renderSection('programs', { tab: 'individual' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">관계·부부</button>
+                <button onclick="renderSection('programs', { tab: 'church' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">조직·리더십</button>
+                <button onclick="renderSection('coach_training')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">전문가 과정</button>
+                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-gray-400">회복 이야기</p>
                 <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">회복 이야기</button>
-                <button onclick="renderSection('support')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">사역지원</button>
                 <button onclick="renderSection('notices')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">공지사항</button>
             </div>
         </div>
@@ -488,12 +532,13 @@
                 <p>&copy; 2025 ER (Enneagram for Restoration).</p>
                 <div class="flex flex-wrap items-center justify-center gap-3">
                     <button type="button" onclick="renderSection('about')" class="hover:text-er-dark transition-colors">ER 소개</button>
-                    <button type="button" onclick="renderSection('coaches')" class="hover:text-er-dark transition-colors">코치 소개</button>
                     <button type="button" onclick="renderSection('test')" class="hover:text-er-dark transition-colors">유형검사</button>
-                    <button type="button" onclick="renderSection('types_guide')" class="hover:text-er-dark transition-colors">유형 알아보기</button>
-                    <button type="button" onclick="renderSection('programs', { tab: 'individual' })" class="hover:text-er-dark transition-colors">서비스 안내</button>
-                    <button type="button" onclick="renderSection('coach_training')" class="hover:text-er-dark transition-colors">전문가 양성반</button>
+                    <button type="button" onclick="renderSection('parenting')" class="font-semibold text-er-dark hover:text-er-accent transition-colors">Parenting</button>
+                    <button type="button" onclick="renderSection('programs', { tab: 'individual' })" class="hover:text-er-dark transition-colors">관계·부부</button>
+                    <button type="button" onclick="renderSection('programs', { tab: 'church' })" class="hover:text-er-dark transition-colors">조직·리더십</button>
+                    <button type="button" onclick="renderSection('coach_training')" class="hover:text-er-dark transition-colors">전문가 과정</button>
                     <button type="button" onclick="renderSection('community')" class="hover:text-er-dark transition-colors">회복 이야기</button>
+                    <button type="button" onclick="renderSection('coaches')" class="hover:text-er-dark transition-colors">코치 소개</button>
                     <button type="button" onclick="renderSection('support')" class="hover:text-er-dark transition-colors">사역지원</button>
                     <button type="button" onclick="renderSection('notices')" class="hover:text-er-dark transition-colors">공지사항</button>
                     <button type="button" onclick="renderSection('privacy')" class="hover:text-er-dark transition-colors">Privacy</button>
@@ -524,6 +569,7 @@
     <script src="js/sections/home.js?v=20260613g"></script>
     <script src="js/sections/about.js?v=20260524a"></script>
     <script src="js/sections/programs.js?v=20260612a"></script>
+    <script src="js/sections/parenting.js?v=20260625a"></script>
     <script src="js/sections/coaches.js?v=20260524a"></script>
     <script src="js/sections/coach-training.js"></script>
     <script src="js/sections/community.js?v=20260621a"></script>

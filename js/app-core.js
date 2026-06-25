@@ -86,6 +86,7 @@ function renderSection(sectionId, payload = null, options = {}) {
         case 'about': html = renderAbout(); break;
         case 'coaches': html = renderCoaches(); break;
         case 'programs': html = renderPrograms(); break;
+        case 'parenting': html = renderParenting(payload); break;
         case 'coach_training': html = renderCoachTraining(); break;
         case 'community': html = renderCommunity(); break;
         case 'resources': html = renderResources(); break;
@@ -122,6 +123,7 @@ function renderSection(sectionId, payload = null, options = {}) {
             test: '프리미엄 검사',
             types_guide: '유형 안내',
             programs: '서비스 안내',
+            parenting: 'Parenting',
             coaches: 'ER 대표 소개',
             coach_training: '전문가 양성반',
             community: '회복 이야기',
@@ -147,6 +149,12 @@ function renderSection(sectionId, payload = null, options = {}) {
     }
     if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
     if(sectionId === 'programs') updateProgramView(state.programFilter);
+    if(sectionId === 'parenting' && payload?.focus) {
+        setTimeout(() => {
+            const el = document.getElementById('parenting-' + payload.focus);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 60);
+    }
     if (sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 50);
     if((sectionId === 'home' || sectionId === 'notices' || sectionId === 'notice_detail') && !state.noticesLoaded) {
         setTimeout(async () => {
