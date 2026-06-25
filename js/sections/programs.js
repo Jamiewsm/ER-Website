@@ -70,12 +70,12 @@ function updateProgramView(filterType) {
 
     const data = {
         individual: {
-            title: '개인/가정 코칭',
+            title: '관계·부부 코칭',
             desc: '',
             problems: [
-                { t: '우리 아이가 달라졌어요', d: '아이와 부모의 서로 다른 기질·반응 패턴을 분석하고, 갈등을 줄이는 맞춤 양육 코칭을 제공합니다.', i: 'fas fa-child-reaching', f: 'parenting' },
                 { t: '우리 부부가 달라졌어요', d: '부부의 차이와 충돌 지점을 구조적으로 해석해, 반복되는 갈등을 대화 가능한 관계로 전환합니다.', i: 'fas fa-heart', f: 'couple' },
-                { t: '하나님이 창조하신 나의 모습 회복하기', d: '나의 original design, 강점, 거짓말, 취약점을 함께 짚어보고, 직장·사회관계에서 강점에 맞는 일을 찾으며, 관계에서 잘 맞거나 맞지 않을 수 있는 유형의 사람들을 이해하고 소통하는 코칭을 진행합니다.', i: 'fas fa-compass', f: 'personal' }
+                { t: '하나님이 창조하신 나의 모습 회복하기', d: '나의 original design, 강점, 거짓말, 취약점을 함께 짚어보고, 직장·사회관계에서 강점에 맞는 일을 찾으며, 관계에서 잘 맞거나 맞지 않을 수 있는 유형의 사람들을 이해하고 소통하는 코칭을 진행합니다.', i: 'fas fa-compass', f: 'personal' },
+                { t: '아이와의 갈등이 반복돼요', d: '아이와 부모의 기질·반응 차이, 반복되는 양육 갈등은 Parenting 여정에서 더 깊이 다룹니다.', i: 'fas fa-child-reaching', to: 'parenting' }
             ],
             cards: [
                 { b: 'Step 1', t: '결과지 해석상담', d: '1시간 결과지 해석\n핵심 유형 + 하위유형 + 날개 + 신뢰도 + 헷갈리는 유형 정리', p: '$50', o: '혼자 읽고 끝내지 않고 실제 삶의 장면과 연결', i: 'fas fa-file-signature', applyFocus: 'result_consult' },
@@ -140,9 +140,9 @@ function updateProgramView(filterType) {
                 </div>
                 <h4 class="text-sm md:text-base font-bold text-er-dark mb-2 break-keep">${p.t}</h4>
                 <p class="text-xs text-gray-600 leading-relaxed break-keep">${p.d}</p>
-                <button onclick="showProgramTestimonials('${p.f || ''}')" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">
-                    후기 보기 <i class="fas fa-comment-dots text-[10px]"></i>
-                </button>
+                ${p.to
+                    ? `<button onclick="renderSection('${p.to}')" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">Parenting에서 자세히 보기 <i class="fas fa-arrow-right text-[10px]"></i></button>`
+                    : `<button onclick="showProgramTestimonials('${p.f || ''}')" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">후기 보기 <i class="fas fa-comment-dots text-[10px]"></i></button>`}
             </div>
         `).join('');
     }
@@ -175,11 +175,11 @@ function renderPrograms() {
             <div class="bg-er-dark text-white py-16 px-6 relative overflow-hidden rounded-b-[3rem]">
                 <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                 <div class="relative z-10 max-w-7xl mx-auto text-center">
-                    <h2 class="text-2xl md:text-4xl font-bold mb-3">서비스 안내</h2>
-                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">개인·가정 코칭부터 기관·교회·기업/팀 프로그램까지, 지금 필요한 회복 여정을 안내합니다.</p>
+                    <h2 class="text-2xl md:text-4xl font-bold mb-3">코칭·프로그램 안내</h2>
+                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">관계·부부부터 기관·교회·기업/팀까지, 지금 필요한 회복 여정을 안내합니다. 자녀 양육은 Parenting 메뉴에서 따로 안내합니다.</p>
                     
                     <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
-                        ${['individual:개인/가정', 'church:기관/교회', 'business:기업/팀'].map(item => {
+                        ${['individual:관계·부부', 'church:기관·교회', 'business:기업·팀'].map(item => {
                             const [key, label] = item.split(':');
                             const isActive = state.programFilter === key;
                             return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
