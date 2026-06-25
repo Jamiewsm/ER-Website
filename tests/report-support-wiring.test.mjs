@@ -37,10 +37,10 @@ test('premium report renderer includes application hook before next-step CTA', (
   assert.match(testJs, /id="report-application"/);
   assert.match(testJs, /이해에서 끝나지 않고, 실제 관계를 돕는 지도/);
   assert.match(testJs, /er-report-application-map/);
-  assert.match(testJs, /나의 필요/);
-  assert.match(testJs, /나의 욕구/);
-  assert.match(testJs, /내가 힘들 때 필요한 도움/);
-  assert.match(testJs, /가족·동료·리더가 나를 도울 방법/);
+  assert.match(testJs, /내가 지키려는 것/);
+  assert.match(testJs, /건강할 때 드러나는 강점/);
+  assert.match(testJs, /압박에서 과해지는 것/);
+  assert.match(testJs, /가까운 사람이 알아야 할 것/);
   assert.match(testJs, /결과지 해석상담이나 기본과정/);
   assert.match(testJs, /data-report-program-key="result_consult"/);
   assert.match(testJs, /data-core-tone/);
@@ -83,9 +83,31 @@ test('premium report evidence section puts interpretation before score charts', 
   assert.match(testCss, /\.er-report-panel-lead/);
 });
 
-test('diagnostic report content includes synthesis copy for Phase A QA samples', () => {
+test('diagnostic report content includes synthesis copy for all 27 subtype families', () => {
   assert.match(reportContentJs, /const CORE_SYNTHESIS/);
+  assert.match(reportContentJs, /const SUBTYPE_SYNTHESIS/);
+  assert.match(reportContentJs, /const WING_SYNTHESIS/);
   assert.match(reportContentJs, /const REPORT_SYNTHESIS/);
+  [
+    'sp_1', 'so_1', 'sx_1',
+    'sp_2', 'so_2', 'sx_2',
+    'sp_3', 'so_3', 'sx_3',
+    'sp_4', 'so_4', 'sx_4',
+    'sp_5', 'so_5', 'sx_5',
+    'sp_6', 'so_6', 'sx_6',
+    'sp_7', 'so_7', 'sx_7',
+    'sp_8', 'so_8', 'sx_8',
+    'sp_9', 'so_9', 'sx_9'
+  ].forEach((key) => {
+    assert.match(reportContentJs, new RegExp(`${key}:\\s*\\{`), `${key} should have subtype synthesis copy`);
+  });
+  [
+    '1w9', '1w2', '2w1', '2w3', '3w2', '3w4',
+    '4w3', '4w5', '5w4', '5w6', '6w5', '6w7',
+    '7w6', '7w8', '8w7', '8w9', '9w8', '9w1'
+  ].forEach((key) => {
+    assert.match(reportContentJs, new RegExp(`"${key}":\\s*\\{`), `${key} should have wing synthesis modifier`);
+  });
   assert.match(reportContentJs, /sx_7w8/);
   assert.match(reportContentJs, /성적\/일대일 7w8 조합/);
   assert.match(reportContentJs, /sp_4w5/);
@@ -93,6 +115,14 @@ test('diagnostic report content includes synthesis copy for Phase A QA samples',
   assert.match(reportContentJs, /so_9w8/);
   assert.match(reportContentJs, /사회적 9w8 조합/);
   assert.match(reportContentJs, /getSynthesis/);
+});
+
+test('premium report Life Application Growth sections are density-compressed', () => {
+  assert.match(testJs, /const list = \(items, limit = Infinity\) => \(items \|\| \[\]\)\.slice\(0, limit\)/);
+  assert.match(testJs, /const actionRows = \(c\.actionPlan \|\| \[\]\)\.slice\(0, 2\)/);
+  assert.match(testJs, /roadmap\(c\.roadmap, 3\)/);
+  assert.match(testJs, /step\.bullets\.filter\(Boolean\)\.slice\(0, 2\)/);
+  assert.doesNotMatch(testJs, /마음을 돌이키는 방향/);
 });
 
 test('premium report final consultation CTA always routes to result_consult', () => {

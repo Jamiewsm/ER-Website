@@ -2972,6 +2972,7 @@ function renderSupportMaterialsSection(selection) {
 
 function renderGuidedApplicationSection(model) {
   const c = model.content || {};
+  const synthesis = c.synthesis || {};
   const coreName = c.coreName || `${model.core}번`;
   const firstOf = (items, fallback) => (Array.isArray(items) && items[0]) ? items[0] : fallback;
   const relationshipPractice = c.relationship && c.relationship.practice && c.relationship.practice[0]
@@ -2995,45 +2996,35 @@ function renderGuidedApplicationSection(model) {
     c.recovery,
     '압박이 커질수록 혼자 결론내리기보다, 안전한 대화 안에서 내 자동반응을 천천히 확인하는 도움이 필요합니다.'
   );
+  const protectedNeed = synthesis.protects || c.motivation || '내가 반복해서 지키려는 핵심 필요를 확인하기';
+  const pressurePattern = synthesis.overuses || c.fear || primaryWatch;
+  const closePeopleGuide = synthesis.closePeople || relationshipPractice;
+  const counselingFocus = synthesis.counseling || recoveryHelp;
 
   const applicationMap = [
     {
-      label: 'Need',
-      title: '나의 필요',
-      body: c.fear
-        ? `불안과 방어가 올라올 때 ${escapeReportHtml(coreName)}이 붙잡고 있는 핵심 필요를 보여줍니다.`
-        : '불안과 방어가 올라올 때 내가 진짜로 필요로 하는 것을 분리해 봅니다.',
-      value: c.fear || '내가 위협으로 느끼는 장면과 보호받아야 할 필요를 확인하기'
+      label: 'Protect',
+      title: '내가 지키려는 것',
+      body: `${coreName}의 반복 패턴은 약점보다 먼저, 내가 꼭 지키고 싶어 하는 필요를 보여줍니다.`,
+      value: protectedNeed
     },
     {
-      label: 'Desire',
-      title: '나의 욕구',
-      body: '내가 반복해서 추구하는 방향입니다. 이것은 나쁜 것이 아니라, 성숙하게 다루어야 할 에너지입니다.',
-      value: c.motivation || '내가 얻고 싶어 하는 인정, 안정, 자유, 연결, 의미의 방향 확인하기'
-    },
-    {
-      label: 'Strength',
-      title: '강점',
-      body: '건강할 때 자연스럽게 드러나는 기여 방식입니다.',
+      label: 'Gift',
+      title: '건강할 때 드러나는 강점',
+      body: '좋은 상태에서 이 성향은 실제 삶과 관계에 분명한 기여로 나타납니다.',
       value: careerStrength
     },
     {
-      label: 'Shadow',
-      title: '방어/약점',
-      body: '스트레스에서 강점이 굳어지거나 과해질 때 나타나는 반복 패턴입니다.',
-      value: primaryWatch
-    },
-    {
-      label: 'Support',
-      title: '내가 힘들 때 필요한 도움',
-      body: '좋은 조언보다 먼저 필요한 것은 내 패턴에 맞는 회복 조건입니다.',
-      value: recoveryHelp
+      label: 'Pressure',
+      title: '압박에서 과해지는 것',
+      body: '스트레스가 커질수록 강점은 굳어지고, 가까운 사람에게는 방어처럼 경험될 수 있습니다.',
+      value: pressurePattern
     },
     {
       label: 'Guide',
-      title: '가족·동료·리더가 나를 도울 방법',
-      body: '나를 바꾸려 하기보다, 내가 안전하게 반응을 조절할 수 있는 환경을 만드는 방식입니다.',
-      value: relationshipPractice || parentingPractice
+      title: '가까운 사람이 알아야 할 것',
+      body: '나를 고치려 하기보다, 내 자동반응이 켜지는 장면을 함께 읽을 때 변화가 시작됩니다.',
+      value: closePeopleGuide
     }
   ];
 
@@ -3041,20 +3032,20 @@ function renderGuidedApplicationSection(model) {
     {
       label: 'Self',
       title: '나를 이해하는 단계',
-      body: `${escapeReportHtml(coreName)}의 핵심 동기와 두려움을 알면, 반복되는 감정과 선택이 더 이상 막연한 성격 문제가 아니라 해석 가능한 패턴이 됩니다.`,
-      bullets: [c.motivation, c.fear, careerStrength]
+      body: `${coreName}의 동기와 방어를 알면, 반복되는 선택이 막연한 성격 문제가 아니라 해석 가능한 패턴이 됩니다.`,
+      bullets: [protectedNeed, pressurePattern]
     },
     {
       label: 'Others',
       title: '타인을 이해하는 단계',
-      body: '에니어그램의 실제 가치는 나를 설명하는 데서 끝나지 않고, 배우자·자녀·동료가 무엇을 필요로 하고 무엇에 약해지는지 읽는 데서 시작됩니다.',
-      bullets: [relationshipPractice, parentingPractice, '상대의 약점 뒤에 있는 필요와 두려움을 먼저 읽는 연습']
+      body: '에니어그램의 실제 가치는 배우자·자녀·동료가 무엇을 지키려 하고 어디서 약해지는지 읽는 데서 시작됩니다.',
+      bullets: [relationshipPractice, parentingPractice]
     },
     {
       label: 'Practice',
       title: '관계 안에서 돕는 단계',
-      body: '혼자 읽은 통찰은 금방 흐려집니다. 상담과 스쿨은 내 패턴을 실제 대화, 갈등, 양육, 리더십 장면에 적용하도록 피드백을 제공합니다.',
-      bullets: ['내 자동반응을 한 박자 먼저 알아차리는 훈련', '다른 유형에게 맞는 언어와 도움 방식을 배우는 과정', '가족·팀·사역 현장에서 반복 가능한 적용 루틴 만들기']
+      body: '혼자 읽은 통찰은 금방 흐려집니다. 결과지 해석상담과 기본과정은 실제 대화, 갈등, 양육, 리더십 장면에 적용하도록 돕습니다.',
+      bullets: [counselingFocus, '가족·팀·사역 현장에서 반복 가능한 적용 루틴 만들기']
     }
   ];
 
@@ -3062,15 +3053,15 @@ function renderGuidedApplicationSection(model) {
     <article class="er-report-bridge-card">
       <span>${escapeReportHtml(step.label)}</span>
       <h3>${escapeReportHtml(step.title)}</h3>
-      <p>${step.body}</p>
-      <ul>${buildReportListItems(step.bullets.filter(Boolean))}</ul>
+      <p>${escapeReportHtml(step.body)}</p>
+      <ul>${buildReportListItems(step.bullets.filter(Boolean).slice(0, 2))}</ul>
     </article>
   `).join('');
   const applicationMapCards = applicationMap.map((item) => `
     <article class="er-report-application-map-card">
       <span>${escapeReportHtml(item.label)}</span>
       <h3>${escapeReportHtml(item.title)}</h3>
-      <p>${item.body}</p>
+      <p>${escapeReportHtml(item.body)}</p>
       <strong>${escapeReportHtml(item.value)}</strong>
     </article>
   `).join('');
@@ -3470,14 +3461,14 @@ function renderPremiumReport(model) {
       </div>
     `;
   }).join('');
-  const list = (items) => (items || []).map((item) => `<li>${escapeReportHtml(item)}</li>`).join('');
+  const list = (items, limit = Infinity) => (items || []).slice(0, limit).map((item) => `<li>${escapeReportHtml(item)}</li>`).join('');
   const lifeBlock = (data) => {
     if (!data) return '';
-    if (Array.isArray(data)) return `<ul>${list(data)}</ul>`;
-    const sub = (label, items) => (items && items.length) ? `<h4>${label}</h4><ul>${list(items)}</ul>` : '';
+    if (Array.isArray(data)) return `<ul>${list(data, 2)}</ul>`;
+    const sub = (label, items, limit = 1) => (items && items.length) ? `<h4>${label}</h4><ul>${list(items, limit)}</ul>` : '';
     return `${sub('강점', data.strength)}${sub('함께 살펴볼 점', data.watch)}${sub('오늘부터 이렇게', data.practice)}`;
   };
-  const roadmap = (items) => (items || []).map((item, index) => `
+  const roadmap = (items, limit = Infinity) => (items || []).slice(0, limit).map((item, index) => `
     <li>
       <span>${index + 1}</span>
       <p>${escapeReportHtml(item)}</p>
@@ -3500,7 +3491,7 @@ function renderPremiumReport(model) {
     </article>
   `;
   }).join('');
-  const actionRows = (c.actionPlan || []).map((item, index) => `
+  const actionRows = (c.actionPlan || []).slice(0, 2).map((item, index) => `
     <label class="er-report-action-row">
       <input type="checkbox" data-report-action="${index}" aria-label="Action Plan ${index + 1}">
       <span>${escapeReportHtml(item)}</span>
@@ -3640,7 +3631,7 @@ function renderPremiumReport(model) {
           <article><h3>일과 커리어</h3>${lifeBlock(c.career)}</article>
           <article><h3>관계에서</h3>${lifeBlock(c.relationship)}</article>
           <article><h3>자녀 양육에서</h3>${lifeBlock(c.parenting)}</article>
-          <article><h3>스트레스와 회복 신호</h3><h4>스트레스를 받을 때</h4><ul>${list(c.stress)}</ul><h4>회복으로 가는 길</h4><ul>${list(c.recovery)}</ul></article>
+          <article><h3>스트레스와 회복 신호</h3><h4>스트레스를 받을 때</h4><ul>${list(c.stress, 2)}</ul><h4>회복으로 가는 길</h4><ul>${list(c.recovery, 2)}</ul></article>
         </div>
       </section>
 
@@ -3653,7 +3644,7 @@ function renderPremiumReport(model) {
           <span>Restoration</span>
           <h2>변화 로드맵과 오늘의 실천</h2>
         </div>
-        <ol class="er-report-roadmap">${roadmap(c.roadmap)}</ol>
+        <ol class="er-report-roadmap">${roadmap(c.roadmap, 3)}</ol>
         <div class="er-report-action">
           <h3>오늘의 Action Plan</h3>
           ${actionRows}
@@ -3667,8 +3658,6 @@ function renderPremiumReport(model) {
             <dd>${escapeReportHtml(c.gospel.falseBelief || '')}</dd>
             <dt>기억하면 좋은 진실</dt>
             <dd>${escapeReportHtml(c.gospel.truth || '')}</dd>
-            <dt>마음을 돌이키는 방향</dt>
-            <dd>${escapeReportHtml(c.gospel.repentance || '')}</dd>
             <dt>마음의 기도</dt>
             <dd>${escapeReportHtml(c.gospel.prayer || '')}</dd>
           </dl>
