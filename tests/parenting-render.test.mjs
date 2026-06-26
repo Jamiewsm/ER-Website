@@ -18,6 +18,22 @@ function loadParentingRenderer() {
   return context;
 }
 
+// openParentingArticle 는 DOM에 모달을 그린다. 최소 document mock으로 innerHTML만 캡처.
+function renderArticleModalHtml(index) {
+  let html = '';
+  const modalObj = {
+    addEventListener() {}, remove() {},
+    set innerHTML(v) { html = v; }, get innerHTML() { return html; }
+  };
+  const context = {
+    document: { getElementById: () => null, createElement: () => modalObj, body: { appendChild() {} } }
+  };
+  vm.createContext(context);
+  vm.runInContext(parentingSource, context, { filename: 'js/sections/parenting.js' });
+  context.openParentingArticle(index);
+  return html;
+}
+
 test('renderParenting renders hero, three lenses, and focus anchors', () => {
   const { renderParenting } = loadParentingRenderer();
   const html = renderParenting();
@@ -69,6 +85,23 @@ test('free articles are clickable and wired to the test funnel', () => {
   const momLinks = (parentingSource.match(/mom_type_summary\.html/g) || []).length;
   assert.ok(checklistLinks >= 5, `아이 관찰 체크리스트가 여러 아티클에 연결되어야 함 (got ${checklistLinks})`);
   assert.ok(momLinks >= 4, `엄마유형 정리가 여러 아티클에 연결되어야 함 (got ${momLinks})`);
+});
+
+test('all 8 articles have full bodies (300~500자) and a topic-matched funnel CTA', () => {
+  for (let i = 0; i < 8; i++) {
+    const html = renderArticleModalHtml(i);
+    // 본문 문단만 추출해 글자 수(공백 제외) 측정.
+    const paras = [...html.matchAll(/<p class="text-sm text-gray-700 leading-relaxed break-keep mb-3">([\s\S]*?)<\/p>/g)]
+      .map(m => m[1].replace(/<[^>]+>/g, ''));
+    const len = paras.join('').replace(/\s/g, '').length;
+    assert.ok(len >= 300 && len <= 540, `아티클 ${i} 본문 길이 ${len}자 — 300~500자 범위를 벗어남`);
+    // 주제별 퍼널 CTA: 아이중심 → 아이 유형검사, 부모중심 → 부모 양육성향.
+    assert.match(html, /아이 유형검사 시작하기|부모 양육성향 이해하기/);
+  }
+  // 부모중심 아티클(하지말아야할말·스마트폰·돈언어)은 부모 CTA로.
+  [1, 4, 7].forEach(i => assert.match(renderArticleModalHtml(i), /부모 양육성향 이해하기/));
+  // 아이중심 아티클은 아이 유형검사 CTA로.
+  [0, 2, 3, 5, 6].forEach(i => assert.match(renderArticleModalHtml(i), /아이 유형검사 시작하기/));
 });
 
 test('parent section has a no-score mini checklist plus a parent resource', () => {
