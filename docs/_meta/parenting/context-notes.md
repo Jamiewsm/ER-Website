@@ -72,3 +72,12 @@ F1~F4 머지(#82, main 206f5b5) 후 남은 퍼널 마감 4건. track: site only.
 - **R4 PARENTING_ARTICLES 자료 연결** (`js/sections/parenting.js`): 웹자료가 2개뿐(`child_type_checklist.html`=아이 관찰, `mom_type_summary.html`=엄마유형)이므로 8개 아티클을 주제별 매핑. 아이중심(스트레스신호·칭찬훈육·사춘기대화·스킨십경계·공부동기)→관찰 체크리스트, 부모중심(하지말아야할말·스마트폰·돈언어)→엄마유형 정리.
 
 테스트: parenting-render(심화 CTA가 `parenting-workshop.html`로, 아티클 자료 링크 다수, 홈 dual-CTA), apply-workshop(영향 없음). node --test 전체 통과 + 브라우저 QA.
+
+## Phase 3B (branch `feat/parenting-phase-3b-articles`)
+무료 아티클 8개를 stub(2문단)에서 정식 본문으로. track: site only. (`js/test.js` 무관)
+
+- **본문 확장** (`js/sections/parenting.js` `PARENTING_ARTICLES`): 각 아티클 `body`를 4문단·326~389자(공백 제외)로 작성. ER 관점(행동보다 욕구·두려움, 부모의 자동반응) 유지, 구체적 상황 예시 포함. 한국어 문장은 마침표로 종결(콜론 종결 금지).
+- **주제별 퍼널 CTA** (`openParentingArticle` 모달): 하단 CTA 박스를 per-article `cta.kind`로 분기. `ctaKinds.child`={아이 유형검사 시작하기 → child-test 페이지}, `ctaKinds.parent`={부모 양육성향 이해하기 → 모달 닫고 `renderSection('parenting',{focus:'parent'})`}. 아이중심 5개(idx 0·2·3·5·6)=child, 부모중심 3개(idx 1·4·7)=parent. `cta.blurb`로 아티클별 안내 문구. 기본값은 기존 child CTA(하위호환).
+- 3A의 per-article `link`(자료) + 하단 CTA 박스 구조는 유지하고, 고정 child CTA만 per-article로 파라미터화.
+
+테스트: parenting-render에 DOM-mock 모달 렌더 헬퍼 + 본문 길이(300~540) · 주제별 CTA kind 검증 추가. node --test 138 pass + 브라우저 QA(child/parent CTA 동작, parent는 모달 닫고 parent 섹션 이동 확인).

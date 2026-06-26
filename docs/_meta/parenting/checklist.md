@@ -56,8 +56,14 @@
 - [x] R4 PARENTING_ARTICLES 자료 연결 — 8개 아티클을 기존 2개 웹자료에 주제별 매핑(아이중심→관찰 체크리스트, 부모중심→엄마유형 정리)
 - [x] node --test 전체 통과 (137 pass) + 브라우저 QA(4건 PASS, 콘솔 에러 없음)
 
+## Phase 3B (branch `feat/parenting-phase-3b-articles`) — 아티클 정식 본문
+- [x] PARENTING_ARTICLES 8개 stub(2문단) → 정식 본문(4문단, 326~389자) 확장
+- [x] 주제별 퍼널 CTA — 모달 CTA를 per-article `cta.kind`로(아이중심 5개→아이 유형검사, 부모중심 3개→`renderSection('parenting',{focus:'parent'})`). 부모 CTA는 모달 닫고 parent 섹션으로 이동
+- [x] 기존 자료 링크(3A)·하단 CTA 박스 구조 유지하며 카피만 본문화
+- [x] node --test 전체 통과 (138 pass, 본문 길이·CTA kind 검증 추가) + 브라우저 QA
+
 ## 차기 (여전히 범위 밖)
 - [ ] 부모 양육성향 검사 신규 개발(문항·채점) — 현재 미니 체크/안내 CTA만
 - [ ] 81개 부모×아이 조합 엔진 — 현재 대표 6개 예시만
-- [ ] 무료 아티클 stub → 정식 아티클 라이브러리 확장
+- [ ] 무료 아티클 라이브러리 확장 — 8개 정식 본문 완료(3B), 추가 아티클·전용 페이지는 차기
 - [ ] 클린 URL `/parenting/...` (현재 해시 라우팅)
