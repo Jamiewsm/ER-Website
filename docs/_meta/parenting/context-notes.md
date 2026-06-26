@@ -62,3 +62,13 @@ MVP를 "보이는 랜딩"에서 "전환되는 여정"으로 다듬음. track: si
 - **F4 child-test→apply 배너 문맥** (`js/sections/apply.js`): `fromChildTypeTest`일 때 trackTitle/trackDesc/bannerTitle/bannerBody를 부모 문맥으로 override. 성인 "프리미엄 테스트 후 추천" 대신 "아이 검사 후 추천 — 결과 해석상담". 상품·가격($50)·category는 무변경.
 
 테스트: `parenting-render.test.mjs`(line 38 `apply_source`로, `id="parenting-program"`·홈 카드 라우팅 assertion 추가), `apply-workshop-render.test.mjs`(child-test 배너 override test 추가). 전체 통과 + 브라우저 QA.
+
+## Phase 3A 잔여 (branch `feat/parenting-phase-3a-remainder`)
+F1~F4 머지(#82, main 206f5b5) 후 남은 퍼널 마감 4건. track: site only. 사용자 승인: dual-CTA="여정 보기+4주 신청", workshop nav="양방향 연결".
+
+- **R1 child-test 결과 퍼널 CTA** (`child-type-test/child-type-test.html`): 결과지 c5(결과 해석상담 $50) 아래에 보조 링크 "부모–자녀 맞춤 가이드 보기" → `../index.html#parenting?focus=guide`. child-test가 유료 해석상담뿐 아니라 Parenting 여정으로도 이어지도록.
+- **R2 parenting-workshop nav 양방향** (`parenting-workshop.html` + `js/sections/parenting.js`): F1 이후 고립된 워크샵 상세 페이지를 퍼널에 재연결. (a) 워크샵 헤더에 `Parenting 여정`(→`/#parenting`) 링크. (b) 랜딩 심화 ladder CTA·최종 CTA "알아보기"를 apply 직행 대신 `parenting-workshop.html?apply_source=parenting` 상세로 라우팅 → 상세 페이지 자체 신청 버튼이 `#apply?focus=parenting_workshop&apply_source=parenting`로 퍼널 완결(attribution 유지).
+- **R3 홈 Hero dual-CTA** (`js/sections/home.js`): 양육 카드 단일 버튼 → 2버튼. 1차 "양육 여정 보기"(`renderSection('parenting')`, 여정 top) + 2차 "4주 과정 신청"(apply parenting_workshop, `apply_source:'home_hero'`). programCards 렌더에 optional `button2`/`action2` 분기 추가(다른 카드는 무변경). F2의 `#parenting-program` 앵커는 유지(직접 URL용).
+- **R4 PARENTING_ARTICLES 자료 연결** (`js/sections/parenting.js`): 웹자료가 2개뿐(`child_type_checklist.html`=아이 관찰, `mom_type_summary.html`=엄마유형)이므로 8개 아티클을 주제별 매핑. 아이중심(스트레스신호·칭찬훈육·사춘기대화·스킨십경계·공부동기)→관찰 체크리스트, 부모중심(하지말아야할말·스마트폰·돈언어)→엄마유형 정리.
+
+테스트: parenting-render(심화 CTA가 `parenting-workshop.html`로, 아티클 자료 링크 다수, 홈 dual-CTA), apply-workshop(영향 없음). node --test 전체 통과 + 브라우저 QA.
