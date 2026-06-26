@@ -156,12 +156,47 @@
             border: 1px solid rgba(255, 250, 245, 0.6);
         }
 
-        /* Mobile Menu Transition + 패널 내부 스크롤(짧은 뷰포트·안드로이드) */
+        /* Mobile Menu — 불투명 패널 + 뒤 콘텐츠 딤(모바일 가독성) */
+        #mobile-menu-backdrop {
+            position: fixed;
+            inset: 0;
+            top: 4rem;
+            z-index: 44;
+            background: rgba(62, 54, 46, 0.55);
+            -webkit-tap-highlight-color: transparent;
+            transition: opacity 0.25s ease;
+        }
+        @media (min-width: 768px) {
+            #mobile-menu-backdrop { top: 5rem; }
+        }
+        #mobile-menu-backdrop.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #mobile-menu-backdrop:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+        }
         #mobile-menu {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 4rem;
+            z-index: 48;
+            max-height: calc(100dvh - 4rem);
+            background-color: #FFFBF6;
+            border-bottom: 1px solid #EEE2D5;
+            box-shadow: 0 20px 40px rgba(62, 54, 46, 0.16);
+            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
             transform-origin: top;
             overscroll-behavior: contain;
             -webkit-overflow-scrolling: touch;
+        }
+        @media (min-width: 768px) {
+            #mobile-menu {
+                top: 5rem;
+                max-height: calc(100dvh - 5rem);
+            }
         }
         #mobile-menu.hidden {
             opacity: 0;
@@ -172,6 +207,9 @@
             opacity: 1;
             pointer-events: auto;
             transform: scaleY(1);
+        }
+        body.mobile-menu-open {
+            overflow: hidden;
         }
 
         /* 모바일 메뉴: 접이식 그룹(기본 닫힘, 한 번에 하나만 펼침) */
@@ -409,7 +447,8 @@
             </div>
         </div>
         
-        <div id="mobile-menu" class="hidden absolute w-full left-0 z-40 top-16 md:top-20 max-h-[calc(100dvh-4rem)] md:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-y-contain bg-white/98 backdrop-blur-xl border-b border-gray-100 shadow-xl">
+        <div id="mobile-menu-backdrop" class="hidden xl:hidden" aria-hidden="true" onclick="closeMobileMenu()"></div>
+        <div id="mobile-menu" class="hidden xl:hidden fixed w-full left-0 z-[48] top-16 md:top-20 max-h-[calc(100dvh-4rem)] md:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-y-contain border-b border-er-accentLight shadow-xl">
             <div class="px-4 py-4 space-y-1">
                 <button id="mobile-auth-btn" class="block w-full text-left px-4 py-2.5 text-sm font-semibold text-gray-600 hover:bg-er-accentLight/30 rounded-xl transition-colors"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
                 <button onclick="renderSection('apply', { track: 'paid' })" class="block w-full text-center px-4 py-3 mt-1 text-sm font-bold bg-er-dark text-white rounded-xl shadow-sm hover:bg-gray-800 transition-colors">상담 신청</button>
