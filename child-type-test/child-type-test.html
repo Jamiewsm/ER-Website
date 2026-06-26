@@ -578,6 +578,15 @@ function renderResult(){
     window.location.href='../index.html#apply?focus=result_consult&apply_source=child_type_test';
   };
   c5.appendChild(cta);
+  // 유료 해석상담 외에, 부모를 Parenting 여정(부모–자녀 맞춤 가이드)으로도 연결하는 보조 CTA
+  const guideCta=document.createElement('button');
+  guideCta.className='btn ghost';
+  guideCta.style.width='100%'; guideCta.style.display='block'; guideCta.style.marginTop='10px';
+  guideCta.textContent='부모–자녀 맞춤 가이드 보기';
+  guideCta.onclick=()=>{
+    window.location.href='../index.html#parenting?focus=guide';
+  };
+  c5.appendChild(guideCta);
   app.appendChild(c5);
 
   // 액션

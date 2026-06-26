@@ -8,6 +8,8 @@ const parentingSource = readFileSync(new URL('../js/sections/parenting.js', impo
 const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url), 'utf8');
 const programsSource = readFileSync(new URL('../js/sections/programs.js', import.meta.url), 'utf8');
 const homeSource = readFileSync(new URL('../js/sections/home.js', import.meta.url), 'utf8');
+const workshopSource = readFileSync(new URL('../parenting-workshop.html', import.meta.url), 'utf8');
+const childTestSource = readFileSync(new URL('../child-type-test/child-type-test.html', import.meta.url), 'utf8');
 
 function loadParentingRenderer() {
   const context = {};
@@ -38,8 +40,8 @@ test('renderParenting wires existing flows without rebuilding them', () => {
   assert.match(html, /child-type-test\/child-type-test\.html/);
   // 양육 해석상담은 기존 apply parenting focus 재사용 + 랜딩발 출처 attribution.
   assert.match(html, /focus: 'parenting',[^}]*apply_source: 'parenting'/);
-  // 4주 과정은 기존 parenting_workshop focus 재사용.
-  assert.match(html, /focus: 'parenting_workshop'/);
+  // 4주 과정 "알아보기"는 워크샵 상세 페이지로 안내(상세→신청 퍼널, attribution 유지).
+  assert.match(html, /parenting-workshop\.html\?apply_source=parenting/);
   // 진단이 아니라 이해의 가설이라는 표현이 포함.
   assert.match(html, /이해의 가설/);
 });
@@ -60,10 +62,13 @@ test('free articles are clickable and wired to the test funnel', () => {
   const html = ctx.renderParenting();
   const btnCount = (html.match(/openParentingArticle\(/g) || []).length;
   assert.equal(btnCount, 8, 'all 8 article cards should be clickable');
-  // 모달 아티클 중 최소 1개는 실제 관찰 자료와 연결.
-  assert.match(parentingSource, /child_type_checklist\.html/);
   // 모달 하단 CTA 는 아이 유형검사 퍼널로 연결.
   assert.match(parentingSource, /child-type-test\/child-type-test\.html/);
+  // 8개 아티클이 기존 2개 웹자료에 주제별로 연결됨(아이중심→관찰 체크리스트, 부모중심→엄마유형 정리).
+  const checklistLinks = (parentingSource.match(/child_type_checklist\.html/g) || []).length;
+  const momLinks = (parentingSource.match(/mom_type_summary\.html/g) || []).length;
+  assert.ok(checklistLinks >= 5, `아이 관찰 체크리스트가 여러 아티클에 연결되어야 함 (got ${checklistLinks})`);
+  assert.ok(momLinks >= 4, `엄마유형 정리가 여러 아티클에 연결되어야 함 (got ${momLinks})`);
 });
 
 test('parent section has a no-score mini checklist plus a parent resource', () => {
@@ -85,10 +90,27 @@ test('programs section is relabeled to the locked nav IA and redirects parenting
   assert.doesNotMatch(programsSource, /individual:개인\/가정/);
 });
 
-test('home parenting hero card routes through the Parenting journey, not the static page', () => {
-  // 홈 Hero "Enneagram for Parenting" 카드는 새 여정(랜딩 상품 계단)으로 진입해야 함.
-  assert.match(homeSource, /renderSection\('parenting', \{ focus: 'program' \}\)/);
-  assert.doesNotMatch(homeSource, /\/parenting-workshop\.html/);
+test('home parenting hero card has a dual CTA into the journey and the workshop apply', () => {
+  // 1차 CTA: 양육 여정 보기 → 랜딩 top.
+  assert.match(homeSource, /button: '양육 여정 보기'/);
+  assert.match(homeSource, /action: "renderSection\('parenting'\)"/);
+  // 2차 CTA: 4주 과정 신청 → apply parenting_workshop (home_hero attribution).
+  assert.match(homeSource, /button2: '4주 과정 신청'/);
+  assert.match(homeSource, /focus: 'parenting_workshop', apply_source: 'home_hero'/);
+  // 홈은 정적 /parenting-workshop.html 로 직행하지 않음.
+  assert.doesNotMatch(homeSource, /parenting-workshop\.html/);
+});
+
+test('workshop detail page links back into the Parenting journey', () => {
+  // F1 이후 고립됐던 워크샵 상세 페이지가 새 여정으로 다시 연결됨.
+  assert.match(workshopSource, /href="\/#parenting"/);
+  assert.match(workshopSource, /Parenting 여정/);
+});
+
+test('child type test result offers a journey CTA beyond the paid consult', () => {
+  // 유료 해석상담 외에 부모–자녀 맞춤 가이드(여정)로도 연결.
+  assert.match(childTestSource, /#parenting\?focus=guide/);
+  assert.match(childTestSource, /부모–자녀 맞춤 가이드 보기/);
 });
 
 test('router routes parenting and scrolls to the requested focus anchor', () => {

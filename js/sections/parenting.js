@@ -16,49 +16,56 @@ const PARENTING_ARTICLES = [
         body: [
             '"왜 너만 그래?", "형은 안 그러는데" 같은 비교와 단정은 행동을 바꾸기보다 "나는 늘 부족하다"는 메시지로 남습니다.',
             '바꾸고 싶은 행동이 있다면, 아이의 존재가 아니라 구체적인 상황과 다음 행동을 짚어 말해 주세요.'
-        ]
+        ],
+        link: { label: '부모 양육성향 특징 자료 보기', href: 'docs/parent_resources/mom_type_summary.html' }
     },
     {
         t: '칭찬과 훈육', i: 'fas fa-star', tag: '동기',
         body: [
             '칭찬은 결과가 아니라 시도와 과정에 할 때 자신감으로 이어집니다. "100점이라서 대단해"보다 "어려운데 끝까지 해봤구나"가 다음 도전을 만듭니다.',
             '훈육도 마찬가지입니다. 감정을 쏟아내는 대신, 무엇이 문제였고 다음엔 어떻게 할지를 함께 정리할 때 아이가 배웁니다.'
-        ]
+        ],
+        link: { label: '아이 관찰 체크리스트 보기', href: 'docs/parent_resources/child_type_checklist.html' }
     },
     {
         t: '사춘기 자녀와의 대화', i: 'fas fa-comment', tag: '사춘기',
         body: [
             '사춘기 아이의 침묵은 거절이 아니라, 자기만의 공간을 지키려는 신호일 때가 많습니다. 다가가려 할수록 더 문을 닫는 것처럼 보일 수 있습니다.',
             '대답을 재촉하기보다, 혼자 정리할 시간을 먼저 허용하고 짧게 곁을 지켜 주세요. 대화는 타이밍이 절반입니다.'
-        ]
+        ],
+        link: { label: '아이 관찰 체크리스트 보기', href: 'docs/parent_resources/child_type_checklist.html' }
     },
     {
         t: '부모의 스마트폰 사용', i: 'fas fa-mobile-screen', tag: '습관',
         body: [
             '아이는 부모의 말보다 부모가 화면을 보는 시간을 더 오래 기억합니다. "스마트폰 그만"이라는 말의 설득력은 부모의 손에서 나옵니다.',
             '규칙을 정할 때 아이만의 규칙이 아니라 가족 공통의 약속으로 만들면, 통제가 아니라 함께 지키는 일이 됩니다.'
-        ]
+        ],
+        link: { label: '부모 양육성향 특징 자료 보기', href: 'docs/parent_resources/mom_type_summary.html' }
     },
     {
         t: '스킨십과 경계', i: 'fas fa-hand', tag: '경계',
         body: [
             '어릴 때 좋아하던 포옹을 사춘기 아이가 거절하는 것은 거리감이 아니라 경계의 발달입니다. 거절을 존중받은 아이가 더 안전하게 다가옵니다.',
             '신체 접촉은 아이의 속도에 맞추고, 거절을 서운함으로 받지 않도록 부모의 마음을 먼저 다독여 주세요.'
-        ]
+        ],
+        link: { label: '아이 관찰 체크리스트 보기', href: 'docs/parent_resources/child_type_checklist.html' }
     },
     {
         t: '공부 동기', i: 'fas fa-book-open', tag: '동기',
         body: [
             '동기는 잔소리로 만들어지지 않습니다. 아이가 무엇을 중요하게 느끼는지에 따라 효과적인 말이 다릅니다. 인정이 중요한 아이와 자유가 중요한 아이에게 같은 말은 통하지 않습니다.',
             '성적이라는 결과보다, 아이가 스스로 정한 작은 목표와 그 과정을 함께 봐주는 것이 더 오래 갑니다.'
-        ]
+        ],
+        link: { label: '아이 관찰 체크리스트 보기', href: 'docs/parent_resources/child_type_checklist.html' }
     },
     {
         t: '돈에 관한 부모의 언어', i: 'fas fa-coins', tag: '가치',
         body: [
             '용돈과 소비를 두고 하는 부모의 말에는 불안, 통제, 인정 욕구가 함께 담깁니다. 아이는 돈에 대한 태도를 부모의 말투에서 먼저 배웁니다.',
             '제한을 둘 때도 이유와 기준을 함께 말해 주면, 돈은 다툼의 주제가 아니라 함께 배우는 주제가 됩니다.'
-        ]
+        ],
+        link: { label: '부모 양육성향 특징 자료 보기', href: 'docs/parent_resources/mom_type_summary.html' }
     }
 ];
 
@@ -201,7 +208,7 @@ function renderParenting(payload = null) {
         ['입문', '우리 아이 유형검사', '부모의 관찰을 통해 아이의 반복적인 동기와 반응 패턴을 탐색합니다. 결과는 아이를 하나의 유형으로 단정하는 진단이 아니라, 부모가 아이를 더 세밀하게 관찰하도록 돕는 이해의 가설입니다.', '아이 유형검사 시작하기', "link:child-type-test/child-type-test.html"],
         ['핵심', '부모–자녀 맞춤 리포트', '아이의 성향 가설, 핵심 욕구, 스트레스 반응, 부모의 양육성향, 주요 갈등 지점, 상황별 도움이 되는 말과 피해야 할 반응, 관계 회복 실천 과제를 담은 맞춤 리포트.', '맞춤 가이드 신청하기', "apply:parenting"],
         ['프리미엄', '부모–자녀 맞춤 해석상담', '검사 결과 검토, 오진 가능성 점검, 실제 갈등 사례 분석, 부모의 자동반응 탐색, 가정별 실천계획 수립.', '해석상담 신청하기', "apply:parenting"],
-        ['심화', '4주 Parenting 과정', '1주 부모인 나 이해하기, 2주 아이의 핵심 욕구와 불안, 3주 부모–아이 갈등 조합 분석, 4주 상황별 대화와 훈육 계획 만들기.', '4주 과정 알아보기', "apply:parenting_workshop"]
+        ['심화', '4주 Parenting 과정', '1주 부모인 나 이해하기, 2주 아이의 핵심 욕구와 불안, 3주 부모–아이 갈등 조합 분석, 4주 상황별 대화와 훈육 계획 만들기.', '4주 과정 알아보기', "link:parenting-workshop.html?apply_source=parenting"]
     ];
 
     const ladderCta = (label, action) => {
@@ -430,7 +437,7 @@ function renderParenting(payload = null) {
                                 <a href="child-type-test/child-type-test.html" class="px-5 py-3.5 rounded-full bg-white text-er-dark text-sm font-bold hover:-translate-y-0.5 transition-all">아이 유형검사 시작하기</a>
                                 <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">검사 결과 해석상담 신청하기</button>
                                 <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">부모–자녀 맞춤 가이드 신청하기</button>
-                                <button onclick="renderSection('apply', { focus: 'parenting_workshop', apply_source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">4주 Parenting 과정 알아보기</button>
+                                <button onclick="window.location.href='parenting-workshop.html?apply_source=parenting'" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">4주 Parenting 과정 알아보기</button>
                             </div>
                         </div>
                     </div>
