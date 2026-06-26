@@ -177,7 +177,35 @@ function renderSection(sectionId, payload = null, options = {}) {
     if (sectionId === 'test') setTimeout(() => mountAdaptiveTestIframe(), 0);
 }
 
+function collapseMobileNavGroups() {
+    document.querySelectorAll('.mobile-nav-panel').forEach((panel) => {
+        panel.classList.add('hidden');
+        panel.setAttribute('aria-hidden', 'true');
+    });
+    document.querySelectorAll('.mobile-nav-trigger').forEach((trigger) => {
+        trigger.setAttribute('aria-expanded', 'false');
+        const chevron = trigger.querySelector('.mobile-nav-chevron');
+        if (chevron) chevron.classList.remove('rotate-180');
+    });
+}
+
+function toggleMobileNavGroup(panelId, triggerEl) {
+    const panel = document.getElementById(panelId);
+    if (!panel || !triggerEl) return;
+    const willOpen = panel.classList.contains('hidden');
+    collapseMobileNavGroups();
+    if (willOpen) {
+        panel.classList.remove('hidden');
+        panel.setAttribute('aria-hidden', 'false');
+        triggerEl.setAttribute('aria-expanded', 'true');
+        const chevron = triggerEl.querySelector('.mobile-nav-chevron');
+        if (chevron) chevron.classList.add('rotate-180');
+    }
+}
+
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
+    const opening = menu.classList.contains('hidden');
     menu.classList.toggle('hidden');
+    if (opening) collapseMobileNavGroups();
 }

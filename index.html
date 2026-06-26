@@ -173,6 +173,71 @@
             pointer-events: auto;
             transform: scaleY(1);
         }
+
+        /* 모바일 메뉴: 접이식 그룹(기본 닫힘, 한 번에 하나만 펼침) */
+        .mobile-nav-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            text-align: left;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #3E362E;
+            border-radius: 0.75rem;
+            transition: background-color 0.15s ease;
+        }
+        .mobile-nav-trigger:hover,
+        .mobile-nav-trigger[aria-expanded="true"] {
+            background: rgba(238, 226, 213, 0.35);
+        }
+        .mobile-nav-trigger--accent {
+            color: #9D7657;
+        }
+        .mobile-nav-chevron {
+            font-size: 0.65rem;
+            opacity: 0.55;
+            transition: transform 0.2s ease;
+        }
+        .mobile-nav-chevron.rotate-180 {
+            transform: rotate(180deg);
+        }
+        .mobile-nav-panel {
+            padding: 0.25rem 0 0.5rem 0.5rem;
+        }
+        .mobile-nav-panel.hidden {
+            display: none;
+        }
+        .mobile-nav-link {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.625rem 1rem 0.625rem 1.25rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #4B5563;
+            border-radius: 0.75rem;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+        .mobile-nav-link:hover {
+            background: rgba(238, 226, 213, 0.3);
+            color: #3E362E;
+        }
+        .mobile-nav-flat {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #3E362E;
+            border-radius: 0.75rem;
+            transition: background-color 0.15s ease;
+        }
+        .mobile-nav-flat:hover {
+            background: rgba(238, 226, 213, 0.35);
+        }
         
         .break-keep { word-break: keep-all; }
 
@@ -274,8 +339,8 @@
                                 <button onclick="renderSection('parenting', { focus: 'guide' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">부모–자녀 맞춤 가이드</button>
                                 <div class="my-1 h-px bg-gray-100 mx-3"></div>
                                 <a href="child-type-test/child-type-test.html" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">아이 유형검사</a>
-                                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">양육 해석상담</button>
-                                <button onclick="renderSection('apply', { focus: 'parenting_workshop', source: 'parenting' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">부모교육·프로그램</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">양육 해석상담</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'parenting' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">부모교육·프로그램</button>
                             </div>
                         </div>
                     </div>
@@ -344,32 +409,68 @@
             </div>
         </div>
         
-        <div id="mobile-menu" class="hidden absolute w-full left-0 z-40 top-16 md:top-20 max-h-[calc(100dvh-4rem)] md:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-y-contain bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl">
-            <div class="px-5 py-6 space-y-2">
-                <button id="mobile-auth-btn" class="block w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
-                <div class="h-px bg-gray-100 my-2 mx-4"></div>
-                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-gray-400">ER 소개</p>
-                <button onclick="renderSection('about')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">ER 소개</button>
-                <button onclick="renderSection('coaches')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">코치 소개</button>
-                <button onclick="renderSection('support')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">사역지원</button>
-                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-gray-400">유형검사</p>
-                <button onclick="renderSection('test')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">프리미엄 검사</button>
-                <button onclick="renderSection('types_guide')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">유형 알아보기</button>
-                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-er-accent">Parenting</p>
-                <button onclick="renderSection('parenting')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">Parenting 소개</button>
-                <button onclick="renderSection('parenting', { focus: 'child' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">우리 아이 이해하기</button>
-                <button onclick="renderSection('parenting', { focus: 'parent' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">부모인 나 이해하기</button>
-                <button onclick="renderSection('parenting', { focus: 'guide' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">부모–자녀 맞춤 가이드</button>
-                <a href="child-type-test/child-type-test.html" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">아이 유형검사</a>
-                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">양육 해석상담</button>
-                <button onclick="renderSection('apply', { focus: 'parenting_workshop', source: 'parenting' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">부모교육·프로그램</button>
-                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-gray-400">서비스</p>
-                <button onclick="renderSection('programs', { tab: 'individual' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">관계·부부</button>
-                <button onclick="renderSection('programs', { tab: 'church' })" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">조직·리더십</button>
-                <button onclick="renderSection('coach_training')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">전문가 과정</button>
-                <p class="px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-gray-400">회복 이야기</p>
-                <button onclick="renderSection('community')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">회복 이야기</button>
-                <button onclick="renderSection('notices')" class="block w-full text-left px-4 py-3 text-base font-bold text-gray-700 hover:bg-er-accentLight/30 rounded-xl transition-colors">공지사항</button>
+        <div id="mobile-menu" class="hidden absolute w-full left-0 z-40 top-16 md:top-20 max-h-[calc(100dvh-4rem)] md:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-y-contain bg-white/98 backdrop-blur-xl border-b border-gray-100 shadow-xl">
+            <div class="px-4 py-4 space-y-1">
+                <button id="mobile-auth-btn" class="block w-full text-left px-4 py-2.5 text-sm font-semibold text-gray-600 hover:bg-er-accentLight/30 rounded-xl transition-colors"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
+                <button onclick="renderSection('apply', { track: 'paid' })" class="block w-full text-center px-4 py-3 mt-1 text-sm font-bold bg-er-dark text-white rounded-xl shadow-sm hover:bg-gray-800 transition-colors">상담 신청</button>
+                <div class="h-px bg-gray-100 my-2"></div>
+
+                <nav class="mobile-nav-accordion" aria-label="모바일 메뉴">
+                    <button type="button" class="mobile-nav-trigger" aria-expanded="false" aria-controls="mobile-nav-er" onclick="toggleMobileNavGroup('mobile-nav-er', this)">
+                        <span>ER 소개</span>
+                        <i class="fas fa-chevron-down mobile-nav-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div id="mobile-nav-er" class="mobile-nav-panel hidden" aria-hidden="true">
+                        <button type="button" onclick="renderSection('about')" class="mobile-nav-link">ER 소개</button>
+                        <button type="button" onclick="renderSection('coaches')" class="mobile-nav-link">코치 소개</button>
+                        <button type="button" onclick="renderSection('support')" class="mobile-nav-link">사역지원</button>
+                    </div>
+
+                    <button type="button" class="mobile-nav-trigger" aria-expanded="false" aria-controls="mobile-nav-test" onclick="toggleMobileNavGroup('mobile-nav-test', this)">
+                        <span>유형검사</span>
+                        <i class="fas fa-chevron-down mobile-nav-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div id="mobile-nav-test" class="mobile-nav-panel hidden" aria-hidden="true">
+                        <button type="button" onclick="renderSection('test')" class="mobile-nav-link">프리미엄 검사</button>
+                        <button type="button" onclick="renderSection('types_guide')" class="mobile-nav-link">유형 알아보기</button>
+                    </div>
+
+                    <button type="button" class="mobile-nav-trigger mobile-nav-trigger--accent" aria-expanded="false" aria-controls="mobile-nav-parenting" onclick="toggleMobileNavGroup('mobile-nav-parenting', this)">
+                        <span>Parenting</span>
+                        <i class="fas fa-chevron-down mobile-nav-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div id="mobile-nav-parenting" class="mobile-nav-panel hidden" aria-hidden="true">
+                        <button type="button" onclick="renderSection('parenting')" class="mobile-nav-link">Parenting 소개</button>
+                        <button type="button" onclick="renderSection('parenting', { focus: 'child' })" class="mobile-nav-link">우리 아이 이해하기</button>
+                        <button type="button" onclick="renderSection('parenting', { focus: 'parent' })" class="mobile-nav-link">부모인 나 이해하기</button>
+                        <button type="button" onclick="renderSection('parenting', { focus: 'guide' })" class="mobile-nav-link">부모–자녀 맞춤 가이드</button>
+                        <a href="child-type-test/child-type-test.html" class="mobile-nav-link">아이 유형검사</a>
+                        <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="mobile-nav-link">양육 해석상담</button>
+                        <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'parenting' })" class="mobile-nav-link">부모교육·프로그램</button>
+                    </div>
+
+                    <button type="button" onclick="renderSection('programs', { tab: 'individual' })" class="mobile-nav-flat">관계·부부</button>
+
+                    <button type="button" class="mobile-nav-trigger" aria-expanded="false" aria-controls="mobile-nav-org" onclick="toggleMobileNavGroup('mobile-nav-org', this)">
+                        <span>조직·리더십</span>
+                        <i class="fas fa-chevron-down mobile-nav-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div id="mobile-nav-org" class="mobile-nav-panel hidden" aria-hidden="true">
+                        <button type="button" onclick="renderSection('programs', { tab: 'church' })" class="mobile-nav-link">기관·교회</button>
+                        <button type="button" onclick="renderSection('programs', { tab: 'business' })" class="mobile-nav-link">기업·팀</button>
+                    </div>
+
+                    <button type="button" onclick="renderSection('coach_training')" class="mobile-nav-flat">전문가 과정</button>
+
+                    <button type="button" class="mobile-nav-trigger" aria-expanded="false" aria-controls="mobile-nav-community" onclick="toggleMobileNavGroup('mobile-nav-community', this)">
+                        <span>회복 이야기</span>
+                        <i class="fas fa-chevron-down mobile-nav-chevron" aria-hidden="true"></i>
+                    </button>
+                    <div id="mobile-nav-community" class="mobile-nav-panel hidden" aria-hidden="true">
+                        <button type="button" onclick="renderSection('community')" class="mobile-nav-link">회복 이야기</button>
+                        <button type="button" onclick="renderSection('notices')" class="mobile-nav-link">공지사항</button>
+                    </div>
+                </nav>
             </div>
         </div>
     </nav>
