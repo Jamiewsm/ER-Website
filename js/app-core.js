@@ -75,7 +75,7 @@ function renderSection(sectionId, payload = null, options = {}) {
     const main = document.getElementById('main-content');
     
     // Close mobile menu
-    document.getElementById('mobile-menu').classList.add('hidden');
+    closeMobileMenu();
     
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'auto' }); 
@@ -177,6 +177,33 @@ function renderSection(sectionId, payload = null, options = {}) {
     if (sectionId === 'test') setTimeout(() => mountAdaptiveTestIframe(), 0);
 }
 
+function closeMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    if (menu) menu.classList.add('hidden');
+    if (backdrop) {
+        backdrop.classList.add('hidden');
+        backdrop.setAttribute('aria-hidden', 'true');
+    }
+    if (document.body && document.body.classList && typeof document.body.classList.remove === 'function') {
+        document.body.classList.remove('mobile-menu-open');
+    }
+}
+
+function openMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    if (menu) menu.classList.remove('hidden');
+    if (backdrop) {
+        backdrop.classList.remove('hidden');
+        backdrop.setAttribute('aria-hidden', 'false');
+    }
+    if (document.body && document.body.classList && typeof document.body.classList.add === 'function') {
+        document.body.classList.add('mobile-menu-open');
+    }
+    collapseMobileNavGroups();
+}
+
 function collapseMobileNavGroups() {
     document.querySelectorAll('.mobile-nav-panel').forEach((panel) => {
         panel.classList.add('hidden');
@@ -205,7 +232,7 @@ function toggleMobileNavGroup(panelId, triggerEl) {
 
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
-    const opening = menu.classList.contains('hidden');
-    menu.classList.toggle('hidden');
-    if (opening) collapseMobileNavGroups();
+    if (!menu) return;
+    if (menu.classList.contains('hidden')) openMobileMenu();
+    else closeMobileMenu();
 }

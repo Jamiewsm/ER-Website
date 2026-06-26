@@ -11,6 +11,9 @@ test('mobile menu uses collapsed accordion groups by default', () => {
   assert.match(indexHtml, /class="mobile-nav-accordion"/);
   assert.match(indexHtml, /id="mobile-nav-parenting"/);
   assert.match(indexHtml, /class="mobile-nav-panel hidden"/);
+  assert.match(indexHtml, /id="mobile-menu-backdrop"/);
+  assert.match(indexHtml, /background-color: #FFFBF6/);
+  assert.doesNotMatch(indexHtml, /bg-white\/9[58].*backdrop-blur/);
   assert.doesNotMatch(indexHtml, /px-4 pt-3 pb-1 text-xs font-bold uppercase tracking-wide text-er-accent">Parenting<\/p>/);
 });
 
