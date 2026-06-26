@@ -58,8 +58,10 @@ function renderHome() {
             price: '$120',
             image: 'home-parent-child-photo.jpg',
             position: 'center top',
-            button: '자세히 보기',
-            action: "renderSection('parenting', { focus: 'program' })"
+            button: '양육 여정 보기',
+            action: "renderSection('parenting')",
+            button2: '4주 과정 신청',
+            action2: "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'home_hero' })"
         },
         {
             badge: '테스트',
@@ -321,6 +323,7 @@ function renderHome() {
                                             <div class="mt-auto pt-6">
                                                 <p class="text-lg font-black text-[#30322d]">${card.price}</p>
                                                 <button onclick="${card.action}" class="mt-4 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl border border-[#dccfbc] bg-[#fffdf8] px-4 py-3 text-sm font-extrabold text-[#30322d] transition-all hover:border-[#657453] hover:bg-[#657453] hover:text-[#fffdf8]">${card.button}</button>
+                                                ${card.button2 ? `<button onclick="${card.action2}" class="mt-2 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl bg-[#657453] px-4 py-3 text-sm font-extrabold text-[#fffdf8] transition-all hover:bg-[#566647]">${card.button2}</button>` : ''}
                                             </div>
                                         </div>
                                     </article>

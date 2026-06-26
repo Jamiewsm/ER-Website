@@ -49,9 +49,15 @@
 - [x] tests 갱신·추가 + 전체 통과 (135 pass)
 - [x] 브라우저 QA(홈 카드→랜딩→상품계단 top=96px 스크롤, child-test 배너, 콘솔 에러 없음)
 
+## Phase 3A 잔여 (branch `feat/parenting-phase-3a-remainder`) — 퍼널 마감
+- [x] R1 child-type-test 결과 퍼널 CTA — 결과지에 "부모–자녀 맞춤 가이드 보기" → `#parenting?focus=guide` 추가(기존 $50 해석상담은 1차 유지)
+- [x] R2 parenting-workshop nav 양방향 — 워크샵 페이지 헤더에 `Parenting 여정`(→`/#parenting`) + 랜딩 "4주 과정 알아보기" CTA를 `parenting-workshop.html?apply_source=parenting` 상세로 라우팅(attribution end-to-end 유지 확인)
+- [x] R3 홈 Hero 양육 카드 dual-CTA — "양육 여정 보기"(→`renderSection('parenting')`) + "4주 과정 신청"(→apply parenting_workshop, `home_hero`)
+- [x] R4 PARENTING_ARTICLES 자료 연결 — 8개 아티클을 기존 2개 웹자료에 주제별 매핑(아이중심→관찰 체크리스트, 부모중심→엄마유형 정리)
+- [x] node --test 전체 통과 (137 pass) + 브라우저 QA(4건 PASS, 콘솔 에러 없음)
+
 ## 차기 (여전히 범위 밖)
 - [ ] 부모 양육성향 검사 신규 개발(문항·채점) — 현재 미니 체크/안내 CTA만
 - [ ] 81개 부모×아이 조합 엔진 — 현재 대표 6개 예시만
 - [ ] 무료 아티클 stub → 정식 아티클 라이브러리 확장
-- [ ] 홈 Hero "Enneagram for Parenting" 프로그램 카드 라우팅(현재 `/parenting-workshop.html`) — site-restructure 맥락에서 Cursor main 판단
 - [ ] 클린 URL `/parenting/...` (현재 해시 라우팅)
