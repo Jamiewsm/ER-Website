@@ -7,6 +7,7 @@ import vm from 'node:vm';
 const parentingSource = readFileSync(new URL('../js/sections/parenting.js', import.meta.url), 'utf8');
 const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url), 'utf8');
 const programsSource = readFileSync(new URL('../js/sections/programs.js', import.meta.url), 'utf8');
+const homeSource = readFileSync(new URL('../js/sections/home.js', import.meta.url), 'utf8');
 
 function loadParentingRenderer() {
   const context = {};
@@ -26,6 +27,7 @@ test('renderParenting renders hero, three lenses, and focus anchors', () => {
   assert.match(html, /id="parenting-child"/);
   assert.match(html, /id="parenting-parent"/);
   assert.match(html, /id="parenting-guide"/);
+  assert.match(html, /id="parenting-program"/);   // 홈 Hero 카드가 스크롤하는 상품 계단 앵커
 });
 
 test('renderParenting wires existing flows without rebuilding them', () => {
@@ -34,8 +36,8 @@ test('renderParenting wires existing flows without rebuilding them', () => {
 
   // 아이 유형검사는 기존 독립 페이지로 연결.
   assert.match(html, /child-type-test\/child-type-test\.html/);
-  // 양육 해석상담은 기존 apply parenting focus 재사용.
-  assert.match(html, /focus: 'parenting',[^}]*source: 'parenting'/);
+  // 양육 해석상담은 기존 apply parenting focus 재사용 + 랜딩발 출처 attribution.
+  assert.match(html, /focus: 'parenting',[^}]*apply_source: 'parenting'/);
   // 4주 과정은 기존 parenting_workshop focus 재사용.
   assert.match(html, /focus: 'parenting_workshop'/);
   // 진단이 아니라 이해의 가설이라는 표현이 포함.
@@ -81,6 +83,12 @@ test('programs section is relabeled to the locked nav IA and redirects parenting
   assert.match(programsSource, /to: 'parenting'/);
   assert.match(programsSource, /Parenting에서 자세히 보기/);
   assert.doesNotMatch(programsSource, /individual:개인\/가정/);
+});
+
+test('home parenting hero card routes through the Parenting journey, not the static page', () => {
+  // 홈 Hero "Enneagram for Parenting" 카드는 새 여정(랜딩 상품 계단)으로 진입해야 함.
+  assert.match(homeSource, /renderSection\('parenting', \{ focus: 'program' \}\)/);
+  assert.doesNotMatch(homeSource, /\/parenting-workshop\.html/);
 });
 
 test('router routes parenting and scrolls to the requested focus anchor', () => {

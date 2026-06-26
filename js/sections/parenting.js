@@ -209,7 +209,7 @@ function renderParenting(payload = null) {
         const [kind, target] = action.split(/:(.*)/s);
         const onClick = kind === 'link'
             ? `window.location.href='${target}'`
-            : `renderSection('apply', { track: 'paid', focus: '${target}', source: 'parenting' })`;
+            : `renderSection('apply', { track: 'paid', focus: '${target}', apply_source: 'parenting' })`;
         return `<button onclick="${onClick}" class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">${label} <i class="fas fa-arrow-right text-[10px]"></i></button>`;
     };
 
@@ -333,7 +333,7 @@ function renderParenting(payload = null) {
 
                         <div class="rounded-2xl bg-er-base/50 border border-gray-100 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <p class="text-xs text-gray-500 break-keep">부모 양육성향 검사는 준비 중입니다. 먼저 상담을 통해 나의 양육 패턴을 함께 짚어볼 수 있습니다.</p>
-                            <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-er-dark text-er-dark text-xs font-bold hover:bg-er-dark hover:text-white transition-colors">
+                            <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-er-dark text-er-dark text-xs font-bold hover:bg-er-dark hover:text-white transition-colors">
                                 양육 상담 신청 <i class="fas fa-arrow-right text-[10px]"></i>
                             </button>
                         </div>
@@ -371,8 +371,8 @@ function renderParenting(payload = null) {
                             ${situations.map(s => `<div class="rounded-xl bg-er-base/60 px-3 py-2.5 text-[11px] text-gray-600 text-center break-keep">${s}</div>`).join('')}
                         </div>
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="flex-1 py-3 rounded-full bg-er-dark text-white text-xs font-bold hover:bg-gray-800 transition-colors">부모–자녀 맞춤 가이드 신청하기</button>
-                            <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="flex-1 py-3 rounded-full border border-gray-200 text-gray-600 text-xs font-bold hover:bg-er-dark hover:text-white hover:border-transparent transition-colors">검사 결과 해석상담 신청하기</button>
+                            <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="flex-1 py-3 rounded-full bg-er-dark text-white text-xs font-bold hover:bg-gray-800 transition-colors">부모–자녀 맞춤 가이드 신청하기</button>
+                            <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="flex-1 py-3 rounded-full border border-gray-200 text-gray-600 text-xs font-bold hover:bg-er-dark hover:text-white hover:border-transparent transition-colors">검사 결과 해석상담 신청하기</button>
                         </div>
                     </div>
                 </section>
@@ -401,7 +401,7 @@ function renderParenting(payload = null) {
                 </section>
 
                 <!-- 상품 계단 -->
-                <section class="mt-16 md:mt-24">
+                <section id="parenting-program" class="mt-16 md:mt-24 scroll-mt-24">
                     <div class="text-center mb-8">
                         <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Step by Step</span>
                         <h3 class="text-xl md:text-2xl font-bold text-er-dark mt-2 break-keep">한 걸음씩 함께합니다</h3>
@@ -428,9 +428,9 @@ function renderParenting(payload = null) {
                             <p class="text-gray-300 text-sm max-w-2xl mx-auto break-keep">아이를 덜 오해하고, 부모가 덜 화내고, 대화가 끊어지지 않고, 아이에게 맞는 말과 경계를 찾는 것 — 반복되는 가족 갈등을 이해하는 데서 변화가 시작됩니다.</p>
                             <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
                                 <a href="child-type-test/child-type-test.html" class="px-5 py-3.5 rounded-full bg-white text-er-dark text-sm font-bold hover:-translate-y-0.5 transition-all">아이 유형검사 시작하기</a>
-                                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">검사 결과 해석상담 신청하기</button>
-                                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">부모–자녀 맞춤 가이드 신청하기</button>
-                                <button onclick="renderSection('apply', { focus: 'parenting_workshop', source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">4주 Parenting 과정 알아보기</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">검사 결과 해석상담 신청하기</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">부모–자녀 맞춤 가이드 신청하기</button>
+                                <button onclick="renderSection('apply', { focus: 'parenting_workshop', apply_source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">4주 Parenting 과정 알아보기</button>
                             </div>
                         </div>
                     </div>

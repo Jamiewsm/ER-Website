@@ -59,7 +59,7 @@ function renderHome() {
             image: 'home-parent-child-photo.jpg',
             position: 'center top',
             button: '자세히 보기',
-            action: "window.location.href='/parenting-workshop.html'"
+            action: "renderSection('parenting', { focus: 'program' })"
         },
         {
             badge: '테스트',

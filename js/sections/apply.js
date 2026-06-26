@@ -407,6 +407,13 @@ function renderApply(payload = null) {
     };
 
     const selectedFocus = focusConfig[focus] || null;
+    // 아이 유형검사에서 넘어온 부모에게는 성인 테스트용 카피 대신 양육 문맥 카피를 노출(상품·가격·category 무변경).
+    const childResultFocus = fromChildTypeTest ? {
+        title: '아이 유형검사 결과 해석상담',
+        desc: '아이 관찰 결과를 함께 읽으며 상위 후보, 본능 성향, 부모의 관찰 편향 가능성, 그리고 아이에게 맞는 양육 방향을 1시간 동안 정리합니다.',
+        bannerTitle: '아이 검사 후 추천 — 결과 해석상담',
+        bannerBody: '아이 유형검사는 방향을 보여줍니다. 해석상담에서는 점수와 상위 후보, 부모의 관찰 편향 가능성을 함께 검토하고 아이에게 맞는 양육 언어와 다음 적용을 정리합니다. (1시간 $50)'
+    } : null;
     const requestedTrack = payload?.track || (fromTest ? 'paid' : 'paid');
     const track = selectedFocus?.track || requestedTrack;
     const isSupportTrack = track === 'support';
@@ -426,7 +433,7 @@ function renderApply(payload = null) {
         ? `약식 테스트 결과: ${state.latestTestResult.finalLabel}, 코어 ${state.latestTestResult.coreType}번, 날개 ${state.latestTestResult.wingLabel}, 하위유형 ${state.latestTestResult.subtypeSummary}, 본능 ${state.latestTestResult.instinctSummary}`
         : (fromChildTypeTest && childTypeResult ? formatChildTypeTestSummary(childTypeResult) : '');
 
-    const trackTitle = selectedFocus?.title || (
+    const trackTitle = childResultFocus?.title || selectedFocus?.title || (
         isSupportTrack
             ? '후원·협력 문의'
             : isMinistryTrack
@@ -435,7 +442,7 @@ function renderApply(payload = null) {
                     ? '기관/교회 프로그램 문의'
                     : '상담 및 코칭 신청'
     );
-    const trackDesc = selectedFocus?.desc || (
+    const trackDesc = childResultFocus?.desc || selectedFocus?.desc || (
         isSupportTrack
             ? '후원 및 협력 관련 문의를 남겨 주세요.'
             : isMinistryTrack
@@ -459,7 +466,7 @@ function renderApply(payload = null) {
     const seededMessage = (fromTest || fromChildTypeTest) && testSummary
         ? `${testSummary}\n${selectedFocus?.message || '유형(Typing) 상담 신청합니다.'}`
         : (selectedFocus?.message || '');
-    const bannerTitle = selectedFocus?.bannerTitle || (
+    const bannerTitle = childResultFocus?.bannerTitle || selectedFocus?.bannerTitle || (
         fromTest
             ? '테스트 후 추천 트랙'
             : isSupportTrack
@@ -470,7 +477,7 @@ function renderApply(payload = null) {
                         ? '기관/교회 프로그램 안내'
                         : ''
     );
-    const bannerBody = selectedFocus?.bannerBody || (
+    const bannerBody = childResultFocus?.bannerBody || selectedFocus?.bannerBody || (
         fromTest
             ? '약식 테스트 결과를 바탕으로 유형(Typing) 상담에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.'
             : isSupportTrack
