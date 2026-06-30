@@ -840,8 +840,8 @@
                                             <p class="text-xs text-gray-500">소임 글로벌 리더십 트레이닝 강사</p>
                                         </div>
                                         <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">DTS Counseling</h4>
-                                            <p class="text-xs text-gray-500">Dallas Theological Seminary 석사 과정</p>
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Arizona State University</h4>
+                                            <p class="text-xs text-gray-500">심리학 석사 과정 재학 중</p>
                                         </div>
                                     </div>
                                 </div>
