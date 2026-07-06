@@ -154,17 +154,17 @@ function renderHome() {
     ];
 
     return `
-        <div class="bg-[#f4efe6] text-[#202219]">
-            <section class="relative overflow-hidden bg-[#fbfaf5]">
+        <div class="bg-[#f4efe6] text-er-ink">
+            <section class="relative overflow-hidden bg-er-base">
                 <div class="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_12%_12%,rgba(236,229,211,0.75),transparent_34%),linear-gradient(90deg,#fbfaf5_0%,#fbfaf5_43%,rgba(251,250,245,0)_70%)]"></div>
                 <div class="relative mx-auto grid min-h-[720px] max-w-[1520px] lg:grid-cols-[minmax(0,0.95fr)_minmax(520px,1.05fr)]">
                     <div class="relative z-10 px-6 pb-10 pt-10 sm:px-10 sm:pt-14 lg:px-12 lg:pb-16 lg:pt-20 xl:px-14">
-                        <div class="inline-flex items-center gap-2 rounded-full bg-[#f0f3e8] px-4 py-2 text-xs font-bold text-[#667554] shadow-sm">
+                        <div class="inline-flex items-center gap-2 rounded-full bg-[#f0f3e8] px-4 py-2 text-xs font-bold text-er-green shadow-sm">
                             <i class="fa-brands fa-pagelines text-[11px]" aria-hidden="true"></i>
                             나를 이해하고, 관계를 회복하는 시간
                         </div>
 
-                        <h1 class="mt-6 max-w-3xl text-[2.18rem] font-black leading-[1.14] tracking-[-0.02em] text-[#202219] break-keep sm:mt-8 sm:text-5xl lg:text-[3.05rem] xl:text-[3.35rem]">
+                        <h1 class="font-display mt-6 max-w-3xl text-[2.18rem] font-bold leading-[1.28] text-er-ink break-keep sm:mt-8 sm:text-5xl sm:leading-[1.28] lg:text-[3.05rem] xl:text-[3.35rem]">
                             나는 왜 이렇게 반응하고,<br>
                             <span class="text-[#68785a]">사랑하는 사람은 왜 그렇게 행동할까요?</span>
                         </h1>
@@ -173,14 +173,14 @@ function renderHome() {
                             ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.
                         </p>
 
-                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-[#fffdf8]/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
+                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
-                                    <span class="inline-flex rounded-full bg-[#eef3e6] px-2.5 py-1 text-[10px] font-black text-[#657453] ring-1 ring-[#dce7cd]">특별 혜택</span>
-                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-[#202219] break-keep">7월 기본과정 모집 중</p>
+                                    <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">특별 혜택</span>
+                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">7월 기본과정 모집 중</p>
                                     <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">${basicCourseDays} · 정원 10명 · 선착순 마감</p>
                                 </div>
-                                <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-[#3a332b] px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(58,51,43,0.16)] transition-all active:scale-95">신청</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-ink px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(32,34,25,0.16)] transition-all active:scale-95">신청</button>
                             </div>
                         </div>
 
@@ -199,11 +199,11 @@ function renderHome() {
                         </div>
 
                         <div class="mt-7 flex max-w-2xl flex-col gap-3 sm:mt-9 sm:flex-row">
-                            <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg bg-[#657453] px-6 py-4 text-sm font-extrabold text-white shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-[#566647] active:scale-95">
+                            <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg bg-er-green px-6 py-4 text-sm font-extrabold text-white shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark active:scale-95">
                                 나에게 맞는 프로그램 찾기
                                 <i class="fas fa-arrow-right text-xs opacity-80" aria-hidden="true"></i>
                             </button>
-                            <button onclick="renderSection('test')" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg border border-[#ded6c8] bg-white/80 px-6 py-4 text-sm font-extrabold text-[#202219] shadow-sm transition-all hover:border-[#7f8b68] hover:bg-white active:scale-95">
+                            <button onclick="renderSection('test')" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg border border-[#ded6c8] bg-white/80 px-6 py-4 text-sm font-extrabold text-er-ink shadow-sm transition-all hover:border-[#7f8b68] hover:bg-white active:scale-95">
                                 무료 에니어그램 검사
                                 <i class="far fa-clipboard text-xs text-[#68785a]" aria-hidden="true"></i>
                             </button>
@@ -212,14 +212,14 @@ function renderHome() {
 
                     <div class="relative min-h-[360px] overflow-hidden sm:min-h-[500px] lg:min-h-[720px]">
                         <img src="background.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center; filter:saturate(1.03) contrast(0.98) brightness(1.04);">
-                        <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-[#fbfaf5] via-[#fbfaf5]/70 to-transparent lg:block"></div>
+                        <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
 
                         <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
                             <p class="text-[11px] font-bold text-[#6c6b60]">지금 시작하면 특별한 혜택!</p>
-                            <p class="mt-4 text-xl font-black text-[#202219]">7월 기본과정 모집</p>
+                            <p class="mt-4 text-xl font-black text-er-ink">7월 기본과정 모집</p>
                             <p class="mt-1 text-sm font-bold text-[#68785a]">${basicCourseDays} · 정원 10명</p>
-                            <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer' })" class="mt-5 w-full rounded-lg bg-[#657453] px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-[#566647]">신청하기</button>
+                            <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer' })" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">신청하기</button>
                         </div>
                     </div>
                 </div>
@@ -230,23 +230,23 @@ function renderHome() {
                     ${stats.map((stat, index) => `
                         <div class="px-6 py-6 text-center ${index > 0 ? 'md:border-l md:border-[#ebe2d4]' : ''}">
                             <p class="text-2xl font-black text-[#68785a]">${stat.value}</p>
-                            <p class="mt-1 text-xs font-semibold text-[#6f7068]">${stat.label}</p>
+                            <p class="mt-1 text-xs font-semibold text-er-muted">${stat.label}</p>
                         </div>
                     `).join('')}
                 </div>
             </section>
 
             <section class="mx-auto max-w-[1480px] px-4 pt-6 sm:px-6 lg:px-8 lg:pt-8">
-                <div class="rounded-2xl border border-[#e2d8c8] bg-[#faf7f0] p-5 shadow-sm sm:p-8 lg:p-10">
+                <div class="rounded-2xl border border-er-sand bg-[#faf7f0] p-5 shadow-sm sm:p-8 lg:p-10">
                     <div class="grid gap-8 lg:grid-cols-[0.88fr_1.12fr] lg:items-end">
                         <div>
                             <div class="flex items-center gap-4">
                                 <div class="h-px w-24 bg-[#dfd6c2]"></div>
                             </div>
-                            <p class="mt-6 text-sm font-black text-[#657453]">회복의 도구, 에니어그램</p>
-                            <h2 class="mt-3 max-w-xl text-3xl font-black leading-tight tracking-[-0.02em] text-[#30322d] break-keep sm:text-4xl">
+                            <p class="mt-6 text-sm font-black text-er-green">회복의 도구, 에니어그램</p>
+                            <h2 class="mt-3 max-w-xl text-3xl font-black leading-tight tracking-[-0.02em] text-er-inkSoft break-keep sm:text-4xl">
                                 같은 자리에서 반복되는 갈등을<br>
-                                <span class="text-[#657453]">다른 시선으로 봅니다</span>
+                                <span class="text-er-green">다른 시선으로 봅니다</span>
                             </h2>
                             <p class="mt-5 max-w-2xl text-sm font-medium leading-8 text-[#65675f] break-keep sm:text-base">
                                 ER은 갈등을 단순한 성격 차이로만 설명하지 않습니다. 그 안에 숨어 있는 두려움, 욕구, 방어 방식, 상처와 관계 패턴을 복음 안에서 조명하고 회복의 방향을 함께 찾아갑니다.
@@ -254,14 +254,14 @@ function renderHome() {
                         </div>
 
                         <div class="rounded-2xl border border-[#e0d5c3] bg-[#f4efe6] p-5 sm:p-6">
-                            <h3 class="text-lg font-black text-[#30322d] break-keep">이런 분께 추천합니다</h3>
+                            <h3 class="text-lg font-black text-er-inkSoft break-keep">이런 분께 추천합니다</h3>
                             <div class="mt-4 grid gap-3 sm:grid-cols-2">
                                 ${recommendationItems.map((item) => `
-                                    <div class="flex items-start gap-3 rounded-xl bg-[#fffdf8]/80 p-3 ring-1 ring-[#e7dcc9]">
-                                        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e7efdc] text-[10px] text-[#657453]">
+                                    <div class="flex items-start gap-3 rounded-xl bg-er-surface/80 p-3 ring-1 ring-[#e7dcc9]">
+                                        <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#e7efdc] text-[10px] text-er-green">
                                             <i class="fas fa-check" aria-hidden="true"></i>
                                         </span>
-                                        <p class="text-sm font-bold leading-6 text-[#44473f] break-keep">${item}</p>
+                                        <p class="text-sm font-bold leading-6 text-er-body break-keep">${item}</p>
                                     </div>
                                 `).join('')}
                             </div>
@@ -270,26 +270,26 @@ function renderHome() {
 
                     <div class="mt-8 grid gap-6 lg:grid-cols-3">
                         ${restorationCards.map((card) => `
-                            <article class="group rounded-2xl border border-[#dfd4c4] bg-[#fffdf8] p-4 shadow-[0_16px_45px_rgba(84,72,52,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(84,72,52,0.12)]">
+                            <article class="group rounded-2xl border border-[#dfd4c4] bg-er-surface p-4 shadow-[0_16px_45px_rgba(84,72,52,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(84,72,52,0.12)]">
                                 <div class="rounded-[1.15rem] bg-[#f0eadf] p-2 ring-1 ring-[#e5dac8]">
                                     <div class="aspect-[16/10] overflow-hidden rounded-xl bg-[#e8dfd1]">
                                         <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]" style="object-position:${card.position}; filter:saturate(0.96) brightness(1.04);">
                                     </div>
                                 </div>
                                 <div class="px-2 pb-2 pt-5">
-                                    <p class="inline-flex rounded-full bg-[#eef3e6] px-3 py-1 text-xs font-black text-[#657453] ring-1 ring-[#dce5ce]">${card.eyebrow}</p>
+                                    <p class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-xs font-black text-er-green ring-1 ring-[#dce5ce]">${card.eyebrow}</p>
                                     <p class="mt-4 rounded-xl bg-[#f4efe6] px-3.5 py-3 text-sm font-extrabold leading-6 text-[#536149] break-keep">${card.caption}</p>
-                                    <h3 class="mt-4 text-xl font-black leading-snug tracking-[-0.01em] text-[#30322d] break-keep">${card.title}</h3>
+                                    <h3 class="mt-4 text-xl font-black leading-snug tracking-[-0.01em] text-er-inkSoft break-keep">${card.title}</h3>
                                     <p class="mt-3 text-sm font-medium leading-7 text-[#65675f] break-keep">${card.text}</p>
                                     <ul class="mt-5 space-y-2.5">
                                         ${card.points.map((point) => `
-                                            <li class="flex items-start gap-2 text-sm font-semibold text-[#44473f] break-keep">
+                                            <li class="flex items-start gap-2 text-sm font-semibold text-er-body break-keep">
                                                 <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8a956f]"></span>
                                                 <span>${point}</span>
                                             </li>
                                         `).join('')}
                                     </ul>
-                                    <button onclick="${card.action}" class="mt-6 inline-flex min-h-[2.95rem] w-full items-center justify-center gap-2 rounded-xl bg-[#657453] px-5 py-3 text-sm font-extrabold text-[#fffdf8] shadow-[0_14px_28px_rgba(101,116,83,0.16)] transition-all hover:-translate-y-0.5 hover:bg-[#566647]">
+                                    <button onclick="${card.action}" class="mt-6 inline-flex min-h-[2.95rem] w-full items-center justify-center gap-2 rounded-xl bg-er-green px-5 py-3 text-sm font-extrabold text-er-surface shadow-[0_14px_28px_rgba(101,116,83,0.16)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark">
                                         상담/워크숍 문의
                                         <i class="fas fa-arrow-right text-xs opacity-80" aria-hidden="true"></i>
                                     </button>
@@ -301,29 +301,29 @@ function renderHome() {
             </section>
 
             <section class="mx-auto max-w-[1480px] px-4 pb-12 pt-6 sm:px-6 lg:px-8 lg:pb-16">
-                <div class="rounded-2xl border border-[#e2d8c8] bg-[#fffdf8] p-5 shadow-sm sm:p-8 lg:p-10">
+                <div class="rounded-2xl border border-er-sand bg-er-surface p-5 shadow-sm sm:p-8 lg:p-10">
                     <div class="grid gap-10 lg:grid-cols-[minmax(0,1.28fr)_minmax(410px,0.88fr)] lg:gap-12">
                         <div>
-                            <p class="text-sm font-black text-[#657453]">ER의 대표 프로그램</p>
-                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-[#30322d] break-keep sm:text-3xl lg:text-[2rem]">당신의 변화를 위한 맞춤 여정</h2>
-                            <p class="mt-3 text-sm font-semibold leading-7 text-[#6f7068] break-keep">검증된 프로그램으로 더 나은 나와 관계를 만들어보세요.</p>
+                            <p class="text-sm font-black text-er-green">ER의 대표 프로그램</p>
+                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-er-inkSoft break-keep sm:text-3xl lg:text-[2rem]">당신의 변화를 위한 맞춤 여정</h2>
+                            <p class="mt-3 text-sm font-semibold leading-7 text-er-muted break-keep">검증된 프로그램으로 더 나은 나와 관계를 만들어보세요.</p>
 
                             <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                                 ${programCards.map((card) => `
-                                    <article class="group flex min-h-[24rem] flex-col rounded-2xl border border-[#e2d8c8] bg-[#fbf8f1] p-4 shadow-[0_14px_40px_rgba(94,77,47,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(94,77,47,0.11)]">
+                                    <article class="group flex min-h-[24rem] flex-col rounded-2xl border border-er-sand bg-[#fbf8f1] p-4 shadow-[0_14px_40px_rgba(94,77,47,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(94,77,47,0.11)]">
                                         <div class="rounded-2xl bg-[#f0eadf] p-2 ring-1 ring-[#e5dac8]">
                                             <div class="relative aspect-[1.45] overflow-hidden rounded-xl bg-[#e8dfd1]">
                                                 <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
-                                                <span class="absolute left-3 top-3 rounded-full bg-[#657453] px-3 py-1 text-[10px] font-black text-[#fffdf8] shadow-sm">${card.badge}</span>
+                                                <span class="absolute left-3 top-3 rounded-full bg-er-green px-3 py-1 text-[10px] font-black text-er-surface shadow-sm">${card.badge}</span>
                                             </div>
                                         </div>
                                         <div class="flex flex-1 flex-col pt-5">
-                                            <h3 class="text-[1.05rem] font-black leading-snug tracking-[-0.01em] text-[#30322d] break-keep">${card.title}</h3>
+                                            <h3 class="text-[1.05rem] font-black leading-snug tracking-[-0.01em] text-er-inkSoft break-keep">${card.title}</h3>
                                             <p class="mt-3 text-sm font-medium leading-7 text-[#696a62] break-keep">${card.text}</p>
                                             <div class="mt-auto pt-6">
-                                                <p class="text-lg font-black text-[#30322d]">${card.price}</p>
-                                                <button onclick="${card.action}" class="mt-4 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl border border-[#dccfbc] bg-[#fffdf8] px-4 py-3 text-sm font-extrabold text-[#30322d] transition-all hover:border-[#657453] hover:bg-[#657453] hover:text-[#fffdf8]">${card.button}</button>
-                                                ${card.button2 ? `<button onclick="${card.action2}" class="mt-2 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl bg-[#657453] px-4 py-3 text-sm font-extrabold text-[#fffdf8] transition-all hover:bg-[#566647]">${card.button2}</button>` : ''}
+                                                <p class="text-lg font-black text-er-inkSoft">${card.price}</p>
+                                                <button onclick="${card.action}" class="mt-4 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl border border-[#dccfbc] bg-er-surface px-4 py-3 text-sm font-extrabold text-er-inkSoft transition-all hover:border-er-green hover:bg-er-green hover:text-er-surface">${card.button}</button>
+                                                ${card.button2 ? `<button onclick="${card.action2}" class="mt-2 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl bg-er-green px-4 py-3 text-sm font-extrabold text-er-surface transition-all hover:bg-er-greenDark">${card.button2}</button>` : ''}
                                             </div>
                                         </div>
                                     </article>
@@ -331,27 +331,27 @@ function renderHome() {
                             </div>
 
                             <div class="mt-9 text-center">
-                                <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.6rem] min-w-[18rem] items-center justify-center gap-3 rounded-xl bg-[#657453] px-9 py-4 text-base font-black text-[#fffdf8] shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-[#566647]">
+                                <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.6rem] min-w-[18rem] items-center justify-center gap-3 rounded-xl bg-er-green px-9 py-4 text-base font-black text-er-surface shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark">
                                     전체 프로그램 보기
                                     <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="lg:border-l lg:border-[#e2d8c8] lg:pl-12">
+                        <div class="lg:border-l lg:border-er-sand lg:pl-12">
                             <p class="text-sm font-black text-[#7a766a]">함께한 사람들의 이야기</p>
-                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-[#30322d] break-keep sm:text-3xl lg:text-[2rem]">변화를 경험한 사람들의 진솔한 후기</h2>
+                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-er-inkSoft break-keep sm:text-3xl lg:text-[2rem]">변화를 경험한 사람들의 진솔한 후기</h2>
 
                             <div class="mt-7 space-y-5">
                                 ${testimonials.map((item) => `
-                                    <article class="relative rounded-2xl border border-[#e2d8c8] bg-[#fbf8f1] p-5 pr-16 shadow-[0_14px_38px_rgba(94,77,47,0.06)] sm:p-6 sm:pr-20">
+                                    <article class="relative rounded-2xl border border-er-sand bg-[#fbf8f1] p-5 pr-16 shadow-[0_14px_38px_rgba(94,77,47,0.06)] sm:p-6 sm:pr-20">
                                         <div class="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#f1eadf] text-3xl font-black leading-none text-[#cabc9e]">
                                             &rdquo;
                                         </div>
-                                        <p class="text-sm font-bold leading-8 text-[#3e4039] break-keep">“${item.quote}”</p>
+                                        <p class="font-display text-sm font-bold leading-8 text-[#3e4039] break-keep">“${item.quote}”</p>
                                         <div class="mt-5 flex items-end justify-between gap-4 border-t border-[#eadfce] pt-4">
-                                            <p class="text-sm font-extrabold text-[#6f7068] break-keep">${item.person} <span class="mx-2 text-[#cfc5b6]">|</span> ${item.label}</p>
-                                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e7efdc] text-sm font-black text-[#657453] ring-4 ring-[#fffdf8]">${item.avatar}</div>
+                                            <p class="text-sm font-extrabold text-er-muted break-keep">${item.person} <span class="mx-2 text-[#cfc5b6]">|</span> ${item.label}</p>
+                                            <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e7efdc] text-sm font-black text-er-green ring-4 ring-er-surface">${item.avatar}</div>
                                         </div>
                                     </article>
                                 `).join('')}
@@ -359,31 +359,31 @@ function renderHome() {
 
                             <div class="mt-5 flex items-center justify-center gap-4 text-[#b8ad9d]" aria-hidden="true">
                                 <i class="fas fa-chevron-left text-xs"></i>
-                                <span class="h-2.5 w-2.5 rounded-full bg-[#657453]"></span>
+                                <span class="h-2.5 w-2.5 rounded-full bg-er-green"></span>
                                 <span class="h-2.5 w-2.5 rounded-full bg-[#d9d1c5]"></span>
                                 <i class="fas fa-chevron-right text-xs"></i>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-10 overflow-hidden rounded-2xl border border-[#d8cbb8] bg-[#657453] text-[#fffdf8] shadow-[0_24px_60px_rgba(101,116,83,0.18)]">
+                    <div class="mt-10 overflow-hidden rounded-2xl border border-[#d8cbb8] bg-er-green text-er-surface shadow-[0_24px_60px_rgba(101,116,83,0.18)]">
                         <div class="relative min-h-[21rem] px-6 py-10 sm:px-10 lg:px-20 lg:py-14">
                             <img src="green and seat.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center right; filter:saturate(0.94) brightness(0.92);">
-                            <div class="absolute inset-0 bg-gradient-to-r from-[#30451f] via-[#3f5530]/88 to-[#30451f]/12"></div>
+                            <div class="absolute inset-0 bg-gradient-to-r from-er-greenDeep via-[#3f5530]/88 to-er-greenDeep/12"></div>
                             <div class="relative max-w-xl">
                                 <h2 class="text-3xl font-black leading-tight tracking-[-0.02em] break-keep sm:text-4xl">지금, 당신의 변화를 시작하세요</h2>
-                                <p class="mt-5 text-base font-bold leading-8 text-[#fffdf8]/88 break-keep">작은 용기가 큰 변화를 만듭니다.<br>ER이 당신의 여정을 함께할게요.</p>
+                                <p class="mt-5 text-base font-bold leading-8 text-er-surface/88 break-keep">작은 용기가 큰 변화를 만듭니다.<br>ER이 당신의 여정을 함께할게요.</p>
                                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                                    <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl bg-[#fffdf8] px-8 py-4 text-sm font-black text-[#30322d] shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:bg-[#f5efe5]">상담 신청하기</button>
-                                    <button onclick="renderSection('test')" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl border border-[#fffdf8]/42 bg-[#fffdf8]/5 px-8 py-4 text-sm font-black text-[#fffdf8] transition-all hover:-translate-y-0.5 hover:bg-[#fffdf8]/12">무료 검사로 시작하기</button>
+                                    <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl bg-er-surface px-8 py-4 text-sm font-black text-er-inkSoft shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:bg-[#f5efe5]">상담 신청하기</button>
+                                    <button onclick="renderSection('test')" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl border border-er-surface/42 bg-er-surface/5 px-8 py-4 text-sm font-black text-er-surface transition-all hover:-translate-y-0.5 hover:bg-er-surface/12">무료 검사로 시작하기</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="grid gap-0 bg-[#fffdf8] text-[#30322d] sm:grid-cols-2 lg:grid-cols-4">
+                        <div class="grid gap-0 bg-er-surface text-er-inkSoft sm:grid-cols-2 lg:grid-cols-4">
                             ${footerBenefits.map((item, index) => `
                                 <div class="flex items-start gap-4 px-6 py-6 ${index > 0 ? 'lg:border-l lg:border-[#ebe2d4]' : ''}">
-                                    <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#f2eedf] text-xl text-[#657453]">
+                                    <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#f2eedf] text-xl text-er-green">
                                         <i class="${item.icon}" aria-hidden="true"></i>
                                     </span>
                                     <span>
