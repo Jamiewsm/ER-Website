@@ -1,0 +1,41 @@
+<!-- @dsCard name="Test UI" group="Screens" -->
+<!-- ER 검사 UI 패턴 카드 — 1문항+진행률 프리미엄 플로우, 테라코타는 결과지 전용 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ER · Test UI</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+body{font-family:var(--er-font-sans);background:var(--er-base);color:var(--er-body);margin:0;padding:24px}
+.mock{background:var(--er-surface);border:1px solid var(--er-sand);border-radius:20px;padding:36px;max-width:520px;margin:0 auto;box-shadow:var(--er-shadow-card)}
+.progress{height:6px;background:var(--er-green-tint);border-radius:9999px;margin-bottom:8px;overflow:hidden}
+.progress i{display:block;height:100%;width:42%;background:var(--er-green);border-radius:9999px}
+.pl{font-size:11px;color:var(--er-muted);margin-bottom:22px;font-variant-numeric:tabular-nums}
+.q{font-size:17px;font-weight:700;color:var(--er-ink-soft);word-break:keep-all;margin-bottom:20px;line-height:1.5}
+.opt{display:block;width:100%;text-align:left;font-family:inherit;font-size:14px;padding:14px 18px;border-radius:14px;border:1px solid var(--er-sand);background:var(--er-surface);color:var(--er-body);margin-bottom:8px;cursor:pointer;transition:all .2s;box-sizing:border-box}
+.opt:hover{border-color:var(--er-green);background:var(--er-green-tint)}
+.opt.sel{border-color:var(--er-green);background:var(--er-green-tint);box-shadow:0 0 0 1px var(--er-green)}
+.result{border-radius:16px;background:var(--er-surface);border:1px solid var(--er-sand);padding:20px 24px;max-width:520px;margin:14px auto 0}
+.result .type{font-family:var(--er-font-display);font-size:19px;color:var(--er-terra-dark);font-weight:700;margin-bottom:4px}
+.result p{font-size:13px;word-break:keep-all;margin:0}
+</style>
+</head>
+<body>
+<div class="mock">
+  <div class="progress"><i></i></div>
+  <div class="pl">15 / 36</div>
+  <div class="q">갈등이 생기면, 나는 먼저 상황이 잘못된 원인을 찾아 바로잡으려 한다.</div>
+  <button class="opt">전혀 그렇지 않다</button>
+  <button class="opt">그렇지 않은 편이다</button>
+  <button class="opt sel">그런 편이다</button>
+  <button class="opt">매우 그렇다</button>
+</div>
+<div class="result">
+  <div class="type">당신의 핵심 유형 — 1유형 · 개혁가</div>
+  <p>테라코타(er-terra)는 이렇게 결과지의 감정적 하이라이트에만 사용합니다. 문항·진행률·선택 상태는 전부 그린.</p>
+</div>
+</body>
+</html>

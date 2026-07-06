@@ -45,14 +45,19 @@
 - **태그/배지 배경은 `er-greenTint`.** 솔리드 액센트 배경 금지.
 - **Amber(`bg-amber-*`)는 사역지원(ministry) 신호 전용.** 그 외 용도 금지.
 
-### Migration status (2026-07-06 기준)
+### Migration status (2026-07-07 기준 — 마이그레이션 완료)
 
-| 영역 | 현재 상태 | 할 일 |
+| 영역 | 상태 | 비고 |
 |---|---|---|
-| 홈 (`js/sections/home.js`) | 이 팔레트를 hex 하드코딩으로 사용 중 | 하드코딩 → 토큰 클래스 치환 |
-| 내부 페이지 (`programs/parenting/about/apply` 등) | 구 브라운 토큰(`er-accent #B89170`) 사용 중 | 토큰 재정의로 일괄 이전 |
-| 검사 (`css/test.css`) | 자체 테라코타 팔레트 | `er-base/ink/green` 기반으로 재도색, 테라코타는 결과 강조로 축소 |
-| `index.html` tailwind.config | 구 브라운 토큰 정의 | 위 Core tokens로 교체 |
+| `index.html` tailwind.config | ✅ 완료 | 신규 토큰 + 구 토큰명 별칭(그린 값) 정의, MaruBuri 로드 |
+| 홈 (`js/sections/home.js`) | ✅ 완료 | 토큰 클래스 치환 + 히어로/인용 MaruBuri. 토큰 외 장식 셰이드(#f4efe6, #68785a 등 그린·크림 중간톤)는 히어로 연출용 허용 예외 |
+| 내부 페이지 (programs/parenting/about/apply 등) | ✅ 완료 | 별칭 재매핑으로 일괄 그린 전환. 클래스명 rename(er-accent→er-green 등)은 후속 |
+| 검사 UI (`test.html`, `css/test.css`, `js/test*.js`, `app-adaptive.js`) | ✅ 완료 | 인터랙션 색 그린, 결과지 센터 톤(head/heart/body 시맨틱 색) 유지, terra는 결과지·주의 블록 전용 |
+| 랜딩 (basic-course, parenting-workshop, parents-*) | ✅ 완료 | CSS·인라인 전부 토큰 값 |
+| `child-type-test/` | ⏸ 보류 | 이미 올리브 그린 계열 독자 팔레트로 브랜드 충돌 없음. 필요시 별도 조율 |
+| `js/main.js`(.bak) | 제외 | 어디에도 로드되지 않는 죽은 코드 |
+
+**후속 작업(코드 하이지니, 시각 변화 없음):** ① 구 별칭 클래스명 rename 스위프(er-accent→er-green, er-dark→er-ink 등) 후 별칭 제거 ② `hover:bg-gray-800` → `hover:bg-er-inkSoft` 정리 ③ 결과지 `border-l-4` 액센트 패턴 교체(금지 패턴 6번).
 
 ---
 
@@ -252,6 +257,8 @@ CTA: 콘텐츠 뒤 중앙 하단 CTA 1개
 | 2026-07-06 | MaruBuri를 Display 서체로 도입 | Pretendard 단일 서체는 카테고리 평균에 머무름. "회복" 정서를 세리프로 운반, 무료 폰트로 비용 없음 |
 | 2026-07-06 | 테라코타를 "예산제 웜 액센트"로 편입 | 검사 페이지 자산을 버리지 않고 결과지 하이라이트 전용으로 역할 축소 |
 | 2026-07-06 | 검사 UI 프리미엄 원칙 신설 | 핵심 전환 상품이 가장 저품질로 보이는 문제 — 문항 벽 나열 금지, 1문항+진행률 플로우 |
+| 2026-07-07 | 전 사이트 그린 마이그레이션 실행 완료 | 구 토큰명은 그린 값 별칭으로 재매핑(무중단 전환), 결과지 센터 톤은 시맨틱 색으로 유지, `user-scalable=no` 제거. 검증: bun test 140 통과 + 전 페이지 스크린샷 |
+| 2026-07-07 | `design-system/` 카드 번들 신설 | claude.ai/design(DesignSync) 업로드용 @dsCard 컴포넌트 카드 + tokens.css. DESIGN.md와 값 동기화 필수 |
 
 ---
 

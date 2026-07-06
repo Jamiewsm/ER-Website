@@ -1,0 +1,26 @@
+/* ER Restoration Green 디자인 토큰 — DESIGN.md와 동기화되는 CSS 변수 정의 */
+:root {
+  /* Surfaces */
+  --er-base: #FBFAF5;
+  --er-surface: #FFFDF8;
+  --er-sand: #E2D8C8;
+  /* Ink */
+  --er-ink: #202219;
+  --er-ink-soft: #30322D;
+  --er-body: #44473F;
+  --er-muted: #6F7068;
+  /* Brand green */
+  --er-green: #657453;
+  --er-green-dark: #566647;
+  --er-green-deep: #30451F;
+  --er-green-tint: #EEF3E6;
+  /* Warm accent — 검사 결과 하이라이트 전용 */
+  --er-terra: #B06149;
+  --er-terra-dark: #8F4634;
+  /* Shadows */
+  --er-shadow-soft: 0 22px 44px -24px rgba(80, 90, 60, 0.16);
+  --er-shadow-card: 0 28px 54px -28px rgba(70, 85, 55, 0.20);
+  /* Type */
+  --er-font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  --er-font-display: 'MaruBuri', serif;
+}

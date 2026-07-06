@@ -1,0 +1,34 @@
+<!-- @dsCard name="Buttons" group="Components" -->
+<!-- ER 버튼 위계 카드 — Primary/Secondary/Text link/Destructive -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ER · Buttons</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+body{font-family:var(--er-font-sans);background:var(--er-base);color:var(--er-body);margin:0;padding:28px}
+h1{font-size:18px;color:var(--er-ink-soft);margin:0 0 4px}
+p.note{font-size:12px;color:var(--er-muted);margin:0 0 20px}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.btn{border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;padding:13px 26px;border-radius:9999px;transition:all .25s}
+.btn-primary{background:var(--er-ink);color:#fff;box-shadow:var(--er-shadow-soft)}
+.btn-primary:hover{background:var(--er-ink-soft);transform:translateY(-2px)}
+.btn-secondary{background:var(--er-surface);color:var(--er-ink);border:1px solid var(--er-sand)}
+.btn-secondary:hover{background:var(--er-green-tint)}
+.btn-destructive{background:#DC2626;color:#fff}
+a.textlink{color:var(--er-green);font-weight:700;text-decoration:underline;text-underline-offset:3px;font-size:14px}
+a.textlink:hover{color:var(--er-green-dark)}
+.lb{font-size:11px;color:var(--er-muted);width:110px}
+</style>
+</head>
+<body>
+<h1>Buttons</h1>
+<p class="note">한 뷰포트에 primary CTA는 하나. Primary 배경은 er-ink(순수 검정 금지). Destructive는 red-600 — er-terra는 에러가 아님.</p>
+<div class="row"><span class="lb">Primary</span><button class="btn btn-primary">상담 신청</button><button class="btn btn-primary">나에게 맞는 프로그램 찾기 →</button></div>
+<div class="row"><span class="lb">Secondary</span><button class="btn btn-secondary">프로그램 보기</button><button class="btn btn-secondary">무료 에니어그램 검사</button></div>
+<div class="row"><span class="lb">Text link</span><a class="textlink" href="#">유형 알아보기</a></div>
+<div class="row"><span class="lb">Destructive</span><button class="btn btn-destructive">삭제</button></div>
+</body>
+</html>
