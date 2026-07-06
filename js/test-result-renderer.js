@@ -26,7 +26,7 @@
       <div class="flex items-center gap-3 mb-2">
         <span class="text-xs font-bold text-gray-500 w-10">${escapeHtml(label)}</span>
         <div class="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
-          <div class="bg-[#bfa68a] h-2 rounded-full" style="width: ${safePct}%"></div>
+          <div class="bg-[#657453] h-2 rounded-full" style="width: ${safePct}%"></div>
         </div>
         <span class="text-xs font-semibold text-gray-700 w-12 text-right">${safePct}%</span>
       </div>`;
@@ -35,9 +35,9 @@
   function buildHeaderCard(profile, phase3Result) {
     const cleanName = profile.name + (profile.countertype ? ' (countertype)' : '');
     return `
-      <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
+      <div class="bg-[#FBFAF5] p-6 rounded-2xl border-l-4 border-[#657453]">
         <p class="text-xs text-gray-400 font-bold uppercase mb-1">Your 27 Subtype</p>
-        <h3 class="text-2xl font-bold text-[#4a4540] mb-1">${escapeHtml(profile.nameKr)} — ${escapeHtml(cleanName)}</h3>
+        <h3 class="text-2xl font-bold text-[#30322D] mb-1">${escapeHtml(profile.nameKr)} — ${escapeHtml(cleanName)}</h3>
         <p class="text-sm text-gray-600">${escapeHtml(profile.preoccupation)}</p>
       </div>`;
   }
@@ -55,7 +55,7 @@
     const items = (profile.signatures || []).map((s) => `<li class="leading-relaxed">${escapeHtml(s)}</li>`).join('');
     return `
       <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-        <h4 class="text-sm font-bold text-[#4a4540] mb-3">행동 시그니처</h4>
+        <h4 class="text-sm font-bold text-[#30322D] mb-3">행동 시그니처</h4>
         <ul class="list-disc pl-5 text-sm text-gray-700 space-y-1">${items}</ul>
       </div>`;
   }
@@ -77,10 +77,10 @@
   function buildSisterDiffCard(profile) {
     const entries = Object.entries(profile.sisterDifferences || {});
     if (entries.length === 0) return '';
-    const items = entries.map(([k, v]) => `<li class="leading-relaxed"><span class="font-bold text-[#4a4540]">vs ${escapeHtml(k)}</span> — ${escapeHtml(v)}</li>`).join('');
+    const items = entries.map(([k, v]) => `<li class="leading-relaxed"><span class="font-bold text-[#30322D]">vs ${escapeHtml(k)}</span> — ${escapeHtml(v)}</li>`).join('');
     return `
       <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-        <h4 class="text-sm font-bold text-[#4a4540] mb-3">같은 코어의 다른 두 subtype 과 차이</h4>
+        <h4 class="text-sm font-bold text-[#30322D] mb-3">같은 코어의 다른 두 subtype 과 차이</h4>
         <ul class="list-disc pl-5 text-sm text-gray-700 space-y-2">${items}</ul>
       </div>`;
   }
@@ -89,15 +89,15 @@
     if (!profile.confusedWith) return '';
     return `
       <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-        <h4 class="text-sm font-bold text-[#4a4540] mb-2">자주 헷갈리는 다른 코어 type</h4>
+        <h4 class="text-sm font-bold text-[#30322D] mb-2">자주 헷갈리는 다른 코어 type</h4>
         <p class="text-sm text-gray-700 leading-relaxed">${escapeHtml(profile.confusedWith)}</p>
       </div>`;
   }
 
   function buildDescriptionCard(profile) {
     return `
-      <div class="bg-[#4a4540] text-white p-6 rounded-2xl">
-        <h4 class="text-xs font-bold text-[#bfa68a] uppercase mb-3">결과 카피</h4>
+      <div class="bg-[#30322D] text-white p-6 rounded-2xl">
+        <h4 class="text-xs font-bold text-[#657453] uppercase mb-3">결과 카피</h4>
         <p class="text-sm leading-relaxed">${escapeHtml(profile.description)}</p>
       </div>`;
   }
@@ -107,7 +107,7 @@
     const ip = phase3Result.instinctPct;
     return `
       <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-        <h4 class="text-sm font-bold text-[#4a4540] mb-3">본능 스택 (각 본능 절대 강도)</h4>
+        <h4 class="text-sm font-bold text-[#30322D] mb-3">본능 스택 (각 본능 절대 강도)</h4>
         ${instinctBarHtml('sp', ip.sp)}
         ${instinctBarHtml('sx', ip.sx)}
         ${instinctBarHtml('so', ip.so)}
@@ -119,7 +119,7 @@
     if (!phase3Result || !phase3Result.wing || phase3Result.wing.wing === null) {
       return `
         <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-          <h4 class="text-sm font-bold text-[#4a4540] mb-3">Wing 강도</h4>
+          <h4 class="text-sm font-bold text-[#30322D] mb-3">Wing 강도</h4>
           <p class="text-sm text-gray-600">두 wing 균형 — 순수 type 표현이 우세합니다.</p>
         </div>`;
     }
@@ -131,7 +131,7 @@
     else if (pct >= 21) band = '약 wing';
     return `
       <div class="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-        <h4 class="text-sm font-bold text-[#4a4540] mb-3">Wing ${escapeHtml(String(wing))} 강도</h4>
+        <h4 class="text-sm font-bold text-[#30322D] mb-3">Wing ${escapeHtml(String(wing))} 강도</h4>
         ${instinctBarHtml('w' + wing, pct)}
         <p class="text-xs text-gray-500 mt-2">${escapeHtml(band)}</p>
       </div>`;
@@ -242,14 +242,14 @@
     const typeBars = types.map((t) => {
       const pct = Math.round((scores[t] || 0) / total * 100);
       const isCenter = (t === coreType);
-      const c = isCenter ? '#bfa68a' : ({ body: '#C44536', heart: '#5A8F69', head: '#3D5A80' })[CENTER_OF[t]];
+      const c = isCenter ? '#657453' : ({ body: '#C44536', heart: '#5A8F69', head: '#3D5A80' })[CENTER_OF[t]];
       return `
         <div class="flex items-center gap-2 text-xs">
-          <span class="w-6 font-bold ${isCenter ? 'text-[#4a4540]' : 'text-gray-500'}">T${t}</span>
+          <span class="w-6 font-bold ${isCenter ? 'text-[#30322D]' : 'text-gray-500'}">T${t}</span>
           <div class="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
             <div style="background:${c};width:${pct}%;height:100%;"></div>
           </div>
-          <span class="w-10 text-right ${isCenter ? 'font-bold text-[#4a4540]' : 'text-gray-500'}">${pct}%</span>
+          <span class="w-10 text-right ${isCenter ? 'font-bold text-[#30322D]' : 'text-gray-500'}">${pct}%</span>
         </div>`;
     }).join('');
     const instBars = ['sp','sx','so'].map((k) => {

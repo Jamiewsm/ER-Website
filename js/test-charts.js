@@ -46,9 +46,9 @@
       const ratio = score / maxScore;
       const dotR = dotMinR + (dotMaxR - dotMinR) * ratio;
       const isCore = (t === coreType);
-      const color = isCore ? '#bfa68a' : CENTER_COLOR[t];
+      const color = isCore ? '#657453' : CENTER_COLOR[t];
       const opacity = isCore ? 1 : (0.3 + 0.7 * ratio);
-      const stroke = isCore ? '#4a4540' : 'transparent';
+      const stroke = isCore ? '#30322D' : 'transparent';
       const strokeW = isCore ? 3 : 0;
       svg += `<circle cx="${pos[t].x}" cy="${pos[t].y}" r="${dotR}" fill="${color}" fill-opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeW}"/>`;
       svg += `<text x="${pos[t].x}" y="${pos[t].y + 5}" text-anchor="middle" font-size="${isCore ? 16 : 14}" font-weight="${isCore ? 800 : 700}" fill="white">${t}</text>`;
@@ -105,7 +105,7 @@
           <div class="text-xs text-gray-500 mt-2">${isLeftDominant ? dominantPct : 100-dominantPct}%</div>
         </div>
         <div class="flex flex-col items-center justify-center px-3">
-          <div class="text-3xl font-bold text-[#bfa68a]">${coreType}</div>
+          <div class="text-3xl font-bold text-[#657453]">${coreType}</div>
           <div class="text-[10px] text-gray-400 uppercase tracking-wider">core</div>
         </div>
         <div class="flex-1 text-center">

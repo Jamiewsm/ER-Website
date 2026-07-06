@@ -2,23 +2,23 @@
 
 .bc-landing {
   font-family: "Pretendard", system-ui, sans-serif;
-  color: #5c4f44;
-  background: #f7eee4;
+  color: #44473F;
+  background: #FBFAF5;
 }
 
 .bc-landing .bc-hero-bg {
   background-image: radial-gradient(
       circle at 50% 14%,
-      rgba(255, 251, 246, 0.82) 0%,
-      rgba(255, 251, 246, 0.45) 33%,
+      rgba(255, 253, 248, 0.82) 0%,
+      rgba(255, 253, 248, 0.45) 33%,
       rgba(247, 238, 228, 0.08) 100%
     ),
     linear-gradient(
       180deg,
       rgba(247, 238, 228, 0.7) 0%,
       rgba(247, 238, 228, 0.38) 44%,
-      rgba(255, 251, 246, 0.92) 72%,
-      #f7eee4 100%
+      rgba(255, 253, 248, 0.92) 72%,
+      #FBFAF5 100%
     ),
     url("/assets/er-visual/hero-home.jpg");
   background-size: cover;
@@ -26,13 +26,13 @@
 }
 
 .bc-glass {
-  background: rgba(255, 251, 246, 0.85);
+  background: rgba(255, 253, 248, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.65);
 }
 
 .bc-poster-frame {
-  background: #f1e7d8;
-  border: 1px solid rgba(184, 145, 112, 0.25);
+  background: #EEF3E6;
+  border: 1px solid rgba(101, 116, 83, 0.25);
 }

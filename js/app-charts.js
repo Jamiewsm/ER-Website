@@ -15,7 +15,7 @@ function initCharts(sectionId) {
                 datasets: [{
                     label: '케이스 분포 (%)',
                     data: contentData.stats.data,
-                    backgroundColor: '#BFA68A',
+                    backgroundColor: '#657453',
                     borderRadius: 4,
                     barThickness: 20
                 }]

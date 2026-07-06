@@ -13,9 +13,9 @@
   position: relative;
   overflow: hidden;
   border-radius: 1.5rem;
-  background: rgba(255, 251, 246, 0.97);
-  border: 1px solid rgba(62, 54, 46, 0.12);
-  box-shadow: 0 10px 28px rgba(62, 54, 46, 0.12);
+  background: rgba(255, 253, 248, 0.97);
+  border: 1px solid rgba(32, 34, 25, 0.12);
+  box-shadow: 0 10px 28px rgba(32, 34, 25, 0.12);
   padding: 1.35rem 1.25rem 1.15rem;
   padding-right: 2.75rem;
 }
@@ -34,7 +34,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background: linear-gradient(180deg, #c47a5a 0%, #b89170 100%);
+  background: linear-gradient(180deg, #657453 0%, #566647 100%);
   border-radius: 1.5rem 0 0 1.5rem;
 }
 
@@ -46,9 +46,9 @@
   width: 2rem;
   height: 2rem;
   border-radius: 9999px;
-  border: 1px solid rgba(62, 54, 46, 0.1);
+  border: 1px solid rgba(32, 34, 25, 0.1);
   background: #fff;
-  color: #8a7a6b;
+  color: #6F7068;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,7 +57,7 @@
 }
 
 #parenting-season-banner .psb-close:hover {
-  background: #3e362e;
+  background: #202219;
   color: #fff;
 }
 
@@ -77,9 +77,9 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   padding: 0.3rem 0.65rem;
-  background: #c47a5a;
+  background: #657453;
   color: #fff;
-  box-shadow: 0 2px 8px rgba(196, 122, 90, 0.35);
+  box-shadow: 0 2px 8px rgba(101, 116, 83, 0.35);
 }
 
 #parenting-season-banner .psb-eyebrow {
@@ -87,7 +87,7 @@
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #7d6a5b;
+  color: #44473F;
 }
 
 #parenting-season-banner .psb-title {
@@ -95,7 +95,7 @@
   font-size: 1.375rem;
   line-height: 1.25;
   font-weight: 800;
-  color: #3e362e;
+  color: #202219;
   word-break: keep-all;
 }
 
@@ -110,7 +110,7 @@
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.45;
-  color: #5c4f44;
+  color: #44473F;
   word-break: keep-all;
 }
 
@@ -118,7 +118,7 @@
   margin: 0.75rem 0 0;
   font-size: 0.9375rem;
   line-height: 1.65;
-  color: #4a4038;
+  color: #44473F;
   word-break: keep-all;
 }
 
@@ -134,19 +134,19 @@
 #parenting-season-banner .psb-meta li {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #3e362e;
+  color: #202219;
   padding: 0.4rem 0.75rem;
   border-radius: 9999px;
   background: #fff;
-  border: 1px solid rgba(184, 145, 112, 0.35);
-  box-shadow: 0 1px 2px rgba(62, 54, 46, 0.04);
+  border: 1px solid rgba(101, 116, 83, 0.35);
+  box-shadow: 0 1px 2px rgba(32, 34, 25, 0.04);
 }
 
 #parenting-season-banner .psb-note {
   margin: 0.75rem 0 0;
   font-size: 0.75rem;
   line-height: 1.5;
-  color: #8a7a6b;
+  color: #6F7068;
   word-break: keep-all;
 }
 
@@ -176,23 +176,23 @@
 
 #parenting-season-banner .psb-btn--primary {
   border: none;
-  background: #3e362e;
+  background: #202219;
   color: #fff;
-  box-shadow: 0 8px 20px rgba(62, 54, 46, 0.2);
+  box-shadow: 0 8px 20px rgba(32, 34, 25, 0.2);
 }
 
 #parenting-season-banner .psb-btn--primary:hover {
-  background: #2d2822;
+  background: #30322D;
 }
 
 #parenting-season-banner .psb-btn--secondary {
-  border: 1.5px solid rgba(184, 145, 112, 0.55);
+  border: 1.5px solid rgba(101, 116, 83, 0.55);
   background: #fff;
-  color: #3e362e;
+  color: #202219;
 }
 
 #parenting-season-banner .psb-btn--secondary:hover {
-  background: #eee2d5;
+  background: #EEF3E6;
 }
 
 #parenting-season-banner .psb-dismiss {
@@ -202,7 +202,7 @@
   background: none;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #aa9889;
+  color: #6F7068;
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
@@ -210,5 +210,5 @@
 }
 
 #parenting-season-banner .psb-dismiss:hover {
-  color: #3e362e;
+  color: #202219;
 }

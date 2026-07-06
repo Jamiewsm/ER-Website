@@ -1,13 +1,13 @@
 /* Legacy short landing — superseded by parenting-workshop-landing.css */
 
 :root {
-  --pw-bg: #f7eee4;
-  --pw-surface: rgba(255, 251, 246, 0.82);
-  --pw-text: #3e362e;
-  --pw-body: #5c4f44;
-  --pw-muted: #8a7a6b;
-  --pw-gold: #b89170;
-  --pw-terracotta: #c47a5a;
+  --pw-bg: #FBFAF5;
+  --pw-surface: rgba(255, 253, 248, 0.82);
+  --pw-text: #202219;
+  --pw-body: #44473F;
+  --pw-muted: #6F7068;
+  --pw-gold: #657453;
+  --pw-terracotta: #657453;
   --pw-frame-max: 430px;
 }
 
@@ -20,7 +20,7 @@
 body.pw-body {
   margin: 0;
   font-family: "Pretendard", system-ui, sans-serif;
-  background: #d9cfc3;
+  background: #E2D8C8;
   color: var(--pw-body);
   -webkit-font-smoothing: antialiased;
 }
@@ -29,7 +29,7 @@ body.pw-body {
   max-width: var(--pw-frame-max);
   margin: 0 auto;
   min-height: 100dvh;
-  box-shadow: 0 0 56px rgba(62, 54, 46, 0.15);
+  box-shadow: 0 0 56px rgba(32, 34, 25, 0.15);
 }
 
 .pw-hero {
@@ -49,9 +49,9 @@ body.pw-body {
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(62, 54, 46, 0.12) 0%,
+    rgba(32, 34, 25, 0.12) 0%,
     rgba(247, 238, 228, 0.5) 42%,
-    rgba(255, 251, 246, 0.96) 78%
+    rgba(255, 253, 248, 0.96) 78%
   );
   z-index: 0;
 }
@@ -74,7 +74,7 @@ body.pw-body {
   border-top: 1px solid rgba(255, 255, 255, 0.7);
   padding: 1.75rem 1.35rem 2rem;
   margin: 0 -1.35rem -2rem;
-  box-shadow: 0 -16px 48px rgba(62, 54, 46, 0.1);
+  box-shadow: 0 -16px 48px rgba(32, 34, 25, 0.1);
   flex: 1;
 }
 
@@ -83,7 +83,7 @@ body.pw-body {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #6b7b5c;
+  color: #657453;
   margin: 0 0 0.5rem;
 }
 
@@ -92,7 +92,7 @@ body.pw-body {
   font-size: 0.7rem;
   font-weight: 700;
   color: #fff;
-  background: linear-gradient(135deg, var(--pw-terracotta), #b86a52);
+  background: linear-gradient(135deg, var(--pw-terracotta), #566647);
   padding: 0.3rem 0.75rem;
   border-radius: 999px;
   margin-bottom: 0.85rem;
@@ -148,9 +148,9 @@ body.pw-body {
   word-break: keep-all;
   margin: 0 0 1.35rem;
   padding: 0.85rem 1rem;
-  background: rgba(184, 145, 112, 0.12);
+  background: rgba(101, 116, 83, 0.12);
   border-radius: 0.85rem;
-  border: 1px solid rgba(184, 145, 112, 0.2);
+  border: 1px solid rgba(101, 116, 83, 0.2);
 }
 
 .pw-note strong {
@@ -183,20 +183,20 @@ body.pw-body {
 
 .pw-btn--primary {
   color: #fff;
-  background: linear-gradient(145deg, #3e362e, #52463c);
-  box-shadow: 0 6px 22px rgba(62, 54, 46, 0.28);
+  background: linear-gradient(145deg, #202219, #30322D);
+  box-shadow: 0 6px 22px rgba(32, 34, 25, 0.28);
 }
 
 .pw-btn--secondary {
   color: var(--pw-text);
   background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(184, 145, 112, 0.45);
+  border: 1px solid rgba(101, 116, 83, 0.45);
 }
 
 .pw-btn--ghost {
   color: var(--pw-terracotta);
   background: transparent;
-  border: 1px solid rgba(196, 122, 90, 0.35);
+  border: 1px solid rgba(101, 116, 83, 0.35);
   font-size: 0.9rem;
   min-height: 2.75rem;
 }

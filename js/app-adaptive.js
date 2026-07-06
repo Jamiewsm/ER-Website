@@ -16,15 +16,15 @@ function renderAdaptiveQuestions(containerId, questions, prefix) {
                     <div class="grid gap-3">
                         <label class="block cursor-pointer">
                             <input type="radio" name="${item.id}" value="A" class="sr-only peer">
-                            <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] smooth-transition">
-                                <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${adaptiveText('forcedA')}</span>
+                            <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5] smooth-transition">
+                                <span class="inline-block text-xs font-bold text-[#30322D] mb-1">${adaptiveText('forcedA')}</span>
                                 <div>${aText}</div>
                             </div>
                         </label>
                         <label class="block cursor-pointer">
                             <input type="radio" name="${item.id}" value="B" class="sr-only peer">
-                            <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] smooth-transition">
-                                <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${adaptiveText('forcedB')}</span>
+                            <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5] smooth-transition">
+                                <span class="inline-block text-xs font-bold text-[#30322D] mb-1">${adaptiveText('forcedB')}</span>
                                 <div>${bText}</div>
                             </div>
                         </label>
@@ -40,7 +40,7 @@ function renderAdaptiveQuestions(containerId, questions, prefix) {
                             ${[1, 2, 3, 4, 5].map((val) => `
                                 <div class="relative">
                                     <input type="radio" name="${item.id}" value="${val}" id="${item.id}-${val}" class="peer sr-only radio-btn">
-                                    <label for="${item.id}-${val}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer peer-hover:border-[#bfa68a] hover:bg-gray-50 smooth-transition font-semibold text-sm bg-white">
+                                    <label for="${item.id}-${val}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer peer-hover:border-[#657453] hover:bg-gray-50 smooth-transition font-semibold text-sm bg-white">
                                         ${val}
                                     </label>
                                 </div>
@@ -568,47 +568,47 @@ function submitPhase2() {
         }
         if (adjustedSO) {
             logMsg += adaptiveLang === 'en'
-                ? `<br><br><span class="text-[#bfa68a] text-xs">* For core Types 3/6/9, a -2.5 correction was applied to Social-instinct scoring to reduce possible over-selection bias on socially weighted items.</span>`
-                : `<br><br><span class="text-[#bfa68a] text-xs">* ${coreType}번은 사회성 관련 문항에서 과대표집이 발생할 수 있어, 사회적 본능(SO)에 -2.5 보정치가 적용되었습니다.</span>`;
+                ? `<br><br><span class="text-[#657453] text-xs">* For core Types 3/6/9, a -2.5 correction was applied to Social-instinct scoring to reduce possible over-selection bias on socially weighted items.</span>`
+                : `<br><br><span class="text-[#657453] text-xs">* ${coreType}번은 사회성 관련 문항에서 과대표집이 발생할 수 있어, 사회적 본능(SO)에 -2.5 보정치가 적용되었습니다.</span>`;
         }
         if (adaptiveTieBreakerMeta.enabled) {
             const marginPct = ((adaptiveTieBreakerMeta.margin ?? 0) * 100).toFixed(1);
             logMsg += adaptiveLang === 'en'
-                ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 6 tie-breaker was activated (base margin ${marginPct}%, weight x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`
-                : `<br><br><span class="text-[#4a4540] text-xs">* 3번/6번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct}%, 가중치 x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`;
+                ? `<br><br><span class="text-[#30322D] text-xs">* 3 vs 6 tie-breaker was activated (base margin ${marginPct}%, weight x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`
+                : `<br><br><span class="text-[#30322D] text-xs">* 3번/6번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct}%, 가중치 x${adaptiveTieBreakerMeta.weight.toFixed(2)}).</span>`;
         }
         if (adaptiveTieBreaker31Meta.enabled) {
             const marginPct31 = ((adaptiveTieBreaker31Meta.margin ?? 0) * 100).toFixed(1);
             logMsg += adaptiveLang === 'en'
-                ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs 1 tie-breaker was activated (base margin ${marginPct31}%, weight x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`
-                : `<br><br><span class="text-[#4a4540] text-xs">* 3번/1번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct31}%, 가중치 x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`;
+                ? `<br><br><span class="text-[#30322D] text-xs">* 3 vs 1 tie-breaker was activated (base margin ${marginPct31}%, weight x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`
+                : `<br><br><span class="text-[#30322D] text-xs">* 3번/1번 혼동 보정 타이브레이커가 적용되었습니다 (1차 점수차 ${marginPct31}%, 가중치 x${adaptiveTieBreaker31Meta.weight.toFixed(2)}).</span>`;
         }
         if (adaptiveTieBreaker3SXMeta.enabled) {
             const marginPct3sx = ((adaptiveTieBreaker3SXMeta.margin ?? 0) * 100).toFixed(1);
             const dampTxt = threeVsSxDampApplied > 0 ? threeVsSxDampApplied.toFixed(2) : '0.00';
             logMsg += adaptiveLang === 'en'
-                ? `<br><br><span class="text-[#4a4540] text-xs">* 3 vs SX tie-breaker was activated (3-to-top margin ${marginPct3sx}%, weight x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, Type 3 damp ${dampTxt}).</span>`
-                : `<br><br><span class="text-[#4a4540] text-xs">* 3번/SX 혼동 보정 타이브레이커가 적용되었습니다 (3번-상위점수 차 ${marginPct3sx}%, 가중치 x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, 3번 감쇠 ${dampTxt}).</span>`;
+                ? `<br><br><span class="text-[#30322D] text-xs">* 3 vs SX tie-breaker was activated (3-to-top margin ${marginPct3sx}%, weight x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, Type 3 damp ${dampTxt}).</span>`
+                : `<br><br><span class="text-[#30322D] text-xs">* 3번/SX 혼동 보정 타이브레이커가 적용되었습니다 (3번-상위점수 차 ${marginPct3sx}%, 가중치 x${adaptiveTieBreaker3SXMeta.weight.toFixed(2)}, 3번 감쇠 ${dampTxt}).</span>`;
         }
         if (adaptiveTieBreaker71Meta.enabled) {
             logMsg += adaptiveLang === 'en'
-                ? `<br><br><span class="text-[#4a4540] text-xs">* 7 vs 1 tie-breaker was activated (weight x${adaptiveTieBreaker71Meta.weight.toFixed(2)}).</span>`
-                : `<br><br><span class="text-[#4a4540] text-xs">* 7번/1번 전용 타이브레이커가 적용되었습니다 (가중치 x${adaptiveTieBreaker71Meta.weight.toFixed(2)}).</span>`;
+                ? `<br><br><span class="text-[#30322D] text-xs">* 7 vs 1 tie-breaker was activated (weight x${adaptiveTieBreaker71Meta.weight.toFixed(2)}).</span>`
+                : `<br><br><span class="text-[#30322D] text-xs">* 7번/1번 전용 타이브레이커가 적용되었습니다 (가중치 x${adaptiveTieBreaker71Meta.weight.toFixed(2)}).</span>`;
         }
         if (adaptiveTieBreaker78Meta.enabled) {
             logMsg += adaptiveLang === 'en'
-                ? `<br><br><span class="text-[#4a4540] text-xs">* 7 vs 8 tie-breaker was activated (weight x${adaptiveTieBreaker78Meta.weight.toFixed(2)}).</span>`
-                : `<br><br><span class="text-[#4a4540] text-xs">* 7번/8번 전용 타이브레이커가 적용되었습니다 (가중치 x${adaptiveTieBreaker78Meta.weight.toFixed(2)}).</span>`;
+                ? `<br><br><span class="text-[#30322D] text-xs">* 7 vs 8 tie-breaker was activated (weight x${adaptiveTieBreaker78Meta.weight.toFixed(2)}).</span>`
+                : `<br><br><span class="text-[#30322D] text-xs">* 7번/8번 전용 타이브레이커가 적용되었습니다 (가중치 x${adaptiveTieBreaker78Meta.weight.toFixed(2)}).</span>`;
         }
         if (adaptiveTieBreaker7WingMeta.enabled && coreType === 7) {
             logMsg += adaptiveLang === 'en'
-                ? `<br><br><span class="text-[#4a4540] text-xs">* 7w6 vs 7w8 wing tie-breaker was applied.</span>`
-                : `<br><br><span class="text-[#4a4540] text-xs">* 7w6 / 7w8 날개 보정 문항이 적용되었습니다.</span>`;
+                ? `<br><br><span class="text-[#30322D] text-xs">* 7w6 vs 7w8 wing tie-breaker was applied.</span>`
+                : `<br><br><span class="text-[#30322D] text-xs">* 7w6 / 7w8 날개 보정 문항이 적용되었습니다.</span>`;
         }
         if (recentStress >= 4) {
             logMsg += adaptiveLang === 'en'
-                ? `<br><br><span class="text-[#4a4540] text-xs">* Two-week stress correction was applied to reduce temporary stress-direction inflation.</span>`
-                : `<br><br><span class="text-[#4a4540] text-xs">* 최근 2주 스트레스 보정이 적용되어, 일시적 스트레스 방향 과상승을 완충했습니다.</span>`;
+                ? `<br><br><span class="text-[#30322D] text-xs">* Two-week stress correction was applied to reduce temporary stress-direction inflation.</span>`
+                : `<br><br><span class="text-[#30322D] text-xs">* 최근 2주 스트레스 보정이 적용되어, 일시적 스트레스 방향 과상승을 완충했습니다.</span>`;
         }
     }
 

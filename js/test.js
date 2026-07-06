@@ -1581,8 +1581,8 @@ function renderQuestions(containerId, items, prefix) {
               ${item.options.map((option, idx) => `
                 <label class="block cursor-pointer">
                   <input type="radio" name="${item.id}" value="${option.value}" class="sr-only peer" required>
-                  <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth">
-                    <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${String.fromCharCode(65 + idx)} ${pageLang === 'en' ? 'choice' : '선택'}</span>
+                  <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5] peer-focus-visible:ring-2 peer-focus-visible:ring-[#30322D]/30 smooth">
+                    <span class="inline-block text-xs font-bold text-[#30322D] mb-1">${String.fromCharCode(65 + idx)} ${pageLang === 'en' ? 'choice' : '선택'}</span>
                     <div>${getChoiceOptionText(option)}</div>
                   </div>
                 </label>
@@ -1600,15 +1600,15 @@ function renderQuestions(containerId, items, prefix) {
             <div class="grid gap-3 mt-5">
             <label class="block cursor-pointer">
               <input type="radio" name="${item.id}" value="A" class="sr-only peer" required>
-              <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth">
-                <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${pageLang === 'en' ? 'Choose A' : 'A 선택'}</span>
+              <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5] peer-focus-visible:ring-2 peer-focus-visible:ring-[#30322D]/30 smooth">
+                <span class="inline-block text-xs font-bold text-[#30322D] mb-1">${pageLang === 'en' ? 'Choose A' : 'A 선택'}</span>
                 <div>${getOptionText(item, 'a')}</div>
               </div>
             </label>
             <label class="block cursor-pointer">
               <input type="radio" name="${item.id}" value="B" class="sr-only peer" required>
-              <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth">
-                <span class="inline-block text-xs font-bold text-[#4a4540] mb-1">${pageLang === 'en' ? 'Choose B' : 'B 선택'}</span>
+              <div class="rounded-xl border-2 border-gray-200 p-4 text-sm text-gray-700 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5] peer-focus-visible:ring-2 peer-focus-visible:ring-[#30322D]/30 smooth">
+                <span class="inline-block text-xs font-bold text-[#30322D] mb-1">${pageLang === 'en' ? 'Choose B' : 'B 선택'}</span>
                 <div>${getOptionText(item, 'b')}</div>
               </div>
             </label>
@@ -1628,14 +1628,14 @@ function renderQuestions(containerId, items, prefix) {
             ${[1,2,3,4,5,6].map((v) => `
               <div class="relative">
                 <input type="radio" name="${item.id}" value="${v}" id="${item.id}-${v}" class="peer sr-only radio-btn">
-                <label for="${item.id}-${v}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer hover:bg-gray-50 peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth font-semibold text-sm bg-white">${v}</label>
+                <label for="${item.id}-${v}" class="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full border-2 border-gray-200 text-gray-400 cursor-pointer hover:bg-gray-50 peer-focus-visible:ring-2 peer-focus-visible:ring-[#30322D]/30 smooth font-semibold text-sm bg-white">${v}</label>
               </div>`).join('')}
           </div>
           <span class="text-xs text-gray-400 font-medium">${pageLang === 'en' ? 'Almost always true' : '거의 항상 그렇다'}</span>
         </div>
         <div class="mt-4 text-center">
           <input type="radio" name="${item.id}" value="U" id="${item.id}-U" class="peer sr-only">
-          <label for="${item.id}-U" class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 text-xs text-gray-500 cursor-pointer hover:bg-gray-50 peer-checked:border-[#4a4540] peer-checked:bg-[#f5f5f0] peer-checked:text-[#4a4540] peer-focus-visible:ring-2 peer-focus-visible:ring-[#4a4540]/30 smooth">
+          <label for="${item.id}-U" class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1.5 text-xs text-gray-500 cursor-pointer hover:bg-gray-50 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5] peer-checked:text-[#30322D] peer-focus-visible:ring-2 peer-focus-visible:ring-[#30322D]/30 smooth">
             ${pageLang === 'en' ? 'Not sure / varies by situation (no scoring)' : '잘 모르겠다 / 상황 따라 다름 (비채점)'}
           </label>
         </div>
@@ -4017,7 +4017,7 @@ function showShareToast(msg) {
     toast.id = 'share-toast';
     toast.style.cssText = [
       'position:fixed', 'bottom:24px', 'left:50%', 'transform:translateX(-50%)',
-      'background:#3E362E', 'color:#fff', 'padding:10px 20px', 'border-radius:24px',
+      'background:#202219', 'color:#fff', 'padding:10px 20px', 'border-radius:24px',
       'font-size:13px', 'font-weight:600', 'z-index:9999',
       'transition:opacity 0.3s', 'pointer-events:none', 'white-space:nowrap'
     ].join(';');

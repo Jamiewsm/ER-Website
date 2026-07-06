@@ -163,7 +163,7 @@ function renderJulyBasicCourseApply(submitSource) {
             <div class="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[minmax(300px,0.92fr)_minmax(430px,1fr)] lg:items-start">
                 <section class="overflow-hidden rounded-lg border border-er-accentLight bg-white shadow-soft">
                     <div class="grid gap-0 md:grid-cols-[0.78fr_1fr] lg:grid-cols-1">
-                        <div class="course-apply-poster-wrap bg-[#f7f0e3]">
+                        <div class="course-apply-poster-wrap bg-[#FBFAF5]">
                             <img
                                 src="/assets/er-visual/enneagram-basic-july-2026.jpg"
                                 alt="에니어그램 기본과정 8주 안내 이미지"
@@ -264,7 +264,7 @@ function renderJulyBasicCourseApply(submitSource) {
                         </div>
 
                         <label class="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 cursor-pointer">
-                            <input type="checkbox" name="covenant_agree" required class="mt-0.5 h-4 w-4 shrink-0 accent-[#B89170]">
+                            <input type="checkbox" name="covenant_agree" required class="mt-0.5 h-4 w-4 shrink-0 accent-[#657453]">
                             <span class="text-xs leading-relaxed text-gray-600 break-keep">수업과 멘토링에서 나눈 개인 이야기를 외부에 공유하지 않으며, 서로 존중하는 안전한 공동체를 만드는 데 협력하고, 강의와 멘토링에 성실히 참여하겠습니다.</span>
                         </label>
 

@@ -9,28 +9,28 @@
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" href="css/test.css">
 </head>
-<body class="min-h-screen pb-20 bg-[#f8fafc] relative">
-  <div id="test-initial-skeleton" class="fixed inset-0 z-40 bg-[#f5f5f0]/90 backdrop-blur-[1px] transition-opacity duration-300">
+<body class="min-h-screen pb-20 bg-[#FBFAF5] relative">
+  <div id="test-initial-skeleton" class="fixed inset-0 z-40 bg-[#FBFAF5]/90 backdrop-blur-[1px] transition-opacity duration-300">
     <div class="max-w-3xl mx-auto pt-12 px-4 sm:px-6">
-      <div class="rounded-3xl border border-[#bfa68a]/20 bg-white/80 p-6 sm:p-8 shadow-sm">
+      <div class="rounded-3xl border border-[#657453]/20 bg-white/80 p-6 sm:p-8 shadow-sm">
         <div class="flex items-center gap-2 mb-5">
-          <span class="w-2 h-2 rounded-full bg-[#bfa68a] animate-pulse"></span>
-          <span id="loading-kicker" class="text-xs font-bold tracking-wider text-[#6b5f55]">진단 페이지 준비 중</span>
+          <span class="w-2 h-2 rounded-full bg-[#657453] animate-pulse"></span>
+          <span id="loading-kicker" class="text-xs font-bold tracking-wider text-[#6F7068]">진단 페이지 준비 중</span>
         </div>
         <div class="space-y-4 animate-pulse">
-          <div class="h-6 w-2/3 rounded-lg bg-[#eadccf]"></div>
-          <div class="h-4 w-5/6 rounded-lg bg-[#efe3d7]"></div>
-          <div class="h-4 w-3/4 rounded-lg bg-[#efe3d7]"></div>
-          <div class="h-24 w-full rounded-2xl border border-[#e9ddcf] bg-white"></div>
-          <div class="h-24 w-full rounded-2xl border border-[#e9ddcf] bg-white"></div>
-          <div class="h-24 w-full rounded-2xl border border-[#e9ddcf] bg-white"></div>
+          <div class="h-6 w-2/3 rounded-lg bg-[#EEF3E6]"></div>
+          <div class="h-4 w-5/6 rounded-lg bg-[#EEF3E6]"></div>
+          <div class="h-4 w-3/4 rounded-lg bg-[#EEF3E6]"></div>
+          <div class="h-24 w-full rounded-2xl border border-[#E2D8C8] bg-white"></div>
+          <div class="h-24 w-full rounded-2xl border border-[#E2D8C8] bg-white"></div>
+          <div class="h-24 w-full rounded-2xl border border-[#E2D8C8] bg-white"></div>
         </div>
       </div>
     </div>
   </div>
   <main id="test-main-content" class="max-w-3xl mx-auto pt-12 px-4 sm:px-6 transition-opacity duration-500 opacity-0">
     <header class="text-center mb-10">
-      <span id="test-pill" class="bg-[#bfa68a] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
+      <span id="test-pill" class="bg-[#657453] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
       <h1 id="test-title" class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
       <p id="test-subtitle" class="mt-4 text-gray-600 leading-relaxed text-sm">행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.</p>
       <p id="test-disclaimer" class="text-xs text-gray-400 mt-4">* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.</p>
@@ -58,16 +58,16 @@
         <div>
           <label for="experiment-participant-name" class="block text-xs font-semibold text-gray-700 mb-1">실명 (필수)</label>
           <input id="experiment-participant-name" type="text" autocomplete="name" maxlength="200"
-            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#4a4540]/30 focus:border-[#4a4540]"
+            class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#30322D]/30 focus:border-[#30322D]"
             placeholder="홍길동" />
         </div>
         <label class="flex items-start gap-2 text-sm text-gray-800 cursor-pointer">
-          <input id="experiment-consent" type="checkbox" class="mt-1 accent-[#4a4540]" />
+          <input id="experiment-consent" type="checkbox" class="mt-1 accent-[#30322D]" />
           <span>이름·응답·결과·자기평가를 ER 진단 개선 목적으로 저장하는 것에 동의합니다.</span>
         </label>
         <p id="experiment-gate-error" class="text-sm text-red-600 hidden" role="alert"></p>
         <button id="experiment-gate-start" type="button"
-          class="w-full sm:w-auto bg-[#4a4540] hover:bg-[#3a3530] text-white font-bold py-3 px-10 rounded-full text-sm">
+          class="w-full sm:w-auto bg-[#30322D] hover:bg-[#202219] text-white font-bold py-3 px-10 rounded-full text-sm">
           동의하고 진단 시작
         </button>
       </div>
@@ -79,31 +79,31 @@
         <span id="step-counter">1 / 4</span>
       </div>
       <div id="progress-track" class="w-full bg-gray-200 rounded-full h-1.5" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        <div id="progress-bar" class="bg-[#8c8680] h-1.5 rounded-full smooth" style="width:50%"></div>
+        <div id="progress-bar" class="bg-[#657453] h-1.5 rounded-full smooth" style="width:50%"></div>
       </div>
     </div>
 
     <form id="phase1-form" class="space-y-10" novalidate>
-      <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-gray-200 text-center">
+      <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-gray-200 text-center">
         <p id="phase1-intro-title" class="font-semibold text-gray-700">1부: 일상적 자동반응 패턴</p>
         <p id="phase1-intro-desc" class="text-sm text-gray-500 mt-1">불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.</p>
       </div>
       <div id="phase1-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button id="phase1-submit-btn" type="button" onclick="submitPhase1()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">2단계로 이동</button>
+        <button id="phase1-submit-btn" type="button" onclick="submitPhase1()" class="bg-[#30322D] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">2단계로 이동</button>
       </div>
     </form>
 
     <form id="phase2-form" class="space-y-10 hidden" novalidate>
-      <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center">
-        <p id="phase2-intro-title" class="font-bold text-[#4a4540] text-lg">1차 분석 완료</p>
+      <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-[#657453] text-center">
+        <p id="phase2-intro-title" class="font-bold text-[#30322D] text-lg">1차 분석 완료</p>
         <p id="phase2-intro-desc" class="text-sm text-gray-600 mt-2">후보 유형 경합을 줄이기 위한 심층 질문입니다.</p>
       </div>
       <div id="phase2-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button id="phase2-submit-btn" type="button" onclick="submitPhase2()" class="bg-[#bfa68a] hover:bg-[#a68c70] text-white font-bold py-4 px-12 rounded-full shadow-lg">결과 보기</button>
+        <button id="phase2-submit-btn" type="button" onclick="submitPhase2()" class="bg-[#657453] hover:bg-[#566647] text-white font-bold py-4 px-12 rounded-full shadow-lg">결과 보기</button>
       </div>
     </form>
 
@@ -120,22 +120,22 @@
     </form>
 
     <form id="phase4-form" class="space-y-10 hidden" novalidate>
-      <div class="bg-[#f5f5f0] p-6 rounded-2xl border border-[#bfa68a] text-center">
-        <p id="phase4-intro-title" class="font-bold text-[#4a4540] text-lg">최종 하위유형/날개 판별</p>
+      <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-[#657453] text-center">
+        <p id="phase4-intro-title" class="font-bold text-[#30322D] text-lg">최종 하위유형/날개 판별</p>
         <p id="phase4-intro-desc" class="text-sm text-gray-600 mt-2">확정된 기본 유형에 맞춰 하위유형과 날개를 한 번 더 정밀하게 확인합니다.</p>
       </div>
       <div id="phase4-container" class="space-y-6"></div>
       <div class="text-center pt-6">
         <p id="validation-msg-4" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button id="phase4-submit-btn" type="button" onclick="submitPhase4()" class="bg-[#4a4540] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
+        <button id="phase4-submit-btn" type="button" onclick="submitPhase4()" class="bg-[#30322D] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
       </div>
     </form>
 
     <section id="result-view" class="hidden">
       <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-        <div class="bg-[#4a4540] px-8 py-10 text-center text-white relative">
+        <div class="bg-[#30322D] px-8 py-10 text-center text-white relative">
           <h2 class="text-sm font-medium opacity-80 uppercase tracking-widest mb-3">Your Original Design</h2>
-          <div id="res-final" class="text-5xl font-bold mb-4 tracking-tight text-[#bfa68a]"></div>
+          <div id="res-final" class="text-5xl font-bold mb-4 tracking-tight text-[#657453]"></div>
           <p id="res-instincts" class="text-lg font-medium opacity-90"></p>
           <div id="confidence-badge" class="absolute top-6 right-6 px-3 py-1 rounded-full text-xs font-bold border border-white/30"></div>
         </div>
@@ -156,13 +156,13 @@
             </div>
           </div>
 
-          <div class="bg-[#f5f5f0] p-6 rounded-2xl border-l-4 border-[#bfa68a]">
-            <h3 id="analysis-report-title" class="font-bold text-[#4a4540] mb-2 text-sm">분석 리포트</h3>
+          <div class="bg-[#FBFAF5] p-6 rounded-2xl border-l-4 border-[#657453]">
+            <h3 id="analysis-report-title" class="font-bold text-[#30322D] mb-2 text-sm">분석 리포트</h3>
             <p id="res-log" class="text-gray-600 text-sm leading-relaxed font-medium"></p>
           </div>
 
           <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-            <h3 id="top3-title" class="font-bold text-[#4a4540] mb-3 text-sm">상위 3유형 상대 점유율 및 근거</h3>
+            <h3 id="top3-title" class="font-bold text-[#30322D] mb-3 text-sm">상위 3유형 상대 점유율 및 근거</h3>
             <div id="res-top3" class="space-y-3 text-sm text-gray-700"></div>
           </div>
 
@@ -176,7 +176,7 @@
           <!-- Share -->
           <div class="flex justify-center pt-2">
             <button onclick="shareTestResult()"
-              class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#4a4540] text-white text-sm font-bold hover:bg-[#3a3530] active:scale-95 transition-all shadow-md">
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#30322D] text-white text-sm font-bold hover:bg-[#202219] active:scale-95 transition-all shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
                 <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
@@ -186,8 +186,8 @@
           </div>
 
           <div class="text-center pt-4 border-t border-gray-100">
-            <button id="download-pdf-btn" onclick="downloadResultPdf()" class="mr-3 text-sm text-[#4a4540] hover:text-black font-semibold underline">결과 PDF 다운로드</button>
-            <button id="restart-test-btn" onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#4a4540] font-medium underline">처음부터 다시하기</button>
+            <button id="download-pdf-btn" onclick="downloadResultPdf()" class="mr-3 text-sm text-[#30322D] hover:text-black font-semibold underline">결과 PDF 다운로드</button>
+            <button id="restart-test-btn" onclick="location.reload()" class="text-sm text-gray-400 hover:text-[#30322D] font-medium underline">처음부터 다시하기</button>
             <p id="result-disclaimer" class="text-xs text-gray-400 mt-4">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
           </div>
         </div>
