@@ -1,5 +1,9 @@
 # PayPal Checkout — 대표가 직접 하는 작업 (Secrets만)
 
+> **일시 중지 (2026-07-10)** — PayPal Business 은행 계좌 연결이 되지 않아 Live/실결제 연동을 중단했습니다.  
+> 코드·PR(#90)·Sandbox Edge Function·Secrets는 그대로 두었습니다. 은행 연결이 되면 이 문서의 Webhook → Sandbox 테스트 → Live 순으로 재개하면 됩니다.  
+> 당분간 운영은 기존처럼 **수동 PayPal·Zelle 송금 안내**를 사용합니다.
+
 아래 **2가지**만 하시면 됩니다. DB·Function 배포·사이트 PR은 개발 쪽에서 처리합니다.
 
 ---
