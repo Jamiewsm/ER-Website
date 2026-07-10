@@ -170,11 +170,11 @@ rounded-full bg-er-greenTint border border-er-green/20 px-4 py-2.5 flex items-ce
 ### Marketing/Content Page
 
 ```
-구조: max-w-4xl mx-auto px-4 sm:px-6
-헤더: 좌측 정렬 H1 + 부제 (중앙 정렬 배지+제목 패턴 금지 — AI 슬롭)
-콘텐츠: flex-col gap-8 카드
-CTA: 콘텐츠 뒤 중앙 하단 CTA 1개
-배경: bg-er-base
+구조: max-w-4xl~6xl mx-auto px-4 sm:px-6
+히어로: bg-er-dark + 흰색 제목(SUIT font-display) + rounded-b-[3rem] — Parenting·About·Coach Training·Community 패턴
+콘텐츠 영역: bg-er-base 위에 bg-er-surface 카드 + border-er-sand/60. 흰 배경(bg-white) 단독 페이지 금지.
+내부 카드: bg-er-base/50~70 + border-er-sand/40. bg-white 카드를 er-base 위에 겹치지 않게.
+CTA: 콘텐츠 뒤 중앙 하단 CTA 1개 (er-green 또는 er-dark 밴드)
 ```
 
 ### Hero/Landing (home)
