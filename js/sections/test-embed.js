@@ -132,33 +132,40 @@ if (typeof window !== 'undefined') window.prefetchTestAssets = prefetchTestAsset
 
 function renderTest() {
     const isKo = adaptiveLang !== 'en';
+    const langBtn = (active) => active
+        ? 'bg-er-green text-white border-er-green'
+        : 'bg-er-surface text-er-body border-er-sand hover:border-er-green hover:text-er-green';
     return `
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <div class="bg-er-base min-h-screen">
+            <section class="bg-er-dark text-white py-10 md:py-14 px-6 relative overflow-hidden rounded-b-[2.5rem]">
+                <div class="absolute top-[-20%] right-[-10%] w-[320px] h-[320px] bg-er-green/20 rounded-full blur-[110px] pointer-events-none"></div>
+                <div class="max-w-5xl mx-auto relative z-10 text-center">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] font-bold tracking-widest uppercase text-er-greenTint mb-4">Premium Test</span>
+                    <h2 class="font-display text-2xl md:text-3xl font-extrabold tracking-[-0.03em] break-keep">에니어그램 프리미엄 검사</h2>
+                    <p class="mt-2 text-sm text-white/80 break-keep">핵심 동기와 유형을 찾는 적응형 진단</p>
+                </div>
+            </section>
+
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
             <div class="mb-4 flex items-center justify-end gap-2">
-                <button
-                    onclick="setAdaptiveTestLanguage('ko')"
-                    class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${isKo ? 'bg-er-dark text-white border-er-dark' : 'bg-white text-gray-600 border-gray-200 hover:border-er-accent hover:text-er-dark'}"
-                >한국어 테스트</button>
-                <button
-                    onclick="setAdaptiveTestLanguage('en')"
-                    class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${!isKo ? 'bg-er-dark text-white border-er-dark' : 'bg-white text-gray-600 border-gray-200 hover:border-er-accent hover:text-er-dark'}"
-                >English Test</button>
+                <button onclick="setAdaptiveTestLanguage('ko')" class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${langBtn(isKo)}">한국어 테스트</button>
+                <button onclick="setAdaptiveTestLanguage('en')" class="px-3 py-1.5 rounded-full text-xs font-bold border transition ${langBtn(!isKo)}">English Test</button>
             </div>
-            <div class="relative bg-white rounded-3xl border border-gray-100 shadow-soft overflow-hidden">
+            <div class="relative bg-er-surface rounded-3xl border border-er-sand/60 shadow-soft overflow-hidden">
                 <div id="adaptive-test-skeleton" class="absolute inset-0 z-10 bg-er-base/80 backdrop-blur-[1px] transition-opacity duration-300">
                     <div class="h-full p-5 md:p-8">
-                        <div class="w-full h-full rounded-2xl border border-er-accent/20 bg-white/70 p-5 md:p-7">
+                        <div class="w-full h-full rounded-2xl border border-er-sand/50 bg-er-surface/90 p-5 md:p-7">
                             <div class="flex items-center gap-2 mb-6">
-                                <span class="w-2 h-2 rounded-full bg-er-accent animate-pulse"></span>
-                                <span class="text-xs font-bold tracking-wider text-er-primary">진단 페이지 불러오는 중</span>
+                                <span class="w-2 h-2 rounded-full bg-er-green animate-pulse"></span>
+                                <span class="text-xs font-bold tracking-wider text-er-green">진단 페이지 불러오는 중</span>
                             </div>
                             <div class="space-y-4 animate-pulse">
-                                <div class="h-6 w-2/3 rounded-lg bg-er-accentLight"></div>
-                                <div class="h-4 w-5/6 rounded-lg bg-er-accentLight/80"></div>
-                                <div class="h-4 w-3/4 rounded-lg bg-er-accentLight/80"></div>
-                                <div class="h-24 w-full rounded-2xl bg-white border border-er-accent/10"></div>
-                                <div class="h-24 w-full rounded-2xl bg-white border border-er-accent/10"></div>
-                                <div class="h-24 w-full rounded-2xl bg-white border border-er-accent/10"></div>
+                                <div class="h-6 w-2/3 rounded-lg bg-er-greenTint"></div>
+                                <div class="h-4 w-5/6 rounded-lg bg-er-greenTint/80"></div>
+                                <div class="h-4 w-3/4 rounded-lg bg-er-greenTint/80"></div>
+                                <div class="h-24 w-full rounded-2xl bg-er-base border border-er-sand/40"></div>
+                                <div class="h-24 w-full rounded-2xl bg-er-base border border-er-sand/40"></div>
+                                <div class="h-24 w-full rounded-2xl bg-er-base border border-er-sand/40"></div>
                             </div>
                         </div>
                     </div>
@@ -167,17 +174,18 @@ function renderTest() {
             </div>
 
             <div class="mt-8 grid md:grid-cols-2 gap-4">
-                <div class="bg-white rounded-2xl border border-gray-100 p-5 shadow-soft">
-                    <h3 class="text-sm font-bold text-er-dark mb-2">진단 안내 자료</h3>
-                    <p class="text-xs text-gray-500 break-keep">테스트 전후 해석 방법과 정식 타이핑 세션 연결 흐름을 한눈에 확인할 수 있습니다.</p>
+                <div class="bg-er-surface rounded-2xl border border-er-sand/60 p-5 shadow-soft">
+                    <h3 class="text-sm font-bold text-er-inkSoft mb-2">진단 안내 자료</h3>
+                    <p class="text-xs text-er-muted break-keep">테스트 전후 해석 방법과 정식 타이핑 세션 연결 흐름을 한눈에 확인할 수 있습니다.</p>
                 </div>
-                <div class="bg-er-base rounded-2xl border border-white/40 p-5 shadow-soft">
-                    <h3 class="text-sm font-bold text-er-dark mb-2">추천 읽을거리</h3>
-                    <ul class="space-y-1 text-xs text-gray-600">
+                <div class="bg-er-base/60 rounded-2xl border border-er-sand/50 p-5 shadow-soft">
+                    <h3 class="text-sm font-bold text-er-inkSoft mb-2">추천 읽을거리</h3>
+                    <ul class="space-y-1 text-xs text-er-body">
                         <li>에니어그램의 지혜 (Don Richard Riso)</li>
                         <li>내면의 감옥에서 벗어나라 (Richard Rohr)</li>
                     </ul>
                 </div>
+            </div>
             </div>
         </div>
     `;

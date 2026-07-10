@@ -134,7 +134,7 @@ function updateProgramView(filterType) {
 
     if (problemCardsEl) {
         problemCardsEl.innerHTML = (selected.problems || []).map(p => `
-            <div class="bg-white rounded-2xl p-5 border border-white/40 shadow-soft floating-card">
+            <div class="bg-er-surface rounded-2xl p-5 border border-er-sand/60 shadow-soft floating-card">
                 <div class="w-10 h-10 rounded-xl bg-er-base text-er-accent flex items-center justify-center mb-3">
                     <i class="${p.i}"></i>
                 </div>
@@ -149,7 +149,7 @@ function updateProgramView(filterType) {
 
     if (cardsEl) {
         cardsEl.innerHTML = selected.cards.map(c => `
-            <div class="bg-white rounded-2xl p-6 border ${c.featured ? 'border-er-accent shadow-card ring-1 ring-er-accent/30' : 'border-gray-100 shadow-sm'} hover:shadow-card transition-all group flex flex-col h-full relative">
+            <div class="bg-er-surface rounded-2xl p-6 border ${c.featured ? 'border-er-green shadow-card ring-1 ring-er-green/30' : 'border-er-sand/60 shadow-sm'} hover:shadow-card transition-all group flex flex-col h-full relative">
                 ${c.featured ? `<span class="absolute -top-3 right-4 px-3 py-1 rounded-full bg-er-accent text-white text-[10px] font-bold tracking-wide">가장 많이 선택</span>` : ''}
                 <div class="flex items-center justify-between mb-4">
                     <span class="px-2.5 py-1 rounded-full bg-er-base text-er-accent text-[10px] font-bold uppercase tracking-wider">${c.b}</span>
@@ -192,7 +192,7 @@ function renderPrograms() {
             </div>
 
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 pb-20">
-                <div id="program-intro" class="mb-6 text-center bg-white rounded-2xl p-6 shadow-soft max-w-2xl mx-auto border border-white/40 animate-fade-in-up floating-card">
+                <div id="program-intro" class="mb-6 text-center bg-er-surface rounded-2xl p-6 shadow-soft max-w-2xl mx-auto border border-er-sand/60 animate-fade-in-up floating-card">
                     </div>
 
                 <div class="mb-4 text-center">
@@ -211,19 +211,19 @@ function renderPrograms() {
                         <h3 class="text-xl md:text-2xl font-bold text-er-dark mt-2">진행 과정</h3>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto">
-                        <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-soft relative group floating-card">
+                        <div class="bg-er-surface p-6 md:p-8 rounded-3xl text-center shadow-soft relative group floating-card border border-er-sand/50">
                             <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-xl"></i></div>
                             <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="far fa-file-alt"></i></div>
                             <h4 class="font-bold text-base mb-1">1. 신청서 작성</h4>
                             <p class="text-xs text-gray-500 break-keep">현재 상황과 니즈를 파악합니다.</p>
                         </div>
-                        <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-soft relative group floating-card">
+                        <div class="bg-er-surface p-6 md:p-8 rounded-3xl text-center shadow-soft relative group floating-card border border-er-sand/50">
                             <div class="absolute top-1/2 -right-4 hidden md:block text-gray-200 z-10"><i class="fas fa-chevron-right text-xl"></i></div>
                             <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="far fa-comments"></i></div>
                             <h4 class="font-bold text-base mb-1">2. 사전 인터뷰</h4>
                             <p class="text-xs text-gray-500 break-keep">코치와 상담을 통해 방향을 설정합니다.</p>
                         </div>
-                        <div class="bg-white p-6 md:p-8 rounded-3xl text-center shadow-soft group floating-card">
+                        <div class="bg-er-surface p-6 md:p-8 rounded-3xl text-center shadow-soft group floating-card border border-er-sand/50">
                             <div class="w-12 h-12 bg-er-base text-er-accent rounded-2xl flex items-center justify-center text-xl mx-auto mb-4 group-hover:scale-110 transition-transform"><i class="fas fa-chalkboard-teacher"></i></div>
                             <h4 class="font-bold text-base mb-1">3. 코칭/강의</h4>
                             <p class="text-xs text-gray-500 break-keep">맞춤형 커리큘럼으로 진행됩니다.</p>
@@ -236,7 +236,7 @@ function renderPrograms() {
                     </div>
                 </div>
 
-                <div class="mt-16 rounded-[2rem] bg-white border border-white/40 p-6 md:p-8 shadow-soft animate-fade-in-up">
+                <div class="mt-16 rounded-[2rem] bg-er-surface border border-er-sand/60 p-6 md:p-8 shadow-soft animate-fade-in-up">
                     <div class="flex items-center justify-between gap-3 mb-4">
                         <h3 class="text-lg font-bold text-er-dark">가격 및 진행 정책</h3>
                         <span class="text-[11px] text-gray-400">USD 기준 안내</span>
@@ -247,7 +247,7 @@ function renderPrograms() {
                             ['사역지원 트랙', '목회자·선교사 대상 무료/감면 원칙은 유지됩니다. 사역지원은 별도 심사 후 배정됩니다.', { label: '사역지원 보기', section: 'support' }],
                             ['패키지 우선', '단회보다 4회/8회 패키지 전환율이 높고 변화 유지에 유리합니다. 초기 상담 후 최적 트랙을 제안합니다.', null]
                         ].map(([title, desc, link]) => `
-                            <div class="rounded-2xl border border-gray-100 bg-er-base/50 p-5">
+                            <div class="rounded-2xl border border-er-sand/50 bg-er-base/60 p-5">
                                 <h4 class="text-sm font-bold text-er-dark">${title}</h4>
                                 <p class="mt-2 text-xs text-gray-500 break-keep">${desc}</p>
                                 ${link ? `<button onclick="renderSection('${link.section}')" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">${link.label} <i class="fas fa-arrow-right text-[10px]"></i></button>` : ''}
@@ -256,7 +256,7 @@ function renderPrograms() {
                     </div>
                 </div>
 
-                <div class="mt-16 rounded-[2rem] bg-white border border-white/40 p-6 md:p-8 shadow-soft animate-fade-in-up">
+                <div class="mt-16 rounded-[2rem] bg-er-surface border border-er-sand/60 p-6 md:p-8 shadow-soft animate-fade-in-up">
                     <div class="flex items-center justify-between gap-3 mb-4">
                         <h3 class="text-lg font-bold text-er-dark">프로그램 자료</h3>
                         <span class="text-[11px] text-gray-400">Teaching Materials</span>
@@ -267,7 +267,7 @@ function renderPrograms() {
                             ['강의 슬라이드', '교회·기관 대상 프로그램에 사용하는 핵심 강의 자료 모음'],
                             ['진행 가이드', '회기별 운영 순서와 질문 프롬프트를 담은 코치용 가이드']
                         ].map(([title, desc]) => `
-                            <div class="rounded-2xl border border-gray-100 bg-er-base/50 p-5">
+                            <div class="rounded-2xl border border-er-sand/50 bg-er-base/60 p-5">
                                 <h4 class="text-sm font-bold text-er-dark">${title}</h4>
                                 <p class="mt-2 text-xs text-gray-500 break-keep">${desc}</p>
                             </div>
