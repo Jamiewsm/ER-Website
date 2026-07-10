@@ -68,9 +68,19 @@ export function basicCourseRegistrationHtml(input: {
   name: string;
   pricing: BasicCourseCheckoutPricingInfo;
   payment: BasicCourseManualPaymentInfo;
+  paypalCheckoutUrl?: string | null;
 }): string {
   const p = input.pricing;
-  const methods = buildManualPaymentMethodsHtml(input.payment);
+  const paypalBlock = input.paypalCheckoutUrl
+    ? `
+      <p style="margin:24px 0">
+        <a href="${escapeHtml(input.paypalCheckoutUrl)}" style="display:inline-block;padding:14px 24px;background:#0070ba;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold;font-size:16px">PayPal로 $${p.amountUsd} 결제하기</a>
+      </p>
+      <p style="font-size:13px;color:#666">위 버튼으로 PayPal 결제창이 열립니다. 결제 완료 시 등록이 자동 확정됩니다.</p>
+      <h3 style="margin:24px 0 8px;font-size:16px">다른 결제 방법 (선택)</h3>
+    `
+    : '<h3 style="margin:24px 0 8px;font-size:16px">결제 방법</h3>';
+  const methods = buildManualPaymentMethodsHtml(input.payment, Boolean(input.paypalCheckoutUrl));
   return wrapEmail(
     '7월 기본과정 등록·결제 안내',
     `
@@ -83,10 +93,10 @@ export function basicCourseRegistrationHtml(input: {
         <li>얼리버드: $${p.earlyBirdPriceUsd} (${escapeHtml(p.earlyBirdDeadline)}까지 입금 완료 시)</li>
       </ul>
       <p><strong>자리 확정은 입금 확인 순</strong>입니다 (정원 10명).</p>
-      <h3 style="margin:24px 0 8px;font-size:16px">결제 방법</h3>
+      ${paypalBlock}
       <ul style="font-size:14px;line-height:1.7">${methods}</ul>
-      <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·메시지에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 를 적어 주시면 확인이 빠릅니다.</p>
-      <p style="font-size:14px;margin-top:16px">입금 후 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 송금 완료를 알려 주시거나, PayPal·Zelle 알림을 기다려 주세요.</p>
+      ${input.paypalCheckoutUrl ? '' : `<p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·메시지에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 를 적어 주시면 확인이 빠릅니다.</p>`}
+      <p style="font-size:14px;margin-top:16px">${input.paypalCheckoutUrl ? 'PayPal 외 송금을 이용하시면' : '입금 후'} <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 송금 완료를 알려 주세요.</p>
       <h3 style="margin:24px 0 8px;font-size:16px">환불 규정 요약</h3>
       <ul style="font-size:14px;line-height:1.6">
         <li>개강 전 — 전액 환불</li>
@@ -100,11 +110,11 @@ export function basicCourseRegistrationHtml(input: {
   );
 }
 
-function buildManualPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): string {
+function buildManualPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo, paypalCheckoutEnabled: boolean): string {
   const items: string[] = [];
-  if (payment.paypalEmail) {
+  if (payment.paypalEmail && !paypalCheckoutEnabled) {
     items.push(
-      `<li><strong>PayPal</strong> — <code>${escapeHtml(payment.paypalEmail)}</code> 로 USD 송금 (가능하면 Friends &amp; Family)</li>`,
+      `<li><strong>PayPal</strong> — <code>${escapeHtml(payment.paypalEmail)}</code> 로 USD 송금</li>`,
     );
   }
   if (payment.zelleEmail) {

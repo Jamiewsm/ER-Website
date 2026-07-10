@@ -8,9 +8,14 @@ import {
 } from '../_shared/email-templates.ts';
 import { requireHeadCoach } from '../_shared/head-coach.ts';
 import {
+  BASIC_COURSE_JULY_KEY,
+  BASIC_COURSE_JULY_MAX_SEATS,
   basicCourseJulyPricing,
+  basicCourseJulyProductName,
   basicCourseManualPaymentFromEnv,
+  siteBaseUrl,
 } from '../_shared/program-pricing.ts';
+import { createPayPalOrder, isPayPalConfigured, paypalCredentialsFromEnv } from '../_shared/paypal.ts';
 import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
 
 type NotifyEvent = 'registration' | 'pre_survey' | 'graduation';
@@ -79,6 +84,78 @@ Deno.serve(async (req) => {
 
     if (event === 'registration') {
       const pricing = basicCourseJulyPricing();
+      let paypalCheckoutUrl: string | null = null;
+
+      if (app.program_key === BASIC_COURSE_JULY_KEY && isPayPalConfigured()) {
+        if (app.status === 'confirmed' || app.status === 'cancelled') {
+          return new Response(JSON.stringify({ error: 'invalid_status' }), {
+            status: 409,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const { count: confirmedCount, error: countError } = await supabase
+          .from('program_applications')
+          .select('id', { count: 'exact', head: true })
+          .eq('program_key', BASIC_COURSE_JULY_KEY)
+          .eq('status', 'confirmed');
+
+        if (countError) {
+          console.error(countError);
+          return new Response(JSON.stringify({ error: 'seat_check_failed' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        if ((confirmedCount ?? 0) >= BASIC_COURSE_JULY_MAX_SEATS) {
+          await supabase
+            .from('program_applications')
+            .update({ status: 'waitlisted' })
+            .eq('id', applicationId);
+          return new Response(JSON.stringify({ error: 'seats_full', waitlisted: true }), {
+            status: 409,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        const credentials = paypalCredentialsFromEnv();
+        if (credentials) {
+          const baseUrl = siteBaseUrl();
+          try {
+            const order = await createPayPalOrder({
+              credentials,
+              amountUsd: pricing.amountUsd,
+              productName: basicCourseJulyProductName(),
+              applicationId,
+              programKey: BASIC_COURSE_JULY_KEY,
+              returnUrl: `${baseUrl}/basic-course-payment.html?outcome=success`,
+              cancelUrl: `${baseUrl}/basic-course-payment.html?outcome=cancelled`,
+            });
+            paypalCheckoutUrl = order.approveUrl;
+            if (paypalCheckoutUrl) {
+              const { error: paypalUpdateError } = await supabase
+                .from('program_applications')
+                .update({
+                  status: 'payment_pending',
+                  payment_amount_usd: pricing.amountUsd,
+                  payment_method: 'paypal',
+                  paypal_order_id: order.id,
+                  checkout_url: paypalCheckoutUrl,
+                  checkout_expires_at: null,
+                })
+                .eq('id', applicationId);
+              if (paypalUpdateError) {
+                console.error('paypal order db update failed', paypalUpdateError);
+                paypalCheckoutUrl = null;
+              }
+            }
+          } catch (paypalErr) {
+            console.error('paypal order creation failed', paypalErr);
+          }
+        }
+      }
+
       subject = '[ER] 7월 기본과정 등록·결제 안내';
       html = basicCourseRegistrationHtml({
         name: app.name,
@@ -90,20 +167,24 @@ Deno.serve(async (req) => {
           isEarlyBird: pricing.isEarlyBird,
         },
         payment: basicCourseManualPaymentFromEnv(app.name),
+        paypalCheckoutUrl,
       });
-      const { error: updateError } = await supabase
-        .from('program_applications')
-        .update({
-          status: 'payment_pending',
-          payment_amount_usd: pricing.amountUsd,
-        })
-        .eq('id', applicationId);
-      if (updateError) {
-        console.error('status update failed', updateError);
-        return new Response(JSON.stringify({ error: 'status_update_failed' }), {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
+
+      if (!paypalCheckoutUrl) {
+        const { error: updateError } = await supabase
+          .from('program_applications')
+          .update({
+            status: 'payment_pending',
+            payment_amount_usd: pricing.amountUsd,
+          })
+          .eq('id', applicationId);
+        if (updateError) {
+          console.error('status update failed', updateError);
+          return new Response(JSON.stringify({ error: 'status_update_failed' }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
       }
     } else if (event === 'pre_survey') {
       const preSurveyUrl = Deno.env.get('BASIC_COURSE_PRE_SURVEY_URL') || '';

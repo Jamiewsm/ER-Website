@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!-- PayPal 결제 완료 리턴 페이지 — 주문 캡처·등록 확정 안내 -->
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>결제 확인 | ER 기본과정</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" crossorigin="anonymous" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            er: {
+              base: '#FBFAF5',
+              accent: '#657453',
+              accentLight: '#EEF3E6',
+              dark: '#566647',
+              muted: '#6F7068',
+            }
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-er-base text-er-dark font-sans min-h-screen flex items-center justify-center p-6">
+  <main class="max-w-md w-full bg-white rounded-3xl border border-er-accentLight shadow-sm p-8 text-center">
+    <p class="text-xs font-bold tracking-widest text-er-accent uppercase">ER 기본과정</p>
+    <h1 id="payment-status" class="mt-4 text-xl font-bold break-keep">결제를 확인하고 있습니다…</h1>
+    <p id="payment-detail" class="mt-4 text-sm text-er-muted leading-relaxed break-keep">잠시만 기다려 주세요.</p>
+    <p class="mt-8">
+      <a href="/basic-course.html" class="inline-block px-5 py-2.5 rounded-full text-sm font-bold bg-er-accent text-white no-underline">기본과정 안내로 돌아가기</a>
+    </p>
+  </main>
+  <script src="/js/config.js"></script>
+  <script src="/js/basic-course-payment.js"></script>
+</body>
+</html>

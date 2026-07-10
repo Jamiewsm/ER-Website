@@ -30,6 +30,33 @@ SPECS = {
             "_shared/program-pricing.ts",
             "_shared/resend.ts",
             "_shared/head-coach.ts",
+            "_shared/paypal.ts",
+        ],
+    },
+    "paypal-webhook": {
+        "entrypoint_path": "paypal-webhook/index.ts",
+        "verify_jwt": False,
+        "files": [
+            "paypal-webhook/index.ts",
+            "_shared/cors.ts",
+            "_shared/confirm-program-payment.ts",
+            "_shared/email-templates.ts",
+            "_shared/program-pricing.ts",
+            "_shared/resend.ts",
+            "_shared/paypal.ts",
+        ],
+    },
+    "capture-paypal-order": {
+        "entrypoint_path": "capture-paypal-order/index.ts",
+        "verify_jwt": False,
+        "files": [
+            "capture-paypal-order/index.ts",
+            "_shared/cors.ts",
+            "_shared/confirm-program-payment.ts",
+            "_shared/email-templates.ts",
+            "_shared/program-pricing.ts",
+            "_shared/resend.ts",
+            "_shared/paypal.ts",
         ],
     },
     "create-program-checkout": {
