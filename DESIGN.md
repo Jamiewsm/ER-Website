@@ -26,20 +26,21 @@
 | `er-base` | `#FBFAF5` | 페이지 배경 — 웜 페이퍼 크림 |
 | `er-surface` | `#FFFDF8` | 카드·모달 배경 — 밝은 크림 |
 | `er-sand` | `#E2D8C8` | 보더, 디바이더, 소프트 구분 블록 |
-| `er-ink` | `#202219` | 최상위 제목, primary CTA 배경 — 딥 올리브 잉크 |
+| `er-ink` | `#202219` | 최상위 **제목 텍스트** — CTA 배경 금지 |
 | `er-inkSoft` | `#30322D` | 섹션 제목, 강조 텍스트 |
 | `er-body` | `#44473F` | 본문 텍스트 |
 | `er-muted` | `#6F7068` | 보조·캡션 텍스트 |
 | `er-green` | `#657453` | 브랜드 액센트 — 세이지 그린 (링크, 아이콘, 강조) |
 | `er-greenDark` | `#566647` | 액센트 hover/active |
 | `er-greenDeep` | `#30451F` | 드문 최고 강조 (히어로 키워드 등) |
-| `er-greenTint` | `#EEF3E6` | 태그·배지·hover 틴트 배경 |
+| `er-greenTint` | `#F0EDE4` | 태그·배지·hover 틴트 배경 — 웜 크림 (쿨 민트 금지) |
 | `er-terra` | `#B06149` | 유일한 웜 액센트 — 검사 결과 하이라이트, 감정 강조 전용 |
 | `er-terraDark` | `#8F4634` | 테라코타 hover/진한 용도 |
 
 ### Rules
 
-- **Primary CTA 배경은 `er-ink`.** 순수 검정(`#000`) 금지.
+- **Primary CTA 배경은 `er-green`.** hover는 `er-greenDark`. `er-ink`·순수 검정(`#000`)을 CTA 배경에 쓰지 않는다.
+- **구 `er-dark` 별칭**은 `#566647`(= `er-greenDark`) — 레거시 `bg-er-dark`가 잉크 블랙이 되지 않도록.
 - **`er-green`은 흰/크림 배경 텍스트로 사용 가능** (명암비 ≈5:1, AA 통과). 구 브라운 `#B89170`은 AA 미달이었으므로 완전 폐기.
 - **`er-terra`는 예산제 색이다.** 한 화면에 한 번, 검사 결과·감정적 하이라이트에만. 일반 UI에 쓰지 않는다. 텍스트로 쓸 때는 bold 이상 굵기 권장(명암비 ≈4.5:1로 AA 경계).
 - **태그/배지 배경은 `er-greenTint`.** 솔리드 액센트 배경 금지.
@@ -49,8 +50,8 @@
 
 | 영역 | 상태 | 비고 |
 |---|---|---|
-| `index.html` tailwind.config | ✅ 완료 | 신규 토큰 + 구 토큰명 별칭(그린 값) 정의, MaruBuri 로드 |
-| 홈 (`js/sections/home.js`) | ✅ 완료 | 토큰 클래스 치환 + 히어로/인용 MaruBuri. 토큰 외 장식 셰이드(#f4efe6, #68785a 등 그린·크림 중간톤)는 히어로 연출용 허용 예외 |
+| `index.html` tailwind.config | ✅ 완료 | 신규 토큰 + 구 토큰명 별칭, SUIT Display 로드 |
+| 홈 (`js/sections/home.js`) | ✅ 완료 | 토큰 클래스 치환 + 히어로 SUIT(font-display extrabold). 후기 인용은 Pretendard |
 | 내부 페이지 (programs/parenting/about/apply 등) | ✅ 완료 | 별칭 재매핑으로 일괄 그린 전환. 클래스명 rename(er-accent→er-green 등)은 후속 |
 | 검사 UI (`test.html`, `css/test.css`, `js/test*.js`, `app-adaptive.js`) | ✅ 완료 | 인터랙션 색 그린, 결과지 센터 톤(head/heart/body 시맨틱 색) 유지, terra는 결과지·주의 블록 전용 |
 | 랜딩 (basic-course, parenting-workshop, parents-*) | ✅ 완료 | CSS·인라인 전부 토큰 값 |
@@ -65,17 +66,19 @@
 
 | 역할 | 서체 | 로딩 |
 |---|---|---|
-| Display (감성 헤드라인) | **MaruBuri (마루 부리)** | `https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css` |
-| Body / UI | **Pretendard** | 기존 jsdelivr CDN 유지 |
+| Display (히어로·큰 섹션 타이틀) | **SUIT** | `https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css` |
+| Body / UI / 인용 | **Pretendard** | 기존 jsdelivr CDN 유지 |
 | 숫자·데이터 | Pretendard + `tabular-nums` | — |
 
-**MaruBuri 사용 범위 (엄격):** 히어로 H1, 인용문(후기 pull quote), 검사 결과지의 감성 문장. 그 외 모든 곳은 Pretendard. 세리프가 흔해지면 특별함이 죽는다 — 한 화면에 한 번이 원칙.
+**SUIT 사용 범위 (엄격):** 히어로 H1, 드문 대형 섹션 진입 제목(`font-display`). **후기 인용·본문·버튼·메뉴는 Pretendard.** Display는 `font-extrabold` + `tracking-[-0.03em]` 권장.
+
+**MaruBuri는 폐기** — 붓글씨 세리프는 ER 톤과 어긋남(2026-07-10 결정).
 
 ### Scale
 
 | Scale | Class | Usage |
 |---|---|---|
-| Display | `font-display text-4xl md:text-6xl font-bold leading-[1.25]` | 히어로 H1 전용 (MaruBuri) |
+| Display | `font-display font-extrabold tracking-[-0.03em] text-4xl md:text-6xl leading-[1.25]` | 히어로 H1 전용 (SUIT) |
 | Page H1 | `text-3xl md:text-4xl font-bold` | 섹션 진입 제목 |
 | Section H2 | `text-2xl font-bold` | 하위 섹션 제목 |
 | Card title | `text-xl font-bold` | 카드 제목 |
@@ -86,7 +89,7 @@
 ### Copy rules
 
 - 모든 한국어 제목에 `break-keep` (어색한 줄바꿈 방지).
-- 제목 line-height `leading-snug`(1.375), 단 MaruBuri Display는 1.25 이상 확보.
+- 제목 line-height `leading-snug`(1.375), SUIT Display는 1.25 이상 확보.
 - 본문 line-height `leading-relaxed`(1.625).
 - 본문 컬럼 최대 폭 `max-w-xl`(~672px).
 - 세일즈 카피 금지어: "완벽한 솔루션", "지금 바로", 과도한 느낌표. 브랜드는 조용히 말한다.
@@ -115,8 +118,8 @@
 ### Buttons
 
 ```
-Primary CTA: bg-er-ink text-white rounded-full font-bold px-7 py-3.5
-             hover:bg-er-inkSoft hover:-translate-y-0.5 transition-all shadow-soft active:scale-95
+Primary CTA: bg-er-green text-white rounded-full font-bold px-7 py-3.5
+             hover:bg-er-greenDark hover:-translate-y-0.5 transition-all shadow-soft active:scale-95
 Secondary:   bg-er-surface text-er-ink border border-er-sand rounded-full font-bold (동일 패딩)
 Text link:   text-er-green font-bold underline underline-offset-2 hover:text-er-greenDark
 Destructive: red-600 사용, er-terra 금지 (테라코타는 에러가 아님)
@@ -178,7 +181,7 @@ CTA: 콘텐츠 뒤 중앙 하단 CTA 1개
 
 ```
 구조: max-w-7xl, lg:grid-cols-2
-좌: MaruBuri 헤드라인(er-inkSoft, 키워드만 er-greenDeep) + 서브카피 + 듀얼 CTA
+좌: SUIT 헤드라인(er-ink, 키워드만 er-greenDeep) + 서브카피 + 듀얼 CTA(er-green primary)
 우: 실사 사진 (일러스트·스톡 3D 금지 — 실사 무드가 브랜드 차별점)
 직하단: 신뢰 지표 스트립 (400+ / 98% / 10년+ / 4.9)
 ```
@@ -223,7 +226,7 @@ CTA: 콘텐츠 뒤 중앙 하단 CTA 1개
 - 모바일 퍼스트 — 기본 클래스는 모바일, `md:`/`lg:`로 확장.
 - 코치/프로그램 카드는 `flex-col md:flex-row`.
 - 터치 타겟 최소 44px.
-- 모바일 H1 최대 `text-3xl` (MaruBuri Display는 모바일 `text-4xl`까지 허용).
+- 모바일 H1 최대 `text-3xl` (SUIT Display는 모바일 `text-4xl`까지 허용).
 - `user-scalable=no` 제거 대상 (접근성 위반 — 마이그레이션 시 수정).
 
 ---
@@ -258,7 +261,9 @@ CTA: 콘텐츠 뒤 중앙 하단 CTA 1개
 | 2026-07-06 | 테라코타를 "예산제 웜 액센트"로 편입 | 검사 페이지 자산을 버리지 않고 결과지 하이라이트 전용으로 역할 축소 |
 | 2026-07-06 | 검사 UI 프리미엄 원칙 신설 | 핵심 전환 상품이 가장 저품질로 보이는 문제 — 문항 벽 나열 금지, 1문항+진행률 플로우 |
 | 2026-07-07 | 전 사이트 그린 마이그레이션 실행 완료 | 구 토큰명은 그린 값 별칭으로 재매핑(무중단 전환), 결과지 센터 톤은 시맨틱 색으로 유지, `user-scalable=no` 제거. 검증: bun test 140 통과 + 전 페이지 스크린샷 |
-| 2026-07-07 | `design-system/` 카드 번들 신설 | claude.ai/design(DesignSync) 업로드용 @dsCard 컴포넌트 카드 + tokens.css. DESIGN.md와 값 동기화 필수 |
+| 2026-07-07 | `design-system/` 카드 번들 신설 | claude.ai/design 업로드용 @dsCard + tokens.css |
+| 2026-07-10 | MaruBuri 폐기 → SUIT Display | 세리프·붓글씨 톤이 ER과 어긋남. SUIT는 전문·현대, Pretendard와 산세리프 페어링, 히어로만 차별화 |
+| 2026-07-10 | Primary CTA를 er-green으로, er-dark 별칭을 greenDark로 | 잉크 블랙 CTA+쿨 민트 틴트 조합이 차갑게 느껴짐. greenTint를 #F0EDE4 웜 크림으로 조정 |
 
 ---
 

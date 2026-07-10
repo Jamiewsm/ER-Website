@@ -1,0 +1,367 @@
+<!-- ER 디스플레이 서체 비교 — MaruBuri 제거 후 후보 시각 검토용 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ER · 디스플레이 서체 비교</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/font-iropke-batang/1.2/font-iropke-batang.css">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;600;700&family=Nanum+Myeongjo:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--er-font-sans);
+      background: #ece8df;
+      color: var(--er-body);
+    }
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(251, 250, 245, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--er-sand);
+      padding: 14px 20px;
+    }
+    .top h1 { margin: 0; font-size: 15px; font-weight: 800; color: var(--er-ink-soft); }
+    .top p { margin: 4px 0 0; font-size: 12px; color: var(--er-muted); line-height: 1.5; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .card {
+      border-radius: 1.25rem;
+      overflow: hidden;
+      border: 2px solid transparent;
+      background: var(--er-surface);
+      box-shadow: var(--er-shadow-soft);
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--er-shadow-card); }
+    .card.is-pick { border-color: var(--er-green); box-shadow: 0 0 0 3px rgba(101, 116, 83, 0.2); }
+    .card.is-drop { opacity: 0.72; }
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #f5f1e8;
+      border-bottom: 1px solid var(--er-sand);
+    }
+    .card-head strong { font-size: 13px; color: var(--er-ink-soft); }
+    .badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .badge-drop { background: #f0e0dc; color: #8f4634; }
+    .badge-new { background: var(--er-green-tint); color: var(--er-green-dark); }
+    .badge-sans { background: #e8edf5; color: #4a5568; }
+    .preview {
+      padding: 18px 16px 16px;
+      background: linear-gradient(180deg, var(--er-base) 0%, #f4efe6 100%);
+      min-height: 280px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: #f0ede4;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--er-green);
+    }
+    .hero-title {
+      margin: 14px 0 0;
+      font-size: 1.55rem;
+      font-weight: 700;
+      line-height: 1.32;
+      color: var(--er-ink);
+      word-break: keep-all;
+    }
+    .hero-title .accent { color: #68785a; }
+    .hero-body {
+      margin: 10px 0 0;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #5f6258;
+      word-break: keep-all;
+      font-family: var(--er-font-sans);
+      font-weight: 500;
+    }
+    .quote-block {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid #e2d8c8;
+    }
+    .quote-block p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.65;
+      color: #3e4039;
+      word-break: keep-all;
+    }
+    .quote-meta {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--er-muted);
+      font-family: var(--er-font-sans);
+      font-weight: 600;
+    }
+    .cta-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 800;
+      font-family: var(--er-font-sans);
+      cursor: default;
+    }
+    .btn-green { background: var(--er-green); color: #fff; }
+    .btn-outline {
+      background: rgba(255, 253, 248, 0.85);
+      color: var(--er-ink);
+      border: 1px solid #ded6c8;
+    }
+    .section-cta {
+      max-width: 1600px;
+      margin: 0 auto 28px;
+      padding: 0 20px;
+    }
+    .section-cta h2 {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--er-ink-soft);
+      margin: 0 0 12px;
+    }
+    .cta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .cta-card {
+      border-radius: 1rem;
+      padding: 16px;
+      background: var(--er-surface);
+      border: 1px solid var(--er-sand);
+    }
+    .cta-card p { margin: 0 0 10px; font-size: 11px; color: var(--er-muted); font-weight: 600; }
+    .nav-mock {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+    }
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .nav-logo { font-weight: 900; color: var(--er-ink-soft); letter-spacing: -0.02em; }
+    .nav-apply {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 800;
+      font-family: var(--er-font-sans);
+      border: none;
+    }
+    .apply-black { background: #202219; color: #fff; }
+    .apply-green { background: var(--er-green); color: #fff; }
+    .apply-warm { background: #566647; color: #fff; }
+    .pick-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: var(--er-ink);
+      color: #fff;
+      padding: 12px 20px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      transform: translateY(100%);
+      transition: transform 0.25s;
+    }
+    .pick-bar.show { transform: translateY(0); }
+    .pick-bar strong { color: #c8d4b8; }
+    body { padding-bottom: 56px; }
+
+    /* Font families per option */
+    .f-maru .hero-title, .f-maru .quote-block p { font-family: 'MaruBuri', serif; }
+    .f-gowun .hero-title, .f-gowun .quote-block p { font-family: 'Gowun Batang', serif; }
+    .f-iropke .hero-title, .f-iropke .quote-block p { font-family: 'Iropke Batang', serif; }
+    .f-noto .hero-title, .f-noto .quote-block p { font-family: 'Noto Serif KR', serif; }
+    .f-nanum .hero-title, .f-nanum .quote-block p { font-family: 'Nanum Myeongjo', serif; }
+    .f-suit .hero-title, .f-suit .quote-block p { font-family: 'SUIT', var(--er-font-sans); letter-spacing: -0.03em; }
+    .f-pretendard .hero-title, .f-pretendard .quote-block p {
+      font-family: var(--er-font-sans);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+    .f-pretendard .quote-block p { font-weight: 700; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <h1>디스플레이 서체 비교 — 클릭해서 마음에 드는 카드 선택</h1>
+    <p>MaruBuri는 제거 예정입니다. 히어로 제목·후기 인용에 쓸 대체 서체를 골라 주세요. 본문·버튼은 모두 Pretendard 유지.</p>
+  </header>
+
+  <div class="grid" id="font-grid">
+    <article class="card is-drop f-maru" data-id="maru" data-name="MaruBuri (현재)">
+      <div class="card-head"><strong>MaruBuri</strong><span class="badge badge-drop">제거 예정</span></div>
+      <div class="preview">
+        <span class="eyebrow">나를 이해하고, 관계를 회복하는 시간</span>
+        <h2 class="hero-title">나는 왜 이렇게 반응하고,<br><span class="accent">사랑하는 사람은 왜 그렇게 행동할까요?</span></h2>
+        <p class="hero-body">ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.</p>
+        <div class="quote-block"><p>"상담을 통해 고유한 강점과 약점 패턴을 분리해서 보게 되었습니다."</p><div class="quote-meta">박○○ · 기본과정 수료</div></div>
+        <div class="cta-row"><button class="btn btn-green" type="button">프로그램 보기</button><button class="btn btn-outline" type="button">유형검사</button></div>
+      </div>
+    </article>
+
+    <article class="card f-gowun" data-id="gowun" data-name="고운바탕 Gowun Batang">
+      <div class="card-head"><strong>고운바탕</strong><span class="badge badge-new">추천 후보</span></div>
+      <div class="preview">
+        <span class="eyebrow">나를 이해하고, 관계를 회복하는 시간</span>
+        <h2 class="hero-title">나는 왜 이렇게 반응하고,<br><span class="accent">사랑하는 사람은 왜 그렇게 행동할까요?</span></h2>
+        <p class="hero-body">ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.</p>
+        <div class="quote-block"><p>"상담을 통해 고유한 강점과 약점 패턴을 분리해서 보게 되었습니다."</p><div class="quote-meta">박○○ · 기본과정 수료</div></div>
+        <div class="cta-row"><button class="btn btn-green" type="button">프로그램 보기</button><button class="btn btn-outline" type="button">유형검사</button></div>
+      </div>
+    </article>
+
+    <article class="card f-iropke" data-id="iropke" data-name="이롭게바탕 Iropke Batang">
+      <div class="card-head"><strong>이롭게바탕</strong><span class="badge badge-new">추천 후보</span></div>
+      <div class="preview">
+        <span class="eyebrow">나를 이해하고, 관계를 회복하는 시간</span>
+        <h2 class="hero-title">나는 왜 이렇게 반응하고,<br><span class="accent">사랑하는 사람은 왜 그렇게 행동할까요?</span></h2>
+        <p class="hero-body">ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.</p>
+        <div class="quote-block"><p>"상담을 통해 고유한 강점과 약점 패턴을 분리해서 보게 되었습니다."</p><div class="quote-meta">박○○ · 기본과정 수료</div></div>
+        <div class="cta-row"><button class="btn btn-green" type="button">프로그램 보기</button><button class="btn btn-outline" type="button">유형검사</button></div>
+      </div>
+    </article>
+
+    <article class="card f-noto" data-id="noto" data-name="Noto Serif KR">
+      <div class="card-head"><strong>Noto Serif KR</strong><span class="badge badge-new">추천 후보</span></div>
+      <div class="preview">
+        <span class="eyebrow">나를 이해하고, 관계를 회복하는 시간</span>
+        <h2 class="hero-title">나는 왜 이렇게 반응하고,<br><span class="accent">사랑하는 사람은 왜 그렇게 행동할까요?</span></h2>
+        <p class="hero-body">ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.</p>
+        <div class="quote-block"><p>"상담을 통해 고유한 강점과 약점 패턴을 분리해서 보게 되었습니다."</p><div class="quote-meta">박○○ · 기본과정 수료</div></div>
+        <div class="cta-row"><button class="btn btn-green" type="button">프로그램 보기</button><button class="btn btn-outline" type="button">유형검사</button></div>
+      </div>
+    </article>
+
+    <article class="card f-nanum" data-id="nanum" data-name="나눔명조 Nanum Myeongjo">
+      <div class="card-head"><strong>나눔명조</strong><span class="badge badge-new">후보</span></div>
+      <div class="preview">
+        <span class="eyebrow">나를 이해하고, 관계를 회복하는 시간</span>
+        <h2 class="hero-title">나는 왜 이렇게 반응하고,<br><span class="accent">사랑하는 사람은 왜 그렇게 행동할까요?</span></h2>
+        <p class="hero-body">ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.</p>
+        <div class="quote-block"><p>"상담을 통해 고유한 강점과 약점 패턴을 분리해서 보게 되었습니다."</p><div class="quote-meta">박○○ · 기본과정 수료</div></div>
+        <div class="cta-row"><button class="btn btn-green" type="button">프로그램 보기</button><button class="btn btn-outline" type="button">유형검사</button></div>
+      </div>
+    </article>
+
+    <article class="card f-suit" data-id="suit" data-name="SUIT (산세리프)">
+      <div class="card-head"><strong>SUIT</strong><span class="badge badge-sans">산세리프 대안</span></div>
+      <div class="preview">
+        <span class="eyebrow">나를 이해하고, 관계를 회복하는 시간</span>
+        <h2 class="hero-title">나는 왜 이렇게 반응하고,<br><span class="accent">사랑하는 사람은 왜 그렇게 행동할까요?</span></h2>
+        <p class="hero-body">ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.</p>
+        <div class="quote-block"><p>"상담을 통해 고유한 강점과 약점 패턴을 분리해서 보게 되었습니다."</p><div class="quote-meta">박○○ · 기본과정 수료</div></div>
+        <div class="cta-row"><button class="btn btn-green" type="button">프로그램 보기</button><button class="btn btn-outline" type="button">유형검사</button></div>
+      </div>
+    </article>
+
+    <article class="card f-pretendard" data-id="pretendard" data-name="Pretendard만 (굵게)">
+      <div class="card-head"><strong>Pretendard 굵게</strong><span class="badge badge-sans">2번째 서체 없음</span></div>
+      <div class="preview">
+        <span class="eyebrow">나를 이해하고, 관계를 회복하는 시간</span>
+        <h2 class="hero-title">나는 왜 이렇게 반응하고,<br><span class="accent">사랑하는 사람은 왜 그렇게 행동할까요?</span></h2>
+        <p class="hero-body">ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.</p>
+        <div class="quote-block"><p>"상담을 통해 고유한 강점과 약점 패턴을 분리해서 보게 되었습니다."</p><div class="quote-meta">박○○ · 기본과정 수료</div></div>
+        <div class="cta-row"><button class="btn btn-green" type="button">프로그램 보기</button><button class="btn btn-outline" type="button">유형검사</button></div>
+      </div>
+    </article>
+  </div>
+
+  <section class="section-cta">
+    <h2>보너스 — 메뉴 상담 신청 버튼 색 (함께 골라 주세요)</h2>
+    <div class="cta-grid">
+      <div class="cta-card">
+        <p>현재 PR — 검정 (#202219) · 차가움</p>
+        <div class="nav-mock">
+          <div class="nav-bar"><span class="nav-logo">ER</span><span>메뉴</span></div>
+          <button class="nav-apply apply-black" type="button">상담 신청</button>
+        </div>
+      </div>
+      <div class="cta-card">
+        <p>제안 A — 세이지 그린 (#657453)</p>
+        <div class="nav-mock">
+          <div class="nav-bar"><span class="nav-logo">ER</span><span>메뉴</span></div>
+          <button class="nav-apply apply-green" type="button">상담 신청</button>
+        </div>
+      </div>
+      <div class="cta-card">
+        <p>제안 B — 딥 그린 (#566647) · 조금 더 무게감</p>
+        <div class="nav-mock">
+          <div class="nav-bar"><span class="nav-logo">ER</span><span>메뉴</span></div>
+          <button class="nav-apply apply-warm" type="button">상담 신청</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pick-bar" id="pick-bar" aria-live="polite">
+    <span>선택: <strong id="pick-label">없음</strong></span>
+    <span style="font-size:11px;opacity:0.75">채팅에 번호나 이름 알려주세요</span>
+  </div>
+
+  <script>
+    const bar = document.getElementById('pick-bar');
+    const label = document.getElementById('pick-label');
+    document.querySelectorAll('#font-grid .card').forEach((card) => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('#font-grid .card').forEach((c) => c.classList.remove('is-pick'));
+        card.classList.add('is-pick');
+        label.textContent = card.dataset.name;
+        bar.classList.add('show');
+      });
+    });
+  </script>
+</body>
+</html>

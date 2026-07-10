@@ -6,18 +6,21 @@
 
 ```
 design-system/
-├── tokens.css          # CSS 변수 토큰 (DESIGN.md와 동기화)
+├── tokens.css              # CSS 변수 토큰 (DESIGN.md와 동기화)
+├── font-comparison.html    # 서체 비교 (참고용, @dsCard 아님)
 └── cards/
     ├── colors.html         # Foundations · 팔레트
-    ├── typography.html     # Foundations · 타이포 스케일 (MaruBuri + Pretendard)
-    ├── buttons.html        # Components · 버튼 위계
+    ├── typography.html     # Foundations · 타이포 (SUIT Display + Pretendard)
+    ├── buttons.html        # Components · 버튼 위계 (er-green primary)
     ├── badges-inputs.html  # Components · 태그·배지·인포 스트립·입력
-    ├── cards.html          # Components · 카드 패턴 + 인용
+    ├── cards.html          # Components · 카드 패턴 + 인용(Pretendard)
     ├── hero.html           # Screens · 홈 히어로 패턴
     └── test-ui.html        # Screens · 검사 UI (1문항+진행률, terra 결과지 전용)
 ```
 
-값의 단일 기준은 저장소 루트의 [DESIGN.md](../DESIGN.md)입니다. 토큰 값을 바꿀 때는 DESIGN.md → `index.html` tailwind config → `tokens.css` 순서로 함께 갱신하세요.
+값의 단일 기준은 저장소 루트의 [DESIGN.md](../DESIGN.md)입니다. 토큰 값을 바꿀 때는 DESIGN.md → `index.html` tailwind config → `tokens.css` → `cards/*.html` 순서로 함께 갱신하세요.
+
+**2026-07-10 타입 시스템:** MaruBuri 폐기 → **SUIT** Display. Primary CTA **er-green**. greenTint **#F0EDE4**.
 
 ## claude.ai/design에 업로드하는 법
 
@@ -32,4 +35,4 @@ claude.ai/code(웹)에서는 Claude Design의 "Send to Claude Code Web" 기능�
 
 ## 로컬 미리보기
 
-브라우저에서 `design-system/cards/*.html`을 바로 열면 됩니다 (Pretendard·MaruBuri는 CDN 로드).
+브라우저에서 `design-system/cards/*.html` 또는 `design-system/font-comparison.html`을 바로 열면 됩니다 (Pretendard·SUIT는 CDN 로드).

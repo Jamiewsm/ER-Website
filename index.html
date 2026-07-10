@@ -50,7 +50,7 @@
     
     <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin />
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
-    <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/parenting-season-banner.css?v=20260526b" />
     <link rel="stylesheet" href="css/parenting-application.css?v=20260525a" />
@@ -77,21 +77,20 @@
                             green: '#657453',     /* 브랜드 액센트: 세이지 그린 */
                             greenDark: '#566647', /* 액센트 hover */
                             greenDeep: '#30451F', /* 최고 강조 */
-                            greenTint: '#EEF3E6', /* 태그·배지 배경 */
+                            greenTint: '#F0EDE4', /* 태그·배지 배경 — 웜 크림 틴트 */
                             terra: '#B06149',     /* 웜 액센트: 검사 결과 하이라이트 전용 */
                             terraDark: '#8F4634',
                             /* 폐기 예정 별칭 — 구 브라운 토큰명을 그린 값으로 재매핑. 신규 코드 사용 금지 */
                             primary: '#44473F',
                             accent: '#657453',
                             accentDark: '#566647',
-                            accentLight: '#EEF3E6',
-                            dark: '#202219',
+                            accentLight: '#F0EDE4',
+                            dark: '#566647',      /* 별칭: er-greenDark — CTA·다크 밴드 (잉크 블랙 금지) */
                         }
                     },
                     fontFamily: {
                         sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
-                        display: ['MaruBuri', 'serif'],
-                        serif: ['MaruBuri', 'serif']
+                        display: ['SUIT', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
                     },
                     boxShadow: {
                         'soft': '0 22px 44px -24px rgba(80, 90, 60, 0.16)',
@@ -431,7 +430,7 @@
 
                     <div class="h-4 w-px bg-gray-200 mx-2"></div>
 
-                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white hover:bg-gray-800 px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
+                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-green text-white hover:bg-er-greenDark px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
                         상담 신청
                     </button>
                     <div class="relative">
@@ -450,7 +449,7 @@
                 </div>
                 
                 <div class="parenting-hide-on-focused xl:hidden flex items-center gap-2 sm:gap-3">
-                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm shrink-0">상담 신청</button>
+                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-green text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm shrink-0 hover:bg-er-greenDark transition-colors">상담 신청</button>
                     <button type="button" id="mobile-header-auth-btn" class="shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors" aria-label="기존 참여자 로그인 또는 마이페이지" title="기존 참여자 포털">
                         <i class="far fa-user"></i>
                     </button>
@@ -465,7 +464,7 @@
         <div id="mobile-menu" class="hidden xl:hidden fixed w-full left-0 z-[48] top-16 md:top-20 max-h-[calc(100dvh-4rem)] md:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-y-contain border-b border-er-accentLight shadow-xl">
             <div class="px-4 py-4 space-y-1">
                 <button id="mobile-auth-btn" class="block w-full text-left px-4 py-2.5 text-sm font-semibold text-gray-600 hover:bg-er-accentLight/30 rounded-xl transition-colors"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
-                <button onclick="renderSection('apply', { track: 'paid' })" class="block w-full text-center px-4 py-3 mt-1 text-sm font-bold bg-er-dark text-white rounded-xl shadow-sm hover:bg-gray-800 transition-colors">상담 신청</button>
+                <button onclick="renderSection('apply', { track: 'paid' })" class="block w-full text-center px-4 py-3 mt-1 text-sm font-bold bg-er-green text-white rounded-xl shadow-sm hover:bg-er-greenDark transition-colors">상담 신청</button>
                 <div class="h-px bg-gray-100 my-2"></div>
 
                 <nav class="mobile-nav-accordion" aria-label="모바일 메뉴">

@@ -164,7 +164,7 @@ function renderHome() {
                             나를 이해하고, 관계를 회복하는 시간
                         </div>
 
-                        <h1 class="font-display mt-6 max-w-3xl text-[2.18rem] font-bold leading-[1.28] text-er-ink break-keep sm:mt-8 sm:text-5xl sm:leading-[1.28] lg:text-[3.05rem] xl:text-[3.35rem]">
+                        <h1 class="font-display mt-6 max-w-3xl text-[2.18rem] font-extrabold leading-[1.28] tracking-[-0.03em] text-er-ink break-keep sm:mt-8 sm:text-5xl sm:leading-[1.28] lg:text-[3.05rem] xl:text-[3.35rem]">
                             나는 왜 이렇게 반응하고,<br>
                             <span class="text-[#68785a]">사랑하는 사람은 왜 그렇게 행동할까요?</span>
                         </h1>
@@ -180,7 +180,7 @@ function renderHome() {
                                     <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">7월 기본과정 모집 중</p>
                                     <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">${basicCourseDays} · 정원 10명 · 선착순 마감</p>
                                 </div>
-                                <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-ink px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(32,34,25,0.16)] transition-all active:scale-95">신청</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">신청</button>
                             </div>
                         </div>
 
@@ -348,7 +348,7 @@ function renderHome() {
                                         <div class="absolute right-5 top-5 flex h-12 w-12 items-center justify-center rounded-full bg-[#f1eadf] text-3xl font-black leading-none text-[#cabc9e]">
                                             &rdquo;
                                         </div>
-                                        <p class="font-display text-sm font-bold leading-8 text-[#3e4039] break-keep">“${item.quote}”</p>
+                                        <p class="text-sm font-bold leading-8 text-[#3e4039] break-keep">“${item.quote}”</p>
                                         <div class="mt-5 flex items-end justify-between gap-4 border-t border-[#eadfce] pt-4">
                                             <p class="text-sm font-extrabold text-er-muted break-keep">${item.person} <span class="mx-2 text-[#cfc5b6]">|</span> ${item.label}</p>
                                             <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e7efdc] text-sm font-black text-er-green ring-4 ring-er-surface">${item.avatar}</div>
