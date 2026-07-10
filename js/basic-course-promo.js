@@ -1,17 +1,10 @@
-// 홈 히어로 — 7월 에니어그램 기본과정 8주 모집 배너
+// 홈 히어로 — 다가오는 ER 프로그램(9월 Parenting · 10월 기본과정) 배너
 (function () {
-  var BANNER_ID = 'basic-course-season-banner';
-  var STORAGE_KEY = 'er_basic_course_banner_dismissed_date';
+  var BANNER_ID = 'upcoming-programs-banner';
+  var STORAGE_KEY = 'er_upcoming_programs_banner_dismissed_date';
 
   function todayKey() {
     return new Date().toISOString().slice(0, 10);
-  }
-
-  function isRecruitmentOpen() {
-    if (window.ERProgramCatalog && typeof window.ERProgramCatalog.isJulyBasicRecruitmentOpen === 'function') {
-      return window.ERProgramCatalog.isJulyBasicRecruitmentOpen();
-    }
-    return Date.now() <= Date.parse('2026-07-05T23:59:59-07:00');
   }
 
   function isBannerDismissedToday() {
@@ -22,68 +15,82 @@
     }
   }
 
-  function closeBasicCourseSeasonBanner() {
+  function closeUpcomingProgramsBanner() {
     var el = document.getElementById(BANNER_ID);
     if (el) el.remove();
   }
 
-  function dismissBasicCourseSeasonBannerToday() {
+  function dismissUpcomingProgramsBannerToday() {
     try {
       localStorage.setItem(STORAGE_KEY, todayKey());
     } catch (_e) {}
-    closeBasicCourseSeasonBanner();
+    closeUpcomingProgramsBanner();
   }
 
-  function renderBasicCourseSeasonBanner() {
-    if (!isRecruitmentOpen()) return '';
+  function renderUpcomingProgramsBanner() {
     if (isBannerDismissedToday()) return '';
     if (/[?&]no_promo=1/.test(window.location.search || '')) return '';
 
     return `
-      <div id="${BANNER_ID}" class="psb-wrap" role="region" aria-labelledby="bcb-title">
+      <div id="${BANNER_ID}" class="psb-wrap" role="region" aria-labelledby="upb-title">
         <article class="psb-card">
-          <button type="button" class="psb-close" onclick="closeBasicCourseSeasonBanner()" aria-label="닫기 (새로고침 시 다시 표시)">
+          <button type="button" class="psb-close" onclick="closeUpcomingProgramsBanner()" aria-label="닫기 (새로고침 시 다시 표시)">
             <i class="fas fa-times text-sm" aria-hidden="true"></i>
           </button>
           <header class="psb-head">
-            <span class="psb-badge">모집중</span>
-            <span class="psb-eyebrow">2026년 7월 개강</span>
+            <span class="psb-badge">모집 예정</span>
+            <span class="psb-eyebrow">2026년 하반기</span>
           </header>
-          <h2 id="bcb-title" class="psb-title">에니어그램 기본과정 8주</h2>
-          <p class="psb-sub">관계 속에서 드러나는 나를 이해하는 시간</p>
-          <p class="psb-lead">하나님 안에서 본래의 나로 회복되는 8주 여정입니다.</p>
-          <ul class="psb-meta" aria-label="기본과정 안내">
-            <li>8주 · 주 1회</li>
-            <li>온라인 Zoom</li>
-            <li>정원 10명</li>
-            <li>얼리버드 $270</li>
+          <h2 id="upb-title" class="psb-title">다가오는 ER 프로그램</h2>
+          <p class="psb-sub">9월 Parenting 세미나 · 10월 에니어그램 기본과정</p>
+          <p class="psb-lead">지금 진행 중인 7월 기본과정과 별도로, 가을 프로그램 모집을 준비하고 있습니다.</p>
+          <ul class="psb-meta" aria-label="9월 Parenting 세미나">
+            <li>9월 · Parenting 세미나</li>
+            <li>부모의 자기이해와 아이 이해</li>
+            <li>온라인 · 소규모</li>
           </ul>
-          <p class="psb-note">수강료 USD · PayPal·Zelle 송금. 승인 후 결제 안내 메일 발송. 6/24까지 얼리버드, 입금 확인 순 확정.</p>
+          <ul class="psb-meta psb-meta--second" aria-label="10월 에니어그램 기본과정">
+            <li>10월 · 기본과정 8주</li>
+            <li>관계 속에서 드러나는 나</li>
+            <li>주 1회 · Zoom</li>
+          </ul>
+          <p class="psb-note">일정·모집 안내는 공지사항과 인스타그램(@er_official_Korea)에서 먼저 알려 드립니다.</p>
           <div class="psb-actions">
-            <button type="button" class="psb-btn psb-btn--primary" onclick="basicCourseBannerGoDetail()">과정 안내 보기</button>
-            <button type="button" class="psb-btn psb-btn--secondary" onclick="basicCourseBannerGoApply()">바로 신청하기</button>
+            <button type="button" class="psb-btn psb-btn--primary" onclick="upcomingBannerGoParenting()">Parenting 안내</button>
+            <button type="button" class="psb-btn psb-btn--secondary" onclick="upcomingBannerGoBasicInterest()">기본과정 알림 신청</button>
           </div>
-          <button type="button" class="psb-dismiss" onclick="dismissBasicCourseSeasonBannerToday()">오늘 하루 이 안내 숨기기</button>
+          <button type="button" class="psb-dismiss" onclick="dismissUpcomingProgramsBannerToday()">오늘 하루 이 안내 숨기기</button>
         </article>
       </div>
     `;
   }
 
-  function basicCourseBannerGoDetail() {
-    window.location.href = '/basic-course.html?apply_source=home_banner';
+  function upcomingBannerGoParenting() {
+    window.location.href = '/parenting-workshop.html?apply_source=home_banner';
   }
 
-  function basicCourseBannerGoApply() {
-    if (typeof renderSection === 'function') {
-      renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_banner' });
-    } else {
-      window.location.href = '/#apply?track=paid&focus=enneagram_basic_july&apply_source=home_banner';
-    }
+  function upcomingBannerGoBasicInterest() {
+    window.location.href = 'mailto:json@er-coaching.com?subject=' + encodeURIComponent('10월 에니어그램 기본과정 알림 신청') + '&body=' + encodeURIComponent('10월 기본과정 모집 안내를 받고 싶습니다.\n\n이름:\n연락처:\n');
   }
 
+  function renderBasicCourseSeasonBanner() {
+    return renderUpcomingProgramsBanner();
+  }
+
+  function closeBasicCourseSeasonBanner() {
+    closeUpcomingProgramsBanner();
+  }
+
+  function dismissBasicCourseSeasonBannerToday() {
+    dismissUpcomingProgramsBannerToday();
+  }
+
+  window.renderUpcomingProgramsBanner = renderUpcomingProgramsBanner;
+  window.closeUpcomingProgramsBanner = closeUpcomingProgramsBanner;
+  window.dismissUpcomingProgramsBannerToday = dismissUpcomingProgramsBannerToday;
+  window.upcomingBannerGoParenting = upcomingBannerGoParenting;
+  window.upcomingBannerGoBasicInterest = upcomingBannerGoBasicInterest;
   window.renderBasicCourseSeasonBanner = renderBasicCourseSeasonBanner;
   window.closeBasicCourseSeasonBanner = closeBasicCourseSeasonBanner;
   window.dismissBasicCourseSeasonBannerToday = dismissBasicCourseSeasonBannerToday;
-  window.basicCourseBannerGoDetail = basicCourseBannerGoDetail;
-  window.basicCourseBannerGoApply = basicCourseBannerGoApply;
 })();

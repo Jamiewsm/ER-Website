@@ -1,6 +1,8 @@
-/* Home hero — Parenting season banner (readable on cream hero background) */
+/* Home hero — upcoming programs season banner (readable on cream hero background) */
 
-#parenting-season-banner.psb-wrap {
+#upcoming-programs-banner.psb-wrap,
+#parenting-season-banner.psb-wrap,
+#basic-course-season-banner.psb-wrap {
   margin-top: 2.5rem;
   width: 100%;
   max-width: 36rem;
@@ -9,7 +11,9 @@
   text-align: left;
 }
 
-#parenting-season-banner .psb-card {
+#upcoming-programs-banner .psb-card,
+#parenting-season-banner .psb-card,
+#basic-course-season-banner .psb-card {
   position: relative;
   overflow: hidden;
   border-radius: 1.5rem;
@@ -21,13 +25,17 @@
 }
 
 @media (min-width: 640px) {
-  #parenting-season-banner .psb-card {
+  #upcoming-programs-banner .psb-card,
+  #parenting-season-banner .psb-card,
+  #basic-course-season-banner .psb-card {
     padding: 1.5rem 1.65rem 1.35rem;
     padding-right: 3rem;
   }
 }
 
-#parenting-season-banner .psb-card::before {
+#upcoming-programs-banner .psb-card::before,
+#parenting-season-banner .psb-card::before,
+#basic-course-season-banner .psb-card::before {
   content: "";
   position: absolute;
   left: 0;
@@ -38,7 +46,9 @@
   border-radius: 1.5rem 0 0 1.5rem;
 }
 
-#parenting-season-banner .psb-close {
+#upcoming-programs-banner .psb-close,
+#parenting-season-banner .psb-close,
+#basic-course-season-banner .psb-close {
   position: absolute;
   top: 0.85rem;
   right: 0.85rem;
@@ -56,12 +66,16 @@
   transition: background 0.15s, color 0.15s;
 }
 
-#parenting-season-banner .psb-close:hover {
+#upcoming-programs-banner .psb-close:hover,
+#parenting-season-banner .psb-close:hover,
+#basic-course-season-banner .psb-close:hover {
   background: #202219;
   color: #fff;
 }
 
-#parenting-season-banner .psb-head {
+#upcoming-programs-banner .psb-head,
+#parenting-season-banner .psb-head,
+#basic-course-season-banner .psb-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -69,7 +83,9 @@
   margin-bottom: 0.85rem;
 }
 
-#parenting-season-banner .psb-badge {
+#upcoming-programs-banner .psb-badge,
+#parenting-season-banner .psb-badge,
+#basic-course-season-banner .psb-badge {
   display: inline-flex;
   align-items: center;
   border-radius: 9999px;
@@ -82,7 +98,9 @@
   box-shadow: 0 2px 8px rgba(101, 116, 83, 0.35);
 }
 
-#parenting-season-banner .psb-eyebrow {
+#upcoming-programs-banner .psb-eyebrow,
+#parenting-season-banner .psb-eyebrow,
+#basic-course-season-banner .psb-eyebrow {
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -90,7 +108,9 @@
   color: #44473F;
 }
 
-#parenting-season-banner .psb-title {
+#upcoming-programs-banner .psb-title,
+#parenting-season-banner .psb-title,
+#basic-course-season-banner .psb-title {
   margin: 0;
   font-size: 1.375rem;
   line-height: 1.25;
@@ -100,12 +120,16 @@
 }
 
 @media (min-width: 640px) {
-  #parenting-season-banner .psb-title {
+  #upcoming-programs-banner .psb-title,
+  #parenting-season-banner .psb-title,
+  #basic-course-season-banner .psb-title {
     font-size: 1.625rem;
   }
 }
 
-#parenting-season-banner .psb-sub {
+#upcoming-programs-banner .psb-sub,
+#parenting-season-banner .psb-sub,
+#basic-course-season-banner .psb-sub {
   margin: 0.45rem 0 0;
   font-size: 1rem;
   font-weight: 600;
@@ -114,7 +138,9 @@
   word-break: keep-all;
 }
 
-#parenting-season-banner .psb-lead {
+#upcoming-programs-banner .psb-lead,
+#parenting-season-banner .psb-lead,
+#basic-course-season-banner .psb-lead {
   margin: 0.75rem 0 0;
   font-size: 0.9375rem;
   line-height: 1.65;
@@ -122,7 +148,9 @@
   word-break: keep-all;
 }
 
-#parenting-season-banner .psb-meta {
+#upcoming-programs-banner .psb-meta,
+#parenting-season-banner .psb-meta,
+#basic-course-season-banner .psb-meta {
   list-style: none;
   margin: 1rem 0 0;
   padding: 0;
@@ -131,7 +159,15 @@
   gap: 0.45rem;
 }
 
-#parenting-season-banner .psb-meta li {
+#upcoming-programs-banner .psb-meta--second,
+#parenting-season-banner .psb-meta--second,
+#basic-course-season-banner .psb-meta--second {
+  margin-top: 0.55rem;
+}
+
+#upcoming-programs-banner .psb-meta li,
+#parenting-season-banner .psb-meta li,
+#basic-course-season-banner .psb-meta li {
   font-size: 0.8125rem;
   font-weight: 600;
   color: #202219;
@@ -142,7 +178,9 @@
   box-shadow: 0 1px 2px rgba(32, 34, 25, 0.04);
 }
 
-#parenting-season-banner .psb-note {
+#upcoming-programs-banner .psb-note,
+#parenting-season-banner .psb-note,
+#basic-course-season-banner .psb-note {
   margin: 0.75rem 0 0;
   font-size: 0.75rem;
   line-height: 1.5;
@@ -150,7 +188,9 @@
   word-break: keep-all;
 }
 
-#parenting-season-banner .psb-actions {
+#upcoming-programs-banner .psb-actions,
+#parenting-season-banner .psb-actions,
+#basic-course-season-banner .psb-actions {
   margin-top: 1.15rem;
   display: grid;
   grid-template-columns: 1fr;
@@ -158,12 +198,16 @@
 }
 
 @media (min-width: 480px) {
-  #parenting-season-banner .psb-actions {
+  #upcoming-programs-banner .psb-actions,
+  #parenting-season-banner .psb-actions,
+  #basic-course-season-banner .psb-actions {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-#parenting-season-banner .psb-btn {
+#upcoming-programs-banner .psb-btn,
+#parenting-season-banner .psb-btn,
+#basic-course-season-banner .psb-btn {
   width: 100%;
   padding: 0.8rem 1rem;
   border-radius: 9999px;
@@ -174,28 +218,38 @@
   word-break: keep-all;
 }
 
-#parenting-season-banner .psb-btn--primary {
+#upcoming-programs-banner .psb-btn--primary,
+#parenting-season-banner .psb-btn--primary,
+#basic-course-season-banner .psb-btn--primary {
   border: none;
   background: #202219;
   color: #fff;
   box-shadow: 0 8px 20px rgba(32, 34, 25, 0.2);
 }
 
-#parenting-season-banner .psb-btn--primary:hover {
+#upcoming-programs-banner .psb-btn--primary:hover,
+#parenting-season-banner .psb-btn--primary:hover,
+#basic-course-season-banner .psb-btn--primary:hover {
   background: #30322D;
 }
 
-#parenting-season-banner .psb-btn--secondary {
+#upcoming-programs-banner .psb-btn--secondary,
+#parenting-season-banner .psb-btn--secondary,
+#basic-course-season-banner .psb-btn--secondary {
   border: 1.5px solid rgba(101, 116, 83, 0.55);
   background: #fff;
   color: #202219;
 }
 
-#parenting-season-banner .psb-btn--secondary:hover {
+#upcoming-programs-banner .psb-btn--secondary:hover,
+#parenting-season-banner .psb-btn--secondary:hover,
+#basic-course-season-banner .psb-btn--secondary:hover {
   background: #EEF3E6;
 }
 
-#parenting-season-banner .psb-dismiss {
+#upcoming-programs-banner .psb-dismiss,
+#parenting-season-banner .psb-dismiss,
+#basic-course-season-banner .psb-dismiss {
   margin-top: 0.85rem;
   padding: 0;
   border: none;
@@ -209,6 +263,8 @@
   word-break: keep-all;
 }
 
-#parenting-season-banner .psb-dismiss:hover {
+#upcoming-programs-banner .psb-dismiss:hover,
+#parenting-season-banner .psb-dismiss:hover,
+#basic-course-season-banner .psb-dismiss:hover {
   color: #202219;
 }

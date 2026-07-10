@@ -81,7 +81,9 @@ async function loadProgramApplications() {
       ? `<p class="text-xs text-gray-500 mt-1">안내 금액: $${escapeHtml(String(row.payment_amount_usd))}${row.payment_method ? ' · ' + escapeHtml(row.payment_method) : ''}</p>`
       : '';
     const pendingHint = status === 'payment_pending'
-      ? '<p class="text-xs text-er-primary mt-1">결제 안내 메일 발송됨 · PayPal·Zelle 입금 대기</p>'
+      ? (row.checkout_url
+        ? '<p class="text-xs text-er-primary mt-1">PayPal 결제 링크 발송됨 · 결제 대기</p>'
+        : '<p class="text-xs text-er-primary mt-1">결제 안내 메일 발송됨 · PayPal·Zelle 입금 대기</p>')
       : '';
 
     const canSendRegistration = status === 'received' || status === 'contacted' || status === 'payment_pending';
@@ -150,7 +152,7 @@ async function updateProgramApplicationStatus(applicationId, status) {
 async function sendRegistrationPaymentEmail(applicationId) {
   if (!ensureCoachAccess() || !canManageCoachAdmin() || !supabaseClient) return;
 
-  const proceed = confirm('PayPal·Zelle 등 결제 안내 메일을 발송합니다. 진행할까요?');
+  const proceed = confirm('결제 안내 메일을 발송합니다.\n\nPayPal이 설정되어 있으면 결제 버튼 링크가 포함됩니다. 진행할까요?');
   if (!proceed) return;
 
   try {
