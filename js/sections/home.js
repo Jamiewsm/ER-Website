@@ -21,12 +21,9 @@ function renderHome() {
         return cleaned.slice(0, 2).toUpperCase();
     };
 
-    const showJulyBasicRecruitment = (() => {
-        if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.isJulyBasicRecruitmentOpen === 'function') {
-            return window.ERProgramCatalog.isJulyBasicRecruitmentOpen();
-        }
-        return Date.now() <= Date.parse('2026-07-05T23:59:59-07:00');
-    })();
+    const upcomingProgramsBanner = (typeof renderUpcomingProgramsBanner === 'function')
+        ? renderUpcomingProgramsBanner()
+        : '';
 
     const benefits = [
         { icon: 'fa-regular fa-gem', title: '에니어그램 전문성', text: '검증된 이론과 실전 경험' },
@@ -43,26 +40,28 @@ function renderHome() {
 
     const programCards = [
         {
-            badge: '진행 중',
-            title: '에니어그램 기본과정 8주',
-            text: '7월 기수 A·B반 13명 · 8주 온라인 과정',
-            price: '$300',
-            image: 'background.png',
-            position: 'center',
-            button: '자세히 보기',
-            action: "window.location.href='/basic-course.html'"
-        },
-        {
-            badge: '추천',
+            badge: '모집 예정',
             title: 'Enneagram for Parenting',
-            text: '부모의 반응 패턴과 아이의 기질을 이해하는 4주 과정',
+            text: '9월 Parenting 세미나 — 부모의 자기이해와 아이 이해',
             price: '$120',
             image: 'home-parent-child-photo.jpg',
             position: 'center top',
-            button: '양육 여정 보기',
-            action: "renderSection('parenting')",
-            button2: '4주 과정 신청',
-            action2: "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'home_hero' })"
+            button: '세미나 안내',
+            action: "window.location.href='/parenting-workshop.html'",
+            button2: '관심 문의',
+            action2: "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'home_programs' })"
+        },
+        {
+            badge: '모집 예정',
+            title: '에니어그램 기본과정 8주',
+            text: '10월 개강 예정 — 관계 속에서 드러나는 나를 이해하는 8주',
+            price: '$300',
+            image: 'background.png',
+            position: 'center',
+            button: '과정 안내',
+            action: "window.location.href='/basic-course.html'",
+            button2: '알림 신청',
+            action2: "window.location.href='mailto:json@er-coaching.com?subject=' + encodeURIComponent('10월 에니어그램 기본과정 알림 신청')"
         },
         {
             badge: '테스트',
@@ -174,29 +173,7 @@ function renderHome() {
                             ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.
                         </p>
 
-                        ${showJulyBasicRecruitment ? `
-                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0">
-                                    <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">특별 혜택</span>
-                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">7월 기본과정 모집 중</p>
-                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">7/5 마감 · 정원 10명 · 선착순 마감</p>
-                                </div>
-                                <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">신청</button>
-                            </div>
-                        </div>
-                        ` : `
-                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0">
-                                    <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">진행 중</span>
-                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">7월 기본과정 개강</p>
-                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">A반 7/7 · B반 7/10 · 총 13명</p>
-                                </div>
-                                <button onclick="window.location.href='/basic-course.html'" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">안내</button>
-                            </div>
-                        </div>
-                        `}
+                        ${upcomingProgramsBanner}
 
                         <div class="mt-6 grid max-w-3xl gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
                             ${benefits.map((item) => `
@@ -228,22 +205,6 @@ function renderHome() {
                         <img src="background.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center; filter:saturate(1.03) contrast(0.98) brightness(1.04);">
                         <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
-
-                        ${showJulyBasicRecruitment ? `
-                        <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
-                            <p class="text-[11px] font-bold text-[#6c6b60]">지금 시작하면 특별한 혜택!</p>
-                            <p class="mt-4 text-xl font-black text-er-ink">7월 기본과정 모집</p>
-                            <p class="mt-1 text-sm font-bold text-[#68785a]">7/5 마감 · 정원 10명</p>
-                            <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer' })" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">신청하기</button>
-                        </div>
-                        ` : `
-                        <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
-                            <p class="text-[11px] font-bold text-[#6c6b60]">2026년 7월 기수</p>
-                            <p class="mt-4 text-xl font-black text-er-ink">기본과정 진행 중</p>
-                            <p class="mt-1 text-sm font-bold text-[#68785a] break-keep">A반 7/7 · B반 7/10 · 13명</p>
-                            <button onclick="window.location.href='/basic-course.html'" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">과정 안내</button>
-                        </div>
-                        `}
                     </div>
                 </div>
             </section>
