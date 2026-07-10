@@ -10,6 +10,13 @@ function isJulyBasicCourseFocus(focus) {
         || normalizedFocus === 'enneagram_basic';
 }
 
+function isJulyBasicRecruitmentOpen() {
+    if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.isJulyBasicRecruitmentOpen === 'function') {
+        return window.ERProgramCatalog.isJulyBasicRecruitmentOpen();
+    }
+    return Date.now() <= Date.parse('2026-07-05T23:59:59-07:00');
+}
+
 function getPaidApplyCategoryOptions() {
     if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.getPaidCategoryOptions === 'function') {
         return window.ERProgramCatalog.getPaidCategoryOptions();
@@ -297,6 +304,31 @@ function renderJulyBasicCourseApply(submitSource) {
     `;
 }
 
+function renderJulyBasicCourseClosed() {
+    return `
+        <div class="course-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
+            <div class="mx-auto max-w-xl">
+                <section class="overflow-hidden rounded-lg border border-er-accentLight bg-white p-6 shadow-soft sm:p-8 text-center">
+                    <span class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-[11px] font-bold text-er-green ring-1 ring-[#dce7cd]">모집 마감</span>
+                    <h1 class="mt-4 text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl break-keep">2026년 7월 기본과정은 개강했습니다</h1>
+                    <p class="mt-4 text-sm leading-relaxed text-er-primary break-keep">
+                        A반·B반 총 <strong>13명</strong>이 함께합니다.<br>
+                        A반 <strong>7월 7일(월)</strong> · B반 <strong>7월 10일(목)</strong> 개강
+                    </p>
+                    <p class="mt-3 text-sm leading-relaxed text-gray-600 break-keep">
+                        이번 기수 모집은 마감되었습니다. 과정 소개와 다음 기수 소식은 아래에서 확인하실 수 있습니다.
+                    </p>
+                    <div class="mt-8 grid gap-3">
+                        <a href="/basic-course.html" class="w-full rounded-lg bg-er-dark py-3.5 text-sm font-bold text-white transition-colors hover:bg-gray-800">과정 안내 보기</a>
+                        <button type="button" onclick="renderSection('home')" class="w-full rounded-lg border border-er-accentLight py-3.5 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">ER 홈으로</button>
+                        <a href="mailto:json@er-coaching.com?subject=다음%20기본과정%20알림%20요청" class="w-full rounded-lg border border-er-accentLight py-3.5 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">다음 기수 알림 문의</a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    `;
+}
+
 function renderApply(payload = null) {
     hydrateLatestTestResult();
     const fromTest = payload?.source === 'test';
@@ -427,6 +459,7 @@ function renderApply(payload = null) {
         return renderParentingWorkshopApply(submitSource);
     }
     if (isJulyBasicCourseFocus(focus)) {
+        if (!isJulyBasicRecruitmentOpen()) return renderJulyBasicCourseClosed();
         return renderJulyBasicCourseApply(submitSource);
     }
     const testSummary = fromTest && state.latestTestResult

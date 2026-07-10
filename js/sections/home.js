@@ -21,10 +21,11 @@ function renderHome() {
         return cleaned.slice(0, 2).toUpperCase();
     };
 
-    const basicCourseDays = (() => {
-        const diff = Date.parse('2026-06-24T23:59:59-07:00') - Date.now();
-        if (!Number.isFinite(diff) || diff <= 0) return '7/5 마감';
-        return `얼리버드 D-${Math.ceil(diff / 86400000)}`;
+    const showJulyBasicRecruitment = (() => {
+        if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.isJulyBasicRecruitmentOpen === 'function') {
+            return window.ERProgramCatalog.isJulyBasicRecruitmentOpen();
+        }
+        return Date.now() <= Date.parse('2026-07-05T23:59:59-07:00');
     })();
 
     const benefits = [
@@ -42,9 +43,9 @@ function renderHome() {
 
     const programCards = [
         {
-            badge: '인기',
+            badge: '진행 중',
             title: '에니어그램 기본과정 8주',
-            text: '나와 타인을 이해하는 첫 번째 여정',
+            text: '7월 기수 A·B반 13명 · 8주 온라인 과정',
             price: '$300',
             image: 'background.png',
             position: 'center',
@@ -173,16 +174,29 @@ function renderHome() {
                             ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.
                         </p>
 
+                        ${showJulyBasicRecruitment ? `
                         <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
                                     <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">특별 혜택</span>
                                     <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">7월 기본과정 모집 중</p>
-                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">${basicCourseDays} · 정원 10명 · 선착순 마감</p>
+                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">7/5 마감 · 정원 10명 · 선착순 마감</p>
                                 </div>
                                 <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">신청</button>
                             </div>
                         </div>
+                        ` : `
+                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">진행 중</span>
+                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">7월 기본과정 개강</p>
+                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">A반 7/7 · B반 7/10 · 총 13명</p>
+                                </div>
+                                <button onclick="window.location.href='/basic-course.html'" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">안내</button>
+                            </div>
+                        </div>
+                        `}
 
                         <div class="mt-6 grid max-w-3xl gap-3 sm:mt-8 sm:grid-cols-3 sm:gap-4">
                             ${benefits.map((item) => `
@@ -215,12 +229,21 @@ function renderHome() {
                         <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
 
+                        ${showJulyBasicRecruitment ? `
                         <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
                             <p class="text-[11px] font-bold text-[#6c6b60]">지금 시작하면 특별한 혜택!</p>
                             <p class="mt-4 text-xl font-black text-er-ink">7월 기본과정 모집</p>
-                            <p class="mt-1 text-sm font-bold text-[#68785a]">${basicCourseDays} · 정원 10명</p>
+                            <p class="mt-1 text-sm font-bold text-[#68785a]">7/5 마감 · 정원 10명</p>
                             <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer' })" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">신청하기</button>
                         </div>
+                        ` : `
+                        <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
+                            <p class="text-[11px] font-bold text-[#6c6b60]">2026년 7월 기수</p>
+                            <p class="mt-4 text-xl font-black text-er-ink">기본과정 진행 중</p>
+                            <p class="mt-1 text-sm font-bold text-[#68785a] break-keep">A반 7/7 · B반 7/10 · 13명</p>
+                            <button onclick="window.location.href='/basic-course.html'" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">과정 안내</button>
+                        </div>
+                        `}
                     </div>
                 </div>
             </section>
