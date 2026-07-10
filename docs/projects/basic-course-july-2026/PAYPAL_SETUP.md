@@ -37,9 +37,13 @@
 
 ## 개발 쪽 처리 (대표 작업 아님)
 
-- `node scripts/apply_paypal_migration.mjs`
-- `node scripts/deploy_paypal_edge_functions.mjs`
-- PR merge → `basic-course-payment.html` 배포
+```bash
+export SUPABASE_ACCESS_TOKEN=...
+node scripts/apply_paypal_migration.mjs   # 최초 1회
+node scripts/deploy_paypal_edge_functions.mjs
+```
+
+`deploy_paypal_edge_functions.mjs` 는 Supabase CLI (`--use-api`) 로 배포합니다.
 
 ## Live 전환 시
 
