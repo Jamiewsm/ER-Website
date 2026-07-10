@@ -55,7 +55,7 @@
 | 내부 페이지 (programs/parenting/about/apply 등) | ✅ 완료 | 별칭 재매핑으로 일괄 그린 전환. 클래스명 rename(er-accent→er-green 등)은 후속 |
 | 검사 UI (`test.html`, `css/test.css`, `js/test*.js`, `app-adaptive.js`) | ✅ 완료 | 인터랙션 색 그린, 결과지 센터 톤(head/heart/body 시맨틱 색) 유지, terra는 결과지·주의 블록 전용 |
 | 랜딩 (basic-course, parenting-workshop, parents-*) | ✅ 완료 | CSS·인라인 전부 토큰 값 |
-| `child-type-test/` | ⏸ 보류 | 이미 올리브 그린 계열 독자 팔레트로 브랜드 충돌 없음. 필요시 별도 조율 |
+| `child-type-test/` | ✅ 정렬 | Restoration Green 토큰·SUIT/Pretendard·딥그린 인트로 히어로 (독립 HTML) |
 | `js/main.js`(.bak) | 제외 | 어디에도 로드되지 않는 죽은 코드 |
 
 **후속 작업(코드 하이지니, 시각 변화 없음):** ① 구 별칭 클래스명 rename 스위프(er-accent→er-green, er-dark→er-ink 등) 후 별칭 제거 ② `hover:bg-gray-800` → `hover:bg-er-inkSoft` 정리 ③ 결과지 `border-l-4` 액센트 패턴 교체(금지 패턴 6번).
