@@ -9,9 +9,15 @@ const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url)
 const applicationsSource = readFileSync(new URL('../js/coach/applications.js', import.meta.url), 'utf8');
 const courseCssSource = readFileSync(new URL('../css/course-application.css', import.meta.url), 'utf8');
 
-function loadApplyRenderer() {
+function loadApplyRenderer(options = {}) {
+  const recruitmentOpen = options.recruitmentOpen === true;
   const context = {
     state: { latestTestResult: null },
+    window: {
+      ERProgramCatalog: {
+        isJulyBasicRecruitmentOpen: () => recruitmentOpen
+      }
+    },
     buildApplySubmitSource(track, focus, attribution) {
       return [track, focus, attribution].filter(Boolean).join(':');
     }
@@ -65,8 +71,8 @@ test('child type test result apply shows parenting-context copy, not adult test 
   assert.match(html, /handleApplySubmit\(event, 'paid:result_consult:child_type_test'\)/);
 });
 
-test('July Enneagram basic course link renders a dedicated direct application form', () => {
-  const renderer = loadApplyRenderer();
+test('July Enneagram basic course link renders a dedicated direct application form while recruitment is open', () => {
+  const renderer = loadApplyRenderer({ recruitmentOpen: true });
   const html = renderer.renderApply({
     track: 'paid',
     focus: 'enneagram_basic_july',
@@ -83,6 +89,21 @@ test('July Enneagram basic course link renders a dedicated direct application fo
   assert.match(html, /name="referral_source"/);
   assert.match(html, /name="covenant_agree"[^>]*required/);
   assert.doesNotMatch(html, /희망하는 세션|<select name="category"/);
+});
+
+test('July Enneagram basic course apply route shows closed notice after recruitment ends', () => {
+  const renderer = loadApplyRenderer({ recruitmentOpen: false });
+  const html = renderer.renderApply({
+    track: 'paid',
+    focus: 'enneagram_basic_july',
+    apply_source: 'instagram'
+  });
+
+  assert.match(html, /모집 마감/);
+  assert.match(html, /A반.*7월 7일/);
+  assert.match(html, /B반.*7월 10일/);
+  assert.match(html, /13명/);
+  assert.doesNotMatch(html, /에니어그램 기본과정 신청하기/);
 });
 
 test('July Enneagram basic course confirmation uses course-specific response copy', () => {

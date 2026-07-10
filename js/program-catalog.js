@@ -155,7 +155,7 @@
       track: 'paid',
       focus: 'enneagram_basic_july',
       featured: true,
-      outcome: '7월 개강 · 8주 온라인 + 1:1 멘토링 · 얼리버드 $270 (6/24까지)',
+      outcome: '7월 기수 진행 중 · A반 7/7 · B반 7/10 개강 · 8주 온라인 + 1:1 멘토링',
       reasonPrimary: '무료 진단 결과를 체계적인 8주 학습으로 확장하기 좋은 시점입니다.',
       reasonSecondary: '9유형의 핵심 동기와 회복 관점을 깊이 배우기 좋습니다.',
       applyMessage: '에니어그램 기본과정 8주 신청합니다.'
