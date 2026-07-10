@@ -1,34 +1,34 @@
-body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif; background:#f6f1e8; color:#4a3e35; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-.radio-btn:checked + label { background:#4a4540; color:#fff; border-color:#4a4540; transform:scale(1.05); }
-.radio-btn:focus-visible + label { outline: 2px solid #bfa68a; outline-offset: 2px; }
+body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif; background:#FBFAF5; color:#30322D; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+.radio-btn:checked + label { background:#30322D; color:#fff; border-color:#30322D; transform:scale(1.05); }
+.radio-btn:focus-visible + label { outline: 2px solid #657453; outline-offset: 2px; }
 .smooth { transition: all .25s ease; }
 
 /* ===== ER 진단 결과지 (Premium Report) — 따뜻한 톤 디자인 시스템 ===== */
 :root {
-  --er-report-base: #f7eee4;        /* caramel beige — 페이지 배경 */
-  --er-report-cream: #fffbf6;       /* warm cream ivory — 카드/섹션 배경 */
-  --er-report-parchment: #f3e7d8;   /* soft warm — 강조 배경(노트/회복) */
-  --er-report-dark: #3e362e;        /* charcoal brown — 제목/어두운 블록 */
-  --er-report-gold: #b08a66;        /* caramel brown — 강조(배경/바) */
-  --er-report-gold-strong: #98714f; /* accent dark — 텍스트 강조(대비) */
-  --er-report-gold-light: #ecd4b6;  /* 어두운 배경 위 밝은 카라멜 */
+  --er-report-base: #FBFAF5;        /* caramel beige — 페이지 배경 */
+  --er-report-cream: #FFFDF8;       /* warm cream ivory — 카드/섹션 배경 */
+  --er-report-parchment: #EEF3E6;   /* soft warm — 강조 배경(노트/회복) */
+  --er-report-dark: #202219;        /* charcoal brown — 제목/어두운 블록 */
+  --er-report-gold: #657453;        /* caramel brown — 강조(배경/바) */
+  --er-report-gold-strong: #566647; /* accent dark — 텍스트 강조(대비) */
+  --er-report-gold-light: #E7EFDC;  /* 어두운 배경 위 밝은 카라멜 */
   --er-report-green: #6f7d59;       /* warm sage — 회복/긍정 신호 */
   --er-report-blue: #57728a;        /* muted blue — head/application */
   --er-report-plum: #8b6678;        /* muted rose — heart/relationship */
   --er-report-clay: #b06149;        /* clay — body/action */
   --er-report-olive: #7f8a61;       /* olive — body/growth */
   --er-report-red: #b06149;         /* warm terracotta — 주의/현재 패턴 */
-  --er-report-text: #382f28;        /* warm near-charcoal — 본문 */
-  --er-report-muted: #7a6a5b;       /* warm taupe — 보조/캡션 */
-  --er-report-line: rgba(62, 54, 46, 0.12);
-  --er-report-shadow: 0 16px 40px -28px rgba(62, 54, 46, 0.30), 0 2px 6px -3px rgba(62, 54, 46, 0.08);
+  --er-report-text: #30322D;        /* warm near-charcoal — 본문 */
+  --er-report-muted: #6F7068;       /* warm taupe — 보조/캡션 */
+  --er-report-line: rgba(32, 34, 25, 0.12);
+  --er-report-shadow: 0 16px 40px -28px rgba(32, 34, 25, 0.30), 0 2px 6px -3px rgba(32, 34, 25, 0.08);
   --er-report-cover-img: url("../test-results/background.png");
   --er-report-card-img: url("../test-results/background_card.png");
   --er-report-vase-img: url("../test-results/background_vase.png");
   --er-report-road-img: url("../test-results/backgrdound_road.png");
   --er-report-accent: var(--er-report-gold);
   --er-report-accent-strong: var(--er-report-gold-strong);
-  --er-report-accent-soft: rgba(176, 138, 102, 0.13);
+  --er-report-accent-soft: rgba(101, 116, 83, 0.13);
 }
 
 .er-premium-report {
@@ -38,8 +38,8 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
   font-size: 16px;
   line-height: 1.78;
   letter-spacing: -0.003em;
-  background: #fffaf3;
-  box-shadow: 0 28px 90px -54px rgba(62, 54, 46, 0.45);
+  background: #FFFDF8;
+  box-shadow: 0 28px 90px -54px rgba(32, 34, 25, 0.45);
 }
 
 .er-premium-report[data-core-tone="body"] {
@@ -68,10 +68,10 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
   overflow: hidden;
   border-radius: 0;
   background:
-    linear-gradient(90deg, rgba(255, 251, 246, 0.72) 0%, rgba(255, 251, 246, 0.50) 45%, rgba(255, 251, 246, 0.08) 100%),
+    linear-gradient(90deg, rgba(255, 253, 248, 0.72) 0%, rgba(255, 253, 248, 0.50) 45%, rgba(255, 253, 248, 0.08) 100%),
     var(--er-report-cover-img) center top / cover no-repeat;
   color: var(--er-report-text);
-  border-bottom: 1px solid rgba(62, 54, 46, 0.16);
+  border-bottom: 1px solid rgba(32, 34, 25, 0.16);
 }
 
 .er-report-hero-inner {
@@ -95,7 +95,7 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
 }
 
 .er-report-kicker {
-  color: rgba(62, 54, 46, 0.68);
+  color: rgba(32, 34, 25, 0.68);
 }
 
 .er-report-hero-type {
@@ -130,9 +130,9 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
 .er-report-hero-answer {
   max-width: 660px;
   border-left: 4px solid var(--er-report-accent);
-  background: rgba(255, 251, 246, 0.70);
+  background: rgba(255, 253, 248, 0.70);
   padding: 16px 18px;
-  box-shadow: 0 18px 36px -32px rgba(62, 54, 46, 0.55);
+  box-shadow: 0 18px 36px -32px rgba(32, 34, 25, 0.55);
 }
 
 .er-report-hero-answer span {
@@ -173,14 +173,14 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
   min-height: 34px;
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(62, 54, 46, 0.12);
+  border: 1px solid rgba(32, 34, 25, 0.12);
   border-radius: 999px;
   padding: 7px 14px;
   background: rgba(255, 255, 255, 0.84);
   color: var(--er-report-dark);
   font-size: 12px;
   font-weight: 800;
-  box-shadow: 0 8px 18px -16px rgba(62, 54, 46, 0.35);
+  box-shadow: 0 8px 18px -16px rgba(32, 34, 25, 0.35);
 }
 
 .er-report-hero-code {
@@ -202,7 +202,7 @@ body {
   position: absolute;
   top: 24px;
   right: 20px;
-  border-color: rgba(62, 54, 46, 0.18);
+  border-color: rgba(32, 34, 25, 0.18);
   font-weight: 850;
 }
 
@@ -214,7 +214,7 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(58px, 1fr));
   gap: 6px;
   padding: 10px;
-  background: rgba(255, 251, 246, 0.92);
+  background: rgba(255, 253, 248, 0.92);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--er-report-line);
 }
@@ -223,7 +223,7 @@ body {
   padding: 12px 18px;
   background: var(--er-report-parchment);
   color: var(--er-report-gold-strong);
-  border-bottom: 1px solid rgba(176, 138, 102, 0.22);
+  border-bottom: 1px solid rgba(101, 116, 83, 0.22);
   font-size: 13px;
   font-weight: 700;
   text-align: center;
@@ -232,7 +232,7 @@ body {
 .er-report-executive {
   padding: 34px 24px 38px;
   background:
-    linear-gradient(rgba(255, 251, 246, 0.91), rgba(255, 251, 246, 0.96)),
+    linear-gradient(rgba(255, 253, 248, 0.91), rgba(255, 253, 248, 0.96)),
     var(--er-report-card-img) center / cover no-repeat;
   border-bottom: 1px solid var(--er-report-line);
 }
@@ -323,9 +323,9 @@ body {
 }
 
 .er-report-executive-focus > div {
-  border: 1px solid rgba(62, 54, 46, 0.14);
+  border: 1px solid rgba(32, 34, 25, 0.14);
   border-radius: 10px;
-  background: linear-gradient(135deg, rgba(62, 54, 46, 0.92), rgba(62, 54, 46, 0.74));
+  background: linear-gradient(135deg, rgba(32, 34, 25, 0.92), rgba(32, 34, 25, 0.74));
   padding: 18px;
   color: #fff;
 }
@@ -371,7 +371,7 @@ body {
 .er-report-section {
   padding: 34px 24px;
   background:
-    linear-gradient(rgba(255, 251, 246, 0.88), rgba(255, 251, 246, 0.92)),
+    linear-gradient(rgba(255, 253, 248, 0.88), rgba(255, 253, 248, 0.92)),
     var(--er-report-card-img) center / cover no-repeat;
   border-bottom: 1px solid var(--er-report-line);
 }
@@ -454,7 +454,7 @@ body {
 .er-report-synthesis {
   border-top: 5px solid var(--er-report-accent);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 251, 246, 0.88)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 253, 248, 0.88)),
     var(--er-report-card-img) center / cover no-repeat;
 }
 
@@ -555,7 +555,7 @@ body {
 .er-report-note {
   margin-top: 16px;
   background: var(--er-report-accent-soft);
-  border-color: rgba(176, 138, 102, 0.24);
+  border-color: rgba(101, 116, 83, 0.24);
 }
 
 .er-report-note strong,
@@ -588,7 +588,7 @@ body {
 
 .er-report-confidence-section {
   background:
-    linear-gradient(rgba(255, 251, 246, 0.92), rgba(255, 251, 246, 0.92)),
+    linear-gradient(rgba(255, 253, 248, 0.92), rgba(255, 253, 248, 0.92)),
     var(--er-report-vase-img) center / cover no-repeat;
 }
 
@@ -696,7 +696,7 @@ body {
   height: 10px;
   margin-top: 8px;
   border-radius: 999px;
-  background: var(--er-report-accent-light, #ece0d2);
+  background: var(--er-report-accent-light, #E7EFDC);
 }
 
 .er-report-bar {
@@ -918,8 +918,8 @@ body {
 }
 
 .er-report-support-card.is-suppression {
-  border-color: rgba(176, 138, 102, 0.34);
-  background: linear-gradient(180deg, #fff, #fff8ef);
+  border-color: rgba(101, 116, 83, 0.34);
+  background: linear-gradient(180deg, #fff, #FBFAF5);
 }
 
 .er-report-support-card > span,
@@ -960,7 +960,7 @@ body {
 
 .er-report-section.er-report-application {
   background:
-    linear-gradient(90deg, rgba(62, 54, 46, 0.80), rgba(62, 54, 46, 0.48)),
+    linear-gradient(90deg, rgba(32, 34, 25, 0.80), rgba(32, 34, 25, 0.48)),
     var(--er-report-vase-img) center / cover no-repeat;
   color: #fff;
 }
@@ -1087,7 +1087,7 @@ body {
 
 .er-report-section.er-report-growth {
   background:
-    linear-gradient(rgba(255, 251, 246, 0.84), rgba(255, 251, 246, 0.9)),
+    linear-gradient(rgba(255, 253, 248, 0.84), rgba(255, 253, 248, 0.9)),
     var(--er-report-road-img) center / cover no-repeat;
 }
 
@@ -1149,7 +1149,7 @@ body {
 .er-report-gospel {
   margin-top: 16px;
   background: var(--er-report-parchment);
-  border-color: rgba(176, 138, 102, 0.22);
+  border-color: rgba(101, 116, 83, 0.22);
 }
 
 .er-report-gospel-intro {
@@ -1180,7 +1180,7 @@ body {
 
 .er-report-section.er-report-next {
   background:
-    linear-gradient(rgba(255, 251, 246, 0.88), rgba(255, 251, 246, 0.94)),
+    linear-gradient(rgba(255, 253, 248, 0.88), rgba(255, 253, 248, 0.94)),
     var(--er-report-card-img) center / cover no-repeat;
 }
 
@@ -1188,7 +1188,7 @@ body {
   margin-bottom: 18px;
   border-radius: 12px;
   background:
-    linear-gradient(135deg, rgba(62, 54, 46, 0.84), rgba(62, 54, 46, 0.50)),
+    linear-gradient(135deg, rgba(32, 34, 25, 0.84), rgba(32, 34, 25, 0.50)),
     var(--er-report-road-img) center / cover no-repeat;
   padding: 28px;
   color: #fff;
@@ -1212,8 +1212,8 @@ body {
 }
 
 .er-report-next-card.is-primary {
-  border-color: rgba(176, 138, 102, 0.4);
-  background: linear-gradient(180deg, #fff, #fdf6ec);
+  border-color: rgba(101, 116, 83, 0.4);
+  background: linear-gradient(180deg, #fff, #FBFAF5);
 }
 
 .er-report-next-card.is-clickable {
@@ -1225,7 +1225,7 @@ body {
 .er-report-next-card.is-clickable:focus-visible {
   transform: translateY(-2px);
   box-shadow: 0 12px 28px rgba(74, 69, 64, 0.12);
-  border-color: rgba(176, 138, 102, 0.55);
+  border-color: rgba(101, 116, 83, 0.55);
   outline: none;
 }
 
@@ -1248,7 +1248,7 @@ body {
 }
 
 .er-report-next-card.is-primary .er-report-next-cta {
-  color: #8a5a28;
+  color: #30451F;
 }
 
 .er-report-next-card h3 {
@@ -1275,7 +1275,7 @@ body {
 
 .er-report-low-confidence p {
   margin: 0 0 12px;
-  color: #8a4733;
+  color: #8F4634;
 }
 
 .er-report-low-confidence a {
@@ -1291,7 +1291,7 @@ body {
   margin-top: 20px;
   border-radius: 12px;
   background:
-    linear-gradient(135deg, rgba(62, 54, 46, 0.92), rgba(62, 54, 46, 0.72)),
+    linear-gradient(135deg, rgba(32, 34, 25, 0.92), rgba(32, 34, 25, 0.72)),
     var(--er-report-vase-img) center / cover no-repeat;
   padding: 32px 24px;
   color: #fff;

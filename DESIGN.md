@@ -1,201 +1,274 @@
-# ER Website — Design System
+# ER Design System — "Restoration Green"
 
-> Single source of truth for all visual decisions. Reference this before adding new pages or components.
+> 모든 시각적 결정의 단일 기준 문서. 새 페이지·컴포넌트 작업 전 반드시 이 문서를 먼저 읽을 것.
+> 2026-07-06 전면 개정 — 기존 카라멜 브라운 시스템을 폐기하고, 홈 화면의 세이지 그린 팔레트를 공식 브랜드 시스템으로 승격함.
 
 ---
 
 ## Brand Identity
 
-**ER** (Enneagram for Restoration) is a for-profit Christian enneagram coaching service.  
-Tone: **warm, professional, trustworthy** — not clinical, not overly religious.  
-The visual language should feel like a trusted guide, not a ministry brochure.
+**ER** (Enneagram for Restoration)는 기독교 세계관과 에니어그램을 통합한 유료 코칭 서비스다.
+톤: **따뜻하고, 전문적이며, 신뢰할 수 있는** — 병원처럼 차갑지 않게, 교회 주보처럼 종교적이지 않게.
+
+**기억에 남아야 할 한 가지:** "조용히 회복되는 공간" — 크림빛 종이 위의 깊은 세이지 그린.
+모든 디자인 결정은 이 인상을 지켜야 한다. 화려함·긴박함·세일즈 압박은 이 브랜드와 어긋난다.
 
 ---
 
 ## Color Palette
 
-All colors are defined as Tailwind tokens in `index.html`:
+모든 색은 `index.html`의 Tailwind 토큰으로만 사용한다. **hex 하드코딩 금지.**
+
+### Core tokens
 
 | Token | Hex | Usage |
 |---|---|---|
-| `er-base` | `#F7EEE4` | Page background — caramel beige |
-| `er-surface` | `#FFFBF6` | Cards, modal backgrounds — warm cream ivory |
-| `er-primary` | `#7D6A5B` | Body text — warm taupe |
-| `er-accent` | `#B89170` | Primary accent — caramel brown (links, icons, highlights) |
-| `er-accentDark` | `#9D7657` | Accent hover/active state |
-| `er-accentLight` | `#EEE2D5` | Soft accent background (tags, pills, hover tints) |
-| `er-dark` | `#3E362E` | Headings, primary CTA background — charcoal brown |
-| `er-muted` | `#AA9889` | Secondary/caption text |
+| `er-base` | `#FBFAF5` | 페이지 배경 — 웜 페이퍼 크림 |
+| `er-surface` | `#FFFDF8` | 카드·모달 배경 — 밝은 크림 |
+| `er-sand` | `#E2D8C8` | 보더, 디바이더, 소프트 구분 블록 |
+| `er-ink` | `#202219` | 최상위 **제목 텍스트** — CTA 배경 금지 |
+| `er-inkSoft` | `#30322D` | 섹션 제목, 강조 텍스트 |
+| `er-body` | `#44473F` | 본문 텍스트 |
+| `er-muted` | `#6F7068` | 보조·캡션 텍스트 |
+| `er-green` | `#657453` | 브랜드 액센트 — 세이지 그린 (링크, 아이콘, 강조) |
+| `er-greenDark` | `#566647` | 액센트 hover/active |
+| `er-greenDeep` | `#30451F` | 드문 최고 강조 (히어로 키워드 등) |
+| `er-greenTint` | `#F0EDE4` | 태그·배지·hover 틴트 배경 — 웜 크림 (쿨 민트 금지) |
+| `er-terra` | `#B06149` | 유일한 웜 액센트 — 검사 결과 하이라이트, 감정 강조 전용 |
+| `er-terraDark` | `#8F4634` | 테라코타 hover/진한 용도 |
 
-**Rule:** Use `er-dark` for all primary action buttons. Never use generic black (`#000`).  
-**Rule:** Use `er-accentLight` for tag/badge backgrounds, not a solid accent.  
-**Rule:** Amber (`bg-amber-*`) is reserved for ministry-only UI signals.
+### Rules
+
+- **Primary CTA 배경은 `er-green`.** hover는 `er-greenDark`. `er-ink`·순수 검정(`#000`)을 CTA 배경에 쓰지 않는다.
+- **구 `er-dark` 별칭**은 `#566647`(= `er-greenDark`) — 레거시 `bg-er-dark`가 잉크 블랙이 되지 않도록.
+- **`er-green`은 흰/크림 배경 텍스트로 사용 가능** (명암비 ≈5:1, AA 통과). 구 브라운 `#B89170`은 AA 미달이었으므로 완전 폐기.
+- **`er-terra`는 예산제 색이다.** 한 화면에 한 번, 검사 결과·감정적 하이라이트에만. 일반 UI에 쓰지 않는다. 텍스트로 쓸 때는 bold 이상 굵기 권장(명암비 ≈4.5:1로 AA 경계).
+- **태그/배지 배경은 `er-greenTint`.** 솔리드 액센트 배경 금지.
+- **Amber(`bg-amber-*`)는 사역지원(ministry) 신호 전용.** 그 외 용도 금지.
+
+### Migration status (2026-07-07 기준 — 마이그레이션 완료)
+
+| 영역 | 상태 | 비고 |
+|---|---|---|
+| `index.html` tailwind.config | ✅ 완료 | 신규 토큰 + 구 토큰명 별칭, SUIT Display 로드 |
+| 홈 (`js/sections/home.js`) | ✅ 완료 | 토큰 클래스 치환 + 히어로 SUIT(font-display extrabold). 후기 인용은 Pretendard |
+| 내부 페이지 (programs/parenting/about/apply 등) | ✅ 완료 | 별칭 재매핑으로 일괄 그린 전환. 클래스명 rename(er-accent→er-green 등)은 후속 |
+| 검사 UI (`test.html`, `css/test.css`, `js/test*.js`, `app-adaptive.js`) | ✅ 완료 | 인터랙션 색 그린, 결과지 센터 톤(head/heart/body 시맨틱 색) 유지, terra는 결과지·주의 블록 전용 |
+| 랜딩 (basic-course, parenting-workshop, parents-*) | ✅ 완료 | CSS·인라인 전부 토큰 값 |
+| `child-type-test/` | ✅ 정렬 | Restoration Green 토큰·SUIT/Pretendard·딥그린 인트로 히어로 (독립 HTML) |
+| `js/main.js`(.bak) | 제외 | 어디에도 로드되지 않는 죽은 코드 |
+
+**후속 작업(코드 하이지니, 시각 변화 없음):** ① 구 별칭 클래스명 rename 스위프(er-accent→er-green, er-dark→er-ink 등) 후 별칭 제거 ② `hover:bg-gray-800` → `hover:bg-er-inkSoft` 정리 ③ 결과지 `border-l-4` 액센트 패턴 교체(금지 패턴 6번).
 
 ---
 
 ## Typography
 
-**Font family:** Pretendard (primary), fallback: system-ui, sans-serif  
-**Serif:** Times New Roman (decorative only — avoid in UI)
+| 역할 | 서체 | 로딩 |
+|---|---|---|
+| Display (히어로·큰 섹션 타이틀) | **SUIT** | `https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css` |
+| Body / UI / 인용 | **Pretendard** | 기존 jsdelivr CDN 유지 |
+| 숫자·데이터 | Pretendard + `tabular-nums` | — |
+
+**SUIT 사용 범위 (엄격):** 히어로 H1, 드문 대형 섹션 진입 제목(`font-display`). **후기 인용·본문·버튼·메뉴는 Pretendard.** Display는 `font-extrabold` + `tracking-[-0.03em]` 권장.
+
+**MaruBuri는 폐기** — 붓글씨 세리프는 ER 톤과 어긋남(2026-07-10 결정).
+
+### Scale
 
 | Scale | Class | Usage |
 |---|---|---|
-| Display | `text-4xl md:text-5xl font-extrabold` | Hero H1 only |
-| Page H1 | `text-3xl md:text-4xl font-bold` | Section entry headings |
-| Section H2 | `text-2xl font-bold` | Sub-section headings |
-| Card title | `text-xl font-bold` | Card headings |
-| Body | `text-base leading-relaxed` | Standard body copy |
-| Caption | `text-sm text-er-muted` | Secondary info, labels |
-| Label/Tag | `text-xs font-bold tracking-widest uppercase` | Metadata tags — use sparingly |
+| Display | `font-display font-extrabold tracking-[-0.03em] text-4xl md:text-6xl leading-[1.25]` | 히어로 H1 전용 (SUIT) |
+| Page H1 | `text-3xl md:text-4xl font-bold` | 섹션 진입 제목 |
+| Section H2 | `text-2xl font-bold` | 하위 섹션 제목 |
+| Card title | `text-xl font-bold` | 카드 제목 |
+| Body | `text-base leading-relaxed text-er-body` | 본문 |
+| Caption | `text-sm text-er-muted` | 보조 정보, 라벨 |
+| Label/Tag | `text-xs font-bold tracking-widest uppercase` | 메타데이터 — 최소한으로 |
 
-**Copy rules:**
-- `break-keep` on all Korean headings (prevents awkward line breaks)
-- Heading line-height: `leading-snug` (1.375)
-- Body line-height: `leading-relaxed` (1.625)
-- Max body column width: `max-w-xl` (~672px) for readability
+### Copy rules
+
+- 모든 한국어 제목에 `break-keep` (어색한 줄바꿈 방지).
+- 제목 line-height `leading-snug`(1.375), SUIT Display는 1.25 이상 확보.
+- 본문 line-height `leading-relaxed`(1.625).
+- 본문 컬럼 최대 폭 `max-w-xl`(~672px).
+- 세일즈 카피 금지어: "완벽한 솔루션", "지금 바로", 과도한 느낌표. 브랜드는 조용히 말한다.
 
 ---
 
 ## Spacing & Layout
 
-**Max widths:**
-- Full-width sections (hero, marketing): `max-w-7xl`
-- Content pages (coaches, programs): `max-w-4xl`
-- Reading content (support, about): `max-w-3xl`
+**Max widths**
 
-**Page padding:** `px-4 sm:px-6 lg:px-8`  
-**Section vertical rhythm:** `py-12 md:py-20` for major sections, `pt-8 pb-20` for content pages  
-**Card gaps:** `gap-8` for vertically stacked cards
+- 풀폭 섹션(히어로, 마케팅) `max-w-7xl`
+- 콘텐츠 페이지(코치, 프로그램) `max-w-4xl`
+- 읽기 콘텐츠(소개, 사역지원) `max-w-3xl`
+
+**Page padding** `px-4 sm:px-6 lg:px-8`
+**Section rhythm** 주요 섹션 `py-12 md:py-20`, 콘텐츠 페이지 `pt-8 pb-20`
+**Card gaps** 수직 스택 카드 `gap-8`
+**Base unit** 4px — 임의 값(`p-[13px]` 등) 금지
+
+**Border radius** — 계층 스케일: 입력·작은 요소 `rounded-xl`(12px), 카드 `rounded-[2rem]`, 버튼·태그 `rounded-full`. 전부 같은 radius로 통일하는 것 금지(AI 슬롭 신호).
 
 ---
 
 ## Component Patterns
 
-### Cards
-
-```
-Primary card: bg-white rounded-[2rem] shadow-card overflow-hidden border border-er-accentLight/40 floating-card
-Surface card: bg-er-surface rounded-[2rem] shadow-soft
-Glass card: glass rounded-[2.5rem] shadow-card floating-card hover:shadow-glow
-```
-
-**Rule:** Cards should earn their existence. Use only when card IS the interaction (e.g., coach profile = selection unit). No decorative card grids.
-
 ### Buttons
 
 ```
-Primary CTA: bg-er-dark text-white rounded-full font-bold px-7 py-3.5 hover:bg-gray-800 hover:-translate-y-0.5 transition-all shadow-soft active:scale-95
-Secondary: bg-white/90 text-er-dark border border-white/60 rounded-full font-bold (same padding)
-Text link: text-er-accent font-bold underline underline-offset-2 hover:text-er-accentDark
-Destructive: use red-600, not er-accent
+Primary CTA: bg-er-green text-white rounded-full font-bold px-7 py-3.5
+             hover:bg-er-greenDark hover:-translate-y-0.5 transition-all shadow-soft active:scale-95
+Secondary:   bg-er-surface text-er-ink border border-er-sand rounded-full font-bold (동일 패딩)
+Text link:   text-er-green font-bold underline underline-offset-2 hover:text-er-greenDark
+Destructive: red-600 사용, er-terra 금지 (테라코타는 에러가 아님)
 ```
 
-**Rule:** One primary CTA per viewport. Duplicate primary actions cause decision fatigue.
+**Rule:** 한 뷰포트에 primary CTA는 하나. 같은 화면에 "상담 신청"이 두 번 보이면 하나를 secondary로 강등.
+
+### Cards
+
+```
+Primary card: bg-er-surface rounded-[2rem] shadow-card border border-er-sand/50
+Tint card:    bg-er-greenTint rounded-[2rem] (강조 블록, 추천 대상 안내 등)
+```
+
+**Rule:** 카드는 존재 이유가 있어야 한다. 카드 자체가 선택 단위일 때만(코치 프로필, 프로그램). 장식용 카드 그리드 금지.
+**Rule:** 글래스모피즘(`glass`)·블러 오브는 신규 페이지에 추가하지 않는다. 기존 홈에서만 단계적 축소.
 
 ### Tags / Badges
 
 ```
-Specialty tag: inline-block px-3 py-1 rounded-full bg-er-accentLight text-er-dark text-xs font-semibold
-Ministry badge: bg-amber-50 border border-amber-200 text-amber-700 rounded-full (signals free ministry track)
-Cert badge: border border-er-accent/30 text-er-accent rounded-full
+일반 태그:      inline-block px-3 py-1 rounded-full bg-er-greenTint text-er-inkSoft text-xs font-semibold
+사역지원 배지:  bg-amber-50 border border-amber-200 text-amber-700 rounded-full
+자격 배지:      border border-er-green/30 text-er-green rounded-full
 ```
-
-**Ministry amber** is the only amber usage — do not use amber for general UI elements.
 
 ### Compact Info Strip
 
-```
-One-line contextual notice: rounded-full bg-{color}-50 border border-{color}-200 px-4 py-2.5 flex items-center gap-3 text-xs
-```
+한 줄짜리 보조 공지는 풀사이즈 info box 대신 아래 패턴을 사용한다.
 
-Use this instead of a full info box when the notice is secondary to the main content.
+```
+rounded-full bg-er-greenTint border border-er-green/20 px-4 py-2.5 flex items-center gap-3 text-xs
+```
 
 ### Animations
 
 | Token | Usage |
 |---|---|
-| `animate-fade-in-up` | Page entry, card reveal |
-| `animate-fade-in` | Hero imagery |
-| `animate-float` | Hero floating card widget |
-| `floating-card` | Persistent subtle float on hover |
+| `animate-fade-in-up` | 페이지 진입, 카드 등장 |
+| `animate-fade-in` | 히어로 이미지 |
+| `floating-card` | 카드 hover 시 미세 부양 |
 
-**Rule:** 2–3 intentional motions per page. Entrance (`fade-in-up`), scroll-linked, and hover/reveal.  
-**Rule:** `animation-fill-mode: both` required on `animate-fade-in-up` for correct initial state.
+**Rule:** 한 페이지에 의도된 모션 2~3개까지. `animation-fill-mode: both` 필수.
 
 ---
 
 ## Page Templates
 
-### Marketing/Content Page (coaches, programs, support)
+### Marketing/Content Page
+
 ```
-Structure: max-w-4xl mx-auto px-4 sm:px-6
-Header: left-aligned H1 + subtitle (NO centered badge/title pattern — this is AI slop)
-Content: flex-col gap-8 cards
-CTA: centered bottom CTA after content
-Background: bg-er-base
-Padding: pt-8 pb-20
+구조: max-w-4xl~6xl mx-auto px-4 sm:px-6
+히어로: bg-er-dark + 흰색 제목(SUIT font-display) + rounded-b-[3rem] — Parenting·About·Coach Training·Community 패턴
+콘텐츠 영역: bg-er-base 위에 bg-er-surface 카드 + border-er-sand/60. 흰 배경(bg-white) 단독 페이지 금지.
+내부 카드: bg-er-base/50~70 + border-er-sand/40~50. bg-white 카드를 er-base 위에 겹치지 않게. border-white/40 금지.
+CTA: 콘텐츠 뒤 중앙 하단 CTA 1개 (er-green 또는 er-dark 밴드)
 ```
 
-### Hero/Landing Section (home)
+### Hero/Landing (home)
+
 ```
-Structure: max-w-7xl, two-column grid lg:grid-cols-2
-Left: brand narrative, headline, dual CTA
-Right: floating glass card widget
-Background: bg-er-base + bg-pattern + subtle blur orbs (2 max)
+구조: max-w-7xl, lg:grid-cols-2
+좌: SUIT 헤드라인(er-ink, 키워드만 er-greenDeep) + 서브카피 + 듀얼 CTA(er-green primary)
+우: 실사 사진 (일러스트·스톡 3D 금지 — 실사 무드가 브랜드 차별점)
+직하단: 신뢰 지표 스트립 (400+ / 98% / 10년+ / 4.9)
 ```
+
+### 검사(test) UI — 프리미엄 원칙
+
+검사는 ER의 핵심 전환 상품이므로 마케팅 페이지와 같은 완성도를 가져야 한다.
+
+- 문항 벽 나열 금지 — 한 화면에 문항 1개(또는 소그룹) + 진행률 표시.
+- 배경 `er-base`, 문항 카드 `er-surface`, 선택 상태 `er-green`.
+- 결과지 하이라이트에만 `er-terra` 허용 (이 색의 유일한 서식지).
 
 ---
 
-## AI Slop Avoidance
+## AI Slop Avoidance (금지 패턴)
 
-These patterns are **prohibited** in new pages:
+1. ❌ 중앙 정렬 배지 + H1 + 설명 헤더
+2. ❌ 3열 아이콘 원형 배경 피처 그리드
+3. ❌ 보라/바이올렛/인디고 그라디언트
+4. ❌ 장식용 블러 오브 추가 (기존 것도 축소 대상)
+5. ❌ 제목 속 이모지
+6. ❌ 카드 `border-left: 3px solid` 액센트
+7. ❌ 일반 카피: "당신의 여정을 위한 완벽한 솔루션"
+8. ❌ 전 요소 동일 border-radius
 
-1. ❌ Centered badge + H1 + description header (every AI-generated page looks like this)
-2. ❌ 3-column icon-in-circle feature grid
-3. ❌ Purple/violet/indigo gradients
-4. ❌ Decorative blobs beyond the 2 already in hero (don't add more)
-5. ❌ Emoji in headings as design elements
-6. ❌ `border-left: 3px solid <accent>` on cards
-7. ❌ Generic copy: "당신의 여정을 위한 완벽한 솔루션"
-
-**Instead:** Left-align page headers, lead with the person/outcome not the product label.
+**대신:** 페이지 헤더는 좌측 정렬, 제품 라벨이 아니라 사람과 결과로 시작.
 
 ---
 
 ## Ministry Track UX
 
-Ministry (목회자·선교사 무료 사역지원) is a secondary service, not the primary identity.
+사역지원(목회자·선교사 무료 트랙)은 보조 서비스다.
 
-- Use amber color family ONLY for ministry signals
-- Ministry strip/notice must be compact (1 line) on pages where it's secondary context
-- Ministry CTA must link to `track: 'support'`, not `track: 'paid'`
-- If a coach has `ministry: true`, their CTA should use a different label/track
+- Amber 계열은 ministry 신호 전용.
+- ministry 공지는 보조 맥락인 페이지에서 1줄 compact strip으로.
+- ministry CTA는 `track: 'support'`로 연결 (`track: 'paid'` 금지).
 
 ---
 
 ## Responsive Principles
 
-- Mobile-first: default classes are mobile, `md:` and `lg:` for larger viewports
-- `flex-col md:flex-row` for coach/program cards (stack on mobile, horizontal on desktop)
-- Touch targets: minimum 44px height for all interactive elements
-- `break-keep` on all Korean headings to prevent awkward word wraps
-- Max mobile font: `text-2xl` for H1 on mobile (not full desktop size)
+- 모바일 퍼스트 — 기본 클래스는 모바일, `md:`/`lg:`로 확장.
+- 코치/프로그램 카드는 `flex-col md:flex-row`.
+- 터치 타겟 최소 44px.
+- 모바일 H1 최대 `text-3xl` (SUIT Display는 모바일 `text-4xl`까지 허용).
+- `user-scalable=no` 제거 대상 (접근성 위반 — 마이그레이션 시 수정).
 
 ---
 
 ## Accessibility (Minimum Bar)
 
-- All `<img>` must have meaningful `alt` text
-- Decorative icons: `aria-hidden="true"` 
-- Dynamic section changes (SPA): announce section change to screen readers (currently unimplemented — see TODOS)
-- Color contrast: all text must be WCAG AA (4.5:1 for body, 3:1 for large text)
-- `er-muted` (#AA9889) on white fails AA — use only on `er-base` or `er-surface` backgrounds
-- Focus visible: Tailwind's default focus ring, do not suppress globally
+- 모든 `<img>`에 의미 있는 `alt`.
+- 장식 아이콘은 `aria-hidden="true"`.
+- 본문 텍스트 WCAG AA(4.5:1), 큰 텍스트 3:1.
+- `er-muted`(#6F7068)는 크림 배경에서 AA 통과. 구 `#AA9889`는 폐기.
+- `er-terra`를 작은 일반 굵기 텍스트로 쓰지 않는다(AA 경계값).
+- SPA 섹션 전환 시 `#sr-status`로 스크린리더 공지.
+- 포커스 링 전역 억제 금지.
+
+---
+
+## Governance
+
+1. **색은 토큰으로만.** 섹션 JS·CSS에 hex 하드코딩 발견 시 리팩터 대상.
+2. **새 페이지는 이 문서 기준.** 기존 브라운 페이지와 어울리게 만들지 말 것 — 새 시스템 기준으로 만들고 마이그레이션을 앞당긴다.
+3. **QA 모드에서는 이 문서와 어긋나는 코드를 플래그.**
+4. 시스템 변경은 반드시 이 문서 수정 + Decisions Log 기록과 함께.
+
+---
+
+## Decisions Log
+
+| Date | Decision | Rationale |
+|------|----------|-----------|
+| 2026-07-06 | 브라운 시스템 폐기, 홈의 세이지 그린을 공식 시스템으로 승격 | 퍼널 내 3개 팔레트 분열 해소. 홈이 완성도 최고, 그린은 AA 명암비 통과(브라운은 미달), 한국 프리미엄 웰니스 코드 부합 |
+| 2026-07-06 | MaruBuri를 Display 서체로 도입 | Pretendard 단일 서체는 카테고리 평균에 머무름. "회복" 정서를 세리프로 운반, 무료 폰트로 비용 없음 |
+| 2026-07-06 | 테라코타를 "예산제 웜 액센트"로 편입 | 검사 페이지 자산을 버리지 않고 결과지 하이라이트 전용으로 역할 축소 |
+| 2026-07-06 | 검사 UI 프리미엄 원칙 신설 | 핵심 전환 상품이 가장 저품질로 보이는 문제 — 문항 벽 나열 금지, 1문항+진행률 플로우 |
+| 2026-07-07 | 전 사이트 그린 마이그레이션 실행 완료 | 구 토큰명은 그린 값 별칭으로 재매핑(무중단 전환), 결과지 센터 톤은 시맨틱 색으로 유지, `user-scalable=no` 제거. 검증: bun test 140 통과 + 전 페이지 스크린샷 |
+| 2026-07-07 | `design-system/` 카드 번들 신설 | claude.ai/design 업로드용 @dsCard + tokens.css |
+| 2026-07-10 | MaruBuri 폐기 → SUIT Display | 세리프·붓글씨 톤이 ER과 어긋남. SUIT는 전문·현대, Pretendard와 산세리프 페어링, 히어로만 차별화 |
+| 2026-07-10 | Primary CTA를 er-green으로, er-dark 별칭을 greenDark로 | 잉크 블랙 CTA+쿨 민트 틴트 조합이 차갑게 느껴짐. greenTint를 #F0EDE4 웜 크림으로 조정 |
 
 ---
 
 ## What Does NOT Belong Here
 
-- Business logic, pricing, service descriptions → `js/strings.js`
-- Routing → `js/app-core.js`
-- Section content → `js/sections/*.js`
+- 비즈니스 로직, 가격, 서비스 설명 → `js/strings.js`
+- 라우팅 → `js/app-core.js`
+- 섹션 콘텐츠 → `js/sections/*.js`

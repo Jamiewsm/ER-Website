@@ -159,15 +159,15 @@
       txt("이 결과가 나에게", "This result feels") +
       "</p>" +
       '<label class="flex items-center gap-2 text-sm text-gray-800 cursor-pointer">' +
-      '<input type="radio" name="experiment-self" value="correct" class="accent-[#4a4540]">' +
+      '<input type="radio" name="experiment-self" value="correct" class="accent-[#30322D]">' +
       txt("맞는 편이다", "Mostly accurate") +
       "</label>" +
       '<label class="flex items-center gap-2 text-sm text-gray-800 cursor-pointer">' +
-      '<input type="radio" name="experiment-self" value="ambiguous" class="accent-[#4a4540]">' +
+      '<input type="radio" name="experiment-self" value="ambiguous" class="accent-[#30322D]">' +
       txt("애매하다", "Unclear / mixed") +
       "</label>" +
       '<label class="flex items-center gap-2 text-sm text-gray-800 cursor-pointer">' +
-      '<input type="radio" name="experiment-self" value="incorrect" class="accent-[#4a4540]">' +
+      '<input type="radio" name="experiment-self" value="incorrect" class="accent-[#30322D]">' +
       txt("맞지 않는 편이다", "Mostly inaccurate") +
       "</label>" +
       "</div>" +
@@ -231,7 +231,7 @@
       '"></textarea>' +
       "</div>" +
       "</div>" +
-      '<button type="button" id="experiment-submit-btn" class="w-full sm:w-auto bg-[#4a4540] hover:bg-[#3a3530] text-white font-bold py-3 px-8 rounded-full text-sm">' +
+      '<button type="button" id="experiment-submit-btn" class="w-full sm:w-auto bg-[#30322D] hover:bg-[#202219] text-white font-bold py-3 px-8 rounded-full text-sm">' +
       txt("제출하기", "Submit") +
       "</button>" +
       '<p id="experiment-submit-status" class="text-xs text-gray-600 min-h-[1.25rem]"></p>' +

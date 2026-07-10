@@ -1,0 +1,40 @@
+<!-- @dsCard name="Colors" group="Foundations" -->
+<!-- ER 팔레트 스와치 카드 — claude design(Design System pane)용 프리뷰 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ER · Colors</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+body{font-family:var(--er-font-sans);background:var(--er-base);color:var(--er-body);margin:0;padding:28px}
+h1{font-size:18px;color:var(--er-ink-soft);margin:0 0 4px}
+p.note{font-size:12px;color:var(--er-muted);margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:12px}
+.sw{border-radius:14px;overflow:hidden;border:1px solid var(--er-sand);background:var(--er-surface)}
+.chip{height:64px}
+.meta{padding:8px 10px;font-size:11px;color:var(--er-muted)}
+.meta b{display:block;color:var(--er-ink-soft);font-size:12px}
+</style>
+</head>
+<body>
+<h1>Restoration Green — Palette</h1>
+<p class="note">모든 색은 토큰으로만 사용. er-terra는 검사 결과 하이라이트 전용 예산제 색.</p>
+<div class="grid">
+  <div class="sw"><div class="chip" style="background:#FBFAF5"></div><div class="meta"><b>er-base</b>#FBFAF5 · 페이지 배경</div></div>
+  <div class="sw"><div class="chip" style="background:#FFFDF8"></div><div class="meta"><b>er-surface</b>#FFFDF8 · 카드</div></div>
+  <div class="sw"><div class="chip" style="background:#E2D8C8"></div><div class="meta"><b>er-sand</b>#E2D8C8 · 보더</div></div>
+  <div class="sw"><div class="chip" style="background:#202219"></div><div class="meta"><b>er-ink</b>#202219 · 제목·CTA</div></div>
+  <div class="sw"><div class="chip" style="background:#30322D"></div><div class="meta"><b>er-inkSoft</b>#30322D · 섹션 제목</div></div>
+  <div class="sw"><div class="chip" style="background:#44473F"></div><div class="meta"><b>er-body</b>#44473F · 본문</div></div>
+  <div class="sw"><div class="chip" style="background:#6F7068"></div><div class="meta"><b>er-muted</b>#6F7068 · 보조</div></div>
+  <div class="sw"><div class="chip" style="background:#657453"></div><div class="meta"><b>er-green</b>#657453 · 브랜드 액센트</div></div>
+  <div class="sw"><div class="chip" style="background:#566647"></div><div class="meta"><b>er-greenDark</b>#566647 · hover</div></div>
+  <div class="sw"><div class="chip" style="background:#30451F"></div><div class="meta"><b>er-greenDeep</b>#30451F · 최고 강조</div></div>
+  <div class="sw"><div class="chip" style="background:#EEF3E6"></div><div class="meta"><b>er-greenTint</b>#EEF3E6 · 태그 배경</div></div>
+  <div class="sw"><div class="chip" style="background:#B06149"></div><div class="meta"><b>er-terra</b>#B06149 · 결과 강조 전용</div></div>
+  <div class="sw"><div class="chip" style="background:#8F4634"></div><div class="meta"><b>er-terraDark</b>#8F4634 · terra hover</div></div>
+</div>
+</body>
+</html>

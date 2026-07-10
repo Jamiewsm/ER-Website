@@ -355,7 +355,7 @@
     adaptiveUi: {
       ko: {
         title: '적응형 에니어그램 심층 진단',
-        subtitle: '행동(열매)의 이면에 숨겨진 근원적 동기(뿌리)를 탐색합니다.<br>1차 응답을 분석하여 유력한 후보 유형을 좁히고, <span class="font-bold text-[#bfa68a]">맞춤형 심층 질문</span>을 통해 진짜 나를 찾아갑니다.',
+        subtitle: '행동(열매)의 이면에 숨겨진 근원적 동기(뿌리)를 탐색합니다.<br>1차 응답을 분석하여 유력한 후보 유형을 좁히고, <span class="font-bold text-[#657453]">맞춤형 심층 질문</span>을 통해 진짜 나를 찾아갑니다.',
         step1: '1단계: 기초 성향 및 하위 본능 파악',
         phase1Title: '1부: 일상적 태도 및 관계 패턴',
         phase1Desc: '극단적인 상황이 아닌, 편안한 상태에서의 본인 모습을 떠올리며 평가해 주세요.',
@@ -385,7 +385,7 @@
       },
       en: {
         title: 'Adaptive Enneagram Typing Assessment',
-        subtitle: 'This assessment explores the core motivations beneath your observable behavior.<br>Using your first-round responses, it narrows likely type candidates and applies <span class="font-bold text-[#bfa68a]">targeted follow-up questions</span> for a more precise typing result.',
+        subtitle: 'This assessment explores the core motivations beneath your observable behavior.<br>Using your first-round responses, it narrows likely type candidates and applies <span class="font-bold text-[#657453]">targeted follow-up questions</span> for a more precise typing result.',
         step1: 'Step 1: Baseline Pattern & Instinct',
         phase1Title: 'Part 1: Everyday Relational and Behavioral Patterns',
         phase1Desc: 'Please answer based on your usual, settled state rather than unusually stressful situations.',

@@ -1,0 +1,32 @@
+<!-- @dsCard name="Badges & Inputs" group="Components" -->
+<!-- ER 태그·배지·인포 스트립·입력 필드 카드 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ER · Badges &amp; Inputs</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+body{font-family:var(--er-font-sans);background:var(--er-base);color:var(--er-body);margin:0;padding:28px}
+h1{font-size:18px;color:var(--er-ink-soft);margin:0 0 4px}
+p.note{font-size:12px;color:var(--er-muted);margin:0 0 20px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.lb{font-size:11px;color:var(--er-muted);width:110px}
+.tag{display:inline-block;padding:5px 13px;border-radius:9999px;background:var(--er-green-tint);color:var(--er-ink-soft);font-size:12px;font-weight:600}
+.tag-ministry{background:#FFFBEB;border:1px solid #FDE68A;color:#B45309}
+.tag-cert{background:transparent;border:1px solid rgba(101,116,83,.3);color:var(--er-green)}
+.strip{display:flex;align-items:center;gap:10px;border-radius:9999px;background:var(--er-green-tint);border:1px solid rgba(101,116,83,.2);padding:9px 16px;font-size:12px;color:var(--er-ink-soft);max-width:480px}
+input.field{font-family:inherit;font-size:14px;padding:12px 15px;border-radius:12px;border:1px solid var(--er-sand);background:var(--er-surface);color:var(--er-body);width:240px;outline:none}
+input.field:focus{border-color:var(--er-green);box-shadow:0 0 0 3px rgba(101,116,83,.15)}
+</style>
+</head>
+<body>
+<h1>Badges &amp; Inputs</h1>
+<p class="note">태그 배경은 greenTint(솔리드 액센트 금지). Amber는 사역지원 신호 전용. 포커스 링은 그린.</p>
+<div class="row"><span class="lb">태그</span><span class="tag">부모와 자녀</span><span class="tag">부부와 가정</span><span class="tag">사역팀과 리더십</span></div>
+<div class="row"><span class="lb">특수 배지</span><span class="tag tag-ministry">목회자·선교사 무료 트랙</span><span class="tag tag-cert">IEA 인증</span></div>
+<div class="row"><span class="lb">인포 스트립</span><span class="strip">🌿&nbsp; 7월 기본과정 모집 중 — 7/5 마감 · 정원 10명</span></div>
+<div class="row"><span class="lb">입력</span><input class="field" placeholder="you@example.com"><input class="field" placeholder="이름을 입력해 주세요"></div>
+</body>
+</html>

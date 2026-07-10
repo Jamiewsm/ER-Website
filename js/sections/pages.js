@@ -9,9 +9,9 @@ function renderPrivacy() {
                     <p class="mt-3 text-sm text-gray-500 break-keep">공개 사이트의 신청과 로그인 과정에서 받은 정보를 어떤 태도로 다루는지 차분히 안내합니다.</p>
                 </div>
                 <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                    <div class="rounded-2xl bg-er-base/60 border border-white/30 p-6 shadow-soft floating-card">ER은 신청서, 로그인, 문의 과정에서 이름, 연락처, 이메일, 제출 메시지와 같은 최소한의 정보를 받습니다.</div>
-                    <div class="rounded-2xl bg-er-base/60 border border-white/30 p-6 shadow-soft floating-card">받은 정보는 상담 안내, 협력 응답, 운영상 필요한 계정 확인 목적에만 사용합니다.</div>
-                    <div class="rounded-2xl bg-er-base/60 border border-white/30 p-6 shadow-soft floating-card">법적 보관 의무가 없는 한, 운영 목적이 끝난 정보는 정리 대상이 됩니다. 더 자세한 정책은 추후 별도 문서로 정리할 예정입니다.</div>
+                    <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">ER은 신청서, 로그인, 문의 과정에서 이름, 연락처, 이메일, 제출 메시지와 같은 최소한의 정보를 받습니다.</div>
+                    <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">받은 정보는 상담 안내, 협력 응답, 운영상 필요한 계정 확인 목적에만 사용합니다.</div>
+                    <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">법적 보관 의무가 없는 한, 운영 목적이 끝난 정보는 정리 대상이 됩니다. 더 자세한 정책은 추후 별도 문서로 정리할 예정입니다.</div>
                 </div>
             </div>
         </div>
@@ -28,9 +28,9 @@ function renderTerms() {
                     <p class="mt-3 text-sm text-gray-500 break-keep">공개 사이트와 운영 포털을 이용하실 때 알아두시면 좋은 기본 원칙을 짧게 정리했습니다.</p>
                 </div>
                 <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                    <div class="rounded-2xl bg-white border border-white/40 p-6 shadow-soft floating-card">공개 사이트의 정보는 ER의 사역과 참여 방법을 소개하기 위한 목적입니다.</div>
-                    <div class="rounded-2xl bg-white border border-white/40 p-6 shadow-soft floating-card">운영 포털과 코치 앱은 승인된 코치와 기존 참여자를 위한 내부 기능이며, 일반 방문자는 공개 안내와 문의 경로를 먼저 이용합니다.</div>
-                    <div class="rounded-2xl bg-white border border-white/40 p-6 shadow-soft floating-card">프로그램 일정과 구성, 제공 방식은 대상과 협력 구조에 따라 달라질 수 있습니다.</div>
+                    <div class="rounded-2xl bg-er-surface border border-er-sand/50 p-6 shadow-soft floating-card">공개 사이트의 정보는 ER의 사역과 참여 방법을 소개하기 위한 목적입니다.</div>
+                    <div class="rounded-2xl bg-er-surface border border-er-sand/50 p-6 shadow-soft floating-card">운영 포털과 코치 앱은 승인된 코치와 기존 참여자를 위한 내부 기능이며, 일반 방문자는 공개 안내와 문의 경로를 먼저 이용합니다.</div>
+                    <div class="rounded-2xl bg-er-surface border border-er-sand/50 p-6 shadow-soft floating-card">프로그램 일정과 구성, 제공 방식은 대상과 협력 구조에 따라 달라질 수 있습니다.</div>
                 </div>
             </div>
         </div>
@@ -55,7 +55,7 @@ function renderResources() {
                             <p class="mt-2 text-sm text-gray-600 leading-relaxed break-keep">이번 호 하이라이트 — <strong>Parenting</strong>과 양육의 자기이해. 전체 PDF 전에 웹에서 읽는 짧은 글.</p>
                             <span class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-er-dark">창간호 읽기 <i class="fas fa-arrow-right text-[10px]"></i></span>
                         </div>
-                        <div onclick="window.location.href='/parenting-workshop.html?apply_source=magazine'" class="group bg-white rounded-[2rem] p-6 md:p-7 shadow-soft floating-card cursor-pointer border border-er-accent/20 relative overflow-hidden">
+                        <div onclick="window.location.href='/parenting-workshop.html?apply_source=magazine'" class="group bg-er-surface rounded-[2rem] p-6 md:p-7 shadow-soft floating-card cursor-pointer border border-er-sand/60 relative overflow-hidden">
                             <span class="inline-flex rounded-full bg-[#c47a5a] text-white text-[9px] font-bold px-2.5 py-0.5">모집중</span>
                             <h3 class="mt-3 text-lg font-bold text-er-dark break-keep">Enneagram for Parenting</h3>
                             <p class="mt-2 text-sm text-gray-600 leading-relaxed break-keep">매거진 주제와 이어지는 4주 심화 워크샵 — 6월–7월, Zoom, $120</p>
@@ -63,7 +63,7 @@ function renderResources() {
                         </div>
                     </div>
                     
-                    <div onclick="renderSection('types_guide')" class="group bg-white rounded-[2rem] p-6 md:p-8 shadow-soft floating-card cursor-pointer relative overflow-hidden border border-white/40">
+                    <div onclick="renderSection('types_guide')" class="group bg-er-surface rounded-[2rem] p-6 md:p-8 shadow-soft floating-card cursor-pointer relative overflow-hidden border border-er-sand/60">
                         <div class="absolute top-0 right-0 w-48 h-48 bg-er-accent/10 rounded-full -mr-12 -mt-12 blur-2xl group-hover:bg-er-accent/20 transition-all"></div>
                         
                         <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
@@ -97,7 +97,7 @@ function renderResources() {
                             </button>
                         </div>
 
-                        <div class="bg-white rounded-[2rem] p-6 md:p-8 shadow-soft border border-white/40 floating-card">
+                        <div class="bg-er-surface rounded-[2rem] p-6 md:p-8 shadow-soft border border-er-sand/60 floating-card">
                             <div class="flex items-center gap-2 mb-5">
                                 <i class="fas fa-book text-er-accent text-lg"></i>
                                 <h3 class="text-lg font-bold text-gray-900">추천 도서</h3>

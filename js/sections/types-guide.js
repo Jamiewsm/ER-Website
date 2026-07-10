@@ -117,33 +117,33 @@ function renderTypesGuide() {
         modal.id = 'type-detail-modal';
         modal.className = 'fixed inset-0 z-50 flex items-end md:items-center justify-center p-4 bg-black/40 backdrop-blur-sm';
         modal.innerHTML = `
-            <div class="bg-white rounded-[2rem] w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl animate-fade-in-up">
-                <div class="sticky top-0 bg-white rounded-t-[2rem] px-6 pt-6 pb-4 border-b border-gray-100 flex items-center justify-between">
+            <div class="bg-er-surface rounded-[2rem] w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl animate-fade-in-up border border-er-sand/60">
+                <div class="sticky top-0 bg-er-surface rounded-t-[2rem] px-6 pt-6 pb-4 border-b border-er-sand/50 flex items-center justify-between">
                     <div>
-                        <span class="text-er-accent font-bold text-[10px] tracking-widest uppercase">Type Detail</span>
-                        <h3 class="text-lg font-bold text-er-dark mt-0.5">${detail.title}</h3>
+                        <span class="text-er-green font-bold text-[10px] tracking-widest uppercase">Type Detail</span>
+                        <h3 class="text-lg font-bold text-er-inkSoft mt-0.5">${detail.title}</h3>
                     </div>
-                    <button onclick="document.getElementById('type-detail-modal').remove()" class="w-9 h-9 rounded-full bg-er-base flex items-center justify-center text-gray-500 hover:bg-er-dark hover:text-white transition-colors">
+                    <button onclick="document.getElementById('type-detail-modal').remove()" class="w-9 h-9 rounded-full bg-er-base flex items-center justify-center text-er-muted hover:bg-er-green hover:text-white transition-colors">
                         <i class="fas fa-times text-sm"></i>
                     </button>
                 </div>
                 <div class="p-6 grid gap-4">
-                    <div class="rounded-2xl border border-gray-100 bg-er-base/60 p-4">
-                        <p class="text-[11px] font-bold text-gray-500 tracking-[0.15em] uppercase mb-2">한 문장 핵심</p>
-                        <p class="text-sm text-gray-700 break-keep leading-relaxed">${detail.oneLine}</p>
+                    <div class="rounded-2xl border border-er-sand/50 bg-er-base/60 p-4">
+                        <p class="text-[11px] font-bold text-er-muted tracking-[0.15em] uppercase mb-2">한 문장 핵심</p>
+                        <p class="text-sm text-er-body break-keep leading-relaxed">${detail.oneLine}</p>
                     </div>
-                    <div class="rounded-2xl border border-gray-100 bg-white p-4">
-                        <p class="text-[11px] font-bold text-gray-500 tracking-[0.15em] uppercase mb-2">기본 특징</p>
+                    <div class="rounded-2xl border border-er-sand/50 bg-er-surface p-4">
+                        <p class="text-[11px] font-bold text-er-muted tracking-[0.15em] uppercase mb-2">기본 특징</p>
                         <ul class="space-y-2">
-                            ${detail.basicTraits.map(item => `<li class="text-sm text-gray-700 break-keep leading-relaxed">• ${item}</li>`).join('')}
+                            ${detail.basicTraits.map(item => `<li class="text-sm text-er-body break-keep leading-relaxed">• ${item}</li>`).join('')}
                         </ul>
-                        <p class="mt-3 text-sm text-er-dark font-semibold break-keep">핵심: ${detail.coreSummary}</p>
+                        <p class="mt-3 text-sm text-er-inkSoft font-semibold break-keep">핵심: ${detail.coreSummary}</p>
                     </div>
-                    <div class="rounded-2xl border border-gray-100 bg-white p-4">
-                        <p class="text-[11px] font-bold text-gray-500 tracking-[0.15em] uppercase mb-3">하위유형별 상세</p>
+                    <div class="rounded-2xl border border-er-sand/50 bg-er-surface p-4">
+                        <p class="text-[11px] font-bold text-er-muted tracking-[0.15em] uppercase mb-3">하위유형별 상세</p>
                         <div class="grid gap-3">
                             ${detail.subtypes.map(item => `
-                                <div class="rounded-xl border border-gray-100 bg-er-base/40 p-4">
+                                <div class="rounded-xl border border-er-sand/40 bg-er-base/55 p-4">
                                     <p class="text-sm font-bold text-er-dark">${item.name} · ${item.subtitle}</p>
                                     <p class="mt-1 text-sm text-gray-700 break-keep leading-relaxed">"${item.catch}"</p>
                                     <p class="mt-2 text-xs font-bold text-gray-500 tracking-wide">특징</p>
@@ -168,8 +168,8 @@ function renderTypesGuide() {
                             `).join('')}
                         </div>
                     </div>
-                    <div class="rounded-2xl border border-gray-100 bg-white p-4">
-                        <p class="text-[11px] font-bold text-gray-500 tracking-[0.15em] uppercase mb-3">한눈에 정리</p>
+                    <div class="rounded-2xl border border-er-sand/50 bg-er-surface p-4">
+                        <p class="text-[11px] font-bold text-er-muted tracking-[0.15em] uppercase mb-3">한눈에 정리</p>
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm">
                                 <thead>
@@ -191,17 +191,17 @@ function renderTypesGuide() {
                             </table>
                         </div>
                     </div>
-                    <div class="rounded-2xl border border-gray-100 bg-white p-4">
-                        <p class="text-[11px] font-bold text-gray-500 tracking-[0.15em] uppercase mb-2">복음적 회복</p>
-                        <p class="text-sm text-gray-700 break-keep leading-relaxed"><span class="font-bold">Original Design:</span> ${detail.gospelRecovery.originalDesign}</p>
-                        <p class="mt-1 text-sm text-gray-700 break-keep leading-relaxed"><span class="font-bold">False Self:</span> ${detail.gospelRecovery.falseSelf}</p>
+                    <div class="rounded-2xl border border-er-sand/50 bg-er-surface p-4">
+                        <p class="text-[11px] font-bold text-er-muted tracking-[0.15em] uppercase mb-2">복음적 회복</p>
+                        <p class="text-sm text-er-body break-keep leading-relaxed"><span class="font-bold">Original Design:</span> ${detail.gospelRecovery.originalDesign}</p>
+                        <p class="mt-1 text-sm text-er-body break-keep leading-relaxed"><span class="font-bold">False Self:</span> ${detail.gospelRecovery.falseSelf}</p>
                         <ul class="mt-2 space-y-1">
-                            ${detail.gospelRecovery.restoration.map(item => `<li class="text-sm text-gray-700 break-keep leading-relaxed">• ${item}</li>`).join('')}
+                            ${detail.gospelRecovery.restoration.map(item => `<li class="text-sm text-er-body break-keep leading-relaxed">• ${item}</li>`).join('')}
                         </ul>
                     </div>
-                    <div class="rounded-2xl border border-er-accent/30 bg-er-base/70 p-4">
-                        <p class="text-sm text-er-dark font-semibold break-keep">한 줄 마무리</p>
-                        <p class="mt-1 text-sm text-gray-700 break-keep leading-relaxed">${detail.closing}</p>
+                    <div class="rounded-2xl border border-er-green/25 bg-er-greenTint/50 p-4">
+                        <p class="text-sm text-er-inkSoft font-semibold break-keep">한 줄 마무리</p>
+                        <p class="mt-1 text-sm text-er-body break-keep leading-relaxed">${detail.closing}</p>
                     </div>
                 </div>
             </div>
@@ -215,42 +215,42 @@ function renderTypesGuide() {
     }
 
     return `
-        <div class="min-h-screen bg-gray-50 py-16 px-4">
-            <div class="max-w-6xl mx-auto">
-                <div class="mb-8 flex items-center justify-between animate-fade-in-up">
-                    <button onclick="renderSection('test')" class="px-3 py-1.5 bg-white rounded-full text-xs font-medium text-gray-600 shadow-sm flex items-center gap-1 transition-all">
+        <div class="min-h-screen bg-er-base">
+            <section class="bg-er-dark text-white py-12 md:py-16 px-6 relative overflow-hidden rounded-b-[3rem]">
+                <div class="absolute top-[-20%] right-[-10%] w-[360px] h-[360px] bg-er-green/20 rounded-full blur-[110px] pointer-events-none"></div>
+                <div class="max-w-6xl mx-auto relative z-10">
+                    <button onclick="renderSection('test')" class="mb-5 px-3 py-1.5 bg-white/10 border border-white/15 rounded-full text-xs font-medium text-white/90 flex items-center gap-1 transition-all hover:bg-white/20 w-fit">
                         <i class="fas fa-arrow-left"></i> 프리미엄 검사로
                     </button>
-                    <h2 class="text-lg font-bold text-gray-900">9가지 유형별 회복의 길</h2>
-                    <div class="w-12"></div>
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] font-bold tracking-widest uppercase text-er-greenTint mb-4">Types Guide</span>
+                    <h2 class="font-display text-2xl md:text-4xl font-extrabold tracking-[-0.03em] break-keep">9가지 유형별 회복의 길</h2>
+                    <p class="mt-3 text-sm text-white/80 break-keep max-w-2xl leading-relaxed">각 유형은 단순한 성격 분류가 아니라 회복의 방향을 안내하는 지도입니다. 유형별 설명과 회복 경로를 참고해 현재의 패턴을 점검해 보세요.</p>
                 </div>
+            </section>
 
-                <div class="mb-6 rounded-2xl bg-white border border-gray-100 p-4 text-sm text-gray-600 break-keep animate-fade-in-up">
-                    각 유형은 단순한 성격 분류가 아니라 회복의 방향을 안내하는 지도입니다. 유형별 설명과 회복 경로를 참고해 현재의 패턴을 점검해 보세요.
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in-up" style="animation-delay: 0.1s;">
-                    ${types.map((t, idx) => `
-                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 group">
+            <div class="max-w-6xl mx-auto px-4 py-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-fade-in-up">
+                    ${types.map((t) => `
+                        <div class="bg-er-surface rounded-2xl shadow-soft border border-er-sand/60 overflow-hidden hover:shadow-card transition-all duration-300 group">
                             <div class="h-1.5 w-full ${t.bg.replace('bg-', 'bg-').replace('50', '400')}"></div>
                             <div class="p-5">
                                 <div class="flex items-center justify-between mb-3">
-                                    <h3 class="text-base font-bold text-gray-800 relative z-10">${t.name.split('(')[0]}</h3>
-                                    <span class="text-3xl font-serif font-bold text-gray-100 group-hover:text-er-accent/20 transition-colors">${t.id}</span>
+                                    <h3 class="text-base font-bold text-er-inkSoft relative z-10">${t.name.split('(')[0]}</h3>
+                                    <span class="text-3xl font-bold text-er-sand group-hover:text-er-green/30 transition-colors tabular-nums">${t.id}</span>
                                 </div>
-                                <p class="text-[10px] text-gray-400 font-serif italic mb-3 -mt-4">${t.name.split('(')[1].replace(')','')}</p>
-                                <p class="text-gray-600 text-xs leading-relaxed mb-5 min-h-[2.5em] break-keep">${t.desc}</p>
+                                <p class="text-[10px] text-er-muted mb-3 -mt-4">${t.name.split('(')[1].replace(')','')}</p>
+                                <p class="text-er-body text-xs leading-relaxed mb-5 min-h-[2.5em] break-keep">${t.desc}</p>
                                 
-                                <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 group-hover:bg-er-base transition-colors">
+                                <div class="bg-er-base/60 rounded-xl p-3 border border-er-sand/40 group-hover:bg-er-greenTint/35 transition-colors">
                                     <div class="flex items-start gap-2">
-                                        <i class="fas fa-seedling text-er-accent mt-0.5 text-xs"></i>
+                                        <i class="fas fa-seedling text-er-green mt-0.5 text-xs"></i>
                                         <div>
-                                            <p class="text-[9px] text-gray-400 font-bold tracking-wider">회복의 길</p>
-                                            <p class="text-xs text-gray-800 font-medium mt-0.5 break-keep">${t.healing}</p>
+                                            <p class="text-[9px] text-er-muted font-bold tracking-wider">회복의 길</p>
+                                            <p class="text-xs text-er-inkSoft font-medium mt-0.5 break-keep">${t.healing}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <button onclick="openTypeDetail(${t.id})" class="mt-4 w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-xs hover:bg-er-dark hover:text-white hover:border-transparent transition-all">
+                                <button onclick="openTypeDetail(${t.id})" class="mt-4 w-full py-2.5 rounded-xl border border-er-sand text-er-body font-bold text-xs hover:bg-er-green hover:text-white hover:border-transparent transition-all">
                                     자세히 알아보기
                                 </button>
                             </div>
@@ -259,7 +259,7 @@ function renderTypesGuide() {
                 </div>
                 
                 <div class="mt-12 text-center pb-10">
-                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors text-sm">
+                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-green text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-er-greenDark transition-colors text-sm">
                         전문가 상담 신청하기
                     </button>
                 </div>

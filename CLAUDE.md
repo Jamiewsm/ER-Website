@@ -45,6 +45,13 @@ rg "Type Five|Avarice|Isolation|Castle" docs/knowledge_base/enneagram/complete_e
 rg "Twos and Eights|2 vs 8|Social Two" docs/knowledge_base/enneagram/complete_enneagram
 ```
 
+## Design System
+
+시각·UI 관련 결정을 하기 전에 반드시 [DESIGN.md](./DESIGN.md)를 먼저 읽으세요.
+서체, 색, 간격, 컴포넌트 패턴, 금지 패턴이 모두 거기에 정의되어 있습니다.
+사용자의 명시적 승인 없이 시스템에서 벗어나지 마세요.
+QA 시 DESIGN.md와 어긋나는 코드(특히 hex 하드코딩, 구 브라운 토큰)를 플래그하세요.
+
 ## Diagnostic Design Principles
 
 When improving the test, prioritize motivation over surface behavior.
