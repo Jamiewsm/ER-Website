@@ -25,7 +25,7 @@ function getPaidApplyCategoryOptions() {
         '테스트 결과지 해석상담 ($50)',
         '유형(Typing) 상담 ($100)',
         '개별 코칭 1회 ($80)',
-        '에니어그램 기본과정 8주 ($300)',
+        '에니어그램 8주 기본과정 ($300)',
         '자녀 양육 코칭 문의',
         '회복 코칭 4회 ($300)',
         '회복 코칭 8회 ($480)',
@@ -173,12 +173,12 @@ function renderJulyBasicCourseApply(submitSource) {
                         <div class="course-apply-poster-wrap bg-[#FBFAF5]">
                             <img
                                 src="/assets/er-visual/enneagram-basic-july-2026.jpg"
-                                alt="에니어그램 기본과정 8주 안내 이미지"
+                                alt="에니어그램 8주 기본과정 안내 이미지"
                                 class="course-apply-poster h-48 w-full object-cover object-top sm:h-60 md:h-full lg:h-[28rem]"
                             />
                         </div>
                         <div class="p-5 sm:p-6">
-                            <h1 class="text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl">에니어그램 기본과정 8주</h1>
+                            <h1 class="text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl">에니어그램 8주 기본과정</h1>
                             <p class="mt-2 text-base font-semibold leading-relaxed text-er-primary break-keep">
                                 관계 속에서 드러나는 나를 이해하는 시간
                             </p>
@@ -204,7 +204,7 @@ function renderJulyBasicCourseApply(submitSource) {
                     </p>
 
                     <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_july' })">
-                        <input type="hidden" name="category" value="에니어그램 기본과정 8주 ($300)">
+                        <input type="hidden" name="category" value="에니어그램 8주 기본과정 ($300)">
 
                         <div>
                             <label class="mb-2 block text-sm font-bold text-gray-700">이름</label>
@@ -287,8 +287,8 @@ function renderJulyBasicCourseApply(submitSource) {
                         </div>
 
                         <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
-                        <button id="apply-submit-btn" type="submit" data-default-label="에니어그램 기본과정 신청하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
-                            에니어그램 기본과정 신청하기
+                        <button id="apply-submit-btn" type="submit" data-default-label="에니어그램 8주 기본과정 신청하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
+                            에니어그램 8주 기본과정 신청하기
                         </button>
                     </form>
 
@@ -357,12 +357,12 @@ function renderApply(payload = null) {
         },
         enneagram_basic_july: {
             track: 'paid',
-            title: '에니어그램 기본과정 8주 신청',
+            title: '에니어그램 8주 기본과정 신청',
             desc: '7-8월 온라인 기본과정 신청을 남겨 주세요.',
-            bannerTitle: '에니어그램 기본과정 8주',
+            bannerTitle: '에니어그램 8주 기본과정',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
-            category: '에니어그램 기본과정 8주 ($300)',
-            message: '에니어그램 기본과정 8주 신청합니다.'
+            category: '에니어그램 8주 기본과정 ($300)',
+            message: '에니어그램 8주 기본과정 신청합니다.'
         },
         couple: {
             track: 'paid',

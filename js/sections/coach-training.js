@@ -8,7 +8,7 @@ function renderCoachTraining() {
                     <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-greenTint mb-5">코치양성</span>
                     <h2 class="font-display text-3xl md:text-5xl font-extrabold tracking-[-0.03em] break-keep">전문가 양성반</h2>
                     <p class="mt-4 text-sm md:text-base text-white/80 max-w-3xl mx-auto break-keep leading-relaxed">
-                        8주 전문가 양성반이 시작점입니다. 수료 후 스터디에 참여할 수 있고, 스터디 2개월 이상 참여 시 1년 코칭스쿨 지원 자격이 열립니다.
+                        전문가 양성반은 <strong class="text-white">에니어그램 8주 기본과정</strong>으로 시작해 스터디, 코칭스쿨까지 이어지는 ER 전문가 여정입니다.
                     </p>
                 </div>
             </section>
@@ -19,9 +19,9 @@ function renderCoachTraining() {
                     <h3 class="text-lg font-bold text-er-inkSoft mb-4">과정 흐름</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         ${[
-                            ['1단계', '8주 전문가 양성반', '에니어그램 핵심 이론과 ER 관점을 배우고, 실제 적용의 기초를 세웁니다.'],
-                            ['2단계', '팔로우업 스터디', '양성반 수료자는 자유롭게 스터디에 참여할 수 있습니다. (격주 운영)'],
-                            ['3단계', '1년 코칭스쿨', '양성반 수료 + 스터디 2개월 이상 참여 시 지원 가능']
+                            ['1단계', '에니어그램 8주 기본과정', '에니어그램 핵심 이론과 ER 관점을 배우고, 실제 적용의 기초를 세웁니다.'],
+                            ['2단계', '팔로우업 스터디', '기본과정 수료 후 자유롭게 스터디에 참여할 수 있습니다. (격주 운영)'],
+                            ['3단계', '1년 코칭스쿨', '기본과정 수료 + 스터디 2개월 이상 참여 시 지원 가능']
                         ].map(([step, title, body]) => `
                             <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-5">
                                 <p class="text-[10px] font-bold tracking-wider text-er-green uppercase">${step}</p>
@@ -36,7 +36,7 @@ function renderCoachTraining() {
                     ${[
                         {
                             b: '핵심 코스',
-                            t: '8주 전문가 양성반',
+                            t: '에니어그램 8주 기본과정',
                             d: [
                                 '에니어그램 핵심 이론 + ER 핵심 관점 정리',
                                 '강의, 과제, 나눔을 통한 실제 적용 훈련',
@@ -49,7 +49,7 @@ function renderCoachTraining() {
                             b: '팔로우업',
                             t: '스터디 모임',
                             d: [
-                                '양성반 수료자 대상 자유 참여',
+                                '기본과정 수료자 대상 자유 참여',
                                 '격주 스터디 + 요약/정리 과제',
                                 '최소 2개월 이상 참여 시 코칭스쿨 지원 가능'
                             ],

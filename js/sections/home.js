@@ -24,6 +24,9 @@ function renderHome() {
     const upcomingProgramsBanner = (typeof renderUpcomingProgramsBanner === 'function')
         ? renderUpcomingProgramsBanner()
         : '';
+    const upcomingProgramsDesktopCard = (typeof renderUpcomingProgramsDesktopCard === 'function')
+        ? renderUpcomingProgramsDesktopCard()
+        : '';
 
     const benefits = [
         { icon: 'fa-regular fa-gem', title: '에니어그램 전문성', text: '검증된 이론과 실전 경험' },
@@ -53,7 +56,7 @@ function renderHome() {
         },
         {
             badge: '모집 예정',
-            title: '에니어그램 기본과정 8주',
+            title: '에니어그램 8주 기본과정',
             text: '10월 개강 예정 — 관계 속에서 드러나는 나를 이해하는 8주',
             price: '$300',
             image: 'background.png',
@@ -61,7 +64,7 @@ function renderHome() {
             button: '과정 안내',
             action: "window.location.href='/basic-course.html'",
             button2: '알림 신청',
-            action2: "window.location.href='mailto:json@er-coaching.com?subject=' + encodeURIComponent('10월 에니어그램 기본과정 알림 신청')"
+            action2: "window.location.href='mailto:json@er-coaching.com?subject=' + encodeURIComponent('10월 에니어그램 8주 기본과정 알림 신청')"
         },
         {
             badge: '테스트',
@@ -205,6 +208,7 @@ function renderHome() {
                         <img src="background.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center; filter:saturate(1.03) contrast(0.98) brightness(1.04);">
                         <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
+                        ${upcomingProgramsDesktopCard}
                     </div>
                 </div>
             </section>

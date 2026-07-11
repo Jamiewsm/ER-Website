@@ -25,6 +25,7 @@
     '결과지 해석상담': 'result_consult',
     '관계 패턴 코칭': 'coaching_single',
     'ER 전문가 양성반': 'coach_training',
+    '에니어그램 8주 기본과정': 'basic_course',
     '에니어그램 기본과정 8주': 'basic_course',
     '커리어/소명 코칭': 'identity_session',
     '리더십/소명 코칭': 'coach_training',
@@ -50,7 +51,7 @@
     const primary = withResultConsultPrimary(programNames);
     if (!isJulyBasicRecruitmentOpen()) return primary;
     const filtered = primary.filter((name) => !['result_consult', 'basic_course'].includes(resolveKey(name)));
-    return ['테스트 결과지 해석상담', '에니어그램 기본과정 8주', ...filtered].slice(0, 3);
+    return ['테스트 결과지 해석상담', '에니어그램 8주 기본과정', ...filtered].slice(0, 3);
   }
 
   const PROGRAMS = {
@@ -148,24 +149,24 @@
     },
     basic_course: {
       key: 'basic_course',
-      title: '에니어그램 기본과정 8주',
-      shortTitle: '기본과정 8주',
+      title: '에니어그램 8주 기본과정',
+      shortTitle: '8주 기본과정',
       price: PRICING.basic_course,
-      category: '에니어그램 기본과정 8주 ($300)',
+      category: '에니어그램 8주 기본과정 ($300)',
       track: 'paid',
       focus: 'enneagram_basic_july',
       featured: true,
-      outcome: '7월 기수 진행 중 · A반 7/7 · B반 7/10 개강 · 8주 온라인 + 1:1 멘토링',
+      outcome: '10월 기수 모집 예정 · 8주 온라인 + 1:1 멘토링',
       reasonPrimary: '무료 진단 결과를 체계적인 8주 학습으로 확장하기 좋은 시점입니다.',
       reasonSecondary: '9유형의 핵심 동기와 회복 관점을 깊이 배우기 좋습니다.',
-      applyMessage: '에니어그램 기본과정 8주 신청합니다.'
+      applyMessage: '에니어그램 8주 기본과정 신청합니다.'
     },
     coach_training: {
       key: 'coach_training',
       title: 'ER 전문가 양성반',
       shortTitle: '전문가 양성반',
       navigateSection: 'coach_training',
-      outcome: '에니어그램 코칭·사역 현장에 적용하는 전문가 훈련 과정입니다.',
+      outcome: '에니어그램 8주 기본과정, 스터디, 코칭스쿨로 이어지는 ER 전문가 여정입니다.',
       reasonPrimary: '다른 사람의 회복 여정을 돕는 소명과 연결됩니다.',
       reasonSecondary: '리더십·사역·코칭 역량을 체계적으로 키우기 좋습니다.',
       applyMessage: 'ER 전문가 양성반 안내를 받고 싶습니다.'
