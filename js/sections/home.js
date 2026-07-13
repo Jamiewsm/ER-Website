@@ -331,12 +331,10 @@ function renderHome() {
 
                             <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                                 ${programCards.map((card) => `
-                                    <article class="group flex min-h-[24rem] flex-col rounded-2xl border border-er-sand bg-[#fbf8f1] p-4 shadow-[0_14px_40px_rgba(94,77,47,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(94,77,47,0.11)]">
-                                        <div class="rounded-2xl bg-[#f0eadf] p-2 ring-1 ring-[#e5dac8]">
-                                            <div class="relative aspect-[1.45] overflow-hidden rounded-xl bg-[#e8dfd1]">
-                                                <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
-                                                <span class="absolute left-3 top-3 rounded-full bg-er-green px-3 py-1 text-[10px] font-black text-er-surface shadow-sm">${card.badge}</span>
-                                            </div>
+                                    <article class="group flex min-h-[24rem] flex-col rounded-2xl border border-er-sand/60 bg-er-surface p-4 shadow-[0_14px_40px_rgba(94,77,47,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(94,77,47,0.11)]">
+                                        <div class="relative aspect-[1.45] overflow-hidden rounded-[1.15rem] bg-er-greenTint">
+                                            <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
+                                            <span class="absolute left-3 top-3 rounded-full bg-er-green px-3 py-1 text-[10px] font-black text-er-surface shadow-sm">${card.badge}</span>
                                         </div>
                                         <div class="flex flex-1 flex-col pt-5">
                                             <h3 class="text-[1.05rem] font-black leading-snug tracking-[-0.01em] text-er-inkSoft break-keep">${card.title}</h3>
