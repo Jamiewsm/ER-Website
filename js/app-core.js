@@ -124,7 +124,7 @@ function renderSection(sectionId, payload = null, options = {}) {
             types_guide: '유형 안내',
             programs: '서비스 안내',
             parenting: 'Parenting',
-            coaches: 'ER 대표 소개',
+            coaches: '코치진 소개',
             coach_training: '전문가 양성반',
             community: '회복 이야기',
             support: '사역지원',

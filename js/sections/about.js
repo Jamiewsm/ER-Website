@@ -80,12 +80,12 @@ function renderAbout() {
                             <span class="text-[10px] tracking-widest text-er-greenTint font-bold uppercase">Next Step</span>
                             <h3 class="mt-3 text-xl md:text-2xl font-bold break-keep">ER이 어떻게 일하는지 보셨다면, 함께할 코치를 만나보세요.</h3>
                             <p class="mt-3 text-sm md:text-[15px] text-white/75 leading-relaxed break-keep">
-                                손지영 대표를 비롯해 7명의 코치 프로필과 자격, 전문 분야는 코치 소개 페이지에서 확인하실 수 있습니다.
+                                손지영 대표의 약력과 전문 분야, 함께 훈련 중인 협력 코치진은 코치진 소개 페이지에서 확인하실 수 있습니다.
                             </p>
                         </div>
                         <div class="flex flex-col sm:flex-row lg:flex-col gap-3">
                             <button onclick="renderSection('coaches')" class="inline-flex items-center justify-center rounded-full bg-white text-er-dark px-6 py-3 text-sm font-bold shadow-md transition-all hover:-translate-y-0.5 hover:bg-er-greenTint">
-                                코치 소개 보기
+                                코치진 소개 보기
                             </button>
                             <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/5 px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-white/10">
                                 프로그램 보기

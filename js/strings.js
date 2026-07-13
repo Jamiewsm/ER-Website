@@ -10,7 +10,7 @@
       news: '사역소식',
       about: 'ER 소개',
       programs: '프로그램',
-      coaches: 'ER 대표 소개',
+      coaches: '코치진 소개',
       resources: '자료실',
       community: '함께한 이야기',
       support: '후원하기',
@@ -327,24 +327,32 @@
     resources: { label: '자료실', noticesTitle: '공지·소식', typesGuideTitle: '유형 가이드' },
 
     coaches: {
-      label: 'ER 대표 소개',
-      title: '회복의 여정을 함께하는 대표와 협력자를 소개합니다',
+      label: '코치진 소개',
+      title: '회복의 여정을 함께하는 대표와 코치진을 소개합니다',
       desc: '에니어그램과 기독교 세계관을 통합적으로 적용해 개인·가정·공동체의 회복을 함께 걸어갑니다.',
       ministryBadge: '사역지원 전담',
       ministryDesc: '목회자·선교사 무료 코칭 트랙을 담당합니다.',
       ctaApply: '상담 신청하기',
       ctaMinistry: '사역지원 신청하기',
-      certLabel: '자격',
+      certLabel: '약력',
       specialtyLabel: '전문 분야',
       list: [
         {
           id: 'coach-son',
           name: '손지영 대표',
-          role: '대표 · Founder',
+          role: 'ER 대표 · 강사 · Head Coach',
+          organizationBadge: '대한민국 정부 인증 여성기업',
           photo: 'son-profile-picture.png',
           bio: '손지영 대표는 오랫동안 중동 선교와 캠퍼스 사역 현장에서 목회자·선교사와 공동체를 섬겨 왔으며, 두 자녀를 양육하는 엄마로서 가정의 실제 고민을 함께 다룹니다. ER 소개에 담긴 비전처럼 에니어그램과 기독교 세계관을 통합적으로 적용해 개인과 공동체의 회복을 돕고 있습니다.',
           specialties: ['개인 자기 이해 코칭', '부부·가정 회복', '사역자·선교사 돌봄', '에니어그램 강사 양성'],
-          certs: ['Enneagram Spectrum Advanced Certification', 'IEA Accredited Instructor', 'SOIM GLTC Instructor', 'Arizona State University 심리학 석사 (재학 중)'],
+          certs: [
+            '한양대학교 역사학과 졸업',
+            'Arizona State University 심리학 석사 과정',
+            'Enneagram Spectrum 공인 트레이너 · 강사 자격 과정 운영 (Jerry Wagner, PhD)',
+            'IEA Accredited Instructor',
+            'The Redeemed Enneagram 저자',
+            'SOIM 글로벌 리더십 강사'
+          ],
           ministry: true,
           locations: 'Korea · USA'
         }
