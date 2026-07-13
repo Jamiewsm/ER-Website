@@ -22,6 +22,9 @@ function renderCoaches() {
                 ${svgCross}${C.ministryBadge || '사역지원 전담'}
                </span>`
             : '';
+        const organizationBadge = coach.organizationBadge
+            ? `<span class="inline-flex items-center px-3 py-1 rounded-full bg-er-greenTint border border-er-green/20 text-er-green text-[11px] font-semibold tracking-wide">${coach.organizationBadge}</span>`
+            : '';
 
         const ctaTrack = coach.ministry ? 'ministry' : 'paid';
         const ctaLabel = coach.ministry ? (C.ctaMinistry || '사역지원 신청하기') : (C.ctaApply || '상담 신청하기');
@@ -44,6 +47,7 @@ function renderCoaches() {
                         <div>
                             <div class="flex flex-wrap items-center gap-2 mb-3">
                                 ${ministryBadge}
+                                ${organizationBadge}
                             </div>
                             <h3 class="text-3xl font-extrabold text-er-inkSoft tracking-tight">${coach.name}</h3>
                             <p class="text-base text-er-muted font-medium mt-1">${coach.role}</p>
@@ -67,7 +71,7 @@ function renderCoaches() {
 
                         ${coach.certs && coach.certs.length ? `
                         <div>
-                            <p class="text-[11px] font-bold text-er-muted uppercase tracking-[0.2em] mb-3">${C.certLabel || '자격'}</p>
+                            <p class="text-[11px] font-bold text-er-muted uppercase tracking-[0.2em] mb-3">${C.certLabel || '약력'}</p>
                             <div class="flex flex-wrap gap-2.5">${certTags}</div>
                         </div>` : ''}
                     </div>
@@ -125,7 +129,9 @@ function renderCoaches() {
             <div class="mt-16 animate-fade-in-up">
                 <div class="text-center mb-8">
                     <span class="text-[11px] font-bold uppercase tracking-[0.26em] text-er-green">Collaborators</span>
-                    <h3 class="mt-3 text-xl md:text-2xl font-bold text-er-inkSoft break-keep">함께하는 협력 코치진</h3>
+                    <h3 class="mt-3 text-xl md:text-2xl font-bold text-er-inkSoft break-keep">
+                        함께하는 협력 코치진 <span class="text-sm md:text-base font-medium text-er-muted whitespace-nowrap">(Coaches in Training)</span>
+                    </h3>
                     <p class="mt-3 text-sm text-er-muted break-keep max-w-xl mx-auto">ER은 한 사람의 사역이 아닙니다. 코치와 협력자 네트워크가 함께 회복의 여정을 만들어 갑니다.</p>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
@@ -135,7 +141,7 @@ function renderCoaches() {
                                 ${name.substring(0,1)}
                             </div>
                             <h4 class="font-bold text-er-inkSoft text-sm">${name}</h4>
-                            <p class="text-[10px] text-er-green mt-1 uppercase tracking-wide">Collaborator</p>
+                            <p class="text-[10px] text-er-green mt-1 uppercase tracking-wide">Coach in Training</p>
                         </div>
                     `).join('')}
                     <div class="bg-er-base/60 rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-dashed border-er-sand cursor-pointer hover:bg-er-greenTint/40 transition-colors" onclick="renderSection('coach_training')">

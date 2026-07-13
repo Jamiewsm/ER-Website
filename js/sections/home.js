@@ -293,11 +293,9 @@ function renderHome() {
 
                     <div class="mt-8 grid gap-6 lg:grid-cols-3">
                         ${restorationCards.map((card) => `
-                            <article class="group rounded-2xl border border-[#dfd4c4] bg-er-surface p-4 shadow-[0_16px_45px_rgba(84,72,52,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(84,72,52,0.12)]">
-                                <div class="rounded-[1.15rem] bg-[#f0eadf] p-2 ring-1 ring-[#e5dac8]">
-                                    <div class="aspect-[16/10] overflow-hidden rounded-xl bg-[#e8dfd1]">
-                                        <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]" style="object-position:${card.position}; filter:saturate(0.96) brightness(1.04);">
-                                    </div>
+                            <article class="group rounded-2xl border border-er-sand/60 bg-er-surface p-4 shadow-[0_16px_45px_rgba(84,72,52,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(84,72,52,0.12)]">
+                                <div class="aspect-[16/10] overflow-hidden rounded-[1.15rem] bg-er-greenTint">
+                                    <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]" style="object-position:${card.position}; filter:saturate(0.96) brightness(1.04);">
                                 </div>
                                 <div class="px-2 pb-2 pt-5">
                                     <p class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-xs font-black text-er-green ring-1 ring-[#dce5ce]">${card.eyebrow}</p>
