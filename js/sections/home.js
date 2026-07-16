@@ -249,9 +249,9 @@ function renderHome() {
             </section>
 
             <section class="relative z-10 mx-auto -mt-8 max-w-[1480px] px-4 sm:px-6 lg:px-8">
-                <div class="grid overflow-hidden rounded-2xl border border-[#e7ddcd] bg-white/88 shadow-xl shadow-[#6b5f4b]/8 backdrop-blur md:grid-cols-4">
+                <div class="grid grid-cols-2 overflow-hidden rounded-2xl border border-[#e7ddcd] bg-white/88 shadow-xl shadow-[#6b5f4b]/8 backdrop-blur md:grid-cols-4">
                     ${stats.map((stat, index) => `
-                        <div class="px-6 py-6 text-center ${index > 0 ? 'md:border-l md:border-[#ebe2d4]' : ''}">
+                        <div class="border-[#ebe2d4] px-4 py-5 text-center sm:px-6 sm:py-6 ${index % 2 === 1 ? 'border-l' : ''} ${index >= 2 ? 'border-t md:border-t-0' : ''} ${index > 0 ? 'md:border-l' : ''}">
                             <p class="text-2xl font-black text-[#68785a]">${stat.value}</p>
                             <p class="mt-1 text-xs font-semibold text-er-muted">${stat.label}</p>
                         </div>
@@ -350,7 +350,7 @@ function renderHome() {
                             </div>
 
                             <div class="mt-9 text-center">
-                                <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.6rem] min-w-[18rem] items-center justify-center gap-3 rounded-xl bg-er-green px-9 py-4 text-base font-black text-er-surface shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark">
+                                <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.6rem] w-full items-center justify-center gap-3 rounded-xl bg-er-green px-6 py-4 text-base font-black text-er-surface shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark sm:w-auto sm:min-w-[18rem] sm:px-9">
                                     전체 프로그램 보기
                                     <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
                                 </button>

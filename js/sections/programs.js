@@ -27,7 +27,7 @@ function showProgramTestimonials(filterKey) {
                     <span class="text-er-accent font-bold text-[10px] tracking-widest uppercase">함께한 이야기</span>
                     <h3 class="text-lg font-bold text-er-dark mt-0.5">마음에 머무는 이야기</h3>
                 </div>
-                <button onclick="document.getElementById('program-testimonials-modal').remove()" class="w-9 h-9 rounded-full bg-er-base flex items-center justify-center text-gray-500 hover:bg-er-dark hover:text-white transition-colors">
+                <button onclick="document.getElementById('program-testimonials-modal').remove()" class="flex h-11 w-11 items-center justify-center rounded-full bg-er-base text-gray-500 transition-colors hover:bg-er-dark hover:text-white" aria-label="후기 닫기">
                     <i class="fas fa-times text-sm"></i>
                 </button>
             </div>
@@ -60,8 +60,8 @@ function updateProgramView(filterType) {
     document.querySelectorAll('[id^="tab-"]').forEach(btn => {
         const isActive = btn.id === `tab-${filterType}`;
         btn.className = isActive
-            ? "whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white text-er-dark shadow-md scale-105"
-            : "whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 bg-white/10 text-gray-300 hover:bg-white/20";
+            ? "inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all duration-300 md:text-sm bg-white text-er-dark shadow-md scale-105"
+            : "inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all duration-300 md:text-sm bg-white/10 text-gray-300 hover:bg-white/20";
     });
 
     const introEl = document.getElementById('program-intro');
@@ -120,7 +120,7 @@ function updateProgramView(filterType) {
         const ministryNotice = filterType === 'church'
             ? `<div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs">
                     <span class="text-gray-500 break-keep">목회자·선교사 본인은 무료/감면 사역지원 트랙으로 안내드립니다.</span>
-                    <button onclick="renderSection('support')" class="font-bold text-er-accent hover:text-er-dark transition-colors whitespace-nowrap">
+                    <button onclick="renderSection('support')" class="inline-flex min-h-11 items-center font-bold text-er-accent transition-colors hover:text-er-dark whitespace-nowrap">
                         사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
                     </button>
                 </div>`
@@ -141,8 +141,8 @@ function updateProgramView(filterType) {
                 <h4 class="text-sm md:text-base font-bold text-er-dark mb-2 break-keep">${p.t}</h4>
                 <p class="text-xs text-gray-600 leading-relaxed break-keep">${p.d}</p>
                 ${p.to
-                    ? `<button onclick="renderSection('${p.to}')" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">Parenting에서 자세히 보기 <i class="fas fa-arrow-right text-[10px]"></i></button>`
-                    : `<button onclick="showProgramTestimonials('${p.f || ''}')" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">후기 보기 <i class="fas fa-comment-dots text-[10px]"></i></button>`}
+                    ? `<button onclick="renderSection('${p.to}')" class="mt-2 inline-flex min-h-11 items-center gap-1 text-xs font-bold text-er-accent transition-colors hover:text-er-dark">Parenting에서 자세히 보기 <i class="fas fa-arrow-right text-[10px]"></i></button>`
+                    : `<button onclick="showProgramTestimonials('${p.f || ''}')" class="mt-2 inline-flex min-h-11 items-center gap-1 text-xs font-bold text-er-accent transition-colors hover:text-er-dark">후기 보기 <i class="fas fa-comment-dots text-[10px]"></i></button>`}
             </div>
         `).join('');
     }
@@ -161,7 +161,7 @@ function updateProgramView(filterType) {
                 <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
                 <p class="text-sm font-extrabold text-er-dark mb-5">${c.p || ''}</p>
                 <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">기대 효과:</span> ${c.o || ''}</p>
-                <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}'${c.applyFocus ? `, focus: '${c.applyFocus}', source: 'programs'` : ''} })" class="w-full py-2.5 rounded-xl ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
+                <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}'${c.applyFocus ? `, focus: '${c.applyFocus}', source: 'programs'` : ''} })" class="min-h-11 w-full rounded-xl px-4 ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
                     신청/문의
                 </button>
             </div>
@@ -183,7 +183,7 @@ function renderPrograms() {
                             const [key, label] = item.split(':');
                             const isActive = state.programFilter === key;
                             return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
-                                class="whitespace-nowrap px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition-all duration-300 ${isActive ? 'bg-white text-er-dark shadow-md scale-105' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">
+                                class="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all duration-300 md:text-sm ${isActive ? 'bg-white text-er-dark shadow-md scale-105' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">
                                 ${label}
                             </button>`
                         }).join('')}
@@ -250,7 +250,7 @@ function renderPrograms() {
                             <div class="rounded-2xl border border-er-sand/50 bg-er-base/60 p-5">
                                 <h4 class="text-sm font-bold text-er-dark">${title}</h4>
                                 <p class="mt-2 text-xs text-gray-500 break-keep">${desc}</p>
-                                ${link ? `<button onclick="renderSection('${link.section}')" class="mt-3 text-xs font-bold text-er-accent hover:text-er-dark transition-colors">${link.label} <i class="fas fa-arrow-right text-[10px]"></i></button>` : ''}
+                                ${link ? `<button onclick="renderSection('${link.section}')" class="mt-2 inline-flex min-h-11 items-center gap-1 text-xs font-bold text-er-accent transition-colors hover:text-er-dark">${link.label} <i class="fas fa-arrow-right text-[10px]"></i></button>` : ''}
                             </div>
                         `).join('')}
                     </div>

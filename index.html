@@ -267,8 +267,10 @@
             display: none;
         }
         .mobile-nav-link {
-            display: block;
+            display: flex;
+            align-items: center;
             width: 100%;
+            min-height: 2.75rem;
             text-align: left;
             padding: 0.625rem 1rem 0.625rem 1.25rem;
             font-size: 0.9375rem;
@@ -294,6 +296,13 @@
         }
         .mobile-nav-flat:hover {
             background: rgba(238, 243, 230, 0.35);
+        }
+
+        .footer-nav-links button {
+            display: inline-flex;
+            align-items: center;
+            min-height: 2.75rem;
+            padding-inline: 0.5rem;
         }
         
         .break-keep { word-break: keep-all; }
@@ -342,7 +351,7 @@
                     <img 
                         src="ER-logo-header.png" 
                         alt="ER logo"
-                        class="h-7 md:h-10 w-auto select-none group-hover:opacity-90 transition"
+                        class="h-8 md:h-10 w-auto select-none group-hover:opacity-90 transition"
                         draggable="false"
                         onerror="this.style.display='none'"
                     >
@@ -454,12 +463,12 @@
                     </div>
                 </div>
                 
-                <div class="parenting-hide-on-focused xl:hidden flex items-center gap-2 sm:gap-3">
-                    <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-green text-white text-xs px-4 py-2 rounded-full font-bold shadow-sm shrink-0 hover:bg-er-greenDark transition-colors">상담 신청</button>
-                    <button type="button" id="mobile-header-auth-btn" class="shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors" aria-label="기존 참여자 로그인 또는 마이페이지" title="기존 참여자 포털">
+                <div class="parenting-hide-on-focused xl:hidden flex items-center gap-1.5 sm:gap-3">
+                    <button onclick="renderSection('apply', { track: 'paid' })" aria-label="상담 신청" class="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-er-green px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-er-greenDark sm:px-4">상담<span class="hidden sm:inline"> 신청</span></button>
+                    <button type="button" id="mobile-header-auth-btn" class="shrink-0 w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:text-er-dark hover:bg-gray-200 transition-colors" aria-label="기존 참여자 로그인 또는 마이페이지" title="기존 참여자 포털">
                         <i class="far fa-user"></i>
                     </button>
-                    <button onclick="toggleMobileMenu()" class="text-gray-600 hover:text-er-dark p-2 focus:outline-none shrink-0" aria-label="메뉴 열기">
+                    <button onclick="toggleMobileMenu()" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-er-greenTint hover:text-er-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-er-green focus-visible:ring-offset-2" aria-label="메뉴 열기">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -469,7 +478,7 @@
         <div id="mobile-menu-backdrop" class="hidden xl:hidden" aria-hidden="true" onclick="closeMobileMenu()"></div>
         <div id="mobile-menu" class="hidden xl:hidden fixed w-full left-0 z-[48] top-16 md:top-20 max-h-[calc(100dvh-4rem)] md:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-y-contain border-b border-er-accentLight shadow-xl">
             <div class="px-4 py-4 space-y-1">
-                <button id="mobile-auth-btn" class="block w-full text-left px-4 py-2.5 text-sm font-semibold text-gray-600 hover:bg-er-accentLight/30 rounded-xl transition-colors"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
+                <button id="mobile-auth-btn" class="block min-h-11 w-full rounded-xl px-4 py-2.5 text-left text-sm font-semibold text-gray-600 transition-colors hover:bg-er-accentLight/30"><i class="far fa-user mr-2"></i> 기존 참여자 로그인</button>
                 <button onclick="renderSection('apply', { track: 'paid' })" class="block w-full text-center px-4 py-3 mt-1 text-sm font-bold bg-er-green text-white rounded-xl shadow-sm hover:bg-er-greenDark transition-colors">상담 신청</button>
                 <div class="h-px bg-gray-100 my-2"></div>
 
@@ -623,13 +632,13 @@
                         하나님이 창조하신 나의 은사와 부르심을 다시 만납니다.
                     </p>
                     <div class="flex flex-wrap gap-3 pt-1">
-                        <a href="mailto:hello@er-coaching.com" class="inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
+                        <a href="mailto:hello@er-coaching.com" class="inline-flex min-h-11 items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
                             <i class="far fa-envelope text-er-accent"></i> 문의 메일
                         </a>
-                        <a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
+                        <a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
                             <i class="fab fa-instagram text-er-accent"></i> @er_official_Korea
                         </a>
-                        <button type="button" onclick="renderSection('apply', { track: 'paid' })" class="inline-flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
+                        <button type="button" onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-11 items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-600 hover:bg-er-accentLight transition-colors">
                             <i class="fas fa-hand-holding-heart text-er-accent"></i> 상담 신청
                         </button>
                     </div>
@@ -644,7 +653,7 @@
                         </li>
                         <li class="flex items-center gap-3">
                             <i class="fab fa-instagram text-er-accent w-4 text-center shrink-0"></i>
-                            <a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="leading-snug hover:text-er-dark transition-colors">@er_official_Korea</a>
+                            <a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center leading-snug transition-colors hover:text-er-dark">@er_official_Korea</a>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="fas fa-map-marker-alt text-er-accent w-4 text-center shrink-0 mt-0.5"></i>
@@ -700,7 +709,7 @@
                         부산광역시 해운대구 재반로 166, 2층 S259호
                     </p>
                 </div>
-                <div class="flex flex-wrap items-center justify-center gap-3">
+                <div class="footer-nav-links flex flex-wrap items-center justify-center gap-x-1 gap-y-0">
                     <button type="button" onclick="renderSection('about')" class="hover:text-er-dark transition-colors">ER 소개</button>
                     <button type="button" onclick="renderSection('test')" class="hover:text-er-dark transition-colors">유형검사</button>
                     <button type="button" onclick="renderSection('parenting')" class="font-semibold text-er-dark hover:text-er-accent transition-colors">Parenting</button>
