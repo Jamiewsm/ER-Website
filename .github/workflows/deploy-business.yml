@@ -1,0 +1,59 @@
+# ER Business production deploy — isolated from er-coaching.com site/test tracks
+name: Deploy ER Business
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "business/**"
+      - ".github/workflows/deploy-business.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-er-business-production
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: business
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: business/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify production build
+        run: npm run verify
+
+      - name: Deploy isolated Cloudflare Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npm run deploy
+
+      - name: Verify custom domain
+        working-directory: .
+        run: |
+          for attempt in 1 2 3 4; do
+            if curl --fail --silent --show-error \
+              https://business.er-coaching.com/ \
+              | grep --quiet "팀의 성과가 달라집니다"; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::ER Business custom domain verification failed."
+          exit 1
