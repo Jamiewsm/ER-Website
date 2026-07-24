@@ -14,6 +14,11 @@ function readPngSize(file) {
   };
 }
 
+function readPngColorType(file) {
+  const data = readFileSync(new URL(file, root));
+  return data.readUInt8(25);
+}
+
 function sha256(file) {
   return createHash('sha256')
     .update(readFileSync(new URL(file, root)))
@@ -29,6 +34,33 @@ test('website ER logo assets use the current trimmed brand files', () => {
     sha256('ER-logo-header.png'),
     'header and footer should share the same horizontal brand asset'
   );
+});
+
+test('favicon assets are transparent, correctly sized, and linked from site pages', () => {
+  assert.deepEqual(readPngSize('favicon.png'), { width: 512, height: 512 });
+  assert.deepEqual(readPngSize('favicon-32x32.png'), { width: 32, height: 32 });
+  assert.equal(readPngColorType('favicon.png'), 6, 'favicon.png should use RGBA color');
+  assert.equal(readPngColorType('favicon-32x32.png'), 6, 'favicon-32x32.png should use RGBA color');
+
+  const ico = readFileSync(new URL('favicon.ico', root));
+  assert.equal(ico.readUInt16LE(0), 0, 'favicon.ico should begin with the ICO reserved field');
+  assert.equal(ico.readUInt16LE(2), 1, 'favicon.ico should identify itself as an icon');
+  assert.equal(ico.readUInt16LE(4), 3, 'favicon.ico should contain 16, 32, and 48px variants');
+
+  const pages = [
+    'index.html',
+    'basic-course.html',
+    'parenting-workshop.html',
+    'parents-brochure.html',
+    'parents-workshop.html',
+    'child-type-test/child-type-test.html',
+  ];
+  for (const page of pages) {
+    const html = readFileSync(new URL(page, root), 'utf8');
+    assert.match(html, /href="\/favicon\.ico"/, `${page} should link favicon.ico`);
+    assert.match(html, /href="\/favicon-32x32\.png"/, `${page} should link the 32px favicon`);
+    assert.match(html, /href="\/favicon\.png"/, `${page} should link the 512px favicon`);
+  }
 });
 
 test('home restoration tool section does not render a logo image', () => {
