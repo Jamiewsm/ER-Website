@@ -11,6 +11,7 @@ import { promisify } from 'node:util';
 const buildScript = fileURLToPath(new URL('../scripts/build_test_only_deploy_bundle.mjs', import.meta.url));
 const siteBuildScript = fileURLToPath(new URL('../scripts/build_site_only_deploy_bundle.mjs', import.meta.url));
 const verifyScript = fileURLToPath(new URL('../scripts/verify_live_test_deploy.mjs', import.meta.url));
+const assetsIgnorePath = fileURLToPath(new URL('../.assetsignore', import.meta.url));
 const execFileAsync = promisify(execFile);
 
 function makeDir(prefix) {
@@ -91,6 +92,11 @@ test('test-only deploy bundle preserves live landing and overlays only allowed t
   assert.equal(existsSync(join(out, 'business')), false);
   assert.notEqual(readFileSync(join(out, 'index.html'), 'utf8'), 'SOURCE LANDING MUST NOT DEPLOY');
   assert.doesNotMatch(readFileSync(join(out, 'index.html'), 'utf8'), /static\.cloudflareinsights\.com/);
+});
+
+test('root Worker assets exclude the independently deployed business app', () => {
+  const assetsIgnore = readFileSync(assetsIgnorePath, 'utf8');
+  assert.match(assetsIgnore, /^business\/\*\*$/m);
 });
 
 test('live deployment verifier passes required production markers and fails missing test markers', () => {
