@@ -48,6 +48,16 @@ async function readExport(file) {
   return readFile(new URL(`dist/client/${file}`, projectRoot), "utf8");
 }
 
+async function readPngInfo(file) {
+  const data = await readFile(new URL(`dist/client/${file}`, projectRoot));
+  assert.equal(data.toString("ascii", 1, 4), "PNG");
+  return {
+    width: data.readUInt32BE(16),
+    height: data.readUInt32BE(20),
+    colorType: data.readUInt8(25),
+  };
+}
+
 test("static export contains six distinct, self-canonical ER Business pages", async () => {
   const descriptions = new Set();
 
@@ -81,6 +91,32 @@ test("static export contains six distinct, self-canonical ER Business pages", as
   }
 
   assert.equal(descriptions.size, routes.length);
+});
+
+test("Business favicon assets are transparent, correctly sized, and linked", async () => {
+  assert.deepEqual(await readPngInfo("favicon.png"), {
+    width: 512,
+    height: 512,
+    colorType: 6,
+  });
+  assert.deepEqual(await readPngInfo("favicon-32x32.png"), {
+    width: 32,
+    height: 32,
+    colorType: 6,
+  });
+
+  const ico = await readFile(new URL("dist/client/favicon.ico", projectRoot));
+  assert.equal(ico.readUInt16LE(0), 0);
+  assert.equal(ico.readUInt16LE(2), 1);
+  assert.equal(ico.readUInt16LE(4), 3);
+
+  const html = await readExport("index.html");
+  assert.match(html, /href="https:\/\/business\.er-coaching\.com\/favicon\.ico"/);
+  assert.match(
+    html,
+    /href="https:\/\/business\.er-coaching\.com\/favicon-32x32\.png"/,
+  );
+  assert.match(html, /href="https:\/\/business\.er-coaching\.com\/favicon\.png"/);
 });
 
 test("shared navigation and legal footer connect every Business route", async () => {
