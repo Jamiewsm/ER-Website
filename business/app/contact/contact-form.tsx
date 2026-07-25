@@ -2,99 +2,74 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { businessEmail } from "../site-config";
+import { contactApiPath } from "../site-config";
+
+type SubmitState = "idle" | "submitting" | "success" | "error";
 
 function value(data: FormData, name: string) {
   return String(data.get(name) ?? "").trim();
 }
 
-function fitEncoded(valueToFit: string, budget: number) {
-  let result = "";
-
-  for (const character of valueToFit) {
-    const candidate = `${result}${character}`;
-    if (encodeURIComponent(candidate).length > budget) {
-      return `${result}…`;
-    }
-    result = candidate;
-  }
-
-  return result;
-}
-
 export function ContactForm() {
-  const [composeStatus, setComposeStatus] = useState("");
+  const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [statusMessage, setStatusMessage] = useState("");
 
-  async function openEmail(event: FormEvent<HTMLFormElement>) {
+  async function submitInquiry(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-    const company = value(data, "company");
-    const name = value(data, "name");
-    const subject = encodeURIComponent(
-      `[ER Business 제안 요청] ${fitEncoded(company, 72)} · ${fitEncoded(name, 45)}`,
-    );
-    const fullBody = [
-      "ER Business 기업교육·조직 컨설팅 문의",
-      "",
-      `회사·기관명: ${company}`,
-      `담당자: ${name}`,
-      `담당 역할: ${value(data, "role")}`,
-      `회신 이메일: ${value(data, "email")}`,
-      `연락처: ${value(data, "phone") || "미기재"}`,
-      `팀 규모: ${value(data, "teamSize")}`,
-      `희망 일정: ${value(data, "timing") || "협의 필요"}`,
-      `진행 방식·지역: ${value(data, "format") || "협의 필요"}`,
-      `예산 범위: ${value(data, "budget") || "협의 필요"}`,
-      "개인정보 처리 동의: 동의함",
-      "",
-      "[현재 가장 큰 고민]",
-      value(data, "challenge"),
-      "",
-      "[기대하는 변화]",
-      value(data, "outcome") || "미기재",
-    ].join("\n");
-    const fullMailto = `mailto:${businessEmail}?subject=${subject}&body=${encodeURIComponent(fullBody)}`;
+    const form = event.currentTarget;
+    const data = new FormData(form);
 
-    if (fullMailto.length <= 1800) {
-      setComposeStatus("이메일 작성 화면을 여는 중입니다.");
-      window.location.href = fullMailto;
-      return;
-    }
+    setSubmitState("submitting");
+    setStatusMessage("문의 내용을 전달하고 있습니다.");
 
-    let copied = false;
     try {
-      await navigator.clipboard?.writeText(fullBody);
-      copied = true;
+      const response = await fetch(contactApiPath, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          company: value(data, "company"),
+          name: value(data, "name"),
+          role: value(data, "role"),
+          email: value(data, "email"),
+          phone: value(data, "phone"),
+          teamSize: value(data, "teamSize"),
+          timing: value(data, "timing"),
+          format: value(data, "format"),
+          budget: value(data, "budget"),
+          challenge: value(data, "challenge"),
+          outcome: value(data, "outcome"),
+          privacyConsent: data.get("privacyConsent") === "on",
+          website: value(data, "website"),
+        }),
+      });
+
+      const result = (await response.json().catch(() => ({}))) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || `HTTP ${response.status}`);
+      }
+
+      form.reset();
+      setSubmitState("success");
+      setStatusMessage(
+        "제안 요청이 전달되었습니다. 확인 후 회신드리겠습니다.",
+      );
     } catch {
-      copied = false;
+      setSubmitState("error");
+      setStatusMessage(
+        "지금은 전달하지 못했습니다. 잠시 후 다시 시도하거나 hello@er-coaching.com으로 직접 메일을 보내주세요.",
+      );
     }
-
-    const compactBody = [
-      copied
-        ? "전체 문의를 복사했습니다. 이 문장을 지우고 메일 본문에 붙여넣어 주세요."
-        : "문의 요약입니다. 필요한 세부 내용을 아래에 추가해 주세요.",
-      "",
-      `회사·기관명: ${fitEncoded(company, 72)}`,
-      `담당자: ${fitEncoded(name, 45)}`,
-      `담당 역할: ${fitEncoded(value(data, "role"), 60)}`,
-      `회신 이메일: ${fitEncoded(value(data, "email"), 120)}`,
-      `팀 규모: ${fitEncoded(value(data, "teamSize"), 45)}`,
-      `현재 고민: ${fitEncoded(value(data, "challenge"), 250)}`,
-      `기대 변화: ${fitEncoded(value(data, "outcome") || "미기재", 135)}`,
-      "개인정보 처리 동의: 동의함",
-    ].join("\n");
-
-    setComposeStatus(
-      copied
-        ? "전체 문의 내용을 복사했습니다. 열린 메일 본문에 붙여넣어 주세요."
-        : "요약된 문의로 이메일 작성 화면을 엽니다. 필요한 내용을 덧붙여 주세요.",
-    );
-    window.location.href = `mailto:${businessEmail}?subject=${subject}&body=${encodeURIComponent(compactBody)}`;
   }
 
   return (
-    <form className="contact-form" onSubmit={openEmail}>
+    <form className="contact-form" onSubmit={submitInquiry} noValidate={false}>
       <div className="form-grid">
         <label>
           <span>회사·기관명 *</span>
@@ -209,23 +184,38 @@ export function ContactForm() {
         </span>
       </label>
 
-      <p className="form-mail-note" id="email-compose-note">
-        버튼을 누르면 기기의 이메일 작성 화면이 열립니다. 메일을 보내야
-        문의가 전달됩니다. 구성원의 진단 결과나 민감한 조직 자료는 이
-        단계에서 보내지 마세요. 내용이 길면 전체 문의를 클립보드에 복사해
-        메일 본문에 붙여넣도록 안내합니다.
+      <label className="honeypot-field" aria-hidden="true">
+        <span>웹사이트</span>
+        <input
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </label>
+
+      <p className="form-mail-note" id="inquiry-submit-note">
+        제출하면 문의 내용이 ER Business로 바로 전달됩니다. 구성원의 진단
+        결과나 민감한 조직 자료는 이 단계에서 보내지 마세요.
       </p>
 
-      <p className="form-compose-status" aria-live="polite">
-        {composeStatus}
+      <p
+        className={`form-compose-status${submitState === "error" ? " is-error" : ""}${submitState === "success" ? " is-success" : ""}`}
+        aria-live="polite"
+      >
+        {statusMessage}
       </p>
 
       <button
         className="button button-lime form-submit"
         type="submit"
-        aria-describedby="email-compose-note"
+        disabled={submitState === "submitting"}
+        aria-describedby="inquiry-submit-note"
       >
-        이메일 작성 화면 열기 <span aria-hidden="true">↗</span>
+        {submitState === "submitting"
+          ? "전달 중…"
+          : "제안 요청 보내기"}{" "}
+        <span aria-hidden="true">→</span>
       </button>
     </form>
   );

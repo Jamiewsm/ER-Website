@@ -70,3 +70,22 @@ jobs:
               exit 1
             fi
           done
+
+          if ! curl --fail --silent --show-error \
+            -X OPTIONS \
+            -o /dev/null \
+            "https://business.er-coaching.com/api/contact"; then
+            echo "::error::ER Business contact API OPTIONS verification failed"
+            exit 1
+          fi
+
+          validation="$(curl --silent --show-error \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"company":"","name":"","role":"","email":"bad","teamSize":"","challenge":"","privacyConsent":false,"website":""}' \
+            "https://business.er-coaching.com/api/contact")"
+          if ! printf '%s' "${validation}" | grep --quiet 'missing_required_fields'; then
+            echo "::error::ER Business contact API validation verification failed"
+            echo "${validation}"
+            exit 1
+          fi

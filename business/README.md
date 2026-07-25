@@ -12,10 +12,10 @@ Independent corporate training and team consulting site for
 - `/privacy` — privacy policy
 - `/terms` — service terms
 
-The contact page currently composes a structured email on the visitor's device.
-It does not post inquiry data to this Worker. A future stored inquiry form must
-use a dedicated backend and privacy review rather than the root site's course
-application endpoint.
+The contact page posts inquiries to `POST /api/contact` on this Worker.
+Cloudflare Email Routing delivers them to `restoration.son@gmail.com`, with
+`Reply-To` set to the visitor's address. Public display still uses
+`hello@er-coaching.com`, which also forwards to the same inbox.
 
 ## Local development
 

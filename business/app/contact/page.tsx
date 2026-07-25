@@ -60,8 +60,8 @@ export default function ContactPage() {
               <span>직접 이메일</span>
               <a href={`mailto:${businessEmail}`}>{businessEmail}</a>
               <p>
-                이메일 앱이 열리지 않으면 위 주소로 회사명, 팀 규모, 현재
-                고민을 보내주세요.
+                폼 제출이 어려우면 위 주소로 회사명, 팀 규모, 현재 고민을
+                보내주세요. 문의는 운영 메일로 전달됩니다.
               </p>
             </div>
           </div>

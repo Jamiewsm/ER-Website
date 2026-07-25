@@ -168,7 +168,7 @@ test("every internal link resolves to an exported route or in-page target", asyn
   }
 });
 
-test("contact route collects only proposal context and clearly opens email", async () => {
+test("contact route collects proposal context and submits through the Worker API", async () => {
   const html = await readExport("contact.html");
 
   for (const name of [
@@ -180,14 +180,38 @@ test("contact route collects only proposal context and clearly opens email", asy
     "challenge",
     "outcome",
     "privacyConsent",
+    "website",
   ]) {
     assert.match(html, new RegExp(`name="${name}"`));
   }
 
-  assert.match(html, /이메일 작성 화면 열기/);
-  assert.match(html, /메일을 보내야/);
-  assert.match(html, /클립보드에 복사/);
+  assert.match(html, /제안 요청 보내기/);
+  assert.match(html, /문의 내용이 ER Business로 바로 전달/);
+  assert.doesNotMatch(html, /이메일 작성 화면 열기/);
+  assert.doesNotMatch(html, /클립보드에 복사/);
   assert.match(html, /hello@er-coaching\.com/);
+});
+
+test("Worker config binds inquiry email delivery to restoration.son@gmail.com", async () => {
+  const [sourceConfig, builtConfig] = await Promise.all([
+    readFile(new URL("wrangler.jsonc", projectRoot), "utf8"),
+    readFile(new URL("dist/server/wrangler.json", projectRoot), "utf8"),
+  ]);
+
+  assert.match(sourceConfig, /"name": "INQUIRY_EMAIL"/);
+  assert.match(
+    sourceConfig,
+    /"destination_address": "restoration\.son@gmail\.com"/,
+  );
+
+  const config = JSON.parse(builtConfig);
+  assert.ok(Array.isArray(config.send_email));
+  assert.deepEqual(config.send_email, [
+    {
+      name: "INQUIRY_EMAIL",
+      destination_address: "restoration.son@gmail.com",
+    },
+  ]);
 });
 
 test("program and policy copy preserves assessment ethics and has no placeholders", async () => {

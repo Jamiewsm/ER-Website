@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 
 export const siteUrl = "https://business.er-coaching.com";
 export const businessEmail = "hello@er-coaching.com";
+/** 문의 폼 제출 시 Cloudflare Email Routing으로 전달되는 수신 수신함 */
+export const inquiryNotifyEmail = "restoration.son@gmail.com";
+export const contactApiPath = "/api/contact";
 
 export const legalOperator = {
   name: "에니어그램 포 레스토레이션",
