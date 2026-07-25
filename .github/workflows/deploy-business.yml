@@ -22,6 +22,7 @@ permissions:
 
 jobs:
   deploy:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -53,13 +54,19 @@ jobs:
         if: github.event_name != 'pull_request'
         working-directory: .
         run: |
-          for attempt in 1 2 3 4; do
-            if curl --fail --silent --show-error \
-              https://business.er-coaching.com/ \
-              | grep --quiet "팀의 성과가 달라집니다"; then
-              exit 0
+          routes=("/" "/programs" "/about" "/contact" "/privacy" "/terms" "/sitemap.xml")
+          for route in "${routes[@]}"; do
+            verified=false
+            for attempt in 1 2 3 4; do
+              if curl --fail --silent --show-error \
+                "https://business.er-coaching.com${route}" > /dev/null; then
+                verified=true
+                break
+              fi
+              sleep 5
+            done
+            if [ "${verified}" != "true" ]; then
+              echo "::error::ER Business route verification failed: ${route}"
+              exit 1
             fi
-            sleep 5
           done
-          echo "::error::ER Business custom domain verification failed."
-          exit 1

@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { SiteFooter } from "./components/site-footer";
+import { SiteHeader } from "./components/site-header";
+import { processSteps, programs } from "./content";
 
 export const metadata: Metadata = {
   title: {
@@ -28,98 +32,6 @@ const frictionSignals = [
     number: "04",
     title: "고객의 진짜 필요를 놓칩니다",
     body: "표면적인 요청만 듣고 상대의 동기와 욕구를 읽지 못하면 관계와 성과가 함께 흔들립니다.",
-  },
-];
-
-const solutions = [
-  {
-    code: "01 / TEAM",
-    eyebrow: "팀 소통 · 협업",
-    title: "Communication Lab",
-    description:
-      "서로 다른 업무 언어와 반응 패턴을 팀의 공통 언어로 바꿉니다.",
-    features: [
-      "개인별 동기·소통 스타일 진단",
-      "팀 커뮤니케이션 맵",
-      "갈등 상황별 대화 실습",
-      "우리 팀 협업 원칙 도출",
-    ],
-    output: "팀 맵 + 소통 합의문",
-  },
-  {
-    code: "02 / TALENT",
-    eyebrow: "강점 · 역할 배치",
-    title: "Role Fit Consulting",
-    description:
-      "개인의 강점과 에너지 패턴을 업무 요구와 연결해 역할 적합도를 점검합니다.",
-    features: [
-      "개인 강점·동기 프로파일",
-      "현재 역할 적합성 인터뷰",
-      "업무·책임 재설계 제안",
-      "리더 1:1 디브리핑",
-    ],
-    output: "역할 적합도 리포트",
-  },
-  {
-    code: "03 / LEADER",
-    eyebrow: "리더십 · 조직 운영",
-    title: "Leadership Sprint",
-    description:
-      "리더의 의사결정과 피드백 방식을 점검하고 팀이 움직이는 운영 규칙을 만듭니다.",
-    features: [
-      "리더십 커뮤니케이션 진단",
-      "의사결정 병목 분석",
-      "피드백·1on1 프레임",
-      "30일 실행 체크인",
-    ],
-    output: "리더십 실행 플레이북",
-  },
-  {
-    code: "04 / CLIENT",
-    eyebrow: "고객 · 사람 중심 팀",
-    title: "People Insight",
-    description:
-      "상대의 말 뒤에 있는 필요와 욕구를 읽고 관계의 질을 성과로 연결합니다.",
-    features: [
-      "욕구·동기 관찰 프레임",
-      "유형별 질문과 제안 방식",
-      "고객·구성원 사례 롤플레이",
-      "현장 적용 스크립트",
-    ],
-    output: "상황별 대화 가이드",
-  },
-];
-
-const process = [
-  {
-    step: "01",
-    title: "Discover",
-    korean: "현황을 듣습니다",
-    body: "리더 인터뷰와 사전 설문으로 팀의 목표, 갈등 지점, 업무 구조를 파악합니다.",
-  },
-  {
-    step: "02",
-    title: "Decode",
-    korean: "사람을 읽습니다",
-    body: "개인의 동기·성향·강점을 해석하고 팀 전체의 상호작용 패턴을 시각화합니다.",
-  },
-  {
-    step: "03",
-    title: "Design",
-    korean: "해결책을 설계합니다",
-    body: "진단 결과를 바탕으로 교육, 워크숍, 리더 코칭의 최적 조합을 제안합니다.",
-  },
-  {
-    step: "04",
-    title: "Deliver",
-    korean: "현장에서 연습합니다",
-    body: "실제 업무 장면을 다루는 참여형 세션으로 팀만의 소통·협업 규칙을 만듭니다.",
-  },
-  {
-    step: "05",
-    title: "Drive",
-    korean: "실행을 정착시킵니다",
-    body: "30일 체크인과 리더 디브리핑으로 배운 언어가 일하는 방식이 되도록 돕습니다.",
   },
 ];
 
@@ -157,27 +69,9 @@ const outcomes = [
 
 export default function Home() {
   return (
-    <main>
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="ER Business 홈">
-          <span className="brand-mark">ER</span>
-          <span className="brand-divider" aria-hidden="true" />
-          <span className="brand-name">BUSINESS</span>
-        </a>
-        <nav className="desktop-nav" aria-label="주요 메뉴">
-          <a href="#why">왜 ER인가</a>
-          <a href="#solutions">프로그램</a>
-          <a href="#method">진행 방식</a>
-          <a href="#about">ER의 관점</a>
-        </nav>
-        <a
-          className="header-cta"
-          href="mailto:hello@er-coaching.com?subject=ER%20Business%20기업교육%20문의"
-        >
-          제안 요청 <span aria-hidden="true">↗</span>
-        </a>
-      </header>
-
+    <>
+      <SiteHeader />
+      <main id="main-content">
       <section className="hero" id="top">
         <div className="hero-noise" aria-hidden="true" />
         <div className="hero-copy">
@@ -193,15 +87,12 @@ export default function Home() {
             연결하는 기업교육·조직 컨설팅입니다.
           </p>
           <div className="hero-actions">
-            <a
-              className="button button-lime"
-              href="mailto:hello@er-coaching.com?subject=ER%20Business%20기업교육%20문의&body=회사명%20%3A%0A팀%20규모%20%3A%0A현재%20고민%20%3A%0A희망%20일정%20%3A"
-            >
+            <Link className="button button-lime" href="/contact">
               우리 팀 진단 문의하기 <span aria-hidden="true">→</span>
-            </a>
-            <a className="text-link light-link" href="#solutions">
+            </Link>
+            <Link className="text-link light-link" href="/programs">
               프로그램 살펴보기 <span aria-hidden="true">↓</span>
-            </a>
+            </Link>
           </div>
           <div className="hero-proof">
             <span>기업 · 팀</span>
@@ -330,7 +221,7 @@ export default function Home() {
         </div>
 
         <div className="solution-list">
-          {solutions.map((solution) => (
+          {programs.map((solution) => (
             <article className="solution-card" key={solution.code}>
               <div className="solution-code">{solution.code}</div>
               <div className="solution-main">
@@ -347,6 +238,13 @@ export default function Home() {
                 <span>OUTPUT</span>
                 <b>{solution.output}</b>
               </div>
+              <Link
+                className="solution-link"
+                href={`/programs#${solution.id}`}
+                aria-label={`${solution.title} 자세히 보기`}
+              >
+                자세히 보기 <span aria-hidden="true">→</span>
+              </Link>
             </article>
           ))}
         </div>
@@ -366,7 +264,7 @@ export default function Home() {
           </p>
         </div>
         <div className="process-list">
-          {process.map((item) => (
+          {processSteps.map((item) => (
             <article className="process-step" key={item.step}>
               <span className="process-number">{item.step}</span>
               <div>
@@ -461,6 +359,9 @@ export default function Home() {
               <span>Enneagram Spectrum</span>
               <span>Korea · USA</span>
             </div>
+            <Link className="text-link perspective-link" href="/about">
+              ER Business의 원칙 보기 <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -478,38 +379,16 @@ export default function Home() {
           <br />
           목적에 맞는 교육·컨설팅 구성을 제안드립니다.
         </p>
-        <a
-          className="button button-dark"
-          href="mailto:hello@er-coaching.com?subject=ER%20Business%20제안%20요청&body=회사명%20%3A%0A팀%20규모%20%3A%0A현재%20고민%20%3A%0A희망%20일정%20%3A"
-        >
+        <Link className="button button-dark" href="/contact">
           기업교육 제안 요청하기 <span aria-hidden="true">↗</span>
-        </a>
+        </Link>
         <a className="email-link" href="mailto:hello@er-coaching.com">
           hello@er-coaching.com
         </a>
       </section>
 
-      <footer>
-        <div className="footer-brand">
-          <span className="brand-mark">ER</span>
-          <span className="brand-divider" aria-hidden="true" />
-          <span className="brand-name">BUSINESS</span>
-        </div>
-        <p>
-          사람을 이해하고, 역할을 맞추고,
-          <br />
-          팀의 성과를 설계합니다.
-        </p>
-        <div className="footer-links">
-          <a href="mailto:hello@er-coaching.com">Contact</a>
-          <a href="https://er-coaching.com">ER Coaching</a>
-          <a href="#top">Back to top ↑</a>
-        </div>
-        <div className="footer-bottom">
-          <span>© 2026 ER — Enneagram for Restoration</span>
-          <span>부산 · Korea / USA</span>
-        </div>
-      </footer>
-    </main>
+      </main>
+      <SiteFooter />
+    </>
   );
 }

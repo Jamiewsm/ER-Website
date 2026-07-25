@@ -3,6 +3,20 @@
 Independent corporate training and team consulting site for
 `https://business.er-coaching.com`.
 
+## Routes
+
+- `/` — service overview
+- `/programs` — four program details and proposal scope
+- `/about` — approach, facilitator, and assessment ethics
+- `/contact` — structured proposal inquiry
+- `/privacy` — privacy policy
+- `/terms` — service terms
+
+The contact page currently composes a structured email on the visitor's device.
+It does not post inquiry data to this Worker. A future stored inquiry form must
+use a dedicated backend and privacy review rather than the root site's course
+application endpoint.
+
 ## Local development
 
 ```bash
@@ -25,7 +39,8 @@ The build uses vinext static export and produces the deployable site in
 Production deployment is owned by
 `.github/workflows/deploy-business.yml`. A merge to `main` that changes
 `business/**` builds and deploys the isolated `er-business-site` Worker, then
-verifies `https://business.er-coaching.com`.
+verifies every public route and the sitemap at
+`https://business.er-coaching.com`.
 
 The root `er-coaching-site` deploy bundle explicitly excludes `business/`, so
 the personal/coaching site and this Worker cannot overwrite one another.
