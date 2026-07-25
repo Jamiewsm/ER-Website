@@ -212,6 +212,7 @@ test("Worker config binds inquiry email delivery to restoration.son@gmail.com", 
       destination_address: "restoration.son@gmail.com",
     },
   ]);
+  assert.deepEqual(config.assets.run_worker_first, ["/api/*"]);
 });
 
 test("program and policy copy preserves assessment ethics and has no placeholders", async () => {
