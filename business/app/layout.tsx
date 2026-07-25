@@ -1,13 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { businessEmail, legalOperator, siteUrl } from "./site-config";
 
 const geist = Geist({
   variable: "--font-geist",
   subsets: ["latin"],
 });
-
-const siteUrl = "https://business.er-coaching.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -19,6 +18,10 @@ export const metadata: Metadata = {
     "개인의 욕구·성향·강점을 팀의 소통, 역할 배치, 업무 실행으로 연결하는 기업교육·조직 컨설팅.",
   alternates: {
     canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
   icons: {
     icon: "/favicon.svg",
@@ -49,14 +52,41 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#17271b",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: "ER Business",
+    legalName: legalOperator.name,
+    url: siteUrl,
+    email: businessEmail,
+    description:
+      "개인의 동기·성향·강점을 팀의 소통, 역할 배치, 업무 실행으로 연결하는 기업교육·조직 컨설팅.",
+    areaServed: ["KR", "US"],
+  };
+
   return (
     <html lang="ko">
-      <body className={geist.variable}>{children}</body>
+      <body className={geist.variable}>
+        <a className="skip-link" href="#main-content">
+          본문으로 바로가기
+        </a>
+        {children}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema).replace(/</g, "\\u003c"),
+          }}
+        />
+      </body>
     </html>
   );
 }
