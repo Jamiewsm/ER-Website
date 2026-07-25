@@ -9,6 +9,12 @@
     "not_found_handling": "none",
     "binding": "ASSETS"
   },
+  "send_email": [
+    {
+      "name": "INQUIRY_EMAIL",
+      "destination_address": "restoration.son@gmail.com"
+    }
+  ],
   "routes": [
     {
       "pattern": "business.er-coaching.com",

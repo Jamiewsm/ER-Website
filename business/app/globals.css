@@ -2099,10 +2099,33 @@ footer > p {
   color: var(--moss);
 }
 
+.form-compose-status.is-success {
+  color: var(--moss);
+}
+
+.form-compose-status.is-error {
+  color: #9b2c2c;
+}
+
+.honeypot-field {
+  position: absolute !important;
+  left: -10000px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .form-submit {
   width: fit-content;
   cursor: pointer;
   border: 0;
+}
+
+.form-submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
 }
 
 .contact-steps {
