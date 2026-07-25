@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFile, execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -11,6 +11,7 @@ import { promisify } from 'node:util';
 const buildScript = fileURLToPath(new URL('../scripts/build_test_only_deploy_bundle.mjs', import.meta.url));
 const siteBuildScript = fileURLToPath(new URL('../scripts/build_site_only_deploy_bundle.mjs', import.meta.url));
 const verifyScript = fileURLToPath(new URL('../scripts/verify_live_test_deploy.mjs', import.meta.url));
+const assetsIgnorePath = fileURLToPath(new URL('../.assetsignore', import.meta.url));
 const execFileAsync = promisify(execFile);
 
 function makeDir(prefix) {
@@ -35,6 +36,7 @@ function makeBuildFixture() {
   writeFile(base, 'wrangler.toml', 'name = "er-coaching-site"');
   writeFile(base, 'child-type-test/child-type-test.html', 'CHILD TYPE PAGE');
   writeFile(base, 'about.html', 'base-only page should remain');
+  writeFile(base, 'business/package.json', '{"private":true}');
 
   writeFile(source, 'index.html', 'SOURCE LANDING MUST NOT DEPLOY');
   writeFile(source, 'js/sections/home.js', 'SOURCE HOME MUST NOT DEPLOY');
@@ -87,8 +89,14 @@ test('test-only deploy bundle preserves live landing and overlays only allowed t
   assert.equal(readFileSync(join(out, 'test.html'), 'utf8'), readFileSync(join(source, 'test.html'), 'utf8'));
   assert.equal(readFileSync(join(out, 'js/test.js'), 'utf8'), readFileSync(join(source, 'js/test.js'), 'utf8'));
   assert.equal(readFileSync(join(out, 'about.html'), 'utf8'), 'base-only page should remain');
+  assert.equal(existsSync(join(out, 'business')), false);
   assert.notEqual(readFileSync(join(out, 'index.html'), 'utf8'), 'SOURCE LANDING MUST NOT DEPLOY');
   assert.doesNotMatch(readFileSync(join(out, 'index.html'), 'utf8'), /static\.cloudflareinsights\.com/);
+});
+
+test('root Worker assets exclude the independently deployed business app', () => {
+  const assetsIgnore = readFileSync(assetsIgnorePath, 'utf8');
+  assert.match(assetsIgnore, /^business\/\*\*$/m);
 });
 
 test('live deployment verifier passes required production markers and fails missing test markers', () => {
@@ -167,6 +175,7 @@ test('site-only deploy bundle preserves live test runtime and deploys site from 
   writeFile(source, 'js/diagnostic-report-content.js', 'legacy content');
   writeFile(source, 'js/report-support-materials.js', 'legacy support');
   writeFile(source, 'test-results/background.png', 'live-png');
+  writeFile(source, 'business/public/index.html', 'BUSINESS MUST DEPLOY SEPARATELY');
 
   writeFile(live, 'test.html', 'LIVE TEST');
   writeFile(live, 'js/test.js', 'buildResponseQualitySnapshot center_auto_1 instinct_attention_1 SUBTYPE_BEHAVIOR_ITEMS tb_2_9_1 er-report-application-map');
@@ -191,4 +200,5 @@ test('site-only deploy bundle preserves live test runtime and deploys site from 
   assert.equal(readFileSync(join(out, 'js/sections/home.js'), 'utf8'), 'NEW HOME');
   assert.equal(readFileSync(join(out, 'js/test.js'), 'utf8'), readFileSync(join(live, 'js/test.js'), 'utf8'));
   assert.doesNotMatch(readFileSync(join(out, 'js/test.js'), 'utf8'), /id:'t2'/);
+  assert.equal(existsSync(join(out, 'business')), false);
 });

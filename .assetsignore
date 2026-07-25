@@ -6,6 +6,7 @@ node_modules/**
 .cursor/**
 .wrangler/**
 .playwright-cli/**
+business/**
 docs/**
 tests/**
 scripts/**

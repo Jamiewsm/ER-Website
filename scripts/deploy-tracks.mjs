@@ -75,6 +75,7 @@ export const DEPLOY_BUNDLE_EXCLUDE_DIRS = [
   '.cursor',
   '.wrangler',
   '.playwright-cli',
+  'business',
   'supabase',
   'docs',
   'tests',
