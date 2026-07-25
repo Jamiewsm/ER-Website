@@ -2,6 +2,10 @@
 name: Deploy ER Business
 
 on:
+  pull_request:
+    paths:
+      - "business/**"
+      - ".github/workflows/deploy-business.yml"
   push:
     branches: [main]
     paths:
@@ -39,12 +43,14 @@ jobs:
         run: npm run verify
 
       - name: Deploy isolated Cloudflare Worker
+        if: github.event_name != 'pull_request'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npm run deploy
 
       - name: Verify custom domain
+        if: github.event_name != 'pull_request'
         working-directory: .
         run: |
           for attempt in 1 2 3 4; do
