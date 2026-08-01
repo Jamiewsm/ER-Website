@@ -5,7 +5,6 @@ function showProgramTestimonials(filterKey) {
         personal: ['자기이해', '자기성찰'],
         ministry: ['선교·사역'],
         church: ['부부관계', '선교·사역'],
-        team: ['자기성찰', '자기이해'],
         leadership: ['자기성찰', '선교·사역'],
         training: ['자기이해', '자기성찰']
     };
@@ -54,7 +53,45 @@ function showProgramTestimonials(filterKey) {
     document.body.appendChild(modal);
 }
 
+function renderBusinessHandoff(destination = 'programs') {
+    const isContact = destination === 'contact';
+    const businessHref = isContact
+        ? 'https://business.er-coaching.com/contact'
+        : 'https://business.er-coaching.com/programs';
+    const businessLabel = isContact ? 'ER Business에 문의하기' : 'ER Business 프로그램 보기';
+
+    return `
+        <div class="min-h-screen bg-er-base px-4 py-20">
+            <section class="mx-auto max-w-3xl rounded-[2.5rem] border border-er-sand/60 bg-er-surface p-8 text-center shadow-soft md:p-12">
+                <span class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-er-green">ER Business</span>
+                <h2 class="mt-5 text-2xl font-bold text-er-ink md:text-4xl break-keep">기업·팀 서비스는 독립된<br class="hidden sm:block"> ER Business에서 안내합니다.</h2>
+                <p class="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-er-body md:text-base break-keep">
+                    기업교육, 팀 워크숍과 조직 컨설팅은 Business 전용 사이트로 통합되었습니다. 이곳 ER Coaching은 개인·가정과 교회·사역 공동체의 회복에 집중합니다.
+                </p>
+                <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                    <a href="${businessHref}" class="inline-flex min-h-12 items-center justify-center rounded-full bg-er-green px-7 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-er-greenDark">
+                        ${businessLabel} <span class="ml-2" aria-hidden="true">↗</span>
+                    </a>
+                    <button type="button" onclick="renderSection('programs', { tab: 'church' })" class="inline-flex min-h-12 items-center justify-center rounded-full border border-er-sand bg-white px-7 py-3 text-sm font-bold text-er-ink transition-colors hover:border-er-green hover:text-er-green">
+                        교회·사역 프로그램 보기
+                    </button>
+                </div>
+            </section>
+        </div>
+    `;
+}
+
+function openProgramApply() {
+    const isChurchProgram = state.programFilter === 'church';
+    renderSection('apply', isChurchProgram
+        ? { track: 'org', focus: 'church' }
+        : { track: 'paid' });
+}
+
 function updateProgramView(filterType) {
+    if (filterType !== 'individual' && filterType !== 'church') {
+        filterType = 'individual';
+    }
     state.programFilter = filterType;
 
     document.querySelectorAll('[id^="tab-"]').forEach(btn => {
@@ -67,6 +104,7 @@ function updateProgramView(filterType) {
     const introEl = document.getElementById('program-intro');
     const problemCardsEl = document.getElementById('program-problem-cards');
     const cardsEl = document.getElementById('program-cards');
+    const primaryCtaEl = document.getElementById('program-primary-cta');
 
     const data = {
         individual: {
@@ -74,7 +112,7 @@ function updateProgramView(filterType) {
             desc: '',
             problems: [
                 { t: '우리 부부가 달라졌어요', d: '부부의 차이와 충돌 지점을 구조적으로 해석해, 반복되는 갈등을 대화 가능한 관계로 전환합니다.', i: 'fas fa-heart', f: 'couple' },
-                { t: '하나님이 창조하신 나의 모습 회복하기', d: '나의 original design, 강점, 거짓말, 취약점을 함께 짚어보고, 직장·사회관계에서 강점에 맞는 일을 찾으며, 관계에서 잘 맞거나 맞지 않을 수 있는 유형의 사람들을 이해하고 소통하는 코칭을 진행합니다.', i: 'fas fa-compass', f: 'personal' },
+                { t: '하나님이 창조하신 나의 모습 회복하기', d: '나의 original design, 강점, 거짓말, 취약점을 함께 짚어보고, 삶과 관계 안에서 은사와 소명을 발견하며, 서로 다른 유형의 사람들을 이해하고 소통하는 코칭을 진행합니다.', i: 'fas fa-compass', f: 'personal' },
                 { t: '아이와의 갈등이 반복돼요', d: '아이와 부모의 기질·반응 차이, 반복되는 양육 갈등은 Parenting 여정에서 더 깊이 다룹니다.', i: 'fas fa-child-reaching', to: 'parenting' }
             ],
             cards: [
@@ -84,37 +122,29 @@ function updateProgramView(filterType) {
             ]
         },
         church: {
-            title: '기관/교회 프로그램',
-            desc: '목회자·선교사 개인은 지원 원칙에 따라 별도 안내해 드리며, 기관 프로그램은 규모와 목적에 맞춰 맞춤 제안으로 진행합니다.',
+            title: '교회·사역팀 프로그램',
+            desc: '교회·선교단체·사역팀의 공동체 회복을 돕습니다. 목회자·선교사 개인은 지원 원칙에 따라 별도 안내해 드립니다.',
             problems: [
-                { t: '공동체 갈등 회복', d: '리더와 구성원 사이의 반복 갈등을 공통 언어로 정리하고, 실제 적용안을 함께 설계합니다.', i: 'fas fa-people-group', f: 'church' },
-                { t: '사역자 소진 돌봄', d: '정서적 소진과 관계 피로를 다루며, 회복 루틴과 팀 내 건강한 역할 분담을 코칭합니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' },
-                { t: '리더십 소통 재정렬', d: '의사결정과 소통 방식의 충돌 지점을 점검해, 팀 운영 흐름이 끊기지 않도록 돕습니다.', i: 'fas fa-comments', f: 'leadership' }
+                { t: '공동체 갈등 회복', d: '서로 다른 동기와 소통 방식을 이해하고, 오해와 갈등을 복음 안에서 다룰 수 있는 공통 언어를 세웁니다.', i: 'fas fa-people-group', f: 'church' },
+                { t: '사역자 소진 돌봄', d: '정서적 소진과 관계 피로를 살피고, 회복의 리듬과 건강한 역할 분담을 함께 정리합니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' },
+                { t: '사역 리더십과 동역 정렬', d: '리더와 사역팀의 의사결정·소통 패턴을 점검하고, 은사와 역할을 존중하는 동역의 흐름을 설계합니다.', i: 'fas fa-comments', f: 'leadership' }
             ],
             cards: [
-                { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등 언어를 공통 프레임으로 정렬', i: 'fas fa-chalkboard-teacher' },
-                { b: '집중', t: '집중 워크숍 (6시간)', d: '팀/리더 분석 + 갈등 구조 해석 + 적용 설계', p: '$1,800부터', o: '결과: 리더십 팀의 소통/의사결정 규칙 재설계', i: 'fas fa-users-cog' },
-                { b: '후속', t: '리더 디브리핑 패키지', d: '리더 디브리핑 + 소그룹 가이드 + 4주 후속 코호트', p: '맞춤 견적', o: '결과: 워크숍 이후 현장 적용이 끊기지 않게 유지', i: 'fas fa-file-signature' }
-            ]
-        },
-        business: {
-            title: '기업/팀 프로그램',
-            desc: '성격 설명이 아니라 팀 커뮤니케이션, 갈등 비용, 협업 효율을 개선하는 운영 언어로 설계합니다.',
-            problems: [
-                { t: '팀 소통 충돌 해결', d: '업무 스타일 차이로 생기는 오해를 줄이고, 협업 속도를 높이는 소통 규칙을 설계합니다.', i: 'fas fa-users', f: 'team' },
-                { t: '리더십 의사결정 정렬', d: '리더-팀 간 피드백 단절을 줄이고 의사결정 흐름이 막히지 않도록 구조를 재정비합니다.', i: 'fas fa-diagram-project', f: 'leadership' },
-                { t: '배치·역할 적합성 개선', d: '강점과 동기 기반으로 역할을 조정해, 사람-업무 미스매치로 인한 비용을 줄입니다.', i: 'fas fa-briefcase', f: 'team' }
-            ],
-            cards: [
-                { b: '팀', t: '인지 다양성 워크숍', d: '역할 적합성·소통 패턴·갈등 비용 진단', p: '$2,000–$5,000', o: '결과: 팀 충돌 원인을 가시화해 실행 합의 도출', i: 'fas fa-sitemap' },
-                { b: '인사', t: '채용·배치 자문', d: '유형 기반 역할 매칭 + 팀 구조 제안', p: '맞춤 견적', o: '결과: 채용/배치 미스매치로 인한 비용 감소', i: 'fas fa-briefcase' },
-                { b: '자문', t: '리더십 커뮤니케이션 스프린트', d: '리더십 커뮤니케이션 프레임 재설계', p: '$5,000부터', o: '결과: 리더-팀 간 피드백/협업 속도 향상', i: 'fas fa-chart-line' }
+                { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등을 다루는 공통 언어 정리', i: 'fas fa-chalkboard-teacher', applyFocus: 'church' },
+                { b: '집중', t: '집중 워크숍 (6시간)', d: '사역팀·리더 분석 + 갈등 구조 해석 + 적용 설계', p: '$1,800부터', o: '결과: 교회 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'church' },
+                { b: '후속', t: '리더 디브리핑 패키지', d: '리더 디브리핑 + 소그룹 가이드 + 4주 후속 코호트', p: '맞춤 견적', o: '결과: 워크숍 이후 현장 적용이 끊기지 않게 유지', i: 'fas fa-file-signature', applyFocus: 'church' }
             ]
         }
     };
 
     const selected = data[filterType];
     if (!selected || !selected.cards) return;
+
+    if (primaryCtaEl) {
+        primaryCtaEl.textContent = filterType === 'church'
+            ? '교회·사역팀 프로그램 문의'
+            : '상담 신청';
+    }
 
     if (introEl) {
         const ministryNotice = filterType === 'church'
@@ -170,16 +200,20 @@ function updateProgramView(filterType) {
 }
 
 function renderPrograms() {
+    if (state.currentPayload?.tab === 'business' || state.programFilter === 'business') {
+        return renderBusinessHandoff();
+    }
+
     return `
         <div class="bg-er-base min-h-screen">
             <div class="bg-er-dark text-white py-16 px-6 relative overflow-hidden rounded-b-[3rem]">
                 <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                 <div class="relative z-10 max-w-7xl mx-auto text-center">
                     <h2 class="text-2xl md:text-4xl font-bold mb-3">코칭·프로그램 안내</h2>
-                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">관계·부부부터 기관·교회·기업/팀까지, 지금 필요한 회복 여정을 안내합니다. 자녀 양육은 Parenting 메뉴에서 따로 안내합니다.</p>
+                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">관계·부부 코칭과 교회·사역팀 프로그램을 통해 개인의 회복이 가정과 공동체로 이어지도록 돕습니다. 자녀 양육은 Parenting 메뉴에서 따로 안내합니다.</p>
                     
                     <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
-                        ${['individual:관계·부부', 'church:기관·교회', 'business:기업·팀'].map(item => {
+                        ${['individual:관계·부부', 'church:교회·사역팀'].map(item => {
                             const [key, label] = item.split(':');
                             const isActive = state.programFilter === key;
                             return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
@@ -230,11 +264,19 @@ function renderPrograms() {
                         </div>
                     </div>
                     <div class="text-center mt-10">
-                        <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
-                            상담 신청
+                        <button id="program-primary-cta" onclick="openProgramApply()" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
+                            ${state.programFilter === 'church' ? '교회·사역팀 프로그램 문의' : '상담 신청'}
                         </button>
                     </div>
                 </div>
+
+                <aside class="mt-12 rounded-[2rem] border border-er-sand/60 bg-er-greenTint/40 p-6 text-center shadow-soft md:p-8">
+                    <h3 class="text-lg font-bold text-er-ink">기업·팀 교육을 찾고 계신가요?</h3>
+                    <p class="mx-auto mt-2 max-w-2xl text-sm text-er-body break-keep">일반 기업교육과 조직 컨설팅은 독립된 ER Business에서 안내합니다.</p>
+                    <a href="https://business.er-coaching.com/programs" class="mt-5 inline-flex min-h-11 items-center justify-center rounded-full border border-er-green/30 bg-white px-6 py-3 text-sm font-bold text-er-green transition-colors hover:border-er-green hover:bg-er-surface">
+                        ER Business 프로그램 보기 <span class="ml-2" aria-hidden="true">↗</span>
+                    </a>
+                </aside>
 
                 <div class="mt-16 rounded-[2rem] bg-er-surface border border-er-sand/60 p-6 md:p-8 shadow-soft animate-fade-in-up">
                     <div class="flex items-center justify-between gap-3 mb-4">
@@ -264,7 +306,7 @@ function renderPrograms() {
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         ${[
                             ['워크북 자료', '개인/그룹 진행 시 바로 활용할 수 있는 실습 시트와 안내 자료'],
-                            ['강의 슬라이드', '교회·기관 대상 프로그램에 사용하는 핵심 강의 자료 모음'],
+                            ['강의 슬라이드', '교회·선교단체 대상 프로그램에 사용하는 핵심 강의 자료 모음'],
                             ['진행 가이드', '회기별 운영 순서와 질문 프롬프트를 담은 코치용 가이드']
                         ].map(([title, desc]) => `
                             <div class="rounded-2xl border border-er-sand/50 bg-er-base/60 p-5">

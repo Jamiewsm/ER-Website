@@ -47,10 +47,6 @@ const ADAPTIVE_TEST_EMBED_VERSION = '20260521-result-hero-scroll-v1';
 
 const ER = typeof window !== 'undefined' && window.ER_STRINGS ? window.ER_STRINGS : {};
 const contentData = {
-    stats: {
-        labels: (ER.contentData && ER.contentData.stats && ER.contentData.stats.labels) ? ER.contentData.stats.labels.slice() : ['개인/가정', '목회자', '기업/조직', '강사양성', '청소년'],
-        data: [45, 25, 15, 10, 5],
-    },
     types: {
         labels: (ER.contentData && ER.contentData.types && ER.contentData.types.labels) ? ER.contentData.types.labels.slice() : ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 열매맺는 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 열정적인 사람', '8번 보호하는 사람', '9번 조화로운 사람'],
         data: [8, 9, 8, 7, 6, 8, 7, 8, 9] 

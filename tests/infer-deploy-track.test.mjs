@@ -28,5 +28,7 @@ test('skips docs-only changes', () => {
 test('matches helpers align with allowlists', () => {
   assert.equal(matchesTestPath('css/test.css'), true);
   assert.equal(matchesSitePath('child-type-test/child-type-test.html'), true);
+  assert.equal(matchesSitePath('js/app-state.js'), true);
+  assert.equal(matchesSitePath('assets/er-social-share-ministry.png'), true);
   assert.equal(matchesTestPath('index.html'), false);
 });

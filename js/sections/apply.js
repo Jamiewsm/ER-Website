@@ -336,6 +336,9 @@ function renderApply(payload = null) {
     const childTypeResult = fromChildTypeTest ? hydrateChildTypeTestResult() : null;
     let focus = String(payload?.focus || '').trim();
     if (focus === 'parents_workshop') focus = 'parenting_workshop';
+    if (focus === 'team' || focus === 'business' || focus === 'business_team') {
+        return renderBusinessHandoff('contact');
+    }
     const focusConfig = {
         parenting: {
             track: 'paid',
@@ -373,14 +376,14 @@ function renderApply(payload = null) {
             category: '부부 코칭 1회 ($220)',
             message: '부부 관계 코칭을 원합니다.'
         },
-        team: {
+        ministry_team: {
             track: 'org',
-            title: '기업/팀 프로그램 문의',
-            desc: '팀 소통, 역할 충돌, 갈등 비용, 리더십 정렬 문제를 남겨 주시면 맞춤형 워크숍 방향을 제안합니다.',
-            bannerTitle: '팀 워크숍 문의 안내',
-            bannerBody: '성격 설명에서 끝나지 않고, 팀 소통 규칙과 역할 적합성, 리더십 커뮤니케이션까지 연결하는 방식으로 설계합니다.',
-            category: '기업/팀 워크숍 문의',
-            message: '우리 팀의 소통과 역할 정렬 문제를 상담하고 싶습니다.'
+            title: '교회·사역팀 프로그램 문의',
+            desc: '사역자 소진, 공동체 갈등, 리더와 사역팀의 소통 문제를 남겨 주시면 현장에 맞는 워크숍과 후속 코칭 방향을 함께 정리합니다.',
+            bannerTitle: '교회·사역팀 회복 프로그램 안내',
+            bannerBody: '교회의 규모와 현재 고민, 리더 구성과 일정에 맞춰 공동체 회복과 사역 리더십 프로그램을 제안합니다.',
+            category: '사역팀 소통·갈등 프로그램 문의',
+            message: '우리 교회와 사역팀의 관계·소통 회복을 위한 상담을 원합니다.'
         },
         church: {
             track: 'org',
@@ -388,7 +391,7 @@ function renderApply(payload = null) {
             desc: '사역자 소진, 공동체 갈등, 리더십 소통 문제를 교회 현장에 맞는 워크숍과 후속 코칭으로 제안합니다.',
             bannerTitle: '교회 공동체 회복 문의 안내',
             bannerBody: '교회의 규모와 현재 고민, 리더 구성과 일정에 맞춰 공동체 회복 프로그램과 리더십 워크숍 방향을 함께 정리합니다.',
-            category: '교회 워크숍 문의',
+            category: '교회 공동체 워크숍 문의',
             message: '우리 교회의 공동체/리더십 회복을 위한 상담을 원합니다.'
         },
         identity_session: {
@@ -472,7 +475,7 @@ function renderApply(payload = null) {
             : isMinistryTrack
                 ? '사역지원 신청'
                 : isOrgTrack
-                    ? '기관/교회 프로그램 문의'
+                    ? '교회·사역팀 프로그램 문의'
                     : '상담 및 코칭 신청'
     );
     const trackDesc = childResultFocus?.desc || selectedFocus?.desc || (
@@ -481,7 +484,7 @@ function renderApply(payload = null) {
             : isMinistryTrack
                 ? '목회자·선교사 사역지원(무료/감면) 신청을 남겨 주세요.'
                 : isOrgTrack
-                    ? '교회/기관/기업 프로그램 문의를 남겨 주세요.'
+                    ? '교회·선교단체·기독교 기관의 프로그램 문의를 남겨 주세요.'
                     : '신청 내용을 남겨주세요.'
     );
 
@@ -490,12 +493,12 @@ function renderApply(payload = null) {
         : isMinistryTrack
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
             : isOrgTrack
-                ? ['교회 워크숍 문의', '기관 프로그램 문의', '기업/팀 워크숍 문의', '리더 디브리핑 문의']
+                ? ['교회 공동체 워크숍 문의', '사역팀 소통·갈등 프로그램 문의', '교회 리더 디브리핑 문의', '기독교 기관 프로그램 문의']
                 : getPaidApplyCategoryOptions();
     const defaultPaidCategory = '테스트 결과지 해석상담 ($50)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
-        : defaultPaidCategory;
+        : (categoryOptions[0] || defaultPaidCategory);
     const seededMessage = (fromTest || fromChildTypeTest) && testSummary
         ? `${testSummary}\n${selectedFocus?.message || '유형(Typing) 상담 신청합니다.'}`
         : (selectedFocus?.message || '');
@@ -507,14 +510,14 @@ function renderApply(payload = null) {
                 : isMinistryTrack
                     ? '사역지원 신청 안내'
                     : isOrgTrack
-                        ? '기관/교회 프로그램 안내'
+                        ? '교회·사역팀 프로그램 안내'
                         : ''
     );
     const bannerBody = childResultFocus?.bannerBody || selectedFocus?.bannerBody || (
         fromTest
             ? '약식 테스트 결과를 바탕으로 유형(Typing) 상담에서 현재 패턴과 회복 방향을 구체적으로 정리해 드립니다.'
             : isSupportTrack
-                ? '후원 문의, 교회·기관 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.'
+                ? '후원 문의, 교회·선교단체 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.'
                 : isMinistryTrack
                     ? '목회자·선교사 대상 무료/감면 사역지원 트랙은 심사 후 배정됩니다.'
                     : isOrgTrack
@@ -536,6 +539,12 @@ function renderApply(payload = null) {
                             <p class="text-sm font-bold text-er-dark mb-1">${bannerTitle}</p>
                             <p class="text-xs text-gray-600 break-keep">${bannerBody}</p>
                         </div>
+                    ` : ''}
+
+                    ${isOrgTrack ? `
+                        <p class="mb-6 rounded-2xl border border-er-sand/60 bg-er-base/60 p-4 text-xs leading-relaxed text-er-body break-keep">
+                            일반 기업·팀 교육이나 조직 컨설팅 문의는 <a href="https://business.er-coaching.com/contact" class="font-bold text-er-green underline decoration-er-green/30 underline-offset-4">ER Business 문의 페이지 <span aria-hidden="true">↗</span></a>에서 접수합니다.
+                        </p>
                     ` : ''}
 
                     <div class="flex items-center justify-between mb-8 px-4 relative">
@@ -591,7 +600,7 @@ function renderApply(payload = null) {
                                     : isMinistryTrack
                                         ? '사역지원 트랙은 월별 슬롯 기반으로 운영됩니다. 접수 후 심사 및 일정 가능 여부를 안내드립니다.'
                                         : isOrgTrack
-                                            ? '기관/교회/기업 프로그램은 요구사항과 일정에 따라 맞춤 제안으로 안내됩니다.'
+                                            ? '교회·사역팀 프로그램은 대상과 일정에 따라 맞춤 제안으로 안내됩니다.'
                                             : 'ER의 모든 세션은 USD 기준으로 운영됩니다. 최종 결제 금액은 결제 수단 및 환율에 따라 달라질 수 있습니다.'}
                                 접수 후 24시간 이내에 담당자가 연락드립니다.
                             </p>

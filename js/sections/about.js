@@ -7,7 +7,7 @@ function renderAbout() {
                     <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-greenTint mb-5">About ER</span>
                     <h2 class="font-display text-2xl md:text-4xl font-extrabold tracking-[-0.03em] leading-snug break-keep max-w-3xl mx-auto">
                         ER은 개인의 회복이<br class="hidden sm:block">
-                        가정과 공동체의 회복으로 이어지도록 돕습니다.
+                        가정과 교회 공동체의 회복으로 이어지도록 돕습니다.
                     </h2>
                     <div class="flex justify-center items-center gap-3 mt-8">
                         <span class="w-8 h-px bg-white/25"></span>
@@ -34,7 +34,7 @@ function renderAbout() {
                                     ['우리가 지향하는 회복', '자기 이해와 정서의 회복, 관계의 회복, 공동체 돌봄이 자연스럽게 이어지는 회복을 지향합니다.'],
                                     ['운영 방식', '코치와 협력자, 파트너 공동체와 함께 후원과 협력 기반의 사역으로 운영합니다.'],
                                     ['핵심 접근', '기독교 세계관과 에니어그램을 통합적으로 적용하여 개인과 공동체를 함께 돌봅니다.'],
-                                    ['협력 구조', '교회와 기관, 사역자, 훈련 중인 코치들과 함께 프로그램을 설계하고 운영합니다.']
+                                    ['협력 구조', '교회와 선교단체, 기독교 기관, 사역자, 훈련 중인 코치들과 함께 프로그램을 설계하고 운영합니다.']
                                 ].map(([title, body]) => `
                                 <div class="p-5 bg-er-base/50 rounded-2xl border border-er-sand/40 shadow-soft floating-card">
                                     <h4 class="font-bold text-er-inkSoft text-sm mb-2">${title}</h4>
@@ -50,7 +50,7 @@ function renderAbout() {
                                     ${[
                                         'ER은 사역의 목적과 참여 대상, 후원과 협력의 길을 투명하게 안내하는 회복 사역입니다.',
                                         '후원 여부와 관계없이 먼저 필요를 듣고, 각 사람과 공동체에 맞는 회복의 방향을 함께 찾습니다.',
-                                        '파트너 교회와 기관, 코치 네트워크와 함께 각 지역과 공동체에 맞는 프로그램을 연결합니다.'
+                                        '파트너 교회와 선교단체, 기독교 기관, 코치 네트워크와 함께 각 지역과 공동체에 맞는 프로그램을 연결합니다.'
                                     ].map((line) => `
                                     <div class="flex items-start gap-3">
                                         <i class="fas fa-check-circle text-er-green mt-0.5"></i>
@@ -60,7 +60,7 @@ function renderAbout() {
                             </div>
                             <div class="grid sm:grid-cols-2 gap-4">
                                 ${[
-                                    ['Partner Ministries', '교회와 기관이 지역의 회복 과제를 함께 다루도록 연결합니다.'],
+                                    ['Partner Ministries', '교회와 선교단체, 기독교 기관이 지역과 사역 현장의 회복 과제를 함께 다루도록 연결합니다.'],
                                     ['Qualified Collaborators', '검증된 코치와 교육 협력자가 프로그램을 함께 설계합니다.'],
                                     ['Support-Based Operations', '후원과 협력이 더 많은 개인과 공동체에게 회복 기회를 넓힙니다.'],
                                     ['Public Trust', '사역의 목적과 방향을 공개적으로 설명해 신뢰를 쌓습니다.']

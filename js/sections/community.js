@@ -6,8 +6,8 @@ function renderCommunity() {
         couple: ['부부관계'],
         personal: ['자기이해', '자기성찰'],
         ministry: ['선교·사역'],
-        church: ['부부관계', '선교·사역'],
-        team: ['자기성찰', '자기이해'],
+        church: ['교회·공동체', '선교·사역'],
+        team: ['교회·공동체', '선교·사역'],
         leadership: ['자기성찰', '선교·사역'],
         training: ['자기이해', '자기성찰']
     };
@@ -33,7 +33,7 @@ function renderCommunity() {
                     ${[
                         ['400+', '지금까지 연결된 참여자'],
                         ['350회+', '누적 상담·코칭 세션'],
-                        ['10곳', '협력 교회·기관'],
+                        ['10곳', '협력 교회·선교단체'],
                         ['100+', '훈련·교육 참여자']
                     ].map(([value, label]) => `
                         <div class="rounded-[2rem] border border-er-sand/60 bg-er-surface p-6 text-center shadow-soft floating-card">
@@ -46,7 +46,7 @@ function renderCommunity() {
                 <div class="mb-10 animate-fade-in-up">
                     <h3 class="text-lg font-bold text-er-inkSoft mb-4">회복 이야기 카테고리</h3>
                     <div class="flex flex-wrap gap-2">
-                        ${['자기이해', '자기성찰', '부부관계', '양육상담', '선교·사역', '리더십·팀'].map((tag) => `
+                        ${['자기이해', '자기성찰', '부부관계', '양육상담', '선교·사역', '교회·사역팀'].map((tag) => `
                             <span class="px-3 py-1.5 rounded-full text-xs font-bold bg-er-greenTint text-er-inkSoft border border-er-sand/40">${tag}</span>
                         `).join('')}
                     </div>
@@ -77,11 +77,21 @@ function renderCommunity() {
                 <div class="grid lg:grid-cols-[1.05fr_0.95fr] gap-8 mb-10">
                     <div class="bg-er-surface rounded-[2rem] p-6 md:p-8 shadow-soft animate-fade-in-up floating-card border border-er-sand/60">
                         <h3 class="font-bold text-base text-er-inkSoft mb-6 flex items-center gap-2">
-                            <i class="fas fa-chart-pie text-er-green"></i> 은혜가 흘러간 자리
+                            <i class="fas fa-church text-er-green"></i> ER이 집중하는 자리
                         </h3>
-                        <p class="text-xs text-er-muted mb-4 break-keep">상담과 교육 요청이 집중되는 주요 영역을 기준으로 사역의 우선순위와 협력 방향을 조정합니다.</p>
-                        <div class="chart-container h-64">
-                            <canvas id="impactChart"></canvas>
+                        <p class="text-xs text-er-muted mb-5 break-keep">개인의 회복이 가정과 교회 공동체로 이어지도록 다음 네 영역을 중심으로 섬깁니다.</p>
+                        <div class="grid gap-3 sm:grid-cols-2">
+                            ${[
+                                ['개인·가정', '자기 이해와 관계 회복'],
+                                ['교회 공동체', '갈등 회복과 건강한 동역'],
+                                ['목회자·선교사', '소진 돌봄과 사역지원'],
+                                ['교육·양성', '기독교 에니어그램 훈련']
+                            ].map(([title, desc]) => `
+                                <div class="rounded-2xl border border-er-sand/50 bg-er-base/60 p-4">
+                                    <h4 class="text-sm font-bold text-er-inkSoft">${title}</h4>
+                                    <p class="mt-1 text-xs text-er-muted break-keep">${desc}</p>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
 
@@ -114,8 +124,8 @@ function renderCommunity() {
                         ${[
                             { label: '양육', desc: '부모-아이 기질 차이', icon: 'fas fa-child-reaching', tab: 'individual' },
                             { label: '부부', desc: '반복 갈등·대화 회복', icon: 'fas fa-heart', tab: 'individual' },
-                            { label: '팀', desc: '소통·역할 정렬', icon: 'fas fa-users', tab: 'business' },
-                            { label: '교회', desc: '공동체·리더십', icon: 'fas fa-church', tab: 'church' },
+                            { label: '사역팀', desc: '동역·소통 회복', icon: 'fas fa-users', tab: 'church' },
+                            { label: '교회', desc: '공동체·사역자 돌봄', icon: 'fas fa-church', tab: 'church' },
                         ].map((card) => `
                             <button onclick="renderSection('programs', { tab: '${card.tab}' })" class="text-left rounded-2xl bg-er-base/60 border border-er-sand/50 p-5 shadow-soft hover:-translate-y-1 hover:border-er-green/40 hover:bg-er-greenTint/30 transition-all">
                                 <div class="w-10 h-10 rounded-xl bg-er-greenTint text-er-green flex items-center justify-center mb-3">
