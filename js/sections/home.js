@@ -136,14 +136,14 @@ function renderHome() {
             action: "renderSection('apply', { track: 'paid', focus: 'couple', apply_source: 'home_relationship_couple' })"
         },
         {
-            eyebrow: '사역팀과 리더십',
-            title: '강점과 소통 방식을 이해하고, 복음 안에서 진정한 연합으로',
-            text: '사역 현장의 오해는 헌신이 부족해서가 아니라, 일하는 동기와 방식의 차이에서 비롯될 때가 많습니다.',
+            eyebrow: '교회·사역팀',
+            title: '다름을 이해하고, 복음 안에서 함께 섬기는 공동체로',
+            text: '사역 현장의 오해와 소진은 헌신의 부족이 아니라, 서로 다른 동기와 소통 방식이 겹치며 생길 때가 많습니다.',
             image: 'home-team-photo.jpg',
             position: 'center top',
-            caption: '강점과 소통 방식을 이해할 때, 팀은 경쟁이 아니라 동역을 배웁니다',
-            points: ['사역자의 강점과 리더십 스타일', '팀 안의 소통 방식과 의사결정 패턴', '오해를 줄이는 협업 언어 만들기'],
-            action: "renderSection('apply', { track: 'org', focus: 'team', apply_source: 'home_relationship_team' })"
+            caption: '각 사람의 은사를 존중하며 함께 섬기는 사역팀',
+            points: ['사역자의 강점과 소명 이해', '리더와 사역팀의 소통·의사결정 패턴', '갈등을 줄이고 동역을 세우는 공동체 언어'],
+            action: "renderSection('apply', { track: 'org', focus: 'ministry_team', apply_source: 'home_relationship_ministry_team' })"
         }
     ];
 
@@ -162,7 +162,7 @@ function renderHome() {
                     <div class="relative z-10 px-6 pb-10 pt-10 sm:px-10 sm:pt-14 lg:px-12 lg:pb-16 lg:pt-20 xl:px-14">
                         <div class="inline-flex items-center gap-2 rounded-full bg-[#f0f3e8] px-4 py-2 text-xs font-bold text-er-green shadow-sm">
                             <i class="fa-brands fa-pagelines text-[11px]" aria-hidden="true"></i>
-                            나를 이해하고, 관계를 회복하는 시간
+                            기독교 에니어그램으로 회복을 배우는 곳
                         </div>
 
                         <h1 class="font-display mt-6 max-w-3xl text-[2.18rem] font-extrabold leading-[1.28] tracking-[-0.03em] text-er-ink break-keep sm:mt-8 sm:text-5xl sm:leading-[1.28] lg:text-[3.05rem] xl:text-[3.35rem]">
@@ -171,7 +171,7 @@ function renderHome() {
                         </h1>
 
                         <p class="mt-4 max-w-2xl text-base font-medium leading-[1.75] text-[#5f6258] break-keep sm:mt-6 sm:text-lg">
-                            ER은 에니어그램과 회복의 관점으로 더 나은 관계와 건강한 나를 만드는 여정을 함께합니다.
+                            ER은 기독교 세계관과 에니어그램을 바탕으로 하나님이 지으신 나를 이해하고, 가정과 교회 공동체 안에서 관계와 소명을 회복하는 여정을 함께합니다.
                         </p>
 
                         ${showJulyBasicRecruitment ? `

@@ -78,7 +78,6 @@
     },
 
     contentData: {
-      stats: { labels: ['개인/가정', '목회자', '기업/조직', '강사양성', '청소년'] },
       types: { labels: ['1번 올바른 사람', '2번 아낌없이 주는 사람', '3번 열매맺는 사람', '4번 독창적인 사람', '5번 지혜로운 사람', '6번 충실한 사람', '7번 열정적인 사람', '8번 보호하는 사람', '9번 조화로운 사람'] },
       notices: [
         { id: 7, tag: '안내', title: '에니어그램 기본과정 8주 — 7월 기수 개강', date: '2026-07-10', summary: 'A·B반 총 13명 · A반 7/7 · B반 7/10 개강 · 8주 온라인', body: '<p class="text-gray-600 leading-relaxed break-keep"><strong>2026년 7월 ER 성경적 에니어그램 기본과정</strong>이 A반·B반으로 나뉘어 시작되었습니다. 참여자 시간대에 맞춰 두 반으로 진행하며, 총 <strong>13명</strong>이 함께합니다.</p><div class="mt-6 grid gap-3"><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">A반</span><span class="text-sm text-gray-700 break-keep">2026년 7월 7일(월) 개강</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">B반</span><span class="text-sm text-gray-700 break-keep">2026년 7월 10일(목) 개강</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">구성</span><span class="text-sm text-gray-700 break-keep">8주 · 주 1회 강의 3시간 + 1:1 멘토링 1시간</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">모집</span><span class="text-sm text-gray-700 break-keep">7월 기수 모집 마감 (7/5)</span></div></div><p class="mt-6 flex flex-wrap gap-3"><a href="/basic-course.html" class="inline-flex items-center justify-center rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors">과정 안내 보기</a><a href="mailto:json@er-coaching.com?subject=%EB%8B%A4%EC%9D%8C%20%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%95%20%EC%95%8C%EB%A6%BC%20%EC%9A%94%EC%B2%AD" class="inline-flex items-center justify-center rounded-full border border-er-accent/40 bg-er-accentLight/30 px-5 py-2.5 text-sm font-bold text-er-dark hover:border-er-accent transition-colors">다음 기수 알림 문의</a></p>' },
@@ -131,8 +130,8 @@
       whoWeServe: [
         { title: '개인', body: '자기 이해, 감정 패턴, 소명 탐색을 돕습니다.' },
         { title: '가정', body: '부부와 부모-자녀 관계의 갈등을 풀고 회복을 돕습니다.' },
-        { title: '교회', body: '사역자와 리더, 공동체의 소진과 갈등을 함께 다룹니다.' },
-        { title: '협력 기관', body: '교육, 워크숍, 파트너십 프로그램으로 연결합니다.' }
+        { title: '교회 공동체', body: '사역자와 리더, 공동체의 소진과 갈등을 함께 다룹니다.' },
+        { title: '선교단체·기독교 기관', body: '교육, 워크숍, 사역 파트너십으로 연결합니다.' }
       ],
       programsLabel: '맞춤형 프로그램',
       programsTitle: '맞춤형 프로그램',
@@ -143,7 +142,6 @@
         { tag: 'Church', title: '교회·사역자 지원', body: '소진, 갈등, 리더십 회복을 위한 코칭과 워크숍을 제공합니다.' },
         { tag: 'Training', title: '교육·강사 양성', body: '에니어그램과 회복 관점을 실제 교육과 현장 적용으로 연결합니다.' }
       ],
-      statsLabels: [['45%', '개인·가정 지원 비중'], ['25%', '교회·사역자 지원 비중'], ['15%', '조직·협력 프로그램 비중'], ['10%', '강사 양성·교육 비중']],
       communityLabel: '함께한 이야기',
       communityTitle: '회복이 남긴 변화',
       communityDesc: '사역이 어떤 자리로 흘러가고 있는지, 주요 지표와 방향을 한눈에 정리했습니다.',
@@ -180,15 +178,6 @@
             { b: 'Community', t: '리더십 수련회', d: '당회, 교사, 소그룹 리더들을 위한 맞춤형 수련회 프로그램을 제공합니다.', i: 'fas fa-users' }
           ]
         },
-        business: {
-          title: '건강한 조직 문화와 성과',
-          desc: '구성원의 강점을 발견하고, 효과적인 소통과 협업을 돕습니다.',
-          cards: [
-            { b: 'HR', t: '강점 기반 채용/배치', d: '구성원의 성격 유형에 따른 직무 적합성을 분석하여 최적의 팀을 구성합니다.', i: 'fas fa-briefcase' },
-            { b: 'Comm', t: '조직 소통/갈등 해결', d: '성격 유형별 의사소통 방식을 이해하여 갈등을 줄이고 협업을 증진합니다.', i: 'fas fa-handshake' },
-            { b: 'Team', t: '팀 시너지 워크숍', d: '서로의 다름을 시너지로 바꾸는 체험형 팀빌딩 프로그램입니다.', i: 'fas fa-layer-group' }
-          ]
-        },
         training: {
           title: '에니어그램 전문가 양성',
           desc: '에니어그램의 지혜를 깊이 있게 배우고, 타인을 돕는 전문가로 성장하는 과정입니다.',
@@ -214,14 +203,14 @@
       label: '함께한 이야기',
       title: '사역의 변화와 방향',
       desc: 'ER이 어떤 자리들을 섬기고 있으며, 어떤 변화의 방향을 꾸준히 만들어 가는지 지표 중심으로 정리했습니다.',
-      stats: [['400+', '지금까지 연결된 참여자'], ['350회+', '누적 상담·코칭 세션'], ['10곳', '협력 교회·기관'], ['100+', '훈련·교육 참여자']],
+      stats: [['400+', '지금까지 연결된 참여자'], ['350회+', '누적 상담·코칭 세션'], ['10곳', '협력 교회·선교단체'], ['100+', '훈련·교육 참여자']],
       chartTitle: '은혜가 흘러간 자리',
       chartDesc: '상담과 교육 요청이 집중되는 주요 영역을 기준으로 사역의 우선순위와 협력 방향을 조정합니다.',
       impactLabel: '사역의 방향',
       impactTitle: '반복적으로 나타난 변화의 방향',
       howWeOperate: '이 사역을 운영하는 방식',
       operateItems: [
-        ['협력 기반의 사역', '교회와 기관, 코치와 협력자와 함께 사역의 구조를 세워 갑니다.'],
+        ['협력 기반의 사역', '교회와 선교단체, 기독교 기관, 코치와 협력자와 함께 사역의 구조를 세워 갑니다.'],
         ['사역지원 후원', '후원금은 목회자·선교사를 위한 무료 코칭 트랙을 유지하는 데 우선 사용됩니다.'],
         ['빠른 해결보다 형성', '단기 해결보다 지속 가능한 회복과 형성의 과정을 중요하게 여깁니다.'],
         ['신뢰와 투명성', '사역의 목적과 운영 방향, 참여 경로를 공개적으로 설명하는 사이트를 지향합니다.']
@@ -231,12 +220,12 @@
     support: {
       label: '후원하기',
       title: '목회자·선교사의 회복 코칭을 함께 후원해 주세요',
-      desc: 'ER의 개인·가정·기업 코칭은 유료 서비스로 운영됩니다. 그러나 목회자와 선교사에게는 무료로 회복 코칭을 제공합니다. 여러분의 후원이 이 무료 사역지원 트랙을 지속할 수 있게 합니다.',
-      stats: [['300명+', '지금까지 섬긴 인원'], ['350회+', '누적 세션 수'], ['10곳', '협력 교회·기관'], ['7명', '함께하는 코치'], ['20명+', '훈련 참가자']],
+      desc: 'ER의 개인·가정 코칭과 교회·사역팀 프로그램은 유료 서비스로 운영됩니다. 그러나 목회자와 선교사에게는 무료로 회복 코칭을 제공합니다. 여러분의 후원이 이 무료 사역지원 트랙을 지속할 수 있게 합니다.',
+      stats: [['300명+', '지금까지 섬긴 인원'], ['350회+', '누적 세션 수'], ['10곳', '협력 교회·선교단체'], ['7명', '함께하는 코치'], ['20명+', '훈련 참가자']],
       howToGive: '함께 마음을 보내는 방법',
       howToGiveItems: [
         ['후원 문의', '프로그램 운영과 자료 개발, 필요한 참여자 연결을 위한 후원 안내를 개별적으로 드립니다.'],
-        ['교회·기관 협력', '회복 프로그램과 워크숍, 훈련 과정을 함께 기획하고 운영할 수 있습니다.'],
+        ['교회·선교단체 협력', '회복 프로그램과 워크숍, 훈련 과정을 함께 기획하고 운영할 수 있습니다.'],
         ['기도와 소개', '도움이 필요한 개인과 공동체를 연결하고 사역 소식을 함께 나누는 방식으로 동참할 수 있습니다.']
       ],
       whereUsed: '후원이 사용되는 곳',
@@ -250,7 +239,7 @@
       principlesTitle: '후원 운영 원칙',
       principles: [
         '후원금은 목회자·선교사 무료 코칭 트랙에 우선 사용됩니다.',
-        '일반 개인·가정·기업 서비스는 유료로 운영됩니다.',
+        '일반 개인·가정 코칭과 교회·사역팀 프로그램은 유료로 운영됩니다.',
         '협력 파트너십과 공동 프로그램은 현장에 맞게 개별 설계합니다.'
       ]
     },
@@ -259,11 +248,11 @@
       title: '상담 신청하기',
       titleSupport: '후원·협력 신청하기',
       desc: '상담과 프로그램 참여를 원하시면 신청 내용을 남겨주세요.',
-      descSupport: '후원, 파트너십, 교회·기관 협력을 원하시면 신청 내용을 남겨주세요.',
+      descSupport: '후원, 파트너십, 교회·선교단체 협력을 원하시면 신청 내용을 남겨주세요.',
       testBannerTitle: '약식 테스트 후 이어지는 이야기',
       testBannerDesc: '정식 타이핑 세션(무료)으로 더 깊은 자기 이해와 관계 이해를 함께 살펴봅니다.',
       supportBannerTitle: '후원·협력 전용 창구',
-      supportBannerDesc: '후원 문의, 교회·기관 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.',
+      supportBannerDesc: '후원 문의, 교회·선교단체 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.',
       nameLabel: '이름',
       namePlaceholder: '성함을 남겨주세요',
       contactLabel: '연락받으실 곳',
@@ -272,10 +261,10 @@
       messageLabel: '나누고 싶은 이야기',
       messagePlaceholder: '지금의 고민이나 바라는 도움을 편하게 적어주세요.',
       securityNote: '보안 확인',
-      infoNote: 'ER의 개인·가정·기업 코칭은 유료 서비스입니다. 목회자·선교사를 위한 무료 사역지원 트랙은 별도 심사 후 안내드립니다. 접수 후 24시간 이내에 담당 코치가 연락드립니다.',
+      infoNote: 'ER의 개인·가정 코칭과 교회·사역팀 프로그램은 유료 서비스입니다. 목회자·선교사를 위한 무료 사역지원 트랙은 별도 심사 후 안내드립니다. 접수 후 24시간 이내에 담당 코치가 연락드립니다.',
       submitBtn: '신청하기',
-      categoryOptions: ['개인/가정 코칭 (부부, 자녀)', '교회/사역자 회복 프로그램', '비즈니스/조직 워크숍', '강사 양성 과정', '기타 문의'],
-      categoryOptionsSupport: ['후원 문의', '교회/기관 협력 문의', '공동 프로그램 제안', '기타 협력 문의'],
+      categoryOptions: ['개인/가정 코칭 (부부, 자녀)', '교회/사역팀 회복 프로그램', '강사 양성 과정', '기타 문의'],
+      categoryOptionsSupport: ['후원 문의', '교회/선교단체 협력 문의', '공동 프로그램 제안', '기타 협력 문의'],
       optionTyping: '정식 타이핑 세션 (무료)'
     },
 
@@ -341,7 +330,6 @@
           id: 'coach-son',
           name: '손지영 대표',
           role: 'ER 대표 · 강사 · Head Coach',
-          organizationBadge: '대한민국 정부 인증 여성기업',
           photo: 'son-profile-picture.png',
           bio: '손지영 대표는 오랫동안 중동 선교와 캠퍼스 사역 현장에서 목회자·선교사와 공동체를 섬겨 왔으며, 두 자녀를 양육하는 엄마로서 가정의 실제 고민을 함께 다룹니다. ER 소개에 담긴 비전처럼 에니어그램과 기독교 세계관을 통합적으로 적용해 개인과 공동체의 회복을 돕고 있습니다.',
           specialties: ['개인 자기 이해 코칭', '부부·가정 회복', '사역자·선교사 돌봄', '에니어그램 강사 양성'],
