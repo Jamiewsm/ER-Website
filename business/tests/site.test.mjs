@@ -257,6 +257,19 @@ test("hero and social assets are shipped without enforcing oversized files", asy
   }
 });
 
+test("hero keeps a visible team photo when CSS animation does not run", async () => {
+  const css = await readFile(new URL("app/globals.css", projectRoot), "utf8");
+
+  assert.match(
+    css,
+    /\.hero-visual\s*\{[\s\S]*?background:\s*#1c2a20 url\("\/hero-team-ai\.jpg"\) 54% 48% \/ cover no-repeat;/,
+  );
+  assert.match(
+    css,
+    /\.hero-photo-one\s*\{[\s\S]*?opacity:\s*1;[\s\S]*?object-position:\s*54% 48%;/,
+  );
+});
+
 test("search crawlers receive an exact six-route production sitemap", async () => {
   const [robots, sitemap] = await Promise.all([
     readFile(new URL("dist/client/robots.txt", projectRoot), "utf8"),
