@@ -821,7 +821,7 @@ body {
 .er-report-toggle-buttons button,
 .er-report-tools button,
 .er-report-final-cta a,
-.er-report-low-confidence a {
+.er-report-gate-primary {
   min-height: 46px;
   border: 0;
   border-radius: 999px;
@@ -835,7 +835,7 @@ body {
 .er-report-toggle-buttons button:hover,
 .er-report-tools button:hover,
 .er-report-final-cta a:hover,
-.er-report-low-confidence a:hover {
+.er-report-gate-primary:hover {
   transform: translateY(-1px);
 }
 
@@ -1264,27 +1264,89 @@ body {
   color: var(--er-report-muted);
 }
 
-.er-report-low-confidence {
-  margin-top: 16px;
+.er-report-gate .er-report-gate-card {
+  border-bottom: 0;
+  padding-bottom: 44px;
+}
+
+.er-report-gate-lead {
+  margin: 0 0 20px;
+  color: var(--er-report-dark);
+}
+
+.er-report-gate-reasons {
   border-radius: 16px;
-  border: 1px solid rgba(176, 97, 73, 0.24);
-  background: #fbf1ec;
-  padding: 18px;
+  border: 1px solid var(--er-report-line);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 18px 20px;
+}
+
+.er-report-gate-reasons h3,
+.er-report-gate-session h3 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--er-report-dark);
+  word-break: keep-all;
+}
+
+.er-report-gate-reasons ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--er-report-muted);
+}
+
+.er-report-gate-reasons li + li {
+  margin-top: 6px;
+}
+
+.er-report-gate-session {
+  margin-top: 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(101, 116, 83, 0.28);
+  background: var(--er-report-accent-soft);
+  padding: 20px;
   text-align: center;
 }
 
-.er-report-low-confidence p {
-  margin: 0 0 12px;
-  color: #8F4634;
+.er-report-gate-session p {
+  margin: 0 0 16px;
+  color: var(--er-report-dark);
 }
 
-.er-report-low-confidence a {
+.er-report-gate-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--er-report-red);
+  width: 100%;
+  background: var(--er-report-gold);
   color: #fff;
   text-decoration: none;
+}
+
+.er-report-gate-primary:hover {
+  background: var(--er-report-gold-strong);
+}
+
+.er-report-gate-retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px solid var(--er-report-line);
+  background: transparent;
+  color: var(--er-report-muted);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.er-report-gate-tip {
+  margin: 18px 0 0;
+  font-size: 14px;
+  color: var(--er-report-muted);
 }
 
 .er-report-final-cta {

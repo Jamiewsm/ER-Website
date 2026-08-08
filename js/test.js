@@ -3675,10 +3675,6 @@ function renderPremiumReport(model) {
         </div>
         <div class="er-report-next-grid">${nextSteps}</div>
         <div id="experiment-result-panel" class="hidden"></div>
-        <div id="cta-consulting" class="hidden er-report-low-confidence">
-          <p id="consult-cta-text">현재 결과는 1순위/2순위가 근접합니다. 결과지 해석상담에서 핵심 유형, 하위유형, 날개, 신뢰도, 헷갈리는 유형을 함께 정리해 드립니다.</p>
-          <a id="consult-cta-btn" href="#" data-report-program-key="result_consult">결과지 해석상담 신청</a>
-        </div>
         <div class="er-report-final-cta">
           <h2>${escapeReportHtml(c.gospel.declaration || c.heroStatement)}</h2>
           <p>결과지는 끝이 아니라, 오늘 하나의 작은 회복을 시작하는 지도입니다. 먼저 1시간 결과지 해석상담에서 내 결과가 실제 삶과 어떻게 연결되는지 함께 정리해 보세요.</p>
@@ -3697,6 +3693,48 @@ function renderPremiumReport(model) {
   bindPremiumReportInteractions(model);
   bindReportApplyNavigation(host);
   persistTestResultSummary(buildTestResultSummary(model));
+  scheduleEmbedResize();
+}
+
+function renderLowConfidenceGate(model) {
+  const host = document.getElementById('result-view');
+  if (!host) return;
+  const qualityFlags = (model.responseQuality && model.responseQuality.flags) || [];
+  const hasFlag = (code) => qualityFlags.some((flag) => flag && flag.code === code);
+  const stateStressApplied = !!(model.stateStressAdjustment && model.stateStressAdjustment.applied);
+  const reasons = ['두세 유형의 점수가 거의 같은 높이로 나온 경우'];
+  if (stateStressApplied || Number(model.recentStress) >= TEST_CONFIG.thresholds.stressCorrectionStart) {
+    reasons.push('최근 스트레스나 큰 변화로 평소와 다른 상태에서 응답한 경우');
+  }
+  if (hasFlag('unknown_overuse')) {
+    reasons.push("'잘 모르겠다' 같은 중립 응답이 많았던 경우");
+  }
+  if (reasons.length < 3) {
+    reasons.push('응답이 여러 유형의 특징에 고르게 걸쳐 있는 경우');
+  }
+  host.innerHTML = `
+    <article class="er-premium-report er-report-gate">
+      <section class="er-report-section er-report-gate-card">
+        <div class="er-report-section-head">
+          <span>결과 확인 전 안내</span>
+          <h2>지금 응답으로는 한 가지 유형으로 단정하기 어렵습니다</h2>
+        </div>
+        <p class="er-report-gate-lead">이번 응답은 여러 유형에 비슷한 강도로 걸쳐 있어, 해석 신뢰도가 낮게 나왔습니다. 이 상태에서 하나의 유형으로 확정한 결과지를 드리면 잘못된 자기 이해로 이어질 수 있어, 결과지를 바로 보여 드리지 않습니다.</p>
+        <div class="er-report-gate-reasons">
+          <h3>신뢰도가 낮게 나오는 흔한 이유</h3>
+          <ul>${reasons.map((item) => `<li>${escapeReportHtml(item)}</li>`).join('')}</ul>
+        </div>
+        <div class="er-report-gate-session">
+          <h3>타이핑 세션에서 함께 확인해 보세요</h3>
+          <p>사전 설문과 1:1 인터뷰로 핵심 유형, 하위유형, 날개를 함께 확인하는 유형(Typing) 상담입니다. 검사 점수만으로 확정하기 어려운 지금 같은 경우에 가장 정확한 다음 단계입니다.</p>
+          <a href="#" class="er-report-gate-primary" data-report-program-key="identity_session">타이핑 세션(유형 확인 상담) 신청</a>
+          <button type="button" class="er-report-gate-retry" onclick="location.reload()">처음부터 다시 검사하기</button>
+        </div>
+        <p class="er-report-gate-tip">최근 2주가 평소와 많이 달랐다면, 마음이 안정된 시기의 나를 기준으로 다시 응답해 보세요. 같은 결과가 반복되면 타이핑 세션에서 함께 확인하는 것이 가장 정확합니다.</p>
+      </section>
+    </article>
+  `;
+  bindReportApplyNavigation(host);
   scheduleEmbedResize();
 }
 
@@ -3902,11 +3940,10 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
     coreDisplay,
     responses: allResponses
   });
-  renderPremiumReport(premiumModel);
-
   if (confidence === '낮음') {
-    const consult = document.getElementById('cta-consulting');
-    if (consult) consult.classList.remove('hidden');
+    renderLowConfidenceGate(premiumModel);
+  } else {
+    renderPremiumReport(premiumModel);
   }
 
   if (window.ERDiagnosticExperiment && typeof window.ERDiagnosticExperiment.onResultReady === 'function') {
@@ -3936,7 +3973,8 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
     });
   }
 
-  document.getElementById('download-pdf-btn').onclick = downloadResultPdf;
+  const pdfBtn = document.getElementById('download-pdf-btn');
+  if (pdfBtn) pdfBtn.onclick = downloadResultPdf;
 }
 
 localizeStaticTestPage();
