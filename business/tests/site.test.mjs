@@ -28,7 +28,7 @@ const routes = [
     file: "contact.html",
     path: "/contact",
     title: "제안 요청 | ER Business",
-    h1: "우리 팀의 문제를 사람의 언어로 다시 읽어보세요.",
+    h1: "구성원의 기질과 강점을 이해하고, 역할을 조정하며 소통 방식을 개선합니다.",
   },
   {
     file: "privacy.html",
@@ -255,6 +255,19 @@ test("hero and social assets are shipped without enforcing oversized files", asy
   for (const asset of assets) {
     assert.ok(asset.size > 50_000);
   }
+});
+
+test("hero keeps a visible team photo when CSS animation does not run", async () => {
+  const css = await readFile(new URL("app/globals.css", projectRoot), "utf8");
+
+  assert.match(
+    css,
+    /\.hero-visual\s*\{[\s\S]*?background:\s*#1c2a20 url\("\/hero-team-ai\.jpg"\) 54% 48% \/ cover no-repeat;/,
+  );
+  assert.match(
+    css,
+    /\.hero-photo-one\s*\{[\s\S]*?opacity:\s*1;[\s\S]*?object-position:\s*54% 48%;/,
+  );
 });
 
 test("search crawlers receive an exact six-route production sitemap", async () => {

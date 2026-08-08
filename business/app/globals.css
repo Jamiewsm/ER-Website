@@ -455,7 +455,7 @@ summary:focus-visible {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: #1c2a20;
+  background: #1c2a20 url("/hero-team-ai.jpg") 54% 48% / cover no-repeat;
 }
 
 .hero-photo {
@@ -472,6 +472,7 @@ summary:focus-visible {
 }
 
 .hero-photo-one {
+  opacity: 1;
   object-position: 54% 48%;
 }
 

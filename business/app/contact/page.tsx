@@ -42,7 +42,7 @@ export default function ContactPage() {
       <main id="main-content">
         <InternalHero
           eyebrow="START THE CONVERSATION"
-          title="우리 팀의 문제를 사람의 언어로 다시 읽어보세요."
+          title="구성원의 기질과 강점을 이해하고, 역할을 조정하며 소통 방식을 개선합니다."
           description="자세한 진단이 아니어도 괜찮습니다. 지금 가장 반복되는 문제와 원하는 변화만 알려주세요. 프로그램을 먼저 판매하기보다 ER Business가 적합한 파트너인지부터 함께 확인합니다."
         />
 
