@@ -45,7 +45,7 @@ test('enterprise consulting details are removed from active main-site content', 
 });
 
 test('Business links are explicit handoffs, not internal service tabs', () => {
-  assert.match(indexHtml, /<a href="https:\/\/business\.er-coaching\.com\/programs"/);
+  assert.match(indexHtml, /<a href="https:\/\/business\.er-coaching\.com\/"/);
   assert.match(programsSource, /https:\/\/business\.er-coaching\.com\/programs/);
   assert.match(applySource, /https:\/\/business\.er-coaching\.com\/contact/);
 
