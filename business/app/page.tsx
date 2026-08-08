@@ -370,9 +370,9 @@ export default function Home() {
         <div className="cta-orbit" aria-hidden="true" />
         <p className="eyebrow">START THE CONVERSATION</p>
         <h2>
-          우리 팀의 문제를
+          구성원의 기질과 강점을 이해하고,
           <br />
-          <em>사람의 언어로 다시 읽어보세요.</em>
+          <em>역할을 조정하며 소통 방식을 개선합니다.</em>
         </h2>
         <p>
           회사명, 팀 규모, 현재 가장 큰 고민을 알려주시면

@@ -28,7 +28,7 @@ const routes = [
     file: "contact.html",
     path: "/contact",
     title: "제안 요청 | ER Business",
-    h1: "우리 팀의 문제를 사람의 언어로 다시 읽어보세요.",
+    h1: "구성원의 기질과 강점을 이해하고, 역할을 조정하며 소통 방식을 개선합니다.",
   },
   {
     file: "privacy.html",
