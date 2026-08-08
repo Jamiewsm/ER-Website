@@ -65,6 +65,9 @@ async function main() {
 
   if (args.url) {
     testJs = await fetchText(args.url);
+    // Live URL checks must also load test.html (redirects to /test are followed).
+    const origin = new URL(args.url).origin;
+    testHtml = await fetchText(`${origin}/test.html`);
   } else if (args.file) {
     testJs = readFileSync(resolve(args.file), 'utf8');
     if (args.html) testHtml = readFileSync(resolve(args.html), 'utf8');
