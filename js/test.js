@@ -550,13 +550,13 @@ const q1 = [
     id: 'center_auto_1',
     format: 'abc',
     centerChoice: true,
-    q: '압박이나 예상 밖의 일이 생긴 직후, 의식적으로 고르기 전에 더 먼저 붙잡는 것은?',
+    q: '갑자기 압박을 받거나 예상 밖의 일이 생겼을 때, 나도 모르게 가장 먼저 신경 쓰이는 것은?',
     qEn: 'Right after pressure or an unexpected situation appears, what do you tend to grab first before you consciously choose?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '이 일이 나를 어떤 사람으로 보이게 만들지, 내가 부족하거나 무능해 보였는지가 먼저 걸린다.',
+        text: '이 일로 내가 어떻게 보였을지, 부족하거나 무능해 보이지는 않았을지가 가장 먼저 마음에 걸린다.',
         textEn: 'I first get caught on how this may make me look, or whether I looked lacking or incapable.'
       },
       {
@@ -577,19 +577,19 @@ const q1 = [
     id: 'center_auto_2',
     format: 'abc',
     centerChoice: true,
-    q: '갈등 기류가 생기거나 서로의 입장이 부딪힐 때, 더 먼저 올라오는 반응은?',
+    q: '갈등이 생길 조짐이 보이거나 서로 입장이 부딪힐 때, 가장 먼저 올라오는 반응은?',
     qEn: 'When conflict begins to form or positions collide, which response comes up first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '내 말투나 태도가 어떻게 보였는지, 내 진심이 왜곡되어 보였는지가 먼저 걸린다.',
+        text: '내 말투나 태도가 어떻게 비쳤을지, 내 진심이 오해받지는 않았을지가 가장 먼저 마음에 걸린다.',
         textEn: 'I first get caught on how my tone or posture came across, and whether my intent looked distorted.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 이렇게 되었는지 이해해야 안심되고, 문제가 커지지 않게 확인할 것을 찾는다.',
+        text: '왜 이렇게 됐는지 이해가 되어야 안심되고, 문제가 커지지 않도록 확인할 것부터 찾는다.',
         textEn: 'I feel safer when I understand why this happened, and I look for what to verify so it does not escalate.'
       },
       {
@@ -604,7 +604,7 @@ const q1 = [
     id: 'center_auto_3',
     format: 'abc',
     centerChoice: true,
-    q: '칭찬이나 좋은 평가를 받을 때, 가장 먼저 의식되는 것은?',
+    q: '칭찬이나 좋은 평가를 받았을 때, 가장 먼저 신경 쓰이는 것은?',
     qEn: 'When you receive praise or a positive evaluation, what do you notice first?',
     options: [
       {
@@ -616,7 +616,7 @@ const q1 = [
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 그렇게 평가받았는지 이해해야 편하고, 다음에도 그 기대를 맞출 수 있을지 확인한다.',
+        text: '왜 그런 평가를 받았는지 알아야 마음이 편하고, 다음에도 그 기대에 맞출 수 있을지 따져 보게 된다.',
         textEn: 'I feel more settled when I understand why I was evaluated that way, and I check whether I can meet that expectation again.'
       },
       {
@@ -631,7 +631,7 @@ const q1 = [
     id: 'center_situation_1',
     format: 'abc',
     centerChoice: true,
-    q: '회의나 대화에서 내 의견이 충분히 받아들여지지 않았을 때, 가장 먼저 가까운 반응은?',
+    q: '회의나 대화에서 내 의견이 잘 받아들여지지 않았을 때, 나에게 가장 가까운 첫 반응은?',
     qEn: 'When your opinion is not received enough in a meeting or conversation, which first response is closest?',
     options: [
       {
@@ -658,7 +658,7 @@ const q1 = [
     id: 'center_situation_2',
     format: 'abc',
     centerChoice: true,
-    q: '누군가 나를 예상보다 차갑게 대하거나 거절했을 때, 먼저 올라오는 반응은?',
+    q: '누군가 나를 생각보다 차갑게 대하거나 거절했을 때, 가장 먼저 올라오는 반응은?',
     qEn: 'When someone treats you more coldly than expected or rejects you, what comes up first?',
     options: [
       {
@@ -670,7 +670,7 @@ const q1 = [
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 그런 반응이 나왔는지 이유를 파악해야 마음이 진정되고, 다음 가능성을 계산하게 된다.',
+        text: '왜 그런 반응이 나왔는지 이유를 알아야 마음이 진정되고, 앞으로 어떻게 될지 미리 따져 보게 된다.',
         textEn: 'I calm down only after I understand why they reacted that way, then I calculate the next possibilities.'
       },
       {
@@ -685,7 +685,7 @@ const q1 = [
     id: 'center_situation_3',
     format: 'abc',
     centerChoice: true,
-    q: '일이 예상과 다르게 틀어졌을 때, 가장 먼저 반복되는 패턴은?',
+    q: '일이 예상과 다르게 틀어졌을 때, 나에게 가장 자주 나타나는 첫 반응은?',
     qEn: 'When something goes differently than expected, which pattern repeats first?',
     options: [
       {
@@ -703,31 +703,31 @@ const q1 = [
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '몸에 힘이 빠지거나 굳는다. 생각보다 감각 반응이 먼저 내려앉거나 올라온다.',
+        text: '몸에 힘이 빠지거나 굳는다. 머리로 정리하기 전에 몸의 반응이 먼저 온다.',
         textEn: 'My body loses force or stiffens. Sensation drops or rises before I can fully think it through.'
       }
     ]
   },
-  { id:'c1', type:1, q:'남이 충분하다고 해도, 내 안의 기준이 아직 안 됐다고 느끼면 마음이 놓이지 않는 편이다.' },
+  { id:'c1', type:1, q:'남들이 충분하다고 해도, 내 기준에 아직 못 미쳤다고 느끼면 마음이 놓이지 않는 편이다.' },
   { id:'c2', type:2, q:'누군가가 더 이상 나를 필요로 하지 않는다고 느껴질 때, 생각보다 큰 허전함이나 불안이 올라오는 편이다.' },
-  { id:'c2_recall', type:2, scoreWeight:0.8, q:'관계에서 내가 줄 수 있는 역할이 사라지면, 내가 그 사람에게 어떤 의미인지 흔들리는 느낌이 든 적이 있다.' },
+  { id:'c2_recall', type:2, scoreWeight:0.8, q:'관계에서 내가 해 줄 수 있는 역할이 사라지면, 내가 그 사람에게 어떤 존재인지 확신이 흔들린 적이 있다.' },
   { id:'c3', type:3, q:'어떤 결과물을 내놓았을 때, 주변 반응과 무관하게 스스로 이 정도면 됐다고 느끼는 순간이 잘 오지 않는 편이다.' },
   { id:'c3_recall', type:3, scoreWeight:0.8, q:'회의나 대화에서 실수한 뒤, 무능해 보였을까 봐 며칠 동안 그 장면을 반복해서 떠올린 적이 있다.' },
   { id:'c4', type:4, scoreWeight:0.7, q:'행복한 순간에도, 마음 한쪽에는 무언가 충분하지 않다는 느낌이 쉽게 사라지지 않는 편이다.' },
-  { id:'c4_pain', type:4, scoreWeight:0.8, q:'힘든 감정이 올라오면 빨리 털어내기보다, 그 감정이 나를 설명하는 것 같아 오래 붙들게 되는 편이다.' },
+  { id:'c4_pain', type:4, scoreWeight:0.8, q:'힘든 감정이 올라오면 빨리 털어내기보다, 그 감정이 지금의 나를 말해 주는 것 같아 오래 붙들게 되는 편이다.' },
   { id:'c4_unique', type:4, scoreWeight:0.5, q:'사람들과 잘 어울리고 있어도, 마음 한쪽에는 나만 온전히 속하지 못한다는 감각이 남아 있는 편이다.' },
-  { id:'c5', type:5, q:'사람들과 오래 있고 나면, 감정 정리보다 내 에너지와 생각을 회수하고 싶다는 느낌이 먼저 오는 편이다.' },
+  { id:'c5', type:5, q:'사람들과 오래 있고 나면, 감정을 나누기보다 혼자 물러나 기운과 생각을 추스르고 싶다는 마음이 먼저 드는 편이다.' },
   { id:'c6', type:6, q:'중요한 결정을 앞두고 위험 요소를 확인할 때, 다 확인했어도 혹시 빠진 게 있지 않을까 하는 생각이 한 번 더 올라오는 편이다.' },
-  { id:'c7', type:7, q:'무겁거나 답답한 감정이 오래 이어질 것 같으면, 의식적으로 결심하지 않아도 다른 가능성이나 계획으로 생각이 이동하는 편이다.' },
-  { id:'c8', type:8, q:'내 사람이나 약자가 부당한 대우를 받으면, 올바른 처신을 떠나 내가 직접 막아야 한다는 반응이 몸에서 먼저 올라오는 편이다.' },
+  { id:'c7', type:7, q:'무겁거나 답답한 감정이 오래 이어질 것 같으면, 나도 모르게 다른 가능성이나 새로운 계획으로 생각이 옮겨 가는 편이다.' },
+  { id:'c8', type:8, q:'내 사람이나 약한 사람이 부당한 대우를 받으면, 옳고 그름을 따지기 전에 내가 직접 나서서 막아야 한다는 반응이 몸에서 먼저 올라오는 편이다.' },
   { id:'c8_recall', type:8, scoreWeight:0.8, q:'사람들 사이에 힘의 불균형이 보이면, 요청받지 않아도 개입하게 되는 편이다.' },
-  { id:'c9', type:9, q:'갈등 기류가 생기면, 내 입장을 세우는 것보다 이 불편함을 빨리 끝내고 싶다는 충동이 먼저 오는 편이다.' },
-  { id:'f_2_3', format:'ab', leftType:2,rightType:3,weight:2.2,q:'압박이 올 때, 내 안에서 자동으로 먼저 나오는 반응에 더 가까운 쪽은?',a:'상대에게 더 적극적으로 다가가거나 도움이 되려 움직인다.',b:'눈에 보이는 결과나 행동으로 빠르게 상황을 만들어낸다.' },
-  { id:'f_3_6', format:'ab', leftType:3,rightType:6,weight:2.2,q:'상황이 흔들리거나 불안정하다고 느껴질 때, 내 안에서 먼저 나오는 반응에 더 가까운 쪽은?',a:'빠르게 행동하거나 결과를 만들어서 상황을 안정시키려 한다.',b:'빠진 것이나 위험 요소를 먼저 확인하고 대비책을 세워야 마음이 놓인다.' },
-  { id:'f_6_8', format:'ab', leftType:6,rightType:8,weight:2.2,q:'위협을 느낄 때, 내 안에서 먼저 나오는 반응에 더 가까운 쪽은?',a:'상황을 파악하고 안전한 기준과 대비책을 먼저 갖추려 한다.',b:'직접 개입하거나 경계를 세워서 주도권을 되찾으려 한다.' },
-  { id:'f_1_9', format:'ab', leftType:1,rightType:9,weight:2.2,q:'갈등이 생기려는 기미가 보일 때, 더 자동으로 먼저 나오는 반응에 가까운 쪽은?',a:'무엇이 잘못됐는지 분명히 짚어내고 바로잡으려는 긴장이 먼저 온다.',b:'마찰이 커지기 전에 상황을 부드럽게 만드는 쪽으로 먼저 움직인다.' },
-  { id:'f_5_7', format:'ab', leftType:5,rightType:7,weight:2.2,q:'지치거나 힘이 빠졌을 때, 회복을 위해 더 먼저 택하는 쪽은?',a:'자극을 끊고 혼자 조용히 물러나서 에너지를 정리한다.',b:'새로운 자극이나 다음 계획으로 전환하면서 다시 에너지를 얻는다.' },
-  { id:'f_2_8', format:'ab', leftType:2,rightType:8,weight:2.2,q:'관계에서 긴장이 높아지거나 상대와 거리가 생겼다고 느낄 때, 내 안에서 먼저 오는 반응에 더 가까운 쪽은?',a:'더 적극적으로 맞추거나 도우면서 관계를 회복하려 한다.',b:'내 위치와 경계를 분명히 하고 주도권을 되찾으려 한다.' },
+  { id:'c9', type:9, q:'갈등이 생길 것 같으면, 내 입장을 내세우기보다 이 불편함을 빨리 끝내고 싶다는 마음이 먼저 드는 편이다.' },
+  { id:'f_2_3', format:'ab', leftType:2,rightType:3,weight:2.2,q:'압박을 받을 때, 나도 모르게 먼저 나오는 반응은 어느 쪽에 가까운가?',a:'상대에게 더 적극적으로 다가가거나 도움이 되려 움직인다.',b:'눈에 보이는 결과나 행동으로 빠르게 상황을 만들어낸다.' },
+  { id:'f_3_6', format:'ab', leftType:3,rightType:6,weight:2.2,q:'상황이 흔들리거나 불안정하다고 느껴질 때, 먼저 나오는 반응은 어느 쪽에 가까운가?',a:'빠르게 행동하거나 결과를 만들어서 상황을 안정시키려 한다.',b:'빠진 것이나 위험 요소를 먼저 확인하고 대비책을 세워야 마음이 놓인다.' },
+  { id:'f_6_8', format:'ab', leftType:6,rightType:8,weight:2.2,q:'위협을 느낄 때, 먼저 나오는 반응은 어느 쪽에 가까운가?',a:'상황을 파악하고 안전한 기준과 대비책을 먼저 갖추려 한다.',b:'직접 개입하거나 경계를 세워서 주도권을 되찾으려 한다.' },
+  { id:'f_1_9', format:'ab', leftType:1,rightType:9,weight:2.2,q:'갈등이 생길 조짐이 보일 때, 나도 모르게 먼저 나오는 반응은 어느 쪽에 가까운가?',a:'무엇이 잘못됐는지 분명히 짚어내고 바로잡으려는 긴장이 먼저 온다.',b:'마찰이 커지기 전에 상황을 부드럽게 만드는 쪽으로 먼저 움직인다.' },
+  { id:'f_5_7', format:'ab', leftType:5,rightType:7,weight:2.2,q:'지치거나 힘이 빠졌을 때, 기운을 되찾기 위해 먼저 택하는 쪽은?',a:'자극을 끊고 혼자 조용히 물러나서 에너지를 정리한다.',b:'새로운 자극이나 다음 계획으로 전환하면서 다시 에너지를 얻는다.' },
+  { id:'f_2_8', format:'ab', leftType:2,rightType:8,weight:2.2,q:'관계가 긴장되거나 상대와 거리가 생겼다고 느낄 때, 먼저 나오는 반응은 어느 쪽에 가까운가?',a:'더 적극적으로 맞추거나 도우면서 관계를 회복하려 한다.',b:'내 위치와 경계를 분명히 하고 주도권을 되찾으려 한다.' },
   { id:'state_2w', state:true, q:'최근 2주 동안, 일상 전반에서 느낀 압박과 스트레스 수준은 어느 정도였나요? (1=매우 안정적이었다, 6=거의 버티기 어려울 정도였다)' },
   { id:'state_defensive', state:true, q:'최근 2주 동안, 평소의 나보다 예민하거나 방어적으로 반응하는 일이 얼마나 늘었나요? (1=거의 없었다, 6=거의 계속 그랬다)' },
   { id:'state_unusual', state:true, q:"최근 2주 동안, 내 본래 성향보다 상황 대응이 우선되어 '평소 같지 않다'고 느낀 적이 얼마나 있었나요? (1=전혀 없었다, 6=거의 항상 그랬다)" },
@@ -739,7 +739,7 @@ const q1 = [
     qEn:'When you enter an unfamiliar place or new gathering, what catches your attention first?',
     options:[
       { value:'sp', inst:'sp', text:'어디서 쉬고, 먹고, 이동하고, 몸을 편하게 유지할 수 있는지 본다.', textEn:'I notice where I can rest, eat, move around, and keep my body comfortable.' },
-      { value:'sx', inst:'sx', text:'누가 강하게 끌리거나 에너지가 집중되는 대상인지 먼저 감지한다.', textEn:'I first sense who or what has strong pull or concentrated energy.' },
+      { value:'sx', inst:'sx', text:'강하게 끌리는 사람이나 에너지가 쏠리는 대상이 있는지가 가장 먼저 눈에 들어온다.', textEn:'I first sense who or what has strong pull or concentrated energy.' },
       { value:'so', inst:'so', text:'누가 영향력이 있고, 관계 흐름이 어떻게 움직이는지 먼저 읽는다.', textEn:'I first read who has influence and how the relational flow is moving.' }
     ]
   },
@@ -755,9 +755,9 @@ const q1 = [
 ];
 
 const deep = {
-  1:[{id:'d1_1',type:1,q:'일을 다 끝냈다고 스스로 판단한 뒤에도, 정말 기준에 맞게 했는지 확인하고 싶은 충동이 다시 올라오는 편이다.'},{id:'d1_2',type:1,q:'무언가 이건 아닌데라는 느낌이 들면, 그냥 지나치려 해도 머릿속 어딘가에서 계속 걸리는 편이다.'}],
+  1:[{id:'d1_1',type:1,q:'일을 다 끝냈다고 스스로 판단한 뒤에도, 정말 기준에 맞게 했는지 확인하고 싶은 충동이 다시 올라오는 편이다.'},{id:'d1_2',type:1,q:'"이건 아닌데" 하는 느낌이 들면, 그냥 지나치려 해도 머릿속 한쪽에서 계속 걸리는 편이다.'}],
   2:[{id:'d2_1',type:2,q:'관계에서 내가 더 이상 필요한 존재가 아닌 것처럼 느껴지면, 예상보다 크게 흔들리거나 허전해지는 편이다.'},{id:'d2_2',type:2,q:'내가 줄 수 있는 역할이나 돌봄의 자리가 사라지면, 그 사람에게 내가 어떤 의미인지 자꾸 확인하고 싶어진다.'}],
-  3:[{id:'d3_1',type:3,q:'내 가치가 분명해지는 순간은, 눈에 보이는 결과나 성과를 만들었을 때인 편이다.'},{id:'d3_2',type:3,q:'실패하거나 무능해 보일 가능성이 느껴지면, 실제 일이 시작되기 전부터 긴장이 크게 올라오는 편이다.'}],
+  3:[{id:'d3_1',type:3,q:'내 가치가 가장 분명하게 느껴지는 순간은, 눈에 보이는 결과나 성과를 만들어 냈을 때다.'},{id:'d3_2',type:3,q:'실패하거나 무능해 보일 가능성이 느껴지면, 실제 일이 시작되기 전부터 긴장이 크게 올라오는 편이다.'}],
   4:[{id:'d4_1',type:4,q:'사람들과 함께 있어도, 나만 완전히 이해받지 못한다는 거리감을 느끼는 편이다.'},{id:'d4_2',type:4,q:'반복적이고 평탄한 흐름이 길어지면 정서적으로 무뎌지고, 감정의 깊이가 느껴질 때 비로소 내가 살아나는 편이다.'}],
   5:[{id:'d5_1',type:5,q:'문제나 상황 한가운데 뛰어들기보다, 한 걸음 물러서서 전체를 파악하고 나서야 마음이 안정되는 편이다.'},{id:'d5_2',type:5,q:'예고 없는 감정 요구나 갑작스러운 침범이 들어오면, 먼저 에너지를 닫고 물러나 정리하려는 반응이 나온다.'}],
   6:[{id:'d6_1',type:6,q:'중요한 결정을 앞두면, 겉으로 보이는 정보보다 숨은 위험이나 빠진 부분을 먼저 확인해야 마음이 놓이는 편이다.'},{id:'d6_2',type:6,q:'권위나 시스템을 따르더라도, 그 대상을 끝까지 검증하고 의심해 봐야 안심되는 편이다.'}],
@@ -808,7 +808,7 @@ const tb45 = [
 const tb46 = [
   {id:'tb_4_6_1',format:'ab',leftType:4,rightType:6,q:'마음이 불안정해질 때, 내 생각이 더 먼저 향하는 쪽은 어느 쪽에 가까운가?',a:'나는 왜 이렇게 결핍되어 있고, 남들처럼 자연스럽지 못한가',b:'지금 뭔가 놓치고 있는 게 있지 않은가, 앞으로 문제가 생기지 않을까'},
   {id:'tb_4_6_2',format:'ab',leftType:4,rightType:6,q:'둘 중 내게 더 견디기 어려운 상태는 어느 쪽에 가까운가?',a:'아무리 있어도 채워지지 않고, 내가 누구인지 흐려지는 상태',b:'믿고 있던 것이 흔들리고, 무엇을 믿어야 할지 확신이 서지 않는 상태'},
-  {id:'tb_4_6_3',format:'ab',leftType:4,rightType:6,q:'크게 흔들릴 때, 내가 더 먼저 붙잡는 쪽은 어느 쪽에 가까운가?',a:'지금 내 감정이 무엇을 말하는지 더 깊이 느껴 보려는 쪽',b:'믿을 만한 기준, 설명, 확인 가능한 근거를 찾으려는 쪽'}
+  {id:'tb_4_6_3',format:'ab',leftType:4,rightType:6,q:'크게 흔들릴 때, 내가 먼저 의지하게 되는 쪽은 어느 쪽에 가까운가?',a:'지금 내 감정이 무엇을 말하는지 더 깊이 느껴 보려는 쪽',b:'믿을 만한 기준, 설명, 확인 가능한 근거를 찾으려는 쪽'}
 ];
 const tb68 = [
   {id:'tb_6_8_1',format:'ab',leftType:6,rightType:8,q:'누군가에게 강하게 맞서거나 들이받을 때, 내면의 진짜 목적은 어느 쪽에 가까운가?',a:'이 사람이 정말 믿을 만한 사람인지, 숨겨진 의도가 없는지 찔러보고 확인하려는 마음이 크다.',b:'누가 힘을 쥐고 있는지 명확히 하고, 내 영역을 함부로 건드리지 못하게 경고하려는 마음이 크다.'},

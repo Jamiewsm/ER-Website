@@ -149,8 +149,8 @@ test('phase 1 uses a shorter forced center screen plus behavior-recall type item
   assert.equal((centerBlock.match(/centerChoice: true/g) || []).length, 6);
   assert.doesNotMatch(centerBlock, /triad:/);
   assert.doesNotMatch(centerBlock, /가치|의미|밀어내|버티/);
-  assert.match(centerBlock, /회의나 대화에서 내 의견이 충분히 받아들여지지 않았을 때/);
-  assert.match(centerBlock, /예상보다 차갑게 대하거나 거절했을 때/);
+  assert.match(centerBlock, /회의나 대화에서 내 의견이 잘 받아들여지지 않았을 때/);
+  assert.match(centerBlock, /생각보다 차갑게 대하거나 거절했을 때/);
   assert.match(centerBlock, /일이 예상과 다르게 틀어졌을 때/);
 
   const phase1Block = testJs.slice(q1Start, testJs.indexOf('const deep = {'));
@@ -172,7 +172,7 @@ test('phase 1 adds one scored instinct attention-bias situation question', () =>
   assert.match(phase1Block, /id:'instinct_attention_1'/);
   assert.match(phase1Block, /instinctChoice:true/);
   assert.match(phase1Block, /어디서 쉬고, 먹고, 이동하고/);
-  assert.match(phase1Block, /강하게 끌리거나 에너지가 집중되는 대상/);
+  assert.match(phase1Block, /강하게 끌리는 사람이나 에너지가 쏠리는 대상/);
   assert.match(phase1Block, /누가 영향력이 있고, 관계 흐름이 어떻게 움직이는지/);
   assert.match(testJs, /addInstinctScoresFromResponses/);
   assert.match(testJs, /item\.format === 'abc' && item\.instinctChoice/);
