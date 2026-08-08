@@ -42,7 +42,7 @@ test('premium report renderer includes application hook before next-step CTA', (
   assert.match(testJs, /압박에서 과해지는 것/);
   assert.match(testJs, /가까운 사람이 알아야 할 것/);
   assert.match(testJs, /결과지 해석상담이나 기본과정/);
-  assert.match(testJs, /data-report-program-key="result_consult"/);
+  assert.match(testJs, /const finalCtaProgramKey = 'result_consult'/);
   assert.match(testJs, /data-core-tone/);
 });
 
@@ -249,4 +249,14 @@ test('premium report named background sections override alternating section back
   assert.match(testCss, /\.er-report-section\.er-report-application\s*\{/);
   assert.match(testCss, /\.er-report-section\.er-report-growth\s*\{/);
   assert.match(testCss, /\.er-report-section\.er-report-next\s*\{/);
+});
+
+test('low confidence result hides the report and routes to a typing session gate', () => {
+  assert.match(testJs, /function renderLowConfidenceGate\(/);
+  assert.match(testJs, /if \(confidence === '낮음'\) \{\s*renderLowConfidenceGate\(premiumModel\);\s*\} else \{\s*renderPremiumReport\(premiumModel\);\s*\}/);
+  assert.match(testJs, /er-report-gate[\s\S]*?data-report-program-key="identity_session"/);
+  assert.match(testJs, /처음부터 다시 검사하기/);
+  assert.doesNotMatch(testJs, /id="cta-consulting"/);
+  assert.match(testCss, /\.er-report-gate-session\s*\{/);
+  assert.match(testCss, /\.er-report-gate-primary\s*\{/);
 });
