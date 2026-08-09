@@ -148,7 +148,11 @@ test('phase 1 uses a shorter forced center screen plus behavior-recall type item
   assert.doesNotMatch(centerBlock, /id: 'center_auto_4'|id: 'center_auto_5'|id: 'center_auto_6'|id: 'center_auto_7'|id: 'center_auto_8'|id: 'center_auto_9'|id: 'center_auto_10'/);
   assert.equal((centerBlock.match(/centerChoice: true/g) || []).length, 6);
   assert.doesNotMatch(centerBlock, /triad:/);
-  assert.doesNotMatch(centerBlock, /가치|의미|밀어내|버티/);
+  // 장형 선택지가 얼어붙기(굳는다/움츠러든다)만 묘사하면 8번이 고르지 못한다 — 행동 충동 워딩 유지 가드.
+  assert.doesNotMatch(centerBlock, /굳는다|움츠러들/);
+  assert.match(centerBlock, /맞설지, 참을지, 물러날지/);
+  assert.match(centerBlock, /의식적으로 판단하기 전에 나도 모르게/);
+  assert.match(centerBlock, /나라는 사람/);
   assert.match(centerBlock, /회의나 대화에서 내 의견이 잘 받아들여지지 않았을 때/);
   assert.match(centerBlock, /생각보다 차갑게 대하거나 거절했을 때/);
   assert.match(centerBlock, /일이 예상과 다르게 틀어졌을 때/);

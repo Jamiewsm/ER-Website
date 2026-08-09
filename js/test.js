@@ -550,26 +550,26 @@ const q1 = [
     id: 'center_auto_1',
     format: 'abc',
     centerChoice: true,
-    q: '갑자기 압박을 받거나 예상 밖의 일이 생겼을 때, 나도 모르게 가장 먼저 신경 쓰이는 것은?',
-    qEn: 'Right after pressure or an unexpected situation appears, what do you tend to grab first before you consciously choose?',
+    q: '갑자기 압박을 받거나 예상 밖의 일이 생겼을 때, 의식적으로 판단하기 전에 나도 모르게 가장 먼저 나오는 반응은?',
+    qEn: 'When sudden pressure or an unexpected event hits, before you consciously judge it, which reaction rises first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '이 일로 내가 어떻게 보였을지, 부족하거나 무능해 보이지는 않았을지가 가장 먼저 마음에 걸린다.',
-        textEn: 'I first get caught on how this may make me look, or whether I looked lacking or incapable.'
+        text: '이 일이 나를 어떤 사람으로 보이게 했을지, 관계나 평가에 어떤 영향을 줄지부터 신경 쓰인다.',
+        textEn: 'I first notice what this says about who I am, and how it may affect my relationships or how I am seen.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '무슨 일이 벌어졌는지 이해해야 마음이 진정되고, 놓친 위험이 없는지 한 번 더 확인하게 된다.',
-        textEn: 'I calm down when I understand what happened, and I tend to check again for risks I may have missed.'
+        text: '지금 정확히 무슨 일이 벌어진 건지 이해하고, 앞으로 어떤 결과로 이어질지 먼저 따져 보게 된다.',
+        textEn: 'I first try to understand exactly what happened, and think ahead to what consequences may follow.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '몸이 먼저 긴장하거나 굳는다. 무엇을 해야 할지 생각하기 전에 몸이 먼저 반응한다.',
-        textEn: 'My body tenses or stiffens first. Before I know what to do, my body has already reacted.'
+        text: '생각보다 몸이 먼저 반응한다. 맞설지, 참을지, 물러날지 행동 방향이 먼저 정해진다.',
+        textEn: 'My body reacts before my thoughts. Whether to confront, hold steady, or step back gets decided first.'
       }
     ]
   },
@@ -577,26 +577,26 @@ const q1 = [
     id: 'center_auto_2',
     format: 'abc',
     centerChoice: true,
-    q: '갈등이 생길 조짐이 보이거나 서로 입장이 부딪힐 때, 가장 먼저 올라오는 반응은?',
-    qEn: 'When conflict begins to form or positions collide, which response comes up first?',
+    q: '갈등이 생길 조짐이 보이거나 서로 입장이 부딪힐 때, 나도 모르게 가장 먼저 올라오는 반응은?',
+    qEn: 'When conflict begins to form or positions collide, which reaction rises first before you think it through?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '내 말투나 태도가 어떻게 비쳤을지, 내 진심이 오해받지는 않았을지가 가장 먼저 마음에 걸린다.',
-        textEn: 'I first get caught on how my tone or posture came across, and whether my intent looked distorted.'
+        text: '갈등 자체보다 이 관계가 어떻게 될지, 내가 어떤 사람으로 받아들여질지가 더 마음에 남는다.',
+        textEn: 'More than the conflict itself, what stays with me is where this relationship goes and how I am received as a person.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 이렇게 됐는지 이해가 되어야 안심되고, 문제가 커지지 않도록 확인할 것부터 찾는다.',
-        textEn: 'I feel safer when I understand why this happened, and I look for what to verify so it does not escalate.'
+        text: '왜 이런 갈등이 생겼는지 이해가 되어야 마음이 놓이고, 해결 방법부터 찾게 된다.',
+        textEn: 'I settle only when I understand why this conflict happened, and I start looking for how to resolve it.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '몸이 먼저 뻣뻣해지거나 굳는다. 말보다 자세, 목소리, 거리감이 먼저 달라진다.',
-        textEn: 'My body tightens or stiffens first. My posture, voice, or distance shifts before my words do.'
+        text: '생각보다 몸이 먼저 움직인다. 밀어붙일지, 참을지, 거리를 둘지가 먼저 정해진다.',
+        textEn: 'My body moves before my thoughts. Whether to push forward, hold back, or create distance gets decided first.'
       }
     ]
   },
@@ -604,26 +604,26 @@ const q1 = [
     id: 'center_auto_3',
     format: 'abc',
     centerChoice: true,
-    q: '칭찬이나 좋은 평가를 받았을 때, 가장 먼저 신경 쓰이는 것은?',
-    qEn: 'When you receive praise or a positive evaluation, what do you notice first?',
+    q: '칭찬이나 좋은 평가를 받았을 때, 나도 모르게 가장 먼저 드는 생각이나 반응은?',
+    qEn: 'When you receive praise or a positive evaluation, which thought or reaction comes up first without trying?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '내가 어떤 모습으로 인정받은 건지, 그 기대를 계속 지킬 수 있을지 신경 쓰인다.',
-        textEn: 'I notice what kind of person I was recognized as, and whether that image can be maintained.'
+        text: '그 칭찬이 나라는 사람을 인정한 것인지, 내가 어떤 존재로 받아들여졌는지가 더 의미 있게 느껴진다.',
+        textEn: 'What feels meaningful is whether the praise recognized who I am, and what kind of person I was received as.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 그런 평가를 받았는지 알아야 마음이 편하고, 다음에도 그 기대에 맞출 수 있을지 따져 보게 된다.',
-        textEn: 'I feel more settled when I understand why I was evaluated that way, and I check whether I can meet that expectation again.'
+        text: '무엇 때문에 그런 평가를 받았는지 이해하고, 앞으로도 유지할 방법을 생각하게 된다.',
+        textEn: 'I try to understand what earned that evaluation, and think about how to keep it up going forward.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '몸이 먼저 반응한다. 편해지거나 어색하게 굳고, 말보다 자세와 거리감이 먼저 바뀐다.',
-        textEn: 'My body responds first. I relax or stiffen awkwardly, and my posture or distance shifts before my words do.'
+        text: '별생각 없이 몸으로 먼저 반응한다. 편안해지거나 어색해지면서 행동이 먼저 달라진다.',
+        textEn: 'I respond with my body before any thought. I ease up or turn awkward, and my behavior changes first.'
       }
     ]
   },
@@ -631,26 +631,26 @@ const q1 = [
     id: 'center_situation_1',
     format: 'abc',
     centerChoice: true,
-    q: '회의나 대화에서 내 의견이 잘 받아들여지지 않았을 때, 가장 먼저 드는 생각이나 반응은?',
-    qEn: 'When your opinion is not received enough in a meeting or conversation, which first response is closest?',
+    q: '회의나 대화에서 내 의견이 잘 받아들여지지 않았을 때, 돌이켜보면 가장 먼저 나오는 반응은?',
+    qEn: 'When your opinion is not well received in a meeting or conversation, looking back, which reaction comes first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '내가 어떤 사람으로 보였는지, 내 말이 가볍게 여겨진 건 아닌지가 오래 남는다.',
-        textEn: 'What stays with me is how I looked, and whether my words were treated as light or unimportant.'
+        text: '의견 자체보다, 나라는 사람이 가볍게 여겨진 건 아닌지가 더 마음에 남는다.',
+        textEn: 'More than the opinion itself, what stays with me is whether I, as a person, was treated as unimportant.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 그런 반응이 나왔는지 이해하고, 다음에는 어떤 정보나 근거를 더 준비해야 할지 생각한다.',
-        textEn: 'I try to understand why that reaction happened, then think about what information or support I need next time.'
+        text: '왜 받아들여지지 않았는지 이유를 파악하고, 다음에는 어떤 근거나 정보를 준비해야 할지 생각하게 된다.',
+        textEn: 'I work out why it was not received, then think about what evidence or information to prepare next time.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '말보다 몸이 먼저 긴장하거나 굳는다. 바로 밀어붙이거나, 조용히 물러나거나, 거리감이 달라진다.',
-        textEn: 'My body tenses or stiffens before words. I may push, quietly step back, or shift my distance.'
+        text: '생각보다 행동이 먼저 나온다. 바로 더 밀어붙이거나, 일단 참거나, 조용히 물러나게 된다.',
+        textEn: 'Action comes before thought. I push harder right away, hold it in for now, or quietly step back.'
       }
     ]
   },
@@ -658,26 +658,26 @@ const q1 = [
     id: 'center_situation_2',
     format: 'abc',
     centerChoice: true,
-    q: '누군가 나를 생각보다 차갑게 대하거나 거절했을 때, 가장 먼저 올라오는 반응은?',
-    qEn: 'When someone treats you more coldly than expected or rejects you, what comes up first?',
+    q: '누군가 나를 생각보다 차갑게 대하거나 거절했을 때, 나도 모르게 가장 먼저 올라오는 반응은?',
+    qEn: 'When someone treats you more coldly than expected or rejects you, which reaction rises first without trying?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '그 거절이 나라는 사람에 대한 평가처럼 느껴져서, 상대가 나를 어떻게 봤을지 자꾸 곱씹게 된다.',
-        textEn: 'The rejection feels like an evaluation of me, and I replay how I was received.'
+        text: '그 거절이 나라는 사람에 대한 평가처럼 느껴져서, 나는 상대에게 어떤 존재였는지 자꾸 곱씹게 된다.',
+        textEn: 'The rejection feels like a judgment of who I am, and I keep replaying what I meant to that person.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 그런 반응이 나왔는지 이유를 알아야 마음이 진정되고, 앞으로 어떻게 될지 미리 따져 보게 된다.',
-        textEn: 'I calm down only after I understand why they reacted that way, then I calculate the next possibilities.'
+        text: '왜 그런 반응이 나왔는지 이유를 알아야 마음이 진정되고, 이 관계가 앞으로 어떻게 될지 미리 따져 보게 된다.',
+        textEn: 'I calm down only after I understand why they reacted that way, and I think ahead to where this relationship goes.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '몸이 먼저 움츠러들거나 굳는다. 말수가 줄거나, 거리를 두거나, 불편한 긴장이 먼저 올라온다.',
-        textEn: 'My body closes or stiffens first. I speak less, create distance, or feel uncomfortable tension first.'
+        text: '생각보다 몸이 먼저 반응한다. 그 자리에서 따지거나, 아무렇지 않은 척 버티거나, 거리를 두는 쪽으로 행동이 먼저 정해진다.',
+        textEn: 'My body reacts before my thoughts. Confronting on the spot, holding on as if unbothered, or creating distance gets decided first.'
       }
     ]
   },
@@ -685,26 +685,26 @@ const q1 = [
     id: 'center_situation_3',
     format: 'abc',
     centerChoice: true,
-    q: '일이 예상과 다르게 틀어졌을 때, 내가 가장 먼저 보이는 반응은?',
-    qEn: 'When something goes differently than expected, which pattern repeats first?',
+    q: '일이 예상과 다르게 틀어졌을 때, 머리로 정리하기 전에 나도 모르게 가장 먼저 나오는 반응은?',
+    qEn: 'When things go off track, before you sort it out in your head, which reaction comes first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '결과보다 내가 실패한 사람처럼 보였을까 봐 그 장면이 오래 남는다.',
-        textEn: 'More than the result itself, I replay whether I looked like someone who failed.'
+        text: '결과 자체보다, 이 일이 나라는 사람의 가치를 깎아내린 것처럼 느껴져 그 장면이 오래 남는다.',
+        textEn: 'More than the result itself, it feels like my worth as a person took the hit, and that scene stays with me.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '무엇이 잘못됐는지 파악해야 마음이 가라앉고, 같은 일이 반복되지 않도록 점검하게 된다.',
-        textEn: 'I calm down when I understand what went wrong, then check how to prevent the same risk next time.'
+        text: '무엇이 잘못됐는지 원인을 파악하고, 앞으로 어떻게 수습할지부터 그려 보게 된다.',
+        textEn: 'I work out what went wrong, and start mapping how to handle what comes next.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '몸에 힘이 빠지거나 굳는다. 머리로 정리하기 전에 몸의 반응이 먼저 온다.',
-        textEn: 'My body loses force or stiffens. Sensation drops or rises before I can fully think it through.'
+        text: '생각을 정리하기 전에 몸이 먼저 움직인다. 바로 수습에 나서거나, 일단 버티거나, 그 자리를 벗어나게 된다.',
+        textEn: 'My body moves before my thoughts settle. I jump in to fix it, hold my ground for now, or leave the scene.'
       }
     ]
   },
