@@ -63,10 +63,12 @@
   function showGate() {
     var gate = document.getElementById("experiment-gate");
     var closed = document.getElementById("experiment-closed");
+    var phase0 = document.getElementById("phase0-form");
     var phase1 = document.getElementById("phase1-form");
     var progress = document.getElementById("progress-container");
     if (gate) gate.classList.remove("hidden");
     if (closed) closed.classList.add("hidden");
+    if (phase0) phase0.classList.add("hidden");
     if (phase1) phase1.classList.add("hidden");
     if (progress) progress.classList.add("hidden");
   }
@@ -74,20 +76,24 @@
   function showClosedMessage() {
     var closed = document.getElementById("experiment-closed");
     var gate = document.getElementById("experiment-gate");
+    var phase0 = document.getElementById("phase0-form");
     var phase1 = document.getElementById("phase1-form");
     var progress = document.getElementById("progress-container");
     if (closed) closed.classList.remove("hidden");
     if (gate) gate.classList.add("hidden");
+    if (phase0) phase0.classList.add("hidden");
     if (phase1) phase1.classList.add("hidden");
     if (progress) progress.classList.add("hidden");
   }
 
   function hideGateShowTest() {
     var gate = document.getElementById("experiment-gate");
+    var phase0 = document.getElementById("phase0-form");
     var phase1 = document.getElementById("phase1-form");
     var progress = document.getElementById("progress-container");
     if (gate) gate.classList.add("hidden");
-    if (phase1) phase1.classList.remove("hidden");
+    if (phase0) phase0.classList.remove("hidden");
+    if (phase1) phase1.classList.add("hidden");
     if (progress) progress.classList.remove("hidden");
   }
 
@@ -376,6 +382,8 @@
       },
       responseQuality: payload.responseQuality || null,
       scoringAxes: payload.scoringAxes || null,
+      eliminatedTypes: payload.eliminatedTypes || [],
+      eliminationResurrected: payload.eliminationResurrected || [],
       tieBreakersUsed: buildTieBreakersUsed(payload.tieSnapshot),
       stateStressAdjustment: payload.stateStressAdjustment || null,
       phase4Result: phase4,

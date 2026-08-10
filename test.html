@@ -75,15 +75,28 @@
 
     <div id="progress-container" class="mb-8" aria-live="polite">
       <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
-        <span id="step-label">1단계: 기초 성향 및 본능 파악</span>
-        <span id="step-counter">1 / 4</span>
+        <span id="step-label">1단계: 확실히 아닌 유형 제거</span>
+        <span id="step-counter">1 / 5</span>
       </div>
-      <div id="progress-track" class="w-full bg-gray-200 rounded-full h-1.5" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-        <div id="progress-bar" class="bg-[#657453] h-1.5 rounded-full smooth" style="width:50%"></div>
+      <div id="progress-track" class="w-full bg-gray-200 rounded-full h-1.5" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+        <div id="progress-bar" class="bg-[#657453] h-1.5 rounded-full smooth" style="width:20%"></div>
       </div>
     </div>
 
-    <form id="phase1-form" class="space-y-10" novalidate>
+    <form id="phase0-form" class="space-y-8" novalidate>
+      <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-gray-200 text-center">
+        <p id="elim-intro-title" class="font-semibold text-gray-700">0단계: 확실히 아닌 유형 걸러내기</p>
+        <p id="elim-intro-desc" class="text-sm text-gray-500 mt-1">아래 아홉 가지 중 “이건 정말 내가 아니야”라고 느껴지는 유형만 표시해 주세요. 확신이 없으면 건드리지 않아도 됩니다. 최대 6개까지 제외할 수 있습니다.</p>
+        <p id="elim-hint" class="text-xs text-gray-400 mt-3">선택 = 확실히 아님 · 남은 유형만 다음 단계에서 집중적으로 비교합니다.</p>
+      </div>
+      <div id="elim-container" class="grid gap-3 sm:grid-cols-1"></div>
+      <div class="text-center pt-2">
+        <p id="validation-msg-elim" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">확실히 아닌 유형은 최대 6개까지 고를 수 있습니다. 적어도 3개 후보는 남겨 주세요.</p>
+        <button id="elim-submit-btn" type="button" onclick="submitTypeElimination()" class="bg-[#30322D] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">이어서 질문 시작</button>
+      </div>
+    </form>
+
+    <form id="phase1-form" class="space-y-10 hidden" novalidate>
       <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-gray-200 text-center">
         <p id="phase1-intro-title" class="font-semibold text-gray-700">1부: 일상적 자동반응 패턴</p>
         <p id="phase1-intro-desc" class="text-sm text-gray-500 mt-1">불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.</p>

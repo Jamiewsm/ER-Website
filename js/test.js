@@ -6,8 +6,14 @@ const TEST_UI = {
   ko: {
     loadingKicker: '진단 페이지 준비 중',
     title: '적응형 에니어그램 심층 진단',
-    subtitle: '행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.',
+    subtitle: '먼저 확실히 아닌 유형을 걸러낸 뒤, 남은 후보의 핵심 동기를 좁혀 갑니다.',
     disclaimer: '* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.',
+    elimIntroTitle: '0단계: 확실히 아닌 유형 걸러내기',
+    elimIntroDesc: '아래 아홉 가지 중 “이건 정말 내가 아니야”라고 느껴지는 유형만 표시해 주세요. 확신이 없으면 건드리지 않아도 됩니다. 최대 6개까지 제외할 수 있습니다.',
+    elimHint: '선택 = 확실히 아님 · 남은 유형만 다음 단계에서 집중적으로 비교합니다.',
+    elimSubmit: '이어서 질문 시작',
+    elimTooMany: '확실히 아닌 유형은 최대 6개까지 고를 수 있습니다. 적어도 3개 후보는 남겨 주세요.',
+    elimMark: '확실히 아님',
     phase1IntroTitle: '1부: 일상적 자동반응 패턴',
     phase1IntroDesc: '불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.',
     phase1Submit: '2단계로 이동',
@@ -22,9 +28,11 @@ const TEST_UI = {
     phase4Submit: '최종 결과 보기',
     requiredAll: '모든 문항에 응답해 주세요.',
     requiredOne: '문항을 선택해 주세요.',
-    step2Label: '2단계: 동기 교차 검증',
-    step3Label: '3단계: 최종 타이브레이커',
-    step4Label: '4단계: 하위유형 및 날개 확정',
+    step1Label: '1단계: 확실히 아닌 유형 제거',
+    step2Label: '2단계: 기초 성향 및 본능 파악',
+    step3Label: '3단계: 동기 교차 검증',
+    step4Label: '4단계: 최종 타이브레이커',
+    step5Label: '5단계: 하위유형 및 날개 확정',
     analysisReportTitle: '분석 리포트',
     top3Title: '헷갈릴 수 있는 가까운 유형들',
     consultText: '현재 결과는 1순위/2순위가 근접합니다. 결과지 해석상담에서 핵심 유형, 하위유형, 날개, 신뢰도, 헷갈리는 유형을 함께 정리해 드립니다.',
@@ -42,8 +50,14 @@ const TEST_UI = {
   en: {
     loadingKicker: 'Preparing assessment page',
     title: 'Adaptive Enneagram Assessment',
-    subtitle: 'We explore your core motivations and narrow close candidates with a two-step tie-breaker.',
+    subtitle: 'First eliminate types that are clearly not you, then narrow the remaining candidates by core motivation.',
     disclaimer: '* This assessment is for self-exploration and does not replace medical or clinical diagnosis.',
+    elimIntroTitle: 'Step 0: Remove types that are clearly not you',
+    elimIntroDesc: 'Mark only the types you are sure do not fit. Leave uncertain ones unmarked. You can eliminate up to 6 types.',
+    elimHint: 'Selected = clearly not me · Remaining types are compared more carefully next.',
+    elimSubmit: 'Continue to questions',
+    elimTooMany: 'You can mark at most 6 types as clearly not you. Please keep at least 3 candidates.',
+    elimMark: 'Clearly not me',
     phase1IntroTitle: 'Part 1: Everyday automatic response patterns',
     phase1IntroDesc: 'Please rate how your automatic response tends to show up under pressure or uncertainty.',
     phase1Submit: 'Continue to Phase 2',
@@ -58,9 +72,11 @@ const TEST_UI = {
     phase4Submit: 'See final result',
     requiredAll: 'Please answer every question before continuing.',
     requiredOne: 'Please select one option to continue.',
-    step2Label: 'Phase 2: Cross-check core motivations',
-    step3Label: 'Phase 3: Final tie-breaker',
-    step4Label: 'Phase 4: Confirm subtype and wing',
+    step1Label: 'Phase 1: Eliminate clearly-not-me types',
+    step2Label: 'Phase 2: Baseline pattern and instinct scan',
+    step3Label: 'Phase 3: Cross-check core motivations',
+    step4Label: 'Phase 4: Final tie-breaker',
+    step5Label: 'Phase 5: Confirm subtype and wing',
     analysisReportTitle: 'Analysis summary',
     top3Title: 'Top 3 relative shares and evidence',
     consultText: 'Your top two results are very close. For clearer typing, we recommend a free 1:1 session.',
@@ -89,6 +105,46 @@ const TYPE_PROMPT_EN = {
   9: 'I reduce tension and protect harmony before pushing my preference.'
 };
 
+// 인터뷰식 제거 단계용 핵심 동기 스케치 (표면 행동이 아니라 fixation)
+const TYPE_ELIMINATION_SKETCHES = {
+  1: {
+    ko: '옳고 그름의 기준에 맞춰야 마음이 놓인다. 어긋난 것을 보면 긴장이 먼저 올라온다.',
+    en: 'I settle only when things match an inner standard of rightness. Misalignment triggers tension first.'
+  },
+  2: {
+    ko: '누군가에게 필요한 존재가 되어야 안전하다. 도움이 안 되면 불안해진다.',
+    en: 'I feel secure when I am needed. If my help does not matter, unease rises.'
+  },
+  3: {
+    ko: '유능하고 성과 나는 모습으로 보여야 한다. 실패처럼 보이는 것이 가장 아프다.',
+    en: 'I need to look capable and effective. Looking like a failure hits hardest.'
+  },
+  4: {
+    ko: '남과 다른 감정과 결핍이 진짜 나다. 평범해지거나 깊이가 사라지는 것이 두렵다.',
+    en: 'My distinct feelings and longing feel like the real me. Becoming ordinary or shallow feels threatening.'
+  },
+  5: {
+    ko: '충분히 알고 준비되기 전에는 나서지 않는다. 에너지와 정보를 지켜야 한다.',
+    en: 'I hold back until I know enough. Energy and information must be conserved.'
+  },
+  6: {
+    ko: '위험과 불확실성을 먼저 본다. 믿을 기준과 대비가 있어야 움직인다.',
+    en: 'I scan risk and uncertainty first. I move only when I have a trusted guide or backup.'
+  },
+  7: {
+    ko: '답답하고 무거운 감정에 오래 머물기 싫다. 더 나은 가능성과 선택지를 찾는다.',
+    en: 'I do not stay long in heavy feelings. I look for better options and possibilities.'
+  },
+  8: {
+    ko: '약해 보이거나 지배당하는 상황을 참기 어렵다. 힘과 주도권을 되찾으려 한다.',
+    en: 'I cannot stand feeling weak or controlled. I move to reclaim strength and initiative.'
+  },
+  9: {
+    ko: '갈등과 마찰을 피하고 편안함을 지킨다. 내 주장보다 분위기를 먼저 본다.',
+    en: 'I protect comfort and avoid friction. Atmosphere comes before asserting my preference.'
+  }
+};
+
 function uiText(key) {
   return (TEST_UI[pageLang] && TEST_UI[pageLang][key]) || TEST_UI.ko[key] || key;
 }
@@ -99,6 +155,11 @@ function localizeStaticTestPage() {
     'test-title': 'title',
     'test-subtitle': 'subtitle',
     'test-disclaimer': 'disclaimer',
+    'elim-intro-title': 'elimIntroTitle',
+    'elim-intro-desc': 'elimIntroDesc',
+    'elim-hint': 'elimHint',
+    'elim-submit-btn': 'elimSubmit',
+    'validation-msg-elim': 'elimTooMany',
     'phase1-intro-title': 'phase1IntroTitle',
     'phase1-intro-desc': 'phase1IntroDesc',
     'phase1-submit-btn': 'phase1Submit',
@@ -129,7 +190,9 @@ function localizeStaticTestPage() {
     if (el) el.textContent = uiText(map[id]);
   });
   const stepLabel = document.getElementById('step-label');
-  if (stepLabel && pageLang === 'en') stepLabel.textContent = 'Phase 1: Baseline pattern and instinct scan';
+  if (stepLabel) stepLabel.textContent = uiText('step1Label');
+  const stepCounter = document.getElementById('step-counter');
+  if (stepCounter) stepCounter.textContent = '1 / 5';
 }
 
 // Minimal English question/option texts (ported from adaptiveQuestionEn in index.html)
@@ -456,6 +519,8 @@ const TEST_CONFIG = {
     candidateRatio: 0.70,
     minCandidates: 3,
     maxCandidates: 5,
+    maxEliminatedTypes: 6,
+    eliminationResurrectRatio: 0.90,
     tie36Margin: 0.08,
     tie31Margin: 0.10,
     tie71Margin: 0.12,
@@ -498,6 +563,8 @@ const TEST_CONFIG = {
 };
 
 const testState = {
+  eliminatedTypes: [],
+  eliminationResurrected: [],
   phase1Responses: {},
   phase2Questions: [],
   phase3Question: null,
@@ -2034,8 +2101,8 @@ function maybeShowPhase4(resultData) {
   document.getElementById('phase2-form').classList.add('hidden');
   document.getElementById('phase3-form').classList.add('hidden');
   document.getElementById('phase4-form').classList.remove('hidden');
-  document.getElementById('step-label').innerText = uiText('step4Label');
-  document.getElementById('step-counter').innerText = '4 / 4';
+  document.getElementById('step-label').innerText = uiText('step5Label');
+  document.getElementById('step-counter').innerText = '5 / 5';
   setProgress(100);
   requestAnimationFrame(() => scrollToTopSmart());
   return true;
@@ -2260,6 +2327,121 @@ function buildPostTieQuestion(typeA, typeB) {
   };
 }
 
+function renderTypeElimination() {
+  const root = document.getElementById('elim-container');
+  if (!root) return;
+  const markLabel = uiText('elimMark');
+  root.innerHTML = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((type) => {
+    const sketch = TYPE_ELIMINATION_SKETCHES[type] || {};
+    const text = pageLang === 'en' ? (sketch.en || '') : (sketch.ko || '');
+    return `
+      <label class="block cursor-pointer">
+        <input type="checkbox" name="elim-type" value="${type}" class="sr-only peer" data-elim-type="${type}">
+        <div class="rounded-xl border-2 border-gray-200 bg-white p-4 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5] peer-focus-visible:ring-2 peer-focus-visible:ring-[#30322D]/30 smooth">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <span class="inline-block text-xs font-bold text-[#30322D] mb-1">${type}${pageLang === 'en' ? '' : '번'}</span>
+              <p class="text-sm text-gray-700 leading-relaxed m-0">${text}</p>
+            </div>
+            <span class="shrink-0 text-[11px] font-bold tracking-wide text-gray-400 peer-checked:text-[#30322D]">${markLabel}</span>
+          </div>
+        </div>
+      </label>
+    `;
+  }).join('');
+  // peer-checked on sibling span doesn't work across nested structure — sync via change
+  root.querySelectorAll('input[name="elim-type"]').forEach((input) => {
+    const badge = input.parentElement.querySelector('span.shrink-0');
+    const sync = () => {
+      if (!badge) return;
+      badge.classList.toggle('text-[#30322D]', input.checked);
+      badge.classList.toggle('text-gray-400', !input.checked);
+    };
+    input.addEventListener('change', sync);
+    sync();
+  });
+}
+
+function readEliminatedTypesFromUi() {
+  return Array.from(document.querySelectorAll('input[name="elim-type"]:checked'))
+    .map((el) => parseInt(el.value, 10))
+    .filter((n) => Number.isFinite(n));
+}
+
+function selectCandidateTypesWithElimination(ranked, eliminated) {
+  const top = ranked[0].score;
+  const topType = ranked[0].type;
+  let cands = ranked.filter((x) => x.score >= top * TEST_CONFIG.thresholds.candidateRatio).map((x) => x.type);
+  cands = [...new Set([...cands, topType, topType === 1 ? 9 : topType - 1, topType === 9 ? 1 : topType + 1])];
+  if (cands.length < TEST_CONFIG.thresholds.minCandidates) {
+    cands = [...new Set([...cands, ...ranked.slice(0, TEST_CONFIG.thresholds.minCandidates).map((x) => x.type)])];
+  }
+  let topTypes = ranked.map((x) => x.type).filter((t) => cands.includes(t)).slice(0, TEST_CONFIG.thresholds.maxCandidates);
+
+  const elim = new Set((eliminated || []).map(Number));
+  const resurrectRatio = TEST_CONFIG.thresholds.eliminationResurrectRatio;
+  const resurrected = [];
+  const shouldKeepEliminated = (type) => {
+    const index = ranked.findIndex((row) => row.type === type);
+    const row = ranked[index];
+    if (index === 0 || index === 1) return true;
+    if (row && top > 0 && row.score >= top * resurrectRatio) return true;
+    return false;
+  };
+
+  topTypes = topTypes.filter((type) => {
+    if (!elim.has(type)) return true;
+    if (shouldKeepEliminated(type)) {
+      resurrected.push(type);
+      return true;
+    }
+    return false;
+  });
+
+  if (topTypes.length < TEST_CONFIG.thresholds.minCandidates) {
+    for (const row of ranked) {
+      if (topTypes.includes(row.type)) continue;
+      if (elim.has(row.type) && !shouldKeepEliminated(row.type)) continue;
+      if (elim.has(row.type) && shouldKeepEliminated(row.type) && !resurrected.includes(row.type)) {
+        resurrected.push(row.type);
+      }
+      topTypes.push(row.type);
+      if (topTypes.length >= TEST_CONFIG.thresholds.minCandidates) break;
+    }
+  }
+
+  return {
+    topTypes: topTypes.slice(0, TEST_CONFIG.thresholds.maxCandidates),
+    resurrected: [...new Set(resurrected)]
+  };
+}
+
+function submitTypeElimination() {
+  const eliminated = readEliminatedTypesFromUi();
+  const maxElim = TEST_CONFIG.thresholds.maxEliminatedTypes;
+  const msg = document.getElementById('validation-msg-elim');
+  if (eliminated.length > maxElim) {
+    if (msg) {
+      msg.textContent = uiText('elimTooMany');
+      msg.classList.remove('hidden');
+    }
+    return;
+  }
+  if (msg) msg.classList.add('hidden');
+  testState.eliminatedTypes = eliminated;
+  testState.eliminationResurrected = [];
+
+  document.getElementById('phase0-form').classList.add('hidden');
+  document.getElementById('phase1-form').classList.remove('hidden');
+  document.getElementById('phase2-form').classList.add('hidden');
+  document.getElementById('phase3-form').classList.add('hidden');
+  document.getElementById('phase4-form').classList.add('hidden');
+  document.getElementById('step-label').innerText = uiText('step2Label');
+  document.getElementById('step-counter').innerText = '2 / 5';
+  setProgress(40);
+  requestAnimationFrame(() => scrollToTopSmart());
+}
+
 function submitPhase1() {
   if (!validate(q1, 'p1', 'validation-msg-1')) return;
   testState.phase3Question = null;
@@ -2278,13 +2460,9 @@ function submitPhase1() {
 
   const ranked = Object.keys(center).map((k)=>({type:parseInt(k,10), score:center[k]})).sort((a,b)=>b.score-a.score);
   const top = ranked[0].score;
-  const topType = ranked[0].type;
-  let cands = ranked.filter((x)=>x.score>=top*TEST_CONFIG.thresholds.candidateRatio).map((x)=>x.type);
-  cands = [...new Set([...cands, topType, topType===1?9:topType-1, topType===9?1:topType+1])];
-  if (cands.length < TEST_CONFIG.thresholds.minCandidates) {
-    cands = [...new Set([...cands, ...ranked.slice(0, TEST_CONFIG.thresholds.minCandidates).map((x)=>x.type)])];
-  }
-  const topTypes = ranked.map((x)=>x.type).filter((t)=>cands.includes(t)).slice(0, TEST_CONFIG.thresholds.maxCandidates);
+  const selection = selectCandidateTypesWithElimination(ranked, testState.eliminatedTypes);
+  const topTypes = selection.topTypes;
+  testState.eliminationResurrected = selection.resurrected;
 
   testState.phase2Questions = [];
   topTypes.forEach((t)=>{ if (deep[t]) testState.phase2Questions = testState.phase2Questions.concat(deep[t]); });
@@ -2428,9 +2606,9 @@ function submitPhase1() {
   document.getElementById('phase2-form').classList.remove('hidden');
   document.getElementById('phase3-form').classList.add('hidden');
   document.getElementById('phase4-form').classList.add('hidden');
-  setProgress(100);
-  document.getElementById('step-label').innerText = uiText('step2Label');
-  document.getElementById('step-counter').innerText = '2 / 4';
+  setProgress(60);
+  document.getElementById('step-label').innerText = uiText('step3Label');
+  document.getElementById('step-counter').innerText = '3 / 5';
   renderQuestions('phase2-container', testState.phase2Questions, 'p2');
   requestAnimationFrame(() => scrollToTopSmart());
 }
@@ -2581,9 +2759,9 @@ function submitPhase2() {
     document.getElementById('phase2-form').classList.add('hidden');
     document.getElementById('phase3-form').classList.remove('hidden');
     document.getElementById('phase4-form').classList.add('hidden');
-    document.getElementById('step-label').innerText = uiText('step3Label');
-    document.getElementById('step-counter').innerText = '3 / 4';
-    setProgress(100);
+    document.getElementById('step-label').innerText = uiText('step4Label');
+    document.getElementById('step-counter').innerText = '4 / 5';
+    setProgress(80);
     requestAnimationFrame(() => scrollToTopSmart());
     return;
   }
@@ -3980,7 +4158,9 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
       wingMetrics,
       reportKey: premiumModel.reportKey,
       tieSnapshot,
-      responses: premiumModel.responses
+      responses: premiumModel.responses,
+      eliminatedTypes: testState.eliminatedTypes.slice(),
+      eliminationResurrected: testState.eliminationResurrected.slice()
     });
   }
 
@@ -3989,8 +4169,12 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
 }
 
 localizeStaticTestPage();
+renderTypeElimination();
 renderQuestions('phase1-container', q1, 'p1');
-setProgress(50);
+setProgress(20);
+if (typeof window !== 'undefined') {
+  window.submitTypeElimination = submitTypeElimination;
+}
 requestAnimationFrame(revealTestPageAfterLoad);
 
 if (typeof window !== 'undefined' && window.parent !== window && typeof ResizeObserver === 'function') {

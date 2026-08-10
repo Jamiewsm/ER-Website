@@ -176,6 +176,18 @@ test('phase 1 uses a shorter forced center screen plus behavior-recall type item
   assert.match(testJs, /option\.types\.forEach/);
 });
 
+test('phase 0 eliminates clearly-not-me types before scoring questions', () => {
+  assert.match(testHtml, /id="phase0-form"/);
+  assert.match(testHtml, /id="phase1-form"[^>]*class="[^"]*hidden/);
+  assert.match(testJs, /TYPE_ELIMINATION_SKETCHES/);
+  assert.match(testJs, /function submitTypeElimination\(/);
+  assert.match(testJs, /function selectCandidateTypesWithElimination\(/);
+  assert.match(testJs, /maxEliminatedTypes/);
+  assert.match(testJs, /eliminationResurrectRatio/);
+  assert.match(testJs, /renderTypeElimination\(\)/);
+  assert.match(testJs, /eliminatedTypes: testState\.eliminatedTypes\.slice\(\)/);
+});
+
 test('phase 1 adds one scored instinct attention-bias situation question', () => {
   const q1Start = testJs.indexOf('const q1 = [');
   const phase1Block = testJs.slice(q1Start, testJs.indexOf('const deep = {'));
