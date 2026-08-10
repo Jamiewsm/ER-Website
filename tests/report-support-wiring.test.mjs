@@ -148,14 +148,21 @@ test('phase 1 uses a shorter forced center screen plus behavior-recall type item
   assert.doesNotMatch(centerBlock, /id: 'center_auto_4'|id: 'center_auto_5'|id: 'center_auto_6'|id: 'center_auto_7'|id: 'center_auto_8'|id: 'center_auto_9'|id: 'center_auto_10'/);
   assert.equal((centerBlock.match(/centerChoice: true/g) || []).length, 6);
   assert.doesNotMatch(centerBlock, /triad:/);
-  // 장형 선택지가 얼어붙기(굳는다/움츠러든다)만 묘사하면 8번이 고르지 못한다 — 행동 충동 워딩 유지 가드.
+  // 장형: 얼어붙기만 쓰지 말고 행동 충동(맞선다/참는다/물러난다)을 묻는다.
   assert.doesNotMatch(centerBlock, /굳는다|움츠러들/);
-  assert.match(centerBlock, /맞설지, 참을지, 물러날지/);
-  assert.match(centerBlock, /의식적으로 판단하기 전에 나도 모르게/);
-  assert.match(centerBlock, /나라는 사람/);
+  assert.match(centerBlock, /맞설지, 참을지, 물러날지|밀어붙일지|따질지/);
+  // 질문 줄기에 프라이밍을 넣지 않는다. 센터 차이는 선택지에서만.
+  assert.doesNotMatch(centerBlock, /의식적으로 판단하기 전에|머리로 정리하기 전에|돌이켜보면/);
+  // Heart는 인정욕구가 아니라 수치심·정체성 감정.
+  assert.match(centerBlock, /창피하거나|부끄럽거나|잘못된 사람처럼/);
+  assert.doesNotMatch(centerBlock, /인정받은|존재로 받아들여|가치를 깎아내린/);
   assert.match(centerBlock, /회의나 대화에서 내 의견이 잘 받아들여지지 않았을 때/);
   assert.match(centerBlock, /생각보다 차갑게 대하거나 거절했을 때/);
   assert.match(centerBlock, /일이 예상과 다르게 틀어졌을 때/);
+  // A/B 강제선택에는 억지 선택을 막는 비채점 옵션.
+  assert.match(testJs, /둘 다 아니다 \(비채점\)/);
+  assert.match(testJs, /if \(raw === 'U'\) return;/);
+  assert.match(testJs, /if \(choice === 'U'\) return;/);
 
   const phase1Block = testJs.slice(q1Start, testJs.indexOf('const deep = {'));
   assert.match(phase1Block, /회의나 대화에서 실수한 뒤/);
