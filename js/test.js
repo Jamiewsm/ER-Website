@@ -550,26 +550,26 @@ const q1 = [
     id: 'center_auto_1',
     format: 'abc',
     centerChoice: true,
-    q: '갑자기 압박을 받거나 예상 밖의 일이 생겼을 때, 의식적으로 판단하기 전에 나도 모르게 가장 먼저 나오는 반응은?',
-    qEn: 'When sudden pressure or an unexpected event hits, before you consciously judge it, which reaction rises first?',
+    q: '갑자기 압박을 받거나 예상 밖의 일이 생겼을 때, 가장 먼저 나오는 반응은?',
+    qEn: 'When sudden pressure or an unexpected event hits, which reaction comes up first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '이 일이 나를 어떤 사람으로 보이게 했을지, 관계나 평가에 어떤 영향을 줄지부터 신경 쓰인다.',
-        textEn: 'I first notice what this says about who I am, and how it may affect my relationships or how I am seen.'
+        text: '순간적으로 창피하거나, 내가 부족한 사람처럼 느껴지는 감정이 먼저 올라온다.',
+        textEn: 'A flash of shame comes first — feeling exposed or somehow deficient as a person.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '지금 정확히 무슨 일이 벌어진 건지 이해하고, 앞으로 어떤 결과로 이어질지 먼저 따져 보게 된다.',
-        textEn: 'I first try to understand exactly what happened, and think ahead to what consequences may follow.'
+        text: '무슨 일이 벌어진 건지, 앞으로 어떻게 될지부터 따져야 마음이 움직인다.',
+        textEn: 'I need to understand what happened and what comes next before anything else settles.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '생각보다 몸이 먼저 반응한다. 맞설지, 참을지, 물러날지 행동 방향이 먼저 정해진다.',
-        textEn: 'My body reacts before my thoughts. Whether to confront, hold steady, or step back gets decided first.'
+        text: '생각하기 전에 이미 방향이 정해진다. 맞설지, 참을지, 물러날지가 반사적으로 나온다.',
+        textEn: 'A direction is already set before thinking. Confront, hold, or step back comes reflexively.'
       }
     ]
   },
@@ -577,26 +577,26 @@ const q1 = [
     id: 'center_auto_2',
     format: 'abc',
     centerChoice: true,
-    q: '갈등이 생길 조짐이 보이거나 서로 입장이 부딪힐 때, 나도 모르게 가장 먼저 올라오는 반응은?',
-    qEn: 'When conflict begins to form or positions collide, which reaction rises first before you think it through?',
+    q: '갈등이 생길 조짐이 보이거나 서로 입장이 부딪힐 때, 가장 먼저 나오는 반응은?',
+    qEn: 'When conflict begins to form or positions collide, which reaction comes up first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '갈등 자체보다 이 관계가 어떻게 될지, 내가 어떤 사람으로 받아들여질지가 더 마음에 남는다.',
-        textEn: 'More than the conflict itself, what stays with me is where this relationship goes and how I am received as a person.'
+        text: '순간적으로 창피하거나, 관계가 흔들린 것 같은 감정이 먼저 올라온다.',
+        textEn: 'Shame or the feeling that the relationship just shifted hits me first.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 이런 갈등이 생겼는지 이해가 되어야 마음이 놓이고, 해결 방법부터 찾게 된다.',
-        textEn: 'I settle only when I understand why this conflict happened, and I start looking for how to resolve it.'
+        text: '왜 이렇게 됐는지 이유를 알아야 안심되고, 해결 방법부터 찾게 된다.',
+        textEn: 'I settle only when I understand why this happened, then look for how to resolve it.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '생각보다 몸이 먼저 움직인다. 밀어붙일지, 참을지, 거리를 둘지가 먼저 정해진다.',
-        textEn: 'My body moves before my thoughts. Whether to push forward, hold back, or create distance gets decided first.'
+        text: '상황을 생각하기보다, 본능적으로 밀어붙일지·참을지·무시할지가 먼저 정해진다.',
+        textEn: 'Before thinking it through, push forward, hold back, or ignore is already decided instinctively.'
       }
     ]
   },
@@ -604,26 +604,26 @@ const q1 = [
     id: 'center_auto_3',
     format: 'abc',
     centerChoice: true,
-    q: '칭찬이나 좋은 평가를 받았을 때, 나도 모르게 가장 먼저 드는 생각이나 반응은?',
-    qEn: 'When you receive praise or a positive evaluation, which thought or reaction comes up first without trying?',
+    q: '칭찬이나 좋은 평가를 받았을 때, 가장 먼저 드는 반응은?',
+    qEn: 'When you receive praise or a positive evaluation, which reaction comes up first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '그 칭찬이 나라는 사람을 인정한 것인지, 내가 어떤 존재로 받아들여졌는지가 더 의미 있게 느껴진다.',
-        textEn: 'What feels meaningful is whether the praise recognized who I am, and what kind of person I was received as.'
+        text: '기쁨보다 먼저, 이 평가에 못 미치는 내가 들통날까 봐 살짝 불편해진다.',
+        textEn: 'Before the joy settles, a quiet unease comes — what if the real me falls short of this praise.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '무엇 때문에 그런 평가를 받았는지 이해하고, 앞으로도 유지할 방법을 생각하게 된다.',
-        textEn: 'I try to understand what earned that evaluation, and think about how to keep it up going forward.'
+        text: '왜 그런 말을 들었는지 이유를 따져 보고, 앞으로도 유지할 방법을 생각한다.',
+        textEn: 'I work out what earned that evaluation, then think about how to keep it going forward.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '별생각 없이 몸으로 먼저 반응한다. 편안해지거나 어색해지면서 행동이 먼저 달라진다.',
-        textEn: 'I respond with my body before any thought. I ease up or turn awkward, and my behavior changes first.'
+        text: '별생각 없이 몸이 먼저 반응한다. 편안해지거나 어색해지며 행동이 달라진다.',
+        textEn: 'My body responds before any thought. I ease up or turn awkward, and my behavior shifts.'
       }
     ]
   },
@@ -631,26 +631,26 @@ const q1 = [
     id: 'center_situation_1',
     format: 'abc',
     centerChoice: true,
-    q: '회의나 대화에서 내 의견이 잘 받아들여지지 않았을 때, 돌이켜보면 가장 먼저 나오는 반응은?',
-    qEn: 'When your opinion is not well received in a meeting or conversation, looking back, which reaction comes first?',
+    q: '회의나 대화에서 내 의견이 잘 받아들여지지 않았을 때, 가장 먼저 나오는 반응은?',
+    qEn: 'When your opinion is not well received in a meeting or conversation, which reaction comes up first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '의견 자체보다, 나라는 사람이 가볍게 여겨진 건 아닌지가 더 마음에 남는다.',
-        textEn: 'More than the opinion itself, what stays with me is whether I, as a person, was treated as unimportant.'
+        text: '순간적으로 창피하거나, 내가 부족한 사람처럼 느껴지는 감정이 먼저 올라온다.',
+        textEn: 'A flash of shame comes first — feeling exposed or somehow lacking as a person.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 받아들여지지 않았는지 이유를 파악하고, 다음에는 어떤 근거나 정보를 준비해야 할지 생각하게 된다.',
-        textEn: 'I work out why it was not received, then think about what evidence or information to prepare next time.'
+        text: '왜 이런 일이 생겼는지 이유부터 찾게 된다.',
+        textEn: 'I start looking for why this happened before anything else.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '생각보다 행동이 먼저 나온다. 바로 더 밀어붙이거나, 일단 참거나, 조용히 물러나게 된다.',
-        textEn: 'Action comes before thought. I push harder right away, hold it in for now, or quietly step back.'
+        text: '본능적으로 밀어붙일지, 참을지, 물러날지가 먼저 정해진다.',
+        textEn: 'Instinctively, push harder, hold it in, or step back is already decided.'
       }
     ]
   },
@@ -658,26 +658,26 @@ const q1 = [
     id: 'center_situation_2',
     format: 'abc',
     centerChoice: true,
-    q: '누군가 나를 생각보다 차갑게 대하거나 거절했을 때, 나도 모르게 가장 먼저 올라오는 반응은?',
-    qEn: 'When someone treats you more coldly than expected or rejects you, which reaction rises first without trying?',
+    q: '누군가 나를 생각보다 차갑게 대하거나 거절했을 때, 가장 먼저 나오는 반응은?',
+    qEn: 'When someone treats you more coldly than expected or rejects you, which reaction comes up first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '그 거절이 나라는 사람에 대한 평가처럼 느껴져서, 나는 상대에게 어떤 존재였는지 자꾸 곱씹게 된다.',
-        textEn: 'The rejection feels like a judgment of who I am, and I keep replaying what I meant to that person.'
+        text: '거절당한 사실보다, 순간적으로 부끄럽거나 내가 잘못된 사람처럼 느껴진다.',
+        textEn: 'More than the rejection itself, shame hits first — feeling wrong or exposed as a person.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '왜 그런 반응이 나왔는지 이유를 알아야 마음이 진정되고, 이 관계가 앞으로 어떻게 될지 미리 따져 보게 된다.',
-        textEn: 'I calm down only after I understand why they reacted that way, and I think ahead to where this relationship goes.'
+        text: '왜 그런 반응이 나왔는지 알아야 진정되고, 앞으로 어떻게 될지 따져 보게 된다.',
+        textEn: 'I calm down only after I understand why they reacted that way, then think ahead to what follows.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '생각보다 몸이 먼저 반응한다. 그 자리에서 따지거나, 아무렇지 않은 척 버티거나, 거리를 두는 쪽으로 행동이 먼저 정해진다.',
-        textEn: 'My body reacts before my thoughts. Confronting on the spot, holding on as if unbothered, or creating distance gets decided first.'
+        text: '본능적으로 따질지, 버틸지, 거리를 둘지가 먼저 정해진다.',
+        textEn: 'Instinctively, confront, hold ground, or create distance is already decided.'
       }
     ]
   },
@@ -685,26 +685,26 @@ const q1 = [
     id: 'center_situation_3',
     format: 'abc',
     centerChoice: true,
-    q: '일이 예상과 다르게 틀어졌을 때, 머리로 정리하기 전에 나도 모르게 가장 먼저 나오는 반응은?',
-    qEn: 'When things go off track, before you sort it out in your head, which reaction comes first?',
+    q: '일이 예상과 다르게 틀어졌을 때, 가장 먼저 나오는 반응은?',
+    qEn: 'When things go off track, which reaction comes up first?',
     options: [
       {
         value: 'heart',
         types: [2, 3, 4],
-        text: '결과 자체보다, 이 일이 나라는 사람의 가치를 깎아내린 것처럼 느껴져 그 장면이 오래 남는다.',
-        textEn: 'More than the result itself, it feels like my worth as a person took the hit, and that scene stays with me.'
+        text: '실패보다 먼저, 내가 잘못된 사람처럼 느껴지는 감각이나 부끄러움이 올라온다.',
+        textEn: 'Before the failure itself, shame or feeling somehow wrong as a person rises first.'
       },
       {
         value: 'head',
         types: [5, 6, 7],
-        text: '무엇이 잘못됐는지 원인을 파악하고, 앞으로 어떻게 수습할지부터 그려 보게 된다.',
-        textEn: 'I work out what went wrong, and start mapping how to handle what comes next.'
+        text: '무엇이 잘못됐는지, 앞으로 어떻게 수습할지부터 그려 보게 된다.',
+        textEn: 'I map what went wrong and how to handle what comes next before anything else.'
       },
       {
         value: 'body',
         types: [8, 9, 1],
-        text: '생각을 정리하기 전에 몸이 먼저 움직인다. 바로 수습에 나서거나, 일단 버티거나, 그 자리를 벗어나게 된다.',
-        textEn: 'My body moves before my thoughts settle. I jump in to fix it, hold my ground for now, or leave the scene.'
+        text: '생각하기 전에 이미 행동이 나온다. 바로 수습에 나서거나, 버티거나, 그 자리를 벗어난다.',
+        textEn: 'Action comes before thinking. I jump in to fix it, hold my ground, or leave the scene.'
       }
     ]
   },
@@ -1443,7 +1443,7 @@ function resolvePhase4Wing(wingQuestions) {
   wingQuestions.forEach((question) => {
     if (!question.wingChoice) return;
     const choice = document.querySelector(`input[name="${question.id}"]:checked`)?.value;
-    if (!choice) return;
+    if (!choice || choice === 'U') return;
     const wing = choice === 'A' ? question.leftWing : question.rightWing;
     votes[wing] = (votes[wing] || 0) + 1;
     evidence.push(choice === 'A' ? getOptionText(question, 'a') : getOptionText(question, 'b'));
@@ -1612,6 +1612,12 @@ function renderQuestions(containerId, items, prefix) {
                 <div>${getOptionText(item, 'b')}</div>
               </div>
             </label>
+            <label class="block cursor-pointer">
+              <input type="radio" name="${item.id}" value="U" class="sr-only peer">
+              <div class="rounded-xl border-2 border-gray-200 p-3 text-sm text-gray-500 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5] peer-focus-visible:ring-2 peer-focus-visible:ring-[#30322D]/30 smooth text-center">
+                ${pageLang === 'en' ? 'Neither (no scoring)' : '둘 다 아니다 (비채점)'}
+              </div>
+            </label>
             </div>
           </fieldset>
         </div>`;
@@ -1771,7 +1777,7 @@ function buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked,
     addQualityFlag(flags, 'straight_lining', 'low', '같은 점수 반복이 많음', `리커트 응답의 ${Math.round(responseStats.straightLineRatio * 100)}%가 같은 값입니다.`);
   }
   if (responseStats.totalCount >= 8 && responseStats.unknownRatio >= 0.25) {
-    addQualityFlag(flags, 'unknown_overuse', 'caution', '비채점 응답이 많음', `리커트 응답 중 ${Math.round(responseStats.unknownRatio * 100)}%가 잘 모르겠다/상황 따라 다름입니다.`);
+    addQualityFlag(flags, 'unknown_overuse', 'caution', '비채점 응답이 많음', `응답 중 ${Math.round(responseStats.unknownRatio * 100)}%가 잘 모르겠다/둘 다 아니다입니다.`);
   }
   if (!centerCoreAligned && confidence !== '높음') {
     addQualityFlag(flags, 'center_core_mismatch', 'caution', '센터 응답과 코어 결과가 충돌함', `센터는 ${dominantCenter}, 코어 ${topType}번은 ${coreCenter} 센터입니다.`);
@@ -1983,6 +1989,7 @@ function scorePhase1Item(item, raw, addScore) {
   if (!item || raw === undefined || raw === null) return;
 
   if (item.format === 'ab') {
+    if (raw === 'U') return;
     const type = raw === 'A' ? item.leftType : item.rightType;
     const text = raw === 'A' ? item.a : item.b;
     addScore(type, TEST_CONFIG.weights.phase1Binary, item.id, text);
@@ -2457,6 +2464,7 @@ function submitPhase2() {
       const el = document.querySelector(`input[name="${q.id}"]:checked`);
       if (!el) return;
       const choice = el.value;
+      if (choice === 'U') return;
       let w = TEST_CONFIG.weights.phase2Base;
       if (q.id.startsWith('tb_1_8_') && testState.tie.t18.enabled) w = testState.tie.t18.weight;
       else if (q.id.startsWith('tb_1_4_') && testState.tie.t14.enabled) w = testState.tie.t14.weight;
@@ -2591,18 +2599,21 @@ function submitPhase3() {
   if (!testState.pendingResult) return;
 
   const choice = document.querySelector(`input[name="${testState.phase3Question.id}"]:checked`).value;
-  const boostType = choice === 'A' ? testState.phase3Question.leftType : testState.phase3Question.rightType;
-  const boostText = choice === 'A' ? testState.phase3Question.a : testState.phase3Question.b;
-
-  testState.pendingResult.final[boostType] += TEST_CONFIG.weights.postTieBreak;
-  testState.pendingResult.evidence[boostType].push({
-    points: TEST_CONFIG.weights.postTieBreak,
-    text: `[최종 타이브레이커] ${boostText}`
-  });
+  let postTieApplied = false;
+  if (choice === 'A' || choice === 'B') {
+    const boostType = choice === 'A' ? testState.phase3Question.leftType : testState.phase3Question.rightType;
+    const boostText = choice === 'A' ? testState.phase3Question.a : testState.phase3Question.b;
+    testState.pendingResult.final[boostType] += TEST_CONFIG.weights.postTieBreak;
+    testState.pendingResult.evidence[boostType].push({
+      points: TEST_CONFIG.weights.postTieBreak,
+      text: `[최종 타이브레이커] ${boostText}`
+    });
+    postTieApplied = true;
+  }
 
   const resultData = {
     ...testState.pendingResult,
-    postTieApplied: true
+    postTieApplied
   };
   if (maybeShowPhase4(resultData)) return;
   renderResultFromScores(resultData);
