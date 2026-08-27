@@ -224,6 +224,7 @@ async function handleApplySubmit(event, source, successPayload) {
     turnstile_token: turnstileToken,
     program_key: programKey || undefined,
     cohort_key: isOctoberBasicCourse ? 'enneagram_basic_2026_10' : undefined,
+    phone: phone || undefined,
     country: country || undefined,
     preferred_time: preferredTime || undefined,
     enneagram_experience: experience || undefined,

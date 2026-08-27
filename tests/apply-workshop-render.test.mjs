@@ -297,6 +297,7 @@ test('October basic course submission preserves the legacy program key and sends
 
   assert.equal(requestBody.program_key, 'enneagram_basic_july');
   assert.equal(requestBody.cohort_key, 'enneagram_basic_2026_10');
+  assert.equal(requestBody.phone, '010-1234-5678');
   assert.equal(requestBody.payment_region, 'KR');
   assert.equal(requestBody.payment_preference, 'kakao_pay');
   assert.equal(requestBody.installment_preference, 'card_installment');
