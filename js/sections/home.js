@@ -21,11 +21,14 @@ function renderHome() {
         return cleaned.slice(0, 2).toUpperCase();
     };
 
-    const showJulyBasicRecruitment = (() => {
+    const showBasicCourseRecruitment = (() => {
+        if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.isBasicCourseRecruitmentOpen === 'function') {
+            return window.ERProgramCatalog.isBasicCourseRecruitmentOpen();
+        }
         if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.isJulyBasicRecruitmentOpen === 'function') {
             return window.ERProgramCatalog.isJulyBasicRecruitmentOpen();
         }
-        return Date.now() <= Date.parse('2026-07-05T23:59:59-07:00');
+        return Date.now() <= Date.parse('2026-09-28T23:59:59-07:00');
     })();
 
     const benefits = [
@@ -43,9 +46,9 @@ function renderHome() {
 
     const programCards = [
         {
-            badge: '진행 중',
+            badge: '모집 중',
             title: '에니어그램 기본과정 8주',
-            text: '7월 기수 A·B반 13명 · 8주 온라인 과정',
+            text: '10월 첫주 개강 · 선착순 8명 · 8주 온라인 과정',
             price: '$300',
             image: 'background.png',
             position: 'center',
@@ -174,13 +177,13 @@ function renderHome() {
                             ER은 기독교 세계관과 에니어그램을 바탕으로 하나님이 지으신 나를 이해하고, 가정과 교회 공동체 안에서 관계와 소명을 회복하는 여정을 함께합니다.
                         </p>
 
-                        ${showJulyBasicRecruitment ? `
+                        ${showBasicCourseRecruitment ? `
                         <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
                                     <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">특별 혜택</span>
-                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">7월 기본과정 모집 중</p>
-                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">7/5 마감 · 정원 10명 · 선착순 마감</p>
+                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">10월 기본과정 모집 중</p>
+                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">선착순 8명 · 9/17까지 얼리버드 $270</p>
                                 </div>
                                 <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">신청</button>
                             </div>
@@ -189,9 +192,9 @@ function renderHome() {
                         <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
-                                    <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">진행 중</span>
-                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">7월 기본과정 개강</p>
-                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">A반 7/7 · B반 7/10 · 총 13명</p>
+                                    <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">안내</span>
+                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">기본과정 다음 기수</p>
+                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">모집 마감 · 과정 소개는 계속 열려 있습니다</p>
                                 </div>
                                 <button onclick="window.location.href='/basic-course.html'" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">안내</button>
                             </div>
@@ -229,18 +232,18 @@ function renderHome() {
                         <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
 
-                        ${showJulyBasicRecruitment ? `
+                        ${showBasicCourseRecruitment ? `
                         <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
                             <p class="text-[11px] font-bold text-[#6c6b60]">지금 시작하면 특별한 혜택!</p>
-                            <p class="mt-4 text-xl font-black text-er-ink">7월 기본과정 모집</p>
-                            <p class="mt-1 text-sm font-bold text-[#68785a]">7/5 마감 · 정원 10명</p>
+                            <p class="mt-4 text-xl font-black text-er-ink">10월 기본과정 모집</p>
+                            <p class="mt-1 text-sm font-bold text-[#68785a]">선착순 8명 · 얼리버드 $270</p>
                             <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_hero_offer' })" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">신청하기</button>
                         </div>
                         ` : `
                         <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
-                            <p class="text-[11px] font-bold text-[#6c6b60]">2026년 7월 기수</p>
-                            <p class="mt-4 text-xl font-black text-er-ink">기본과정 진행 중</p>
-                            <p class="mt-1 text-sm font-bold text-[#68785a] break-keep">A반 7/7 · B반 7/10 · 13명</p>
+                            <p class="text-[11px] font-bold text-[#6c6b60]">에니어그램 기본과정</p>
+                            <p class="mt-4 text-xl font-black text-er-ink">다음 기수 안내</p>
+                            <p class="mt-1 text-sm font-bold text-[#68785a] break-keep">모집 마감 · 과정 소개 보기</p>
                             <button onclick="window.location.href='/basic-course.html'" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">과정 안내</button>
                         </div>
                         `}

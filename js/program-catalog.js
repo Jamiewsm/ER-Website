@@ -34,10 +34,16 @@
     '회복 코칭 4회': 'recovery_journey_4'
   };
 
-  const JULY_BASIC_RECRUITMENT_END = '2026-07-05T23:59:59-07:00';
+  /** 10월 기수 모집 마감 (정원 선착순 8명 · 조기 마감 가능) — America/Los_Angeles */
+  const BASIC_COURSE_RECRUITMENT_END = '2026-09-28T23:59:59-07:00';
 
+  function isBasicCourseRecruitmentOpen() {
+    return Date.now() <= Date.parse(BASIC_COURSE_RECRUITMENT_END);
+  }
+
+  /** @deprecated 호환용 — isBasicCourseRecruitmentOpen 사용 */
   function isJulyBasicRecruitmentOpen() {
-    return Date.now() <= Date.parse(JULY_BASIC_RECRUITMENT_END);
+    return isBasicCourseRecruitmentOpen();
   }
 
   function withResultConsultPrimary(programNames) {
@@ -46,11 +52,16 @@
     return ['테스트 결과지 해석상담', ...filtered].slice(0, 3);
   }
 
-  function withJulyBasicBoost(programNames) {
+  function withBasicCourseBoost(programNames) {
     const primary = withResultConsultPrimary(programNames);
-    if (!isJulyBasicRecruitmentOpen()) return primary;
+    if (!isBasicCourseRecruitmentOpen()) return primary;
     const filtered = primary.filter((name) => !['result_consult', 'basic_course'].includes(resolveKey(name)));
     return ['테스트 결과지 해석상담', '에니어그램 기본과정 8주', ...filtered].slice(0, 3);
+  }
+
+  /** @deprecated 호환용 — withBasicCourseBoost 사용 */
+  function withJulyBasicBoost(programNames) {
+    return withBasicCourseBoost(programNames);
   }
 
   const PROGRAMS = {
@@ -155,7 +166,7 @@
       track: 'paid',
       focus: 'enneagram_basic_july',
       featured: true,
-      outcome: '7월 기수 진행 중 · A반 7/7 · B반 7/10 개강 · 8주 온라인 + 1:1 멘토링',
+      outcome: '10월 첫주 개강 · 선착순 8명 · 8주 온라인 + 1:1 멘토링 · 요일·시간은 참여자와 조율',
       reasonPrimary: '무료 진단 결과를 체계적인 8주 학습으로 확장하기 좋은 시점입니다.',
       reasonSecondary: '9유형의 핵심 동기와 회복 관점을 깊이 배우기 좋습니다.',
       applyMessage: '에니어그램 기본과정 8주 신청합니다.'
@@ -203,7 +214,7 @@
   }
 
   function buildNextSteps(programNames) {
-    return withJulyBasicBoost(programNames).map((name, index) => {
+    return withBasicCourseBoost(programNames).map((name, index) => {
       const key = resolveKey(name);
       const prog = get(key);
       const priceNote = prog.price ? prog.price.label : '';
@@ -247,7 +258,9 @@
     buildApplyPayload,
     buildNextSteps,
     withResultConsultPrimary,
+    withBasicCourseBoost,
     withJulyBasicBoost,
+    isBasicCourseRecruitmentOpen,
     isJulyBasicRecruitmentOpen,
     getPaidCategoryOptions,
     getRecoveryPackageCopy,

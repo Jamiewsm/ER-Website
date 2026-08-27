@@ -3,18 +3,33 @@ function isParentingWorkshopFocus(focus) {
     return normalizedFocus === 'parenting_workshop' || normalizedFocus === 'parents_workshop';
 }
 
-function isJulyBasicCourseFocus(focus) {
+function isBasicCourseFocus(focus) {
     const normalizedFocus = String(focus || '').trim();
     return normalizedFocus === 'enneagram_basic_july'
         || normalizedFocus === 'basic_course_july'
+        || normalizedFocus === 'enneagram_basic_october'
+        || normalizedFocus === 'basic_course_october'
         || normalizedFocus === 'enneagram_basic';
 }
 
-function isJulyBasicRecruitmentOpen() {
+/** @deprecated 호환용 — isBasicCourseFocus 사용 */
+function isJulyBasicCourseFocus(focus) {
+    return isBasicCourseFocus(focus);
+}
+
+function isBasicCourseRecruitmentOpen() {
+    if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.isBasicCourseRecruitmentOpen === 'function') {
+        return window.ERProgramCatalog.isBasicCourseRecruitmentOpen();
+    }
     if (typeof window !== 'undefined' && window.ERProgramCatalog && typeof window.ERProgramCatalog.isJulyBasicRecruitmentOpen === 'function') {
         return window.ERProgramCatalog.isJulyBasicRecruitmentOpen();
     }
-    return Date.now() <= Date.parse('2026-07-05T23:59:59-07:00');
+    return Date.now() <= Date.parse('2026-09-28T23:59:59-07:00');
+}
+
+/** @deprecated 호환용 — isBasicCourseRecruitmentOpen 사용 */
+function isJulyBasicRecruitmentOpen() {
+    return isBasicCourseRecruitmentOpen();
 }
 
 function getPaidApplyCategoryOptions() {
@@ -164,7 +179,7 @@ function renderParentingWorkshopApply(submitSource) {
     `;
 }
 
-function renderJulyBasicCourseApply(submitSource) {
+function renderBasicCourseApply(submitSource) {
     return `
         <div class="course-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
             <div class="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[minmax(300px,0.92fr)_minmax(430px,1fr)] lg:items-start">
@@ -186,11 +201,12 @@ function renderJulyBasicCourseApply(submitSource) {
                                 내 안의 패턴을 이해하고, 하나님 안에서 본래의 나로 회복되는 여정을 시작합니다.
                             </p>
                             <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-er-accentLight pt-4 text-sm text-er-dark">
-                                <p><span class="block text-[11px] text-er-muted">기간</span>2026년 7월 개강 · 8주</p>
+                                <p><span class="block text-[11px] text-er-muted">기간</span>2026년 10월 첫주 개강 · 8주</p>
                                 <p><span class="block text-[11px] text-er-muted">방식</span>온라인 Zoom</p>
                                 <p><span class="block text-[11px] text-er-muted">구성</span>교재 + 강의 + 1:1 멘토링</p>
-                                <p><span class="block text-[11px] text-er-muted">정원</span>최대 10명</p>
-                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료 (USD)</span>$300 <span class="text-xs text-er-muted">· 6/24까지 얼리버드 $270 · PayPal·Zelle</span></p>
+                                <p><span class="block text-[11px] text-er-muted">정원</span>선착순 8명</p>
+                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료 (USD)</span>$300 <span class="text-xs text-er-muted">· 9/17까지 얼리버드 $270 · PayPal·Zelle</span></p>
+                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">요일·시간</span>참여자 희망 시간대를 모아 조율합니다</p>
                             </div>
                             <a href="/basic-course.html" class="mt-4 inline-block text-xs font-bold text-er-dark underline">과정 상세 안내 보기 →</a>
                         </div>
@@ -200,7 +216,7 @@ function renderJulyBasicCourseApply(submitSource) {
                 <section class="rounded-lg border border-er-accentLight bg-white p-5 shadow-soft sm:p-7">
                     <h2 class="text-lg font-bold text-er-dark">기본과정 신청 정보</h2>
                     <p class="mb-6 mt-2 text-sm leading-relaxed text-er-primary break-keep">
-                        아래 내용을 남겨주시면 접수 후 담당자 확인을 거쳐 등록·결제 안내 메일(USD, PayPal·Zelle)을 보내드립니다.
+                        아래 내용을 남겨주시면 접수 후 담당자 확인을 거쳐 등록·결제 안내 메일(USD, PayPal·Zelle)을 보내드립니다. 자리 확정은 입금 확인 순입니다.
                     </p>
 
                     <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_july' })">
@@ -222,8 +238,8 @@ function renderJulyBasicCourseApply(submitSource) {
                                 <input type="text" name="country" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: USA, Korea">
                             </div>
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">희망 시간대 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="preferred_time" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: Dallas PM">
+                                <label class="mb-2 block text-sm font-bold text-gray-700">희망 요일·시간대</label>
+                                <input type="text" name="preferred_time" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 목요일 저녁 / Dallas PM">
                             </div>
                         </div>
 
@@ -304,19 +320,21 @@ function renderJulyBasicCourseApply(submitSource) {
     `;
 }
 
-function renderJulyBasicCourseClosed() {
+/** @deprecated 호환용 — renderBasicCourseApply 사용 */
+function renderJulyBasicCourseApply(submitSource) {
+    return renderBasicCourseApply(submitSource);
+}
+
+function renderBasicCourseClosed() {
     return `
         <div class="course-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
             <div class="mx-auto max-w-xl">
                 <section class="overflow-hidden rounded-lg border border-er-accentLight bg-white p-6 shadow-soft sm:p-8 text-center">
                     <span class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-[11px] font-bold text-er-green ring-1 ring-[#dce7cd]">모집 마감</span>
-                    <h1 class="mt-4 text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl break-keep">2026년 7월 기본과정은 개강했습니다</h1>
+                    <h1 class="mt-4 text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl break-keep">2026년 10월 기본과정 모집이 마감되었습니다</h1>
                     <p class="mt-4 text-sm leading-relaxed text-er-primary break-keep">
-                        A반·B반 총 <strong>13명</strong>이 함께합니다.<br>
-                        A반 <strong>7월 7일(월)</strong> · B반 <strong>7월 10일(목)</strong> 개강
-                    </p>
-                    <p class="mt-3 text-sm leading-relaxed text-gray-600 break-keep">
-                        이번 기수 모집은 마감되었습니다. 과정 소개와 다음 기수 소식은 아래에서 확인하실 수 있습니다.
+                        이번 기수 정원(선착순 8명)이 마감되었습니다.<br>
+                        과정 소개와 다음 기수 소식은 아래에서 확인하실 수 있습니다.
                     </p>
                     <div class="mt-8 grid gap-3">
                         <a href="/basic-course.html" class="w-full rounded-lg bg-er-dark py-3.5 text-sm font-bold text-white transition-colors hover:bg-gray-800">과정 안내 보기</a>
@@ -327,6 +345,11 @@ function renderJulyBasicCourseClosed() {
             </div>
         </div>
     `;
+}
+
+/** @deprecated 호환용 — renderBasicCourseClosed 사용 */
+function renderJulyBasicCourseClosed() {
+    return renderBasicCourseClosed();
 }
 
 function renderApply(payload = null) {
@@ -361,7 +384,16 @@ function renderApply(payload = null) {
         enneagram_basic_july: {
             track: 'paid',
             title: '에니어그램 기본과정 8주 신청',
-            desc: '7-8월 온라인 기본과정 신청을 남겨 주세요.',
+            desc: '10월 첫주 개강 · 선착순 8명 · 온라인 기본과정 신청을 남겨 주세요.',
+            bannerTitle: '에니어그램 기본과정 8주',
+            bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
+            category: '에니어그램 기본과정 8주 ($300)',
+            message: '에니어그램 기본과정 8주 신청합니다.'
+        },
+        enneagram_basic_october: {
+            track: 'paid',
+            title: '에니어그램 기본과정 8주 신청',
+            desc: '10월 첫주 개강 · 선착순 8명 · 온라인 기본과정 신청을 남겨 주세요.',
             bannerTitle: '에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
             category: '에니어그램 기본과정 8주 ($300)',

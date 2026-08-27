@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
 
     if (event === 'registration') {
       const pricing = basicCourseJulyPricing();
-      subject = '[ER] 7월 기본과정 등록·결제 안내';
+      subject = '[ER] 10월 기본과정 등록·결제 안내';
       html = basicCourseRegistrationHtml({
         name: app.name,
         pricing: {

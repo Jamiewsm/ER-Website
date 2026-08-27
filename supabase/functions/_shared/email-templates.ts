@@ -57,7 +57,7 @@ export function basicCourseApplicantReceivedHtml(input: {
       <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
       <p><strong>${escapeHtml(input.programLabel)}</strong> 신청이 정상적으로 접수되었습니다.</p>
       <p>담당자 확인 후 <strong>24시간 이내</strong> 등록·결제 안내 메일(USD, PayPal·Zelle 등)을 보내드립니다.</p>
-      <p style="font-size:14px;color:#666">자리 확정은 <strong>입금 확인 순</strong>입니다 (정원 10명).</p>
+      <p style="font-size:14px;color:#666">자리 확정은 <strong>입금 확인 순</strong>입니다 (정원 8명).</p>
       <p>급한 문의는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 연락 주세요.</p>
       <p style="color:#666;font-size:13px">Enneagram for Restoration</p>
     `,
@@ -72,17 +72,17 @@ export function basicCourseRegistrationHtml(input: {
   const p = input.pricing;
   const methods = buildManualPaymentMethodsHtml(input.payment);
   return wrapEmail(
-    '7월 기본과정 등록·결제 안내',
+    '10월 기본과정 등록·결제 안내',
     `
       <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
-      <p><strong>ER 성경적 에니어그램 기본과정 8주 (2026년 7월 기수)</strong> 신청을 환영합니다.</p>
+      <p><strong>ER 성경적 에니어그램 기본과정 8주 (2026년 10월 기수)</strong> 신청을 환영합니다.</p>
       <h3 style="margin:24px 0 8px;font-size:16px">결제 금액 (USD)</h3>
       <p style="font-size:18px;margin:8px 0"><strong>$${p.amountUsd}</strong>${p.isEarlyBird ? ` <span style="font-size:14px;color:#666">(얼리버드 · ${escapeHtml(p.earlyBirdDeadline)}까지)</span>` : ''}</p>
       <ul style="font-size:14px;line-height:1.6">
         <li>정가: $${p.regularPriceUsd}</li>
         <li>얼리버드: $${p.earlyBirdPriceUsd} (${escapeHtml(p.earlyBirdDeadline)}까지 입금 완료 시)</li>
       </ul>
-      <p><strong>자리 확정은 입금 확인 순</strong>입니다 (정원 10명).</p>
+      <p><strong>자리 확정은 입금 확인 순</strong>입니다 (정원 8명).</p>
       <h3 style="margin:24px 0 8px;font-size:16px">결제 방법</h3>
       <ul style="font-size:14px;line-height:1.7">${methods}</ul>
       <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·메시지에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 를 적어 주시면 확인이 빠릅니다.</p>

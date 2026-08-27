@@ -36,7 +36,7 @@ async function coachFunctionFetch(path, body) {
     let message = text || 'HTTP ' + response.status;
     try {
       const parsed = JSON.parse(text);
-      if (parsed.error === 'seats_full') message = '정원(10명)이 가득 찼습니다. 신청자는 대기 목록으로 이동했습니다.';
+      if (parsed.error === 'seats_full') message = '정원(8명)이 가득 찼습니다. 신청자는 대기 목록으로 이동했습니다.';
       else if (parsed.error) message = parsed.error;
     } catch (_) {}
     throw new Error(message);
@@ -66,7 +66,7 @@ async function loadProgramApplications() {
   if (!listEl) return;
 
   if (!state.programApplications.length) {
-    listEl.innerHTML = '<p class="text-sm text-gray-500">7월 기본과정 신청이 아직 없습니다.</p>';
+    listEl.innerHTML = '<p class="text-sm text-gray-500">10월 기본과정 신청이 아직 없습니다.</p>';
     return;
   }
 
