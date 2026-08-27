@@ -1,4 +1,4 @@
-// 홈 히어로 — 7월 에니어그램 기본과정 8주 모집 배너
+// 홈 히어로 — 10월 에니어그램 기본과정 8주 모집 배너
 (function () {
   var BANNER_ID = 'basic-course-season-banner';
   var STORAGE_KEY = 'er_basic_course_banner_dismissed_date';
@@ -8,10 +8,13 @@
   }
 
   function isRecruitmentOpen() {
+    if (window.ERProgramCatalog && typeof window.ERProgramCatalog.isBasicCourseRecruitmentOpen === 'function') {
+      return window.ERProgramCatalog.isBasicCourseRecruitmentOpen();
+    }
     if (window.ERProgramCatalog && typeof window.ERProgramCatalog.isJulyBasicRecruitmentOpen === 'function') {
       return window.ERProgramCatalog.isJulyBasicRecruitmentOpen();
     }
-    return Date.now() <= Date.parse('2026-07-05T23:59:59-07:00');
+    return Date.now() <= Date.parse('2026-09-28T23:59:59-07:00');
   }
 
   function isBannerDismissedToday() {
@@ -47,7 +50,7 @@
           </button>
           <header class="psb-head">
             <span class="psb-badge">모집중</span>
-            <span class="psb-eyebrow">2026년 7월 개강</span>
+            <span class="psb-eyebrow">2026년 10월 첫주 개강</span>
           </header>
           <h2 id="bcb-title" class="psb-title">에니어그램 기본과정 8주</h2>
           <p class="psb-sub">관계 속에서 드러나는 나를 이해하는 시간</p>
@@ -55,10 +58,10 @@
           <ul class="psb-meta" aria-label="기본과정 안내">
             <li>8주 · 주 1회</li>
             <li>온라인 Zoom</li>
-            <li>정원 10명</li>
+            <li>선착순 8명</li>
             <li>얼리버드 $270</li>
           </ul>
-          <p class="psb-note">수강료 USD · PayPal·Zelle 송금. 승인 후 결제 안내 메일 발송. 6/24까지 얼리버드, 입금 확인 순 확정.</p>
+          <p class="psb-note">수강료 USD · PayPal·Zelle 송금. 승인 후 결제 안내 메일 발송. 9/17까지 얼리버드, 입금 확인 순 확정. 요일·시간은 참여자와 조율합니다.</p>
           <div class="psb-actions">
             <button type="button" class="psb-btn psb-btn--primary" onclick="basicCourseBannerGoDetail()">과정 안내 보기</button>
             <button type="button" class="psb-btn psb-btn--secondary" onclick="basicCourseBannerGoApply()">바로 신청하기</button>

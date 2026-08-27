@@ -87,11 +87,13 @@ test('July Enneagram basic course link renders a dedicated direct application fo
   assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_july:instagram', \{ focus: 'enneagram_basic_july' \}\)/);
   assert.match(html, /name="enneagram_experience"/);
   assert.match(html, /name="referral_source"/);
+  assert.match(html, /name="preferred_time"[^>]*required/);
   assert.match(html, /name="covenant_agree"[^>]*required/);
+  assert.match(html, /10월 첫주 개강|선착순 8명|9\/17까지 얼리버드/);
   assert.doesNotMatch(html, /희망하는 세션|<select name="category"/);
 });
 
-test('July Enneagram basic course apply route shows closed notice after recruitment ends', () => {
+test('October Enneagram basic course apply route shows closed notice after recruitment ends', () => {
   const renderer = loadApplyRenderer({ recruitmentOpen: false });
   const html = renderer.renderApply({
     track: 'paid',
@@ -100,9 +102,8 @@ test('July Enneagram basic course apply route shows closed notice after recruitm
   });
 
   assert.match(html, /모집 마감/);
-  assert.match(html, /A반.*7월 7일/);
-  assert.match(html, /B반.*7월 10일/);
-  assert.match(html, /13명/);
+  assert.match(html, /10월 기본과정 모집이 마감되었습니다/);
+  assert.match(html, /선착순 8명/);
   assert.doesNotMatch(html, /에니어그램 기본과정 신청하기/);
 });
 

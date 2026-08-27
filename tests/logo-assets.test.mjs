@@ -73,7 +73,7 @@ test('home restoration tool section does not render a logo image', () => {
 test('home hero includes a compact mobile basic-course status card', () => {
   const homeSection = readFileSync(new URL('js/sections/home.js', root), 'utf8');
 
-  assert.match(homeSection, /showJulyBasicRecruitment/);
-  assert.match(homeSection, /sm:hidden[\s\S]*7월 기본과정/);
-  assert.match(homeSection, /기본과정 진행 중|7월 기본과정 개강/);
+  assert.match(homeSection, /showBasicCourseRecruitment/);
+  assert.match(homeSection, /sm:hidden[\s\S]*10월 기본과정/);
+  assert.match(homeSection, /10월 기본과정 모집 중|기본과정 다음 기수/);
 });

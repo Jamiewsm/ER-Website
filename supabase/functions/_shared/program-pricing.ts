@@ -1,10 +1,11 @@
 // 프로그램별 USD 수강료·얼리버드 규칙
+// 내부 program_key는 DB 호환을 위해 enneagram_basic_july 유지 (10월 기수 카피·정원·얼리버드만 갱신)
 
 export const BASIC_COURSE_JULY_KEY = 'enneagram_basic_july';
-export const BASIC_COURSE_JULY_MAX_SEATS = 10;
+export const BASIC_COURSE_JULY_MAX_SEATS = 8;
 
-/** 2026-06-24 23:59:59 America/Los_Angeles (PDT, UTC-7) */
-export const BASIC_COURSE_JULY_EARLY_BIRD_END_MS = Date.parse('2026-06-25T06:59:59.000Z');
+/** 2026-09-17 23:59:59 America/Los_Angeles (PDT, UTC-7) */
+export const BASIC_COURSE_JULY_EARLY_BIRD_END_MS = Date.parse('2026-09-18T06:59:59.000Z');
 
 export type BasicCourseJulyPricing = {
   regularPriceUsd: number;
@@ -21,14 +22,14 @@ export function basicCourseJulyPricing(nowMs = Date.now()): BasicCourseJulyPrici
   return {
     regularPriceUsd,
     earlyBirdPriceUsd,
-    earlyBirdDeadlineLabel: '2026년 6월 24일(수)',
+    earlyBirdDeadlineLabel: '2026년 9월 17일(수)',
     amountUsd: isEarlyBird ? earlyBirdPriceUsd : regularPriceUsd,
     isEarlyBird,
   };
 }
 
 export function basicCourseJulyProductName(): string {
-  return 'ER 성경적 에니어그램 기본과정 8주 (2026년 7월)';
+  return 'ER 성경적 에니어그램 기본과정 8주 (2026년 10월)';
 }
 
 export function siteBaseUrl(): string {
@@ -54,6 +55,6 @@ export function basicCourseManualPaymentFromEnv(name: string): BasicCourseManual
     zelleEmail: (Deno.env.get('BASIC_COURSE_ZELLE_EMAIL') || BASIC_COURSE_ZELLE_EMAIL_DEFAULT).trim(),
     zellePhone: (Deno.env.get('BASIC_COURSE_ZELLE_PHONE') || '').trim(),
     bankInstructions: (Deno.env.get('BASIC_COURSE_BANK_INSTRUCTIONS') || '').trim(),
-    memoHint: `ER Basic July - ${safeName}`,
+    memoHint: `ER Basic October - ${safeName}`,
   };
 }

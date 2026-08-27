@@ -41,7 +41,7 @@ function parseApplySource(source: string): string {
 }
 
 function programLabel(programKey: string, category: string): string {
-  if (programKey === 'enneagram_basic_july') return 'ER 성경적 에니어그램 기본과정 8주 (2026년 7월)';
+  if (programKey === 'enneagram_basic_july') return 'ER 성경적 에니어그램 기본과정 8주 (2026년 10월)';
   if (programKey === 'parenting_workshop') return 'Enneagram for Parenting 4주 워크샵';
   return category || 'ER 프로그램';
 }
