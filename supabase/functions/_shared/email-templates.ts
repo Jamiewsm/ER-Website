@@ -5,10 +5,13 @@ export type BasicCoursePricingInfo = {
   earlyBirdDeadline: string;
   regularPriceUsd: number;
   earlyBirdPriceUsd: number;
+  regularPriceKrw: number;
+  earlyBirdPriceKrw: number;
 };
 
 export type BasicCourseCheckoutPricingInfo = BasicCoursePricingInfo & {
   amountUsd: number;
+  amountKrw: number;
   isEarlyBird: boolean;
 };
 
@@ -20,10 +23,18 @@ export function adminApplicationNoticeHtml(input: {
   message: string;
   source: string;
   applicationId: string;
+  cohortKey?: string;
+  paymentRegion?: string;
+  paymentPreference?: string;
+  installmentPreference?: string;
 }): string {
   const lines = [
     `<p><strong>신규 신청</strong> (${escapeHtml(input.programKey)})</p>`,
+    input.cohortKey ? `<p>기수: ${escapeHtml(input.cohortKey)}</p>` : '',
     `<p>이름: ${escapeHtml(input.name)}<br>연락처: ${escapeHtml(input.contact)}<br>분야: ${escapeHtml(input.category)}</p>`,
+    input.paymentRegion || input.paymentPreference || input.installmentPreference
+      ? `<p>결제 선호: ${escapeHtml([input.paymentRegion, input.paymentPreference, input.installmentPreference].filter(Boolean).join(' · '))}</p>`
+      : '',
     `<p>유입: ${escapeHtml(input.source || '-')}</p>`,
     `<pre style="white-space:pre-wrap;font-family:inherit">${escapeHtml(input.message || '(없음)')}</pre>`,
     `<p style="color:#666;font-size:12px">ID: ${escapeHtml(input.applicationId)}</p>`,
@@ -50,14 +61,21 @@ export function applicantReceivedHtml(input: {
 export function basicCourseApplicantReceivedHtml(input: {
   name: string;
   programLabel: string;
+  paymentRegion?: string;
+  pricing: BasicCoursePricingInfo;
 }): string {
+  const isKorea = input.paymentRegion === 'KR';
+  const priceCopy = isKorea
+    ? `한국 결제 정가 <strong>₩${formatKrw(input.pricing.regularPriceKrw)}</strong> · 얼리버드 <strong>₩${formatKrw(input.pricing.earlyBirdPriceKrw)}</strong>`
+    : `해외 결제 정가 <strong>$${input.pricing.regularPriceUsd}</strong> · 얼리버드 <strong>$${input.pricing.earlyBirdPriceUsd}</strong>`;
   return wrapEmail(
     '신청이 접수되었습니다',
     `
       <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
       <p><strong>${escapeHtml(input.programLabel)}</strong> 신청이 정상적으로 접수되었습니다.</p>
-      <p>담당자 확인 후 <strong>24시간 이내</strong> 등록·결제 안내 메일(USD, PayPal·Zelle 등)을 보내드립니다.</p>
-      <p style="font-size:14px;color:#666">자리 확정은 <strong>입금 확인 순</strong>입니다 (정원 8명).</p>
+      <p>${priceCopy}<br><span style="font-size:13px;color:#666">얼리버드: ${escapeHtml(input.pricing.earlyBirdDeadline)}까지 결제 완료</span></p>
+      <p>담당자 확인 후 <strong>24시간 이내</strong> 신청 지역과 희망 수단에 맞는 등록·결제 안내를 보내드립니다.</p>
+      <p style="font-size:14px;color:#666">자리 확정은 <strong>결제 확인 순</strong>입니다 (정원 8명).</p>
       <p>급한 문의는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 연락 주세요.</p>
       <p style="color:#666;font-size:13px">Enneagram for Restoration</p>
     `,
@@ -68,25 +86,42 @@ export function basicCourseRegistrationHtml(input: {
   name: string;
   pricing: BasicCourseCheckoutPricingInfo;
   payment: BasicCourseManualPaymentInfo;
+  paymentRegion: 'KR' | 'OVERSEAS';
+  paymentPreference?: string;
+  installmentPreference?: string;
 }): string {
   const p = input.pricing;
-  const methods = buildManualPaymentMethodsHtml(input.payment);
+  const isKorea = input.paymentRegion === 'KR';
+  const amount = isKorea ? `₩${formatKrw(p.amountKrw)}` : `$${p.amountUsd}`;
+  const regularPrice = isKorea ? `₩${formatKrw(p.regularPriceKrw)}` : `$${p.regularPriceUsd}`;
+  const earlyBirdPrice = isKorea ? `₩${formatKrw(p.earlyBirdPriceKrw)}` : `$${p.earlyBirdPriceUsd}`;
+  const methods = isKorea
+    ? buildKoreanPaymentMethodsHtml(input.payment)
+    : buildOverseasPaymentMethodsHtml(input.payment);
+  const checkoutButton = isKorea && input.payment.krCheckoutUrl
+    ? `<p style="margin:24px 0"><a href="${escapeHtml(input.payment.krCheckoutUrl)}" style="display:inline-block;padding:12px 20px;background:#657453;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold">웹사이트에서 원화 결제하기</a></p>`
+    : '';
+  const preferenceCopy = paymentPreferenceLabel(input.paymentPreference);
+  const installmentCopy = installmentPreferenceCopy(input.installmentPreference, isKorea);
   return wrapEmail(
     '10월 기본과정 등록·결제 안내',
     `
       <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
       <p><strong>ER 성경적 에니어그램 기본과정 8주 (2026년 10월 기수)</strong> 신청을 환영합니다.</p>
-      <h3 style="margin:24px 0 8px;font-size:16px">결제 금액 (USD)</h3>
-      <p style="font-size:18px;margin:8px 0"><strong>$${p.amountUsd}</strong>${p.isEarlyBird ? ` <span style="font-size:14px;color:#666">(얼리버드 · ${escapeHtml(p.earlyBirdDeadline)}까지)</span>` : ''}</p>
+      <h3 style="margin:24px 0 8px;font-size:16px">결제 금액 (${isKorea ? 'KRW' : 'USD'})</h3>
+      <p style="font-size:18px;margin:8px 0"><strong>${amount}</strong>${p.isEarlyBird ? ` <span style="font-size:14px;color:#666">(얼리버드 · ${escapeHtml(p.earlyBirdDeadline)}까지)</span>` : ''}</p>
       <ul style="font-size:14px;line-height:1.6">
-        <li>정가: $${p.regularPriceUsd}</li>
-        <li>얼리버드: $${p.earlyBirdPriceUsd} (${escapeHtml(p.earlyBirdDeadline)}까지 입금 완료 시)</li>
+        <li>정가: ${regularPrice}</li>
+        <li>얼리버드: ${earlyBirdPrice} (${escapeHtml(p.earlyBirdDeadline)}까지 결제 완료 시)</li>
+        ${preferenceCopy ? `<li>신청 시 선택한 희망 수단: ${escapeHtml(preferenceCopy)}</li>` : ''}
       </ul>
-      <p><strong>자리 확정은 입금 확인 순</strong>입니다 (정원 8명).</p>
+      <p><strong>자리 확정은 결제 확인 순</strong>입니다 (정원 8명).</p>
       <h3 style="margin:24px 0 8px;font-size:16px">결제 방법</h3>
       <ul style="font-size:14px;line-height:1.7">${methods}</ul>
+      ${checkoutButton}
       <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·메시지에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 를 적어 주시면 확인이 빠릅니다.</p>
-      <p style="font-size:14px;margin-top:16px">입금 후 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 송금 완료를 알려 주시거나, PayPal·Zelle 알림을 기다려 주세요.</p>
+      ${installmentCopy ? `<p style="font-size:14px;margin-top:16px">${escapeHtml(installmentCopy)}</p>` : ''}
+      <p style="font-size:14px;margin-top:16px">결제 후 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 완료를 알려 주시거나 결제 알림을 기다려 주세요.</p>
       <h3 style="margin:24px 0 8px;font-size:16px">환불 규정 요약</h3>
       <ul style="font-size:14px;line-height:1.6">
         <li>개강 전 — 전액 환불</li>
@@ -100,11 +135,11 @@ export function basicCourseRegistrationHtml(input: {
   );
 }
 
-function buildManualPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): string {
+function buildOverseasPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): string {
   const items: string[] = [];
   if (payment.paypalEmail) {
     items.push(
-      `<li><strong>PayPal</strong> — <code>${escapeHtml(payment.paypalEmail)}</code> 로 USD 송금 (가능하면 Friends &amp; Family)</li>`,
+      `<li><strong>PayPal</strong> — <code>${escapeHtml(payment.paypalEmail)}</code> 로 USD 결제</li>`,
     );
   }
   if (payment.zelleEmail) {
@@ -113,14 +148,26 @@ function buildManualPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): s
   if (payment.zellePhone) {
     items.push(`<li><strong>Zelle</strong> — 전화번호 <code>${escapeHtml(payment.zellePhone)}</code></li>`);
   }
-  if (payment.bankInstructions) {
-    const bankHtml = escapeHtml(payment.bankInstructions).replace(/\n/g, '<br>');
-    items.push(`<li><strong>은행 송금</strong><br>${bankHtml}</li>`);
-  }
   if (!items.length) {
     items.push(
-      '<li>PayPal·Zelle·은행 송금 안내는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>',
+      '<li>PayPal·Zelle 안내는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>',
     );
+  }
+  return items.join('\n');
+}
+
+function buildKoreanPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): string {
+  const items: string[] = [];
+  if (payment.krCheckoutUrl) {
+    items.push('<li><strong>국내 온라인 결제</strong> — 신용카드·카카오페이·네이버페이·실시간 계좌이체 중 결제창에 활성화된 수단</li>');
+  }
+  if (payment.krBankInstructions) {
+    const bankHtml = escapeHtml(payment.krBankInstructions).replace(/\n/g, '<br>');
+    items.push(`<li><strong>원화 계좌이체</strong><br>${bankHtml}</li>`);
+  }
+  if (!items.length) {
+    items.push('<li><strong>원화 계좌이체</strong> 계좌 정보는 이 메일에 회신하거나 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>');
+    items.push('<li>국내 카드·카카오페이·네이버페이는 가맹점 오픈 후 별도 안내됩니다.</li>');
   }
   return items.join('\n');
 }
@@ -141,22 +188,48 @@ export function basicCoursePreSurveyHtml(input: {
   );
 }
 
-export function basicCourseGraduationUpsellHtml(input: {
+export function basicCourseGraduationHtml(input: {
   name: string;
-  expertCohortLabel: string;
-  applyUrl: string;
   testimonialUrl: string;
 }): string {
   return wrapEmail(
     '기본과정 수료를 축하드립니다',
     `
       <p>${escapeHtml(input.name)}님, 8주 기본과정을 마치신 것을 진심으로 축하합니다.</p>
-      <p>이제 에니어그램을 <strong>나와 타인을 돕는 도구</strong>로 더 깊이 쓰고 싶다면, 다음 단계로 <strong>${escapeHtml(input.expertCohortLabel)}</strong> 을 안내드립니다.</p>
-      <p style="margin:24px 0"><a href="${escapeHtml(input.applyUrl)}" style="display:inline-block;padding:12px 20px;background:#B89170;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold">전문가 양성반 안내·신청</a></p>
+      <p><strong>ER 전문가 과정</strong>은 별도의 다음 기수 이름이 아니라, 지금 수료하신 에니어그램 기본과정에 팔로우업 스터디와 1년 코칭스쿨이 이어지는 전체 훈련 여정을 뜻합니다.</p>
+      <p>스터디와 코칭스쿨 참여 안내는 수료자의 준비 단계와 운영 일정에 맞춰 별도로 전해 드립니다.</p>
       <p>수료 경험을 나눠 주시면 다음 기수 분들에게 큰 도움이 됩니다.<br>
       <a href="${escapeHtml(input.testimonialUrl)}">수료 후기 남기기</a></p>
     `,
   );
+}
+
+function paymentPreferenceLabel(value?: string): string {
+  const labels: Record<string, string> = {
+    kr_bank: '한국 원화 계좌이체',
+    kr_card: '국내 신용카드',
+    kakao_pay: '카카오페이',
+    naver_pay: '네이버페이',
+    paypal: 'PayPal',
+    zelle: 'Zelle',
+  };
+  return labels[String(value || '')] || '';
+}
+
+function installmentPreferenceCopy(value: string | undefined, isKorea: boolean): string {
+  if (value === 'card_installment') {
+    return isKorea
+      ? '카드사 할부는 국내 온라인 카드 결제가 열린 뒤 카드사 정책에 따라 결제창에서 선택할 수 있습니다.'
+      : '해외 결제의 할부 가능 여부는 사용하시는 결제수단 또는 카드사에 확인해 주세요.';
+  }
+  if (value === 'split_consult') {
+    return 'ER 자체 2회 분납을 요청하셨습니다. 승인 여부와 납부 일정을 담당자가 별도로 회신드립니다.';
+  }
+  return '';
+}
+
+function formatKrw(value: number): string {
+  return Math.round(Number(value) || 0).toLocaleString('ko-KR');
 }
 
 function wrapEmail(title: string, bodyHtml: string): string {

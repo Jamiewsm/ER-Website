@@ -16,6 +16,7 @@ SPECS = {
             "submit-application/index.ts",
             "_shared/cors.ts",
             "_shared/email-templates.ts",
+            "_shared/program-pricing.ts",
             "_shared/resend.ts",
             "_shared/turnstile.ts",
         ],
