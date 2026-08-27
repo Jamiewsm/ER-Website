@@ -50,10 +50,21 @@ async function loadProgramApplications() {
   const listEl = document.getElementById('coach-admin-applications-list');
   if (listEl) listEl.innerHTML = renderListSkeleton(4);
 
-  const { data, error } = await supabaseClient.rpc('admin_list_program_applications', {
+  let { data, error } = await supabaseClient.rpc('admin_list_program_applications_by_cohort', {
     p_program_key: 'enneagram_basic_july',
+    p_cohort_key: 'enneagram_basic_2026_10',
     p_limit: 100
   });
+
+  // Supabase migration이 site 배포보다 늦게 적용되는 동안에도 목록은 계속 열린다.
+  if (error) {
+    const legacyResult = await supabaseClient.rpc('admin_list_program_applications', {
+      p_program_key: 'enneagram_basic_july',
+      p_limit: 100
+    });
+    data = (legacyResult.data || []).filter((row) => String(row.created_at || '') >= '2026-08-27');
+    error = legacyResult.error;
+  }
 
   if (error) {
     if (listEl) {
@@ -77,11 +88,17 @@ async function loadProgramApplications() {
       return `<option value="${key}" ${selected}>${PROGRAM_APPLICATION_STATUS_LABELS[key]}</option>`;
     }).join('');
 
-    const paymentMeta = row.payment_amount_usd
-      ? `<p class="text-xs text-gray-500 mt-1">안내 금액: $${escapeHtml(String(row.payment_amount_usd))}${row.payment_method ? ' · ' + escapeHtml(row.payment_method) : ''}</p>`
+    const paymentAmount = row.payment_amount_krw
+      ? `₩${Number(row.payment_amount_krw).toLocaleString('ko-KR')}`
+      : (row.payment_amount_usd ? `$${escapeHtml(String(row.payment_amount_usd))}` : '');
+    const paymentMeta = paymentAmount
+      ? `<p class="text-xs text-gray-500 mt-1">안내 금액: ${paymentAmount}${row.payment_method ? ' · ' + escapeHtml(row.payment_method) : ''}</p>`
+      : '';
+    const paymentPreferenceMeta = row.payment_region || row.payment_preference || row.installment_preference
+      ? `<p class="text-xs text-gray-500 mt-1">결제 선호: ${escapeHtml([row.payment_region, row.payment_preference, row.installment_preference].filter(Boolean).join(' · '))}</p>`
       : '';
     const pendingHint = status === 'payment_pending'
-      ? '<p class="text-xs text-er-primary mt-1">결제 안내 메일 발송됨 · PayPal·Zelle 입금 대기</p>'
+      ? '<p class="text-xs text-er-primary mt-1">결제 안내 메일 발송됨 · 결제 확인 대기</p>'
       : '';
 
     const canSendRegistration = status === 'received' || status === 'contacted' || status === 'payment_pending';
@@ -98,6 +115,7 @@ async function loadProgramApplications() {
             <p class="text-xs text-gray-500 mt-1">유입: ${escapeHtml(row.apply_source || row.source || '-')}</p>
             <p class="text-xs text-gray-400 mt-1">접수: ${formatDateTime(row.created_at)}</p>
             ${paymentMeta}
+            ${paymentPreferenceMeta}
             ${pendingHint}
           </div>
           <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-er-base text-er-dark border border-er-accentLight">
@@ -111,7 +129,7 @@ async function loadProgramApplications() {
           </select>
           ${registrationBtn}
           <button type="button" onclick="sendProgramApplicationEmail('${row.id}', 'pre_survey')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">사전 성찰 메일</button>
-          <button type="button" onclick="sendProgramApplicationEmail('${row.id}', 'graduation')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-500 hover:bg-gray-50">수료·양성반 안내</button>
+          <button type="button" onclick="sendProgramApplicationEmail('${row.id}', 'graduation')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-500 hover:bg-gray-50">수료 안내</button>
         </div>
       </div>
     `;
@@ -150,7 +168,7 @@ async function updateProgramApplicationStatus(applicationId, status) {
 async function sendRegistrationPaymentEmail(applicationId) {
   if (!ensureCoachAccess() || !canManageCoachAdmin() || !supabaseClient) return;
 
-  const proceed = confirm('PayPal·Zelle 등 결제 안내 메일을 발송합니다. 진행할까요?');
+  const proceed = confirm('신청자의 결제 지역·희망 수단에 맞춘 결제 안내 메일을 발송합니다. 진행할까요?');
   if (!proceed) return;
 
   try {

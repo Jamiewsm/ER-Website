@@ -5,10 +5,10 @@ function renderCoachTraining() {
             <section class="bg-er-dark text-white py-14 md:py-20 px-6 relative overflow-hidden rounded-b-[3rem]">
                 <div class="absolute top-[-20%] right-[-10%] w-[420px] h-[420px] bg-er-green/20 rounded-full blur-[110px] pointer-events-none"></div>
                 <div class="max-w-6xl mx-auto relative z-10 text-center">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-greenTint mb-5">코치양성</span>
-                    <h2 class="font-display text-3xl md:text-5xl font-extrabold tracking-[-0.03em] break-keep">전문가 양성반</h2>
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-greenTint mb-5">전체 훈련 여정</span>
+                    <h2 class="font-display text-3xl md:text-5xl font-extrabold tracking-[-0.03em] break-keep">ER 전문가 과정</h2>
                     <p class="mt-4 text-sm md:text-base text-white/80 max-w-3xl mx-auto break-keep leading-relaxed">
-                        8주 전문가 양성반이 시작점입니다. 수료 후 스터디에 참여할 수 있고, 스터디 2개월 이상 참여 시 1년 코칭스쿨 지원 자격이 열립니다.
+                        전문가 과정은 별도의 한 기수나 8주 과정 이름이 아닙니다. 에니어그램 기본과정, 팔로우업 스터디, 1년 코칭스쿨까지 이어지는 전체 훈련 여정을 뜻합니다.
                     </p>
                 </div>
             </section>
@@ -19,9 +19,9 @@ function renderCoachTraining() {
                     <h3 class="text-lg font-bold text-er-inkSoft mb-4">과정 흐름</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         ${[
-                            ['1단계', '8주 전문가 양성반', '에니어그램 핵심 이론과 ER 관점을 배우고, 실제 적용의 기초를 세웁니다.'],
-                            ['2단계', '팔로우업 스터디', '양성반 수료자는 자유롭게 스터디에 참여할 수 있습니다. (격주 운영)'],
-                            ['3단계', '1년 코칭스쿨', '양성반 수료 + 스터디 2개월 이상 참여 시 지원 가능']
+                            ['1단계', '에니어그램 기본과정 8주', '에니어그램 핵심 이론과 ER 관점을 배우고, 실제 적용의 기초를 세웁니다.'],
+                            ['2단계', '팔로우업 스터디', '기본과정 수료자는 자유롭게 스터디에 참여할 수 있습니다. (격주 운영)'],
+                            ['3단계', '1년 코칭스쿨', '기본과정 수료 + 스터디 2개월 이상 참여 시 지원 가능']
                         ].map(([step, title, body]) => `
                             <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-5">
                                 <p class="text-[10px] font-bold tracking-wider text-er-green uppercase">${step}</p>
@@ -36,7 +36,7 @@ function renderCoachTraining() {
                     ${[
                         {
                             b: '핵심 코스',
-                            t: '8주 전문가 양성반',
+                            t: '에니어그램 기본과정 8주',
                             d: [
                                 '에니어그램 핵심 이론 + ER 핵심 관점 정리',
                                 '강의, 과제, 나눔을 통한 실제 적용 훈련',
@@ -49,7 +49,7 @@ function renderCoachTraining() {
                             b: '팔로우업',
                             t: '스터디 모임',
                             d: [
-                                '양성반 수료자 대상 자유 참여',
+                                '기본과정 수료자 대상 자유 참여',
                                 '격주 스터디 + 요약/정리 과제',
                                 '최소 2개월 이상 참여 시 코칭스쿨 지원 가능'
                             ],
@@ -79,10 +79,7 @@ function renderCoachTraining() {
                             <ul class="text-er-body text-xs leading-relaxed mb-4 flex-grow break-keep space-y-2">
                                 ${c.d.map((line) => `<li class="flex items-start gap-2"><span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-er-green"></span><span>${line}</span></li>`).join('')}
                             </ul>
-                            <p class="text-[11px] text-er-muted mb-5 break-keep"><span class="font-bold text-er-inkSoft">예상 결과:</span> ${c.o}</p>
-                            <button onclick="renderSection('apply', { track: 'paid' })" class="w-full py-2.5 rounded-xl border border-er-sand text-er-body font-bold text-xs hover:bg-er-green hover:text-white hover:border-transparent transition-all">
-                                신청/문의
-                            </button>
+                            <p class="text-[11px] text-er-muted break-keep"><span class="font-bold text-er-inkSoft">예상 결과:</span> ${c.o}</p>
                         </div>
                     `).join('')}
                 </div>
@@ -116,10 +113,11 @@ function renderCoachTraining() {
                         </div>
                     </div>
                     <p class="mt-4 text-xs text-er-muted break-keep">연말 리트릿에서 한 해를 정리하고, 다음 해 개인 훈련 목표를 수립합니다.</p>
-                    <div class="mt-6">
-                        <button onclick="renderSection('apply', { track: 'paid' })" class="px-6 py-3 rounded-full bg-er-green text-white text-sm font-bold hover:bg-er-greenDark transition-all">
-                            코치양성 문의하기
-                        </button>
+                    <div class="mt-6 rounded-2xl bg-er-greenTint/50 border border-er-sand/60 p-5">
+                        <p class="text-sm text-er-body leading-relaxed break-keep">전문가 과정 전체를 별도 기수로 모집하거나 별도 신청을 받지 않습니다. 시작을 원하시면 현재 모집 중인 에니어그램 기본과정부터 확인해 주세요.</p>
+                        <a href="/basic-course.html" class="mt-4 inline-flex px-6 py-3 rounded-full bg-er-green text-white text-sm font-bold hover:bg-er-greenDark transition-all">
+                            현재 기본과정 안내 보기
+                        </a>
                     </div>
                 </div>
             </div>

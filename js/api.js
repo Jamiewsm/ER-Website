@@ -148,6 +148,7 @@ async function handleApplySubmit(event, source, successPayload) {
   var formData = new FormData(form);
   var name = (formData.get('name') || '').toString().trim();
   var contact = (formData.get('contact') || '').toString().trim();
+  var phone = (formData.get('phone') || '').toString().trim();
   var country = (formData.get('country') || '').toString().trim();
   var preferredTime = (formData.get('preferred_time') || '').toString().trim();
   var category = (formData.get('category') || '').toString().trim();
@@ -155,12 +156,19 @@ async function handleApplySubmit(event, source, successPayload) {
   var experience = (formData.get('enneagram_experience') || '').toString().trim();
   var referralSource = (formData.get('referral_source') || '').toString().trim();
   var referralName = (formData.get('referral_name') || '').toString().trim();
+  var paymentRegion = (formData.get('payment_region') || '').toString().trim();
+  var paymentPreference = (formData.get('payment_preference') || '').toString().trim();
+  var installmentPreference = (formData.get('installment_preference') || '').toString().trim();
   var covenantAgree = formData.get('covenant_agree') ? '동의함' : '';
   var extraLines = [];
+  if (phone) extraLines.push('전화번호: ' + phone);
   if (country) extraLines.push('거주 국가: ' + country);
   if (preferredTime) extraLines.push('희망 시간대: ' + preferredTime);
   if (experience) extraLines.push('에니어그램 경험: ' + experience);
   if (referralSource) extraLines.push('신청 경로: ' + referralSource + (referralName ? ' — ' + referralName : ''));
+  if (paymentRegion) extraLines.push('결제 지역: ' + paymentRegion);
+  if (paymentPreference) extraLines.push('희망 결제수단: ' + paymentPreference);
+  if (installmentPreference) extraLines.push('납부 방식: ' + installmentPreference);
   if (covenantAgree) extraLines.push('공동체 약속: ' + covenantAgree);
   var message = extraLines.length
     ? (extraLines.join('\n') + (rawMessage ? '\n\n' + rawMessage : ''))
@@ -198,9 +206,14 @@ async function handleApplySubmit(event, source, successPayload) {
   }
   setApplySubmitStatus('신청 내용을 접수하고 있습니다.', null);
 
-  var programKey = successPayload && successPayload.focus
+  var requestedProgramKey = successPayload && successPayload.focus
     ? String(successPayload.focus).trim()
     : '';
+  var isOctoberBasicCourse = requestedProgramKey === 'enneagram_basic_october'
+    || requestedProgramKey === 'basic_course_october';
+  // 기존 운영 Edge Function과의 무중단 호환을 위해 program_key는 유지하고,
+  // 실제 기수는 cohort_key로 별도 전송한다.
+  var programKey = isOctoberBasicCourse ? 'enneagram_basic_july' : requestedProgramKey;
   var payload = {
     name: name,
     contact: contact,
@@ -210,11 +223,15 @@ async function handleApplySubmit(event, source, successPayload) {
     user_id: (window.state && window.state.user) ? window.state.user.id : null,
     turnstile_token: turnstileToken,
     program_key: programKey || undefined,
+    cohort_key: isOctoberBasicCourse ? 'enneagram_basic_2026_10' : undefined,
     country: country || undefined,
     preferred_time: preferredTime || undefined,
     enneagram_experience: experience || undefined,
     referral_source: referralSource || undefined,
     referral_name: referralName || undefined,
+    payment_region: paymentRegion || undefined,
+    payment_preference: paymentPreference || undefined,
+    installment_preference: installmentPreference || undefined,
     covenant_agreed: Boolean(formData.get('covenant_agree'))
   };
   try {

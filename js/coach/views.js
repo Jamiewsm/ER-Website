@@ -64,7 +64,7 @@ function renderCoachAdmin() {
                 </div>
                 <div class="bg-white border border-gray-100 rounded-3xl p-6">
                     <h3 class="text-base font-bold text-er-dark mb-1">10월 기본과정 (모집 중)</h3>
-                    <p class="text-xs text-gray-500 mb-4">접수 → 결제 안내 메일(PayPal·Zelle) → 입금 확인 후 등록 확정 → 사전 성찰 메일.</p>
+                    <p class="text-xs text-gray-500 mb-4">접수 확인 자동메일 → 지역별 결제 안내 → 결제 확인 후 등록 확정 → 사전 성찰 메일.</p>
                     <div id="coach-admin-applications-list" class="space-y-3 text-sm text-gray-500">${renderListSkeleton(3)}</div>
                 </div>
                 <div class="bg-white border border-gray-100 rounded-3xl p-6">

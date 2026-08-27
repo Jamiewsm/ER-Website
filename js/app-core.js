@@ -43,15 +43,17 @@ function renderSection(sectionId, payload = null, options = {}) {
     const previousSection = state.currentSection;
     const activeFocus = String(payload?.focus || '').trim();
     const isParentingFocus = activeFocus === 'parenting_workshop' || activeFocus === 'parents_workshop';
-    const isJulyBasicFocus = (
+    const isBasicCourseFocus = (
         activeFocus === 'enneagram_basic_july'
         || activeFocus === 'basic_course_july'
+        || activeFocus === 'enneagram_basic_october'
+        || activeFocus === 'basic_course_october'
         || activeFocus === 'enneagram_basic'
     );
     const isFocusedApplyJourney = (
         sectionId === 'apply' || sectionId === 'thankyou'
     ) && (
-        isParentingFocus || isJulyBasicFocus
+        isParentingFocus || isBasicCourseFocus
     );
     const isParentingFocusedView = (
         sectionId === 'apply' || sectionId === 'thankyou'
@@ -125,7 +127,7 @@ function renderSection(sectionId, payload = null, options = {}) {
             programs: '서비스 안내',
             parenting: 'Parenting',
             coaches: '코치진 소개',
-            coach_training: '전문가 양성반',
+            coach_training: 'ER 전문가 과정',
             community: '회복 이야기',
             support: '사역지원',
             apply: '신청',

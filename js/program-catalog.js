@@ -7,7 +7,7 @@
     recovery_journey_8: { total: 480, sessions: 8, label: '$480' },
     couple_coaching: { total: 220, sessions: 1, label: '$220' },
     parenting_workshop: { total: 120, sessions: 4, label: '$120' },
-    basic_course: { total: 300, sessions: 8, label: '$300' },
+    basic_course: { total: 300, totalKrw: 420000, earlyBird: 270, earlyBirdKrw: 380000, sessions: 8, label: '$300 / ₩420,000', earlyBirdLabel: '$270 / ₩380,000' },
     result_consult: { total: 50, sessions: 1, label: '$50 / 1시간' }
   };
 
@@ -24,6 +24,7 @@
     '테스트 결과지 해석상담': 'result_consult',
     '결과지 해석상담': 'result_consult',
     '관계 패턴 코칭': 'coaching_single',
+    'ER 전문가 과정': 'coach_training',
     'ER 전문가 양성반': 'coach_training',
     '에니어그램 기본과정 8주': 'basic_course',
     '커리어/소명 코칭': 'identity_session',
@@ -162,9 +163,9 @@
       title: '에니어그램 기본과정 8주',
       shortTitle: '기본과정 8주',
       price: PRICING.basic_course,
-      category: '에니어그램 기본과정 8주 ($300)',
+      category: '에니어그램 기본과정 8주 ($300 / ₩420,000)',
       track: 'paid',
-      focus: 'enneagram_basic_july',
+      focus: 'enneagram_basic_october',
       featured: true,
       outcome: '10월 첫주 개강 · 선착순 8명 · 8주 온라인 + 1:1 멘토링 · 요일·시간은 참여자와 조율',
       reasonPrimary: '무료 진단 결과를 체계적인 8주 학습으로 확장하기 좋은 시점입니다.',
@@ -173,13 +174,13 @@
     },
     coach_training: {
       key: 'coach_training',
-      title: 'ER 전문가 양성반',
-      shortTitle: '전문가 양성반',
+      title: 'ER 전문가 과정',
+      shortTitle: '전문가 과정',
       navigateSection: 'coach_training',
-      outcome: '에니어그램 코칭·사역 현장에 적용하는 전문가 훈련 과정입니다.',
+      outcome: '기본과정 + 스터디 + 1년 코칭스쿨로 이어지는 전체 훈련 여정입니다.',
       reasonPrimary: '다른 사람의 회복 여정을 돕는 소명과 연결됩니다.',
       reasonSecondary: '리더십·사역·코칭 역량을 체계적으로 키우기 좋습니다.',
-      applyMessage: 'ER 전문가 양성반 안내를 받고 싶습니다.'
+      applyMessage: 'ER 전문가 과정 전체 여정을 확인하고 싶습니다.'
     }
   };
 
