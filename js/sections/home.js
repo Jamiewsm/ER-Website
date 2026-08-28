@@ -182,8 +182,8 @@ function renderHome() {
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
                                     <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">모집 중</span>
-                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">10월 기본과정 모집 중</p>
-                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">정원 8명 · 한국 ₩450,000 · 미국 $330</p>
+                                    <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">에니어그램 8주 기본과정 모집 중</p>
+                                    <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">정원 8명</p>
                                 </div>
                                 <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_october', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">신청</button>
                             </div>
@@ -235,8 +235,8 @@ function renderHome() {
                         ${showBasicCourseRecruitment ? `
                         <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
                             <p class="text-[11px] font-bold text-[#6c6b60]">2026년 10월 첫주 개강</p>
-                            <p class="mt-4 text-xl font-black text-er-ink">10월 기본과정 모집</p>
-                            <p class="mt-1 text-sm font-bold text-[#68785a]">정원 8명 · 한국 ₩450,000 · 미국 $330</p>
+                            <p class="mt-4 text-xl font-black text-er-ink">에니어그램 8주 기본과정 모집</p>
+                            <p class="mt-1 text-sm font-bold text-[#68785a]">정원 8명</p>
                             <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_october', apply_source: 'home_hero_offer' })" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">신청하기</button>
                         </div>
                         ` : `
