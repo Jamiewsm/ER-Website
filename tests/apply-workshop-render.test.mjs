@@ -83,19 +83,21 @@ test('October Enneagram basic course link renders a dedicated direct application
   assert.match(html, /관계 속에서 드러나는 나를 이해하는 시간/);
   assert.match(html, /October 2026/);
   assert.doesNotMatch(html, /enneagram-basic-july-2026\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$300 \/ ₩420,000\)"/);
+  assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$330 \/ ₩450,000~₩470,000\)"/);
   assert.match(html, /에니어그램 기본과정 신청하기/);
   assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_october:instagram', \{ focus: 'enneagram_basic_october' \}\)/);
   assert.match(html, /name="contact"[^>]*type="email"|type="email"[^>]*name="contact"/);
   assert.match(html, /name="payment_region"[^>]*required/);
   assert.match(html, /name="payment_preference"[^>]*required/);
   assert.match(html, /name="installment_preference"/);
-  assert.match(html, /₩380,000 \/ \$270/);
+  assert.match(html, /₩450,000/);
+  assert.match(html, /₩470,000/);
+  assert.match(html, /\$330/);
   assert.match(html, /name="enneagram_experience"/);
   assert.match(html, /name="referral_source"/);
   assert.match(html, /name="preferred_time"[^>]*required/);
   assert.match(html, /name="covenant_agree"[^>]*required/);
-  assert.match(html, /10월 첫주 개강|선착순 8명|9\/17까지 얼리버드/);
+  assert.match(html, /10월 첫주 개강|정원 8명/);
   assert.doesNotMatch(html, /희망하는 세션|<select name="category"/);
 });
 
@@ -109,7 +111,7 @@ test('October Enneagram basic course apply route shows closed notice after recru
 
   assert.match(html, /모집 마감/);
   assert.match(html, /10월 기본과정 모집이 마감되었습니다/);
-  assert.match(html, /선착순 8명/);
+  assert.match(html, /신청 기간이 종료/);
   assert.doesNotMatch(html, /에니어그램 기본과정 신청하기/);
 });
 
@@ -286,7 +288,7 @@ test('October basic course submission preserves the legacy program key and sends
         name: '테스트',
         contact: 'test@example.com',
         phone: '010-1234-5678',
-        category: '에니어그램 기본과정 8주 ($300 / ₩420,000)',
+        category: '에니어그램 기본과정 8주 ($330 / ₩450,000~₩470,000)',
         payment_region: 'KR',
         payment_preference: 'kakao_pay',
         installment_preference: 'card_installment',

@@ -7,7 +7,7 @@
     recovery_journey_8: { total: 480, sessions: 8, label: '$480' },
     couple_coaching: { total: 220, sessions: 1, label: '$220' },
     parenting_workshop: { total: 120, sessions: 4, label: '$120' },
-    basic_course: { total: 300, totalKrw: 420000, earlyBird: 270, earlyBirdKrw: 380000, sessions: 8, label: '$300 / ₩420,000', earlyBirdLabel: '$270 / ₩380,000' },
+    basic_course: { total: 330, bankKrw: 450000, onlineKrw: 470000, sessions: 8, label: '$330 / ₩450,000~₩470,000' },
     result_consult: { total: 50, sessions: 1, label: '$50 / 1시간' }
   };
 
@@ -35,7 +35,7 @@
     '회복 코칭 4회': 'recovery_journey_4'
   };
 
-  /** 10월 기수 모집 마감 (정원 선착순 8명 · 조기 마감 가능) — America/Los_Angeles */
+  /** 10월 기수 신청 기간 종료 — America/Los_Angeles. 정원 수로 폼을 자동 폐쇄하지 않는다. */
   const BASIC_COURSE_RECRUITMENT_END = '2026-09-28T23:59:59-07:00';
 
   function isBasicCourseRecruitmentOpen() {
@@ -163,11 +163,11 @@
       title: '에니어그램 기본과정 8주',
       shortTitle: '기본과정 8주',
       price: PRICING.basic_course,
-      category: '에니어그램 기본과정 8주 ($300 / ₩420,000)',
+      category: '에니어그램 기본과정 8주 ($330 / ₩450,000~₩470,000)',
       track: 'paid',
       focus: 'enneagram_basic_october',
       featured: true,
-      outcome: '10월 첫주 개강 · 선착순 8명 · 8주 온라인 + 1:1 멘토링 · 요일·시간은 참여자와 조율',
+      outcome: '10월 첫주 개강 · 정원 8명 · 8주 온라인 + 1:1 멘토링 · 요일·시간은 참여자와 조율',
       reasonPrimary: '무료 진단 결과를 체계적인 8주 학습으로 확장하기 좋은 시점입니다.',
       reasonSecondary: '9유형의 핵심 동기와 회복 관점을 깊이 배우기 좋습니다.',
       applyMessage: '에니어그램 기본과정 8주 신청합니다.'

@@ -40,7 +40,7 @@ function getPaidApplyCategoryOptions() {
         '테스트 결과지 해석상담 ($50)',
         '유형(Typing) 상담 ($100)',
         '개별 코칭 1회 ($80)',
-        '에니어그램 기본과정 8주 ($300)',
+        '에니어그램 기본과정 8주 ($330 / ₩450,000~₩470,000)',
         '자녀 양육 코칭 문의',
         '회복 코칭 4회 ($300)',
         '회복 코칭 8회 ($480)',
@@ -188,7 +188,7 @@ function renderBasicCourseApply(submitSource) {
                         <div class="course-apply-poster-wrap flex min-h-48 flex-col items-center justify-center bg-er-dark px-8 py-10 text-center text-white sm:min-h-60 lg:min-h-[28rem]">
                             <span class="text-[11px] font-bold uppercase tracking-[0.28em] text-er-greenTint">October 2026</span>
                             <p class="mt-4 font-display text-3xl font-extrabold leading-tight break-keep">에니어그램<br>기본과정 8주</p>
-                            <p class="mt-4 text-sm text-white/75 break-keep">10월 첫주 개강 · 온라인 Zoom · 선착순 8명</p>
+                            <p class="mt-4 text-sm text-white/75 break-keep">10월 첫주 개강 · 온라인 Zoom · 정원 8명</p>
                         </div>
                         <div class="p-5 sm:p-6">
                             <h1 class="text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl">에니어그램 기본과정 8주</h1>
@@ -202,8 +202,8 @@ function renderBasicCourseApply(submitSource) {
                                 <p><span class="block text-[11px] text-er-muted">기간</span>2026년 10월 첫주 개강 · 8주</p>
                                 <p><span class="block text-[11px] text-er-muted">방식</span>온라인 Zoom</p>
                                 <p><span class="block text-[11px] text-er-muted">구성</span>교재 + 강의 + 1:1 멘토링</p>
-                                <p><span class="block text-[11px] text-er-muted">정원</span>선착순 8명</p>
-                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료</span>한국 ₩420,000 / 해외 $300 <span class="text-xs text-er-muted">· 9/17까지 ₩380,000 / $270</span></p>
+                                <p><span class="block text-[11px] text-er-muted">정원</span>8명</p>
+                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료</span>한국 계좌이체 ₩450,000 · 카드·간편결제 ₩470,000 · 해외 $330</p>
                                 <p class="col-span-2"><span class="block text-[11px] text-er-muted">요일·시간</span>참여자 희망 시간대를 모아 조율합니다</p>
                             </div>
                             <a href="/basic-course.html" class="mt-4 inline-block text-xs font-bold text-er-dark underline">과정 상세 안내 보기 →</a>
@@ -218,7 +218,7 @@ function renderBasicCourseApply(submitSource) {
                     </p>
 
                     <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_october' })">
-                        <input type="hidden" name="category" value="에니어그램 기본과정 8주 ($300 / ₩420,000)">
+                        <input type="hidden" name="category" value="에니어그램 기본과정 8주 ($330 / ₩450,000~₩470,000)">
 
                         <div>
                             <label class="mb-2 block text-sm font-bold text-gray-700">이름</label>
@@ -263,12 +263,12 @@ function renderBasicCourseApply(submitSource) {
                                     <label class="mb-2 block text-sm font-bold text-gray-700">희망 결제수단</label>
                                     <select name="payment_preference" required class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
                                         <option value="" disabled selected>선택해 주세요</option>
-                                        <option value="kr_bank">한국 원화 계좌이체 · 현재 가능</option>
-                                        <option value="kr_card">국내 신용카드 · 오픈 후</option>
-                                        <option value="kakao_pay">카카오페이 · 오픈 후</option>
-                                        <option value="naver_pay">네이버페이 · 오픈 후</option>
-                                        <option value="paypal">해외 PayPal</option>
-                                        <option value="zelle">해외 Zelle</option>
+                                        <option value="kr_bank">한국 원화 계좌이체 · ₩450,000 · 현재 가능</option>
+                                        <option value="kr_card">국내 신용카드 · ₩470,000 · 오픈 후</option>
+                                        <option value="kakao_pay">카카오페이 · ₩470,000 · 오픈 후</option>
+                                        <option value="naver_pay">네이버페이 · ₩470,000 · 오픈 후</option>
+                                        <option value="paypal">해외 PayPal · $330</option>
+                                        <option value="zelle">해외 Zelle · $330</option>
                                     </select>
                                 </div>
                             </div>
@@ -372,7 +372,7 @@ function renderBasicCourseClosed() {
                     <span class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-[11px] font-bold text-er-green ring-1 ring-[#dce7cd]">모집 마감</span>
                     <h1 class="mt-4 text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl break-keep">2026년 10월 기본과정 모집이 마감되었습니다</h1>
                     <p class="mt-4 text-sm leading-relaxed text-er-primary break-keep">
-                        이번 기수 정원(선착순 8명)이 마감되었습니다.<br>
+                        이번 기수 신청 기간이 종료되었습니다.<br>
                         과정 소개와 다음 기수 소식은 아래에서 확인하실 수 있습니다.
                     </p>
                     <div class="mt-8 grid gap-3">
@@ -423,19 +423,19 @@ function renderApply(payload = null) {
         enneagram_basic_july: {
             track: 'paid',
             title: '에니어그램 기본과정 8주 신청',
-            desc: '10월 첫주 개강 · 선착순 8명 · 온라인 기본과정 신청을 남겨 주세요.',
+            desc: '10월 첫주 개강 · 정원 8명 · 온라인 기본과정 신청을 남겨 주세요.',
             bannerTitle: '에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
-            category: '에니어그램 기본과정 8주 ($300 / ₩420,000)',
+            category: '에니어그램 기본과정 8주 ($330 / ₩450,000~₩470,000)',
             message: '에니어그램 기본과정 8주 신청합니다.'
         },
         enneagram_basic_october: {
             track: 'paid',
             title: '에니어그램 기본과정 8주 신청',
-            desc: '10월 첫주 개강 · 선착순 8명 · 온라인 기본과정 신청을 남겨 주세요.',
+            desc: '10월 첫주 개강 · 정원 8명 · 온라인 기본과정 신청을 남겨 주세요.',
             bannerTitle: '에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
-            category: '에니어그램 기본과정 8주 ($300 / ₩420,000)',
+            category: '에니어그램 기본과정 8주 ($330 / ₩450,000~₩470,000)',
             message: '에니어그램 기본과정 8주 신청합니다.'
         },
         couple: {

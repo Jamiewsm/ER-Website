@@ -13,14 +13,27 @@ const home = read('js/sections/home.js');
 const training = read('js/sections/coach-training.js');
 const notices = read('js/strings.js');
 const catalog = read('js/program-catalog.js');
+const octoberNotice = notices.slice(notices.indexOf('{ id: 8'), notices.indexOf('{ id: 7'));
 
 test('October basic course publishes matching KRW and USD prices across active entry points', () => {
   for (const source of [landing, apply, promo, home, notices, catalog]) {
-    assert.match(source, /₩420,000/);
-    assert.match(source, /₩380,000/);
-    assert.match(source, /\$300/);
-    assert.match(source, /\$270/);
+    assert.match(source, /₩450,000/);
+    assert.match(source, /₩470,000/);
+    assert.match(source, /\$330/);
   }
+  for (const source of [landing, promo, home, octoberNotice]) {
+    assert.doesNotMatch(source, /₩420,000|₩380,000|\$300|\$270/);
+  }
+  assert.doesNotMatch(apply, /에니어그램 기본과정 8주 \(\$300 \/ ₩420,000\)/);
+  assert.doesNotMatch(catalog, /basic_course:\s*\{[^}]*total:\s*300/);
+});
+
+test('October public copy keeps capacity at eight without exposing internal class operations', () => {
+  for (const source of [landing, apply, promo, home, octoberNotice, catalog]) {
+    assert.match(source, /정원[^<\n']*8명|정원<\/span>8명/);
+    assert.doesNotMatch(source, /A\/B|A반|B반|분반|지원 13명/);
+  }
+  assert.match(catalog, /정원 수로 폼을 자동 폐쇄하지 않는다/);
 });
 
 test('October application route uses October focus and collects region-aware payment preferences', () => {
