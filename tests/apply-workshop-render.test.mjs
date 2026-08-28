@@ -71,25 +71,36 @@ test('child type test result apply shows parenting-context copy, not adult test 
   assert.match(html, /handleApplySubmit\(event, 'paid:result_consult:child_type_test'\)/);
 });
 
-test('July Enneagram basic course link renders a dedicated direct application form while recruitment is open', () => {
+test('October Enneagram basic course link renders a dedicated direct application form while recruitment is open', () => {
   const renderer = loadApplyRenderer({ recruitmentOpen: true });
   const html = renderer.renderApply({
     track: 'paid',
-    focus: 'enneagram_basic_july',
+    focus: 'enneagram_basic_october',
     apply_source: 'instagram'
   });
 
   assert.match(html, /에니어그램 기본과정 8주/);
   assert.match(html, /관계 속에서 드러나는 나를 이해하는 시간/);
-  assert.match(html, /assets\/er-visual\/enneagram-basic-july-2026\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$300\)"/);
+  assert.match(html, /October 2026/);
+  assert.doesNotMatch(html, /enneagram-basic-july-2026\.jpg/);
+  assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$330 \/ ₩450,000\)"/);
   assert.match(html, /에니어그램 기본과정 신청하기/);
-  assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_july:instagram', \{ focus: 'enneagram_basic_july' \}\)/);
+  assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_october:instagram', \{ focus: 'enneagram_basic_october' \}\)/);
+  assert.match(html, /name="contact"[^>]*type="email"|type="email"[^>]*name="contact"/);
+  assert.match(html, /name="payment_region"[^>]*required/);
+  assert.match(html, /name="payment_preference"[^>]*required/);
+  assert.match(html, /name="installment_preference"/);
+  assert.match(html, /₩450,000/);
+  assert.match(html, /\$330/);
+  assert.match(html, /카카오뱅크 3333-37-8817302/);
+  assert.match(html, /value="zelle"/);
+  assert.match(html, /value="venmo"/);
+  assert.doesNotMatch(html, /value="(?:kr_card|kakao_pay|naver_pay|paypal|card_installment)"/);
   assert.match(html, /name="enneagram_experience"/);
   assert.match(html, /name="referral_source"/);
   assert.match(html, /name="preferred_time"[^>]*required/);
   assert.match(html, /name="covenant_agree"[^>]*required/);
-  assert.match(html, /10월 첫주 개강|선착순 8명|9\/17까지 얼리버드/);
+  assert.match(html, /10월 첫주 개강|정원 8명/);
   assert.doesNotMatch(html, /희망하는 세션|<select name="category"/);
 });
 
@@ -97,23 +108,24 @@ test('October Enneagram basic course apply route shows closed notice after recru
   const renderer = loadApplyRenderer({ recruitmentOpen: false });
   const html = renderer.renderApply({
     track: 'paid',
-    focus: 'enneagram_basic_july',
+    focus: 'enneagram_basic_october',
     apply_source: 'instagram'
   });
 
   assert.match(html, /모집 마감/);
   assert.match(html, /10월 기본과정 모집이 마감되었습니다/);
-  assert.match(html, /선착순 8명/);
+  assert.match(html, /신청 기간이 종료/);
   assert.doesNotMatch(html, /에니어그램 기본과정 신청하기/);
 });
 
-test('July Enneagram basic course confirmation uses course-specific response copy', () => {
+test('October Enneagram basic course confirmation uses region-aware response copy', () => {
   const renderer = loadApplyRenderer();
-  const html = renderer.renderThankYou({ focus: 'enneagram_basic_july' });
+  const html = renderer.renderThankYou({ focus: 'enneagram_basic_october' });
 
   assert.match(html, /기본과정 신청이 접수되었습니다/);
   assert.match(html, /24시간 이내/);
-  assert.match(html, /PayPal·Zelle/);
+  assert.match(html, /한국은 원화, 해외는 USD/);
+  assert.match(html, /접수 확인 메일이 자동 발송/);
   assert.doesNotMatch(html, /Stripe/);
   assert.doesNotMatch(html, /접수 확인·결제 안내 메일이 곧 발송/);
 });
@@ -167,7 +179,7 @@ test('router preserves parenting focus while rendering the confirmation view', (
   assert.equal(thankYouPayload?.focus, 'parenting_workshop');
 });
 
-test('router applies quiet focused shell to July basic course routes', () => {
+test('router applies quiet focused shell to October basic course routes', () => {
   const toggles = {};
   const mainContent = { innerHTML: '' };
   const context = {
@@ -191,7 +203,7 @@ test('router applies quiet focused shell to July basic course routes', () => {
   vm.createContext(context);
   vm.runInContext(appCoreSource, context, { filename: 'js/app-core.js' });
 
-  context.renderSection('thankyou', { focus: 'enneagram_basic_july' }, { syncHash: false });
+  context.renderSection('thankyou', { focus: 'enneagram_basic_october' }, { syncHash: false });
 
   assert.equal(toggles['course-focused-apply'], true);
   assert.equal(toggles['parenting-focused-apply'], false);
@@ -239,6 +251,62 @@ test('successful focused submission carries parenting focus into confirmation', 
 
   assert.equal(renderArgs[0], 'thankyou');
   assert.equal(renderArgs[1].focus, 'parenting_workshop');
+});
+
+test('October basic course submission preserves the legacy program key and sends cohort/payment metadata', async () => {
+  let requestBody = null;
+  const submitButton = {
+    dataset: { defaultLabel: '에니어그램 기본과정 신청하기', loadingLabel: '접수 중...' },
+    disabled: false,
+    textContent: '에니어그램 기본과정 신청하기'
+  };
+  const context = {
+    window: { SUPABASE_CONFIG: { url: 'https://example.supabase.co' }, state: { user: null } },
+    document: {
+      getElementById(id) {
+        if (id === 'apply-submit-btn') return submitButton;
+        return null;
+      }
+    },
+    FormData: class FakeFormData {
+      constructor(form) { this.values = form.values; }
+      get(name) { return this.values[name] || ''; }
+    },
+    fetch: async (_url, options) => {
+      requestBody = JSON.parse(options.body);
+      return { ok: true };
+    },
+    renderSection() {},
+    alert() {},
+    setInterval,
+    clearInterval
+  };
+  vm.createContext(context);
+  vm.runInContext(apiSource, context, { filename: 'js/api.js' });
+
+  await context.handleApplySubmit({
+    preventDefault() {},
+    target: {
+      values: {
+        name: '테스트',
+        contact: 'test@example.com',
+        phone: '010-1234-5678',
+        category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
+        payment_region: 'KR',
+        payment_preference: 'kr_bank',
+        installment_preference: 'split_consult',
+        turnstile_token: 'verified-token'
+      }
+    }
+  }, 'paid:enneagram_basic_october:landing', { focus: 'enneagram_basic_october' });
+
+  assert.equal(requestBody.program_key, 'enneagram_basic_july');
+  assert.equal(requestBody.cohort_key, 'enneagram_basic_2026_10');
+  assert.equal(requestBody.phone, '010-1234-5678');
+  assert.equal(requestBody.payment_region, 'KR');
+  assert.equal(requestBody.payment_preference, 'kr_bank');
+  assert.equal(requestBody.installment_preference, 'split_consult');
+  assert.match(requestBody.message, /전화번호: 010-1234-5678/);
 });
 
 test('failed focused submission reports an inline retryable error', async () => {

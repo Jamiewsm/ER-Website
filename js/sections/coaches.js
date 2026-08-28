@@ -146,7 +146,7 @@ function renderCoaches() {
                     `).join('')}
                     <div class="bg-er-base/60 rounded-2xl p-5 flex flex-col items-center justify-center text-center border border-dashed border-er-sand cursor-pointer hover:bg-er-greenTint/40 transition-colors" onclick="renderSection('coach_training')">
                         <div class="w-10 h-10 bg-er-surface rounded-full flex items-center justify-center text-er-muted mb-2 shadow-sm border border-er-sand/50"><i class="fas fa-plus"></i></div>
-                        <p class="text-[10px] text-er-muted font-medium">전문가 과정<br>모집 중</p>
+                        <p class="text-[10px] text-er-muted font-medium">전문가 과정<br>전체 안내</p>
                     </div>
                 </div>
             </div>

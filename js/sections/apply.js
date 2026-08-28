@@ -40,7 +40,7 @@ function getPaidApplyCategoryOptions() {
         '테스트 결과지 해석상담 ($50)',
         '유형(Typing) 상담 ($100)',
         '개별 코칭 1회 ($80)',
-        '에니어그램 기본과정 8주 ($300)',
+        '에니어그램 기본과정 8주 ($330 / ₩450,000)',
         '자녀 양육 코칭 문의',
         '회복 코칭 4회 ($300)',
         '회복 코칭 8회 ($480)',
@@ -185,12 +185,10 @@ function renderBasicCourseApply(submitSource) {
             <div class="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[minmax(300px,0.92fr)_minmax(430px,1fr)] lg:items-start">
                 <section class="overflow-hidden rounded-lg border border-er-accentLight bg-white shadow-soft">
                     <div class="grid gap-0 md:grid-cols-[0.78fr_1fr] lg:grid-cols-1">
-                        <div class="course-apply-poster-wrap bg-[#FBFAF5]">
-                            <img
-                                src="/assets/er-visual/enneagram-basic-july-2026.jpg"
-                                alt="에니어그램 기본과정 8주 안내 이미지"
-                                class="course-apply-poster h-48 w-full object-cover object-top sm:h-60 md:h-full lg:h-[28rem]"
-                            />
+                        <div class="course-apply-poster-wrap flex min-h-48 flex-col items-center justify-center bg-er-dark px-8 py-10 text-center text-white sm:min-h-60 lg:min-h-[28rem]">
+                            <span class="text-[11px] font-bold uppercase tracking-[0.28em] text-er-greenTint">October 2026</span>
+                            <p class="mt-4 font-display text-3xl font-extrabold leading-tight break-keep">에니어그램<br>기본과정 8주</p>
+                            <p class="mt-4 text-sm text-white/75 break-keep">10월 첫주 개강 · 온라인 Zoom · 정원 8명</p>
                         </div>
                         <div class="p-5 sm:p-6">
                             <h1 class="text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl">에니어그램 기본과정 8주</h1>
@@ -204,8 +202,8 @@ function renderBasicCourseApply(submitSource) {
                                 <p><span class="block text-[11px] text-er-muted">기간</span>2026년 10월 첫주 개강 · 8주</p>
                                 <p><span class="block text-[11px] text-er-muted">방식</span>온라인 Zoom</p>
                                 <p><span class="block text-[11px] text-er-muted">구성</span>교재 + 강의 + 1:1 멘토링</p>
-                                <p><span class="block text-[11px] text-er-muted">정원</span>선착순 8명</p>
-                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료 (USD)</span>$300 <span class="text-xs text-er-muted">· 9/17까지 얼리버드 $270 · PayPal·Zelle</span></p>
+                                <p><span class="block text-[11px] text-er-muted">정원</span>8명</p>
+                                <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료</span>한국 계좌이체 ₩450,000 · 미국 Zelle·Venmo $330</p>
                                 <p class="col-span-2"><span class="block text-[11px] text-er-muted">요일·시간</span>참여자 희망 시간대를 모아 조율합니다</p>
                             </div>
                             <a href="/basic-course.html" class="mt-4 inline-block text-xs font-bold text-er-dark underline">과정 상세 안내 보기 →</a>
@@ -216,20 +214,26 @@ function renderBasicCourseApply(submitSource) {
                 <section class="rounded-lg border border-er-accentLight bg-white p-5 shadow-soft sm:p-7">
                     <h2 class="text-lg font-bold text-er-dark">기본과정 신청 정보</h2>
                     <p class="mb-6 mt-2 text-sm leading-relaxed text-er-primary break-keep">
-                        아래 내용을 남겨주시면 접수 후 담당자 확인을 거쳐 등록·결제 안내 메일(USD, PayPal·Zelle)을 보내드립니다. 자리 확정은 입금 확인 순입니다.
+                        아래 내용을 남겨주시면 접수 확인 메일이 자동 발송됩니다. 담당자 확인 후 한국은 원화, 해외는 USD 기준의 등록·결제 안내를 보내드립니다. 자리 확정은 결제 확인 순입니다.
                     </p>
 
-                    <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_july' })">
-                        <input type="hidden" name="category" value="에니어그램 기본과정 8주 ($300)">
+                    <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_october' })">
+                        <input type="hidden" name="category" value="에니어그램 기본과정 8주 ($330 / ₩450,000)">
 
                         <div>
                             <label class="mb-2 block text-sm font-bold text-gray-700">이름</label>
                             <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="성함을 남겨주세요">
                         </div>
 
-                        <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">연락받으실 곳</label>
-                            <input type="text" name="contact" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="전화번호 또는 이메일">
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">이메일</label>
+                                <input type="email" name="contact" required autocomplete="email" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="자동 안내를 받을 이메일">
+                            </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">전화번호 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="tel" name="phone" autocomplete="tel" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 010-1234-5678">
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -240,6 +244,37 @@ function renderBasicCourseApply(submitSource) {
                             <div>
                                 <label class="mb-2 block text-sm font-bold text-gray-700">희망 요일·시간대</label>
                                 <input type="text" name="preferred_time" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 목요일 저녁 / Dallas PM">
+                            </div>
+                        </div>
+
+                        <div class="rounded-lg border border-er-accentLight bg-er-base/60 p-4">
+                            <p class="text-sm font-bold text-er-dark">결제 정보</p>
+                            <p class="mt-1 text-xs leading-relaxed text-er-primary break-keep">한국은 카카오뱅크 3333-37-8817302 계좌이체, 미국은 Zelle 또는 Venmo로 안내드립니다.</p>
+                            <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                <div>
+                                    <label class="mb-2 block text-sm font-bold text-gray-700">결제 지역</label>
+                                    <select name="payment_region" required class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                        <option value="" disabled selected>선택해 주세요</option>
+                                        <option value="KR">한국 · 원화(KRW)</option>
+                                        <option value="OVERSEAS">미국 · 달러(USD)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="mb-2 block text-sm font-bold text-gray-700">희망 결제수단</label>
+                                    <select name="payment_preference" required class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                        <option value="" disabled selected>선택해 주세요</option>
+                                        <option value="kr_bank">한국 원화 계좌이체 · ₩450,000</option>
+                                        <option value="zelle">미국 Zelle · $330</option>
+                                        <option value="venmo">미국 Venmo · $330</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="mb-2 block text-sm font-bold text-gray-700">납부 방식 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <select name="installment_preference" class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                    <option value="full">일시불</option>
+                                    <option value="split_consult">2회 분납 상담 요청</option>
+                                </select>
                             </div>
                         </div>
 
@@ -333,7 +368,7 @@ function renderBasicCourseClosed() {
                     <span class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-[11px] font-bold text-er-green ring-1 ring-[#dce7cd]">모집 마감</span>
                     <h1 class="mt-4 text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl break-keep">2026년 10월 기본과정 모집이 마감되었습니다</h1>
                     <p class="mt-4 text-sm leading-relaxed text-er-primary break-keep">
-                        이번 기수 정원(선착순 8명)이 마감되었습니다.<br>
+                        이번 기수 신청 기간이 종료되었습니다.<br>
                         과정 소개와 다음 기수 소식은 아래에서 확인하실 수 있습니다.
                     </p>
                     <div class="mt-8 grid gap-3">
@@ -384,19 +419,19 @@ function renderApply(payload = null) {
         enneagram_basic_july: {
             track: 'paid',
             title: '에니어그램 기본과정 8주 신청',
-            desc: '10월 첫주 개강 · 선착순 8명 · 온라인 기본과정 신청을 남겨 주세요.',
+            desc: '10월 첫주 개강 · 정원 8명 · 온라인 기본과정 신청을 남겨 주세요.',
             bannerTitle: '에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
-            category: '에니어그램 기본과정 8주 ($300)',
+            category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
             message: '에니어그램 기본과정 8주 신청합니다.'
         },
         enneagram_basic_october: {
             track: 'paid',
             title: '에니어그램 기본과정 8주 신청',
-            desc: '10월 첫주 개강 · 선착순 8명 · 온라인 기본과정 신청을 남겨 주세요.',
+            desc: '10월 첫주 개강 · 정원 8명 · 온라인 기본과정 신청을 남겨 주세요.',
             bannerTitle: '에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
-            category: '에니어그램 기본과정 8주 ($300)',
+            category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
             message: '에니어그램 기본과정 8주 신청합니다.'
         },
         couple: {
@@ -693,8 +728,8 @@ function renderThankYou(payload = null) {
                     </div>
                     <h2 class="mb-3 text-xl font-bold text-er-dark">기본과정 신청이 접수되었습니다</h2>
                     <p class="text-sm leading-relaxed text-er-primary break-keep">
-                        접수가 완료되었습니다. 담당자 확인 후 <strong>24시간 이내</strong> 등록·결제 안내 메일(USD, PayPal·Zelle)을 보내드립니다.<br>
-                        자리 확정은 <strong>입금 확인 순</strong>이며, 확인 후 사전 성찰 설문 링크를 보내드립니다.
+                        접수 확인 메일이 자동 발송되었습니다. 담당자 확인 후 <strong>24시간 이내</strong> 한국은 원화, 해외는 USD 기준의 등록·결제 안내를 보내드립니다.<br>
+                        자리 확정은 <strong>결제 확인 순</strong>이며, 확인 후 사전 성찰 설문 링크를 보내드립니다.
                     </p>
                     <div class="mt-8 grid gap-3">
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">

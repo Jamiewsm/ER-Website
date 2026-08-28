@@ -23,9 +23,9 @@ function loadCatalog(nowIso) {
   return context.window.ERProgramCatalog;
 }
 
-test('result consultation remains the first recommended next step after July basic boost ends', () => {
-  const catalog = loadCatalog('2026-07-06T12:00:00-07:00');
-  const steps = catalog.buildNextSteps(['유형(Typing) 상담', '회복 코칭 8회', 'ER 전문가 양성반']);
+test('result consultation remains the first recommended next step after October basic boost ends', () => {
+  const catalog = loadCatalog('2026-09-29T12:00:00-07:00');
+  const steps = catalog.buildNextSteps(['유형(Typing) 상담', '회복 코칭 8회', 'ER 전문가 과정']);
 
   assert.equal(steps[0].programKey, 'result_consult');
   assert.equal(steps[0].program, '테스트 결과지 해석상담');
@@ -33,9 +33,9 @@ test('result consultation remains the first recommended next step after July bas
   assert.equal(steps[1].programKey, 'identity_session');
 });
 
-test('July basic boost keeps result consultation first and basic course second', () => {
-  const catalog = loadCatalog('2026-06-22T12:00:00-07:00');
-  const steps = catalog.buildNextSteps(['유형(Typing) 상담', '회복 코칭 8회', 'ER 전문가 양성반']);
+test('October basic boost keeps result consultation first and basic course second', () => {
+  const catalog = loadCatalog('2026-08-27T12:00:00-07:00');
+  const steps = catalog.buildNextSteps(['유형(Typing) 상담', '회복 코칭 8회', 'ER 전문가 과정']);
 
   assert.equal(steps[0].programKey, 'result_consult');
   assert.equal(steps[1].programKey, 'basic_course');

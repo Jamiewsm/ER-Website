@@ -58,10 +58,10 @@
           <ul class="psb-meta" aria-label="기본과정 안내">
             <li>8주 · 주 1회</li>
             <li>온라인 Zoom</li>
-            <li>선착순 8명</li>
-            <li>얼리버드 $270</li>
+            <li>정원 8명</li>
+            <li>한국 ₩450,000 · 미국 $330</li>
           </ul>
-          <p class="psb-note">수강료 USD · PayPal·Zelle 송금. 승인 후 결제 안내 메일 발송. 9/17까지 얼리버드, 입금 확인 순 확정. 요일·시간은 참여자와 조율합니다.</p>
+          <p class="psb-note">한국 계좌이체 ₩450,000, 미국 Zelle·Venmo $330. 신청 후 지역별 결제 안내 메일을 보내드립니다.</p>
           <div class="psb-actions">
             <button type="button" class="psb-btn psb-btn--primary" onclick="basicCourseBannerGoDetail()">과정 안내 보기</button>
             <button type="button" class="psb-btn psb-btn--secondary" onclick="basicCourseBannerGoApply()">바로 신청하기</button>
@@ -78,9 +78,9 @@
 
   function basicCourseBannerGoApply() {
     if (typeof renderSection === 'function') {
-      renderSection('apply', { track: 'paid', focus: 'enneagram_basic_july', apply_source: 'home_banner' });
+      renderSection('apply', { track: 'paid', focus: 'enneagram_basic_october', apply_source: 'home_banner' });
     } else {
-      window.location.href = '/#apply?track=paid&focus=enneagram_basic_july&apply_source=home_banner';
+      window.location.href = '/#apply?track=paid&focus=enneagram_basic_october&apply_source=home_banner';
     }
   }
 
