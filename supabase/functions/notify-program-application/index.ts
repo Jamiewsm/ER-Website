@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
         });
       }
 
-      const pricing = basicCourseOctoberPricing();
+      const pricing = basicCourseOctoberPricing(app.payment_preference || undefined);
       const hasKoreanPreference = ['kr_bank', 'kr_card', 'kakao_pay', 'naver_pay']
         .includes(String(app.payment_preference || ''));
       const hasKoreanCountry = /(한국|korea|south korea)/i.test(String(app.country || ''));
@@ -130,14 +130,12 @@ Deno.serve(async (req) => {
       html = basicCourseRegistrationHtml({
         name: app.name,
         pricing: {
-          earlyBirdDeadline: pricing.earlyBirdDeadlineLabel,
-          regularPriceUsd: pricing.regularPriceUsd,
-          earlyBirdPriceUsd: pricing.earlyBirdPriceUsd,
-          regularPriceKrw: pricing.regularPriceKrw,
-          earlyBirdPriceKrw: pricing.earlyBirdPriceKrw,
+          overseasPriceUsd: pricing.overseasPriceUsd,
+          bankTransferPriceKrw: pricing.bankTransferPriceKrw,
+          onlinePaymentPriceKrw: pricing.onlinePaymentPriceKrw,
           amountUsd: pricing.amountUsd,
           amountKrw: pricing.amountKrw,
-          isEarlyBird: pricing.isEarlyBird,
+          isKoreanOnlinePayment: pricing.isKoreanOnlinePayment,
         },
         payment: basicCourseManualPaymentFromEnv(app.name),
         paymentRegion,

@@ -2,17 +2,15 @@
 import type { BasicCourseManualPaymentInfo } from './program-pricing.ts';
 
 export type BasicCoursePricingInfo = {
-  earlyBirdDeadline: string;
-  regularPriceUsd: number;
-  earlyBirdPriceUsd: number;
-  regularPriceKrw: number;
-  earlyBirdPriceKrw: number;
+  overseasPriceUsd: number;
+  bankTransferPriceKrw: number;
+  onlinePaymentPriceKrw: number;
 };
 
 export type BasicCourseCheckoutPricingInfo = BasicCoursePricingInfo & {
   amountUsd: number;
   amountKrw: number;
-  isEarlyBird: boolean;
+  isKoreanOnlinePayment: boolean;
 };
 
 export function adminApplicationNoticeHtml(input: {
@@ -66,16 +64,16 @@ export function basicCourseApplicantReceivedHtml(input: {
 }): string {
   const isKorea = input.paymentRegion === 'KR';
   const priceCopy = isKorea
-    ? `한국 결제 정가 <strong>₩${formatKrw(input.pricing.regularPriceKrw)}</strong> · 얼리버드 <strong>₩${formatKrw(input.pricing.earlyBirdPriceKrw)}</strong>`
-    : `해외 결제 정가 <strong>$${input.pricing.regularPriceUsd}</strong> · 얼리버드 <strong>$${input.pricing.earlyBirdPriceUsd}</strong>`;
+    ? `한국 직접 계좌이체 <strong>₩${formatKrw(input.pricing.bankTransferPriceKrw)}</strong> · 신용카드·카카오페이·네이버페이 <strong>₩${formatKrw(input.pricing.onlinePaymentPriceKrw)}</strong>`
+    : `해외 PayPal·Zelle <strong>$${input.pricing.overseasPriceUsd}</strong>`;
   return wrapEmail(
     '신청이 접수되었습니다',
     `
       <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
       <p><strong>${escapeHtml(input.programLabel)}</strong> 신청이 정상적으로 접수되었습니다.</p>
-      <p>${priceCopy}<br><span style="font-size:13px;color:#666">얼리버드: ${escapeHtml(input.pricing.earlyBirdDeadline)}까지 결제 완료</span></p>
+      <p>${priceCopy}</p>
       <p>담당자 확인 후 <strong>24시간 이내</strong> 신청 지역과 희망 수단에 맞는 등록·결제 안내를 보내드립니다.</p>
-      <p style="font-size:14px;color:#666">자리 확정은 <strong>결제 확인 순</strong>입니다 (정원 8명).</p>
+      <p style="font-size:14px;color:#666">정원은 8명이며, 등록 절차는 담당자가 개별 안내합니다.</p>
       <p>급한 문의는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 연락 주세요.</p>
       <p style="color:#666;font-size:13px">Enneagram for Restoration</p>
     `,
@@ -93,8 +91,6 @@ export function basicCourseRegistrationHtml(input: {
   const p = input.pricing;
   const isKorea = input.paymentRegion === 'KR';
   const amount = isKorea ? `₩${formatKrw(p.amountKrw)}` : `$${p.amountUsd}`;
-  const regularPrice = isKorea ? `₩${formatKrw(p.regularPriceKrw)}` : `$${p.regularPriceUsd}`;
-  const earlyBirdPrice = isKorea ? `₩${formatKrw(p.earlyBirdPriceKrw)}` : `$${p.earlyBirdPriceUsd}`;
   const methods = isKorea
     ? buildKoreanPaymentMethodsHtml(input.payment)
     : buildOverseasPaymentMethodsHtml(input.payment);
@@ -109,13 +105,14 @@ export function basicCourseRegistrationHtml(input: {
       <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
       <p><strong>ER 성경적 에니어그램 기본과정 8주 (2026년 10월 기수)</strong> 신청을 환영합니다.</p>
       <h3 style="margin:24px 0 8px;font-size:16px">결제 금액 (${isKorea ? 'KRW' : 'USD'})</h3>
-      <p style="font-size:18px;margin:8px 0"><strong>${amount}</strong>${p.isEarlyBird ? ` <span style="font-size:14px;color:#666">(얼리버드 · ${escapeHtml(p.earlyBirdDeadline)}까지)</span>` : ''}</p>
+      <p style="font-size:18px;margin:8px 0"><strong>${amount}</strong></p>
       <ul style="font-size:14px;line-height:1.6">
-        <li>정가: ${regularPrice}</li>
-        <li>얼리버드: ${earlyBirdPrice} (${escapeHtml(p.earlyBirdDeadline)}까지 결제 완료 시)</li>
+        ${isKorea
+          ? `<li>직접 계좌이체: ₩${formatKrw(p.bankTransferPriceKrw)}</li><li>신용카드·카카오페이·네이버페이: ₩${formatKrw(p.onlinePaymentPriceKrw)}</li>`
+          : `<li>해외 PayPal·Zelle: $${p.overseasPriceUsd}</li>`}
         ${preferenceCopy ? `<li>신청 시 선택한 희망 수단: ${escapeHtml(preferenceCopy)}</li>` : ''}
       </ul>
-      <p><strong>자리 확정은 결제 확인 순</strong>입니다 (정원 8명).</p>
+      <p>정원은 8명이며, 결제가 확인되면 등록이 확정됩니다.</p>
       <h3 style="margin:24px 0 8px;font-size:16px">결제 방법</h3>
       <ul style="font-size:14px;line-height:1.7">${methods}</ul>
       ${checkoutButton}
@@ -159,15 +156,17 @@ function buildOverseasPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo):
 function buildKoreanPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): string {
   const items: string[] = [];
   if (payment.krCheckoutUrl) {
-    items.push('<li><strong>국내 온라인 결제</strong> — 신용카드·카카오페이·네이버페이·실시간 계좌이체 중 결제창에 활성화된 수단</li>');
+    items.push('<li><strong>국내 온라인 결제 ₩470,000</strong> — 신용카드·카카오페이·네이버페이 중 결제창에 활성화된 수단</li>');
   }
   if (payment.krBankInstructions) {
     const bankHtml = escapeHtml(payment.krBankInstructions).replace(/\n/g, '<br>');
-    items.push(`<li><strong>원화 계좌이체</strong><br>${bankHtml}</li>`);
+    items.push(`<li><strong>원화 계좌이체 ₩450,000</strong><br>${bankHtml}</li>`);
   }
   if (!items.length) {
-    items.push('<li><strong>원화 계좌이체</strong> 계좌 정보는 이 메일에 회신하거나 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>');
-    items.push('<li>국내 카드·카카오페이·네이버페이는 가맹점 오픈 후 별도 안내됩니다.</li>');
+    items.push('<li><strong>원화 계좌이체 ₩450,000</strong> 계좌 정보는 이 메일에 회신하거나 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>');
+  }
+  if (!payment.krCheckoutUrl) {
+    items.push('<li>신용카드·카카오페이·네이버페이 결제(₩470,000)는 국내 가맹점 오픈 후 별도 안내됩니다.</li>');
   }
   return items.join('\n');
 }

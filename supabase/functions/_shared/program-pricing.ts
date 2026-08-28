@@ -1,4 +1,4 @@
-// 2026년 10월 기본과정 가격·기수·수동 결제 규칙
+// 2026년 10월 기본과정 결제수단별 가격·기수·수동 결제 규칙
 // program_key는 무중단 호환을 위해 july 값을 유지하고 실제 기수는 cohort_key로 분리한다.
 
 export const BASIC_COURSE_PROGRAM_KEY = 'enneagram_basic_july';
@@ -10,43 +10,34 @@ export const BASIC_COURSE_JULY_KEY = BASIC_COURSE_PROGRAM_KEY;
 /** @deprecated 기존 Edge Function 호환용 */
 export const BASIC_COURSE_JULY_MAX_SEATS = BASIC_COURSE_MAX_SEATS;
 
-/** 2026-09-17 23:59:59 America/Los_Angeles (PDT, UTC-7) */
-export const BASIC_COURSE_OCTOBER_2026_EARLY_BIRD_END_MS = Date.parse('2026-09-18T06:59:59.000Z');
-/** @deprecated 기존 테스트·함수 호환용 */
-export const BASIC_COURSE_JULY_EARLY_BIRD_END_MS = BASIC_COURSE_OCTOBER_2026_EARLY_BIRD_END_MS;
-
 export type BasicCourseOctoberPricing = {
-  regularPriceUsd: number;
-  earlyBirdPriceUsd: number;
-  regularPriceKrw: number;
-  earlyBirdPriceKrw: number;
-  earlyBirdDeadlineLabel: string;
+  overseasPriceUsd: number;
+  bankTransferPriceKrw: number;
+  onlinePaymentPriceKrw: number;
   amountUsd: number;
   amountKrw: number;
-  isEarlyBird: boolean;
+  isKoreanOnlinePayment: boolean;
 };
 
-export function basicCourseOctoberPricing(nowMs = Date.now()): BasicCourseOctoberPricing {
-  const regularPriceUsd = 300;
-  const earlyBirdPriceUsd = 270;
-  const regularPriceKrw = 420000;
-  const earlyBirdPriceKrw = 380000;
-  const isEarlyBird = nowMs <= BASIC_COURSE_OCTOBER_2026_EARLY_BIRD_END_MS;
+export function basicCourseOctoberPricing(paymentPreference?: string): BasicCourseOctoberPricing {
+  const overseasPriceUsd = 330;
+  const bankTransferPriceKrw = 450000;
+  const onlinePaymentPriceKrw = 470000;
+  const isKoreanOnlinePayment = ['kr_card', 'kakao_pay', 'naver_pay']
+    .includes(String(paymentPreference || ''));
   return {
-    regularPriceUsd,
-    earlyBirdPriceUsd,
-    regularPriceKrw,
-    earlyBirdPriceKrw,
-    earlyBirdDeadlineLabel: '2026년 9월 17일(수)',
-    amountUsd: isEarlyBird ? earlyBirdPriceUsd : regularPriceUsd,
-    amountKrw: isEarlyBird ? earlyBirdPriceKrw : regularPriceKrw,
-    isEarlyBird,
+    overseasPriceUsd,
+    bankTransferPriceKrw,
+    onlinePaymentPriceKrw,
+    amountUsd: overseasPriceUsd,
+    amountKrw: isKoreanOnlinePayment ? onlinePaymentPriceKrw : bankTransferPriceKrw,
+    isKoreanOnlinePayment,
   };
 }
 
 /** @deprecated 기존 Edge Function 호환용 */
-export function basicCourseJulyPricing(nowMs = Date.now()): BasicCourseOctoberPricing {
-  return basicCourseOctoberPricing(nowMs);
+export function basicCourseJulyPricing(paymentPreference?: string): BasicCourseOctoberPricing {
+  return basicCourseOctoberPricing(paymentPreference);
 }
 
 export function basicCourseOctoberProductName(): string {

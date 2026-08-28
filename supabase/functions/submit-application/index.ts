@@ -197,7 +197,7 @@ Deno.serve(async (req) => {
     }
 
     if (applicantEmail) {
-      const pricing = basicCourseOctoberPricing();
+      const pricing = basicCourseOctoberPricing(paymentPreference || undefined);
 
       try {
         const receiptResult = await sendResendEmail({
@@ -212,11 +212,9 @@ Deno.serve(async (req) => {
               programLabel: label,
               paymentRegion: paymentRegion || undefined,
               pricing: {
-                earlyBirdDeadline: pricing.earlyBirdDeadlineLabel,
-                regularPriceUsd: pricing.regularPriceUsd,
-                earlyBirdPriceUsd: pricing.earlyBirdPriceUsd,
-                regularPriceKrw: pricing.regularPriceKrw,
-                earlyBirdPriceKrw: pricing.earlyBirdPriceKrw,
+                overseasPriceUsd: pricing.overseasPriceUsd,
+                bankTransferPriceKrw: pricing.bankTransferPriceKrw,
+                onlinePaymentPriceKrw: pricing.onlinePaymentPriceKrw,
               },
             })
             : applicantReceivedHtml({ name, programLabel: label }),

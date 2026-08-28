@@ -57,8 +57,19 @@ test('registration mail chooses KRW or USD and reserves seats before sending', (
   assert.match(notify, /pricing\.amountUsd/);
   assert.match(notify, /registration_email_sent_at/);
   assert.match(notify, /seats_full/);
-  assert.match(pricing, /regularPriceKrw = 420000/);
-  assert.match(pricing, /earlyBirdPriceKrw = 380000/);
+  assert.match(pricing, /bankTransferPriceKrw = 450000/);
+  assert.match(pricing, /onlinePaymentPriceKrw = 470000/);
+  assert.match(pricing, /overseasPriceUsd = 330/);
+  assert.match(pricing, /\['kr_card', 'kakao_pay', 'naver_pay'\]/);
+  assert.doesNotMatch(pricing, /earlyBird|420000|380000/);
+  assert.match(templates, /직접 계좌이체[^`]*₩/);
+  assert.match(templates, /신용카드·카카오페이·네이버페이/);
+});
+
+test('application intake stays open independently of the visible seat count', () => {
+  assert.doesNotMatch(submit, /BASIC_COURSE_MAX_SEATS|waitlisted|seats_full/);
+  assert.match(submit, /status: 'received'/);
+  assert.match(migration, /status = 'waitlisted'/);
 });
 
 test('graduation mail has no standalone expert cohort application link', () => {
