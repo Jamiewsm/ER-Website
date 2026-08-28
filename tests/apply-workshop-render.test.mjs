@@ -83,7 +83,7 @@ test('October Enneagram basic course link renders a dedicated direct application
   assert.match(html, /관계 속에서 드러나는 나를 이해하는 시간/);
   assert.match(html, /October 2026/);
   assert.doesNotMatch(html, /enneagram-basic-july-2026\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$330 \/ ₩450,000~₩470,000\)"/);
+  assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$330 \/ ₩450,000\)"/);
   assert.match(html, /에니어그램 기본과정 신청하기/);
   assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_october:instagram', \{ focus: 'enneagram_basic_october' \}\)/);
   assert.match(html, /name="contact"[^>]*type="email"|type="email"[^>]*name="contact"/);
@@ -91,8 +91,11 @@ test('October Enneagram basic course link renders a dedicated direct application
   assert.match(html, /name="payment_preference"[^>]*required/);
   assert.match(html, /name="installment_preference"/);
   assert.match(html, /₩450,000/);
-  assert.match(html, /₩470,000/);
   assert.match(html, /\$330/);
+  assert.match(html, /카카오뱅크 3333-37-8817302/);
+  assert.match(html, /value="zelle"/);
+  assert.match(html, /value="venmo"/);
+  assert.doesNotMatch(html, /value="(?:kr_card|kakao_pay|naver_pay|paypal|card_installment)"/);
   assert.match(html, /name="enneagram_experience"/);
   assert.match(html, /name="referral_source"/);
   assert.match(html, /name="preferred_time"[^>]*required/);
@@ -288,10 +291,10 @@ test('October basic course submission preserves the legacy program key and sends
         name: '테스트',
         contact: 'test@example.com',
         phone: '010-1234-5678',
-        category: '에니어그램 기본과정 8주 ($330 / ₩450,000~₩470,000)',
+        category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
         payment_region: 'KR',
-        payment_preference: 'kakao_pay',
-        installment_preference: 'card_installment',
+        payment_preference: 'kr_bank',
+        installment_preference: 'split_consult',
         turnstile_token: 'verified-token'
       }
     }
@@ -301,8 +304,8 @@ test('October basic course submission preserves the legacy program key and sends
   assert.equal(requestBody.cohort_key, 'enneagram_basic_2026_10');
   assert.equal(requestBody.phone, '010-1234-5678');
   assert.equal(requestBody.payment_region, 'KR');
-  assert.equal(requestBody.payment_preference, 'kakao_pay');
-  assert.equal(requestBody.installment_preference, 'card_installment');
+  assert.equal(requestBody.payment_preference, 'kr_bank');
+  assert.equal(requestBody.installment_preference, 'split_consult');
   assert.match(requestBody.message, /전화번호: 010-1234-5678/);
 });
 

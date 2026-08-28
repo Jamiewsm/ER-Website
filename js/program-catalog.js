@@ -7,7 +7,7 @@
     recovery_journey_8: { total: 480, sessions: 8, label: '$480' },
     couple_coaching: { total: 220, sessions: 1, label: '$220' },
     parenting_workshop: { total: 120, sessions: 4, label: '$120' },
-    basic_course: { total: 330, bankKrw: 450000, onlineKrw: 470000, sessions: 8, label: '$330 / ₩450,000~₩470,000' },
+    basic_course: { total: 330, totalKrw: 450000, sessions: 8, label: '$330 / ₩450,000' },
     result_consult: { total: 50, sessions: 1, label: '$50 / 1시간' }
   };
 
@@ -163,7 +163,7 @@
       title: '에니어그램 기본과정 8주',
       shortTitle: '기본과정 8주',
       price: PRICING.basic_course,
-      category: '에니어그램 기본과정 8주 ($330 / ₩450,000~₩470,000)',
+      category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
       track: 'paid',
       focus: 'enneagram_basic_october',
       featured: true,

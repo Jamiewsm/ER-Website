@@ -18,8 +18,8 @@ const octoberNotice = notices.slice(notices.indexOf('{ id: 8'), notices.indexOf(
 test('October basic course publishes matching KRW and USD prices across active entry points', () => {
   for (const source of [landing, apply, promo, home, notices, catalog]) {
     assert.match(source, /₩450,000/);
-    assert.match(source, /₩470,000/);
     assert.match(source, /\$330/);
+    assert.doesNotMatch(source, /₩470,000/);
   }
   for (const source of [landing, promo, home, octoberNotice]) {
     assert.doesNotMatch(source, /₩420,000|₩380,000|\$300|\$270/);
@@ -43,6 +43,12 @@ test('October application route uses October focus and collects region-aware pay
   assert.match(apply, /name="payment_region" required/);
   assert.match(apply, /name="payment_preference" required/);
   assert.match(apply, /name="installment_preference"/);
+  assert.match(apply, /value="kr_bank"/);
+  assert.match(apply, /value="zelle"/);
+  assert.match(apply, /value="venmo"/);
+  assert.doesNotMatch(apply, /value="(?:kr_card|kakao_pay|naver_pay|paypal|card_installment)"/);
+  assert.match(landing, /카카오뱅크 3333-37-8817302/);
+  assert.match(apply, /카카오뱅크 3333-37-8817302/);
 });
 
 test('expert course is an umbrella journey and has no standalone application CTA', () => {
