@@ -2,14 +2,17 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
 import { corsHeaders } from '../_shared/cors.ts';
 import {
-  basicCourseGraduationUpsellHtml,
+  basicCourseGraduationHtml,
   basicCoursePreSurveyHtml,
   basicCourseRegistrationHtml,
 } from '../_shared/email-templates.ts';
 import { requireHeadCoach } from '../_shared/head-coach.ts';
 import {
-  basicCourseJulyPricing,
+  BASIC_COURSE_MAX_SEATS,
+  BASIC_COURSE_OCTOBER_2026_COHORT_KEY,
+  BASIC_COURSE_PROGRAM_KEY,
   basicCourseManualPaymentFromEnv,
+  basicCourseOctoberPricing,
 } from '../_shared/program-pricing.ts';
 import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
 
@@ -37,6 +40,7 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY') || '';
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
     await requireHeadCoach(req, supabaseUrl, anonKey);
+    const authHeader = req.headers.get('Authorization') || '';
 
     const body = (await req.json()) as NotifyPayload;
     const applicationId = String(body.application_id || '').trim();
@@ -49,6 +53,9 @@ Deno.serve(async (req) => {
     }
 
     const supabase = createClient(supabaseUrl, serviceKey);
+    const adminSupabase = createClient(supabaseUrl, anonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
     const { data: app, error: fetchError } = await supabase
       .from('program_applications')
       .select('*')
@@ -76,35 +83,63 @@ Deno.serve(async (req) => {
 
     let subject = '';
     let html = '';
+    let sentAtColumn = '';
 
     if (event === 'registration') {
-      const pricing = basicCourseJulyPricing();
-      subject = '[ER] 10월 기본과정 등록·결제 안내';
-      html = basicCourseRegistrationHtml({
-        name: app.name,
-        pricing: {
-          earlyBirdDeadline: pricing.earlyBirdDeadlineLabel,
-          regularPriceUsd: pricing.regularPriceUsd,
-          earlyBirdPriceUsd: pricing.earlyBirdPriceUsd,
-          amountUsd: pricing.amountUsd,
-          isEarlyBird: pricing.isEarlyBird,
-        },
-        payment: basicCourseManualPaymentFromEnv(app.name),
-      });
-      const { error: updateError } = await supabase
-        .from('program_applications')
-        .update({
-          status: 'payment_pending',
-          payment_amount_usd: pricing.amountUsd,
-        })
-        .eq('id', applicationId);
-      if (updateError) {
-        console.error('status update failed', updateError);
-        return new Response(JSON.stringify({ error: 'status_update_failed' }), {
+      if (app.program_key !== BASIC_COURSE_PROGRAM_KEY) {
+        return new Response(JSON.stringify({ error: 'unsupported_program' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const pricing = basicCourseOctoberPricing();
+      const hasKoreanPreference = app.payment_preference === 'kr_bank';
+      const hasKoreanCountry = /(한국|korea|south korea)/i.test(String(app.country || ''));
+      const paymentRegion: 'KR' | 'OVERSEAS' = app.payment_region === 'KR'
+        || (app.payment_region !== 'OVERSEAS' && (hasKoreanPreference || hasKoreanCountry))
+        ? 'KR'
+        : 'OVERSEAS';
+      const paymentCurrency = paymentRegion === 'KR' ? 'KRW' : 'USD';
+      const { data: prepared, error: prepareError } = await adminSupabase
+        .rpc('admin_prepare_program_application_registration', {
+          p_id: applicationId,
+          p_cohort_key: app.cohort_key || BASIC_COURSE_OCTOBER_2026_COHORT_KEY,
+          p_max_seats: BASIC_COURSE_MAX_SEATS,
+          p_payment_region: paymentRegion,
+          p_payment_currency: paymentCurrency,
+          p_payment_amount_usd: paymentRegion === 'OVERSEAS' ? pricing.amountUsd : null,
+          p_payment_amount_krw: paymentRegion === 'KR' ? pricing.amountKrw : null,
+        });
+      if (prepareError) {
+        console.error('registration preparation failed', prepareError);
+        return new Response(JSON.stringify({ error: 'registration_prepare_failed' }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
+      if (prepared?.status === 'waitlisted') {
+        return new Response(JSON.stringify({ error: 'seats_full' }), {
+          status: 409,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      subject = '[ER] 10월 기본과정 등록·결제 안내';
+      html = basicCourseRegistrationHtml({
+        name: app.name,
+        pricing: {
+          overseasPriceUsd: pricing.overseasPriceUsd,
+          bankTransferPriceKrw: pricing.bankTransferPriceKrw,
+          amountUsd: pricing.amountUsd,
+          amountKrw: pricing.amountKrw,
+        },
+        payment: basicCourseManualPaymentFromEnv(app.name),
+        paymentRegion,
+        paymentPreference: app.payment_preference || undefined,
+        installmentPreference: app.installment_preference || undefined,
+      });
+      sentAtColumn = 'registration_email_sent_at';
     } else if (event === 'pre_survey') {
       const preSurveyUrl = Deno.env.get('BASIC_COURSE_PRE_SURVEY_URL') || '';
       if (!preSurveyUrl) {
@@ -115,20 +150,15 @@ Deno.serve(async (req) => {
       }
       subject = '[ER] 기본과정 사전 성찰 설문';
       html = basicCoursePreSurveyHtml({ name: app.name, preSurveyUrl });
-      await supabase
-        .from('program_applications')
-        .update({ pre_survey_sent_at: new Date().toISOString() })
-        .eq('id', applicationId);
+      sentAtColumn = 'pre_survey_sent_at';
     } else if (event === 'graduation') {
-      const applyUrl = Deno.env.get('EXPERT_COHORT_APPLY_URL') || 'https://er-coaching.com/#apply?track=paid';
       const testimonialUrl = Deno.env.get('BASIC_COURSE_TESTIMONIAL_URL') || 'mailto:json@er-coaching.com?subject=기본과정%20수료%20후기';
       subject = '[ER] 기본과정 수료를 축하드립니다';
-      html = basicCourseGraduationUpsellHtml({
+      html = basicCourseGraduationHtml({
         name: app.name,
-        expertCohortLabel: '전문가 양성반 6기 (2026년 9월 개강)',
-        applyUrl,
         testimonialUrl,
       });
+      sentAtColumn = 'graduation_email_sent_at';
     } else {
       return new Response(JSON.stringify({ error: 'invalid_event' }), {
         status: 400,
@@ -144,6 +174,14 @@ Deno.serve(async (req) => {
       subject,
       html,
     });
+
+    if (!result.skipped && sentAtColumn) {
+      const { error: sentAtError } = await supabase
+        .from('program_applications')
+        .update({ [sentAtColumn]: new Date().toISOString() })
+        .eq('id', applicationId);
+      if (sentAtError) console.error('email sent timestamp update failed', sentAtError);
+    }
 
     return new Response(JSON.stringify({ ok: true, email: result }), {
       status: 200,

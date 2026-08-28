@@ -1,35 +1,45 @@
-// 프로그램별 USD 수강료·얼리버드 규칙
-// 내부 program_key는 DB 호환을 위해 enneagram_basic_july 유지 (10월 기수 카피·정원·얼리버드만 갱신)
+// 2026년 10월 기본과정 지역별 가격·기수·수동 결제 규칙
+// program_key는 무중단 호환을 위해 july 값을 유지하고 실제 기수는 cohort_key로 분리한다.
 
-export const BASIC_COURSE_JULY_KEY = 'enneagram_basic_july';
-export const BASIC_COURSE_JULY_MAX_SEATS = 8;
+export const BASIC_COURSE_PROGRAM_KEY = 'enneagram_basic_july';
+export const BASIC_COURSE_OCTOBER_2026_COHORT_KEY = 'enneagram_basic_2026_10';
+export const BASIC_COURSE_MAX_SEATS = 8;
 
-/** 2026-09-17 23:59:59 America/Los_Angeles (PDT, UTC-7) */
-export const BASIC_COURSE_JULY_EARLY_BIRD_END_MS = Date.parse('2026-09-18T06:59:59.000Z');
+/** @deprecated 기존 Edge Function 호환용 */
+export const BASIC_COURSE_JULY_KEY = BASIC_COURSE_PROGRAM_KEY;
+/** @deprecated 기존 Edge Function 호환용 */
+export const BASIC_COURSE_JULY_MAX_SEATS = BASIC_COURSE_MAX_SEATS;
 
-export type BasicCourseJulyPricing = {
-  regularPriceUsd: number;
-  earlyBirdPriceUsd: number;
-  earlyBirdDeadlineLabel: string;
+export type BasicCourseOctoberPricing = {
+  overseasPriceUsd: number;
+  bankTransferPriceKrw: number;
   amountUsd: number;
-  isEarlyBird: boolean;
+  amountKrw: number;
 };
 
-export function basicCourseJulyPricing(nowMs = Date.now()): BasicCourseJulyPricing {
-  const regularPriceUsd = 300;
-  const earlyBirdPriceUsd = 270;
-  const isEarlyBird = nowMs <= BASIC_COURSE_JULY_EARLY_BIRD_END_MS;
+export function basicCourseOctoberPricing(): BasicCourseOctoberPricing {
+  const overseasPriceUsd = 330;
+  const bankTransferPriceKrw = 450000;
   return {
-    regularPriceUsd,
-    earlyBirdPriceUsd,
-    earlyBirdDeadlineLabel: '2026년 9월 17일(수)',
-    amountUsd: isEarlyBird ? earlyBirdPriceUsd : regularPriceUsd,
-    isEarlyBird,
+    overseasPriceUsd,
+    bankTransferPriceKrw,
+    amountUsd: overseasPriceUsd,
+    amountKrw: bankTransferPriceKrw,
   };
 }
 
-export function basicCourseJulyProductName(): string {
+/** @deprecated 기존 Edge Function 호환용 */
+export function basicCourseJulyPricing(_paymentPreference?: string): BasicCourseOctoberPricing {
+  return basicCourseOctoberPricing();
+}
+
+export function basicCourseOctoberProductName(): string {
   return 'ER 성경적 에니어그램 기본과정 8주 (2026년 10월)';
+}
+
+/** @deprecated 기존 Edge Function 호환용 */
+export function basicCourseJulyProductName(): string {
+  return basicCourseOctoberProductName();
 }
 
 export function siteBaseUrl(): string {
@@ -37,24 +47,28 @@ export function siteBaseUrl(): string {
 }
 
 export type BasicCourseManualPaymentInfo = {
-  paypalEmail: string;
   zelleEmail: string;
   zellePhone: string;
-  bankInstructions: string;
+  venmoHandle: string;
+  krBankInstructions: string;
   memoHint: string;
 };
 
-const BASIC_COURSE_PAYPAL_EMAIL_DEFAULT = 'json@er-coaching.com';
 const BASIC_COURSE_ZELLE_EMAIL_DEFAULT = 'campus.12000@gmail.com';
+const BASIC_COURSE_KR_BANK_INSTRUCTIONS_DEFAULT = '카카오뱅크 3333-37-8817302\n입금자명: 신청자 이름';
 
-/** Supabase Edge Function secrets — 등록·결제 안내 메일에 사용 (미설정 시 아래 기본값) */
+/** Supabase Edge Function secrets — 등록·결제 안내 메일에 사용 */
 export function basicCourseManualPaymentFromEnv(name: string): BasicCourseManualPaymentInfo {
   const safeName = String(name || '').trim() || '신청자';
   return {
-    paypalEmail: (Deno.env.get('BASIC_COURSE_PAYPAL_EMAIL') || BASIC_COURSE_PAYPAL_EMAIL_DEFAULT).trim(),
     zelleEmail: (Deno.env.get('BASIC_COURSE_ZELLE_EMAIL') || BASIC_COURSE_ZELLE_EMAIL_DEFAULT).trim(),
     zellePhone: (Deno.env.get('BASIC_COURSE_ZELLE_PHONE') || '').trim(),
-    bankInstructions: (Deno.env.get('BASIC_COURSE_BANK_INSTRUCTIONS') || '').trim(),
+    venmoHandle: (Deno.env.get('BASIC_COURSE_VENMO_HANDLE') || '').trim(),
+    krBankInstructions: (
+      Deno.env.get('BASIC_COURSE_KR_BANK_INSTRUCTIONS')
+      || Deno.env.get('BASIC_COURSE_BANK_INSTRUCTIONS')
+      || BASIC_COURSE_KR_BANK_INSTRUCTIONS_DEFAULT
+    ).trim(),
     memoHint: `ER Basic October - ${safeName}`,
   };
 }

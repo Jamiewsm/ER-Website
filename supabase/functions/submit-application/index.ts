@@ -7,6 +7,12 @@ import {
   basicCourseApplicantReceivedHtml,
 } from '../_shared/email-templates.ts';
 import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
+import {
+  BASIC_COURSE_OCTOBER_2026_COHORT_KEY,
+  BASIC_COURSE_PROGRAM_KEY,
+  basicCourseManualPaymentFromEnv,
+  basicCourseOctoberPricing,
+} from '../_shared/program-pricing.ts';
 import { verifyTurnstileToken } from '../_shared/turnstile.ts';
 
 type ApplyPayload = {
@@ -18,21 +24,42 @@ type ApplyPayload = {
   user_id?: string | null;
   turnstile_token?: string;
   program_key?: string;
+  cohort_key?: string;
+  phone?: string;
   country?: string;
   preferred_time?: string;
   enneagram_experience?: string;
   referral_source?: string;
   referral_name?: string;
+  payment_region?: string;
+  payment_preference?: string;
+  installment_preference?: string;
   covenant_agreed?: boolean;
 };
 
 function inferProgramKey(payload: ApplyPayload): string {
   const explicit = String(payload.program_key || '').trim();
+  if (['enneagram_basic_october', 'basic_course_october', 'enneagram_basic'].includes(explicit)) {
+    return BASIC_COURSE_PROGRAM_KEY;
+  }
   if (explicit) return explicit;
   const category = String(payload.category || '').toLowerCase();
-  if (category.includes('기본과정') || category.includes('basic')) return 'enneagram_basic_july';
+  if (category.includes('기본과정') || category.includes('basic')) return BASIC_COURSE_PROGRAM_KEY;
   if (category.includes('parenting') || category.includes('양육')) return 'parenting_workshop';
   return 'general';
+}
+
+function normalizePaymentRegion(payload: ApplyPayload, isBasicCourse: boolean): 'KR' | 'OVERSEAS' | null {
+  if (!isBasicCourse) return null;
+  const explicit = String(payload.payment_region || '').trim().toUpperCase();
+  if (explicit === 'KR' || explicit === 'OVERSEAS') return explicit;
+  const country = String(payload.country || '').trim();
+  return /(한국|korea|south korea)/i.test(country) ? 'KR' : 'OVERSEAS';
+}
+
+function allowedValue(value: unknown, allowed: string[]): string | null {
+  const normalized = String(value || '').trim();
+  return allowed.includes(normalized) ? normalized : null;
 }
 
 function parseApplySource(source: string): string {
@@ -41,7 +68,7 @@ function parseApplySource(source: string): string {
 }
 
 function programLabel(programKey: string, category: string): string {
-  if (programKey === 'enneagram_basic_july') return 'ER 성경적 에니어그램 기본과정 8주 (2026년 10월)';
+  if (programKey === BASIC_COURSE_PROGRAM_KEY) return 'ER 성경적 에니어그램 기본과정 8주 (2026년 10월)';
   if (programKey === 'parenting_workshop') return 'Enneagram for Parenting 4주 워크샵';
   return category || 'ER 프로그램';
 }
@@ -91,14 +118,26 @@ Deno.serve(async (req) => {
 
     const programKey = inferProgramKey(payload);
     const applySource = parseApplySource(source);
+    const isBasicCourse = programKey === BASIC_COURSE_PROGRAM_KEY;
+    const cohortKey = isBasicCourse ? BASIC_COURSE_OCTOBER_2026_COHORT_KEY : null;
+    const paymentRegion = normalizePaymentRegion(payload, isBasicCourse);
+    const paymentCurrency = paymentRegion === 'KR' ? 'KRW' : (paymentRegion === 'OVERSEAS' ? 'USD' : null);
+    const paymentPreference = allowedValue(payload.payment_preference, [
+      'kr_bank', 'zelle', 'venmo',
+    ]);
+    const installmentPreference = allowedValue(payload.installment_preference, [
+      'full', 'split_consult',
+    ]);
 
     const { data: row, error: insertError } = await supabase
       .from('program_applications')
       .insert({
         program_key: programKey,
+        cohort_key: cohortKey,
         status: 'received',
         name,
         contact,
+        phone: String(payload.phone || '').trim() || null,
         category,
         message,
         country: payload.country || null,
@@ -106,6 +145,10 @@ Deno.serve(async (req) => {
         enneagram_experience: payload.enneagram_experience || null,
         referral_source: payload.referral_source || null,
         referral_name: payload.referral_name || null,
+        payment_region: paymentRegion,
+        payment_currency: paymentCurrency,
+        payment_preference: paymentPreference,
+        installment_preference: installmentPreference,
         covenant_agreed: Boolean(payload.covenant_agreed),
         source,
         apply_source: applySource || null,
@@ -144,6 +187,10 @@ Deno.serve(async (req) => {
           message,
           source,
           applicationId: row.id,
+          cohortKey: cohortKey || undefined,
+          paymentRegion: paymentRegion || undefined,
+          paymentPreference: paymentPreference || undefined,
+          installmentPreference: installmentPreference || undefined,
         }),
       });
     } catch (emailErr) {
@@ -151,25 +198,41 @@ Deno.serve(async (req) => {
     }
 
     if (applicantEmail) {
-      const isBasic = programKey === 'enneagram_basic_july';
+      const pricing = basicCourseOctoberPricing();
 
       try {
-        await sendResendEmail({
+        const receiptResult = await sendResendEmail({
           apiKey: resendKey,
           from: fromEmail,
           to: applicantEmail,
           replyTo,
           subject: `[ER] ${label} 신청 접수 확인`,
-          html: isBasic
-            ? basicCourseApplicantReceivedHtml({ name, programLabel: label })
+          html: isBasicCourse
+            ? basicCourseApplicantReceivedHtml({
+              name,
+              programLabel: label,
+              paymentRegion: paymentRegion || undefined,
+              paymentPreference: paymentPreference || undefined,
+              pricing: {
+                overseasPriceUsd: pricing.overseasPriceUsd,
+                bankTransferPriceKrw: pricing.bankTransferPriceKrw,
+              },
+              payment: basicCourseManualPaymentFromEnv(name),
+            })
             : applicantReceivedHtml({ name, programLabel: label }),
         });
+        if (!receiptResult.skipped) {
+          await supabase
+            .from('program_applications')
+            .update({ receipt_email_sent_at: new Date().toISOString() })
+            .eq('id', row.id);
+        }
       } catch (emailErr) {
         console.error('applicant receipt email failed', emailErr);
       }
     }
 
-    return new Response(JSON.stringify({ ok: true, id: row.id }), {
+    return new Response(JSON.stringify({ ok: true, id: row.id, cohort_key: cohortKey }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
