@@ -48,6 +48,9 @@ test('submit application persists cohort/payment metadata and records successful
   assert.match(submit, /installment_preference: installmentPreference/);
   assert.match(submit, /receipt_email_sent_at/);
   assert.match(submit, /basicCourseApplicantReceivedHtml/);
+  assert.match(submit, /basicCourseManualPaymentFromEnv\(name\)/);
+  assert.match(submit, /'kr_bank', 'zelle', 'venmo'/);
+  assert.doesNotMatch(submit, /'kr_card'|'kakao_pay'|'naver_pay'|'paypal'|'card_installment'/);
 });
 
 test('registration mail chooses KRW or USD and reserves seats before sending', () => {
@@ -58,12 +61,21 @@ test('registration mail chooses KRW or USD and reserves seats before sending', (
   assert.match(notify, /registration_email_sent_at/);
   assert.match(notify, /seats_full/);
   assert.match(pricing, /bankTransferPriceKrw = 450000/);
-  assert.match(pricing, /onlinePaymentPriceKrw = 470000/);
   assert.match(pricing, /overseasPriceUsd = 330/);
-  assert.match(pricing, /\['kr_card', 'kakao_pay', 'naver_pay'\]/);
-  assert.doesNotMatch(pricing, /earlyBird|420000|380000/);
-  assert.match(templates, /직접 계좌이체[^`]*₩/);
-  assert.match(templates, /신용카드·카카오페이·네이버페이/);
+  assert.doesNotMatch(pricing, /earlyBird|470000|420000|380000|paypalEmail|krCheckoutUrl/);
+  assert.match(pricing, /카카오뱅크 3333-37-8817302/);
+  assert.match(pricing, /BASIC_COURSE_VENMO_HANDLE/);
+  assert.match(templates, /원화 계좌이체 ₩450,000/);
+  assert.match(templates, /Zelle·Venmo/);
+  assert.match(templates, /Venmo/);
+  assert.doesNotMatch(templates, /PayPal|카카오페이|네이버페이|신용카드|₩470,000/);
+});
+
+test('migration accepts only bank transfer, Zelle, Venmo, and manual split consultation', () => {
+  assert.match(migration, /payment_preference IN \('kr_bank', 'zelle', 'venmo'\)/);
+  assert.match(migration, /installment_preference IN \('full', 'split_consult'\)/);
+  assert.doesNotMatch(migration, /'kr_card'|'kakao_pay'|'naver_pay'|'paypal'|'card_installment'|₩470,000/);
+  assert.match(migration, /한국 계좌이체 ₩450,000 · 미국 Zelle·Venmo \$330/);
 });
 
 test('application intake stays open independently of the visible seat count', () => {

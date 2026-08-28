@@ -18,7 +18,7 @@ COMMENT ON COLUMN public.program_applications.cohort_key IS
 COMMENT ON COLUMN public.program_applications.payment_preference IS
   '신청자가 선택한 희망 결제수단이며 실제 승인된 payment_method와 다를 수 있다.';
 COMMENT ON COLUMN public.program_applications.installment_preference IS
-  'full, card_installment, split_consult 중 신청 단계 선호값.';
+  'full, split_consult 중 신청 단계 선호값.';
 
 ALTER TABLE public.program_applications
   DROP CONSTRAINT IF EXISTS program_applications_payment_region_check,
@@ -31,13 +31,13 @@ ALTER TABLE public.program_applications
   ADD CONSTRAINT program_applications_payment_preference_check
     CHECK (
       payment_preference IS NULL
-      OR payment_preference IN ('kr_bank', 'kr_card', 'kakao_pay', 'naver_pay', 'paypal', 'zelle')
+      OR payment_preference IN ('kr_bank', 'zelle', 'venmo')
     ) NOT VALID,
   DROP CONSTRAINT IF EXISTS program_applications_installment_preference_check,
   ADD CONSTRAINT program_applications_installment_preference_check
     CHECK (
       installment_preference IS NULL
-      OR installment_preference IN ('full', 'card_installment', 'split_consult')
+      OR installment_preference IN ('full', 'split_consult')
     ) NOT VALID,
   DROP CONSTRAINT IF EXISTS program_applications_payment_amount_krw_check,
   ADD CONSTRAINT program_applications_payment_amount_krw_check
@@ -186,8 +186,8 @@ WHERE legacy_key = 5;
 
 UPDATE public.public_notices
 SET
-  summary = '10월 첫주 개강 · 정원 8명 · 한국 ₩450,000부터 / 해외 $330',
-  body = '<p class="text-gray-600 leading-relaxed break-keep"><strong>2026년 10월 ER 성경적 에니어그램 기본과정</strong> 모집을 시작합니다. 관계 속에서 드러나는 나를 이해하고, 하나님 안에서 본래의 나로 회복되는 8주 온라인 과정입니다.</p><div class="mt-6 grid gap-3"><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">개강</span><span class="text-sm text-gray-700 break-keep">2026년 10월 첫주 (요일·시간은 참여자와 조율)</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">정원</span><span class="text-sm text-gray-700 break-keep">8명</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">구성</span><span class="text-sm text-gray-700 break-keep">8주 · 주 1회 강의 3시간 + 1:1 멘토링 1시간</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">수강료</span><span class="text-sm text-gray-700 break-keep">한국 계좌이체 ₩450,000 · 카드·간편결제 ₩470,000 · 해외 $330</span></div></div><p class="mt-6 flex flex-wrap gap-3"><a href="/basic-course.html" class="inline-flex items-center justify-center rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors">과정 안내 보기</a><a href="/#apply?track=paid&focus=enneagram_basic_october" class="inline-flex items-center justify-center rounded-full border border-er-accent/40 bg-er-accentLight/30 px-5 py-2.5 text-sm font-bold text-er-dark hover:border-er-accent transition-colors">지금 신청하기</a></p>',
+  summary = '10월 첫주 개강 · 정원 8명 · 한국 ₩450,000 / 미국 $330',
+  body = '<p class="text-gray-600 leading-relaxed break-keep"><strong>2026년 10월 ER 성경적 에니어그램 기본과정</strong> 모집을 시작합니다. 관계 속에서 드러나는 나를 이해하고, 하나님 안에서 본래의 나로 회복되는 8주 온라인 과정입니다.</p><div class="mt-6 grid gap-3"><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">개강</span><span class="text-sm text-gray-700 break-keep">2026년 10월 첫주 (요일·시간은 참여자와 조율)</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">정원</span><span class="text-sm text-gray-700 break-keep">8명</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">구성</span><span class="text-sm text-gray-700 break-keep">8주 · 주 1회 강의 3시간 + 1:1 멘토링 1시간</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">수강료</span><span class="text-sm text-gray-700 break-keep">한국 계좌이체 ₩450,000 · 미국 Zelle·Venmo $330</span></div></div><p class="mt-6 flex flex-wrap gap-3"><a href="/basic-course.html" class="inline-flex items-center justify-center rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors">과정 안내 보기</a><a href="/#apply?track=paid&focus=enneagram_basic_october" class="inline-flex items-center justify-center rounded-full border border-er-accent/40 bg-er-accentLight/30 px-5 py-2.5 text-sm font-bold text-er-dark hover:border-er-accent transition-colors">지금 신청하기</a></p>',
   body_is_html = true,
   updated_at = now()
 WHERE legacy_key = 7;

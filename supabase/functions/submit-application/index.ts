@@ -10,6 +10,7 @@ import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
 import {
   BASIC_COURSE_OCTOBER_2026_COHORT_KEY,
   BASIC_COURSE_PROGRAM_KEY,
+  basicCourseManualPaymentFromEnv,
   basicCourseOctoberPricing,
 } from '../_shared/program-pricing.ts';
 import { verifyTurnstileToken } from '../_shared/turnstile.ts';
@@ -122,10 +123,10 @@ Deno.serve(async (req) => {
     const paymentRegion = normalizePaymentRegion(payload, isBasicCourse);
     const paymentCurrency = paymentRegion === 'KR' ? 'KRW' : (paymentRegion === 'OVERSEAS' ? 'USD' : null);
     const paymentPreference = allowedValue(payload.payment_preference, [
-      'kr_bank', 'kr_card', 'kakao_pay', 'naver_pay', 'paypal', 'zelle',
+      'kr_bank', 'zelle', 'venmo',
     ]);
     const installmentPreference = allowedValue(payload.installment_preference, [
-      'full', 'card_installment', 'split_consult',
+      'full', 'split_consult',
     ]);
 
     const { data: row, error: insertError } = await supabase
@@ -197,7 +198,7 @@ Deno.serve(async (req) => {
     }
 
     if (applicantEmail) {
-      const pricing = basicCourseOctoberPricing(paymentPreference || undefined);
+      const pricing = basicCourseOctoberPricing();
 
       try {
         const receiptResult = await sendResendEmail({
@@ -211,11 +212,12 @@ Deno.serve(async (req) => {
               name,
               programLabel: label,
               paymentRegion: paymentRegion || undefined,
+              paymentPreference: paymentPreference || undefined,
               pricing: {
                 overseasPriceUsd: pricing.overseasPriceUsd,
                 bankTransferPriceKrw: pricing.bankTransferPriceKrw,
-                onlinePaymentPriceKrw: pricing.onlinePaymentPriceKrw,
               },
+              payment: basicCourseManualPaymentFromEnv(name),
             })
             : applicantReceivedHtml({ name, programLabel: label }),
         });

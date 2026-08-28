@@ -93,9 +93,8 @@ Deno.serve(async (req) => {
         });
       }
 
-      const pricing = basicCourseOctoberPricing(app.payment_preference || undefined);
-      const hasKoreanPreference = ['kr_bank', 'kr_card', 'kakao_pay', 'naver_pay']
-        .includes(String(app.payment_preference || ''));
+      const pricing = basicCourseOctoberPricing();
+      const hasKoreanPreference = app.payment_preference === 'kr_bank';
       const hasKoreanCountry = /(한국|korea|south korea)/i.test(String(app.country || ''));
       const paymentRegion: 'KR' | 'OVERSEAS' = app.payment_region === 'KR'
         || (app.payment_region !== 'OVERSEAS' && (hasKoreanPreference || hasKoreanCountry))
@@ -132,10 +131,8 @@ Deno.serve(async (req) => {
         pricing: {
           overseasPriceUsd: pricing.overseasPriceUsd,
           bankTransferPriceKrw: pricing.bankTransferPriceKrw,
-          onlinePaymentPriceKrw: pricing.onlinePaymentPriceKrw,
           amountUsd: pricing.amountUsd,
           amountKrw: pricing.amountKrw,
-          isKoreanOnlinePayment: pricing.isKoreanOnlinePayment,
         },
         payment: basicCourseManualPaymentFromEnv(app.name),
         paymentRegion,

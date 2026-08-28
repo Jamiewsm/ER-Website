@@ -4,13 +4,11 @@ import type { BasicCourseManualPaymentInfo } from './program-pricing.ts';
 export type BasicCoursePricingInfo = {
   overseasPriceUsd: number;
   bankTransferPriceKrw: number;
-  onlinePaymentPriceKrw: number;
 };
 
 export type BasicCourseCheckoutPricingInfo = BasicCoursePricingInfo & {
   amountUsd: number;
   amountKrw: number;
-  isKoreanOnlinePayment: boolean;
 };
 
 export function adminApplicationNoticeHtml(input: {
@@ -60,19 +58,27 @@ export function basicCourseApplicantReceivedHtml(input: {
   name: string;
   programLabel: string;
   paymentRegion?: string;
+  paymentPreference?: string;
   pricing: BasicCoursePricingInfo;
+  payment: BasicCourseManualPaymentInfo;
 }): string {
   const isKorea = input.paymentRegion === 'KR';
   const priceCopy = isKorea
-    ? `한국 직접 계좌이체 <strong>₩${formatKrw(input.pricing.bankTransferPriceKrw)}</strong> · 신용카드·카카오페이·네이버페이 <strong>₩${formatKrw(input.pricing.onlinePaymentPriceKrw)}</strong>`
-    : `해외 PayPal·Zelle <strong>$${input.pricing.overseasPriceUsd}</strong>`;
+    ? `한국 계좌이체 <strong>₩${formatKrw(input.pricing.bankTransferPriceKrw)}</strong>`
+    : `미국 Zelle·Venmo <strong>$${input.pricing.overseasPriceUsd}</strong>`;
+  const methods = isKorea
+    ? buildKoreanPaymentMethodsHtml(input.payment)
+    : buildUsPaymentMethodsHtml(input.payment, input.paymentPreference);
   return wrapEmail(
     '신청이 접수되었습니다',
     `
       <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
       <p><strong>${escapeHtml(input.programLabel)}</strong> 신청이 정상적으로 접수되었습니다.</p>
       <p>${priceCopy}</p>
-      <p>담당자 확인 후 <strong>24시간 이내</strong> 신청 지역과 희망 수단에 맞는 등록·결제 안내를 보내드립니다.</p>
+      <h3 style="margin:24px 0 8px;font-size:16px">결제 안내</h3>
+      <ul style="font-size:14px;line-height:1.7">${methods}</ul>
+      <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·입금자명에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 또는 신청자 이름을 적어 주세요.</p>
+      <p>결제가 확인되면 등록이 확정되며, 담당자가 후속 안내를 보내드립니다.</p>
       <p style="font-size:14px;color:#666">정원은 8명이며, 등록 절차는 담당자가 개별 안내합니다.</p>
       <p>급한 문의는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 연락 주세요.</p>
       <p style="color:#666;font-size:13px">Enneagram for Restoration</p>
@@ -93,12 +99,9 @@ export function basicCourseRegistrationHtml(input: {
   const amount = isKorea ? `₩${formatKrw(p.amountKrw)}` : `$${p.amountUsd}`;
   const methods = isKorea
     ? buildKoreanPaymentMethodsHtml(input.payment)
-    : buildOverseasPaymentMethodsHtml(input.payment);
-  const checkoutButton = isKorea && input.payment.krCheckoutUrl
-    ? `<p style="margin:24px 0"><a href="${escapeHtml(input.payment.krCheckoutUrl)}" style="display:inline-block;padding:12px 20px;background:#657453;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold">웹사이트에서 원화 결제하기</a></p>`
-    : '';
+    : buildUsPaymentMethodsHtml(input.payment, input.paymentPreference);
   const preferenceCopy = paymentPreferenceLabel(input.paymentPreference);
-  const installmentCopy = installmentPreferenceCopy(input.installmentPreference, isKorea);
+  const installmentCopy = installmentPreferenceCopy(input.installmentPreference);
   return wrapEmail(
     '10월 기본과정 등록·결제 안내',
     `
@@ -108,14 +111,13 @@ export function basicCourseRegistrationHtml(input: {
       <p style="font-size:18px;margin:8px 0"><strong>${amount}</strong></p>
       <ul style="font-size:14px;line-height:1.6">
         ${isKorea
-          ? `<li>직접 계좌이체: ₩${formatKrw(p.bankTransferPriceKrw)}</li><li>신용카드·카카오페이·네이버페이: ₩${formatKrw(p.onlinePaymentPriceKrw)}</li>`
-          : `<li>해외 PayPal·Zelle: $${p.overseasPriceUsd}</li>`}
+          ? `<li>한국 계좌이체: ₩${formatKrw(p.bankTransferPriceKrw)}</li>`
+          : `<li>미국 Zelle·Venmo: $${p.overseasPriceUsd}</li>`}
         ${preferenceCopy ? `<li>신청 시 선택한 희망 수단: ${escapeHtml(preferenceCopy)}</li>` : ''}
       </ul>
       <p>정원은 8명이며, 결제가 확인되면 등록이 확정됩니다.</p>
       <h3 style="margin:24px 0 8px;font-size:16px">결제 방법</h3>
       <ul style="font-size:14px;line-height:1.7">${methods}</ul>
-      ${checkoutButton}
       <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·메시지에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 를 적어 주시면 확인이 빠릅니다.</p>
       ${installmentCopy ? `<p style="font-size:14px;margin-top:16px">${escapeHtml(installmentCopy)}</p>` : ''}
       <p style="font-size:14px;margin-top:16px">결제 후 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 완료를 알려 주시거나 결제 알림을 기다려 주세요.</p>
@@ -132,22 +134,22 @@ export function basicCourseRegistrationHtml(input: {
   );
 }
 
-function buildOverseasPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): string {
+function buildUsPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo, preference?: string): string {
   const items: string[] = [];
-  if (payment.paypalEmail) {
-    items.push(
-      `<li><strong>PayPal</strong> — <code>${escapeHtml(payment.paypalEmail)}</code> 로 USD 결제</li>`,
-    );
-  }
-  if (payment.zelleEmail) {
+  const includeZelle = !preference || preference === 'zelle';
+  const includeVenmo = !preference || preference === 'venmo';
+  if (includeZelle && payment.zelleEmail) {
     items.push(`<li><strong>Zelle</strong> — 이메일 <code>${escapeHtml(payment.zelleEmail)}</code></li>`);
   }
-  if (payment.zellePhone) {
+  if (includeZelle && payment.zellePhone) {
     items.push(`<li><strong>Zelle</strong> — 전화번호 <code>${escapeHtml(payment.zellePhone)}</code></li>`);
+  }
+  if (includeVenmo && payment.venmoHandle) {
+    items.push(`<li><strong>Venmo</strong> — <code>${escapeHtml(payment.venmoHandle)}</code></li>`);
   }
   if (!items.length) {
     items.push(
-      '<li>PayPal·Zelle 안내는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>',
+      `<li>${preference === 'venmo' ? 'Venmo' : preference === 'zelle' ? 'Zelle' : 'Zelle·Venmo'} 수취 정보는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>`,
     );
   }
   return items.join('\n');
@@ -155,18 +157,12 @@ function buildOverseasPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo):
 
 function buildKoreanPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): string {
   const items: string[] = [];
-  if (payment.krCheckoutUrl) {
-    items.push('<li><strong>국내 온라인 결제 ₩470,000</strong> — 신용카드·카카오페이·네이버페이 중 결제창에 활성화된 수단</li>');
-  }
   if (payment.krBankInstructions) {
     const bankHtml = escapeHtml(payment.krBankInstructions).replace(/\n/g, '<br>');
     items.push(`<li><strong>원화 계좌이체 ₩450,000</strong><br>${bankHtml}</li>`);
   }
   if (!items.length) {
     items.push('<li><strong>원화 계좌이체 ₩450,000</strong> 계좌 정보는 이 메일에 회신하거나 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>');
-  }
-  if (!payment.krCheckoutUrl) {
-    items.push('<li>신용카드·카카오페이·네이버페이 결제(₩470,000)는 국내 가맹점 오픈 후 별도 안내됩니다.</li>');
   }
   return items.join('\n');
 }
@@ -206,21 +202,13 @@ export function basicCourseGraduationHtml(input: {
 function paymentPreferenceLabel(value?: string): string {
   const labels: Record<string, string> = {
     kr_bank: '한국 원화 계좌이체',
-    kr_card: '국내 신용카드',
-    kakao_pay: '카카오페이',
-    naver_pay: '네이버페이',
-    paypal: 'PayPal',
     zelle: 'Zelle',
+    venmo: 'Venmo',
   };
   return labels[String(value || '')] || '';
 }
 
-function installmentPreferenceCopy(value: string | undefined, isKorea: boolean): string {
-  if (value === 'card_installment') {
-    return isKorea
-      ? '카드사 할부는 국내 온라인 카드 결제가 열린 뒤 카드사 정책에 따라 결제창에서 선택할 수 있습니다.'
-      : '해외 결제의 할부 가능 여부는 사용하시는 결제수단 또는 카드사에 확인해 주세요.';
-  }
+function installmentPreferenceCopy(value: string | undefined): string {
   if (value === 'split_consult') {
     return 'ER 자체 2회 분납을 요청하셨습니다. 승인 여부와 납부 일정을 담당자가 별도로 회신드립니다.';
   }
