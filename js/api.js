@@ -181,9 +181,20 @@ async function handleApplySubmit(event, source, successPayload) {
     } catch (_e) {}
   }
   var submitBtn = document.getElementById('apply-submit-btn');
+  var requestedProgramKey = successPayload && successPayload.focus
+    ? String(successPayload.focus).trim()
+    : '';
+  var isOctoberBasicCourse = requestedProgramKey === 'enneagram_basic_october'
+    || requestedProgramKey === 'basic_course_october';
   if (!name || !contact || !category) {
     if (!setApplySubmitStatus('이름과 연락받으실 곳을 확인해 주세요.', 'error')) {
       alert('이름, 연락처, 신청 분야를 확인해 주세요.');
+    }
+    return;
+  }
+  if (isOctoberBasicCourse && !phone) {
+    if (!setApplySubmitStatus('전화번호를 입력해 주세요. (연락 및 현금영수증 발급 용도)', 'error')) {
+      alert('전화번호를 입력해 주세요.');
     }
     return;
   }
@@ -206,11 +217,6 @@ async function handleApplySubmit(event, source, successPayload) {
   }
   setApplySubmitStatus('신청 내용을 접수하고 있습니다.', null);
 
-  var requestedProgramKey = successPayload && successPayload.focus
-    ? String(successPayload.focus).trim()
-    : '';
-  var isOctoberBasicCourse = requestedProgramKey === 'enneagram_basic_october'
-    || requestedProgramKey === 'basic_course_october';
   // 기존 운영 Edge Function과의 무중단 호환을 위해 program_key는 유지하고,
   // 실제 기수는 cohort_key로 별도 전송한다.
   var programKey = isOctoberBasicCourse ? 'enneagram_basic_july' : requestedProgramKey;

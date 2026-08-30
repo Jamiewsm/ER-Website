@@ -87,6 +87,8 @@ test('October Enneagram basic course link renders a dedicated direct application
   assert.match(html, /에니어그램 기본과정 신청하기/);
   assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_october:instagram', \{ focus: 'enneagram_basic_october' \}\)/);
   assert.match(html, /name="contact"[^>]*type="email"|type="email"[^>]*name="contact"/);
+  assert.match(html, /name="phone"[^>]*required/);
+  assert.match(html, /연락 및 현금영수증 발급 용도/);
   assert.match(html, /name="payment_region"[^>]*required/);
   assert.match(html, /name="payment_preference"[^>]*required/);
   assert.match(html, /name="installment_preference"/);
