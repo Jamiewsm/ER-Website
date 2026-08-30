@@ -119,6 +119,13 @@ Deno.serve(async (req) => {
     const programKey = inferProgramKey(payload);
     const applySource = parseApplySource(source);
     const isBasicCourse = programKey === BASIC_COURSE_PROGRAM_KEY;
+    const phone = String(payload.phone || '').trim();
+    if (isBasicCourse && !phone) {
+      return new Response(JSON.stringify({ error: 'missing_phone' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     const cohortKey = isBasicCourse ? BASIC_COURSE_OCTOBER_2026_COHORT_KEY : null;
     const paymentRegion = normalizePaymentRegion(payload, isBasicCourse);
     const paymentCurrency = paymentRegion === 'KR' ? 'KRW' : (paymentRegion === 'OVERSEAS' ? 'USD' : null);
@@ -137,7 +144,7 @@ Deno.serve(async (req) => {
         status: 'received',
         name,
         contact,
-        phone: String(payload.phone || '').trim() || null,
+        phone: phone || null,
         category,
         message,
         country: payload.country || null,
