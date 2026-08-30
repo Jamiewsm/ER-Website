@@ -231,8 +231,9 @@ function renderBasicCourseApply(submitSource) {
                                 <input type="email" name="contact" required autocomplete="email" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="자동 안내를 받을 이메일">
                             </div>
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">전화번호 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="tel" name="phone" autocomplete="tel" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 010-1234-5678">
+                                <label class="mb-2 block text-sm font-bold text-gray-700">전화번호</label>
+                                <p class="mb-2 text-xs text-gray-500 break-keep">(연락 및 현금영수증 발급 용도)</p>
+                                <input type="tel" name="phone" required autocomplete="tel" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 010-1234-5678">
                             </div>
                         </div>
 
