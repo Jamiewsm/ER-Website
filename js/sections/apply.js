@@ -59,7 +59,7 @@ function getPaidApplyCategoryOptions() {
         '테스트 결과지 해석상담 ($50)',
         '유형(Typing) 상담 ($100)',
         '개별 코칭 1회 ($80)',
-        '에니어그램 기본과정 8주 ($330 / ₩450,000)',
+        '성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)',
         '자녀 양육 코칭 문의',
         '회복 코칭 4회 ($300)',
         '회복 코칭 8회 ($480)',
@@ -206,11 +206,11 @@ function renderBasicCourseApply(submitSource) {
                     <div class="grid gap-0 md:grid-cols-[0.78fr_1fr] lg:grid-cols-1">
                         <div class="course-apply-poster-wrap flex min-h-48 flex-col items-center justify-center bg-er-dark px-8 py-10 text-center text-white sm:min-h-60 lg:min-h-[28rem]">
                             <span class="text-[11px] font-bold uppercase tracking-[0.28em] text-er-greenTint">October 2026</span>
-                            <p class="mt-4 font-display text-3xl font-extrabold leading-tight break-keep">에니어그램<br>기본과정 8주</p>
+                            <p class="mt-4 font-display text-3xl font-extrabold leading-tight break-keep">성경적 에니어그램<br>기본과정 8주</p>
                             <p class="mt-4 text-sm text-white/75 break-keep">10월 첫주 개강 · 온라인 Zoom · 정원 8명</p>
                         </div>
                         <div class="p-5 sm:p-6">
-                            <h1 class="text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl">에니어그램 기본과정 8주</h1>
+                            <h1 class="text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl">성경적 에니어그램 기본과정 8주</h1>
                             <p class="mt-2 text-base font-semibold leading-relaxed text-er-primary break-keep">
                                 관계 속에서 드러나는 나를 이해하는 시간
                             </p>
@@ -225,7 +225,7 @@ function renderBasicCourseApply(submitSource) {
                                 <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료</span>한국 계좌이체 ₩450,000 · 미국 Zelle·Venmo $330</p>
                                 <p class="col-span-2"><span class="block text-[11px] text-er-muted">요일·시간</span>참여자 희망 시간대를 모아 조율합니다</p>
                             </div>
-                            <a href="/basic-course.html" class="mt-4 inline-block text-xs font-bold text-er-dark underline">과정 상세 안내 보기 →</a>
+                            <a href="/basic-course.html" class="mt-4 inline-block text-sm font-bold text-er-green underline underline-offset-2 hover:text-er-greenDark">과정 상세 안내 보기 →</a>
                         </div>
                     </div>
                 </section>
@@ -237,7 +237,7 @@ function renderBasicCourseApply(submitSource) {
                     </p>
 
                     <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_october' })">
-                        <input type="hidden" name="category" value="에니어그램 기본과정 8주 ($330 / ₩450,000)">
+                        <input type="hidden" name="category" value="성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)">
 
                         <div>
                             <label class="mb-2 block text-sm font-bold text-gray-700">수강자 이름</label>
@@ -407,8 +407,8 @@ function renderBasicCourseApply(submitSource) {
                         </div>
 
                         <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
-                        <button id="apply-submit-btn" type="submit" data-default-label="에니어그램 기본과정 신청하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
-                            에니어그램 기본과정 신청하기
+                        <button id="apply-submit-btn" type="submit" data-default-label="성경적 에니어그램 기본과정 신청하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
+                            성경적 에니어그램 기본과정 신청하기
                         </button>
                     </form>
 
@@ -487,21 +487,21 @@ function renderApply(payload = null) {
         },
         enneagram_basic_july: {
             track: 'paid',
-            title: '에니어그램 기본과정 8주 신청',
+            title: '성경적 에니어그램 기본과정 8주 신청',
             desc: '10월 첫주 개강 · 정원 8명 · 온라인 기본과정 신청을 남겨 주세요.',
-            bannerTitle: '에니어그램 기본과정 8주',
+            bannerTitle: '성경적 에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
-            category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
-            message: '에니어그램 기본과정 8주 신청합니다.'
+            category: '성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)',
+            message: '성경적 에니어그램 기본과정 8주 신청합니다.'
         },
         enneagram_basic_october: {
             track: 'paid',
-            title: '에니어그램 기본과정 8주 신청',
+            title: '성경적 에니어그램 기본과정 8주 신청',
             desc: '10월 첫주 개강 · 정원 8명 · 온라인 기본과정 신청을 남겨 주세요.',
-            bannerTitle: '에니어그램 기본과정 8주',
+            bannerTitle: '성경적 에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
-            category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
-            message: '에니어그램 기본과정 8주 신청합니다.'
+            category: '성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)',
+            message: '성경적 에니어그램 기본과정 8주 신청합니다.'
         },
         couple: {
             track: 'paid',

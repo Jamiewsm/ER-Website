@@ -79,16 +79,17 @@ test('October Enneagram basic course link renders a dedicated direct application
     apply_source: 'instagram'
   });
 
-  assert.match(html, /에니어그램 기본과정 8주/);
+  assert.match(html, /성경적 에니어그램 기본과정 8주/);
   assert.match(html, /관계 속에서 드러나는 나를 이해하는 시간/);
   assert.match(html, /October 2026/);
   assert.doesNotMatch(html, /enneagram-basic-july-2026\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="에니어그램 기본과정 8주 \(\$330 \/ ₩450,000\)"/);
-  assert.match(html, /에니어그램 기본과정 신청하기/);
+  assert.match(html, /type="hidden" name="category" value="성경적 에니어그램 기본과정 8주 \(\$330 \/ ₩450,000\)"/);
+  assert.match(html, /성경적 에니어그램 기본과정 신청하기/);
   assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_october:instagram', \{ focus: 'enneagram_basic_october' \}\)/);
   assert.match(html, /name="contact"[^>]*type="email"|type="email"[^>]*name="contact"/);
   assert.match(html, /name="phone"[^>]*required/);
   assert.match(html, /연락 및 현금영수증 발급 용도/);
+  assert.match(html, /class="[^"]*text-er-green[^"]*"[^>]*>과정 상세 안내 보기/);
   assert.match(html, /name="kakao_id"/);
   assert.match(html, /카카오톡 ID/);
   assert.match(html, /name="is_full_time_ministry"/);
@@ -306,7 +307,7 @@ test('October basic course submission preserves the legacy program key and sends
         contact: 'test@example.com',
         phone: '010-1234-5678',
         kakao_id: 'er_test',
-        category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
+        category: '성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)',
         is_full_time_ministry: 'yes',
         ministry_context: '서울, ER교회',
         is_proxy_application: 'yes',
