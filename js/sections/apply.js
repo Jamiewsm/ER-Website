@@ -12,6 +12,25 @@ function isBasicCourseFocus(focus) {
         || normalizedFocus === 'enneagram_basic';
 }
 
+function toggleApplyDetails(checkbox, targetId) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    const isOpen = Boolean(checkbox?.checked);
+    target.classList.toggle('hidden', !isOpen);
+    target.setAttribute('aria-hidden', String(!isOpen));
+    if (checkbox) checkbox.setAttribute('aria-expanded', String(isOpen));
+
+    target.querySelectorAll('[data-required-when-visible]').forEach((field) => {
+        field.disabled = !isOpen;
+        field.required = isOpen;
+    });
+}
+
+if (typeof window !== 'undefined') {
+    window.toggleApplyDetails = toggleApplyDetails;
+}
+
 /** @deprecated 호환용 — isBasicCourseFocus 사용 */
 function isJulyBasicCourseFocus(focus) {
     return isBasicCourseFocus(focus);
@@ -221,17 +240,17 @@ function renderBasicCourseApply(submitSource) {
                         <input type="hidden" name="category" value="에니어그램 기본과정 8주 ($330 / ₩450,000)">
 
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">이름</label>
-                            <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="성함을 남겨주세요">
+                            <label class="mb-2 block text-sm font-bold text-gray-700">수강자 이름</label>
+                            <input type="text" name="name" required autocomplete="name" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="실제로 수강하실 분의 성함">
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">이메일</label>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">수강자 이메일</label>
                                 <input type="email" name="contact" required autocomplete="email" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="자동 안내를 받을 이메일">
                             </div>
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">전화번호</label>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">수강자 전화번호</label>
                                 <p class="mb-2 text-xs text-gray-500 break-keep">(연락 및 현금영수증 발급 용도)</p>
                                 <input type="tel" name="phone" required autocomplete="tel" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 010-1234-5678">
                             </div>
@@ -239,12 +258,61 @@ function renderBasicCourseApply(submitSource) {
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
+                                <label class="mb-2 block text-sm font-bold text-gray-700">카카오톡 ID <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="kakao_id" autocomplete="off" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="카카오톡 ID를 적어주세요">
+                            </div>
+                            <div>
                                 <label class="mb-2 block text-sm font-bold text-gray-700">거주 국가 <span class="font-normal text-gray-400">(선택)</span></label>
                                 <input type="text" name="country" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: USA, Korea">
                             </div>
-                            <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">희망 요일·시간대</label>
-                                <input type="text" name="preferred_time" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 목요일 저녁 / Dallas PM">
+                        </div>
+
+                        <div>
+                            <label class="mb-2 block text-sm font-bold text-gray-700">희망 요일·시간대</label>
+                            <input type="text" name="preferred_time" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 목요일 저녁 / Dallas PM">
+                        </div>
+
+                        <div class="rounded-lg border border-amber-200 bg-amber-50 p-4">
+                            <label class="flex cursor-pointer items-start gap-3">
+                                <input type="checkbox" name="is_full_time_ministry" value="yes" aria-controls="basic-course-ministry-details" aria-expanded="false" onchange="toggleApplyDetails(this, 'basic-course-ministry-details')" class="mt-0.5 h-4 w-4 shrink-0 accent-er-green">
+                                <span>
+                                    <span class="block text-sm font-bold text-gray-700 break-keep">전임 사역자 및 사모에 해당합니다</span>
+                                    <span class="mt-1 block text-xs leading-relaxed text-gray-500 break-keep">목회자, 선교사, 선교단체 간사 등 전임 사역자와 사모께서는 체크해 주세요.</span>
+                                </span>
+                            </label>
+                            <div id="basic-course-ministry-details" class="mt-4 hidden" aria-hidden="true">
+                                <label class="mb-2 block text-sm font-bold text-gray-700">사역 정보</label>
+                                <textarea name="ministry_context" rows="2" disabled data-required-when-visible class="w-full resize-none rounded-lg border border-amber-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="지역, 교회, 선교지 또는 소속 단체를 간단히 적어주세요."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="rounded-lg border border-er-accentLight bg-er-base/60 p-4">
+                            <label class="flex cursor-pointer items-start gap-3">
+                                <input type="checkbox" name="is_proxy_application" value="yes" aria-controls="basic-course-proxy-details" aria-expanded="false" onchange="toggleApplyDetails(this, 'basic-course-proxy-details')" class="mt-0.5 h-4 w-4 shrink-0 accent-er-green">
+                                <span>
+                                    <span class="block text-sm font-bold text-er-dark break-keep">다른 사람이나 가정을 위해 대신 신청하고 비용을 납부합니다</span>
+                                    <span class="mt-1 block text-xs leading-relaxed text-er-primary break-keep">위에는 실제 수강자의 정보를, 아래에는 대리 신청자와 결제자 정보를 적어주세요.</span>
+                                </span>
+                            </label>
+                            <div id="basic-course-proxy-details" class="mt-4 hidden" aria-hidden="true">
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                    <div>
+                                        <label class="mb-2 block text-sm font-bold text-gray-700">대리 신청자 이름</label>
+                                        <input type="text" name="proxy_name" disabled data-required-when-visible autocomplete="name" class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="신청서를 작성하시는 분">
+                                    </div>
+                                    <div>
+                                        <label class="mb-2 block text-sm font-bold text-gray-700">수강자와의 관계</label>
+                                        <input type="text" name="proxy_relationship" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 부모, 배우자, 후원자">
+                                    </div>
+                                    <div>
+                                        <label class="mb-2 block text-sm font-bold text-gray-700">대리 신청자 연락처</label>
+                                        <input type="text" name="proxy_contact" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="이메일 또는 전화번호">
+                                    </div>
+                                    <div>
+                                        <label class="mb-2 block text-sm font-bold text-gray-700">결제자·입금자명</label>
+                                        <input type="text" name="payer_name" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="결제 확인에 사용할 이름">
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -323,7 +391,7 @@ function renderBasicCourseApply(submitSource) {
                         </div>
 
                         <label class="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 cursor-pointer">
-                            <input type="checkbox" name="covenant_agree" required class="mt-0.5 h-4 w-4 shrink-0 accent-[#657453]">
+                            <input type="checkbox" name="covenant_agree" required class="mt-0.5 h-4 w-4 shrink-0 accent-er-green">
                             <span class="text-xs leading-relaxed text-gray-600 break-keep">수업과 멘토링에서 나눈 개인 이야기를 외부에 공유하지 않으며, 서로 존중하는 안전한 공동체를 만드는 데 협력하고, 강의와 멘토링에 성실히 참여하겠습니다.</span>
                         </label>
 

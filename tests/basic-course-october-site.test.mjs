@@ -43,6 +43,14 @@ test('October application route uses October focus and collects region-aware pay
   assert.match(apply, /name="payment_region" required/);
   assert.match(apply, /name="payment_preference" required/);
   assert.match(apply, /name="installment_preference"/);
+  assert.match(apply, /name="kakao_id"/);
+  assert.match(apply, /name="is_full_time_ministry"/);
+  assert.match(apply, /name="ministry_context"/);
+  assert.match(apply, /name="is_proxy_application"/);
+  assert.match(apply, /name="proxy_name"/);
+  assert.match(apply, /name="proxy_relationship"/);
+  assert.match(apply, /name="proxy_contact"/);
+  assert.match(apply, /name="payer_name"/);
   assert.match(apply, /value="kr_bank"/);
   assert.match(apply, /value="zelle"/);
   assert.match(apply, /value="venmo"/);

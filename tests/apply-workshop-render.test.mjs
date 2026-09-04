@@ -89,6 +89,18 @@ test('October Enneagram basic course link renders a dedicated direct application
   assert.match(html, /name="contact"[^>]*type="email"|type="email"[^>]*name="contact"/);
   assert.match(html, /name="phone"[^>]*required/);
   assert.match(html, /연락 및 현금영수증 발급 용도/);
+  assert.match(html, /name="kakao_id"/);
+  assert.match(html, /카카오톡 ID/);
+  assert.match(html, /name="is_full_time_ministry"/);
+  assert.match(html, /전임 사역자 및 사모에 해당합니다/);
+  assert.match(html, /name="ministry_context"[^>]*data-required-when-visible/);
+  assert.match(html, /지역, 교회, 선교지 또는 소속 단체/);
+  assert.match(html, /name="is_proxy_application"/);
+  assert.match(html, /다른 사람이나 가정을 위해 대신 신청하고 비용을 납부합니다/);
+  assert.match(html, /name="proxy_name"[^>]*data-required-when-visible/);
+  assert.match(html, /name="proxy_relationship"[^>]*data-required-when-visible/);
+  assert.match(html, /name="proxy_contact"[^>]*data-required-when-visible/);
+  assert.match(html, /name="payer_name"[^>]*data-required-when-visible/);
   assert.match(html, /name="payment_region"[^>]*required/);
   assert.match(html, /name="payment_preference"[^>]*required/);
   assert.match(html, /name="installment_preference"/);
@@ -293,7 +305,15 @@ test('October basic course submission preserves the legacy program key and sends
         name: '테스트',
         contact: 'test@example.com',
         phone: '010-1234-5678',
+        kakao_id: 'er_test',
         category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
+        is_full_time_ministry: 'yes',
+        ministry_context: '서울, ER교회',
+        is_proxy_application: 'yes',
+        proxy_name: '대리인',
+        proxy_relationship: '가족',
+        proxy_contact: 'proxy@example.com',
+        payer_name: '대리인',
         payment_region: 'KR',
         payment_preference: 'kr_bank',
         installment_preference: 'split_consult',
@@ -309,6 +329,13 @@ test('October basic course submission preserves the legacy program key and sends
   assert.equal(requestBody.payment_preference, 'kr_bank');
   assert.equal(requestBody.installment_preference, 'split_consult');
   assert.match(requestBody.message, /전화번호: 010-1234-5678/);
+  assert.match(requestBody.message, /카카오톡 ID: er_test/);
+  assert.match(requestBody.message, /전임 사역자 및 사모: 해당/);
+  assert.match(requestBody.message, /사역 정보: 서울, ER교회/);
+  assert.match(requestBody.message, /대리 신청자 이름: 대리인/);
+  assert.match(requestBody.message, /수강자와의 관계: 가족/);
+  assert.match(requestBody.message, /대리 신청자 연락처: proxy@example.com/);
+  assert.match(requestBody.message, /결제자·입금자명: 대리인/);
 });
 
 test('failed focused submission reports an inline retryable error', async () => {
