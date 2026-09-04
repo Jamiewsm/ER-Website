@@ -149,6 +149,7 @@ async function handleApplySubmit(event, source, successPayload) {
   var name = (formData.get('name') || '').toString().trim();
   var contact = (formData.get('contact') || '').toString().trim();
   var phone = (formData.get('phone') || '').toString().trim();
+  var kakaoId = (formData.get('kakao_id') || '').toString().trim();
   var country = (formData.get('country') || '').toString().trim();
   var preferredTime = (formData.get('preferred_time') || '').toString().trim();
   var category = (formData.get('category') || '').toString().trim();
@@ -159,11 +160,30 @@ async function handleApplySubmit(event, source, successPayload) {
   var paymentRegion = (formData.get('payment_region') || '').toString().trim();
   var paymentPreference = (formData.get('payment_preference') || '').toString().trim();
   var installmentPreference = (formData.get('installment_preference') || '').toString().trim();
+  var isFullTimeMinistry = Boolean(formData.get('is_full_time_ministry'));
+  var ministryContext = (formData.get('ministry_context') || '').toString().trim();
+  var isProxyApplication = Boolean(formData.get('is_proxy_application'));
+  var proxyName = (formData.get('proxy_name') || '').toString().trim();
+  var proxyRelationship = (formData.get('proxy_relationship') || '').toString().trim();
+  var proxyContact = (formData.get('proxy_contact') || '').toString().trim();
+  var payerName = (formData.get('payer_name') || '').toString().trim();
   var covenantAgree = formData.get('covenant_agree') ? '동의함' : '';
   var extraLines = [];
   if (phone) extraLines.push('전화번호: ' + phone);
+  if (kakaoId) extraLines.push('카카오톡 ID: ' + kakaoId);
   if (country) extraLines.push('거주 국가: ' + country);
   if (preferredTime) extraLines.push('희망 시간대: ' + preferredTime);
+  if (isFullTimeMinistry) {
+    extraLines.push('전임 사역자 및 사모: 해당');
+    if (ministryContext) extraLines.push('사역 정보: ' + ministryContext);
+  }
+  if (isProxyApplication) {
+    extraLines.push('대리 신청: 해당');
+    if (proxyName) extraLines.push('대리 신청자 이름: ' + proxyName);
+    if (proxyRelationship) extraLines.push('수강자와의 관계: ' + proxyRelationship);
+    if (proxyContact) extraLines.push('대리 신청자 연락처: ' + proxyContact);
+    if (payerName) extraLines.push('결제자·입금자명: ' + payerName);
+  }
   if (experience) extraLines.push('에니어그램 경험: ' + experience);
   if (referralSource) extraLines.push('신청 경로: ' + referralSource + (referralName ? ' — ' + referralName : ''));
   if (paymentRegion) extraLines.push('결제 지역: ' + paymentRegion);
@@ -195,6 +215,18 @@ async function handleApplySubmit(event, source, successPayload) {
   if (isOctoberBasicCourse && !phone) {
     if (!setApplySubmitStatus('전화번호를 입력해 주세요. (연락 및 현금영수증 발급 용도)', 'error')) {
       alert('전화번호를 입력해 주세요.');
+    }
+    return;
+  }
+  if (isOctoberBasicCourse && isFullTimeMinistry && !ministryContext) {
+    if (!setApplySubmitStatus('지역, 교회, 선교지 또는 소속 단체 등 사역 정보를 입력해 주세요.', 'error')) {
+      alert('사역 정보를 입력해 주세요.');
+    }
+    return;
+  }
+  if (isOctoberBasicCourse && isProxyApplication && (!proxyName || !proxyRelationship || !proxyContact || !payerName)) {
+    if (!setApplySubmitStatus('대리 신청자 이름, 수강자와의 관계, 연락처, 결제자·입금자명을 모두 입력해 주세요.', 'error')) {
+      alert('대리 신청 정보를 모두 입력해 주세요.');
     }
     return;
   }
