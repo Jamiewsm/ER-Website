@@ -27,6 +27,7 @@
     'ER 전문가 과정': 'coach_training',
     'ER 전문가 양성반': 'coach_training',
     '에니어그램 기본과정 8주': 'basic_course',
+    '성경적 에니어그램 기본과정 8주': 'basic_course',
     '커리어/소명 코칭': 'identity_session',
     '리더십/소명 코칭': 'coach_training',
     '회복 여정 8회': 'recovery_journey_8',
@@ -57,7 +58,7 @@
     const primary = withResultConsultPrimary(programNames);
     if (!isBasicCourseRecruitmentOpen()) return primary;
     const filtered = primary.filter((name) => !['result_consult', 'basic_course'].includes(resolveKey(name)));
-    return ['테스트 결과지 해석상담', '에니어그램 기본과정 8주', ...filtered].slice(0, 3);
+    return ['테스트 결과지 해석상담', '성경적 에니어그램 기본과정 8주', ...filtered].slice(0, 3);
   }
 
   /** @deprecated 호환용 — withBasicCourseBoost 사용 */
@@ -160,17 +161,17 @@
     },
     basic_course: {
       key: 'basic_course',
-      title: '에니어그램 기본과정 8주',
+      title: '성경적 에니어그램 기본과정 8주',
       shortTitle: '기본과정 8주',
       price: PRICING.basic_course,
-      category: '에니어그램 기본과정 8주 ($330 / ₩450,000)',
+      category: '성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)',
       track: 'paid',
       focus: 'enneagram_basic_october',
       featured: true,
       outcome: '10월 첫주 개강 · 정원 8명 · 8주 온라인 + 1:1 멘토링 · 요일·시간은 참여자와 조율',
       reasonPrimary: '무료 진단 결과를 체계적인 8주 학습으로 확장하기 좋은 시점입니다.',
       reasonSecondary: '9유형의 핵심 동기와 회복 관점을 깊이 배우기 좋습니다.',
-      applyMessage: '에니어그램 기본과정 8주 신청합니다.'
+      applyMessage: '성경적 에니어그램 기본과정 8주 신청합니다.'
     },
     coach_training: {
       key: 'coach_training',
