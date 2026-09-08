@@ -58,7 +58,7 @@
           <ul class="psb-meta" aria-label="기본과정 안내">
             <li>8주 · 주 1회</li>
             <li>온라인 Zoom</li>
-            <li>정원 8명</li>
+            <li>클래스당 7명 · 분반 가능</li>
             <li>한국 ₩450,000 · 미국 $330</li>
           </ul>
           <p class="psb-note">한국 계좌이체 ₩450,000, 미국 Zelle·Venmo $330. 신청 후 지역별 결제 안내 메일을 보내드립니다.</p>

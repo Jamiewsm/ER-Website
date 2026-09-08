@@ -207,7 +207,7 @@ function renderBasicCourseApply(submitSource) {
                         <div class="course-apply-poster-wrap flex min-h-48 flex-col items-center justify-center bg-er-dark px-8 py-10 text-center text-white sm:min-h-60 lg:min-h-[28rem]">
                             <span class="text-[11px] font-bold uppercase tracking-[0.28em] text-er-greenTint">October 2026</span>
                             <p class="mt-4 font-display text-3xl font-extrabold leading-tight break-keep">성경적 에니어그램<br>기본과정 8주</p>
-                            <p class="mt-4 text-sm text-white/75 break-keep">10월 첫주 개강 · 온라인 Zoom · 정원 8명</p>
+                            <p class="mt-4 text-sm text-white/75 break-keep">10월 첫주 개강 · 온라인 Zoom · 클래스당 7명 · 분반 가능</p>
                         </div>
                         <div class="p-5 sm:p-6">
                             <h1 class="text-[1.65rem] font-bold leading-tight text-er-dark sm:text-3xl">성경적 에니어그램 기본과정 8주</h1>
@@ -221,7 +221,7 @@ function renderBasicCourseApply(submitSource) {
                                 <p><span class="block text-[11px] text-er-muted">기간</span>2026년 10월 첫주 개강 · 8주</p>
                                 <p><span class="block text-[11px] text-er-muted">방식</span>온라인 Zoom</p>
                                 <p><span class="block text-[11px] text-er-muted">구성</span>교재 + 강의 + 1:1 멘토링</p>
-                                <p><span class="block text-[11px] text-er-muted">정원</span>8명</p>
+                                <p><span class="block text-[11px] text-er-muted">정원</span>클래스당 7명 · 분반 가능</p>
                                 <p class="col-span-2"><span class="block text-[11px] text-er-muted">수강료</span>한국 계좌이체 ₩450,000 · 미국 Zelle·Venmo $330</p>
                                 <p class="col-span-2"><span class="block text-[11px] text-er-muted">요일·시간</span>참여자 희망 시간대를 모아 조율합니다</p>
                             </div>
@@ -488,7 +488,7 @@ function renderApply(payload = null) {
         enneagram_basic_july: {
             track: 'paid',
             title: '성경적 에니어그램 기본과정 8주 신청',
-            desc: '10월 첫주 개강 · 정원 8명 · 온라인 기본과정 신청을 남겨 주세요.',
+            desc: '10월 첫주 개강 · 클래스당 7명 · 분반 가능 · 온라인 기본과정 신청을 남겨 주세요.',
             bannerTitle: '성경적 에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
             category: '성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)',
@@ -497,7 +497,7 @@ function renderApply(payload = null) {
         enneagram_basic_october: {
             track: 'paid',
             title: '성경적 에니어그램 기본과정 8주 신청',
-            desc: '10월 첫주 개강 · 정원 8명 · 온라인 기본과정 신청을 남겨 주세요.',
+            desc: '10월 첫주 개강 · 클래스당 7명 · 분반 가능 · 온라인 기본과정 신청을 남겨 주세요.',
             bannerTitle: '성경적 에니어그램 기본과정 8주',
             bannerBody: '9가지 유형의 핵심 동기와 패턴을 배우고, 관계와 회복의 관점으로 삶에 적용하는 온라인 과정입니다.',
             category: '성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)',
