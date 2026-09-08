@@ -1,0 +1,11 @@
+{
+  "name": "er-education-db-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test ../education-portal-rls.test.mjs ../education-registration.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8"
+  }
+}

@@ -86,7 +86,7 @@ test('application intake stays open independently of the visible seat count', ()
 
 test('graduation mail has no standalone expert cohort application link', () => {
   assert.match(templates, /ER 전문가 과정/);
-  assert.match(templates, /기본과정에 팔로우업 스터디와 1년 코칭스쿨/);
+  assert.match(templates, /2급 자격 소지와 심화성장101 이수/);
   assert.doesNotMatch(templates, /전문가 양성반 안내·신청/);
   assert.doesNotMatch(notify, /EXPERT_COHORT_APPLY_URL|expertCohortLabel|applyUrl/);
 });

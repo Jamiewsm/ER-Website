@@ -9,6 +9,7 @@ import {
 import { requireHeadCoach } from '../_shared/head-coach.ts';
 import {
   BASIC_COURSE_MAX_SEATS,
+  BASIC_COURSE_JULY_MAX_SEATS,
   BASIC_COURSE_OCTOBER_2026_COHORT_KEY,
   BASIC_COURSE_PROGRAM_KEY,
   basicCourseManualPaymentFromEnv,
@@ -105,7 +106,8 @@ Deno.serve(async (req) => {
         .rpc('admin_prepare_program_application_registration', {
           p_id: applicationId,
           p_cohort_key: app.cohort_key || BASIC_COURSE_OCTOBER_2026_COHORT_KEY,
-          p_max_seats: BASIC_COURSE_MAX_SEATS,
+          p_max_seats: app.cohort_key && app.cohort_key !== BASIC_COURSE_OCTOBER_2026_COHORT_KEY
+            ? BASIC_COURSE_JULY_MAX_SEATS : BASIC_COURSE_MAX_SEATS,
           p_payment_region: paymentRegion,
           p_payment_currency: paymentCurrency,
           p_payment_amount_usd: paymentRegion === 'OVERSEAS' ? pricing.amountUsd : null,
