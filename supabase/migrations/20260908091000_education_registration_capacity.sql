@@ -32,11 +32,14 @@ BEGIN
     RAISE EXCEPTION 'application_not_found' USING ERRCODE = 'P0002';
   END IF;
 
+  IF NULLIF(p_cohort_key,'') IS NOT NULL AND result_row.cohort_key IS NOT NULL AND result_row.cohort_key<>p_cohort_key THEN
+    RAISE EXCEPTION 'edu_application_cohort_mismatch';
+  END IF;
   lock_key := COALESCE(NULLIF(p_cohort_key, ''), result_row.cohort_key, result_row.program_key);
   PERFORM pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(lock_key, 0));
 
   -- Re-sending a registration notice must not downgrade an already confirmed student.
-  IF result_row.status = 'confirmed' AND result_row.cohort_key = lock_key THEN
+  IF result_row.status = 'confirmed' AND coalesce(result_row.cohort_key,result_row.program_key) = lock_key THEN
     RETURN result_row;
   END IF;
 
@@ -47,13 +50,16 @@ BEGIN
     class_capacity := GREATEST(1, p_max_seats);
   END IF;
 
-  SELECT count(*)::integer INTO reserved_count
-  FROM public.program_applications pa
-  WHERE pa.id <> p_id
-    AND pa.cohort_key = lock_key
-    AND pa.status IN ('payment_pending', 'confirmed');
+  IF linked_cohort IS NOT NULL THEN
+    reserved_count := public.edu_cohort_occupied(linked_cohort,NULL,p_id);
+  ELSE
+    SELECT count(*)::integer INTO reserved_count FROM public.program_applications pa
+    WHERE pa.id<>p_id AND coalesce(pa.cohort_key,pa.program_key)=lock_key AND pa.status IN ('payment_pending','confirmed');
+  END IF;
 
-  IF reserved_count >= class_capacity THEN
+  IF reserved_count >= class_capacity AND NOT EXISTS(
+    SELECT 1 FROM public.edu_enrollments WHERE application_id=p_id AND role='student' AND status IN ('active','completed')
+  ) THEN
     UPDATE public.program_applications
     SET status = 'waitlisted', cohort_key = lock_key
     WHERE id = p_id
@@ -80,6 +86,29 @@ REVOKE ALL ON FUNCTION public.admin_prepare_program_application_registration(uui
 REVOKE ALL ON FUNCTION public.admin_prepare_program_application_registration(uuid, text, integer, text, text, numeric, bigint) FROM anon;
 GRANT EXECUTE ON FUNCTION public.admin_prepare_program_application_registration(uuid, text, integer, text, text, numeric, bigint) TO authenticated;
 
+
+-- Direct status edits share the same lock/capacity rule as classroom placement and registration notices.
+CREATE FUNCTION public.edu_validate_application_seat() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
+DECLARE cohort uuid; cap integer;
+BEGIN
+ IF TG_OP='UPDATE' AND OLD.cohort_key IS DISTINCT FROM NEW.cohort_key AND EXISTS(SELECT 1 FROM public.edu_enrollments WHERE application_id=NEW.id) THEN
+  RAISE EXCEPTION 'edu_application_cohort_mismatch';
+ END IF;
+ SELECT id INTO cohort FROM public.edu_cohorts WHERE application_cohort_key=NEW.cohort_key;
+ IF cohort IS NOT NULL THEN
+  PERFORM pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(NEW.cohort_key,0));
+  IF NEW.status IN ('payment_pending','confirmed') THEN
+   SELECT coalesce(sum(capacity),0) INTO cap FROM public.edu_classes WHERE cohort_id=cohort;
+   IF public.edu_cohort_occupied(cohort,NULL,NEW.id)>=cap AND NOT EXISTS(SELECT 1 FROM public.edu_enrollments WHERE application_id=NEW.id AND role='student' AND status IN ('active','completed')) THEN
+    RAISE EXCEPTION 'edu_cohort_full';
+   END IF;
+  END IF;
+ END IF;
+ RETURN NEW;
+END $$;
+REVOKE ALL ON FUNCTION public.edu_validate_application_seat() FROM PUBLIC, anon, authenticated;
+CREATE TRIGGER edu_application_seat BEFORE INSERT OR UPDATE OF status,cohort_key ON public.program_applications FOR EACH ROW EXECUTE FUNCTION public.edu_validate_application_seat();
 
 -- Keep public notices consistent with the approved 2026-2027 education pathway.
 UPDATE public.public_notices SET

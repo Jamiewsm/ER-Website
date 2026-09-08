@@ -118,15 +118,26 @@ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = '' AS $$
 SELECT jsonb_build_object('user_id',auth.uid(),'is_head',public.edu_is_head(),'is_coach',EXISTS(SELECT 1 FROM public.coach_profiles WHERE user_id=auth.uid() AND is_active))
 $$;
 
+-- Count each occupied seat once, including registrations not yet placed in a class.
+-- Internal only: no caller may use this definer helper to enumerate other cohorts.
+CREATE FUNCTION public.edu_cohort_occupied(p_cohort uuid, p_exclude_enrollment uuid DEFAULT NULL, p_exclude_application uuid DEFAULT NULL) RETURNS integer
+LANGUAGE sql VOLATILE SECURITY DEFINER SET search_path = '' AS $$
+ SELECT ((SELECT count(*) FROM public.edu_enrollments e JOIN public.edu_classes c ON c.id=e.class_id
+  WHERE c.cohort_id=p_cohort AND e.role='student' AND e.status IN ('active','completed') AND e.id IS DISTINCT FROM p_exclude_enrollment)
+ + (SELECT count(*) FROM public.program_applications a JOIN public.edu_cohorts c ON c.application_cohort_key=a.cohort_key
+  WHERE c.id=p_cohort AND a.status IN ('payment_pending','confirmed') AND a.id IS DISTINCT FROM p_exclude_application
+  AND NOT EXISTS(SELECT 1 FROM public.edu_enrollments e WHERE e.id IS DISTINCT FROM p_exclude_enrollment AND e.application_id=a.id AND e.role='student' AND e.status IN ('active','completed'))))::integer
+$$;
+
 CREATE FUNCTION public.edu_validate_row() RETURNS trigger
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
 DECLARE oldj jsonb; newj jsonb := to_jsonb(NEW); col text; cols text[];
- e public.edu_enrollments; m public.edu_enrollments; l public.edu_lessons; q jsonb; r jsonb; used integer; cap integer;
+ e public.edu_enrollments; m public.edu_enrollments; l public.edu_lessons; q jsonb; r jsonb; used integer; cap integer; cohort uuid; v_cohort_key text; total_cap integer;
 BEGIN
  IF TG_OP='UPDATE' THEN
   oldj := to_jsonb(OLD);
   cols := CASE TG_TABLE_NAME
-   WHEN 'edu_cohorts' THEN ARRAY['id','course_id'] WHEN 'edu_classes' THEN ARRAY['id','cohort_id']
+   WHEN 'edu_cohorts' THEN ARRAY['id','course_id','application_cohort_key'] WHEN 'edu_classes' THEN ARRAY['id','cohort_id']
    WHEN 'edu_enrollments' THEN ARRAY['id','class_id','user_id','role']
    WHEN 'edu_mentor_assignments' THEN ARRAY['id','student_enrollment_id','mentor_enrollment_id']
    WHEN 'edu_lessons' THEN ARRAY['id','class_id'] WHEN 'edu_submissions' THEN ARRAY['id','lesson_id','student_enrollment_id']
@@ -140,16 +151,26 @@ BEGIN
   IF oldj ? 'created_at' AND oldj->'created_at' IS DISTINCT FROM newj->'created_at' THEN RAISE EXCEPTION 'edu_created_at_immutable'; END IF;
  END IF;
  IF TG_TABLE_NAME='edu_classes' THEN
+  SELECT application_cohort_key INTO v_cohort_key FROM public.edu_cohorts WHERE id=NEW.cohort_id;
+  PERFORM pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(coalesce(v_cohort_key,NEW.cohort_id::text),0));
   SELECT count(*) INTO used FROM public.edu_enrollments WHERE class_id=NEW.id AND role='student' AND status IN ('active','completed');
   IF used>NEW.capacity THEN RAISE EXCEPTION 'edu_capacity_below_enrollment'; END IF;
+  SELECT coalesce(sum(capacity),0)+NEW.capacity INTO total_cap FROM public.edu_classes WHERE cohort_id=NEW.cohort_id AND id<>NEW.id;
+  IF TG_OP='UPDATE' AND NEW.capacity<OLD.capacity AND public.edu_cohort_occupied(NEW.cohort_id)>total_cap THEN RAISE EXCEPTION 'edu_capacity_below_reservations'; END IF;
  ELSIF TG_TABLE_NAME='edu_enrollments' THEN
-  SELECT capacity INTO cap FROM public.edu_classes WHERE id=NEW.class_id FOR UPDATE;
+  SELECT c.cohort_id,h.application_cohort_key INTO cohort,v_cohort_key FROM public.edu_classes c JOIN public.edu_cohorts h ON h.id=c.cohort_id WHERE c.id=NEW.class_id;
+  IF cohort IS NULL THEN RAISE EXCEPTION 'edu_class_not_found'; END IF;
+  PERFORM pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(coalesce(v_cohort_key,cohort::text),0));
+  SELECT capacity INTO cap FROM public.edu_classes WHERE id=NEW.class_id;
   IF NEW.role='student' AND NEW.status IN ('active','completed') THEN
    SELECT count(*) INTO used FROM public.edu_enrollments WHERE class_id=NEW.class_id AND role='student' AND status IN ('active','completed') AND id<>NEW.id;
    IF used>=cap THEN RAISE EXCEPTION 'edu_class_full'; END IF;
+   SELECT coalesce(sum(capacity),0) INTO total_cap FROM public.edu_classes WHERE cohort_id=cohort;
+   IF public.edu_cohort_occupied(cohort,NEW.id,NEW.application_id)>=total_cap THEN RAISE EXCEPTION 'edu_cohort_full'; END IF;
   END IF;
   IF NEW.application_id IS NOT NULL THEN
    IF NEW.role<>'student' THEN RAISE EXCEPTION 'edu_application_requires_student'; END IF;
+   IF NOT EXISTS(SELECT 1 FROM public.program_applications a WHERE a.id=NEW.application_id AND v_cohort_key IS NOT NULL AND a.cohort_key=v_cohort_key) THEN RAISE EXCEPTION 'edu_application_cohort_mismatch'; END IF;
    -- Exact email matching when the contact itself is an email. Phone/mixed contact is an explicit head mapping.
    IF EXISTS(SELECT 1 FROM public.program_applications a JOIN auth.users u ON u.id=NEW.user_id
     WHERE a.id=NEW.application_id AND trim(a.contact) ~ '^[^[:space:]@]+@[^[:space:]@]+[.][^[:space:]@]+$'
@@ -180,7 +201,7 @@ BEGIN
   FOR r IN SELECT jsonb_build_object('id',key,'answer',value) FROM jsonb_each(NEW.answers) LOOP
    IF jsonb_typeof(r->'answer')<>'string' OR length(r->>'answer')>20000 OR NOT EXISTS(SELECT 1 FROM jsonb_array_elements(l.questions) x WHERE x->>'id'=r->>'id') THEN RAISE EXCEPTION 'edu_invalid_answer'; END IF;
   END LOOP;
-  NEW.question_snapshot := '[]'; NEW.updated_at := now();
+  NEW.question_snapshot := l.questions; NEW.updated_at := now();
   IF NEW.submitted_at IS NOT NULL THEN
    IF EXISTS(SELECT 1 FROM jsonb_array_elements(l.questions) x WHERE coalesce((x->>'required')::boolean,false) AND length(trim(coalesce(NEW.answers->>(x->>'id'),'')))=0) THEN RAISE EXCEPTION 'edu_answer_required'; END IF;
    IF NOT EXISTS(SELECT 1 FROM jsonb_each_text(NEW.answers) WHERE length(trim(value))>0) THEN RAISE EXCEPTION 'edu_answer_required'; END IF;
@@ -198,16 +219,23 @@ BEGIN
 END
 $$;
 
-CREATE FUNCTION public.edu_add_member(p_class_id uuid, p_email text, p_display_name text, p_role text) RETURNS public.edu_enrollments
+CREATE FUNCTION public.edu_add_member(p_class_id uuid, p_email text, p_display_name text, p_role text, p_application_id uuid DEFAULT NULL) RETURNS public.edu_enrollments
 LANGUAGE plpgsql SECURITY DEFINER SET search_path = '' AS $$
-DECLARE u uuid; result public.edu_enrollments;
+DECLARE u uuid; result public.edu_enrollments; lock_key text;
 BEGIN
  IF NOT public.edu_is_head() THEN RAISE EXCEPTION 'head_coach_required' USING ERRCODE='42501'; END IF;
  SELECT id INTO u FROM auth.users WHERE lower(trim(email))=lower(trim(p_email));
  IF u IS NULL THEN RAISE EXCEPTION 'edu_account_not_found'; END IF;
  IF length(trim(p_display_name)) NOT BETWEEN 1 AND 100 THEN RAISE EXCEPTION 'edu_invalid_display_name'; END IF;
- INSERT INTO public.edu_enrollments(class_id,user_id,display_name,role) VALUES(p_class_id,u,trim(p_display_name),p_role)
- ON CONFLICT(class_id,user_id,role) DO UPDATE SET display_name=EXCLUDED.display_name,status='active' RETURNING * INTO result;
+ SELECT coalesce(h.application_cohort_key,h.id::text) INTO lock_key FROM public.edu_classes c JOIN public.edu_cohorts h ON h.id=c.cohort_id WHERE c.id=p_class_id;
+ IF lock_key IS NULL THEN RAISE EXCEPTION 'edu_class_not_found'; END IF;
+ PERFORM pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtextextended(lock_key,0));
+ -- An INSERT trigger runs before ON CONFLICT: update existing membership first so a full class remains idempotent.
+ UPDATE public.edu_enrollments SET display_name=trim(p_display_name),status='active',application_id=coalesce(p_application_id,application_id)
+ WHERE class_id=p_class_id AND user_id=u AND role=p_role RETURNING * INTO result;
+ IF NOT FOUND THEN
+  INSERT INTO public.edu_enrollments(class_id,user_id,display_name,role,application_id) VALUES(p_class_id,u,trim(p_display_name),p_role,p_application_id) RETURNING * INTO result;
+ END IF;
  RETURN result;
 END
 $$;
@@ -358,11 +386,11 @@ CREATE POLICY edu_files_delete ON storage.objects FOR DELETE TO authenticated US
 DO $$ DECLARE f record; BEGIN
  FOR f IN SELECT p.oid::regprocedure AS signature FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname LIKE 'edu_%' LOOP
   EXECUTE format('REVOKE ALL ON FUNCTION %s FROM PUBLIC, anon, authenticated',f.signature);
-  IF f.signature::text NOT LIKE '%edu_validate_row(%' THEN EXECUTE format('GRANT EXECUTE ON FUNCTION %s TO authenticated',f.signature); END IF;
+  IF f.signature::text NOT LIKE '%edu_validate_row(%' AND f.signature::text NOT LIKE '%edu_cohort_occupied(%' THEN EXECUTE format('GRANT EXECUTE ON FUNCTION %s TO authenticated',f.signature); END IF;
  END LOOP;
 END $$;
 INSERT INTO public.edu_courses(code,title,kind) VALUES
- ('basic','성경적 에니어그램 기본과정','basic'),('growth_101','심화 101','growth'),('growth_201','심화 201','growth'),('growth_202','심화 202 (안내 준비 중)','growth'),('training','코치 트레이닝','training');
+ ('basic','성경적 에니어그램 기본과정','basic'),('growth_101','심화성장101 · 고착과 하위유형','growth'),('growth_201','Parenting(자녀양육)','growth'),('training','코치 트레이닝','training');
 INSERT INTO public.edu_cohorts(id,course_id,title,status,application_cohort_key) SELECT 'ed000000-0000-4000-8000-000000000010',id,'2026년 10월 기본과정','draft','enneagram_basic_2026_10' FROM public.edu_courses WHERE code='basic';
 INSERT INTO public.edu_classes(cohort_id,title,capacity) VALUES
  ('ed000000-0000-4000-8000-000000000010','A반',7),('ed000000-0000-4000-8000-000000000010','B반',7);

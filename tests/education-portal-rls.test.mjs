@@ -248,6 +248,15 @@ test("class capacity excludes mentors and persists completed students; manual cr
         ]),
         /class_full/,
       );
+      assert.equal(
+        (
+          await db.query(
+            "select * from edu_add_member($1,$2,'같은 학생','student')",
+            [f.a.id, users.student.email],
+          )
+        ).rows[0].id,
+        f.student.id,
+      );
       await db.query(
         "update edu_enrollments set status='completed' where id=$1",
         [f.student.id],
@@ -437,6 +446,69 @@ test("administrative accounts archive academic records rather than deleting them
         "withdrawn",
       );
     });
+  } finally {
+    await db.close();
+  }
+});
+
+test("students retain saved questions and answers after a lesson closes and enrollment is withdrawn", async () => {
+  const db = await createDB();
+  try {
+    const f = await seed(db);
+    let saved;
+    await asUser(db, users.student, async () => {
+      saved = (
+        await db.query(
+          "insert into edu_submissions(lesson_id,student_enrollment_id,answers) values($1,$2,$3) returning *",
+          [f.lesson.id, f.student.id, JSON.stringify({ q1: "보관할 성찰" })],
+        )
+      ).rows[0];
+      assert.equal(
+        saved.question_snapshot[0].prompt,
+        f.lesson.questions[0].prompt,
+      );
+    });
+    await asUser(db, users.head, async () => {
+      await db.query("update edu_lessons set publish_at=null where id=$1", [
+        f.lesson.id,
+      ]);
+      await db.query(
+        "update edu_enrollments set status='withdrawn' where id=$1",
+        [f.student.id],
+      );
+      assert.equal(
+        (await db.query("select id from edu_submissions")).rows.length,
+        0,
+        "head cannot read a draft",
+      );
+    });
+    await asUser(db, users.student, async () => {
+      assert.equal(
+        (await db.query("select id from edu_lessons")).rows.length,
+        0,
+      );
+      const row = (await db.query("select * from edu_submissions")).rows[0];
+      assert.equal(row.answers.q1, "보관할 성찰");
+      assert.equal(
+        row.question_snapshot[0].prompt,
+        f.lesson.questions[0].prompt,
+      );
+      assert.equal(
+        (
+          await db.query(
+            "update edu_submissions set submitted_at=now() where id=$1",
+            [saved.id],
+          )
+        ).affectedRows,
+        0,
+      );
+    });
+    await asUser(db, users.mentor, async () =>
+      assert.equal(
+        (await db.query("select id from edu_submissions")).rows.length,
+        0,
+      ),
+    );
   } finally {
     await db.close();
   }

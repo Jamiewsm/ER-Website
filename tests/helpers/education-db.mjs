@@ -34,7 +34,7 @@ export async function asUser(db, user, fn) {
     await db.exec("reset role");
   }
 }
-export async function createDB() {
+export async function createDB({ beforeMigration } = {}) {
   const db = new PGlite();
   await db.exec(`
 create role anon;create role authenticated;create role service_role bypassrls;
@@ -44,7 +44,7 @@ create function auth.uid() returns uuid language sql stable as $$select nullif(c
 grant usage on schema public,auth,storage to anon,authenticated;
 create table public.coach_profiles(user_id uuid primary key references auth.users,role text,is_active boolean default true);
 create table public.coach_mentees(id uuid primary key,coach_user_id uuid references auth.users);
-create table public.program_applications(id uuid primary key,contact text);
+create table public.program_applications(id uuid primary key,contact text,cohort_key text,program_key text,status text);
 create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint);
 create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text references storage.buckets,name text,metadata jsonb default '{}',unique(bucket_id,name));
 alter table storage.objects enable row level security;grant select,insert,update,delete on storage.objects to authenticated;
@@ -55,6 +55,7 @@ alter table storage.objects enable row level security;grant select,insert,update
     "insert into coach_profiles values($1,'head_coach',true),($2,'coach',true),($3,'coach',true)",
     [users.head.id, users.mentor.id, users.unassigned.id],
   );
+  if (beforeMigration) await beforeMigration(db);
   await db.exec(
     await readFile(
       new URL(
