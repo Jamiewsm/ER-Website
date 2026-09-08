@@ -96,7 +96,7 @@ test('rendered pathway permits parallel exam and 101 participation and requires 
   assert.match(html, /href="\/basic-course\.html"/);
 });
 
-test('rendered education details preserve approved dates, fees, training duration and optional 201', () => {
+test('rendered education details preserve approved dates, fees and training duration', () => {
   const html = renderTraining();
   const exam = html.slice(html.indexOf('id="education-exam-title"'), html.indexOf('aria-labelledby="education-growth-title"'));
   assert.match(exam, /2026년 9월 말 온라인 시행 예정/);
@@ -116,8 +116,17 @@ test('rendered education details preserve approved dates, fees, training duratio
   assert.match(coach, /총 ₩1,200,000 · 월 ₩100,000씩 12회/);
   assert.match(coach, /12회는 납부 횟수이며 교육 기간과는 다릅니다/);
   for (const course of [growth, coach]) assert.match(course, /전임사역자 및 사모에게는 수강료 50%/);
-  const parenting = html.slice(html.indexOf('id="education-parenting-title"'));
-  assert.match(parenting, /서초윤/);
-  assert.match(parenting, /선택하여 참여하는 성장 과정/);
-  assert.match(parenting, /일정과 수강료는 추후 안내/);
+});
+
+test('future growth subjects are examples without unconfirmed instructors or course requirements', () => {
+  const html = renderTraining();
+  const future = html.slice(html.indexOf('id="education-parenting-title"'));
+  assert.match(future, /앞으로 개설할 심화성장 과목/);
+  for (const subject of ['Parenting(자녀양육)', '부부관계', '목회와 사역', '리더십']) {
+    assert.ok(future.includes(subject), subject);
+  }
+  assert.match(future, /선택하여 참여하는 성장 과정의 예시/);
+  assert.match(future, /개설 일정과 내용은 확정 후 안내/);
+  assert.doesNotMatch(html, /서초윤/);
+  assert.doesNotMatch(future, /심화성장20[2-9]|₩|강사|코치가|지원 조건|월요일|화요일|수요일|목요일|금요일|토요일|일요일/);
 });

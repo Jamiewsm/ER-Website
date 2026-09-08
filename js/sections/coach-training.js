@@ -66,8 +66,8 @@ function renderCoachTraining() {
                 </section>
 
                 <section aria-labelledby="education-parenting-title">
-                    <h3 id="education-parenting-title" class="text-2xl font-bold text-er-inkSoft break-keep">선택 과정 · 심화성장201 · 자녀양육과 에니어그램</h3>
-                    <p class="mt-4 max-w-xl text-er-body leading-relaxed break-keep">서초윤 코치가 이끄는 자녀양육과 에니어그램 과정입니다. 부모의 유형과 하위유형에서 나타나는 고착과 갈등 패턴을 살피고, 부모의 건강한 자기 이해와 자녀에 대한 객관적인 이해를 돕습니다. 선택하여 참여하는 성장 과정이며, 일정과 수강료는 추후 안내합니다. 기존 스터디 참여자는 심화성장101 재참여를 선택하거나 쉬었다가 이후 합류할 수도 있습니다.</p>
+                    <h3 id="education-parenting-title" class="text-2xl font-bold text-er-inkSoft break-keep">앞으로 개설할 심화성장 과목</h3>
+                    <p class="mt-4 max-w-xl text-er-body leading-relaxed break-keep">앞으로 Parenting(자녀양육), 부부관계, 목회와 사역, 리더십 등 삶의 여러 영역에 적용하는 심화성장 과목을 개설할 예정입니다. 선택하여 참여하는 성장 과정의 예시이며, 구체적인 개설 일정과 내용은 확정 후 안내합니다. 기존 스터디 참여자는 심화성장101 재참여를 선택하거나 쉬었다가 이후 합류할 수도 있습니다.</p>
                 </section>
             </div>
         </div>
