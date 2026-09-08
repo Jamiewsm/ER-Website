@@ -36,7 +36,7 @@ async function coachFunctionFetch(path, body) {
     let message = text || 'HTTP ' + response.status;
     try {
       const parsed = JSON.parse(text);
-      if (parsed.error === 'seats_full') message = '정원(8명)이 가득 찼습니다. 신청자는 대기 목록으로 이동했습니다.';
+      if (parsed.error === 'seats_full') message = '현재 기수의 등록 정원이 가득 찼습니다. 신청자는 대기 목록으로 이동했습니다.';
       else if (parsed.error) message = parsed.error;
     } catch (_) {}
     throw new Error(message);

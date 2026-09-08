@@ -168,7 +168,7 @@
       track: 'paid',
       focus: 'enneagram_basic_october',
       featured: true,
-      outcome: '10월 첫주 개강 · 정원 8명 · 8주 온라인 + 1:1 멘토링 · 요일·시간은 참여자와 조율',
+      outcome: '10월 첫주 개강 · 클래스당 7명 · 분반 가능 · 8주 온라인 + 1:1 멘토링 · 요일·시간은 참여자와 조율',
       reasonPrimary: '무료 진단 결과를 체계적인 8주 학습으로 확장하기 좋은 시점입니다.',
       reasonSecondary: '9유형의 핵심 동기와 회복 관점을 깊이 배우기 좋습니다.',
       applyMessage: '성경적 에니어그램 기본과정 8주 신청합니다.'
@@ -178,7 +178,7 @@
       title: 'ER 전문가 과정',
       shortTitle: '전문가 과정',
       navigateSection: 'coach_training',
-      outcome: '기본과정 + 스터디 + 1년 코칭스쿨로 이어지는 전체 훈련 여정입니다.',
+      outcome: '기본과정 → 2급 검정·심화성장101 → 1급 코치 트레이닝으로 이어지는 교육 여정입니다.',
       reasonPrimary: '다른 사람의 회복 여정을 돕는 소명과 연결됩니다.',
       reasonSecondary: '리더십·사역·코칭 역량을 체계적으로 키우기 좋습니다.',
       applyMessage: 'ER 전문가 과정 전체 여정을 확인하고 싶습니다.'
