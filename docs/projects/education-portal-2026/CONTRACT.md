@@ -1,9 +1,10 @@
 # ER 교육 포털 — 승인된 설계와 공통 계약
 
-2026-09-08. 사용자가 전체 회의안을 고려해 실행을 승인했다. 설계 재승인을 요청하지 않고 구현·검증·PR까지 진행한다. 배포·merge는 각 저장소 운영 지침을 따른다.
+2026-09-08 실행 승인, 2026-09-09 공개 안내 보류 지시 반영. DB·포털 준비와 검증·PR 작업은 계속한다. 공개 웹사이트 PR #123은 사용자의 추가 수정 및 별도 공개 지시 전까지 배포하지 않는다. 배포·merge 담당은 Cursor CLI다.
 
 ## 운영 기준
-- 기본과정은 분기별, 반당 학생 7명, 같은 반에서 8주. 10월 A/B반은 운영 준비 상태로 생성한다. 실제 일정·학생·줌 URL은 운영자가 입력한다. 7월은 8월말 종료이며 기존 기록을 변경하거나 이름으로 자동 연결하지 않는다.
+- 기본과정은 분기별, 반당 학생 7명, 같은 반에서 8주. 10월 A/B반은 운영 준비 상태로 생성한다. 일정은 학생들의 가능 시간을 취합한 뒤 확정하며, 실제 학생·줌 URL과 함께 운영자가 입력한다. 7월은 8월말 종료이며 기존 기록을 변경하거나 이름으로 자동 연결하지 않는다.
+- 현재 코치훈련의 운영 구분은 2026년 10~12월 3분기다. 2027년 신규 2기와 별도 기수로 관리하며, 실제 일정은 학생 가능 시간 취합 후 확정한다.
 - 멘토는 코치 훈련생이며 보통 2~3명 담당. 한 계정에 여러 과정·반의 student/mentor/instructor 역할을 연결한다. 수석코치는 활성 coach_profiles.role=head_coach로 판정하며 이름·이메일 하드코딩을 하지 않는다.
 - 주차별 자기성찰 질문지, 답변 임시저장/제출, 담당 멘토 및 수석 열람, 학생에게 공유한 피드백만 학생 열람. 학생 수료·검정 합격은 자동 부여하지 않는다.
 - 교실별 일정·줌·자료·YouTube/강의 링크·예약 공지·댓글·읽음. 기본 외 심화101/201/202·트레이닝도 지원. 자체 채팅·외부 자동 수집·Kakao 발송·시험 엔진은 이번 릴리스 범위 밖.
@@ -38,7 +39,7 @@ Private bucket edu-files, 10MB max. Paths lesson/<lesson uuid>/<random>-filename
 New /education.html in CoachPortal-WebApp. Shares js/config.js and js/supabase-client.js and Supabase auth session, but own entrypoint because existing auth intentionally requires coach profile. Email/password sign in/sign up/password reset. Empty account can sign in and sees no classes until head enrolls. Head UI creates courses/cohorts/classes, assigns members by email, mentors, publishes lessons/posts, marks attendance/completion and payment/credentials. Student/mentor roles cannot grant themselves access. UI does not depend on uncommitted original files. Link from existing app login and More view. No real student data in fixtures.
 
 ## Delivery
-Site PR: new education pathway copy + 7-per-class public capacity. Backend PR (supabase track): additive migration, RLS tests, October capacity14 for two planned classes instead of8, current graduation copy. Portal PR: new files/integration + tests. Do not merge/deploy automatically. Operator enters actual questions, links, times and enrollments; no fabricated curriculum or participant records.
+Site PR #123: education pathway copy and public capacity information remain ON HOLD for user edits and a separate publication instruction. Backend PR (supabase track): additive migration, RLS tests, October capacity14 for two planned classes instead of8, current graduation copy. Education migrations preserve all existing public.public_notices fields. Held notice copy is entirely commented out in supabase/manual/education-public-notices.pending.sql, outside migrations, and is review-only. Portal PR: new files/integration + tests. After verified backup/restore, Cursor CLI applies DB then portal; the site is not part of that deployment sequence. Operator enters actual questions, links and enrollments, and confirms times after collecting student availability; no fabricated curriculum or participant records.
 
 ## 구현 보완
 원문 질문은 선택 입력으로 보존하고, 제출 시 한 가지 이상의 성찰을 요구한다. 기본과정 정원은 active와 completed 학생을 포함하며 멘토는 제외한다. 기수의 application_cohort_key와 반 정원 합계를 신청 예약에 사용한다. 추가 서버나 DB 프로젝트를 만들지 않는다. 운영 적용 전 DATA-PRESERVATION.md의 백업 및 복원 조건을 충족한다.

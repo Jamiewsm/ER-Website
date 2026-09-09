@@ -141,10 +141,10 @@ test("registration shares 14 places with existing enrollments, follows added cla
         );
       }
     });
-    assert.match(
-      (await db.query("select summary from public_notices where legacy_key=7"))
-        .rows[0].summary,
-      /7명/,
+    assert.equal(
+      (await db.query("select body from public_notices where legacy_key=7"))
+        .rows[0].body,
+      "<p>8명</p>",
     );
   } finally {
     await db.close();
@@ -177,6 +177,66 @@ test("initial classes preserve already reserved October applications during migr
         )
       ).rows[0].count,
       8,
+    );
+  } finally {
+    await db.close();
+  }
+});
+
+test("education migrations and review-only notice draft preserve every existing public notice field", async () => {
+  let before;
+  const db = await createDB({
+    beforeMigration: async (db) => {
+      await db.exec(`
+        create table public_notices(legacy_key integer primary key,title text,summary text,body text,body_is_html boolean,program_period text,updated_at timestamptz);
+        insert into public_notices values
+          (1,'운영 중 과정 안내','운영 중 요약','<p>사용자가 유지한 기존 과정 본문</p>',true,'기존 과정',timestamptz '2026-09-01 00:00:00+00'),
+          (7,'운영 중 모집 안내','기존 모집 요약','<p>사용자가 유지한 기존 모집 본문</p>',true,'기존 모집',timestamptz '2026-09-02 00:00:00+00'),
+          (99,'기타 공지',null,'다른 공지도 보존',false,null,timestamptz '2026-09-03 00:00:00+00');
+      `);
+      before = (
+        await db.query("select * from public_notices order by legacy_key")
+      ).rows;
+    },
+  });
+  try {
+    const notices = async () =>
+      (await db.query("select * from public_notices order by legacy_key")).rows;
+    assert.deepEqual(
+      await notices(),
+      before,
+      "portal schema migration must preserve published notices",
+    );
+    await db.exec(`
+      alter table program_applications add column payment_region text, add column payment_currency text, add column payment_amount_usd numeric, add column payment_amount_krw bigint;
+      create function require_head_coach() returns void language plpgsql as $$begin if not public.edu_is_head() then raise exception 'head_coach_required';end if;end$$;
+    `);
+    await db.exec(
+      await readFile(
+        new URL(
+          "../supabase/migrations/20260908091000_education_registration_capacity.sql",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
+    assert.deepEqual(
+      await notices(),
+      before,
+      "registration migration must preserve published notices",
+    );
+    const pending = await readFile(
+      new URL(
+        "../supabase/manual/education-public-notices.pending.sql",
+        import.meta.url,
+      ),
+      "utf8",
+    );
+    await db.exec(pending);
+    assert.deepEqual(
+      await notices(),
+      before,
+      "review-only SQL must remain inert even if accidentally executed",
     );
   } finally {
     await db.close();

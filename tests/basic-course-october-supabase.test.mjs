@@ -97,3 +97,17 @@ test('notice migration replaces the old recruiting notice with an informational 
   assert.doesNotMatch(migration, />문의·신청하기<|>양성반 안내 보기</);
   assert.match(migration, /focus=enneagram_basic_october/);
 });
+
+
+test('held public notice copy is reviewable outside automatic education migrations', () => {
+  const schema = read('supabase/migrations/20260908090000_education_portal.sql');
+  const registration = read('supabase/migrations/20260908091000_education_registration_capacity.sql');
+  const pending = read('supabase/manual/education-public-notices.pending.sql');
+  assert.doesNotMatch(schema + registration, /(?:UPDATE|INSERT\s+INTO|DELETE\s+FROM)\s+public\.public_notices/i);
+  assert.match(pending, /ON HOLD/);
+  assert.match(pending, /WHERE legacy_key=1/);
+  assert.match(pending, /WHERE legacy_key=7/);
+  assert.match(pending, /심화성장101/);
+  assert.match(pending, /반당 학생 7명/);
+  assert.ok(pending.split('\n').every(line => !line.trim() || line.startsWith('--')), 'pending SQL is entirely comments');
+});

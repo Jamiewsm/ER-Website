@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/2026090809*.sql'
+      - 'supabase/manual/education-public-notices.pending.sql'
       - 'supabase/functions/_shared/email-templates.ts'
       - 'supabase/functions/_shared/program-pricing.ts'
       - 'supabase/functions/notify-program-application/**'
       - 'tests/education*'
       - 'tests/education/**'
+      - 'tests/basic-course-october-supabase.test.mjs'
       - 'tests/helpers/education-db.mjs'
       - '.github/workflows/education-backend.yml'
 permissions:
