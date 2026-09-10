@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test ../education-portal-rls.test.mjs ../education-registration.test.mjs"
+    "test": "node --test ../education-portal-rls.test.mjs ../education-registration.test.mjs ../education-rehearsal.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8"
