@@ -32,4 +32,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes postgresql libpq-dev
       - name: Verify independent database connection races
-        run: PG_BIN_DIR="$(pg_config --bindir)" node --test tests/education-concurrency.test.mjs
+        run: |
+          PG_TEST_BIN="$(pg_config --bindir)"
+          test -x "$PG_TEST_BIN/initdb"
+          PG_BIN_DIR="$PG_TEST_BIN" node --test tests/education-concurrency.test.mjs
