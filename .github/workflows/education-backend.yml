@@ -12,6 +12,7 @@ on:
       - 'tests/education/**'
       - 'tests/basic-course-october-supabase.test.mjs'
       - 'tests/helpers/education-db.mjs'
+      - 'tests/helpers/education-postgres.mjs'
       - '.github/workflows/education-backend.yml'
 permissions:
   contents: read
@@ -26,3 +27,9 @@ jobs:
       - run: npm ci --prefix tests/education --ignore-scripts
       - run: npm test --prefix tests/education
       - run: node --test tests/basic-course-october-supabase.test.mjs
+      - name: Install local PostgreSQL test tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql libpq-dev
+      - name: Verify independent database connection races
+        run: PG_BIN_DIR="$(pg_config --bindir)" node --test tests/education-concurrency.test.mjs
