@@ -53,9 +53,10 @@ async function race(db, firstSQL, secondSQL, secondError) {
   const secondPID = Number(await second.value("PID:"));
   assert.ok(firstPID > 0 && secondPID > 0 && firstPID !== secondPID);
   await db.blockedBy(secondPID, firstPID);
+  // Close input while the second query is still blocked; it may exit as soon as the lock is released.
+  second.end();
   first.end("commit;");
   assert.equal((await first.done).code, 0);
-  second.end();
   const result = await second.done;
   if (secondError) {
     assert.notEqual(result.code, 0);

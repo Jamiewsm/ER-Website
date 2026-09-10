@@ -69,7 +69,8 @@ export async function createPostgres() {
       child,
       done,
       write: (sql) => child.stdin.write(sql + "\n"),
-      end: (sql = "") => child.stdin.end(sql + "\n"),
+      // EOF must not write a newline after an expected SQL error has already closed psql.
+      end: (sql = "") => child.stdin.end(sql ? sql + "\n" : undefined),
       async until(marker) {
         const deadline = Date.now() + 10000;
         while (!stdout.split(/\r?\n/).includes(marker)) {
