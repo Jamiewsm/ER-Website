@@ -44,6 +44,21 @@ function createApp(hash = '#theology') {
   };
 }
 
+test('theology copy presents Original Design as unfolding purpose rather than self-discovery', () => {
+  const app = createApp();
+  app.context.renderSection('theology');
+  const html = app.main.innerHTML;
+
+  assert.doesNotMatch(html, /하나님께 알려지고/);
+  assert.doesNotMatch(html, /고유성을 지우시는 것이 아니라 정화하고/);
+  assert.match(html, /한 사람 한 사람을 아시고 뜻 가운데 지으셨습니다/);
+  assert.match(html, /하나님께로부터 주어집니다/);
+  assert.match(html, /기질과 능력이 성령 안에서 새로워지고/);
+  assert.match(html, /ER의 비전/);
+  assert.match(html, /더욱 온전히 펼쳐지고/);
+  assert.match(html, /이것이 ER이 꿈꾸는 Restoration입니다/);
+});
+
 test('direct theology links render the public page and announce navigation', () => {
   const app = createApp();
   const route = app.context.parseSectionHash();

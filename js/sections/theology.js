@@ -32,14 +32,14 @@ function renderTheology() {
                     <section aria-labelledby="theology-design" class="space-y-5 border-t border-er-sand pt-10 md:pt-12">
                         <h2 id="theology-design" tabindex="-1" class="scroll-mt-28 text-2xl font-bold leading-snug text-er-inkSoft break-keep">2. 하나님께서 주신 고유성</h2>
                         <p>인간의 이야기는 고착이나 결핍에서 시작하지 않습니다. 성경은 인간이 하나님의 형상대로 창조되었다고 선언합니다(창세기 1:26–27). 우리의 가장 근본적인 정체성은 에니어그램의 번호나 성격 유형이 아니라 하나님의 형상을 지닌 존재라는 데 있습니다.</p>
-                        <p>우리는 하나님께 알려지고 사랑받으며 그분과 관계하도록 지음받았습니다. 하나님은 각 사람에게 고유한 기질과 가능성, 은사를 주셨으며, 그것을 통해 하나님을 사랑하고 이웃을 섬기며 세상 가운데 하나님의 선하심과 아름다움을 드러내도록 부르셨습니다.</p>
+                        <p>하나님께서는 우리를 우연히 존재하게 하신 것이 아니라, 한 사람 한 사람을 아시고 뜻 가운데 지으셨습니다. 우리는 하나님께 사랑받으며 그분과 관계하도록 창조되었습니다. 하나님께서는 각 사람에게 고유한 기질과 가능성, 은사를 주셨으며, 우리의 삶을 향한 선하신 뜻과 목적을 가지고 계십니다.</p>
                         <h3 class="pt-4 text-xl font-bold leading-snug text-er-inkSoft break-keep">Original Design</h3>
-                        <p><strong class="font-semibold text-er-inkSoft">Original Design은 하나님께서 각 사람에게 창조적으로 주신 고유한 기질과 가능성, 은사와 방향성이며, 그것을 통해 하나님을 사랑하고 이웃을 섬기며 하나님의 선하심과 아름다움을 세상 가운데 드러내도록 하신 창조적 의도를 의미합니다.</strong></p>
-                        <p>Original Design은 단순한 능력이나 장점만을 뜻하지 않습니다. 하나님께서 한 사람에게 주신 기질적 방향성과 고유성, 은사와 가능성을 포괄하는 ER의 신학적 개념입니다.</p>
+                        <p><strong class="font-semibold text-er-inkSoft">Original Design은 하나님께서 한 사람 한 사람을 고유하게 창조하시고, 그 사람의 삶을 통해 이루어 가기를 원하시는 선하신 뜻과 창조적 의도를 가리키는 ER의 신학적 개념입니다. 여기에는 하나님께서 주신 기질과 가능성, 은사와 고유성이 포함되며, 궁극적으로는 그것들이 하나님과 이웃을 사랑하고 하나님의 선하심과 아름다움을 드러내는 방향으로 사용되는 것을 지향합니다.</strong></p>
+                        <p>Original Design은 단순히 “내가 무엇을 잘하는가”에 관한 개념이 아닙니다. 하나님께서 한 사람을 고유하게 지으시고, 그 사람의 삶을 통해 이루어 가기를 원하시는 선하신 뜻과 방향을 함께 바라보는 개념입니다.</p>
                         <h3 class="pt-4 text-xl font-bold leading-snug text-er-inkSoft break-keep">Original Design과 에니어그램 유형</h3>
                         <p>ER은 에니어그램의 아홉 유형을 인간의 다양한 기질 가운데 반복적으로 관찰되는 큰 패턴을 기술하는 지도로 이해합니다. 유형을 통해 각 사람의 Original Design이 지닌 기질적 측면을 살펴볼 수 있지만, 한 사람 전체의 Original Design을 유형 하나로 설명할 수는 없습니다.</p>
                         <p>이는 하나님께서 인간을 정확히 아홉 종류로 창조하셨다는 뜻이 아닙니다. 같은 유형 안에서도 하위유형과 날개, 기질의 강도, 가족과 문화, 삶의 경험과 선택에 따라 매우 다양한 모습이 나타납니다. 이러한 유형과 기질에 관한 설명은 ER이 채택한 작업모델이며, 성경이 직접 가르치는 창조 분류나 과학적으로 확정된 사실로 제시하지 않습니다.</p>
-                        <p>에니어그램은 우리가 누구인지 결정하지 않습니다. 우리의 정체성은 우리를 창조하시고 아시며 그리스도 안에서 구속하시는 하나님과의 관계 안에서 발견됩니다.</p>
+                        <p>에니어그램은 우리가 누구인지 결정하지 않습니다. 우리의 가장 근본적인 정체성은 에니어그램을 통해 발견되는 것이 아니라, 우리를 창조하시고 아시며 그리스도 안에서 구속하시는 하나님께로부터 주어집니다.</p>
                     </section>
                     <section aria-labelledby="theology-fixation" class="space-y-5 border-t border-er-sand pt-10 md:pt-12">
                         <h2 id="theology-fixation" tabindex="-1" class="scroll-mt-28 text-2xl font-bold leading-snug text-er-inkSoft break-keep">3. 기질과 고착의 차이</h2>
@@ -74,7 +74,7 @@ function renderTheology() {
                         <p>이 변화는 부정적인 생각을 긍정적인 생각으로 바꾸는 자기확언이 아닙니다. 성령께서는 말씀의 진리로 우리의 믿음과 욕망, 동기를 새롭게 하시며, 하나님을 신뢰하는 새로운 선택과 실천이 삶의 열매로 이어지도록 이끄십니다.</p>
                         <p>성화는 기술을 정확히 적용하여 자신을 완성하는 공식이 아닙니다. 말씀과 기도, 예배와 공동체, 관계와 일상의 순종 가운데 성령께서 평생에 걸쳐 이루어 가시는 과정입니다. 그 안에서 우리는 반복해서 자신을 돌아보고 회개하며 믿음으로 응답합니다.</p>
                         <h3 class="pt-4 text-xl font-bold leading-snug text-er-inkSoft break-keep">Restoration</h3>
-                        <p><strong class="font-semibold text-er-inkSoft">ER에서 회복(Restoration)은 하나님께서 주신 Original Design이 죄와 거짓, 왜곡된 욕망과 고착의 지배로부터 점점 자유로워지고, 성령 안에서 동기와 방향이 새롭게 되어 그리스도를 닮은 방식으로 열매 맺어 가는 과정입니다.</strong></p>
+                        <p><strong class="font-semibold text-er-inkSoft">ER에서 회복(Restoration)은 죄와 거짓, 왜곡된 욕망과 고착으로 인해 흐려지고 왜곡되어 사용되던 우리의 기질과 능력이 성령 안에서 새로워지고, 하나님께서 주신 Original Design이 삶 가운데 점점 더 온전히 드러나고 열매 맺어 가는 과정입니다.</strong></p>
                         <p>회복은 성격을 제거하거나 다른 유형의 사람이 되는 것을 뜻하지 않습니다. 또한 내면 깊은 곳에 숨어 있는 죄 없는 완벽한 자아를 발견하는 과정도 아닙니다.</p>
                         <ul class="list-disc space-y-3 pl-6 marker:text-er-green">
                             <li>1번은 정의에 대한 감각을 잃는 것이 아니라 그 힘을 자기의와 통제가 아닌 사랑과 겸손 안에서 사용할 수 있습니다.</li>
@@ -86,13 +86,20 @@ function renderTheology() {
                     <section aria-labelledby="theology-calling" class="space-y-5 border-t border-er-sand pt-10 md:pt-12">
                         <h2 id="theology-calling" tabindex="-1" class="scroll-mt-28 text-2xl font-bold leading-snug text-er-inkSoft break-keep">5. 회복된 삶의 열매</h2>
                         <p><strong class="font-semibold text-er-inkSoft">회복의 목표는 그리스도를 닮아가는 것입니다. 하나님께서 주신 고유한 기질은 그 사랑을 각자의 삶에서 드러내는 통로가 됩니다.</strong></p>
-                        <p>그리스도를 닮는다고 모든 사람이 동일한 성격이 되는 것은 아닙니다. 성령께서는 각 사람의 고유성을 지우시는 것이 아니라 정화하고 새롭게 하셔서, 그 고유성을 통해 그리스도의 성품이 다양한 방식으로 나타나게 하십니다.</p>
+                        <p>그리스도를 닮는다고 모든 사람이 동일한 성격이 되는 것은 아닙니다. 성령께서는 각 사람의 고유성을 지워 모두를 같은 모습으로 만드시는 것이 아니라, 죄로 왜곡된 욕망과 동기를 새롭게 하시고 하나님께서 주신 고유한 기질과 은사가 사랑과 섬김을 향해 사용되도록 이끄십니다.</p>
                         <p>회복은 나를 더 잘 이해하거나 더 건강하고 만족스러운 자신이 되는 데서 끝나지 않습니다. 하나님께서 주신 힘과 지혜, 사랑과 창조성, 감수성과 용기는 다시 하나님과 이웃을 향해 흘러갑니다.</p>
                         <p>그래서 ER의 질문은 “나는 얼마나 건강한 유형이 되었는가?”에서 더 나아갑니다.</p>
                         <p><strong class="font-semibold text-er-inkSoft">하나님께서 내게 주신 것이 이제 누구를 살리고 있는가?</strong></p>
                         <p>우리는 하나님과의 관계 안에서 그분을 신뢰하고, 가족과 공동체를 살리며, 맡겨진 일을 충실히 감당하고, 삶의 자리에서 하나님의 선하심과 아름다움을 드러내도록 부름받았습니다.</p>
                         <h3 class="pt-4 text-xl font-bold leading-snug text-er-inkSoft break-keep">ER이 추구하는 회복</h3>
-                        <p>ER은 에니어그램을 통해 각 사람에게 주신 Original Design의 기질적 측면과 그것이 고착 속에서 어떻게 왜곡되어 사용되는지를 살펴봅니다. 우리의 구원은 예수 그리스도 안에 있으며, 성령께서는 복음의 진리로 우리를 새롭게 하십니다. ER은 그 회복이 하나님과 이웃을 사랑하는 삶, 부르심과 섬김의 열매로 이어지도록 돕습니다.</p>
+                        <p>ER은 에니어그램을 통해 각 사람에게 주어진 고유한 기질의 특성과 그것이 두려움과 욕망, 거짓된 믿음과 고착 속에서 어떻게 왜곡되어 사용되는지를 살펴봅니다. 그러나 자신을 이해하는 것이 ER의 최종 목적은 아닙니다.</p>
+                        <p>우리의 구원은 오직 예수 그리스도 안에 있으며, 성령께서는 복음의 진리로 우리의 믿음과 욕망, 동기와 삶의 방향을 새롭게 하십니다. 그 과정에서 우리는 고착된 자기보호의 방식에서 점차 자유로워지고, 하나님께서 주신 기질과 은사, 가능성을 하나님과 이웃을 사랑하는 방향으로 사용해 가는 법을 배웁니다.</p>
+                        <h3 class="pt-4 text-xl font-bold leading-snug text-er-inkSoft break-keep">ER의 비전</h3>
+                        <p><strong class="font-semibold text-er-inkSoft">ER의 비전은 한 사람 한 사람을 향한 하나님의 선하신 뜻과 창조적 의도, 곧 Original Design이 그리스도 안에서 회복되어 삶 가운데 더욱 온전히 펼쳐지고, 그 사람을 통해 가정과 공동체와 세상에 생명의 열매가 맺히는 것을 보는 것입니다.</strong></p>
+                        <p>ER이 궁극적으로 보고자 하는 것은 단순히 더 건강한 성격을 가진 사람이나 자신의 유형을 잘 이해하는 사람이 아닙니다. 그것은 각 사람이 하나님과 더욱 깊은 관계 안에서 살아가며, 자신에게 주어진 고유한 기질과 은사와 가능성으로 가족과 공동체를 살리고, 맡겨진 부르심에 응답하며, 자신이 서 있는 자리에서 하나님의 선하심과 아름다움을 드러내는 것입니다.</p>
+                        <p>Original Design의 회복은 자기실현을 위한 프로젝트가 아닙니다. 그것은 “진짜 나”를 찾아 나 자신을 완성하는 과정도 아닙니다. 하나님께서 우리를 지으신 뜻을 따라 그리스도 안에서 새로워지고, 성령의 인도하심 가운데 하나님과 이웃을 사랑하는 사람으로 살아가는 과정입니다.</p>
+                        <p>ER은 바로 그 여정을 돕고자 합니다.</p>
+                        <p><strong class="font-semibold text-er-inkSoft">한 사람을 향한 하나님의 선하신 뜻이 그 사람의 삶 가운데 펼쳐지고, 그렇게 회복된 한 사람을 통해 가정과 공동체와 세상이 다시 살아나는 것. 이것이 ER이 꿈꾸는 Restoration입니다.</strong></p>
                     </section>
                 </div>
             </article>
