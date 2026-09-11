@@ -86,6 +86,7 @@ function renderSection(sectionId, payload = null, options = {}) {
     switch(sectionId) {
         case 'home': html = renderHome(); break;
         case 'about': html = renderAbout(); break;
+        case 'theology': html = renderTheology(); break;
         case 'coaches': html = renderCoaches(); break;
         case 'programs': html = renderPrograms(); break;
         case 'parenting': html = renderParenting(payload); break;
@@ -122,6 +123,7 @@ function renderSection(sectionId, payload = null, options = {}) {
         const sectionLabels = {
             home: '홈',
             about: 'ER 소개',
+            theology: '신학적 기초',
             test: '프리미엄 검사',
             types_guide: '유형 안내',
             programs: '서비스 안내',
@@ -158,6 +160,15 @@ function renderSection(sectionId, payload = null, options = {}) {
         }, 60);
     }
     if (sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 50);
+    if (sectionId === 'theology' && payload?.focus) {
+        setTimeout(() => {
+            if (state.currentSection !== 'theology') return;
+            const heading = document.getElementById('theology-' + payload.focus);
+            if (!heading) return;
+            heading.focus({ preventScroll: true });
+            heading.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }, 60);
+    }
     if((sectionId === 'home' || sectionId === 'notices' || sectionId === 'notice_detail') && !state.noticesLoaded) {
         setTimeout(async () => {
             await loadNotices();

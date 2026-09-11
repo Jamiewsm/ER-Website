@@ -74,6 +74,12 @@ function renderAbout() {
                     </div>
                 </div>
 
+                <section aria-labelledby="about-theology-title" class="mx-auto mb-16 max-w-3xl border-t border-er-sand pt-8 md:mb-20">
+                    <h3 id="about-theology-title" class="text-2xl font-bold leading-snug text-er-inkSoft break-keep">ER의 신학적 기초</h3>
+                    <p class="mt-4 max-w-xl text-base leading-relaxed text-er-body break-keep">ER이 성경을 기준으로 에니어그램을 어떻게 이해하며, 정체성과 고착, 그리스도 안에서의 회복과 부르심을 어떻게 설명하는지 살펴보세요.</p>
+                    <a href="#theology" class="mt-3 inline-flex min-h-11 items-center font-bold text-er-green underline underline-offset-4 hover:text-er-greenDark">신학적 기초 읽기</a>
+                </section>
+
                 <div class="rounded-[2.5rem] bg-er-dark p-8 md:p-10 text-white shadow-card animate-fade-in-up">
                     <div class="grid gap-6 lg:grid-cols-[1.3fr_0.7fr] lg:items-center">
                         <div>
