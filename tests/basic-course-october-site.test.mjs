@@ -67,3 +67,9 @@ test('expert course is an umbrella journey and has no standalone application CTA
   assert.doesNotMatch(notices, /전문가 양성반 5기·6기 모집/);
   assert.doesNotMatch(notices, /양성반 안내 보기|양성반 신청/);
 });
+
+test('July cohort graduation is bundled and October $300 copy is not', () => {
+  assert.match(notices, /\{ id: 9, tag: '축하', title: '에니어그램 기본과정 수료 — 7월반 13명'/);
+  assert.equal((notices.match(/10월 기수 모집/g) || []).length, 1);
+  assert.doesNotMatch(octoberNotice, /\$300/);
+});
