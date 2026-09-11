@@ -3,12 +3,12 @@
 
 export const BASIC_COURSE_PROGRAM_KEY = 'enneagram_basic_july';
 export const BASIC_COURSE_OCTOBER_2026_COHORT_KEY = 'enneagram_basic_2026_10';
-export const BASIC_COURSE_MAX_SEATS = 8;
+export const BASIC_COURSE_MAX_SEATS = 14;
 
 /** @deprecated 기존 Edge Function 호환용 */
 export const BASIC_COURSE_JULY_KEY = BASIC_COURSE_PROGRAM_KEY;
 /** @deprecated 기존 Edge Function 호환용 */
-export const BASIC_COURSE_JULY_MAX_SEATS = BASIC_COURSE_MAX_SEATS;
+export const BASIC_COURSE_JULY_MAX_SEATS = 8;
 
 export type BasicCourseOctoberPricing = {
   overseasPriceUsd: number;

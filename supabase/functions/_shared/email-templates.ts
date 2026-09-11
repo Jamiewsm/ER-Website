@@ -79,7 +79,7 @@ export function basicCourseApplicantReceivedHtml(input: {
       <ul style="font-size:14px;line-height:1.7">${methods}</ul>
       <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·입금자명에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 또는 신청자 이름을 적어 주세요.</p>
       <p>결제가 확인되면 등록이 확정되며, 담당자가 후속 안내를 보내드립니다.</p>
-      <p style="font-size:14px;color:#666">정원은 8명이며, 등록 절차는 담당자가 개별 안내합니다.</p>
+      <p style="font-size:14px;color:#666">반당 학생 정원은 7명이며, 10월에는 A·B반 운영을 준비합니다. 등록 절차는 담당자가 개별 안내합니다.</p>
       <p>급한 문의는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 연락 주세요.</p>
       <p style="color:#666;font-size:13px">Enneagram for Restoration</p>
     `,
@@ -115,7 +115,7 @@ export function basicCourseRegistrationHtml(input: {
           : `<li>미국 Zelle·Venmo: $${p.overseasPriceUsd}</li>`}
         ${preferenceCopy ? `<li>신청 시 선택한 희망 수단: ${escapeHtml(preferenceCopy)}</li>` : ''}
       </ul>
-      <p>정원은 8명이며, 결제가 확인되면 등록이 확정됩니다.</p>
+      <p>반당 학생 정원은 7명이며, 10월에는 A·B반 운영을 준비합니다. 결제가 확인되면 등록이 확정됩니다.</p>
       <h3 style="margin:24px 0 8px;font-size:16px">결제 방법</h3>
       <ul style="font-size:14px;line-height:1.7">${methods}</ul>
       <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·메시지에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 를 적어 주시면 확인이 빠릅니다.</p>
@@ -191,8 +191,8 @@ export function basicCourseGraduationHtml(input: {
     '기본과정 수료를 축하드립니다',
     `
       <p>${escapeHtml(input.name)}님, 8주 기본과정을 마치신 것을 진심으로 축하합니다.</p>
-      <p><strong>ER 전문가 과정</strong>은 별도의 다음 기수 이름이 아니라, 지금 수료하신 에니어그램 기본과정에 팔로우업 스터디와 1년 코칭스쿨이 이어지는 전체 훈련 여정을 뜻합니다.</p>
-      <p>스터디와 코칭스쿨 참여 안내는 수료자의 준비 단계와 운영 일정에 맞춰 별도로 전해 드립니다.</p>
+      <p><strong>ER 전문가 과정</strong>은 기본과정 수료 후 2급 검정 및 심화성장101, 이후 전문가 1급 과정인 코치 트레이닝으로 이어집니다.</p>
+      <p>심화성장101은 기본과정 수료자가 신청할 수 있습니다. 2027년 코치 트레이닝 2기는 2급 자격 소지와 심화성장101 이수를 모두 갖춘 분이 지원할 수 있습니다. 상세 일정과 신청 안내는 별도로 전해 드립니다.</p>
       <p>수료 경험을 나눠 주시면 다음 기수 분들에게 큰 도움이 됩니다.<br>
       <a href="${escapeHtml(input.testimonialUrl)}">수료 후기 남기기</a></p>
     `,

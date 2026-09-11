@@ -93,6 +93,17 @@ Deno.serve(async (req) => {
         });
       }
 
+      // 등록 가격과 메일은 10월 전용이다. 접수일이나 예전 program_key로 기수를 추정하지 않는다.
+      if (app.cohort_key !== BASIC_COURSE_OCTOBER_2026_COHORT_KEY) {
+        return new Response(JSON.stringify({
+          error: 'cohort_confirmation_required',
+          message: '신청 기수를 확인해 주세요. 2026년 10월 기수가 명시된 신청에만 이 등록·결제 안내를 보낼 수 있습니다.',
+        }), {
+          status: 409,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
       const pricing = basicCourseOctoberPricing();
       const hasKoreanPreference = app.payment_preference === 'kr_bank';
       const hasKoreanCountry = /(한국|korea|south korea)/i.test(String(app.country || ''));
@@ -104,7 +115,7 @@ Deno.serve(async (req) => {
       const { data: prepared, error: prepareError } = await adminSupabase
         .rpc('admin_prepare_program_application_registration', {
           p_id: applicationId,
-          p_cohort_key: app.cohort_key || BASIC_COURSE_OCTOBER_2026_COHORT_KEY,
+          p_cohort_key: app.cohort_key,
           p_max_seats: BASIC_COURSE_MAX_SEATS,
           p_payment_region: paymentRegion,
           p_payment_currency: paymentCurrency,

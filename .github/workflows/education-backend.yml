@@ -1,0 +1,38 @@
+# 교육 포털의 실제 Postgres 접근권한과 반별 정원을 검증한다.
+name: Education backend checks
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/2026090809*.sql'
+      - 'supabase/manual/education-public-notices.pending.sql'
+      - 'supabase/functions/_shared/email-templates.ts'
+      - 'supabase/functions/_shared/program-pricing.ts'
+      - 'supabase/functions/notify-program-application/**'
+      - 'tests/education*'
+      - 'tests/education/**'
+      - 'tests/basic-course-october-supabase.test.mjs'
+      - 'tests/helpers/education-db.mjs'
+      - 'tests/helpers/education-postgres.mjs'
+      - '.github/workflows/education-backend.yml'
+permissions:
+  contents: read
+jobs:
+  permissions-and-registration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix tests/education --ignore-scripts
+      - run: npm test --prefix tests/education
+      - run: node --test tests/basic-course-october-supabase.test.mjs
+      - name: Install local PostgreSQL test tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql libpq-dev
+      - name: Verify independent database connection races
+        run: |
+          PG_TEST_BIN="$(pg_config --bindir)"
+          test -x "$PG_TEST_BIN/initdb"
+          PG_BIN_DIR="$PG_TEST_BIN" node --test tests/education-concurrency.test.mjs

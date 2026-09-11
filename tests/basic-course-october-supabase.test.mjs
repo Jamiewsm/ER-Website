@@ -86,7 +86,7 @@ test('application intake stays open independently of the visible seat count', ()
 
 test('graduation mail has no standalone expert cohort application link', () => {
   assert.match(templates, /ER 전문가 과정/);
-  assert.match(templates, /기본과정에 팔로우업 스터디와 1년 코칭스쿨/);
+  assert.match(templates, /2급 자격 소지와 심화성장101 이수/);
   assert.doesNotMatch(templates, /전문가 양성반 안내·신청/);
   assert.doesNotMatch(notify, /EXPERT_COHORT_APPLY_URL|expertCohortLabel|applyUrl/);
 });
@@ -96,4 +96,18 @@ test('notice migration replaces the old recruiting notice with an informational 
   assert.match(migration, /전체 과정 안내 보기/);
   assert.doesNotMatch(migration, />문의·신청하기<|>양성반 안내 보기</);
   assert.match(migration, /focus=enneagram_basic_october/);
+});
+
+
+test('held public notice copy is reviewable outside automatic education migrations', () => {
+  const schema = read('supabase/migrations/20260908090000_education_portal.sql');
+  const registration = read('supabase/migrations/20260908091000_education_registration_capacity.sql');
+  const pending = read('supabase/manual/education-public-notices.pending.sql');
+  assert.doesNotMatch(schema + registration, /(?:UPDATE|INSERT\s+INTO|DELETE\s+FROM)\s+public\.public_notices/i);
+  assert.match(pending, /ON HOLD/);
+  assert.match(pending, /WHERE legacy_key=1/);
+  assert.match(pending, /WHERE legacy_key=7/);
+  assert.match(pending, /심화성장101/);
+  assert.match(pending, /반당 학생 7명/);
+  assert.ok(pending.split('\n').every(line => !line.trim() || line.startsWith('--')), 'pending SQL is entirely comments');
 });
