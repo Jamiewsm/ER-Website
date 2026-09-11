@@ -11,6 +11,28 @@ function runAppInit() {
             nav.classList.add('bg-white/80');
         }
     });
+    const portalEntryModal = document.getElementById('portal-entry-modal');
+    if (portalEntryModal) {
+        portalEntryModal.addEventListener('click', (event) => {
+            if (event.target === portalEntryModal) closePortalEntry();
+        });
+        var portalCloseBtn = document.getElementById('portal-entry-close-btn');
+        if (portalCloseBtn) {
+            portalCloseBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (typeof closePortalEntry === 'function') closePortalEntry();
+                else portalEntryModal.classList.add('hidden');
+            });
+        }
+        var siteAccountBtn = document.getElementById('portal-entry-site-account-btn');
+        if (siteAccountBtn) {
+            siteAccountBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (typeof openSiteAccountFromPortalEntry === 'function') openSiteAccountFromPortalEntry();
+            });
+        }
+    }
     const authModal = document.getElementById('auth-modal');
     if (authModal) {
         authModal.addEventListener('click', (event) => {

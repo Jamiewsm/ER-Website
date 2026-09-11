@@ -82,7 +82,6 @@ function renderTheology() {
                             <li>5번은 깊이 생각하고 관찰하는 능력을 버리는 것이 아니라 그 지혜를 관계와 공동체 안으로 내어놓을 수 있습니다.</li>
                             <li>7번은 기쁨과 가능성을 보는 힘을 잃는 것이 아니라 고통을 회피하지 않으면서도 소망을 살아낼 수 있습니다.</li>
                         </ul>
-                        <p>이 예들은 사람 전체를 유형 하나로 규정하는 설명이 아닙니다. 같은 기질적 선물도 그것을 움직이는 동기와 방향에 따라 다르게 사용될 수 있음을 보여줍니다.</p>
                     </section>
                     <section aria-labelledby="theology-calling" class="space-y-5 border-t border-er-sand pt-10 md:pt-12">
                         <h2 id="theology-calling" tabindex="-1" class="scroll-mt-28 text-2xl font-bold leading-snug text-er-inkSoft break-keep">5. 회복된 삶의 열매</h2>

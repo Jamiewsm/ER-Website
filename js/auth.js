@@ -18,11 +18,6 @@ function withAuthTimeout(promise, timeoutMs) {
   ]);
 }
 
-function shouldOpenCoachAppOnMobile() {
-  var ua = navigator.userAgent || '';
-  return /Android|iPhone|iPad|iPod/i.test(ua) || window.matchMedia('(max-width: 1024px)').matches;
-}
-
 function shouldRefreshAccountSection() {
   if (!window.state) return false;
   var current = String(window.state.currentSection || '');
@@ -119,7 +114,7 @@ function updateAuthButtons() {
   var coachAppBtn = document.getElementById('desktop-account-app-btn');
   var mobileBtn = document.getElementById('mobile-auth-btn');
   var mobileHeaderBtn = document.getElementById('mobile-header-auth-btn');
-  var mobileLabel = !state.user ? '기존 참여자 로그인' : (state.isCoach ? '코치 포털' : '마이페이지');
+  var mobileLabel = !state.user ? '포털 입장' : (state.isCoach ? '코치 포털' : '마이페이지');
   if (mobileBtn) mobileBtn.innerHTML = '<i class="far fa-user mr-2"></i> ' + mobileLabel;
   if (mobileHeaderBtn) {
     mobileHeaderBtn.innerHTML = '<i class="' + (state.user ? 'fas fa-user-check' : 'far fa-user') + '"></i>';
@@ -159,7 +154,7 @@ function handleDesktopAuthClick(event) {
     return;
   }
   if (!window.state.user) {
-    toggleLogin();
+    openPortalEntry();
     return;
   }
   var menu = document.getElementById('desktop-account-menu');
@@ -281,10 +276,6 @@ async function handleEmailAuth(mode) {
   }
   closeAuthModal();
   await loadCoachProfile();
-  if (window.state && window.state.isCoach && shouldOpenCoachAppOnMobile() && typeof openCoachApp === 'function') {
-    openCoachApp();
-    return;
-  }
   if (typeof renderSection === 'function' && window.state) renderSection('mypage');
 }
 
@@ -337,6 +328,39 @@ async function handleLogout() {
   if (typeof renderSection === 'function') renderSection('home');
 }
 
+function coachPortalHref(path) {
+  var base = String(window.COACH_APP_URL || 'https://coach.er-coaching.com').replace(/\/$/, '');
+  return base + (path || '');
+}
+
+function closePortalEntry() {
+  var modal = document.getElementById('portal-entry-modal');
+  if (modal) modal.classList.add('hidden');
+}
+if (typeof window !== 'undefined') { window.closePortalEntry = closePortalEntry; }
+
+function openPortalEntry() {
+  closeDesktopAccountMenu();
+  closeAuthModal();
+  var modal = document.getElementById('portal-entry-modal');
+  if (!modal) {
+    openAuthModal();
+    return;
+  }
+  var coachLink = document.getElementById('portal-entry-coach-link');
+  var educationLink = document.getElementById('portal-entry-education-link');
+  if (coachLink) coachLink.href = coachPortalHref('/');
+  if (educationLink) educationLink.href = coachPortalHref('/education');
+  modal.classList.remove('hidden');
+}
+if (typeof window !== 'undefined') { window.openPortalEntry = openPortalEntry; }
+
+function openSiteAccountFromPortalEntry() {
+  closePortalEntry();
+  openAuthModal();
+}
+if (typeof window !== 'undefined') { window.openSiteAccountFromPortalEntry = openSiteAccountFromPortalEntry; }
+
 async function toggleLogin() {
   if (!isSupabaseConfigured()) {
     alert('Supabase 설정이 필요합니다. index.html의 __ER_SUPABASE_URL / __ER_SUPABASE_ANON_KEY를 먼저 설정해 주세요.');
@@ -345,13 +369,9 @@ async function toggleLogin() {
   closeDesktopAccountMenu();
   if (window.state && window.state.user) {
     if (typeof loadCoachProfile === 'function') await loadCoachProfile();
-    if (window.state && window.state.isCoach && shouldOpenCoachAppOnMobile() && typeof openCoachApp === 'function') {
-      openCoachApp();
-      return;
-    }
     if (typeof renderSection === 'function') renderSection('mypage');
   } else {
-    openAuthModal();
+    openPortalEntry();
   }
 }
 if (typeof window !== 'undefined') { window.toggleLogin = toggleLogin; }
