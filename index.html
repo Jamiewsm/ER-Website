@@ -369,6 +369,7 @@
                         <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[15rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('about')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">ER 소개</button>
+                                <button type="button" onclick="renderSection('theology')" class="flex min-h-11 w-full items-center rounded-xl px-4 py-2.5 text-left text-sm font-semibold text-er-body hover:bg-er-greenTint">신학적 기초</button>
                                 <button onclick="renderSection('coaches')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">코치진 소개</button>
                                 <button onclick="renderSection('support')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">사역지원</button>
                             </div>
@@ -494,6 +495,7 @@
                     </button>
                     <div id="mobile-nav-er" class="mobile-nav-panel hidden" aria-hidden="true">
                         <button type="button" onclick="renderSection('about')" class="mobile-nav-link">ER 소개</button>
+                        <button type="button" onclick="renderSection('theology')" class="mobile-nav-link">신학적 기초</button>
                         <button type="button" onclick="renderSection('coaches')" class="mobile-nav-link">코치진 소개</button>
                         <button type="button" onclick="renderSection('support')" class="mobile-nav-link">사역지원</button>
                     </div>
@@ -717,6 +719,7 @@
                 </div>
                 <div class="footer-nav-links flex flex-wrap items-center justify-center gap-x-1 gap-y-0">
                     <button type="button" onclick="renderSection('about')" class="hover:text-er-dark transition-colors">ER 소개</button>
+                    <button type="button" onclick="renderSection('theology')" class="hover:text-er-greenDark transition-colors">신학적 기초</button>
                     <button type="button" onclick="renderSection('test')" class="hover:text-er-dark transition-colors">유형검사</button>
                     <button type="button" onclick="renderSection('parenting')" class="font-semibold text-er-dark hover:text-er-accent transition-colors">Parenting</button>
                     <button type="button" onclick="renderSection('programs', { tab: 'individual' })" class="hover:text-er-dark transition-colors">관계·부부</button>
@@ -753,7 +756,8 @@
     <script src="js/basic-course-promo.js?v=20260827b"></script>
     <script src="js/parents-workshop-promo.js?v=20260526b"></script>
     <script src="js/sections/home.js?v=20260827b"></script>
-    <script src="js/sections/about.js?v=20260801a"></script>
+    <script src="js/sections/about.js?v=20260911a"></script>
+    <script src="js/sections/theology.js?v=20260911a"></script>
     <script src="js/sections/programs.js?v=20260801a"></script>
     <script src="js/sections/parenting.js?v=20260625a"></script>
     <script src="js/sections/coaches.js?v=20260827b"></script>
@@ -774,7 +778,7 @@
     <script src="js/coach/mentoring-hub.js"></script>
 
     <!-- Core routing & init -->
-    <script src="js/app-core.js?v=20260827b"></script>
+    <script src="js/app-core.js?v=20260911a"></script>
     <script src="js/app-init.js"></script>
     <script src="js/coach-portal.js?v=20260401a"></script>
 </body>
