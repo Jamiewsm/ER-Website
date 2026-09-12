@@ -25,6 +25,8 @@ on:
       - 'js/report-support-materials.js'
       - 'test-results/**'
       - 'wrangler.toml'
+      - 'robots.txt'
+      - 'sitemap.xml'
       - 'scripts/build_test_only_deploy_bundle.mjs'
       - 'scripts/build_site_only_deploy_bundle.mjs'
       - 'scripts/check_premium_test_markers.mjs'

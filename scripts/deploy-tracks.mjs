@@ -26,6 +26,8 @@ export const SITE_OVERLAY_GLOBS = [
   'ER-logo-*.png',
   'wrangler.toml',
   '.assetsignore',
+  'robots.txt',
+  'sitemap.xml',
 ];
 
 /** Test runtime — only updated via test-only bundle deploy, never site full deploy. */
