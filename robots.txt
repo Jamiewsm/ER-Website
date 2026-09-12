@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /design-system/
+Disallow: /docs/
+
+Sitemap: https://er-coaching.com/sitemap.xml
