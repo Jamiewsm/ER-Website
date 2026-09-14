@@ -1,15 +1,8 @@
 // 프로그램 신청·등록 안내 메일 HTML 템플릿
-import type { BasicCourseManualPaymentInfo } from './program-pricing.ts';
+import type { BasicCourseManualPaymentInfo, BasicCourseOctoberPricing, GrowthCoursePricing } from './program-pricing.ts';
 
-export type BasicCoursePricingInfo = {
-  overseasPriceUsd: number;
-  bankTransferPriceKrw: number;
-};
-
-export type BasicCourseCheckoutPricingInfo = BasicCoursePricingInfo & {
-  amountUsd: number;
-  amountKrw: number;
-};
+export type BasicCourseCheckoutPricingInfo = BasicCourseOctoberPricing;
+export type CoursePricingInfo = BasicCourseOctoberPricing | GrowthCoursePricing;
 
 export function adminApplicationNoticeHtml(input: {
   name: string;
@@ -23,6 +16,7 @@ export function adminApplicationNoticeHtml(input: {
   paymentRegion?: string;
   paymentPreference?: string;
   installmentPreference?: string;
+  pricing?: CoursePricingInfo;
 }): string {
   const lines = [
     `<p><strong>신규 신청</strong> (${escapeHtml(input.programKey)})</p>`,
@@ -30,6 +24,9 @@ export function adminApplicationNoticeHtml(input: {
     `<p>이름: ${escapeHtml(input.name)}<br>연락처: ${escapeHtml(input.contact)}<br>분야: ${escapeHtml(input.category)}</p>`,
     input.paymentRegion || input.paymentPreference || input.installmentPreference
       ? `<p>결제 선호: ${escapeHtml([input.paymentRegion, input.paymentPreference, input.installmentPreference].filter(Boolean).join(' · '))}</p>`
+      : '',
+    input.pricing
+      ? `<p>안내 금액: <strong>${input.paymentRegion === 'KR' ? `₩${formatKrw(input.pricing.amountKrw)}` : `$${input.pricing.amountUsd}`}</strong></p>${ministryDiscountHtml(input.pricing, input.paymentRegion === 'KR')}`
       : '',
     `<p>유입: ${escapeHtml(input.source || '-')}</p>`,
     `<pre style="white-space:pre-wrap;font-family:inherit">${escapeHtml(input.message || '(없음)')}</pre>`,
@@ -59,31 +56,11 @@ export function basicCourseApplicantReceivedHtml(input: {
   programLabel: string;
   paymentRegion?: string;
   paymentPreference?: string;
-  pricing: BasicCoursePricingInfo;
+  installmentPreference?: string;
+  pricing: BasicCourseCheckoutPricingInfo;
   payment: BasicCourseManualPaymentInfo;
 }): string {
-  const isKorea = input.paymentRegion === 'KR';
-  const priceCopy = isKorea
-    ? `한국 계좌이체 <strong>₩${formatKrw(input.pricing.bankTransferPriceKrw)}</strong>`
-    : `미국 Zelle·Venmo <strong>$${input.pricing.overseasPriceUsd}</strong>`;
-  const methods = isKorea
-    ? buildKoreanPaymentMethodsHtml(input.payment)
-    : buildUsPaymentMethodsHtml(input.payment, input.paymentPreference);
-  return wrapEmail(
-    '신청이 접수되었습니다',
-    `
-      <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
-      <p><strong>${escapeHtml(input.programLabel)}</strong> 신청이 정상적으로 접수되었습니다.</p>
-      <p>${priceCopy}</p>
-      <h3 style="margin:24px 0 8px;font-size:16px">결제 안내</h3>
-      <ul style="font-size:14px;line-height:1.7">${methods}</ul>
-      <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·입금자명에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 또는 신청자 이름을 적어 주세요.</p>
-      <p>결제가 확인되면 등록이 확정되며, 담당자가 후속 안내를 보내드립니다.</p>
-      <p style="font-size:14px;color:#666">반당 학생 정원은 7명이며, 10월에는 A·B반 운영을 준비합니다. 등록 절차는 담당자가 개별 안내합니다.</p>
-      <p>급한 문의는 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 연락 주세요.</p>
-      <p style="color:#666;font-size:13px">Enneagram for Restoration</p>
-    `,
-  );
+  return programApplicationConfirmationHtml(input);
 }
 
 export function basicCourseRegistrationHtml(input: {
@@ -94,44 +71,73 @@ export function basicCourseRegistrationHtml(input: {
   paymentPreference?: string;
   installmentPreference?: string;
 }): string {
+  return programApplicationConfirmationHtml({
+    ...input,
+    programLabel: 'ER 성경적 에니어그램 기본과정 8주 (2026년 10월 기수)',
+  });
+}
+
+// 접수와 관리자 복구 발송이 같은 금액·절차를 안내하도록 한 본문을 사용한다.
+export function programApplicationConfirmationHtml(input: {
+  name: string;
+  programLabel: string;
+  pricing: CoursePricingInfo;
+  payment: BasicCourseManualPaymentInfo;
+  paymentRegion?: string;
+  paymentPreference?: string;
+  installmentPreference?: string;
+}): string {
   const p = input.pricing;
-  const isKorea = input.paymentRegion === 'KR';
+  const isGrowth = 'installmentMonths' in p;
+  const isKorea = isGrowth || input.paymentRegion === 'KR';
   const amount = isKorea ? `₩${formatKrw(p.amountKrw)}` : `$${p.amountUsd}`;
   const methods = isKorea
-    ? buildKoreanPaymentMethodsHtml(input.payment)
+    ? buildKoreanPaymentMethodsHtml(input.payment, p.amountKrw)
     : buildUsPaymentMethodsHtml(input.payment, input.paymentPreference);
-  const preferenceCopy = paymentPreferenceLabel(input.paymentPreference);
-  const installmentCopy = installmentPreferenceCopy(input.installmentPreference);
+  const installment = isGrowth
+    ? `3개월 과정이며, 월 ₩${formatKrw(p.monthlyAmountKrw)}씩 3회 분납할 수 있습니다. 총 납부액은 ₩${formatKrw(p.amountKrw)}입니다.`
+    : installmentPreferenceCopy(input.installmentPreference);
+  const courseDetails = isGrowth
+    ? '수업 일정과 반 배정은 담당자가 확인 후 안내해 드립니다.'
+    : '반당 학생 정원은 7명이며, 10월에는 A·B반 운영을 준비하고 있습니다. 수업 일정과 반 배정은 담당자가 안내해 드립니다.';
   return wrapEmail(
-    '10월 기본과정 등록·결제 안내',
+    '신청 접수 및 등록 안내',
     `
       <p>${escapeHtml(input.name)}님, 안녕하세요.</p>
-      <p><strong>ER 성경적 에니어그램 기본과정 8주 (2026년 10월 기수)</strong> 신청을 환영합니다.</p>
-      <h3 style="margin:24px 0 8px;font-size:16px">결제 금액 (${isKorea ? 'KRW' : 'USD'})</h3>
-      <p style="font-size:18px;margin:8px 0"><strong>${amount}</strong></p>
-      <ul style="font-size:14px;line-height:1.6">
-        ${isKorea
-          ? `<li>한국 계좌이체: ₩${formatKrw(p.bankTransferPriceKrw)}</li>`
-          : `<li>미국 Zelle·Venmo: $${p.overseasPriceUsd}</li>`}
-        ${preferenceCopy ? `<li>신청 시 선택한 희망 수단: ${escapeHtml(preferenceCopy)}</li>` : ''}
-      </ul>
-      <p>반당 학생 정원은 7명이며, 10월에는 A·B반 운영을 준비합니다. 결제가 확인되면 등록이 확정됩니다.</p>
-      <h3 style="margin:24px 0 8px;font-size:16px">결제 방법</h3>
-      <ul style="font-size:14px;line-height:1.7">${methods}</ul>
-      <p style="font-size:13px;color:#666;margin-top:12px">송금 시 메모·메시지에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 를 적어 주시면 확인이 빠릅니다.</p>
-      ${installmentCopy ? `<p style="font-size:14px;margin-top:16px">${escapeHtml(installmentCopy)}</p>` : ''}
-      <p style="font-size:14px;margin-top:16px">결제 후 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 완료를 알려 주시거나 결제 알림을 기다려 주세요.</p>
-      <h3 style="margin:24px 0 8px;font-size:16px">환불 규정 요약</h3>
-      <ul style="font-size:14px;line-height:1.6">
-        <li>개강 전 — 전액 환불</li>
-        <li>1주차 참여 후, 2주차 시작 전 — 전액 환불 (첫 주 안심 보장)</li>
-        <li>2주차~4주차 시작 전 — 50% 환불</li>
-        <li>4주차 시작 후 — 환불 불가 (다음 기수 1회 이월 가능)</li>
-        <li>폐강 시 — 전액 환불</li>
-      </ul>
-      <p style="color:#666;font-size:13px">입금이 확인되면 등록이 확정되며, 사전 성찰 설문(약 15–20분) 링크를 보내드립니다.</p>
+      <p><strong>${escapeHtml(input.programLabel)}</strong> 신청이 정상적으로 접수되었습니다.<br>수강료와 등록 절차를 다음과 같이 안내해 드립니다.</p>
+      <h2>수강료 안내</h2>
+      <table role="presentation" width="100%" style="border-collapse:collapse;background:#f5f7f6;border:1px solid #e2e8e4">
+        <tr><td style="padding:18px 20px">총 납부 금액 (${isKorea ? 'KRW' : 'USD'})<br><strong style="font-size:24px;color:#17634b">${amount}</strong></td></tr>
+      </table>
+      ${ministryDiscountHtml(p, isKorea)}
+      ${installment ? `<p>${escapeHtml(installment)}</p>` : ''}
+      <h2>결제 방법</h2>
+      <ul>${methods}</ul>
+      <p>송금 메모 또는 입금자명에 <strong>${escapeHtml(input.payment.memoHint)}</strong> 또는 신청자 이름을 적어 주십시오.</p>
+      <h2>등록 절차</h2>
+      <ol>
+        <li>위 안내에 따라 수강료를 납부해 주십시오.</li>
+        <li>담당자가 결제 내역과 수강 가능 여부를 확인한 뒤 등록을 확정합니다.</li>
+        <li>등록이 확정되면 수업 참여 방법과 후속 안내를 보내드립니다.</li>
+      </ol>
+      <p>${courseDetails}</p>
+      ${isGrowth ? '' : `<h2>환불 규정</h2>
+      <ul>
+        <li>개강 전 또는 1주차 참여 후 2주차 시작 전에는 전액 환불됩니다.</li>
+        <li>2주차부터 4주차 시작 전까지는 50% 환불됩니다.</li>
+        <li>4주차 시작 후에는 환불이 불가하며, 다음 기수로 1회 이월할 수 있습니다.</li>
+        <li>폐강 시에는 전액 환불됩니다.</li>
+      </ul>`}
+      <p style="margin-top:28px">문의 사항이나 결제 완료 안내는 이 메일에 회신하시거나<br><a href="mailto:json@er-coaching.com">json@er-coaching.com</a>으로 보내 주십시오.</p>
+      <p>감사합니다.<br>Enneagram for Restoration</p>
     `,
   );
+}
+
+function ministryDiscountHtml(pricing: CoursePricingInfo, isKorea: boolean): string {
+  if (!pricing.ministryDiscountRate) return '';
+  const regular = isKorea ? `₩${formatKrw(pricing.bankTransferPriceKrw)}` : `$${pricing.overseasPriceUsd}`;
+  return `<p>사역자 ${pricing.ministryDiscountRate * 100}% 할인 적용 · 정가 <s>${regular}</s></p>`;
 }
 
 function buildUsPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo, preference?: string): string {
@@ -155,32 +161,16 @@ function buildUsPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo, prefer
   return items.join('\n');
 }
 
-function buildKoreanPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo): string {
+function buildKoreanPaymentMethodsHtml(payment: BasicCourseManualPaymentInfo, amountKrw: number): string {
   const items: string[] = [];
   if (payment.krBankInstructions) {
     const bankHtml = escapeHtml(payment.krBankInstructions).replace(/\n/g, '<br>');
-    items.push(`<li><strong>원화 계좌이체 ₩450,000</strong><br>${bankHtml}</li>`);
+    items.push(`<li><strong>원화 계좌이체 ₩${formatKrw(amountKrw)}</strong><br>${bankHtml}</li>`);
   }
   if (!items.length) {
-    items.push('<li><strong>원화 계좌이체 ₩450,000</strong> 계좌 정보는 이 메일에 회신하거나 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>');
+    items.push(`<li><strong>원화 계좌이체 ₩${formatKrw(amountKrw)}</strong> 계좌 정보는 이 메일에 회신하거나 <a href="mailto:json@er-coaching.com">json@er-coaching.com</a> 으로 문의해 주세요.</li>`);
   }
   return items.join('\n');
-}
-
-export function basicCoursePreSurveyHtml(input: {
-  name: string;
-  preSurveyUrl: string;
-}): string {
-  return wrapEmail(
-    '기본과정 사전 성찰 설문 안내',
-    `
-      <p>${escapeHtml(input.name)}님, 등록이 확정되었습니다. 감사합니다.</p>
-      <p>8주 여정을 준비하기 위해 <strong>사전 성찰 설문</strong>(약 15–20분)을 부탁드립니다. 개인적인 이야기를 천천히 돌아보시는 시간입니다.</p>
-      <p style="margin:24px 0"><a href="${escapeHtml(input.preSurveyUrl)}" style="display:inline-block;padding:12px 20px;background:#3E362E;color:#fff;text-decoration:none;border-radius:8px;font-weight:bold">사전 성찰 설문 작성하기</a></p>
-      <p style="font-size:14px">링크가 열리지 않으면 아래 주소를 복사해 브라우저에 붙여넣어 주세요.<br><code>${escapeHtml(input.preSurveyUrl)}</code></p>
-      <p style="color:#666;font-size:13px">설문은 외부에 공유되지 않으며, 멘토링 준비에만 사용됩니다.</p>
-    `,
-  );
 }
 
 export function basicCourseGraduationHtml(input: {
@@ -199,15 +189,6 @@ export function basicCourseGraduationHtml(input: {
   );
 }
 
-function paymentPreferenceLabel(value?: string): string {
-  const labels: Record<string, string> = {
-    kr_bank: '한국 원화 계좌이체',
-    zelle: 'Zelle',
-    venmo: 'Venmo',
-  };
-  return labels[String(value || '')] || '';
-}
-
 function installmentPreferenceCopy(value: string | undefined): string {
   if (value === 'split_consult') {
     return 'ER 자체 2회 분납을 요청하셨습니다. 승인 여부와 납부 일정을 담당자가 별도로 회신드립니다.';
@@ -220,10 +201,15 @@ function formatKrw(value: number): string {
 }
 
 function wrapEmail(title: string, bodyHtml: string): string {
-  return `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><title>${escapeHtml(title)}</title></head>
-<body style="font-family:'Pretendard',-apple-system,sans-serif;color:#3E362E;line-height:1.6;max-width:560px;margin:0 auto;padding:24px">
-${bodyHtml}
-</body></html>`;
+  return `<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)}</title>
+<style>p{margin:0 0 18px}h2{margin:30px 0 12px;font-size:17px;color:#1b3329}ul,ol{margin:0 0 18px;padding-left:22px}li{margin:0 0 8px}a{color:#17634b}code{overflow-wrap:anywhere}</style></head>
+<body style="margin:0;background:#f4f6f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Malgun Gothic',sans-serif;color:#27352e;font-size:15px;line-height:1.8">
+<table role="presentation" width="100%" style="border-collapse:collapse"><tr><td align="center" style="padding:24px 12px">
+<table role="presentation" width="100%" style="max-width:600px;border-collapse:collapse;background:#ffffff;border:1px solid #e2e8e4">
+<tr><td style="padding:28px 24px 20px;border-bottom:3px solid #238162"><strong style="font-size:18px;color:#17634b">Enneagram for Restoration</strong></td></tr>
+<tr><td style="padding:28px 24px"><h1 style="font-size:22px;line-height:1.5;margin:0 0 26px;color:#1b3329">${escapeHtml(title)}</h1>${bodyHtml}</td></tr>
+<tr><td style="padding:18px 24px;border-top:1px solid #e2e8e4;font-size:12px;color:#66766b">ER · Enneagram for Restoration<br><a href="https://er-coaching.com">er-coaching.com</a></td></tr>
+</table></td></tr></table></body></html>`;
 }
 
 function escapeHtml(value: string): string {

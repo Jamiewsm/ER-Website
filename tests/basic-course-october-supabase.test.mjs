@@ -47,7 +47,7 @@ test('submit application persists cohort/payment metadata and records successful
   assert.match(submit, /payment_preference: paymentPreference/);
   assert.match(submit, /installment_preference: installmentPreference/);
   assert.match(submit, /receipt_email_sent_at/);
-  assert.match(submit, /basicCourseApplicantReceivedHtml/);
+  assert.match(submit, /programApplicationConfirmationHtml/);
   assert.match(submit, /basicCourseManualPaymentFromEnv\(name\)/);
   assert.match(submit, /'kr_bank', 'zelle', 'venmo'/);
   assert.doesNotMatch(submit, /'kr_card'|'kakao_pay'|'naver_pay'|'paypal'|'card_installment'/);
@@ -65,7 +65,8 @@ test('registration mail chooses KRW or USD and reserves seats before sending', (
   assert.doesNotMatch(pricing, /earlyBird|470000|420000|380000|paypalEmail|krCheckoutUrl/);
   assert.match(pricing, /카카오뱅크 3333-37-8817302/);
   assert.match(pricing, /BASIC_COURSE_VENMO_HANDLE/);
-  assert.match(templates, /원화 계좌이체 ₩450,000/);
+  assert.match(templates, /원화 계좌이체 ₩\$\{formatKrw\(amountKrw\)\}/);
+  assert.doesNotMatch(templates, /원화 계좌이체 ₩450,000/);
   assert.match(templates, /Zelle·Venmo/);
   assert.match(templates, /Venmo/);
   assert.doesNotMatch(templates, /PayPal|카카오페이|네이버페이|신용카드|₩470,000/);

@@ -15,16 +15,57 @@ export type BasicCourseOctoberPricing = {
   bankTransferPriceKrw: number;
   amountUsd: number;
   amountKrw: number;
+  ministryDiscountRate: number;
 };
 
-export function basicCourseOctoberPricing(): BasicCourseOctoberPricing {
+// 기존 접수분에도 적용할 수 있도록 폼이 저장한 체크 표시 한 줄만 인정한다.
+export function ministryDiscountRate(message: unknown): number {
+  return typeof message === 'string'
+    && message.split(/\r?\n/).some((line) => line.trim() === '전임 사역자 및 사모: 해당')
+    ? 0.5
+    : 0;
+}
+
+export function basicCourseOctoberPricing(message?: unknown): BasicCourseOctoberPricing {
   const overseasPriceUsd = 330;
   const bankTransferPriceKrw = 450000;
+  const discountRate = ministryDiscountRate(message);
   return {
     overseasPriceUsd,
     bankTransferPriceKrw,
-    amountUsd: overseasPriceUsd,
-    amountKrw: bankTransferPriceKrw,
+    amountUsd: overseasPriceUsd * (1 - discountRate),
+    amountKrw: bankTransferPriceKrw * (1 - discountRate),
+    ministryDiscountRate: discountRate,
+  };
+}
+
+// 키 형식만 판별한다. 실제 가격 적용 전에는 edu_courses의 growth 과정인지 조회한다.
+export function isGrowthCourseProgram(programKey: string): boolean {
+  return /^growth_\d{3}$/.test(programKey);
+}
+
+export type GrowthCoursePricing = {
+  overseasPriceUsd: null;
+  bankTransferPriceKrw: number;
+  amountUsd: null;
+  amountKrw: number;
+  ministryDiscountRate: number;
+  installmentMonths: number;
+  monthlyAmountKrw: number;
+};
+
+export function growthCoursePricing(message?: unknown): GrowthCoursePricing {
+  const bankTransferPriceKrw = 150000;
+  const discountRate = ministryDiscountRate(message);
+  const amountKrw = bankTransferPriceKrw * (1 - discountRate);
+  return {
+    overseasPriceUsd: null,
+    bankTransferPriceKrw,
+    amountUsd: null,
+    amountKrw,
+    ministryDiscountRate: discountRate,
+    installmentMonths: 3,
+    monthlyAmountKrw: amountKrw / 3,
   };
 }
 

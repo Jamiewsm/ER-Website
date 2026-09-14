@@ -19,19 +19,42 @@ const application = {
   payment_region: 'KR',
 };
 
+// 조건부 UPDATE를 공유 객체에 원자적으로 적용해 서버의 영속 발송 선점을 검증한다.
+function applicationQuery(row, calls, options) {
+  let update; const nullFields = [];
+  const execute = () => {
+    if (!update) return { data: structuredClone(row), error: null };
+    const claim = Boolean(update.confirmation_email_attempted_at);
+    if (claim && options.claimError) return { data: null, error: { message: 'synthetic claim failure' } };
+    if (nullFields.some((field) => row[field] != null)) return { data: null, error: null };
+    if (!claim) calls.updates.push(update);
+    if (!claim && options.recordError) return { data: null, error: { message: 'synthetic record failure' } };
+    Object.assign(row, update);
+    return { data: { id: row.id }, error: null };
+  };
+  return {
+    select() { return this; },
+    update(value) { update = JSON.parse(JSON.stringify(value)); return this; },
+    eq(field, value) { assert.equal(field, 'id'); assert.equal(value, row.id); return this; },
+    is(field, value) { assert.equal(value, null); nullFields.push(field); return this; },
+    maybeSingle: async () => execute(),
+    then(resolve, reject) { return Promise.resolve(execute()).then(resolve, reject); },
+  };
+}
+
 function loadHandler(overrides = {}, options = {}) {
-  const row = structuredClone({ ...application, ...overrides });
+  const row = options.sharedRow || structuredClone({ ...application, ...overrides });
   const calls = { reservations: [], emails: [], updates: [] };
   const environment = {
     SUPABASE_URL: 'https://database.example.invalid',
     SUPABASE_ANON_KEY: 'synthetic-anon',
     SUPABASE_SERVICE_ROLE_KEY: 'synthetic-service',
     RESEND_API_KEY: 'synthetic-resend',
-    BASIC_COURSE_PRE_SURVEY_URL: 'https://survey.example.invalid',
+    ...options.environment,
   };
   let handler;
   const context = vm.createContext({
-    Request, Response, Headers,
+    Request, Response, Headers, URL,
     console: { error() {}, warn() {} },
     Deno: {
       env: { get: (name) => environment[name] },
@@ -45,28 +68,18 @@ function loadHandler(overrides = {}, options = {}) {
           getUser: async () => ({ data: { user: { id: 'synthetic-head' } }, error: null }),
         },
         from(table) {
-          assert.ok(['coach_profiles', 'program_applications'].includes(table));
-          let update;
-          return {
-            select() { return this; },
-            update(value) { update = JSON.parse(JSON.stringify(value)); return this; },
-            eq(field, value) {
-              assert.equal(field, table === 'coach_profiles' ? 'user_id' : 'id');
-              assert.equal(value, table === 'coach_profiles' ? 'synthetic-head' : row.id);
-              if (update) {
-                calls.updates.push(update);
-                Object.assign(row, update);
-                return Promise.resolve({ error: null });
-              }
-              return this;
-            },
-            maybeSingle: async () => ({
-              data: table === 'coach_profiles'
-                ? { role: options.role || 'head_coach', is_active: true }
-                : structuredClone(row),
-              error: null,
-            }),
+          assert.ok(['coach_profiles', 'program_applications', 'edu_courses', 'edu_cohorts'].includes(table));
+          if (table === 'edu_courses' || table === 'edu_cohorts') {
+            return {
+              select() { return this; }, eq() { return this; },
+              maybeSingle: async () => ({ data: table === 'edu_courses' ? options.growthCourse || null : options.growthCohort || null, error: null }),
+            };
+          }
+          if (table === 'coach_profiles') return {
+            select() { return this; }, eq() { return this; },
+            maybeSingle: async () => ({ data: { role: options.role || 'head_coach', is_active: true }, error: null }),
           };
+          return applicationQuery(row, calls, options);
         },
         async rpc(name, payload) {
           assert.equal(name, 'admin_prepare_program_application_registration');
@@ -85,7 +98,15 @@ function loadHandler(overrides = {}, options = {}) {
       // 의도하지 않은 네트워크 요청도 여기서 실패하며 실제 네트워크는 사용하지 않는다.
       assert.equal(url, 'https://api.resend.com/emails');
       assert.equal(init.method, 'POST');
+      const key = init.headers['Idempotency-Key'];
+      options.emailRequests?.push({ key, body: JSON.parse(init.body) });
+      if (key && options.mailStore?.has(key)) {
+        assert.equal(options.mailStore.get(key), init.body, 'a retry uses exactly the same mail payload');
+        return new Response(JSON.stringify({ id: 'synthetic-email-id' }), { status: 200 });
+      }
+      if (key) options.mailStore?.set(key, init.body);
       calls.emails.push(JSON.parse(init.body));
+      if (options.providerError) throw new Error('synthetic network interruption after send');
       return new Response(JSON.stringify({ id: 'synthetic-email-id' }), { status: 200 });
     },
   });
@@ -94,6 +115,7 @@ function loadHandler(overrides = {}, options = {}) {
     '_shared/cors.ts',
     '_shared/program-pricing.ts',
     '_shared/email-templates.ts',
+    '_shared/basic-course-welcome.ts',
     '_shared/head-coach.ts',
     '_shared/resend.ts',
     'notify-program-application/index.ts',
@@ -159,9 +181,9 @@ for (const [region, overrides, currency, amount] of [
     }]);
     assert.equal(harness.calls.emails.length, 1);
     const email = harness.calls.emails[0];
-    assert.equal(email.subject, '[ER] 10월 기본과정 등록·결제 안내');
+    assert.equal(email.subject, '[ER] ER 성경적 에니어그램 기본과정 8주 (2026년 10월) 신청 접수 및 등록 안내');
     assert.deepEqual(email.to, ['synthetic@example.invalid']);
-    assert.match(email.html, /2026년 10월 기수/);
+    assert.match(email.html, /2026년 10월/);
     assert.ok(email.html.includes(amount));
     assert.match(email.html, /ER Basic October/);
     assert.equal(harness.row.cohort_key, october);
@@ -202,7 +224,6 @@ test('헤드 코치가 아니면 명시적 10월 신청도 예약하거나 발�
 });
 
 for (const [event, timestamp] of [
-  ['pre_survey', 'pre_survey_sent_at'],
   ['graduation', 'graduation_email_sent_at'],
 ]) {
   test(`과거 기수의 ${event} 안내는 기수·등록 정보를 바꾸지 않고 계속 동작한다`, async () => {
@@ -218,3 +239,297 @@ for (const [event, timestamp] of [
     assert.ok(harness.calls.updates[0][timestamp]);
   });
 }
+
+const ministryMessage = '전화번호: 010-0000-0000\n전임 사역자 및 사모: 해당\n사역 정보: 테스트 교회';
+for (const [region, amount, formatted] of [['KR', 225000, '₩225,000'], ['OVERSEAS', 165, '$165']]) {
+  test(`사역자 ${region} 등록 준비와 통합 메일은 같은 50% 금액을 사용한다`, async () => {
+    const h = loadHandler({ message: ministryMessage, payment_region: region });
+    assert.equal((await h.invoke()).status, 200);
+    assert.equal(h.calls.reservations[0][region === 'KR' ? 'p_payment_amount_krw' : 'p_payment_amount_usd'], amount);
+    const html = h.calls.emails[0].html;
+    assert.ok(html.includes(`<strong style="font-size:24px;color:#17634b">${formatted}</strong>`));
+    assert.match(html, /사역자 50% 할인 적용/);
+    if (region === 'KR') {
+      assert.match(html, /원화 계좌이체 ₩225,000/);
+      assert.doesNotMatch(html, /원화 계좌이체 ₩450,000/);
+    }
+  });
+}
+for (const message of ['', '전임 사역자 및 사모: 해당 없음', '전임 사역자 및 사모: false', '질문: 전임 사역자 및 사모: 해당', '목회자 할인 요청']) {
+  test(`정확한 체크 표시가 없는 신청은 정가를 유지한다 (${message || '비어 있음'})`, async () => {
+    const h = loadHandler({ message });
+    assert.equal((await h.invoke()).status, 200);
+    assert.equal(h.calls.reservations[0].p_payment_amount_krw, 450000);
+    assert.doesNotMatch(h.calls.emails[0].html, /사역자 50% 할인 적용/);
+  });
+}
+for (const field of ['receipt_email_sent_at', 'registration_email_sent_at']) {
+  test(`${field}가 있으면 정원 예약만 하고 안내를 중복 발송하지 않는다`, async () => {
+    const h = loadHandler({ [field]: '2026-09-14T00:00:00Z', message: ministryMessage });
+    const res = await h.invoke();
+    assert.equal(res.status, 200);
+    assert.deepEqual(await res.json(), { ok: true, registration: { prepared: true, status: 'payment_pending' }, email: { skipped: true, reason: 'already_sent' } });
+    assert.equal(h.calls.reservations.length, 1);
+    assert.equal(h.calls.reservations[0].p_payment_amount_krw, 225000);
+    assert.equal(h.calls.emails.length, 0);
+  });
+}
+test('등록 준비를 반복하거나 동시에 요청해도 통합 안내는 한 번만 발송한다', async () => {
+  const mailStore = new Map(), emailRequests = [];
+  const sharedRow = structuredClone(application);
+  const a = loadHandler({}, { mailStore, emailRequests, sharedRow });
+  const b = loadHandler({}, { mailStore, emailRequests, sharedRow });
+  const results = await Promise.all([a.invoke(), b.invoke()]);
+  assert.ok(results.every((result) => [200, 409].includes(result.status)));
+  assert.equal(a.calls.emails.length + b.calls.emails.length, 1);
+  assert.equal(new Set(emailRequests.map((r) => r.key)).size, 1);
+  assert.equal(emailRequests[0].key, `application-confirmation/${application.id}`);
+  const repeat = await a.invoke();
+  assert.equal((await repeat.json()).email.reason, 'already_sent');
+  assert.equal(a.calls.emails.length + b.calls.emails.length, 1);
+});
+test('발송 후 완료 기록 저장에 실패하면 24시간이 지나도 자동 재발송하지 않는다', async () => {
+  const h = loadHandler({}, { recordError: true });
+  const first = await h.invoke();
+  assert.equal(first.status, 500);
+  assert.equal((await first.json()).error, 'email_sent_record_failed');
+  h.row.confirmation_email_attempted_at = '2020-01-01T00:00:00Z';
+  const retry = await h.invoke();
+  assert.equal(retry.status, 409);
+  assert.equal((await retry.json()).error, 'email_delivery_uncertain');
+  assert.equal(h.calls.emails.length, 1);
+});
+test('발송 선점 기록 저장에 실패하면 메일 API를 호출하지 않는다', async () => {
+  const h = loadHandler({}, { claimError: true });
+  const response = await h.invoke();
+  assert.equal(response.status, 500);
+  assert.equal((await response.json()).error, 'email_delivery_claim_failed');
+  assert.equal(h.calls.emails.length, 0);
+});
+for (const [code, discounted] of [['growth_101', false], ['growth_201', true], ['growth_202', true]]) {
+  test(`실제로 개설된 ${code}는 원화 3개월 금액과 월 분납액을 안내한다`, async () => {
+    const h = loadHandler({ program_key: code, cohort_key: 'growth-test', payment_region: 'OVERSEAS', message: discounted ? ministryMessage : '' }, {
+      growthCourse: { id: 'course-id', code, kind: 'growth', title: '심화성장 테스트' },
+      growthCohort: { id: 'cohort-id', course_id: 'course-id' },
+    });
+    assert.equal((await h.invoke()).status, 200);
+    assert.equal(h.calls.reservations[0].p_payment_currency, 'KRW');
+    assert.equal(h.calls.reservations[0].p_payment_amount_krw, discounted ? 75000 : 150000);
+    assert.equal(h.calls.reservations[0].p_payment_amount_usd, null);
+    assert.match(h.calls.emails[0].html, discounted ? /월 ₩25,000씩 3회/ : /월 ₩50,000씩 3회/);
+    assert.doesNotMatch(h.calls.emails[0].html, /USD|Zelle|10월|첫 주 안심|50% 환불/);
+  });
+}
+test('레지스트리에 없는 성장 과정이나 다른 과정의 기수를 예약하거나 청구하지 않는다', async () => {
+  const absent = loadHandler({ program_key: 'growth_999' });
+  assert.equal((await absent.invoke()).status, 400);
+  assert.equal(absent.calls.reservations.length, 0);
+  const mismatch = loadHandler({ program_key: 'growth_101' }, {
+    growthCourse: { id: 'course-1', kind: 'growth', title: '심화' }, growthCohort: { course_id: 'course-2' },
+  });
+  assert.equal((await mismatch.invoke()).status, 409);
+  assert.equal(mismatch.calls.reservations.length, 0);
+  assert.equal(mismatch.calls.emails.length, 0);
+});
+
+function loadIntake(overrides = {}, options = {}) {
+  const row = { id: application.id };
+  const calls = { inserts: [], updates: [], emails: [], emailRequests: [] };
+  const payload = {
+    name: application.name, contact: application.contact, phone: '010-0000-0000',
+    category: '성경적 에니어그램 기본과정', program_key: application.program_key,
+    payment_region: 'KR', payment_preference: 'kr_bank', turnstile_token: 'synthetic-token',
+    ...overrides,
+  };
+  const environment = {
+    SUPABASE_URL: 'https://database.example.invalid', SUPABASE_SERVICE_ROLE_KEY: 'synthetic-service',
+    RESEND_API_KEY: 'synthetic-resend', TURNSTILE_SECRET_KEY: 'synthetic-turnstile',
+  };
+  let handler;
+  const context = vm.createContext({
+    Request, Response, Headers, URLSearchParams,
+    console: { error() {}, warn() {} },
+    Deno: { env: { get: (name) => environment[name] }, serve: (callback) => { handler = callback; } },
+    createClient() {
+      return {
+        from(table) {
+          assert.ok(['program_applications', 'edu_courses', 'edu_cohorts'].includes(table));
+          if (table === 'edu_courses' || table === 'edu_cohorts') return {
+            select() { return this; }, eq() { return this; },
+            maybeSingle: async () => ({ data: table === 'edu_courses' ? options.growthCourse || null : options.growthCohort || null, error: null }),
+          };
+          return {
+            ...applicationQuery(row, calls, options),
+            insert(value) { calls.inserts.push(JSON.parse(JSON.stringify(value))); Object.assign(row, value); return this; },
+            single: async () => ({ data: { id: application.id }, error: null }),
+          };
+        },
+      };
+    },
+    async fetch(url, init) {
+      if (url === 'https://challenges.cloudflare.com/turnstile/v0/siteverify') {
+        return new Response(JSON.stringify({ success: true }), { status: 200 });
+      }
+      assert.equal(url, 'https://api.resend.com/emails');
+      const body = JSON.parse(init.body);
+      calls.emailRequests.push({ key: init.headers['Idempotency-Key'], body });
+      calls.emails.push(body);
+      if (options.providerError && init.headers['Idempotency-Key']) throw new Error('synthetic network interruption after send');
+      return new Response(JSON.stringify({ id: 'synthetic-email-id' }), { status: 200 });
+    },
+  });
+  for (const path of ['_shared/cors.ts', '_shared/program-pricing.ts', '_shared/email-templates.ts', '_shared/resend.ts', '_shared/turnstile.ts', 'submit-application/index.ts']) {
+    const source = readFileSync(new URL(`../supabase/functions/${path}`, import.meta.url), 'utf8');
+    const script = stripTypeScriptTypes(source)
+      .replace(/^import\s[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
+      .replace(/^export\s+/gm, '');
+    vm.runInContext(script, context, { filename: path });
+  }
+  return {
+    calls, row,
+    invoke: () => handler(new Request('https://function.example.invalid', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+    })),
+  };
+}
+
+for (const [region, discount] of [['KR', false], ['KR', true], ['OVERSEAS', false], ['OVERSEAS', true]]) {
+  test(`접수와 복구 안내 본문·금액·중복방지 키가 일치한다 (${region}, 사역자 ${discount})`, async () => {
+    const message = discount ? ministryMessage.replaceAll('\n', '\r\n') : '';
+    const h = loadIntake({ message, payment_region: region, payment_preference: region === 'KR' ? 'kr_bank' : 'zelle', is_full_time_ministry: discount });
+    assert.equal((await h.invoke()).status, 200);
+    const amount = region === 'KR' ? (discount ? 225000 : 450000) : (discount ? 165 : 330);
+    const field = region === 'KR' ? 'payment_amount_krw' : 'payment_amount_usd';
+    assert.equal(h.calls.inserts[0][field], amount);
+    assert.equal(h.calls.emails.length, 2, '운영자 알림 한 통과 신청자 안내 한 통');
+    const receipt = h.calls.emails[1], admin = h.calls.emails[0];
+    const formatted = region === 'KR' ? `₩${amount.toLocaleString('ko-KR')}` : `$${amount}`;
+    assert.ok(receipt.html.includes(formatted)); assert.ok(admin.html.includes(formatted));
+    assert.equal(receipt.html.includes('사역자 50% 할인 적용'), discount);
+    assert.ok(h.calls.updates[0].receipt_email_sent_at);
+    const emailRequests = [];
+    const fallback = loadHandler(h.calls.inserts[0], { emailRequests });
+    assert.equal((await fallback.invoke()).status, 200);
+    assert.deepEqual(fallback.calls.emails[0], receipt, '초기 안내와 복구 발송의 전체 Resend payload가 동일하다');
+    assert.equal(emailRequests[0].key, h.calls.emailRequests[1].key);
+  });
+}
+
+test('사역자 심화 접수는 원화 총 75000원·3개월 월 25000원을 저장하고 안내한다', async () => {
+  const h = loadIntake({ program_key: 'growth_101', cohort_key: 'growth-2026', message: ministryMessage, payment_region: 'OVERSEAS' }, {
+    growthCourse: { id: 'growth-id', code: 'growth_101', title: '심화성장101', kind: 'growth' },
+    growthCohort: { id: 'growth-cohort', course_id: 'growth-id' },
+  });
+  assert.equal((await h.invoke()).status, 200);
+  assert.equal(h.calls.inserts[0].cohort_key, 'growth-2026');
+  assert.equal(h.calls.inserts[0].payment_currency, 'KRW');
+  assert.equal(h.calls.inserts[0].payment_amount_krw, 75000);
+  assert.equal(h.calls.inserts[0].payment_amount_usd, null);
+  assert.match(h.calls.emails[1].html, /월 ₩25,000씩 3회/);
+  assert.doesNotMatch(h.calls.emails[1].html, /USD|10월|Zelle/);
+});
+
+for (const [label, options, cohort_key] of [
+  ['없는 과정', {}, 'growth-test'],
+  ['미지정 기수', { growthCourse: { id: 'growth-id', kind: 'growth', title: '심화' } }, undefined],
+  ['존재하지 않는 기수', { growthCourse: { id: 'growth-id', kind: 'growth', title: '심화' } }, 'missing'],
+  ['다른 과정 기수', { growthCourse: { id: 'growth-id', kind: 'growth', title: '심화' }, growthCohort: { course_id: 'other-course' } }, 'wrong'],
+]) {
+  test(`유효하지 않은 심화 접수는 저장하거나 메일을 보내지 않는다 (${label})`, async () => {
+    const h = loadIntake({ program_key: 'growth_101', cohort_key, message: ministryMessage }, options);
+    assert.equal((await h.invoke()).status, 400);
+    assert.equal(h.calls.inserts.length, 0);
+    assert.equal(h.calls.emails.length, 0);
+  });
+}
+test('기존 양육 워크숍 신청을 심화 3개월 가격으로 바꾸지 않는다', async () => {
+  const h = loadIntake({ program_key: 'parenting_workshop' });
+  assert.equal((await h.invoke()).status, 200);
+  assert.equal(h.calls.inserts[0].payment_amount_krw, null);
+  assert.doesNotMatch(h.calls.emails[1].html, /150,000|75,000|3개월|총 납부 금액/);
+});
+
+test('접수 후 메일 기록 저장 실패는 접수 성공과 구분되는 경고로 반환한다', async () => {
+  const h = loadIntake({}, { recordError: true });
+  const response = await h.invoke();
+  assert.equal(response.status, 200);
+  const result = await response.json();
+  assert.equal(result.ok, true);
+  assert.equal(result.warning, 'email_sent_record_failed');
+  assert.equal(h.calls.inserts.length, 1);
+});
+
+test('외부 설문 URL 없이 강의계획안과 자기관찰보고서를 HTML·본문으로 발송한다', async () => {
+  const h = loadHandler({}, { environment: { BASIC_COURSE_PRE_SURVEY_URL: '' } });
+  const response = await h.invoke('pre_survey');
+  assert.equal(response.status, 200);
+  assert.equal(h.calls.emails.length, 1);
+  const mail = h.calls.emails[0];
+  assert.equal(mail.subject, '[ER] 기본과정 강의계획안 및 자기관찰보고서 안내');
+  for (const content of [mail.html, mail.text]) {
+    assert.match(content, /강의계획안/);
+    assert.match(content, /자기관찰보고서/);
+    assert.match(content, /myjiji82@gmail\.com/);
+    assert.match(content, /10월/);
+  }
+  for (let session = 1; session <= 8; session++) {
+    assert.ok(mail.html.includes(`${session}회차`));
+    assert.ok(mail.text.includes(`${session}회차`));
+  }
+  const questions = mail.text.split('작성을 돕는 질문')[1].split('강사 소개')[0];
+  assert.equal((questions.match(/^[1-8]\. /gm) || []).length, 8);
+  assert.doesNotMatch(mail.html, /survey\.example|BASIC_COURSE_PRE_SURVEY_URL/);
+  assert.ok(h.calls.updates[0].pre_survey_sent_at);
+});
+test('심화 신청에 기본과정 자기관찰보고서를 잘못 발송하지 않는다', async () => {
+  const h = loadHandler({ program_key: 'growth_101' });
+  assert.equal((await h.invoke('pre_survey')).status, 400);
+  assert.equal(h.calls.emails.length, 0);
+});
+
+for (const cohort_key of [null, '', 'enneagram_basic_2026_07']) {
+  test(`과거 또는 미지정 기수에는 10월 강의계획안을 보내지 않는다 (${cohort_key})`, async () => {
+    const h = loadHandler({ cohort_key });
+    const response = await h.invoke('pre_survey');
+    assert.equal(response.status, 409);
+    assert.equal((await response.json()).error, 'cohort_confirmation_required');
+    assert.equal(h.calls.emails.length, 0);
+    assert.equal(h.calls.updates.length, 0);
+  });
+}
+
+test('접수 메일 성공 후 기록 저장이 실패해도 관리자 재시도가 두 번째 메일을 만들지 않는다', async () => {
+  const intake = loadIntake({}, { recordError: true });
+  assert.equal((await intake.invoke()).status, 200);
+  assert.ok(intake.row.confirmation_email_attempted_at);
+  intake.row.confirmation_email_attempted_at = '2020-01-01T00:00:00Z';
+  const retry = loadHandler({}, { sharedRow: intake.row });
+  const response = await retry.invoke();
+  assert.equal(response.status, 409);
+  assert.equal((await response.json()).error, 'email_delivery_uncertain');
+  assert.equal(retry.calls.emails.length, 0);
+});
+
+test('등록 안내의 첫 네트워크 실패도 운영자 확인을 안내하고 후속 재발송을 차단한다', async () => {
+  const h = loadHandler({}, { providerError: true });
+  const first = await h.invoke();
+  assert.equal(first.status, 502);
+  const body = await first.json();
+  assert.equal(body.error, 'email_delivery_uncertain');
+  assert.match(body.message, /운영자가 실제 발송 기록을 확인/);
+  assert.ok(h.row.confirmation_email_attempted_at);
+  assert.equal((await h.invoke()).status, 409);
+  assert.equal(h.calls.emails.length, 1);
+});
+test('최초 접수 메일의 응답이 불확실해도 접수를 반복하도록 유도하지 않는다', async () => {
+  const h = loadIntake({}, { providerError: true });
+  const response = await h.invoke();
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.warning, 'email_delivery_uncertain');
+  assert.match(body.warning_message, /재신청하지 말고 담당자/);
+  assert.ok(h.row.confirmation_email_attempted_at);
+  const retry = loadHandler({}, { sharedRow: h.row });
+  assert.equal((await retry.invoke()).status, 409);
+  assert.equal(retry.calls.emails.length, 0);
+});
