@@ -133,16 +133,17 @@ test('October Enneagram basic course apply route shows closed notice after recru
   assert.doesNotMatch(html, /에니어그램 기본과정 신청하기/);
 });
 
-test('October Enneagram basic course confirmation uses region-aware response copy', () => {
+test('October basic confirmation explains one receipt and payment email followed by course guidance', () => {
   const renderer = loadApplyRenderer();
   const html = renderer.renderThankYou({ focus: 'enneagram_basic_october' });
 
   assert.match(html, /기본과정 신청이 접수되었습니다/);
-  assert.match(html, /24시간 이내/);
   assert.match(html, /한국은 원화, 해외는 USD/);
-  assert.match(html, /접수 확인 메일이 자동 발송/);
+  assert.match(html, /신청 접수와 결제 안내가 담긴 메일/);
+  assert.match(html, /50% 할인/);
+  assert.match(html, /강의계획안과 자기관찰보고서 작성 안내/);
   assert.doesNotMatch(html, /Stripe/);
-  assert.doesNotMatch(html, /접수 확인·결제 안내 메일이 곧 발송/);
+  assert.doesNotMatch(html, /24시간 이내|메일이 자동 발송되었습니다|사전 성찰 설문 링크/);
 });
 
 test('focused course application CSS hides global distractions and allows mobile shrink', () => {

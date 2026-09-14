@@ -233,7 +233,7 @@ function renderBasicCourseApply(submitSource) {
                 <section class="rounded-lg border border-er-accentLight bg-white p-5 shadow-soft sm:p-7">
                     <h2 class="text-lg font-bold text-er-dark">기본과정 신청 정보</h2>
                     <p class="mb-6 mt-2 text-sm leading-relaxed text-er-primary break-keep">
-                        아래 내용을 남겨주시면 접수 확인 메일이 자동 발송됩니다. 담당자 확인 후 한국은 원화, 해외는 USD 기준의 등록·결제 안내를 보내드립니다. 자리 확정은 결제 확인 순입니다.
+                        신청 접수와 결제 안내를 한 통의 메일로 보내드립니다. 한국은 원화, 해외는 USD 기준이며, 사역자 항목에 체크하시면 50% 할인 금액을 안내합니다. 담당자가 결제 내역과 수강 가능 여부를 확인한 뒤 등록을 확정합니다.
                     </p>
 
                     <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_october' })">
@@ -797,8 +797,8 @@ function renderThankYou(payload = null) {
                     </div>
                     <h2 class="mb-3 text-xl font-bold text-er-dark">기본과정 신청이 접수되었습니다</h2>
                     <p class="text-sm leading-relaxed text-er-primary break-keep">
-                        접수 확인 메일이 자동 발송되었습니다. 담당자 확인 후 <strong>24시간 이내</strong> 한국은 원화, 해외는 USD 기준의 등록·결제 안내를 보내드립니다.<br>
-                        자리 확정은 <strong>결제 확인 순</strong>이며, 확인 후 사전 성찰 설문 링크를 보내드립니다.
+                        신청 접수와 결제 안내가 담긴 메일을 확인해 주세요. 한국은 원화, 해외는 USD 기준으로 안내하며, 사역자 항목에 체크하신 경우 50% 할인이 적용됩니다.<br>
+                        담당자가 결제 내역과 수강 가능 여부를 확인한 뒤 등록을 확정하고, <strong>강의계획안과 자기관찰보고서 작성 안내</strong>를 보내드립니다. 메일이 보이지 않으면 스팸함을 확인하거나 <a href="mailto:json@er-coaching.com" class="underline">json@er-coaching.com</a>으로 문의해 주세요.
                     </p>
                     <div class="mt-8 grid gap-3">
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
