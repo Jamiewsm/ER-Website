@@ -38,7 +38,34 @@ function syncSectionHash(sectionId, payload = null, replaceHash = false) {
     }
 }
 
+function redirectPortalSection(sectionId, payload = null, replace = false) {
+    if (['login', 'mypage', 'portal', 'education'].includes(sectionId)) {
+        openPortalEntry(replace);
+        return true;
+    }
+    const coachTabs = {
+        coach: 'dashboard', coach_portal: 'dashboard', coach_tasks: 'training',
+        coach_materials: 'resources', coach_schedule: 'calendar', coach_notes: 'reports',
+        coach_mentoring: 'practicum'
+    };
+    if (!Object.prototype.hasOwnProperty.call(coachTabs, sectionId)) return false;
+    openCoachApp((sectionId === 'coach' || sectionId === 'coach_portal') && payload?.tab
+        ? payload.tab : coachTabs[sectionId], replace);
+    return true;
+}
+
+function restoreSiteAdminReturn() {
+    const params = new URLSearchParams(window.location.search || '');
+    const sectionId = params.get('site_admin');
+    if (sectionId !== 'coach_admin' && sectionId !== 'notices') return null;
+    params.delete('site_admin');
+    const query = params.toString();
+    history.replaceState(null, '', window.location.pathname + (query ? '?' + query : '') + buildSectionHash(sectionId));
+    return { sectionId, payload: null };
+}
+
 function renderSection(sectionId, payload = null, options = {}) {
+    if (redirectPortalSection(sectionId, payload)) return;
     const { syncHash = true, replaceHash = false } = options;
     const previousSection = state.currentSection;
     const activeFocus = String(payload?.focus || '').trim();
@@ -101,14 +128,7 @@ function renderSection(sectionId, payload = null, options = {}) {
         case 'notice_detail': html = renderNoticeDetail(payload); break;
         case 'types_guide': html = renderTypesGuide(); break; 
         case 'apply': html = renderApply(payload); break;
-        case 'mypage': html = renderMyPage(); break;
-        case 'coach_portal': html = renderCoachPortal(); break;
         case 'coach_admin': html = renderCoachAdmin(); break;
-        case 'coach_tasks': html = renderCoachTasks(); break;
-        case 'coach_materials': html = renderCoachMaterials(); break;
-        case 'coach_schedule': html = renderCoachSchedule(); break;
-        case 'coach_notes': html = renderCoachNotes(); break;
-        case 'coach_mentoring': html = renderCoachMentoring(); break;
         case 'thankyou': html = renderThankYou(payload); break;
         default: html = renderHome();
     }
@@ -177,16 +197,10 @@ function renderSection(sectionId, payload = null, options = {}) {
             }
         }, 0);
     }
-    if(sectionId === 'coach_portal') setTimeout(() => loadCoachPortalDashboard(), 0);
     if(sectionId === 'coach_admin') setTimeout(() => {
         loadCoachAdminUsers();
         if (typeof loadProgramApplications === 'function') loadProgramApplications();
     }, 0);
-    if(sectionId === 'coach_tasks') setTimeout(() => loadCoachTasks(), 0);
-    if(sectionId === 'coach_materials') setTimeout(() => loadCoachMaterials(), 0);
-    if(sectionId === 'coach_schedule') setTimeout(() => loadCoachSchedules(), 0);
-    if(sectionId === 'coach_notes') setTimeout(() => loadCoachNotes(), 0);
-    if(sectionId === 'coach_mentoring') setTimeout(() => loadCoachMentoringHub(), 0);
     if (sectionId === 'test') setTimeout(() => mountAdaptiveTestIframe(), 0);
 }
 

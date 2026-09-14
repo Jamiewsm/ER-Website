@@ -2,18 +2,14 @@
 // --- Helper Functions ---
 function openNotices() { renderSection('notices'); }
 function openNotice(id) { renderSection('notice_detail', { id }); }
-function openCoachApp(hashTab) {
-    var base = String(typeof COACH_APP_URL !== 'undefined' ? COACH_APP_URL : '').replace(/#.*$/, '');
+function openCoachApp(hashTab, replace = false) {
+    var base = String(window.COACH_APP_URL || 'https://coach.er-coaching.com/').replace(/#.*$/, '');
     var raw = String(hashTab || '').replace(/^#/, '').trim().toLowerCase();
-    var allowed = ['dashboard', 'training', 'mentoring', 'calendar', 'resources'];
+    if (raw === 'mentoring') raw = 'practicum';
+    var allowed = ['dashboard', 'reports', 'mentees', 'more', 'training', 'practicum', 'calendar', 'resources'];
     var suffix = allowed.indexOf(raw) !== -1 ? ('#' + raw) : '';
     var target = base + suffix;
-    var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '') || window.matchMedia('(max-width: 1024px)').matches;
-    if (isMobile) {
-        window.location.href = target || COACH_APP_URL;
-        return;
-    }
-    window.open(target || COACH_APP_URL, '_blank', 'noopener,noreferrer');
+    window.location[replace ? 'replace' : 'assign'](target || 'https://coach.er-coaching.com/');
 }
 
 /** ISO 주차 키 (YYYY-WW), 멘토링 주간 데이터와 동일 규칙 */
