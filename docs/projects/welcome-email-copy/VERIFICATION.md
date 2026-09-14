@@ -6,6 +6,7 @@
 - focused 25개 통과. 실제 registration 요청 유지, 등록 준비 성공과 already_sent 분리, 공급자 발송 생략·결과 없음·불확실 오류 표시, 상태 저장 후 선택적 pre_survey 발송, 과거 기수 경계, 권한 거절.
 - 아래 site/기존 CI 회귀 146개 통과.
 - `node --check`로 변경한 세 JS 문법 검사 통과. `git diff --check` 통과.
+- 캐시 후속 변경. `index.html`에서 `apply.js`, `coach/views.js`, `coach/applications.js` 참조만 `20260915a`로 갱신했다. Node assert로 세 참조가 정확히 한 번씩 존재하며 파일이 실제 경로에 있는지 확인했고 focused 25개를 다시 통과했다.
 
 ```sh
 node --test tests/welcome-email-copy.test.mjs tests/apply-workshop-render.test.mjs
