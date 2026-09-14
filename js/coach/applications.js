@@ -13,6 +13,11 @@ function formatProgramApplicationStatus(status) {
   return PROGRAM_APPLICATION_STATUS_LABELS[status] || status || '-';
 }
 
+function isOctoberBasicCourseApplication(row) {
+  return row?.program_key === 'enneagram_basic_july'
+    && row.cohort_key === 'enneagram_basic_2026_10';
+}
+
 async function coachFunctionFetch(path, body) {
   const config = window.SUPABASE_CONFIG || {};
   const { data: sessionData } = await supabaseClient.auth.getSession();
@@ -36,7 +41,8 @@ async function coachFunctionFetch(path, body) {
     let message = text || 'HTTP ' + response.status;
     try {
       const parsed = JSON.parse(text);
-      if (parsed.error === 'seats_full') message = '정원(8명)이 가득 찼습니다. 신청자는 대기 목록으로 이동했습니다.';
+      if (parsed.error === 'seats_full') message = '이 기수의 정원이 가득 찼습니다. 신청자는 대기 목록으로 이동했습니다.';
+      else if (parsed.message) message = parsed.message;
       else if (parsed.error) message = parsed.error;
     } catch (_) {}
     throw new Error(message);
@@ -98,12 +104,13 @@ async function loadProgramApplications() {
       ? `<p class="text-xs text-gray-500 mt-1">결제 선호: ${escapeHtml([row.payment_region, row.payment_preference, row.installment_preference].filter(Boolean).join(' · '))}</p>`
       : '';
     const pendingHint = status === 'payment_pending'
-      ? '<p class="text-xs text-er-primary mt-1">결제 안내 메일 발송됨 · 결제 확인 대기</p>'
+      ? '<p class="text-xs text-er-primary mt-1">등록 준비 완료 · 결제 확인 대기</p>'
       : '';
 
-    const canSendRegistration = status === 'received' || status === 'contacted' || status === 'payment_pending';
+    const isOctoberBasic = isOctoberBasicCourseApplication(row);
+    const canSendRegistration = isOctoberBasic && (status === 'received' || status === 'contacted' || status === 'payment_pending');
     const registrationBtn = canSendRegistration
-      ? `<button type="button" onclick="sendRegistrationPaymentEmail('${row.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent bg-er-accent/10 text-er-dark hover:bg-er-accentLight/40">결제 안내 메일</button>`
+      ? `<button type="button" onclick="sendRegistrationPaymentEmail('${row.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent bg-er-accent/10 text-er-dark hover:bg-er-accentLight/40">등록 준비</button>`
       : '';
 
     return `
@@ -128,7 +135,7 @@ async function loadProgramApplications() {
             ${statusOptions}
           </select>
           ${registrationBtn}
-          <button type="button" onclick="sendProgramApplicationEmail('${row.id}', 'pre_survey')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">사전 성찰 메일</button>
+          ${isOctoberBasic ? `<button type="button" onclick="sendProgramApplicationEmail('${row.id}', 'pre_survey')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">강의계획안·자기관찰보고서</button>` : ''}
           <button type="button" onclick="sendProgramApplicationEmail('${row.id}', 'graduation')" class="px-3 py-1.5 rounded-full text-[11px] font-bold border border-gray-200 text-gray-500 hover:bg-gray-50">수료 안내</button>
         </div>
       </div>
@@ -139,8 +146,9 @@ async function loadProgramApplications() {
 async function updateProgramApplicationStatus(applicationId, status) {
   if (!ensureCoachAccess() || !canManageCoachAdmin() || !supabaseClient) return;
 
-  const sendPreSurvey = status === 'confirmed'
-    && confirm('등록 확정으로 변경합니다.\n\n[확인] 사전 성찰 메일도 함께 발송\n[취소] 등록 확정만 저장');
+  const application = state.programApplications?.find((row) => row.id === applicationId);
+  const sendPreSurvey = status === 'confirmed' && isOctoberBasicCourseApplication(application)
+    && confirm('등록 확정으로 변경합니다.\n\n[확인] 강의계획안·자기관찰보고서 안내도 함께 발송\n[취소] 등록 확정만 저장');
 
   const { error } = await supabaseClient.rpc('admin_update_program_application_status', {
     p_id: applicationId,
@@ -158,7 +166,7 @@ async function updateProgramApplicationStatus(applicationId, status) {
       await sendProgramApplicationEmail(applicationId, 'pre_survey');
       return;
     } catch (err) {
-      alert('등록은 확정되었으나 사전 성찰 메일 발송에 실패했습니다: ' + (err instanceof Error ? err.message : String(err)));
+      alert('등록은 확정되었으나 강의계획안·자기관찰보고서 안내 발송에 실패했습니다: ' + (err instanceof Error ? err.message : String(err)));
     }
   }
 
@@ -168,18 +176,27 @@ async function updateProgramApplicationStatus(applicationId, status) {
 async function sendRegistrationPaymentEmail(applicationId) {
   if (!ensureCoachAccess() || !canManageCoachAdmin() || !supabaseClient) return;
 
-  const proceed = confirm('신청자의 결제 지역·희망 수단에 맞춘 결제 안내 메일을 발송합니다. 진행할까요?');
+  const proceed = confirm('정원을 확인하고 등록을 준비합니다. 접수·결제 안내를 이미 보낸 신청에는 메일을 다시 보내지 않습니다. 진행할까요?');
   if (!proceed) return;
 
   try {
-    await coachFunctionFetch('/functions/v1/notify-program-application', {
+    const result = await coachFunctionFetch('/functions/v1/notify-program-application', {
       application_id: applicationId,
       event: 'registration'
     });
-    alert('결제 안내 메일이 발송되었습니다.');
+    const prepared = result.registration?.prepared ? '등록 준비가 완료되었습니다. ' : '';
+    if (result.email?.skipped && result.email.reason === 'already_sent') {
+      alert(prepared + '접수·결제 안내는 이미 발송되어 다시 보내지 않았습니다.');
+    } else if (result.email?.skipped) {
+      alert(prepared + '메일 발송은 보류되었습니다. 발송 설정을 확인해 주세요.');
+    } else if (result.email?.id) {
+      alert(prepared + '접수·결제 안내 메일이 발송되었습니다.');
+    } else {
+      alert(prepared + '메일 발송 결과를 확인하지 못했습니다. 발송 기록을 확인해 주세요.');
+    }
     await loadProgramApplications();
   } catch (err) {
-    alert('메일 발송 실패: ' + (err instanceof Error ? err.message : String(err)));
+    alert('등록 준비 처리 중 확인이 필요합니다. ' + (err instanceof Error ? err.message : String(err)));
     await loadProgramApplications();
   }
 }
@@ -188,11 +205,12 @@ async function sendProgramApplicationEmail(applicationId, event) {
   if (!ensureCoachAccess() || !canManageCoachAdmin() || !supabaseClient) return;
 
   try {
-    await coachFunctionFetch('/functions/v1/notify-program-application', {
+    const result = await coachFunctionFetch('/functions/v1/notify-program-application', {
       application_id: applicationId,
       event
     });
-    alert('메일 발송 요청이 완료되었습니다.');
+    alert(result.email?.skipped ? '메일 발송이 보류되었습니다. 발송 설정을 확인해 주세요.'
+      : result.email?.id ? '안내 메일이 발송되었습니다.' : '메일 발송 결과를 확인하지 못했습니다. 발송 기록을 확인해 주세요.');
     await loadProgramApplications();
   } catch (err) {
     alert('메일 발송 실패: ' + (err instanceof Error ? err.message : String(err)));
