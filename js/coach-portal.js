@@ -25,59 +25,20 @@ function toggleCoachComposer(kind, forceVisible) {
 }
 
 function openMyAccount() {
-  if (typeof closeDesktopAccountMenu === 'function') closeDesktopAccountMenu();
-  if (typeof renderSection === 'function') renderSection('mypage');
-  if (window.state && window.state.user && typeof loadCoachProfile === 'function') {
-    loadCoachProfile();
-  }
+  openPortalEntry();
 }
 
-async function openCoachPortalFromMenu() {
-  if (typeof closeDesktopAccountMenu === 'function') closeDesktopAccountMenu();
-  if (window.state && window.state.user && typeof loadCoachProfile === 'function') {
-    await loadCoachProfile();
-  }
-  if (!window.state || !window.state.user) {
-    if (typeof toggleLogin === 'function') toggleLogin();
-    return;
-  }
-  if (!window.state.isCoach) {
-    if (typeof renderSection === 'function') renderSection('mypage');
-    return;
-  }
-  var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '') || window.matchMedia('(max-width: 1024px)').matches;
-  if (isMobile && typeof openCoachApp === 'function') {
-    openCoachApp();
-    return;
-  }
-  if (typeof renderSection === 'function') renderSection('coach_portal');
+function openCoachPortalFromMenu() {
+  openCoachApp();
 }
 
 function openCoachAppFromMenu() {
-  if (typeof closeDesktopAccountMenu === 'function') closeDesktopAccountMenu();
-  if (typeof openCoachApp === 'function') openCoachApp();
+  openCoachApp();
 }
 
 if (typeof window !== 'undefined') {
   function setDesktopCoachEmbedTab(tab) {
-    var frame = document.getElementById('coach-portal-embed-frame');
-    if (!frame) return;
-    var allowed = ['dashboard', 'training', 'mentoring', 'calendar', 'resources'];
-    var nextTab = allowed.indexOf(String(tab || '').toLowerCase()) >= 0 ? String(tab).toLowerCase() : 'dashboard';
-    var base = typeof window.COACH_APP_URL === 'string' && window.COACH_APP_URL
-      ? window.COACH_APP_URL
-      : 'https://coach.er-coaching.com';
-    frame.src = base.replace(/\/$/, '') + '/#' + nextTab;
-
-    document.querySelectorAll('[data-desktop-embed-tab]').forEach(function (button) {
-      var active = button.getAttribute('data-desktop-embed-tab') === nextTab;
-      button.classList.toggle('bg-er-dark', active);
-      button.classList.toggle('text-white', active);
-      button.classList.toggle('bg-white', !active);
-      button.classList.toggle('border', !active);
-      button.classList.toggle('border-gray-200', !active);
-      button.classList.toggle('text-gray-700', !active);
-    });
+    openCoachApp(tab);
   }
 
   window.setDesktopCoachEmbedTab = setDesktopCoachEmbedTab;

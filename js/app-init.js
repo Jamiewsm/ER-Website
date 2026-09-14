@@ -11,28 +11,6 @@ function runAppInit() {
             nav.classList.add('bg-white/80');
         }
     });
-    const portalEntryModal = document.getElementById('portal-entry-modal');
-    if (portalEntryModal) {
-        portalEntryModal.addEventListener('click', (event) => {
-            if (event.target === portalEntryModal) closePortalEntry();
-        });
-        var portalCloseBtn = document.getElementById('portal-entry-close-btn');
-        if (portalCloseBtn) {
-            portalCloseBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (typeof closePortalEntry === 'function') closePortalEntry();
-                else portalEntryModal.classList.add('hidden');
-            });
-        }
-        var siteAccountBtn = document.getElementById('portal-entry-site-account-btn');
-        if (siteAccountBtn) {
-            siteAccountBtn.addEventListener('click', function (e) {
-                e.preventDefault();
-                if (typeof openSiteAccountFromPortalEntry === 'function') openSiteAccountFromPortalEntry();
-            });
-        }
-    }
     const authModal = document.getElementById('auth-modal');
     if (authModal) {
         authModal.addEventListener('click', (event) => {
@@ -48,61 +26,6 @@ function runAppInit() {
             });
         }
     }
-    const desktopAuthBtn = document.getElementById('desktop-auth-btn');
-    if (desktopAuthBtn) {
-        desktopAuthBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            if (typeof handleDesktopAuthClick === 'function') {
-                handleDesktopAuthClick(event);
-                return;
-            }
-            if (typeof openAuthModal === 'function') {
-                openAuthModal();
-                return;
-            }
-            var modal = document.getElementById('auth-modal');
-            if (modal) modal.classList.remove('hidden');
-        });
-    }
-    async function handleMobileAccountNavClick(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        var menu = document.getElementById('mobile-menu');
-        if (menu) menu.classList.add('hidden');
-        if (!window.state || !window.state.user) {
-            if (typeof toggleLogin === 'function') {
-                toggleLogin();
-                return;
-            }
-            var modal = document.getElementById('auth-modal');
-            if (modal) modal.classList.remove('hidden');
-            return;
-        }
-        if (typeof loadCoachProfile === 'function') {
-            try { await loadCoachProfile(); } catch (_) {}
-        }
-        if (window.state && window.state.isCoach && typeof openCoachPortalFromMenu === 'function') {
-            if (typeof openCoachApp === 'function' && (window.matchMedia('(max-width: 1024px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || ''))) {
-                openCoachApp();
-            } else {
-                openCoachPortalFromMenu();
-            }
-            return;
-        }
-        if (typeof renderSection === 'function') renderSection('mypage');
-    }
-    const mobileAuthBtn = document.getElementById('mobile-auth-btn');
-    if (mobileAuthBtn) mobileAuthBtn.addEventListener('click', handleMobileAccountNavClick);
-    const mobileHeaderAuthBtn = document.getElementById('mobile-header-auth-btn');
-    if (mobileHeaderAuthBtn) mobileHeaderAuthBtn.addEventListener('click', handleMobileAccountNavClick);
-    document.addEventListener('click', (event) => {
-        const menu = document.getElementById('desktop-account-menu');
-        const button = document.getElementById('desktop-auth-btn');
-        if (!menu || !button || menu.classList.contains('hidden')) return;
-        if (menu.contains(event.target) || button.contains(event.target)) return;
-        closeDesktopAccountMenu();
-    });
     document.addEventListener('click', (event) => {
         const modal = document.getElementById('coach-schedule-modal');
         if (modal && !modal.classList.contains('hidden') && event.target === modal) {
@@ -149,12 +72,15 @@ function runAppInit() {
     });
 
     (async function init() {
+        const entryRoute = parseSectionHash();
+        // 옛 북마크를 뒤로 가기로 다시 열며 반복 이동하지 않도록 현재 기록을 교체한다.
+        if (redirectPortalSection(entryRoute.sectionId, entryRoute.payload, true)) return;
         try {
             if (typeof initializeSupabase === 'function') await initializeSupabase();
         } catch (e) {
             if (window.console && window.console.error) window.console.error('initializeSupabase error', e);
         }
-        const initialRoute = parseSectionHash();
+        const initialRoute = restoreSiteAdminReturn() || parseSectionHash();
         try {
             renderSection(initialRoute.sectionId, initialRoute.payload, { syncHash: false });
         } catch (e) {

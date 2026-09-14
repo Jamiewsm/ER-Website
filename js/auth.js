@@ -21,7 +21,7 @@ function withAuthTimeout(promise, timeoutMs) {
 function shouldRefreshAccountSection() {
   if (!window.state) return false;
   var current = String(window.state.currentSection || '');
-  return current === 'mypage' || current.indexOf('coach_') === 0;
+  return current === 'coach_admin' || current === 'notices' || current === 'notice_detail';
 }
 
 function refreshCurrentAccountSection() {
@@ -106,76 +106,15 @@ async function loadCoachProfile() {
 }
 
 function updateAuthButtons() {
-  if (!window.state) return;
-  var state = window.state;
-  var desktopBtn = document.getElementById('desktop-auth-btn');
-  var desktopMenu = document.getElementById('desktop-account-menu');
-  var coachBtn = document.getElementById('desktop-account-coach-btn');
-  var coachAppBtn = document.getElementById('desktop-account-app-btn');
-  var mobileBtn = document.getElementById('mobile-auth-btn');
-  var mobileHeaderBtn = document.getElementById('mobile-header-auth-btn');
-  var mobileLabel = !state.user ? '포털 입장' : (state.isCoach ? '코치 포털' : '마이페이지');
-  if (mobileBtn) mobileBtn.innerHTML = '<i class="far fa-user mr-2"></i> ' + mobileLabel;
-  if (mobileHeaderBtn) {
-    mobileHeaderBtn.innerHTML = '<i class="' + (state.user ? 'fas fa-user-check' : 'far fa-user') + '"></i>';
-    mobileHeaderBtn.classList.toggle('text-er-dark', Boolean(state.user));
-    mobileHeaderBtn.classList.toggle('text-gray-400', !state.user);
-  }
-  if (desktopBtn) {
-    desktopBtn.innerHTML = '<i class="' + (state.user ? 'fas fa-user-check' : 'far fa-user') + '"></i>';
-    desktopBtn.classList.toggle('text-er-dark', Boolean(state.user));
-    desktopBtn.setAttribute('aria-expanded', 'false');
-  }
-  if (desktopMenu) desktopMenu.classList.add('hidden');
-  if (coachBtn) coachBtn.classList.toggle('hidden', !state.isCoach);
-  if (coachAppBtn) coachAppBtn.classList.add('hidden');
-}
-
-function closeDesktopAccountMenu() {
-  var menu = document.getElementById('desktop-account-menu');
-  var button = document.getElementById('desktop-auth-btn');
-  if (menu) menu.classList.add('hidden');
-  if (button) button.setAttribute('aria-expanded', 'false');
-}
-
-function openDesktopAccountMenu() {
-  var menu = document.getElementById('desktop-account-menu');
-  var button = document.getElementById('desktop-auth-btn');
-  if (!menu || !button) return;
-  menu.classList.remove('hidden');
-  button.setAttribute('aria-expanded', 'true');
-}
-
-function handleDesktopAuthClick(event) {
-  if (event) event.stopPropagation();
-  if (!window.state) {
-    if (typeof toggleLogin === 'function') toggleLogin();
-    else if (typeof openAuthModal === 'function') openAuthModal();
-    return;
-  }
-  if (!window.state.user) {
-    openPortalEntry();
-    return;
-  }
-  var menu = document.getElementById('desktop-account-menu');
-  if (!menu) {
-    if (typeof renderSection === 'function') renderSection(window.state.isCoach ? 'coach_portal' : 'mypage');
-    return;
-  }
-  var shouldOpen = menu.classList.contains('hidden');
-  closeDesktopAccountMenu();
-  if (shouldOpen) openDesktopAccountMenu();
-}
-if (typeof window !== 'undefined') { window.handleDesktopAuthClick = handleDesktopAuthClick; }
-
-async function handleLogoutFromMenu() {
-  closeDesktopAccountMenu();
-  await handleLogout();
+  ['desktop-auth-btn', 'mobile-auth-btn', 'mobile-header-auth-btn'].forEach(function (id) {
+    var link = document.getElementById(id);
+    if (link) link.href = coachPortalHref('/education.html');
+  });
 }
 
 async function switchWebsiteAccount() {
-  closeDesktopAccountMenu();
   await handleLogout();
+  openSiteAdmin();
   openAuthModal();
 }
 
@@ -276,7 +215,10 @@ async function handleEmailAuth(mode) {
   }
   closeAuthModal();
   await loadCoachProfile();
-  if (typeof renderSection === 'function' && window.state) renderSection('mypage');
+  if (typeof renderSection === 'function' && window.state) {
+    var section = String(window.state.currentSection || '');
+    renderSection(section === 'notices' || section === 'notice_detail' ? section : 'coach_admin', window.state.currentPayload);
+  }
 }
 
 async function handleGoogleLogin() {
@@ -285,7 +227,9 @@ async function handleGoogleLogin() {
   if (googleBtn && googleBtn.disabled) return;
   setAuthButtonsDisabled(true);
   try {
-    var redirectUrl = window.location.origin + window.location.pathname;
+    var returnSection = window.state && (window.state.currentSection === 'notices' || window.state.currentSection === 'notice_detail')
+      ? 'notices' : 'coach_admin';
+    var redirectUrl = window.location.origin + window.location.pathname + '?site_admin=' + returnSection;
     var out = await withAuthTimeout(window.supabaseClient.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: redirectUrl, skipBrowserRedirect: true }
@@ -333,46 +277,18 @@ function coachPortalHref(path) {
   return base + (path || '');
 }
 
-function closePortalEntry() {
-  var modal = document.getElementById('portal-entry-modal');
-  if (modal) modal.classList.add('hidden');
-}
-if (typeof window !== 'undefined') { window.closePortalEntry = closePortalEntry; }
-
-function openPortalEntry() {
-  closeDesktopAccountMenu();
-  closeAuthModal();
-  var modal = document.getElementById('portal-entry-modal');
-  if (!modal) {
-    openAuthModal();
-    return;
-  }
-  var coachLink = document.getElementById('portal-entry-coach-link');
-  var educationLink = document.getElementById('portal-entry-education-link');
-  if (coachLink) coachLink.href = coachPortalHref('/');
-  if (educationLink) educationLink.href = coachPortalHref('/education');
-  modal.classList.remove('hidden');
+function openPortalEntry(replace = false) {
+  window.location[replace ? 'replace' : 'assign'](coachPortalHref('/education.html'));
 }
 if (typeof window !== 'undefined') { window.openPortalEntry = openPortalEntry; }
 
-function openSiteAccountFromPortalEntry() {
-  closePortalEntry();
-  openAuthModal();
+function openSiteAdmin() {
+  if (typeof renderSection === 'function') renderSection('coach_admin');
 }
-if (typeof window !== 'undefined') { window.openSiteAccountFromPortalEntry = openSiteAccountFromPortalEntry; }
+if (typeof window !== 'undefined') { window.openSiteAdmin = openSiteAdmin; }
 
-async function toggleLogin() {
-  if (!isSupabaseConfigured()) {
-    alert('Supabase 설정이 필요합니다. index.html의 __ER_SUPABASE_URL / __ER_SUPABASE_ANON_KEY를 먼저 설정해 주세요.');
-    return;
-  }
-  closeDesktopAccountMenu();
-  if (window.state && window.state.user) {
-    if (typeof loadCoachProfile === 'function') await loadCoachProfile();
-    if (typeof renderSection === 'function') renderSection('mypage');
-  } else {
-    openPortalEntry();
-  }
+function toggleLogin() {
+  openPortalEntry();
 }
 if (typeof window !== 'undefined') { window.toggleLogin = toggleLogin; }
 if (typeof window !== 'undefined') { window.switchWebsiteAccount = switchWebsiteAccount; }

@@ -1,0 +1,12 @@
+# 맥락과 결정
+- 2026-09-14. 사용자 요청에 따라 마이페이지 경유/별도 창/중복 로그인 진입을 줄인다. 교육포털을 기본으로 유지한다.
+- origin/main b02581d에서 격리 작업공간을 만들었다. 원본 site/search-console-sitemap 체크아웃을 변경하지 않는다.
+- 일반 사용자의 마이페이지에는 이메일·역할·링크만 있어 진입 단계에서 제거할 수 있다. 본사이트 공지 편집과 기존 관리자의 직접 진입 인증은 보존한다.
+- 사용자 자료, 승인 RPC, 검사 runtime, 배포 ledger는 수정하지 않는다.
+- 구현. 데스크탑·모바일 헤더·모바일 메뉴의 포털 버튼을 `https://coach.er-coaching.com/education.html`의 native anchor로 바꿨다. 본사이트 로그인 상태가 링크나 문안을 바꾸지 않는다. 선택 모달과 일반 계정 메뉴, 마이페이지 및 코치 iframe 렌더러를 제거했다.
+- 호환. `#login`, `#mypage`, `#portal`, `#education`은 교육포털로, 구 코치 해시는 해당 앱 탭으로 이동한다. 초기 북마크 진입은 history replace를 사용해 뒤로 가기 반복 이동을 방지한다. 일반 링크는 동일 창 이동이며 사이트 방문 기록을 유지한다.
+- 관리자. 기존 `#coach_admin`과 서버 권한검사를 보존했다. footer의 사이트 관리, 관리자 로그인/계정 전환, 공지 관리, 로그아웃 경로를 남겼다. 이메일 로그인은 마이페이지 대신 관리 화면으로 돌아가고 Google 복귀는 `coach_admin`/`notices` 두 경로만 허용한다. 인증 토큰은 앱 URL이나 창 간 메시지로 넘기지 않는다.
+- 검증. `node --check`로 변경한 JavaScript 7개 파일 통과. `node --test tests/portal-entry-navigation.test.mjs tests/mobile-site-layout.test.mjs tests/mobile-nav-accordion.test.mjs tests/theology-navigation.test.mjs` 최초 20개 통과 후 북마크 history 테스트 1개를 추가했다. 최종 `node --test tests/*.test.mjs`는 220개 중 219개 통과, 1개 환경 조건부 PostgreSQL 동시성 테스트 skip, 실패 0개다.
+- 테스트 환경. 새 worktree의 PGlite 의존성 미설치로 첫 전체 실행에서 DB 테스트 3파일이 로드되지 않았다. 기존 lockfile에 대해 `npm ci --prefix tests/education --ignore-scripts --no-audit --no-fund` 실행 후 재검증했다. 의존성 정의/lockfile 변경은 없다.
+- 브라우저. 실제 Chromium에서 1440/1280/390/320px 헤더 링크, 모바일 메뉴 링크, 같은 창 이동, 가로 넘침 없음, 44px 터치 영역, 구 마이페이지/코치 일정 링크, 관리자 로그인 모달과 합성 관리자 목록 영역을 확인했다. `output/playwright/site-portal-verification.json`에 8개 시나리오 기록과 스크린샷을 남겼다. API 응답은 합성 데이터이며 실계정 OAuth 동의/복귀, 실제 승인/메일 발송과 production 반영은 검증하지 않았다.
+- 정리. 브라우저와 로컬 HTTP 서버를 종료했다. `git diff --check` 통과. push/PR/merge/deploy는 상위 작업 및 기존 Cursor/CI 절차로 이어간다.

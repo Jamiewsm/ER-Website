@@ -1,49 +1,4 @@
 // ER Coach: Portal view renderers
-function renderCoachPortal() {
-    if (!state.user) return renderCoachAccessDenied('로그인 후 코치 포털을 사용할 수 있습니다.');
-    if (!state.isCoach) return renderCoachAccessDenied();
-    const coachAppUrl = typeof window.COACH_APP_URL === 'string' && window.COACH_APP_URL
-        ? window.COACH_APP_URL
-        : 'https://coach.er-coaching.com';
-    const adminButton = (typeof canManageCoachAdmin === 'function' && canManageCoachAdmin())
-        ? `<button onclick="renderSection('coach_admin')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">코치 승인</button>`
-        : '';
-    return `
-        <div class="bg-er-base min-h-screen py-8 md:py-10 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-7xl mx-auto space-y-5">
-                <div class="bg-white rounded-3xl p-6 md:p-8 border border-gray-100 shadow-soft">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div>
-                            <p class="text-xs tracking-[0.2em] text-er-accent font-bold uppercase">Coach Portal</p>
-                            <h2 class="text-2xl md:text-3xl font-bold text-er-dark mt-1">코치 포털 (데스크탑)</h2>
-                            <p class="text-sm text-gray-500 mt-2">${state.coachProfile?.display_name || state.user.email || ''}님, 코치앱과 동일한 기능(훈련·멘토링·일정·자료)을 여기서 바로 사용하세요.</p>
-                        </div>
-                        <div class="flex flex-wrap gap-2 items-center">
-                            ${adminButton}
-                            <button data-desktop-embed-tab="dashboard" onclick="setDesktopCoachEmbedTab('dashboard')" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">홈</button>
-                            <button data-desktop-embed-tab="training" onclick="setDesktopCoachEmbedTab('training')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">훈련</button>
-                            <button data-desktop-embed-tab="mentoring" onclick="setDesktopCoachEmbedTab('mentoring')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">멘토링</button>
-                            <button data-desktop-embed-tab="calendar" onclick="setDesktopCoachEmbedTab('calendar')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">일정</button>
-                            <button data-desktop-embed-tab="resources" onclick="setDesktopCoachEmbedTab('resources')" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-gray-200 text-gray-700">자료</button>
-                            <a href="${coachAppUrl}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-full text-xs font-bold bg-white border border-er-accent/30 text-er-dark">새 창에서 열기</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white rounded-3xl border border-gray-100 shadow-soft p-3 md:p-4">
-                    <iframe
-                        id="coach-portal-embed-frame"
-                        title="ER Coach App Desktop Embed"
-                        src="${coachAppUrl}/#dashboard"
-                        loading="lazy"
-                        class="w-full rounded-2xl border border-gray-100"
-                        style="height:calc(100vh - 260px); min-height:780px;"
-                    ></iframe>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
 function renderCoachAdmin() {
     if (!state.user) return renderCoachAccessDenied('로그인 후 코치 승인 기능을 사용할 수 있습니다.');
     if (!state.isCoach || !(typeof canManageCoachAdmin === 'function' && canManageCoachAdmin())) {
@@ -58,7 +13,9 @@ function renderCoachAdmin() {
                         <p class="text-sm text-gray-500 mt-1">가입한 계정을 코치로 승인하거나 비활성화할 수 있습니다.</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="renderSection('coach_portal')" class="px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">대시보드</button>
+                        <a href="${coachPortalHref('/education.html')}" class="inline-flex min-h-11 items-center px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">포털로 이동</a>
+                        <button onclick="renderSection('notices')" class="min-h-11 px-4 py-2 rounded-full text-xs font-bold bg-gray-100 text-gray-700">공지 관리</button>
+                        <button onclick="handleLogout()" class="min-h-11 px-4 py-2 rounded-full text-xs font-bold text-gray-500">로그아웃</button>
                         <button onclick="loadCoachAdminUsers(); loadProgramApplications();" class="px-4 py-2 rounded-full text-xs font-bold bg-er-dark text-white">새로고침</button>
                     </div>
                 </div>
