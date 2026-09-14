@@ -10,7 +10,9 @@ export async function sendResendEmail(input: {
   to: string | string[];
   subject: string;
   html: string;
+  text?: string;
   replyTo?: string;
+  idempotencyKey?: string;
 }): Promise<{ id?: string; skipped?: boolean }> {
   if (!input.apiKey) {
     console.warn('RESEND_API_KEY missing — email skipped:', input.subject);
@@ -22,12 +24,14 @@ export async function sendResendEmail(input: {
     headers: {
       Authorization: `Bearer ${input.apiKey}`,
       'Content-Type': 'application/json',
+      ...(input.idempotencyKey ? { 'Idempotency-Key': input.idempotencyKey } : {}),
     },
     body: JSON.stringify({
       from: input.from,
       to: Array.isArray(input.to) ? input.to : [input.to],
       subject: input.subject,
       html: input.html,
+      text: input.text,
       reply_to: input.replyTo && isValidReplyToEmail(input.replyTo) ? input.replyTo : undefined,
     }),
   });

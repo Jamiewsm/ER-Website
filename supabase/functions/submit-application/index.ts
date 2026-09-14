@@ -4,7 +4,7 @@ import { corsHeaders } from '../_shared/cors.ts';
 import {
   adminApplicationNoticeHtml,
   applicantReceivedHtml,
-  basicCourseApplicantReceivedHtml,
+  programApplicationConfirmationHtml,
 } from '../_shared/email-templates.ts';
 import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
 import {
@@ -12,6 +12,8 @@ import {
   BASIC_COURSE_PROGRAM_KEY,
   basicCourseManualPaymentFromEnv,
   basicCourseOctoberPricing,
+  growthCoursePricing,
+  isGrowthCourseProgram,
 } from '../_shared/program-pricing.ts';
 import { verifyTurnstileToken } from '../_shared/turnstile.ts';
 
@@ -119,6 +121,29 @@ Deno.serve(async (req) => {
     const programKey = inferProgramKey(payload);
     const applySource = parseApplySource(source);
     const isBasicCourse = programKey === BASIC_COURSE_PROGRAM_KEY;
+    let growthCourse: { id: string; title: string } | null = null;
+    if (isGrowthCourseProgram(programKey)) {
+      const { data: course, error: courseError } = await supabase.from('edu_courses')
+        .select('id,code,title,kind').eq('code', programKey).maybeSingle();
+      if (courseError) throw courseError;
+      if (!course || course.kind !== 'growth') {
+        return new Response(JSON.stringify({ error: 'unsupported_program', message: '신청 가능한 심화과정을 확인해 주세요.' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      const requestedCohort = String(payload.cohort_key || '').trim();
+      const { data: cohort, error: cohortError } = await supabase.from('edu_cohorts')
+        .select('id,course_id').eq('application_cohort_key', requestedCohort).maybeSingle();
+      if (cohortError) throw cohortError;
+      if (!requestedCohort || !cohort || cohort.course_id !== course.id) {
+        return new Response(JSON.stringify({ error: 'cohort_confirmation_required', message: '신청할 심화과정의 기수를 확인해 주세요. 기수가 확인되기 전에는 접수하거나 결제를 안내하지 않습니다.' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      growthCourse = course;
+    }
+    const pricing = isBasicCourse ? basicCourseOctoberPricing(message)
+      : growthCourse ? growthCoursePricing(message) : null;
     const phone = String(payload.phone || '').trim();
     if (isBasicCourse && !phone) {
       return new Response(JSON.stringify({ error: 'missing_phone' }), {
@@ -126,8 +151,9 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const cohortKey = isBasicCourse ? BASIC_COURSE_OCTOBER_2026_COHORT_KEY : null;
-    const paymentRegion = normalizePaymentRegion(payload, isBasicCourse);
+    const cohortKey = isBasicCourse ? BASIC_COURSE_OCTOBER_2026_COHORT_KEY
+      : growthCourse ? String(payload.cohort_key || '').trim() || null : null;
+    const paymentRegion = growthCourse ? 'KR' : normalizePaymentRegion(payload, isBasicCourse);
     const paymentCurrency = paymentRegion === 'KR' ? 'KRW' : (paymentRegion === 'OVERSEAS' ? 'USD' : null);
     const paymentPreference = allowedValue(payload.payment_preference, [
       'kr_bank', 'zelle', 'venmo',
@@ -154,6 +180,8 @@ Deno.serve(async (req) => {
         referral_name: payload.referral_name || null,
         payment_region: paymentRegion,
         payment_currency: paymentCurrency,
+        payment_amount_krw: paymentRegion === 'KR' ? pricing?.amountKrw : null,
+        payment_amount_usd: paymentRegion === 'OVERSEAS' ? pricing?.amountUsd : null,
         payment_preference: paymentPreference,
         installment_preference: installmentPreference,
         covenant_agreed: Boolean(payload.covenant_agreed),
@@ -176,7 +204,7 @@ Deno.serve(async (req) => {
     const fromEmail = Deno.env.get('APPLICATION_FROM_EMAIL') || 'ER <enrollment@er-coaching.com>';
     const notifyEmail = Deno.env.get('APPLICATION_NOTIFY_EMAIL') || 'json@er-coaching.com';
     const replyTo = Deno.env.get('APPLICATION_REPLY_TO') || 'json@er-coaching.com';
-    const label = programLabel(programKey, category);
+    const label = growthCourse?.title || programLabel(programKey, category);
     const applicantEmail = extractEmailFromContact(contact);
 
     try {
@@ -198,48 +226,66 @@ Deno.serve(async (req) => {
           paymentRegion: paymentRegion || undefined,
           paymentPreference: paymentPreference || undefined,
           installmentPreference: installmentPreference || undefined,
+          pricing: pricing || undefined,
         }),
       });
     } catch (emailErr) {
       console.error('admin notify email failed', emailErr);
     }
 
+    let receiptWarning: string | undefined;
+    let confirmationAttemptStarted = false;
     if (applicantEmail) {
-      const pricing = basicCourseOctoberPricing();
-
       try {
+        if (pricing && resendKey) {
+          const { data: claimed, error: claimError } = await supabase.from('program_applications')
+            .update({ confirmation_email_attempted_at: new Date().toISOString() })
+            .eq('id', row.id).is('confirmation_email_attempted_at', null).is('confirmation_email_sent_at', null)
+            .select('id').maybeSingle();
+          if (claimError) throw new Error('email_delivery_claim_failed');
+          if (!claimed) throw new Error('email_delivery_uncertain');
+          confirmationAttemptStarted = true;
+        }
         const receiptResult = await sendResendEmail({
           apiKey: resendKey,
           from: fromEmail,
           to: applicantEmail,
           replyTo,
-          subject: `[ER] ${label} 신청 접수 확인`,
-          html: isBasicCourse
-            ? basicCourseApplicantReceivedHtml({
+          subject: pricing ? `[ER] ${label} 신청 접수 및 등록 안내` : `[ER] ${label} 신청 접수 확인`,
+          idempotencyKey: `application-confirmation/${row.id}`,
+          html: pricing
+            ? programApplicationConfirmationHtml({
               name,
               programLabel: label,
               paymentRegion: paymentRegion || undefined,
               paymentPreference: paymentPreference || undefined,
-              pricing: {
-                overseasPriceUsd: pricing.overseasPriceUsd,
-                bankTransferPriceKrw: pricing.bankTransferPriceKrw,
+              installmentPreference: installmentPreference || undefined,
+              pricing,
+              payment: {
+                ...basicCourseManualPaymentFromEnv(name),
+                ...(growthCourse ? { memoHint: `ER Growth - ${name}` } : {}),
               },
-              payment: basicCourseManualPaymentFromEnv(name),
             })
             : applicantReceivedHtml({ name, programLabel: label }),
         });
         if (!receiptResult.skipped) {
-          await supabase
+          const { error: receiptRecordError } = await supabase
             .from('program_applications')
-            .update({ receipt_email_sent_at: new Date().toISOString() })
+            .update({ receipt_email_sent_at: new Date().toISOString(), ...(pricing ? { confirmation_email_sent_at: new Date().toISOString() } : {}) })
             .eq('id', row.id);
+          if (receiptRecordError) {
+            console.error('receipt sent but timestamp update failed', receiptRecordError);
+            receiptWarning = 'email_sent_record_failed';
+          }
         }
       } catch (emailErr) {
+        receiptWarning = confirmationAttemptStarted ? 'email_delivery_uncertain'
+          : emailErr instanceof Error && ['email_delivery_claim_failed', 'email_delivery_uncertain'].includes(emailErr.message) ? emailErr.message : 'receipt_email_failed';
         console.error('applicant receipt email failed', emailErr);
       }
     }
 
-    return new Response(JSON.stringify({ ok: true, id: row.id, cohort_key: cohortKey }), {
+    return new Response(JSON.stringify({ ok: true, id: row.id, cohort_key: cohortKey, ...(receiptWarning ? { warning: receiptWarning, warning_message: '신청은 접수되었습니다. 안내 메일의 발송 기록 확인이 필요하므로 재신청하지 말고 담당자에게 문의해 주세요.' } : {}) }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
