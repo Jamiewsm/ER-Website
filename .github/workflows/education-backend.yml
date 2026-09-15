@@ -18,6 +18,7 @@ on:
       - 'tests/basic-course-october-supabase.test.mjs'
       - 'tests/helpers/education-db.mjs'
       - 'tests/helpers/education-postgres.mjs'
+      - 'scripts/education-backup-preflight.mjs'
       - '.github/workflows/education-backend.yml'
       - '.github/workflows/education-reminders.yml'
 permissions:
@@ -33,6 +34,8 @@ jobs:
       - run: npm ci --prefix tests/education --ignore-scripts
       - run: npm test --prefix tests/education
       - run: node --test tests/basic-course-october-supabase.test.mjs
+      - name: Verify local backup prerequisite checks without credentials
+        run: node --test tests/education-backup-preflight.test.mjs
       - name: Install local PostgreSQL test tools
         run: |
           sudo apt-get update
