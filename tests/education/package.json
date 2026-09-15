@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test ../education-portal-rls.test.mjs ../education-registration.test.mjs ../education-rehearsal.test.mjs ../education-registration-notification.test.mjs ../education-email-delivery-guard.test.mjs ../education-avatar-policy.test.mjs"
+    "test": "node --test ../education-portal-rls.test.mjs ../education-registration.test.mjs ../education-rehearsal.test.mjs ../education-registration-notification.test.mjs ../education-email-delivery-guard.test.mjs ../education-avatar-policy.test.mjs ../education-onboarding.test.mjs ../education-onboarding-email.test.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.8"
