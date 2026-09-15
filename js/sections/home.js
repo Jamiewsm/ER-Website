@@ -177,6 +177,10 @@ function renderHome() {
                             ER은 기독교 세계관과 에니어그램을 바탕으로 하나님이 지으신 나를 이해하고, 가정과 교회 공동체 안에서 관계와 소명을 회복하는 여정을 함께합니다.
                         </p>
 
+                        <p class="mt-4 text-sm">
+                            <a href="/christian-enneagram/" class="inline-flex min-h-11 items-center font-semibold text-er-green underline underline-offset-4 hover:text-er-greenDark">기독교 에니어그램이란? ER의 관점 읽기</a>
+                        </p>
+
                         ${showBasicCourseRecruitment ? `
                         <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
                             <div class="flex items-start justify-between gap-3">
