@@ -49,6 +49,27 @@ test('reading pages deliver unique metadata and article content without executab
   assert.equal(descriptions.size, pages.length);
 });
 
+test('reading page headers mirror main-site IA with CSS-only mobile nav', () => {
+  const css = read('css/reading.css');
+  assert.match(css, /\.desktop-nav\s*\{/);
+  assert.match(css, /:has\(\.nav-toggle:checked\)/);
+  assert.match(css, /min-width:\s*1280px/);
+  for (const file of [...pages, 'biblical-enneagram/index.html']) {
+    const html = read(file);
+    assert.match(html, /class="desktop-nav"/);
+    assert.match(html, /ER 소개/);
+    assert.match(html, /Parenting/);
+    assert.match(html, /href="\/theology\/"/);
+    assert.match(html, /href="\/christian-enneagram\/"/);
+    assert.match(html, /href="\/#coaches"/);
+    assert.match(html, /id="nav-toggle"/);
+    assert.match(html, /id="mobile-panel"/);
+    assert.doesNotMatch(html, /\bonclick=/);
+  }
+  assert.match(read('theology/index.html'), /aria-current="page"[^>]*>신학적 기초|신학적 기초[^<]*aria-current="page"/);
+  assert.match(read('christian-enneagram/index.html'), /aria-current="page"[^>]*>기독교 에니어그램 안내|기독교 에니어그램 안내[^<]*aria-current="page"/);
+});
+
 test('reading pages have real local targets and valid in-page anchors', () => {
   for (const file of pages) {
     const html = read(file);
