@@ -5,9 +5,11 @@ export const DEFAULT_SITE = 'https://er-coaching.com';
 export const SITE_OVERLAY_GLOBS = [
   'index.html',
   'christian-enneagram/**',
+  'theology/**',
   'biblical-enneagram/**',
   'css/reading.css',
   'design-system/tokens.css',
+  '_redirects',
   'js/sections/**',
   'child-type-test/**',
   'css/style.css',

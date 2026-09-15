@@ -1,8 +1,12 @@
 # 작업 맥락
 
-## 2026-09-15
+## 2026-09-15 — 주제 통합
 
-- 시작 worktree는 clean main. origin/main 10e075b에서 site/seo-foundation 분기. 열려 있는 PR #129, #123, #90은 다른 범위이며 #123은 배포 보류 상태다.
+- 세 문서(신학적 기초 SPA, 기독교 에니어그램, 성경적 관점)의 신학 뼈대 중복을 줄이기 위해 주제를 둘로 통합했다.
+- `/theology/` 정적 페이지가 신학적 기초 SSOT. `#theology` 해시는 `/theology/`로 넘긴다.
+- `/christian-enneagram/`는 입문·유형·실습에 집중하고 신학 정의는 `/theology/`로 연결한다.
+- `/biblical-enneagram/`는 canonical·`_redirects` 301로 `/theology/`에 흡수한다. sitemap에서는 제외.
+
 - DEPLOY_LEDGER는 6월 기록이라 현재 운영 SHA의 증거로 사용하지 않는다. 실제 운영 응답을 별도로 확인한다.
 - robots와 sitemap은 저장소에 이미 있다. 재생성보다 실제 응답·내용과 연결을 검증한다.
 - 기존 소개·신학적 기초는 hash 기반 JavaScript 렌더링이다. 앱 전체 라우터 교체 대신 정적 콘텐츠 URL을 추가한다.

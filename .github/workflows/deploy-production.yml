@@ -7,10 +7,13 @@ on:
     paths:
       - 'index.html'
       - 'christian-enneagram/**'
+      - 'theology/**'
       - 'biblical-enneagram/**'
       - 'css/reading.css'
       - 'design-system/tokens.css'
+      - '_redirects'
       - 'js/sections/**'
+      - 'js/app-core.js'
       - 'child-type-test/**'
       - 'css/style.css'
       - 'apply.html'

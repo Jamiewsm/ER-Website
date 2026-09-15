@@ -5,8 +5,10 @@ on:
     paths:
       - 'index.html'
       - 'christian-enneagram/**'
+      - 'theology/**'
       - 'biblical-enneagram/**'
       - 'css/reading.css'
+      - '_redirects'
       - 'design-system/tokens.css'
       - '*workshop.html'
       - 'basic-course.html'
