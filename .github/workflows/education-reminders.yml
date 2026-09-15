@@ -1,0 +1,49 @@
+# 등록된 학생의 미제출 알림을 명시적으로 활성화한 뒤 한국 시간 오전 9시에 실행한다.
+name: Education preparation reminders
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '대상 수만 확인하고 메일은 보내지 않습니다.'
+        type: boolean
+        default: true
+permissions:
+  contents: read
+concurrency:
+  group: education-preparation-reminders
+  cancel-in-progress: false
+jobs:
+  reminders:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || vars.EDUCATION_REMINDERS_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check reminder candidates or send enabled reminders
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          EDUCATION_REMINDER_SECRET: ${{ secrets.EDUCATION_REMINDER_SECRET }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_URL"
+          test -n "$EDUCATION_REMINDER_SECRET"
+          case "$SUPABASE_URL" in https://*.supabase.co) ;; *) echo 'A Supabase HTTPS project URL is required.' >&2; exit 1;; esac
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+          for batch in $(seq 1 10); do
+            status="$(curl --silent --show-error --max-time 150 --output "$response_file" --write-out '%{http_code}' \
+              --request POST "$SUPABASE_URL/functions/v1/education-onboarding-reminders" \
+              --header "X-Education-Reminder-Secret: $EDUCATION_REMINDER_SECRET" \
+              --header 'Content-Type: application/json' \
+              --data "{\"dry_run\":$DRY_RUN}")"
+            jq '{ok,dry_run,eligible,sent,skipped,failed,error}' "$response_file"
+            test "$status" = '200'
+            if [ "$DRY_RUN" = 'true' ] || [ "$(jq -r '.eligible' "$response_file")" -lt 50 ]; then
+              exit 0
+            fi
+          done
+          echo 'The daily safety limit was reached. Check remaining candidates before the deadline.' >&2
+          exit 1

@@ -11,3 +11,10 @@ verify_jwt = true
 
 [functions.stripe-webhook]
 verify_jwt = false
+
+[functions.education-onboarding-email]
+verify_jwt = true
+
+# GitHub 스케줄러는 학생 JWT 대신 전용 비밀키를 함수 안에서 검증한다.
+[functions.education-onboarding-reminders]
+verify_jwt = false

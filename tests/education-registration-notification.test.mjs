@@ -459,40 +459,12 @@ test('접수 후 메일 기록 저장 실패는 접수 성공과 구분되는 �
   assert.equal(h.calls.inserts.length, 1);
 });
 
-test('외부 설문 URL 없이 강의계획안과 자기관찰보고서를 HTML·본문으로 발송한다', async () => {
-  const h = loadHandler({}, { environment: { BASIC_COURSE_PRE_SURVEY_URL: '' } });
-  const response = await h.invoke('pre_survey');
-  assert.equal(response.status, 200);
-  assert.equal(h.calls.emails.length, 1);
-  const mail = h.calls.emails[0];
-  assert.equal(mail.subject, '[ER] 기본과정 강의계획안 및 자기관찰보고서 안내');
-  for (const content of [mail.html, mail.text]) {
-    assert.match(content, /강의계획안/);
-    assert.match(content, /자기관찰보고서/);
-    assert.match(content, /myjiji82@gmail\.com/);
-    assert.match(content, /10월/);
-  }
-  for (let session = 1; session <= 8; session++) {
-    assert.ok(mail.html.includes(`${session}회차`));
-    assert.ok(mail.text.includes(`${session}회차`));
-  }
-  const questions = mail.text.split('작성을 돕는 질문')[1].split('강사 소개')[0];
-  assert.equal((questions.match(/^[1-8]\. /gm) || []).length, 8);
-  assert.doesNotMatch(mail.html, /survey\.example|BASIC_COURSE_PRE_SURVEY_URL/);
-  assert.ok(h.calls.updates[0].pre_survey_sent_at);
-});
-test('심화 신청에 기본과정 자기관찰보고서를 잘못 발송하지 않는다', async () => {
-  const h = loadHandler({ program_key: 'growth_101' });
-  assert.equal((await h.invoke('pre_survey')).status, 400);
-  assert.equal(h.calls.emails.length, 0);
-});
-
-for (const cohort_key of [null, '', 'enneagram_basic_2026_07']) {
-  test(`과거 또는 미지정 기수에는 10월 강의계획안을 보내지 않는다 (${cohort_key})`, async () => {
-    const h = loadHandler({ cohort_key });
+for (const row of [{}, { program_key: 'growth_101' }, { cohort_key: null }, { cohort_key: 'enneagram_basic_2026_07' }]) {
+  test(`이전 자기관찰 안내 버튼은 새 등록 확정 흐름으로 안내하고 발송하지 않는다 ${JSON.stringify(row)}`, async () => {
+    const h = loadHandler(row);
     const response = await h.invoke('pre_survey');
-    assert.equal(response.status, 409);
-    assert.equal((await response.json()).error, 'cohort_confirmation_required');
+    assert.equal(response.status, 410);
+    assert.equal((await response.json()).error, 'new_onboarding_flow_required');
     assert.equal(h.calls.emails.length, 0);
     assert.equal(h.calls.updates.length, 0);
   });

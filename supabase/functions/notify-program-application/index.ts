@@ -1,11 +1,10 @@
-// 수석코치가 등록을 준비하고 강의계획안·자기관찰보고서·수료 안내를 발송한다.
+// 수석코치가 접수·결제 안내와 수료 안내를 처리하고 이전 사전과제 발송을 차단한다.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1';
 import { corsHeaders } from '../_shared/cors.ts';
 import {
   basicCourseGraduationHtml,
   programApplicationConfirmationHtml,
 } from '../_shared/email-templates.ts';
-import { buildBasicCourseWelcomeHtml, buildBasicCourseWelcomeText } from '../_shared/basic-course-welcome.ts';
 import { requireHeadCoach } from '../_shared/head-coach.ts';
 import {
   BASIC_COURSE_MAX_SEATS,
@@ -87,7 +86,6 @@ Deno.serve(async (req) => {
 
     let subject = '';
     let html = '';
-    let plainText: string | undefined;
     let sentAtColumn = '';
     let registration: { prepared: boolean; status: string } | undefined;
 
@@ -211,20 +209,10 @@ Deno.serve(async (req) => {
       });
       sentAtColumn = 'registration_email_sent_at';
     } else if (event === 'pre_survey') {
-      if (app.program_key !== BASIC_COURSE_PROGRAM_KEY) {
-        return new Response(JSON.stringify({ error: 'unsupported_program' }), {
-          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      if (app.cohort_key !== BASIC_COURSE_OCTOBER_2026_COHORT_KEY) {
-        return new Response(JSON.stringify({ error: 'cohort_confirmation_required', message: '2026년 10월 기본과정 신청자에게만 이 강의계획안을 보낼 수 있습니다.' }), {
-          status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      subject = '[ER] 기본과정 강의계획안 및 자기관찰보고서 안내';
-      html = buildBasicCourseWelcomeHtml({ name: app.name });
-      plainText = buildBasicCourseWelcomeText({ name: app.name });
-      sentAtColumn = 'pre_survey_sent_at';
+      // 이전 포털의 버튼으로 결제·등록 확정 조건을 우회해 발송할 수 없다.
+      return new Response(JSON.stringify({ error: 'new_onboarding_flow_required', message: '교육포털을 새로고침한 뒤 결제 확인·등록 확정 화면에서 내 교실 안내를 보내 주세요.' }), {
+        status: 410, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     } else if (event === 'graduation') {
       const testimonialUrl = Deno.env.get('BASIC_COURSE_TESTIMONIAL_URL') || 'mailto:json@er-coaching.com?subject=기본과정%20수료%20후기';
       subject = '[ER] 기본과정 수료를 축하드립니다';
@@ -247,7 +235,6 @@ Deno.serve(async (req) => {
       replyTo,
       subject,
       html,
-      text: plainText,
       ...(event === 'registration' ? { idempotencyKey: `application-confirmation/${applicationId}` } : {}),
     });
 
