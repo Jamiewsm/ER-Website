@@ -143,9 +143,11 @@ BEGIN
    SELECT 1 FROM public.program_applications a JOIN public.edu_classes c ON c.id=o.class_id JOIN public.edu_cohorts h ON h.id=c.cohort_id
    WHERE a.id=o.application_id AND a.status='confirmed' AND a.cohort_key=h.application_cohort_key AND h.status<>'completed') THEN CONTINUE; END IF;
   SELECT * INTO e FROM public.edu_enrollments WHERE application_id=o.application_id;
-  IF e.id IS NOT NULL THEN CONTINUE; END IF;
-  SELECT * INTO e FROM public.edu_enrollments WHERE class_id=o.class_id AND user_id=auth.uid() AND role='student';
-  IF e.id IS NOT NULL AND (e.status<>'active' OR (e.application_id IS NOT NULL AND e.application_id<>o.application_id)) THEN CONTINUE; END IF;
+  IF e.id IS NOT NULL AND (e.class_id<>o.class_id OR e.user_id<>auth.uid() OR e.role<>'student' OR e.status<>'active') THEN CONTINUE; END IF;
+  IF e.id IS NULL THEN
+   SELECT * INTO e FROM public.edu_enrollments WHERE class_id=o.class_id AND user_id=auth.uid() AND role='student';
+   IF e.id IS NOT NULL AND (e.status<>'active' OR (e.application_id IS NOT NULL AND e.application_id<>o.application_id)) THEN CONTINUE; END IF;
+  END IF;
   IF e.id IS NULL THEN
    INSERT INTO public.edu_enrollments(class_id,user_id,display_name,role,application_id)
     VALUES(o.class_id,auth.uid(),o.display_name,'student',o.application_id) RETURNING * INTO e;
@@ -215,22 +217,25 @@ END $$;
 -- 아래 발송 함수는 서비스 역할만 호출한다. 선점은 자동 만료하지 않아 불확실한 재전송을 막는다.
 CREATE FUNCTION public.edu_onboarding_email_payload(p_application_id uuid,p_kind text) RETURNS jsonb
 LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path='' AS $$
-DECLARE o public.edu_registration_onboarding; l public.edu_lessons; result jsonb; welcome_at timestamptz; previous_at timestamptz; days_left integer;
+DECLARE o public.edu_registration_onboarding; l public.edu_lessons; linked_enrollment public.edu_enrollments; result jsonb; welcome_at timestamptz; previous_at timestamptz; days_left integer;
 BEGIN
  IF p_kind NOT IN ('welcome','reminder_3d','reminder_1d') OR p_kind IS NULL THEN RETURN jsonb_build_object('ok',false,'reason','invalid_kind'); END IF;
  SELECT * INTO o FROM public.edu_registration_onboarding WHERE application_id=p_application_id;
+ SELECT * INTO linked_enrollment FROM public.edu_enrollments WHERE application_id=p_application_id;
  IF o.application_id IS NULL OR o.cancelled_at IS NOT NULL OR NOT EXISTS(
   SELECT 1 FROM public.program_applications a JOIN public.edu_classes c ON c.id=o.class_id JOIN public.edu_cohorts h ON h.id=c.cohort_id
   WHERE a.id=o.application_id AND a.status='confirmed' AND a.cohort_key=h.application_cohort_key AND h.status<>'completed')
   OR (o.claimed_enrollment_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM public.edu_enrollments e WHERE e.id=o.claimed_enrollment_id AND e.status='active'
-    AND e.application_id=o.application_id AND e.class_id=o.class_id)) THEN
+    AND e.application_id=o.application_id AND e.class_id=o.class_id))
+  OR (linked_enrollment.id IS NOT NULL AND (linked_enrollment.role<>'student' OR linked_enrollment.status<>'active' OR linked_enrollment.class_id<>o.class_id
+    OR (o.claimed_enrollment_id IS NULL AND NOT EXISTS(SELECT 1 FROM auth.users WHERE id=linked_enrollment.user_id AND lower(trim(email))=o.email)))) THEN
   RETURN jsonb_build_object('ok',false,'reason','registration_inactive');
  END IF;
  SELECT * INTO l FROM public.edu_lessons WHERE class_id=o.class_id AND kind='preparation';
  IF l.id IS NULL OR l.publish_at IS NULL OR l.publish_at>now() OR l.due_at IS NULL THEN RETURN jsonb_build_object('ok',false,'reason','preparation_not_ready'); END IF;
  IF p_kind<>'welcome' THEN
   IF NOT l.reminders_enabled OR l.due_at<=now() THEN RETURN jsonb_build_object('ok',false,'reason','reminders_inactive'); END IF;
-  IF EXISTS(SELECT 1 FROM public.edu_submissions WHERE lesson_id=l.id AND student_enrollment_id=o.claimed_enrollment_id
+  IF EXISTS(SELECT 1 FROM public.edu_submissions WHERE lesson_id=l.id AND student_enrollment_id=coalesce(o.claimed_enrollment_id,linked_enrollment.id)
    AND (submitted_at IS NOT NULL OR external_received_at IS NOT NULL)) THEN RETURN jsonb_build_object('ok',false,'reason','already_submitted'); END IF;
   days_left:=(l.due_at AT TIME ZONE 'Asia/Seoul')::date-(now() AT TIME ZONE 'Asia/Seoul')::date;
   IF days_left<>(CASE p_kind WHEN 'reminder_3d' THEN 3 ELSE 1 END) THEN RETURN jsonb_build_object('ok',false,'reason','outside_reminder_window'); END IF;

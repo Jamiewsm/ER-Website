@@ -265,3 +265,31 @@ test('신규 준비 기능이 정규 과제 필수 응답과 개인 초안 권�
   await asUser(db,users.head,()=>assert.rejects(db.query("UPDATE edu_lessons SET kind='preparation',position=0 WHERE id=$1",[l]),/edu_identity_immutable/));
  } finally {await db.close();}
 });
+
+test('승인 후 기존 배정 화면으로 연결한 학생도 제출 알림에서 제외하고 로그인 링크를 보완한다',async()=>{
+ const f=await fixture();const {db}=f;
+ try {
+  const id=await f.app(170);await asUser(db,users.head,()=>f.confirm(id));const l=await f.preparation();
+  const enrollment=await asUser(db,users.head,async()=>(await db.query("SELECT * FROM edu_add_member($1,$2,$3,'student',$4)",[f.a.id,users.empty.email,users.empty.name,id])).rows[0]);
+  assert.equal((await db.query('SELECT claimed_enrollment_id FROM edu_registration_onboarding WHERE application_id=$1',[id])).rows[0].claimed_enrollment_id,null);
+  await f.service(async()=>{const welcome=await f.claimMail(id);assert.equal(welcome.ok,true);await db.query('SELECT edu_finish_onboarding_email($1,$2)',[welcome.delivery_id,'welcome-170']);});
+  await db.query("UPDATE edu_onboarding_email_deliveries SET sent_at=now()-interval '2 days' WHERE application_id=$1",[id]);
+  // 이미 열려 있던 이전 포털은 새 claim RPC를 호출하지 않고도 제출할 수 있다.
+  await asUser(db,users.empty,()=>db.query(`INSERT INTO edu_submissions(lesson_id,student_enrollment_id,answers,submitted_at)
+    VALUES($1,$2,'{"report":"작성한 보고서"}',now())`,[l.id,enrollment.id]));
+  await f.service(async()=>assert.equal((await f.claimMail(id,'reminder_3d',null)).reason,'already_submitted'));
+  await asUser(db,users.empty,async()=>{
+   assert.equal((await db.query('SELECT edu_claim_registrations() AS n')).rows[0].n,1);
+   assert.equal((await db.query('SELECT edu_claim_registrations() AS n')).rows[0].n,0);
+  });
+  assert.equal((await db.query('SELECT claimed_enrollment_id FROM edu_registration_onboarding WHERE application_id=$1',[id])).rows[0].claimed_enrollment_id,enrollment.id);
+  assert.equal((await db.query('SELECT count(*)::int AS n FROM edu_enrollments WHERE application_id=$1',[id])).rows[0].n,1);
+  const other=await f.app(171,users.other);await asUser(db,users.head,async()=>{
+   await f.confirm(other,f.a,users.other);
+   const e=(await db.query("SELECT * FROM edu_add_member($1,$2,$3,'student',$4)",[f.a.id,users.other.email,users.other.name,other])).rows[0];
+   await db.query("UPDATE edu_enrollments SET status='withdrawn' WHERE id=$1",[e.id]);
+  });
+  await asUser(db,users.other,async()=>assert.equal((await db.query('SELECT edu_claim_registrations() AS n')).rows[0].n,0));
+  await f.service(async()=>assert.equal((await f.claimMail(other)).reason,'registration_inactive'));
+ } finally {await db.close();}
+});
