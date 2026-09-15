@@ -158,6 +158,31 @@ test('theology keeps legacy biblical-enneagram fragment aliases after redirect',
   assert.match(html, /id="theology-fixation"/);
 });
 
+test('theology TOC uses ordered-list markers without duplicated numbers in link text', () => {
+  const html = read('theology/index.html');
+  const toc = html.match(/<nav class="toc"[\s\S]*?<\/nav>/)?.[0] || '';
+  assert.match(toc, /<ol>/);
+  assert.doesNotMatch(toc, />\s*\d+\.\s/);
+  assert.match(toc, />우리의 신학적 기준</);
+  assert.match(toc, />회복된 삶의 열매</);
+});
+
+test('reading page footers mirror main-site Contact and Partnership blocks', () => {
+  for (const file of pages) {
+    const html = read(file);
+    assert.match(html, /class="site-footer"/);
+    assert.match(html, /footer-heading">Contact</);
+    assert.match(html, /footer-heading">Partnership</);
+    assert.match(html, /hello@er-coaching\.com/);
+    assert.match(html, /사업자등록번호 347-64-00804/);
+    assert.match(html, /href="\/#coaches"/);
+    assert.match(html, /href="\/#about"/);
+    assert.match(html, /SOIM-Logo\.png/);
+    assert.match(html, /IEA-logo\.png/);
+    assert.doesNotMatch(html, /\bonclick=/);
+  }
+});
+
 test('christian page stays introductory and defers theology definitions', () => {
   const html = read('christian-enneagram/index.html');
   assert.match(html, /href="\/theology\/"/);
