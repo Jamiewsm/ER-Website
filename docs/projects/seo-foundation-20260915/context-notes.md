@@ -19,3 +19,10 @@
 
 - 구현 커밋 b8cbb23, PR https://github.com/Jamiewsm/ER-Website/pull/136. site-seo, test-runtime, live-deploy-markers, label 검사 통과. Cursor 메인 자동 검토는 대기 상태이며 merge·production 완료로 기록하지 않는다.
 - QA 임시 브라우저와 로컬 Wrangler 서버 종료. 화면 캡처는 작업별 visualization 디렉터리로 옮겨 배포 번들에 포함되지 않게 했다.
+
+## 네이버 등록 후속 — 2026-09-15
+
+- 사용자가 네이버 로그인을 완료했다. 사이트 목록은 비어 있었으며 https://er-coaching.com 등록 화면에서 HTML 메타 태그를 발급받았다.
+- Track은 site. 홈페이지 head에 검증 태그 한 줄만 추가한다. 기존 계획의 검색엔진 등록 단계를 이어가는 작업이다. 공개 검증 값이며 로그인 비밀번호나 API 비밀키가 아니다.
+- HTML 파일 경로의 확장자 리다이렉트와 새 파일 배포 규칙을 추가할 필요가 없는 메타 태그 방식을 선택했다. 배포 후 네이버 소유확인, 사이트맵 제출, 주요 URL 수집 요청 순서로 진행한다.
+- PR #136은 fdf649f로 병합됐고 CI 34938743282가 성공했다. 운영 두 문서 200·대표 주소·sitemap 7 URL·검사 JS 4개가 배포 전과 동일함을 확인했다. Google 재제출 성공 이후 새 문서 색인은 아직 확인 전이다.
