@@ -4,16 +4,22 @@ on:
   pull_request:
     paths:
       - 'supabase/migrations/2026090809*.sql'
+      - 'supabase/migrations/20260915003*.sql'
       - 'supabase/manual/education-public-notices.pending.sql'
       - 'supabase/functions/_shared/email-templates.ts'
       - 'supabase/functions/_shared/program-pricing.ts'
       - 'supabase/functions/notify-program-application/**'
+      - 'supabase/functions/_shared/education-onboarding-*.ts'
+      - 'supabase/functions/education-onboarding-email/**'
+      - 'supabase/functions/education-onboarding-reminders/**'
+      - 'supabase/config.toml'
       - 'tests/education*'
       - 'tests/education/**'
       - 'tests/basic-course-october-supabase.test.mjs'
       - 'tests/helpers/education-db.mjs'
       - 'tests/helpers/education-postgres.mjs'
       - '.github/workflows/education-backend.yml'
+      - '.github/workflows/education-reminders.yml'
 permissions:
   contents: read
 jobs:
