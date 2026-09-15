@@ -129,6 +129,14 @@ test('theology copy keeps Original Design as unfolding purpose rather than self-
   assert.match(html, /성경적 에니어그램/);
 });
 
+test('theology keeps legacy biblical-enneagram fragment aliases after redirect', () => {
+  const html = read('theology/index.html');
+  for (const id of ['bible', 'identity', 'fixation', 'restoration', 'fruit', 'next']) {
+    assert.match(html, new RegExp(`id="${id}"`));
+  }
+  assert.match(html, /id="theology-fixation"/);
+});
+
 test('christian page stays introductory and defers theology definitions', () => {
   const html = read('christian-enneagram/index.html');
   assert.match(html, /href="\/theology\/"/);

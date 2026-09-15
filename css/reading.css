@@ -236,6 +236,14 @@ article section {
   border-top: 1px solid var(--er-sand);
   scroll-margin-top: 6rem;
 }
+/* /biblical-enneagram/#fixation 등 구 앵커가 301 후에도 맞는 섹션으로 머물게 한다. */
+.legacy-anchor {
+  display: block;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  scroll-margin-top: 6rem;
+}
 article section:first-of-type { padding-top: 0; border-top: 0; }
 @media (min-width: 768px) {
   .hero { padding-block: 4rem 4.5rem; }
