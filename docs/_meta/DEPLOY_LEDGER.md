@@ -11,14 +11,14 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 
 | Surface | Git ref (의도) | Live SHA / fingerprint | Deployed at (UTC) | Method | Notes |
 |---------|----------------|------------------------|-------------------|--------|-------|
-| **Site** (landing, menu, home, child-type-test shell) | `origin/main` @ `6c4f7d4` | css/reading.css sha256 1d954e19…; theology/christian headers = main-site IA | 2026-09-15 | GitHub Actions Deploy Production (site+test) | PR #140 merge 후 헤더 IA 정렬 live 확인 |
-| **Test runtime** | `origin/main` @ `6c4f7d4` | CI post-deploy premium markers OK | 2026-09-15 | GitHub Actions test-only bundle | PR #140 deploy track both |
+| **Site** (landing, menu, home, child-type-test shell) | `origin/main` @ `2ccdf76` | theology TOC single numbers; reading footers match About/Coaches | 2026-09-15 | GitHub Actions Deploy Production (site+test) | PR #142 TOC/footer live 확인 |
+| **Test runtime** | `origin/main` @ `2ccdf76` | CI post-deploy premium markers OK | 2026-09-15 | GitHub Actions test-only bundle | PR #142 deploy track both |
 | **Supabase Edge** | `main` / 별도 branch | (미기록) | — | `supabase functions deploy` | 웹 wrangler deploy 와 **분리** |
 
 ### Drift 요약
 
-- **Site + Test runtime:** 2026-09-15 CI Deploy Production으로 `main` (6c4f7d4, PR #140)과 live 동기화됨. 신학/기독교 에니어그램 안내 헤더가 ER 소개·코치진 소개와 동일 IA.
-- **CI deploy:** Actions Deploy Production 동작 확인 (run 34991713035). Ledger 직접 push는 branch protection으로 거부되어 PR로 갱신.
+- **Site + Test runtime:** 2026-09-15 CI Deploy Production으로 `main` (2ccdf76, PR #142)과 live 동기화됨. 신학 TOC 이중 번호 제거, 안내 페이지 푸터를 ER 소개·코치진 소개와 동일 IA로 맞춤.
+- **CI deploy:** Actions Deploy Production 동작 확인 (run 34996036227). Ledger 직접 push는 branch protection으로 거부되어 PR로 갱신.
 - **과거 사고 패턴:** full deploy / `.assetsignore` test 제외로 test 404 가능 → bundle prune + assetsignore 수정 (#67).
 
 
@@ -45,6 +45,13 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 | Site | main @ abc1234 | landing markers OK | CI site deploy | cursor-main |
 | Test runtime | main @ def5678 | js/test.js sha256 … | test-only bundle | cursor-main |
 ```
+
+### 2026-09-15 — reading TOC + footer (#142)
+| Surface | Git ref | Live fingerprint | Method | By |
+|---------|---------|------------------|--------|-----|
+| Site | main @ 2ccdf76 | theology TOC single numbers; reading footers match About/Coaches | CI site+test deploy | cursor-main |
+| Test runtime | main @ 2ccdf76 | premium markers OK | test-only bundle | cursor-main |
+
 
 ### 2026-09-15 — reading pages header IA (#140)
 | Surface | Git ref | Live fingerprint | Method | By |
