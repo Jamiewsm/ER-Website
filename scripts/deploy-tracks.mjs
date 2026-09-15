@@ -4,6 +4,10 @@ export const DEFAULT_SITE = 'https://er-coaching.com';
 /** Only these paths may change on site deploy. Test runtime is preserved from live. */
 export const SITE_OVERLAY_GLOBS = [
   'index.html',
+  'christian-enneagram/**',
+  'biblical-enneagram/**',
+  'css/reading.css',
+  'design-system/tokens.css',
   'js/sections/**',
   'child-type-test/**',
   'css/style.css',
