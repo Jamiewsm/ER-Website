@@ -14,7 +14,11 @@
 - 4주 자녀양육 심화: `program-catalog.js` `parenting_workshop` + `apply?focus=parenting_workshop` + `parenting-workshop.html`.
 - 양육 코칭 상담: `apply?focus=parenting` (apply.js focusConfig에 이미 존재: "자녀 양육 코칭 상담").
 - 부모/아이 자료 PDF·HTML: `docs/parent_resources/` (엄마유형 특징, 아이 관찰 체크리스트).
-- 양육 인스타: https://www.instagram.com/er_parenting/
+- 양육 인스타: https://www.instagram.com/er_parenting/ (구독자 500+ · 활성)
+- 공식 인스타: https://www.instagram.com/er_official_Korea/ (신규 · 방향성 정리 중, 구독자 ~16)
+- 메인 사이트 푸터·JSON-LD `sameAs`·`ER_SOCIAL`에 **두 계정 모두** 등록. 맥락별 링크는 유지:
+  - 양육/parenting 페이지·신청 → `@er_parenting`
+  - 기본과정·코칭 신청 → `@er_official_Korea`
 
 ## 메뉴 매핑 결정 (전면 재구성)
 사용자 승인: 상단 메뉴 전면 재구성. 7개 상위 항목으로 재편하며 기존 모든 기능을 재배치.

@@ -3,6 +3,44 @@ function isParentingWorkshopFocus(focus) {
     return normalizedFocus === 'parenting_workshop' || normalizedFocus === 'parents_workshop';
 }
 
+function getErInstagramAccounts() {
+    const social = (typeof window !== 'undefined' && window.ER_SOCIAL) || {};
+    return {
+        parenting: {
+            url: social.instagramParenting || 'https://www.instagram.com/er_parenting/',
+            handle: social.instagramParentingHandle || 'er_parenting',
+            label: '양육'
+        },
+        official: {
+            url: social.instagram || 'https://www.instagram.com/er_official_Korea/',
+            handle: social.instagramHandle || 'er_official_Korea',
+            label: '공식'
+        }
+    };
+}
+
+/** @param {'parenting'|'both'} mode */
+function renderInstagramInquiryLine(mode = 'both') {
+    const { parenting, official } = getErInstagramAccounts();
+    if (mode === 'parenting') {
+        return `<a href="${parenting.url}" target="_blank" rel="noopener noreferrer" class="font-bold underline">@${parenting.handle}</a>`;
+    }
+    return `<a href="${parenting.url}" target="_blank" rel="noopener noreferrer" class="font-bold underline">@${parenting.handle}</a>`
+        + `<span class="mx-1.5 text-er-muted">·</span>`
+        + `<a href="${official.url}" target="_blank" rel="noopener noreferrer" class="font-bold underline">@${official.handle}</a>`;
+}
+
+/** @param {'parenting'|'both'} mode */
+function renderInstagramThankYouButtons(mode = 'both') {
+    const { parenting, official } = getErInstagramAccounts();
+    const btnClass = 'w-full rounded-lg border border-er-accentLight py-3 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30';
+    if (mode === 'parenting') {
+        return `<a href="${parenting.url}" target="_blank" rel="noopener noreferrer" class="${btnClass}">Instagram @${parenting.handle}</a>`;
+    }
+    return `<a href="${parenting.url}" target="_blank" rel="noopener noreferrer" class="${btnClass}">Instagram @${parenting.handle} <span class="font-normal text-er-muted">· ${parenting.label}</span></a>`
+        + `<a href="${official.url}" target="_blank" rel="noopener noreferrer" class="${btnClass}">Instagram @${official.handle} <span class="font-normal text-er-muted">· ${official.label}</span></a>`;
+}
+
 function isBasicCourseFocus(focus) {
     const normalizedFocus = String(focus || '').trim();
     return normalizedFocus === 'enneagram_basic_july'
@@ -190,7 +228,7 @@ function renderParentingWorkshopApply(submitSource) {
                         신청 전 문의
                         <a href="mailto:restoration.son@gmail.com" class="ml-2 font-bold underline">Email</a>
                         <span class="mx-2 text-er-muted">|</span>
-                        <a href="https://www.instagram.com/er_parenting/" target="_blank" rel="noopener noreferrer" class="font-bold underline">Instagram</a>
+                        ${renderInstagramInquiryLine('parenting')}
                     </p>
                 </section>
             </div>
@@ -416,7 +454,7 @@ function renderBasicCourseApply(submitSource) {
                         신청 전 문의
                         <a href="mailto:json@er-coaching.com" class="ml-2 font-bold underline">Email</a>
                         <span class="mx-2 text-er-muted">|</span>
-                        <a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="font-bold underline">Instagram</a>
+                        ${renderInstagramInquiryLine('both')}
                     </p>
                 </section>
             </div>
@@ -590,6 +628,7 @@ function renderApply(payload = null) {
     const isSupportTrack = track === 'support';
     const isMinistryTrack = track === 'ministry';
     const isOrgTrack = track === 'org';
+    const isParentingApplyContext = focus === 'parenting' || fromChildTypeTest;
     const applyAttribution = fromTest ? 'test' : (fromChildTypeTest ? 'child_type_test' : (payload?.apply_source || ''));
     const submitSource = typeof buildApplySubmitSource === 'function'
         ? buildApplySubmitSource(track, focus, applyAttribution)
@@ -757,6 +796,13 @@ function renderApply(payload = null) {
                             신청하기
                         </button>
                     </form>
+
+                    <p class="mt-6 border-t border-gray-100 pt-5 text-center text-xs text-er-primary">
+                        신청 전 문의
+                        <a href="mailto:hello@er-coaching.com" class="ml-2 font-bold underline">Email</a>
+                        <span class="mx-2 text-er-muted">|</span>
+                        ${renderInstagramInquiryLine(isParentingApplyContext ? 'parenting' : 'both')}
+                    </p>
                 </div>
             </div>
         </div>
@@ -780,9 +826,7 @@ function renderThankYou(payload = null) {
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
                             ER 홈페이지로 돌아가기
                         </button>
-                        <a href="https://www.instagram.com/er_parenting/" target="_blank" rel="noopener noreferrer" class="w-full rounded-lg border border-er-accentLight py-3 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">
-                            Instagram 보기
-                        </a>
+                        ${renderInstagramThankYouButtons('parenting')}
                     </div>
                 </div>
             </div>
@@ -804,14 +848,16 @@ function renderThankYou(payload = null) {
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
                             ER 홈페이지로 돌아가기
                         </button>
-                        <a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="w-full rounded-lg border border-er-accentLight py-3 text-sm font-bold text-er-dark transition-colors hover:bg-er-accentLight/30">
-                            Instagram 보기
-                        </a>
+                        ${renderInstagramThankYouButtons('both')}
                     </div>
                 </div>
             </div>
         `;
     }
+    const thankYouInstagramMode = (
+        String(payload?.focus || '').trim() === 'parenting'
+        || String(payload?.apply_source || '') === 'child_type_test'
+    ) ? 'parenting' : 'both';
     return `
         <div class="min-h-screen flex items-center justify-center bg-er-base px-6">
             <div class="bg-white rounded-[2rem] shadow-card floating-card p-10 max-w-sm w-full text-center animate-fade-in-up border border-white/40">
@@ -823,9 +869,12 @@ function renderThankYou(payload = null) {
                     마음을 나누어 주셔서 감사합니다.<br>
                     남겨주신 연락처로 곧 정성껏 연락드리겠습니다.
                 </p>
-                <button onclick="renderSection('home')" class="w-full py-3 rounded-xl bg-er-dark text-white hover:bg-gray-800 transition-colors font-bold shadow-md text-sm">
-                    처음 화면으로 돌아가기
-                </button>
+                <div class="grid gap-3">
+                    <button onclick="renderSection('home')" class="w-full py-3 rounded-xl bg-er-dark text-white hover:bg-gray-800 transition-colors font-bold shadow-md text-sm">
+                        처음 화면으로 돌아가기
+                    </button>
+                    ${renderInstagramThankYouButtons(thankYouInstagramMode)}
+                </div>
             </div>
         </div>
     `;
