@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { stripTypeScriptTypes } from 'node:module';
 import { webcrypto } from 'node:crypto';
+import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import vm from 'node:vm';
 import test from 'node:test';
 
@@ -23,10 +27,11 @@ function harness(options = {}) {
     EDUCATION_REMINDER_SECRET: 'synthetic-purpose-limited-secret', ...options.environment,
   };
   const state = options.state || { deliveries: new Map() };
-  const calls = { rpc: [], emails: [] };
+  const calls = { rpc: [], emails: [], delays: [] };
   let handler;
   const context = vm.createContext({
     Request, Response, Headers, URL, TextEncoder, crypto: webcrypto,
+    setTimeout(callback, milliseconds) { calls.delays.push(milliseconds); callback(); },
     console: { warn() {}, error() {} },
     Deno: { env: { get: (key) => environment[key] }, serve: (value) => { handler = value; } },
     createClient(url, key) {
@@ -203,6 +208,7 @@ test('scheduler defaults to read-only dry run and emits aggregate counts only', 
   assert.deepEqual(await response.json(), { ok: true, dry_run: true, eligible: 1 });
   assert.equal(h.calls.rpc.length, 1);
   assert.equal(h.calls.emails.length, 0);
+  assert.deepEqual(h.calls.delays, []);
 });
 
 test('scheduler refuses head JWT without its purpose-limited secret', async () => {
@@ -226,6 +232,19 @@ test('enabled scheduler sends a portal reminder without answer contents', async 
   assert.equal(h.calls.rpc.find((call) => call.name === 'edu_claim_onboarding_email').args.p_kind, 'reminder_3d');
   assert.match(h.calls.emails[0].body.text, /아직 자기관찰보고서 제출이 확인되지 않아/);
   assert.doesNotMatch(h.calls.emails[0].body.text, /가장 중요한 가치|어린 시절|회원가입/);
+  assert.deepEqual(h.calls.delays, [1000]);
+});
+
+test('scheduler paces every candidate and avoids sleeping on an empty batch', async () => {
+  const h = harness({ reminders: true, candidates: [
+    { application_id: applicationId, kind: 'reminder_3d' },
+    { application_id: applicationId, kind: 'reminder_1d' },
+  ] });
+  assert.equal((await h.invoke({ dry_run: false })).status, 200);
+  assert.deepEqual(h.calls.delays, [1000, 1000]);
+  const empty = harness({ reminders: true, candidates: [] });
+  assert.equal((await empty.invoke({ dry_run: false })).status, 200);
+  assert.deepEqual(empty.calls.delays, []);
 });
 
 test('scheduler skips a submission that arrived after candidate selection', async () => {
@@ -251,4 +270,65 @@ test('daily scheduler has explicit enable gate, dry run default, no retry and li
   const config = readFileSync(new URL('../supabase/config.toml', import.meta.url), 'utf8');
   assert.match(config, /\[functions.education-onboarding-email\]\s+verify_jwt = true/);
   assert.match(config, /\[functions.education-onboarding-reminders\]\s+verify_jwt = false/);
+});
+
+function runReminderWorkflow(responses, dryRun = false) {
+  const workflow = readFileSync(new URL('../.github/workflows/education-reminders.yml', import.meta.url), 'utf8');
+  const script = workflow.split('        run: |\n')[1].split('\n').map((line) => line.startsWith('          ') ? line.slice(10) : line).join('\n');
+  const directory = mkdtempSync(join(tmpdir(), 'education-reminder-workflow-'));
+  try {
+    writeFileSync(join(directory, 'responses.json'), JSON.stringify(responses));
+    // 실제 워크플로의 Bash·jq 분기를 실행하며 curl 경계만 합성 응답으로 대체한다.
+    writeFileSync(join(directory, 'curl'), `#!/usr/bin/env node\nconst fs=require('node:fs');const path=require('node:path');const root=process.env.WORKFLOW_TEST_DIR;const counter=path.join(root,'count');const n=fs.existsSync(counter)?Number(fs.readFileSync(counter,'utf8')):0;fs.writeFileSync(counter,String(n+1));const rows=JSON.parse(fs.readFileSync(path.join(root,'responses.json'),'utf8'));if(!rows[n])process.exit(99);const row=rows[n];if(row.networkError)process.exit(28);const args=process.argv.slice(2);fs.writeFileSync(args[args.indexOf('--output')+1],typeof row.body==='string'?row.body:JSON.stringify(row.body));process.stdout.write(String(row.status));\n`, { mode: 0o755 });
+    const result = spawnSync('bash', ['-c', script], {
+      encoding: 'utf8', timeout: 10000,
+      env: { ...process.env, PATH: directory + ':' + process.env.PATH, WORKFLOW_TEST_DIR: directory,
+        SUPABASE_URL: 'https://synthetic.supabase.co', EDUCATION_REMINDER_SECRET: 'synthetic-secret', DRY_RUN: String(dryRun) },
+    });
+    assert.equal(result.error, undefined);
+    return { ...result, calls: Number(readFileSync(join(directory, 'count'), 'utf8')) };
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+}
+
+const batch = (eligible, failed = 0) => ({ status: failed ? 502 : 200, body: { ok: !failed, dry_run: false, eligible, sent: eligible - failed, skipped: 0, failed } });
+
+test('workflow processes later batches after a structured delivery failure then reports failure', () => {
+  const result = runReminderWorkflow([batch(50, 1), batch(50, 2), batch(2)]);
+  assert.equal(result.calls, 3);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /3 failed deliveries/);
+});
+
+test('workflow stops at ten batches and makes remaining work visible', () => {
+  const result = runReminderWorkflow(Array.from({ length: 10 }, () => batch(50)));
+  assert.equal(result.calls, 10);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /daily safety limit/);
+});
+
+test('workflow stops rather than burning more claims when no delivery succeeds', () => {
+  const result = runReminderWorkflow([batch(50, 50), batch(1)]);
+  assert.equal(result.calls, 1);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /No deliveries succeeded.*50 failed deliveries/);
+});
+
+test('workflow completes cleanly after draining a full and partial batch', () => {
+  const result = runReminderWorkflow([batch(50), batch(2)]);
+  assert.equal(result.calls, 2);
+  assert.equal(result.status, 0);
+});
+
+for (const response of [{ networkError: true }, { status: 502, body: '{bad' }, { status: 502, body: { error: 'internal_error' } }, { status: 200, body: { ok: true, dry_run: false, eligible: 50, sent: 2, skipped: 0, failed: 0 } }]) {
+  test(`workflow stops immediately on transport or invalid aggregate data ${JSON.stringify(response)}`, () => {
+    const result = runReminderWorkflow([response, batch(1)]);
+    assert.equal(result.calls, 1);
+    assert.notEqual(result.status, 0);
+  });
+}
+
+test('workflow dry run stops after one read even if its candidate batch is full', () => {
+  const result = runReminderWorkflow([{ status: 200, body: { ok: true, dry_run: true, eligible: 50 } }], true);
+  assert.equal(result.calls, 1);
+  assert.equal(result.status, 0);
 });

@@ -46,6 +46,8 @@ Deno.serve(async (req) => {
     if (dryRun) return respond({ ok: true, dry_run: true, eligible: data.length });
     const summary = { eligible: data.length, sent: 0, skipped: 0, failed: 0 };
     for (const candidate of data) {
+      // 같은 Resend 계정을 쓰는 다른 메일에 여유를 두고 일괄 발송을 초당 한 건으로 제한한다.
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const result = await deliverEducationOnboardingEmail(client, candidate.application_id, candidate.kind as OnboardingKind, null, settings!);
       if (result.body.ok && !result.body.email?.skipped) summary.sent++;
       else if (result.status === 409 || result.body.email?.skipped) summary.skipped++;

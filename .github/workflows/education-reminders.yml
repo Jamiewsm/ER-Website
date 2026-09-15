@@ -33,6 +33,7 @@ jobs:
           case "$SUPABASE_URL" in https://*.supabase.co) ;; *) echo 'A Supabase HTTPS project URL is required.' >&2; exit 1;; esac
           response_file="$(mktemp)"
           trap 'rm -f "$response_file"' EXIT
+          total_failed=0
           for batch in $(seq 1 10); do
             status="$(curl --silent --show-error --max-time 150 --output "$response_file" --write-out '%{http_code}' \
               --request POST "$SUPABASE_URL/functions/v1/education-onboarding-reminders" \
@@ -40,10 +41,29 @@ jobs:
               --header 'Content-Type: application/json' \
               --data "{\"dry_run\":$DRY_RUN}")"
             jq '{ok,dry_run,eligible,sent,skipped,failed,error}' "$response_file"
-            test "$status" = '200'
-            if [ "$DRY_RUN" = 'true' ] || [ "$(jq -r '.eligible' "$response_file")" -lt 50 ]; then
+            if [ "$DRY_RUN" = 'true' ]; then
+              test "$status" = '200'
+              jq -e '.ok == true and .dry_run == true and (.eligible | type == "number" and . >= 0 and . <= 50 and . == floor)' "$response_file" > /dev/null
+              exit 0
+            fi
+            case "$status" in 200|502) ;; *) exit 1;; esac
+            jq -e '.dry_run == false and (.eligible | type == "number" and . >= 0 and . <= 50 and . == floor) and
+              ([.sent,.skipped,.failed] | all(type == "number" and . >= 0 and . == floor)) and
+              (.sent + .skipped + .failed == .eligible) and (.ok == (.failed == 0))' "$response_file" > /dev/null
+            failed="$(jq -r '.failed' "$response_file")"
+            if [ "$status" = '502' ]; then test "$failed" -gt 0; else test "$failed" -eq 0; fi
+            total_failed=$((total_failed + failed))
+            if [ "$failed" -gt 0 ] && [ "$(jq -r '.sent' "$response_file")" -eq 0 ]; then
+              echo "No deliveries succeeded in this batch ($total_failed failed deliveries). Check provider and server health before continuing." >&2
+              exit 1
+            fi
+            if [ "$(jq -r '.eligible' "$response_file")" -lt 50 ]; then
+              if [ "$total_failed" -gt 0 ]; then
+                echo "Reminder processing finished with $total_failed failed deliveries. Check the delivery history." >&2
+                exit 1
+              fi
               exit 0
             fi
           done
-          echo 'The daily safety limit was reached. Check remaining candidates before the deadline.' >&2
+          echo "The daily safety limit was reached ($total_failed failed deliveries). Check remaining candidates before the deadline." >&2
           exit 1
