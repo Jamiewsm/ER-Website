@@ -6,7 +6,7 @@ import { inferDeployTrackFromPaths } from '../scripts/infer_deploy_track.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), 'utf8');
-const pages = ['christian-enneagram/index.html', 'biblical-enneagram/index.html'];
+const pages = ['christian-enneagram/index.html', 'theology/index.html'];
 const site = 'https://er-coaching.com';
 const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
 const tags = (html, name) => [...html.matchAll(new RegExp(`<${name}\\b[^>]*>`, 'g'))].map((m) => attrs(m[0]));
@@ -70,15 +70,16 @@ test('home and course expose crawlable guide links and a return path to enrollme
   for (const file of ['index.html', 'js/sections/home.js', 'basic-course.html']) {
     assert.match(read(file), /href="\/christian-enneagram\/"/);
   }
-  for (const file of pages) assert.match(read(file), /href="\/basic-course"/);
+  assert.match(read('basic-course.html'), /href="\/theology\/"/);
   assert.match(read('basic-course.html'), /href="\/#apply\?track=paid&focus=enneagram_basic_october/);
+  for (const file of pages) assert.match(read(file), /href="\/basic-course"/);
 });
 
-test('sitemap uses canonical site documents and excludes the duplicate redirect page', () => {
+test('sitemap uses canonical site documents and excludes retired biblical URL', () => {
   const xml = read('sitemap.xml');
   const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
   assert.equal(urls.length, new Set(urls).size);
-  assert.ok(!urls.some((u) => u.includes('#') || u.includes('parents-workshop')));
+  assert.ok(!urls.some((u) => u.includes('#') || u.includes('parents-workshop') || u.includes('biblical-enneagram')));
   for (const url of urls) {
     const { pathname } = new URL(url);
     assert.ok(existsSync(new URL(fileFor(pathname), root)), url);
@@ -89,6 +90,14 @@ test('sitemap uses canonical site documents and excludes the duplicate redirect 
   for (const file of pages) assert.ok(urls.includes(`${site}/${file.replace('index.html', '')}`));
 });
 
+test('biblical-enneagram points readers to theology and stays out of the primary sitemap', () => {
+  const html = read('biblical-enneagram/index.html');
+  assert.deepEqual(canonical(html), [`${site}/theology/`]);
+  assert.match(html, /href="\/theology\/"/);
+  assert.match(html, /noindex/);
+  assert.match(read('_redirects'), /\/biblical-enneagram\/\s+\/theology\/\s+301/);
+});
+
 test('reading assets can be crawled and independently trigger site-only deployment', () => {
   const robots = read('robots.txt');
   assert.match(robots, /Sitemap: https:\/\/er-coaching.com\/sitemap.xml/);
@@ -96,10 +105,42 @@ test('reading assets can be crawled and independently trigger site-only deployme
   const css = read('css/reading.css');
   assert.match(css, /@import url\('\/design-system\/tokens\.css'\)/);
   assert.doesNotMatch(css, /#[\da-f]{3,8}\b/i);
-  const paths = [...pages, 'css/reading.css', 'design-system/tokens.css'];
+  const paths = [...pages, 'biblical-enneagram/index.html', 'css/reading.css', 'design-system/tokens.css', '_redirects'];
   for (const path of paths) assert.equal(inferDeployTrackFromPaths([path]).track, 'site');
   const workflow = read('.github/workflows/deploy-production.yml');
-  for (const path of ['christian-enneagram/**', 'biblical-enneagram/**', 'css/reading.css', 'design-system/tokens.css']) {
+  for (const path of ['christian-enneagram/**', 'theology/**', 'biblical-enneagram/**', 'css/reading.css', 'design-system/tokens.css', '_redirects']) {
     assert.ok(workflow.includes(`- '${path}'`), path);
   }
+});
+
+test('theology copy keeps Original Design as unfolding purpose rather than self-discovery', () => {
+  const html = read('theology/index.html');
+  assert.doesNotMatch(html, /하나님께 알려지고/);
+  assert.doesNotMatch(html, /고유성을 지우시는 것이 아니라 정화하고/);
+  assert.match(html, /한 사람 한 사람을 아시고 뜻 가운데 지으셨습니다/);
+  assert.match(html, /하나님께로부터 주어집니다/);
+  assert.match(html, /기질과 능력이 성령 안에서 새로워지고/);
+  assert.match(html, /ER의 비전/);
+  assert.match(html, /더욱 온전히 펼쳐지고/);
+  assert.match(html, /이것이 ER이 꿈꾸는 Restoration입니다/);
+  assert.match(html, /선하신 뜻과 계획/);
+  assert.doesNotMatch(html, /창조적 의도/);
+  assert.match(html, /유형은 정체성을 결정하지 않습니다/);
+  assert.match(html, /성경적 에니어그램/);
+});
+
+test('theology keeps legacy biblical-enneagram fragment aliases after redirect', () => {
+  const html = read('theology/index.html');
+  for (const id of ['bible', 'identity', 'fixation', 'restoration', 'fruit', 'next']) {
+    assert.match(html, new RegExp(`id="${id}"`));
+  }
+  assert.match(html, /id="theology-fixation"/);
+});
+
+test('christian page stays introductory and defers theology definitions', () => {
+  const html = read('christian-enneagram/index.html');
+  assert.match(html, /href="\/theology\/"/);
+  assert.doesNotMatch(html, /biblical-enneagram/);
+  assert.doesNotMatch(html, /id="design"/);
+  assert.match(html, /자기 관찰에서 관계의 변화로/);
 });

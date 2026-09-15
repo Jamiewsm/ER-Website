@@ -66,6 +66,12 @@ function restoreSiteAdminReturn() {
 
 function renderSection(sectionId, payload = null, options = {}) {
     if (redirectPortalSection(sectionId, payload)) return;
+    // 신학적 기초는 정적 /theology/ 가 SSOT. 해시 북마크는 그곳으로 넘긴다.
+    if (sectionId === 'theology') {
+        const dest = typeof theologyStaticUrl === 'function' ? theologyStaticUrl(payload) : '/theology/';
+        window.location.replace(dest);
+        return;
+    }
     const { syncHash = true, replaceHash = false } = options;
     const previousSection = state.currentSection;
     const activeFocus = String(payload?.focus || '').trim();
@@ -113,7 +119,6 @@ function renderSection(sectionId, payload = null, options = {}) {
     switch(sectionId) {
         case 'home': html = renderHome(); break;
         case 'about': html = renderAbout(); break;
-        case 'theology': html = renderTheology(); break;
         case 'coaches': html = renderCoaches(); break;
         case 'programs': html = renderPrograms(); break;
         case 'parenting': html = renderParenting(payload); break;
@@ -180,15 +185,6 @@ function renderSection(sectionId, payload = null, options = {}) {
         }, 60);
     }
     if (sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 50);
-    if (sectionId === 'theology' && payload?.focus) {
-        setTimeout(() => {
-            if (state.currentSection !== 'theology') return;
-            const heading = document.getElementById('theology-' + payload.focus);
-            if (!heading) return;
-            heading.focus({ preventScroll: true });
-            heading.scrollIntoView({ behavior: 'auto', block: 'start' });
-        }, 60);
-    }
     if((sectionId === 'home' || sectionId === 'notices' || sectionId === 'notice_detail') && !state.noticesLoaded) {
         setTimeout(async () => {
             await loadNotices();
