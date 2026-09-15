@@ -48,17 +48,114 @@
 <body>
 <a class="skip" href="#content">본문 바로가기</a>
 <header class="site-header">
-  <div class="wrap site-header-inner">
+  <div class="site-header-bar">
     <a class="site-logo" href="/" aria-label="ER 홈"><img src="/ER-logo-header.png" alt="Enneagram for Restoration" width="112" height="40"></a>
-    <nav class="site-nav" aria-label="주요 메뉴">
-      <a href="/#about">ER 소개</a>
-      <a href="/theology/" aria-current="page">신학적 기초</a>
-      <a href="/christian-enneagram/">기독교 에니어그램</a>
-      <a href="/basic-course">기본과정</a>
+    <nav class="desktop-nav" aria-label="주요 메뉴">
+      <div class="nav-item has-dd">
+        <a href="/#about" class="nav-top">ER 소개 <span class="nav-caret" aria-hidden="true"></span></a>
+        <div class="nav-dd" role="list">
+          <a href="/#about" class="nav-dd-link">ER 소개</a>
+          <a href="/theology/" class="nav-dd-link" aria-current="page">신학적 기초</a>
+          <a href="/christian-enneagram/" class="nav-dd-link">기독교 에니어그램 안내</a>
+          <a href="/#coaches" class="nav-dd-link">코치진 소개</a>
+          <a href="/#support" class="nav-dd-link">사역지원</a>
+        </div>
+      </div>
+      <div class="nav-item has-dd">
+        <a href="/#test" class="nav-top">유형검사 <span class="nav-caret" aria-hidden="true"></span></a>
+        <div class="nav-dd" role="list">
+          <a href="/#test" class="nav-dd-link">프리미엄 검사<span class="nav-dd-desc">나의 핵심 동기와 유형을 찾는 검사</span></a>
+          <a href="/#types_guide" class="nav-dd-link">유형 알아보기<span class="nav-dd-desc">9가지 유형의 핵심 동기 살펴보기</span></a>
+        </div>
+      </div>
+      <div class="nav-item has-dd">
+        <a href="/#parenting" class="nav-top nav-top-accent">Parenting <span class="nav-caret" aria-hidden="true"></span></a>
+        <div class="nav-dd" role="list">
+          <a href="/#parenting" class="nav-dd-link">Parenting 소개<span class="nav-dd-desc">아이와 부모를 함께 보는 양육</span></a>
+          <a href="/#parenting?focus=child" class="nav-dd-link">우리 아이 이해하기</a>
+          <a href="/#parenting?focus=parent" class="nav-dd-link">부모인 나 이해하기</a>
+          <a href="/#parenting?focus=guide" class="nav-dd-link">부모–자녀 맞춤 가이드</a>
+          <div class="nav-dd-rule" aria-hidden="true"></div>
+          <a href="/child-type-test/child-type-test.html" class="nav-dd-link">아이 유형검사</a>
+          <a href="/#apply?track=paid&amp;focus=parenting&amp;apply_source=parenting" class="nav-dd-link">양육 해석상담</a>
+          <a href="/#apply?track=paid&amp;focus=parenting_workshop&amp;apply_source=parenting" class="nav-dd-link">부모교육·프로그램</a>
+        </div>
+      </div>
+      <a href="/#programs?tab=individual" class="nav-top">관계·부부</a>
+      <div class="nav-item has-dd">
+        <a href="/#programs?tab=church" class="nav-top">교회·사역 <span class="nav-caret" aria-hidden="true"></span></a>
+        <div class="nav-dd" role="list">
+          <a href="/#programs?tab=church" class="nav-dd-link">교회·사역팀</a>
+          <a href="/#support" class="nav-dd-link">목회자·선교사 사역지원</a>
+          <div class="nav-dd-rule" aria-hidden="true"></div>
+          <a href="https://business.er-coaching.com/" class="nav-dd-link">기업·팀 서비스 <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <a href="/#coach_training" class="nav-top">전문가 과정</a>
+      <div class="nav-item has-dd">
+        <a href="/#community" class="nav-top">회복 이야기 <span class="nav-caret" aria-hidden="true"></span></a>
+        <div class="nav-dd" role="list">
+          <a href="/#community" class="nav-dd-link">회복 이야기</a>
+          <a href="/#notices" class="nav-dd-link">공지사항</a>
+        </div>
+      </div>
+      <div class="nav-divider" aria-hidden="true"></div>
+      <a class="header-cta" href="/#apply?track=paid">상담 신청</a>
+      <a class="header-portal" href="https://coach.er-coaching.com/education.html">포털 입장</a>
     </nav>
-    <a class="header-cta" href="/#apply?track=paid">상담 신청</a>
+    <div class="mobile-tools">
+      <a class="header-cta header-cta-compact" href="/#apply?track=paid">상담<span class="cta-extra"> 신청</span></a>
+      <a class="header-portal-icon" href="https://coach.er-coaching.com/education.html" aria-label="포털 입장">포털</a>
+      <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-controls="mobile-panel">
+      <label for="nav-toggle" class="nav-burger" aria-label="메뉴 열기"><span></span><span></span><span></span></label>
+    </div>
+  </div>
+  <div id="mobile-panel" class="mobile-panel">
+    <div class="mobile-panel-inner">
+      <a href="https://coach.er-coaching.com/education.html" class="mobile-portal">포털 입장</a>
+      <a href="/#apply?track=paid" class="mobile-apply">상담 신청</a>
+      <nav class="mobile-nav" aria-label="모바일 메뉴">
+        <details class="mobile-group">
+          <summary>ER 소개</summary>
+          <a href="/#about">ER 소개</a>
+          <a href="/theology/" aria-current="page">신학적 기초</a>
+          <a href="/christian-enneagram/">기독교 에니어그램 안내</a>
+          <a href="/#coaches">코치진 소개</a>
+          <a href="/#support">사역지원</a>
+        </details>
+        <details class="mobile-group">
+          <summary>유형검사</summary>
+          <a href="/#test">프리미엄 검사</a>
+          <a href="/#types_guide">유형 알아보기</a>
+        </details>
+        <details class="mobile-group mobile-group-accent">
+          <summary>Parenting</summary>
+          <a href="/#parenting">Parenting 소개</a>
+          <a href="/#parenting?focus=child">우리 아이 이해하기</a>
+          <a href="/#parenting?focus=parent">부모인 나 이해하기</a>
+          <a href="/#parenting?focus=guide">부모–자녀 맞춤 가이드</a>
+          <a href="/child-type-test/child-type-test.html">아이 유형검사</a>
+          <a href="/#apply?track=paid&amp;focus=parenting&amp;apply_source=parenting">양육 해석상담</a>
+          <a href="/#apply?track=paid&amp;focus=parenting_workshop&amp;apply_source=parenting">부모교육·프로그램</a>
+        </details>
+        <a class="mobile-flat" href="/#programs?tab=individual">관계·부부</a>
+        <details class="mobile-group">
+          <summary>교회·사역</summary>
+          <a href="/#programs?tab=church">교회·사역팀</a>
+          <a href="/#support">목회자·선교사 사역지원</a>
+          <a href="https://business.er-coaching.com/">기업·팀 서비스 <span aria-hidden="true">↗</span></a>
+        </details>
+        <a class="mobile-flat" href="/#coach_training">전문가 과정</a>
+        <details class="mobile-group">
+          <summary>회복 이야기</summary>
+          <a href="/#community">회복 이야기</a>
+          <a href="/#notices">공지사항</a>
+        </details>
+      </nav>
+    </div>
   </div>
 </header>
+
 <main id="content" tabindex="-1">
   <header class="hero">
     <div class="wrap">
