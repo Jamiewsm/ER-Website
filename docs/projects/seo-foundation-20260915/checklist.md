@@ -11,6 +11,6 @@
 - [x] 대상 테스트와 관련 회귀 검사 통과.
 - [x] 모바일·데스크톱·JavaScript 비활성화 동선 검증.
 - [x] 후속 콘텐츠 계획과 등록 절차 작성.
-- [ ] 커밋·push·PR 및 CI 확인.
+- [x] 커밋·push·PR #136 및 코드 CI 확인. Cursor 메인 검토 대기.
 - [ ] Cursor Cloud merge 후 CI production 배포 확인.
 - [ ] 배포된 sitemap 제출·URL 검사·색인 확인.

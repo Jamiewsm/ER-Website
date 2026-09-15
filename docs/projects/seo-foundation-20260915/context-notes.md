@@ -16,3 +16,6 @@
 - Naver 로그인 필요 상태, Daum은 미등록 및 필수 동의 화면까지 확인. 사용자 응답 전 동의·개인정보 입력을 진행하지 않는다.
 - 사이트 사역 범위를 고정 문구로 확인하는 기존 테스트가 최초 메타 설명 변경에 실패했다. 개인·가정·교회·사역 공동체를 명시하는 설명으로 수정해 기존 계약을 유지했다.
 - 전체 테스트의 교육 DB 모듈 누락은 기존 lockfile의 의존성 설치로 해소했다. 새 라이브러리 추가나 테스트 비활성화는 없다.
+
+- 구현 커밋 b8cbb23, PR https://github.com/Jamiewsm/ER-Website/pull/136. site-seo, test-runtime, live-deploy-markers, label 검사 통과. Cursor 메인 자동 검토는 대기 상태이며 merge·production 완료로 기록하지 않는다.
+- QA 임시 브라우저와 로컬 Wrangler 서버 종료. 화면 캡처는 작업별 visualization 디렉터리로 옮겨 배포 번들에 포함되지 않게 했다.
