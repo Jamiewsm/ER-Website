@@ -147,7 +147,8 @@ function showScholarshipTransfer(event) {
         <ol class="mt-5 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-er-body">
             <li>${region === 'US' ? '이용하시는 미국 은행 앱의 Zelle 메뉴를 엽니다.' : '이용하시는 은행 앱에서 계좌이체를 엽니다.'}</li>
             <li>위 입금처를 입력하고, 표시되는 수취인 이름을 확인합니다.</li>
-            <li>${formatScholarshipAmount(amount, region)}을 송금합니다. 메모를 남길 수 있다면 ‘ER 장학’을 적어 주세요.</li>
+            <li>${region === 'US' ? 'Zelle 송금 메모' : '받는 분 통장 표시 또는 송금 메모'}에 <strong>반드시 ‘후원’을 포함</strong>해 주세요. 예: 후원 홍길동</li>
+            <li>${formatScholarshipAmount(amount, region)}을 송금합니다.</li>
         </ol>
         ${frequency === 'monthly' ? `<p class="mt-4 text-sm leading-relaxed text-er-body">${scholarshipFrequencyNote()}</p>` : ''}
         <p class="mt-4 text-xs leading-relaxed text-er-muted break-keep">${escapeHtml(config.receiptNotice)}</p>

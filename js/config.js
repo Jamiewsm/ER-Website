@@ -44,7 +44,7 @@ window.ER_SCHOLARSHIP_SUPPORT = {
   inquiriesEnabled: false, // Enable after the scholarship receipt email is deployed and verified.
   acceptingContributions: false,
   recipientName: '',
-  receiptNotice: '',
-  bank: { confirmed: false, name: '', number: '', holder: '' },
-  zelle: { confirmed: false, address: '', holder: '' }
+  receiptNotice: '입금 확인 후 요청하신 분께 후원금 수령 확인서를 보내드립니다. 이 확인서는 소득·세액공제용 기부금영수증이 아닙니다.',
+  bank: { confirmed: false, name: '국민은행', number: '', holder: '' },
+  zelle: { confirmed: false, address: '214-966-5153', holder: '' }
 };
