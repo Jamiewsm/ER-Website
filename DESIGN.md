@@ -34,6 +34,7 @@
 | `er-greenDark` | `#566647` | 액센트 hover/active |
 | `er-greenDeep` | `#30451F` | 드문 최고 강조 (히어로 키워드 등) |
 | `er-greenTint` | `#F0EDE4` | 태그·배지·hover 틴트 배경 — 웜 크림 (쿨 민트 금지) |
+| `er-heart` | `#B4434D` | 장학 후원 메뉴의 작은 하트 아이콘 전용 |
 | `er-terra` | `#B06149` | 유일한 웜 액센트 — 검사 결과 하이라이트, 감정 강조 전용 |
 | `er-terraDark` | `#8F4634` | 테라코타 hover/진한 용도 |
 
@@ -253,6 +254,8 @@ CTA: 콘텐츠 뒤 중앙 하단 CTA 1개 (er-green 또는 er-dark 밴드)
 ---
 
 ## Decisions Log
+
+2026-09-20: 사용자 요청에 따라 장학 후원 메뉴에 작은 붉은 하트를 허용한다. `er-heart`는 하트 아이콘에만 사용하며 CTA 배경은 기존 `er-green`을 유지한다.
 
 | Date | Decision | Rationale |
 |------|----------|-----------|

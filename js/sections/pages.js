@@ -10,7 +10,7 @@ function renderPrivacy() {
                 </div>
                 <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
                     <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">ER은 신청서, 로그인, 문의 과정에서 이름, 연락처, 이메일, 제출 메시지와 같은 최소한의 정보를 받습니다.</div>
-                    <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">받은 정보는 상담 안내, 협력 응답, 운영상 필요한 계정 확인 목적에만 사용합니다.</div>
+                    <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">받은 정보는 상담 안내, 협력 응답, 장학 후원 문의 응대와 입금 확인, 운영상 필요한 계정 확인 목적에만 사용합니다.</div>
                     <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">법적 보관 의무가 없는 한, 운영 목적이 끝난 정보는 정리 대상이 됩니다. 더 자세한 정책은 추후 별도 문서로 정리할 예정입니다.</div>
                 </div>
             </div>

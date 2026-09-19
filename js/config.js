@@ -37,3 +37,14 @@ window.ER_EXPERT_COHORT_MENTORING = {
   keyYear: 2026,
 };
 window.TURNSTILE_SITE_KEY = "0x4AAAAAACmAr1w7-5BNiCHZ";
+
+// Scholarship transfer instructions. Enable only after the receiving arrangement is confirmed.
+// Public recipient details only: never put credentials or donor data in this config.
+window.ER_SCHOLARSHIP_SUPPORT = {
+  inquiriesEnabled: false, // Enable after the scholarship receipt email is deployed and verified.
+  acceptingContributions: false,
+  recipientName: '',
+  receiptNotice: '',
+  bank: { confirmed: false, name: '', number: '', holder: '' },
+  zelle: { confirmed: false, address: '', holder: '' }
+};
