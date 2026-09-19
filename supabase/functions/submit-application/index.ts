@@ -4,6 +4,7 @@ import { corsHeaders } from '../_shared/cors.ts';
 import {
   adminApplicationNoticeHtml,
   applicantReceivedHtml,
+  scholarshipInquiryReceivedHtml,
   programApplicationConfirmationHtml,
 } from '../_shared/email-templates.ts';
 import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
@@ -120,6 +121,10 @@ Deno.serve(async (req) => {
 
     const programKey = inferProgramKey(payload);
     const applySource = parseApplySource(source);
+    // This identifies an inquiry, never a verified contribution or course registration.
+    const isScholarshipInquiry = programKey === 'general'
+      && ['support:scholarship', 'support:scholarship-transfer'].includes(source);
+    const isScholarshipTransferRequest = isScholarshipInquiry && source === 'support:scholarship-transfer';
     const isBasicCourse = programKey === BASIC_COURSE_PROGRAM_KEY;
     let growthCourse: { id: string; title: string } | null = null;
     if (isGrowthCourseProgram(programKey)) {
@@ -213,7 +218,7 @@ Deno.serve(async (req) => {
         from: fromEmail,
         to: notifyEmail,
         replyTo: applicantEmail || undefined,
-        subject: `[ER 신청] ${label} — ${name}`,
+        subject: `${isScholarshipInquiry ? '[ER 장학 후원]' : '[ER 신청]'} ${label} — ${name}`,
         html: adminApplicationNoticeHtml({
           name,
           contact,
@@ -251,7 +256,8 @@ Deno.serve(async (req) => {
           from: fromEmail,
           to: applicantEmail,
           replyTo,
-          subject: pricing ? `[ER] ${label} 신청 접수 및 등록 안내` : `[ER] ${label} 신청 접수 확인`,
+          subject: isScholarshipInquiry ? `[ER] ${isScholarshipTransferRequest ? '장학 후원 입금 확인 요청' : '장학 후원 문의'} 접수`
+            : pricing ? `[ER] ${label} 신청 접수 및 등록 안내` : `[ER] ${label} 신청 접수 확인`,
           idempotencyKey: `application-confirmation/${row.id}`,
           html: pricing
             ? programApplicationConfirmationHtml({
@@ -266,7 +272,9 @@ Deno.serve(async (req) => {
                 ...(growthCourse ? { memoHint: `ER Growth - ${name}` } : {}),
               },
             })
-            : applicantReceivedHtml({ name, programLabel: label }),
+            : isScholarshipInquiry
+              ? scholarshipInquiryReceivedHtml({ name, transferRequest: isScholarshipTransferRequest })
+              : applicantReceivedHtml({ name, programLabel: label }),
         });
         if (!receiptResult.skipped) {
           const { error: receiptRecordError } = await supabase

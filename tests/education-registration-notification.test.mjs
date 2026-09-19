@@ -505,3 +505,43 @@ test('최초 접수 메일의 응답이 불확실해도 접수를 반복하도�
   assert.equal((await retry.invoke()).status, 409);
   assert.equal(retry.calls.emails.length, 0);
 });
+
+for (const transferRequest of [false, true]) {
+  test(`장학 후원 ${transferRequest ? '입금 확인 요청' : '문의'}는 일반 접수로 저장하고 후원 전용 메일을 보낸다`, async () => {
+    const source = transferRequest ? 'support:scholarship-transfer' : 'support:scholarship';
+    const message = transferRequest ? '처리 구분: 입금 확인 요청 (미확인·후원자 입력)\n송금액: $30 USD' : '가상 후원 문의';
+    const h = loadIntake({
+      name: '<b>가상 문의자</b>', program_key: undefined, category: transferRequest ? '장학 후원 입금 확인 요청' : '장학 후원 문의',
+      source, message, payment_region: undefined, payment_preference: undefined,
+    });
+    assert.equal((await h.invoke()).status, 200);
+    const row = h.calls.inserts[0];
+    assert.equal(row.program_key, 'general');
+    assert.equal(row.status, 'received');
+    assert.equal(row.cohort_key, null);
+    assert.equal(row.payment_currency, null);
+    assert.equal(row.payment_amount_krw, null);
+    assert.equal(row.payment_amount_usd, null);
+    assert.equal(row.source, source);
+    assert.equal(row.message, message);
+    assert.equal(h.calls.emails.length, 2);
+    const [admin, receipt] = h.calls.emails;
+    assert.match(admin.subject, /장학 후원/);
+    assert.ok(admin.html.includes(message));
+    assert.match(receipt.html, /&lt;b&gt;가상 문의자&lt;\/b&gt;/);
+    assert.match(receipt.html, /입금 확인서나 기부금영수증이 아닙니다/);
+    assert.doesNotMatch(receipt.html, /24시간|등록·결제|입금이 확인되었습니다|수강료/);
+    assert.equal(receipt.html.includes('실제 입금 내역을 확인한 뒤'), transferRequest);
+    assert.ok(h.calls.updates[0].receipt_email_sent_at);
+  });
+}
+
+test('후원 전용 메일은 정확한 후원 source와 일반 문의 조합에서만 선택된다', async () => {
+  const general = loadIntake({ program_key: undefined, category: '일반 문의', source: 'support:other' });
+  assert.equal((await general.invoke()).status, 200);
+  assert.match(general.calls.emails[1].html, /등록·결제 안내/);
+  const course = loadIntake({ source: 'support:scholarship' });
+  assert.equal((await course.invoke()).status, 200);
+  assert.match(course.calls.emails[1].html, /등록|기본과정/);
+  assert.doesNotMatch(course.calls.emails[1].html, /장학 후원 문의를 받았습니다/);
+});
