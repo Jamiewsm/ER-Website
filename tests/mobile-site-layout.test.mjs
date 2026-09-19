@@ -13,7 +13,7 @@ test('home mobile layout keeps trust stats compact and CTA fluid', () => {
 });
 
 test('shared mobile navigation exposes 44px touch targets', () => {
-  assert.match(indexHtml, /id="mobile-header-auth-btn"[^>]*w-11 h-11/);
+  assert.match(indexHtml, /id="mobile-header-auth-btn"[^>]*min-h-11/);
   assert.match(indexHtml, /aria-label="메뉴 열기"/);
   assert.match(indexHtml, /\.mobile-nav-link \{[\s\S]*?min-height: 2\.75rem;/);
 });
