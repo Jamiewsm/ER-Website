@@ -201,6 +201,18 @@ test('email escapes student/course content and omits unknown first class dates',
   assert.match(h.calls.emails[0].body.text, /내 교실에서 일정을 확인/);
 });
 
+test('welcome explains the pending report deadline without inventing a date', async () => {
+  const h = harness({ payload: { starts_at: null, due_at: null } });
+  assert.equal((await h.invoke()).status, 200);
+  assert.equal(h.calls.emails.length, 1);
+  for (const content of [h.calls.emails[0].body.html, h.calls.emails[0].body.text]) {
+    assert.match(content, /자기관찰보고서 제출 기한/);
+    assert.match(content, /제출 기한은 추후 안내/);
+    assert.match(content, /강의계획안/);
+    assert.doesNotMatch(content, /Invalid Date|\d{4}년\s*\d+월\s*\d+일|한국 시간/);
+  }
+});
+
 test('scheduler defaults to read-only dry run and emits aggregate counts only', async () => {
   const h = harness({ reminders: true, environment: { RESEND_API_KEY: '' } });
   const response = await h.invoke();

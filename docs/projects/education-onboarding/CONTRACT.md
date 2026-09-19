@@ -12,9 +12,10 @@
 - preparation 파일만 제출은 실제 storage.objects bucket edu-files의 submission/{submission.id}/... 객체가 존재해야 한다. 일반 과제의 기존 필수 답변 검사는 유지한다.
 
 ## 이메일
-- POST education-onboarding-email {application_id}. 수석 JWT를 서버에서 검사. 결제/등록/대상 반과 공개된 준비 자료/마감일을 검증한 뒤 영속 발송 선점. 성공 email.id 또는 already_sent, 불확실 시409와 운영 확인 안내.
+- POST education-onboarding-email {application_id}. 수석 JWT를 서버에서 검사. 결제/등록/대상 반과 공개된 준비 자료를 검증한 뒤 영속 발송 선점. 성공 email.id 또는 already_sent, 불확실 시409와 운영 확인 안내.
 - 메일에는 등록 과정·반·확정된 일정·제출기한·https://coach.er-coaching.com/education.html 링크·처음 가입/기존 로그인 안내만 담는다. 자동 Auth 계정 생성은 하지 않는다.
 - POST education-onboarding-reminders {dry_run:true|false}. 기본dryrun, 서버 전용 X-Education-Reminder-Secret, 서버에서 대상자 선택. 임의 수신자 지정 불가.
+- 제출 기한 미정의 공개 준비 자료도 등록 안내에 사용할 수 있다. 메일·포털에는 추후 안내로 표시하며, 알림 활성화에는 확정 기한이 필요하다.
 - 마감3일 전/전날 알림은 최대2회, 환영 메일24시간 이후와 마지막 알림24시간 이후에만. 늦은등록에 과거단계 몰아 보내지 않음. 실제 제출/외부접수/취소/등록해제/기수종료는 발송 직전에 검사.
 - GitHub Actions UTC00 일일 작업. EDUCATION_REMINDERS_ENABLED=true일 때만 활성, secret 없으면 발송하지 않음. workflow_dispatch 기본dryrun. 운영에서는 backend migration/함수/자료와 포털을 먼저 적용하고 검증한 뒤 별도 활성화한다.
 
