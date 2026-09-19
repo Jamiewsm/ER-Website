@@ -626,6 +626,7 @@ function renderApply(payload = null) {
     const requestedTrack = payload?.track || (fromTest ? 'paid' : 'paid');
     const track = selectedFocus?.track || requestedTrack;
     const isSupportTrack = track === 'support';
+    if (isSupportTrack) return renderScholarshipInquiry(payload);
     const isMinistryTrack = track === 'ministry';
     const isOrgTrack = track === 'org';
     const isParentingApplyContext = focus === 'parenting' || fromChildTypeTest;
@@ -810,6 +811,7 @@ function renderApply(payload = null) {
 }
 
 function renderThankYou(payload = null) {
+    if (payload?.scholarshipInquiry) return renderScholarshipInquiryThankYou(payload);
     if (isParentingWorkshopFocus(payload?.focus)) {
         return `
             <div class="min-h-screen bg-er-base px-4 py-14">

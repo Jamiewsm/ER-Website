@@ -89,6 +89,7 @@
                             greenDark: '#566647', /* 액센트 hover */
                             greenDeep: '#30451F', /* 최고 강조 */
                             greenTint: '#F0EDE4', /* 태그·배지 배경 — 웜 크림 틴트 */
+                            heart: '#B4434D',     /* 장학 후원 하트 전용 */
                             terra: '#B06149',     /* 웜 액센트: 검사 결과 하이라이트 전용 */
                             terraDark: '#8F4634',
                             /* 폐기 예정 별칭 — 구 브라운 토큰명을 그린 값으로 재매핑. 신규 코드 사용 금지 */
@@ -452,6 +453,8 @@
                         </div>
                     </div>
 
+                    <a href="#support" class="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-semibold text-er-inkSoft hover:text-er-green focus-visible:ring-2 focus-visible:ring-er-green"><i class="fas fa-heart text-er-heart" aria-hidden="true"></i> 후원하기</a>
+
                     <div class="h-4 w-px bg-gray-200 mx-2"></div>
 
                     <button onclick="renderSection('apply', { track: 'paid' })" class="bg-er-green text-white hover:bg-er-greenDark px-6 py-2.5 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:scale-95">
@@ -537,6 +540,7 @@
                         <button type="button" onclick="renderSection('community')" class="mobile-nav-link">회복 이야기</button>
                         <button type="button" onclick="renderSection('notices')" class="mobile-nav-link">공지사항</button>
                     </div>
+                    <a href="#support" onclick="renderSection('support'); return false;" class="mobile-nav-link gap-2"><i class="fas fa-heart text-er-heart" aria-hidden="true"></i> 후원하기</a>
                 </nav>
             </div>
         </div>
@@ -723,7 +727,7 @@
                     <button type="button" onclick="renderSection('coach_training')" class="hover:text-er-dark transition-colors">전문가 과정</button>
                     <button type="button" onclick="renderSection('community')" class="hover:text-er-dark transition-colors">회복 이야기</button>
                     <button type="button" onclick="renderSection('coaches')" class="hover:text-er-dark transition-colors">코치진 소개</button>
-                    <button type="button" onclick="renderSection('support')" class="hover:text-er-dark transition-colors">사역지원</button>
+                    <button type="button" onclick="renderSection('support')" class="hover:text-er-dark transition-colors"><i class="fas fa-heart text-er-heart" aria-hidden="true"></i> 후원하기</button>
                     <button type="button" onclick="renderSection('notices')" class="hover:text-er-dark transition-colors">공지사항</button>
                     <button type="button" onclick="renderSection('privacy')" class="hover:text-er-dark transition-colors">Privacy</button>
                     <button type="button" onclick="renderSection('terms')" class="hover:text-er-dark transition-colors">Terms</button>
@@ -734,7 +738,7 @@
     </footer>
 
     <!-- Config & foundation -->
-    <script src="js/config.js?v=20260618a"></script>
+    <script src="js/config.js?v=20260920-scholarship"></script>
     <script src="js/supabase-client.js"></script>
     <script src="js/auth.js?v=20260914a"></script>
     <script src="js/api.js?v=20260904a"></script>
@@ -759,13 +763,13 @@
     <script src="js/sections/coaches.js?v=20260827b"></script>
     <script src="js/sections/coach-training.js?v=20260827b"></script>
     <script src="js/sections/community.js?v=20260801a"></script>
-    <script src="js/sections/support.js?v=20260524a"></script>
-    <script src="js/sections/apply.js?v=20260915a"></script>
+    <script src="js/sections/support.js?v=20260920-scholarship"></script>
+    <script src="js/sections/apply.js?v=20260920-scholarship"></script>
     <script src="js/sections/notices.js?v=20260525f"></script>
     <script src="js/sections/types-guide.js?v=20260621a"></script>
     <script src="js/sections/test-embed.js?v=20260611a"></script>
     <script src="js/sections/account.js?v=20260914a"></script>
-    <script src="js/sections/pages.js?v=20260525f"></script>
+    <script src="js/sections/pages.js?v=20260920-scholarship"></script>
     <script src="js/coach/views.js?v=20260915a"></script>
     <script src="js/coach/applications.js?v=20260915a"></script>
     <script src="js/coach/tasks.js?v=20260406a"></script>
@@ -774,7 +778,7 @@
     <script src="js/coach/mentoring-hub.js"></script>
 
     <!-- Core routing & init -->
-    <script src="js/app-core.js?v=20260915c"></script>
+    <script src="js/app-core.js?v=20260920-scholarship"></script>
     <script src="js/app-init.js?v=20260914a"></script>
     <script src="js/coach-portal.js?v=20260914a"></script>
 </body>
