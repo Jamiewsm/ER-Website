@@ -458,13 +458,13 @@
                         상담 신청
                     </button>
                     <a id="desktop-auth-btn" href="https://coach.er-coaching.com/education.html" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-er-sand px-4 text-sm font-semibold text-er-dark transition-colors hover:bg-er-greenTint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-er-green focus-visible:ring-offset-2">
-                        포털 입장 <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                        ER 교육포털 로그인 <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
                     </a>
                 </div>
                 
                 <div class="parenting-hide-on-focused xl:hidden flex items-center gap-1.5 sm:gap-3">
                     <button onclick="renderSection('apply', { track: 'paid' })" aria-label="상담 신청" class="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-er-green px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-er-greenDark sm:px-4">상담<span class="hidden sm:inline"> 신청</span></button>
-                    <a id="mobile-header-auth-btn" href="https://coach.er-coaching.com/education.html" class="shrink-0 w-11 h-11 rounded-full bg-er-greenTint flex items-center justify-center text-xs font-bold text-er-dark hover:bg-er-sand transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-er-green focus-visible:ring-offset-2" aria-label="포털 입장">포털</a>
+                    <a id="mobile-header-auth-btn" href="https://coach.er-coaching.com/education.html" class="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-er-greenTint px-3 text-[11px] font-bold leading-tight text-er-dark transition-colors hover:bg-er-sand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-er-green focus-visible:ring-offset-2 sm:px-3.5 sm:text-xs" aria-label="ER 교육포털 로그인">교육 로그인</a>
                     <button onclick="toggleMobileMenu()" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-er-greenTint hover:text-er-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-er-green focus-visible:ring-offset-2" aria-label="메뉴 열기">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
@@ -475,7 +475,7 @@
         <div id="mobile-menu-backdrop" class="hidden xl:hidden" aria-hidden="true" onclick="closeMobileMenu()"></div>
         <div id="mobile-menu" class="hidden xl:hidden fixed w-full left-0 z-[48] top-16 md:top-20 max-h-[calc(100dvh-4rem)] md:max-h-[calc(100dvh-5rem)] overflow-y-auto overscroll-y-contain border-b border-er-accentLight shadow-xl">
             <div class="px-4 py-4 space-y-1">
-                <a id="mobile-auth-btn" href="https://coach.er-coaching.com/education.html" class="flex min-h-11 w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-semibold text-er-dark transition-colors hover:bg-er-accentLight/30">포털 입장 <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i></a>
+                <a id="mobile-auth-btn" href="https://coach.er-coaching.com/education.html" class="flex min-h-11 w-full items-center justify-between rounded-xl px-4 py-2.5 text-sm font-semibold text-er-dark transition-colors hover:bg-er-accentLight/30">ER 교육포털 로그인 <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i></a>
                 <button onclick="renderSection('apply', { track: 'paid' })" class="block w-full text-center px-4 py-3 mt-1 text-sm font-bold bg-er-green text-white rounded-xl shadow-sm hover:bg-er-greenDark transition-colors">상담 신청</button>
                 <div class="h-px bg-gray-100 my-2"></div>
 
@@ -738,7 +738,7 @@
     <script src="js/supabase-client.js"></script>
     <script src="js/auth.js?v=20260914a"></script>
     <script src="js/api.js?v=20260904a"></script>
-    <script src="js/strings.js?v=20260912a"></script>
+    <script src="js/strings.js?v=20260919-portal-login"></script>
 
     <!-- App state & utilities -->
     <script src="js/app-state.js?v=20260801a"></script>
