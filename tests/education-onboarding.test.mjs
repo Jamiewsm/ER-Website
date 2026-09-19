@@ -13,7 +13,7 @@ async function fixture() {
     ADD COLUMN payment_region text, ADD COLUMN payment_currency text, ADD COLUMN payment_amount_usd numeric, ADD COLUMN payment_amount_krw bigint;
     CREATE FUNCTION require_head_coach() RETURNS void LANGUAGE plpgsql AS $$BEGIN IF NOT edu_is_head() THEN RAISE EXCEPTION 'head_coach_required'; END IF; END$$;
     GRANT USAGE ON SCHEMA public TO service_role;`);
-  for (const file of ['20260908091000_education_registration_capacity.sql','20260915003000_education_onboarding.sql','20260915003100_education_preparation_submission.sql']) {
+  for (const file of ['20260908091000_education_registration_capacity.sql','20260915003000_education_onboarding.sql','20260915003100_education_preparation_submission.sql','20260919001000_education_welcome_pending_deadline.sql']) {
     const sql=await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8');
     try { await db.exec(sql); } catch(error) { throw new Error(file+': '+error.message+' at '+error.position+' '+error.where+' '+sql.slice(Number(error.position)-100,Number(error.position)+100),{cause:error}); }
   }

@@ -12,7 +12,7 @@ export type OnboardingDelivery = {
   class_title?: string;
   schedule_note?: string;
   starts_at?: string;
-  due_at?: string;
+  due_at?: string | null;
 };
 
 function escapeOnboardingHtml(value: unknown): string {
@@ -28,7 +28,7 @@ export function educationPortalUrl(value: string): string {
   return url.href;
 }
 
-function onboardingDate(value?: string): string {
+function onboardingDate(value?: string | null): string {
   if (!value) return '';
   const date = new Date(value);
   if (!Number.isFinite(date.getTime())) throw new Error('invalid_onboarding_date');
@@ -49,7 +49,7 @@ export function buildEducationOnboardingEmail(delivery: OnboardingDelivery, kind
     ['과정', delivery.course_title || 'ER 교육과정'],
     ['기수 · 반', [delivery.cohort_title, delivery.class_title].filter(Boolean).join(' · ')],
     ...(welcome ? [['첫 수업', onboardingDate(delivery.starts_at) || '내 교실에서 일정을 확인해 주세요.']] : []),
-    ['자기관찰보고서 제출 기한', onboardingDate(delivery.due_at)],
+    ['자기관찰보고서 제출 기한', onboardingDate(delivery.due_at) || (welcome ? '제출 기한은 추후 안내' : '')],
   ].filter(([, value]) => value);
   const accountGuide = `처음 참여하신다면 신청 이메일(${delivery.recipient})로 회원가입한 뒤 인증 메일을 확인해 주세요. 기존 계정이 있다면 같은 이메일의 계정으로 로그인해 주세요. 이메일 인증 후 등록된 반이 내 교실에 연결됩니다.`;
   const guide = welcome
