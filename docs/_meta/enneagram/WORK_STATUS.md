@@ -11,7 +11,7 @@ retrieval_tags:
   - lock_state
   - project_complete
 current_phase: 7
-current_task: "word-narrative-v2 Korean review and choice-only assessment verified; PR handoff pending"
+current_task: "word-narrative-v2 Korean review and choice-only assessment verified; PR #154 awaiting Cursor merge"
 checkpoint_plan: []
 checkpoint: null
 paused: true

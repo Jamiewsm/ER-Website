@@ -7,4 +7,4 @@
 - [x] 주관식 입력·복원·렌더·전송 제거.
 - [x] 회귀 테스트와 전체 테스트.
 - [x] 브라우저 검증.
-- [ ] 커밋·PR 인계.
+- [x] 커밋·PR 인계. [PR #154](https://github.com/Jamiewsm/ER-Website/pull/154).
