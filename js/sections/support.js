@@ -23,7 +23,7 @@ function renderScholarshipGivingPanel() {
         </dl>
         <p class="mt-7 text-sm leading-relaxed text-er-body">송금 메모에 <strong>‘후원’</strong>을 꼭 적어 주세요.</p>
         <p class="mt-4 text-xs leading-relaxed text-er-muted break-keep">${escapeHtml(receiptNotice)}</p>
-        <a href="mailto:hello@er-coaching.com?subject=ER%20장학%20후원%20문의" class="mt-5 inline-flex min-h-11 items-center text-sm font-bold text-er-green underline underline-offset-4">후원 문의: hello@er-coaching.com</a>
+        <a href="mailto:hello@er-coaching.com?subject=ER%20장학%20후원%20수령%20확인서%20요청" class="mt-5 inline-flex min-h-11 items-center text-sm font-bold text-er-green underline underline-offset-4">수령 확인서·후원 문의: hello@er-coaching.com</a>
     </section>`;
 }
 
@@ -98,7 +98,7 @@ function renderScholarshipInquiry() {
     return `<div class="min-h-screen bg-er-base px-6 py-16"><div class="mx-auto max-w-xl">
         <h1 class="font-display text-3xl font-extrabold text-er-ink">장학 후원 문의</h1>
         <p class="mt-5 leading-relaxed text-er-body break-keep">후원에 관해 궁금한 내용은 이메일로 연락해 주세요.</p>
-        <a href="mailto:hello@er-coaching.com?subject=ER%20장학%20후원%20문의" class="${scholarshipButtonStyle()} mt-6">이메일로 문의하기</a>
+        <a href="mailto:hello@er-coaching.com?subject=ER%20장학%20후원%20수령%20확인서%20요청" class="${scholarshipButtonStyle()} mt-6">이메일로 문의·수령 확인서 요청</a>
         <p class="mt-3 break-all text-sm text-er-muted">hello@er-coaching.com</p>
         <a href="#support" class="mt-6 inline-flex min-h-11 items-center text-sm font-bold text-er-green underline underline-offset-4">후원 계좌 보기</a>
     </div></div>`;
