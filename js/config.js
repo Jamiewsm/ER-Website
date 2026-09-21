@@ -8,6 +8,8 @@ window.SUPABASE_CONFIG = {
 };
 window.COACH_APP_URL = "https://coach.er-coaching.com";
 window.ER_SOCIAL = {
+  // 개설 후 확인한 공식 채널 주소. 미설정 시 문의 링크를 숨긴다.
+  kakaoChannelURL: "https://pf.kakao.com/_CzwaX",
   // 메인 푸터·문의에는 두 계정 모두 노출. 맥락별 기본값은 아래 필드 사용.
   // @er_parenting — 양육 (구독자 더 많음, 활성)
   // @er_official_Korea — 코칭·사역 공식 (신규, 방향성 정리 중)
