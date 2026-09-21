@@ -1,3 +1,4 @@
+// 단어 선별과 서사형 변별을 연결하고 프리미엄 검사 결과를 표시한다.
 const params = new URLSearchParams(window.location.search || '');
 const pageLang = params.get('lang') === 'en' ? 'en' : 'ko';
 document.documentElement.lang = pageLang === 'en' ? 'en' : 'ko';
@@ -5,26 +6,26 @@ document.documentElement.lang = pageLang === 'en' ? 'en' : 'ko';
 const TEST_UI = {
   ko: {
     loadingKicker: '진단 페이지 준비 중',
-    title: '적응형 에니어그램 심층 진단',
-    subtitle: '먼저 확실히 아닌 유형을 걸러낸 뒤, 남은 후보의 핵심 동기를 좁혀 갑니다.',
+    title: '나를 움직이는 마음의 이유',
+    subtitle: '나를 닮은 단어에서 시작해, 삶의 이야기 속에서 반복되는 동기를 찾아갑니다.',
     disclaimer: '* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.',
-    elimIntroTitle: '0단계: 확실히 아닌 유형 걸러내기',
-    elimIntroDesc: '아래 아홉 가지 중 “이건 정말 내가 아니야”라고 느껴지는 유형만 표시해 주세요. 확신이 없으면 건드리지 않아도 됩니다. 최대 6개까지 제외할 수 있습니다.',
-    elimHint: '선택 = 확실히 아님 · 남은 유형만 다음 단계에서 집중적으로 비교합니다.',
-    elimSubmit: '이어서 질문 시작',
+    elimIntroTitle: '나를 닮은 단어',
+    elimIntroDesc: '바라는 모습보다 평소의 나를 떠올려 보세요. 단어가 나와 닮았다면 예, 판단이 어렵다면 모르겠다, 다르다면 아니요를 선택해 주세요.',
+    elimHint: '정답은 없습니다. 단어는 비교할 후보를 찾는 데만 사용합니다.',
+    elimSubmit: '상황 질문 시작',
     elimTooMany: '확실히 아닌 유형은 최대 6개까지 고를 수 있습니다. 적어도 3개 후보는 남겨 주세요.',
     elimMark: '확실히 아님',
-    phase1IntroTitle: '1부: 일상적 자동반응 패턴',
-    phase1IntroDesc: '불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.',
-    phase1Submit: '2단계로 이동',
-    phase2IntroTitle: '1차 분석 완료',
-    phase2IntroDesc: '후보 유형 경합을 줄이기 위한 심층 질문입니다.',
-    phase2Submit: '결과 보기',
-    phase3IntroTitle: '마지막 정밀 감별',
-    phase3IntroDesc: '상위 2개 유형이 모두 높게 경합 중입니다. 최종 확정을 위해 아래 문항 1개만 선택해 주세요.',
-    phase3Submit: '최종 결과 보기',
-    phase4IntroTitle: '최종 하위유형/날개 판별',
-    phase4IntroDesc: '확정된 기본 유형에 맞춰 하위유형과 날개를 한 번 더 정밀하게 확인합니다.',
+    phase1IntroTitle: '이야기로 후보 좁히기',
+    phase1IntroDesc: '단어에서 여러 가능성이 함께 남았습니다. 반복되는 내적 동기로 비교할 후보를 골라 봅니다.',
+    phase1Submit: '선택한 이야기 비교하기',
+    phase2IntroTitle: '같은 행동, 다른 마음',
+    phase2IntroDesc: '최근 실제 경험을 떠올리며 더 자주 반복된 마음을 골라 주세요. 어느 쪽도 닮지 않았다면 둘 다 아니다를 선택해도 됩니다.',
+    phase2Submit: '다음 단계로',
+    phase3IntroTitle: '가까운 두 마음 더 살펴보기',
+    phase3IntroDesc: '두 패턴이 비슷하게 나타났습니다. 나를 더 자주 움직인 이유를 한 번 더 살펴봅니다.',
+    phase3Submit: '다음 단계로',
+    phase4IntroTitle: '내 패턴의 세부 결',
+    phase4IntroDesc: '반복되는 행동을 통해 하위유형과 날개를 살펴봅니다. 확신하기 어렵다면 모르겠다고 답해도 됩니다.',
     phase4Submit: '최종 결과 보기',
     requiredAll: '모든 문항에 응답해 주세요.',
     requiredOne: '문항을 선택해 주세요.',
@@ -49,26 +50,26 @@ const TEST_UI = {
   },
   en: {
     loadingKicker: 'Preparing assessment page',
-    title: 'Adaptive Enneagram Assessment',
-    subtitle: 'First eliminate types that are clearly not you, then narrow the remaining candidates by core motivation.',
+    title: 'What moves you from within',
+    subtitle: 'Start with familiar words, then explore the motivations that repeat in your life.',
     disclaimer: '* This assessment is for self-exploration and does not replace medical or clinical diagnosis.',
-    elimIntroTitle: 'Step 0: Remove types that are clearly not you',
-    elimIntroDesc: 'Mark only the types you are sure do not fit. Leave uncertain ones unmarked. You can eliminate up to 6 types.',
-    elimHint: 'Selected = clearly not me · Remaining types are compared more carefully next.',
-    elimSubmit: 'Continue to questions',
+    elimIntroTitle: 'Words that sound like me',
+    elimIntroDesc: 'Think of your everyday self. Choose Yes if the word fits, Not sure if it is unclear, or No if it does not.',
+    elimHint: 'There are no right answers. Words only select the possibilities to explore next.',
+    elimSubmit: 'Explore the stories',
     elimTooMany: 'You can mark at most 6 types as clearly not you. Please keep at least 3 candidates.',
     elimMark: 'Clearly not me',
-    phase1IntroTitle: 'Part 1: Everyday automatic response patterns',
-    phase1IntroDesc: 'Please rate how your automatic response tends to show up under pressure or uncertainty.',
-    phase1Submit: 'Continue to Phase 2',
-    phase2IntroTitle: 'Phase 1 analysis complete',
-    phase2IntroDesc: 'These follow-up questions help separate close candidate types.',
-    phase2Submit: 'View results',
-    phase3IntroTitle: 'Final precision check',
-    phase3IntroDesc: 'Your top two types are very close. Please answer one final question.',
-    phase3Submit: 'See final result',
-    phase4IntroTitle: 'Final subtype and wing check',
-    phase4IntroDesc: 'Now that the core type is resolved, choose the subtype and wing pattern that fits most closely.',
+    phase1IntroTitle: 'Narrow the possibilities through stories',
+    phase1IntroDesc: 'Your word responses leave several possibilities open. Choose the recurring motivations to compare.',
+    phase1Submit: 'Compare these stories',
+    phase2IntroTitle: 'Similar actions, different motivations',
+    phase2IntroDesc: 'Recall a real experience and choose the inner response that repeats more often. It is fine to choose neither.',
+    phase2Submit: 'Continue',
+    phase3IntroTitle: 'Explore two close patterns',
+    phase3IntroDesc: 'Two patterns remain close. Consider once more what tends to drive your response.',
+    phase3Submit: 'Continue',
+    phase4IntroTitle: 'The finer details of your pattern',
+    phase4IntroDesc: 'Explore subtype and wing through repeated behavior. Choose Not sure when no option fits.',
     phase4Submit: 'See final result',
     requiredAll: 'Please answer every question before continuing.',
     requiredOne: 'Please select one option to continue.',
@@ -461,7 +462,13 @@ const questionTextEn = {
   tb_8_9_2_b: "B. My energy drops and I get tired, and I want to cover it over and move past it quickly.",
   tb_8_9_3: "Which state is harder for you to tolerate?",
   tb_8_9_3_a: "A. Looking easy to push around and losing initiative to other people.",
-  tb_8_9_3_b: "B. Loud friction and tension continuing so my mind cannot stay settled."
+  tb_8_9_3_b: "B. Loud friction and tension continuing so my mind cannot stay settled.",
+  tb_2_9_1: 'When you adjust to someone or give way, which inner concern is closer?',
+  tb_2_9_1_a: 'I want to remain needed and significant in the relationship.',
+  tb_2_9_1_b: 'I want to keep friction from growing and preserve a comfortable atmosphere.',
+  tb_2_9_2: 'When rejection or distance appears, which feels more unsettling first?',
+  tb_2_9_2_a: 'Feeling that the other person no longer particularly needs me.',
+  tb_2_9_2_b: 'Uncomfortable tension lasting in the relationship.'
 };
 
 function getQuestionText(item) {
@@ -563,6 +570,15 @@ const TEST_CONFIG = {
 };
 
 const testState = {
+  assessmentVersion: 'word-narrative-v1',
+  stage: 'words',
+  wordResponses: {},
+  narrativeResponses: {},
+  candidateTypes: [],
+  screening: null,
+  narrativeMeta: null,
+  pagerPositions: {},
+  reflection: '',
   eliminatedTypes: [],
   eliminationResurrected: [],
   phase1Responses: {},
@@ -611,6 +627,49 @@ const testState = {
     t7wing: {enabled:false,weight:0,margin:null}
   }
 };
+
+const ASSESSMENT_SESSION_KEY = 'er_word_narrative_v1';
+const WORD_SCREENING_BANK = [
+  { type: 1, ko: '윤리적인|일관성 있는|양심적인|완벽한|비판적인|규범적인|합리적인|정확한|설교적인|간섭하는|공정한|원칙적인|도덕적인', en: 'Ethical|Consistent|Conscientious|Perfect|Critical|Rule-oriented|Rational|Accurate|Preachy|Interfering|Fair|Principled|Moral' },
+  { type: 2, ko: '희생하는|상냥한|섬세한|배려심이 깊은|다정한|겸손한|신체에 접촉하는|관대한|소유욕이 강한|보호적인|봉사적인|이타적인|사교적인', en: 'Self-sacrificing|Kind|Sensitive|Considerate|Affectionate|Humble|Physically affectionate|Generous|Possessive|Protective|Service-minded|Altruistic|Sociable' },
+  { type: 3, ko: '활동적인|역량을 강화하는|목표지향적인|근면한|책임감 있는|융통성 있는|능률적인|최고가 되고 싶은|인정받고 싶은|유능한|열정적인|야망적인|매력적인', en: 'Active|Developing competence|Goal-oriented|Diligent|Responsible|Flexible|Efficient|Wanting to be the best|Wanting recognition|Capable|Passionate|Ambitious|Attractive' },
+  { type: 4, ko: '고상한|상상력이 풍부한|직관적인|낭만적인|자기 연민적인|개성이 강한|생각이 깊은|집중하는|비밀스러운|심미적인|특색있는|표현적인|독립적인', en: 'Refined|Imaginative|Intuitive|Romantic|Self-pitying|Individualistic|Deep-thinking|Focused|Secretive|Aesthetic|Distinctive|Expressive|Independent' },
+  { type: 5, ko: '현명한|철저한|차분한|사려 깊은|예리한|학구적인|재치 있는|사색적인|분석적인|전문적인|인색한|논리적인|호기심 강한', en: 'Wise|Thorough|Calm|Thoughtful|Perceptive|Studious|Witty|Contemplative|Analytical|Expert|Stingy|Logical|Curious' },
+  { type: 6, ko: '준비성 있는|공손한|협조적인|순종적인|전통을 따르는|실용적인|충성심 있는|신뢰성 있는|의존적인|신중한|소심한|걱정이 많은|의심 많은', en: 'Prepared|Polite|Cooperative|Obedient|Traditional|Practical|Loyal|Reliable|Dependent|Cautious|Timid|Worried|Suspicious' },
+  { type: 7, ko: '외향적인|정열적인|낙관적인|충동적인|현실도피적인|거리낌 없는|산만한|개방적인|수다스러운|활기찬|쾌활한|다재다능한|자발적인', en: 'Outgoing|Enthusiastic|Optimistic|Impulsive|Escapist|Uninhibited|Distractible|Open-minded|Talkative|Energetic|Cheerful|Versatile|Spontaneous' },
+  { type: 8, ko: '자신감 있는|지도력 있는|용감한|도전적인|지배력 있는|권위있는|억척스러운|단호한|현실적인|방어적인|진취적인|결단력 있는|완고한', en: 'Confident|A natural leader|Brave|Challenging|Dominant|Authoritative|Tenacious|Firm|Realistic|Defensive|Enterprising|Decisive|Stubborn' },
+  { type: 9, ko: '침착한|나서지 않는|태평스러운|양보하는|안정적인|평화로운|중립적인|수용적인|조화로운|너그러운|참을성 있는|느긋한|편견 없는', en: 'Composed|Unassuming|Carefree|Yielding|Stable|Peaceful|Neutral|Accepting|Harmonious|Tolerant|Patient|Easygoing|Unbiased' }
+];
+const wordScreeningQuestions = Array.from({ length: 13 }, (_, wordIndex) =>
+  [4, 8, 2, 6, 1, 7, 3, 9, 5].map((_, offset, order) => {
+    const type = order[(offset + wordIndex * 4) % order.length];
+    const entry = WORD_SCREENING_BANK[type - 1];
+    return { id: `word_${type}_${String(wordIndex + 1).padStart(2, '0')}`, type, format: 'word', q: entry.ko.split('|')[wordIndex], qEn: entry.en.split('|')[wordIndex] };
+  })
+).flat();
+
+function scoreWordScreening(responses) {
+  const ranked = WORD_SCREENING_BANK.map(({ type }) => ({ type, yes: 0, no: 0, unsure: 0, missing: 0, score: 0 }));
+  wordScreeningQuestions.forEach((question) => {
+    const row = ranked[question.type - 1];
+    const answer = responses[question.id];
+    if (answer === 'Y') row.yes += 1;
+    else if (answer === 'N') row.no += 1;
+    else if (answer === 'U') row.unsure += 1;
+    else row.missing += 1;
+    row.score = row.yes;
+  });
+  ranked.sort((a, b) => b.score - a.score);
+  const missing = ranked.reduce((sum, row) => sum + row.missing, 0);
+  const unsure = ranked.reduce((sum, row) => sum + row.unsure, 0);
+  const count = ranked[2].score - ranked[3].score <= 1 ? 4 : 3;
+  let reason = '';
+  if (missing) reason = 'incomplete';
+  else if (ranked[0].score === 0 || unsure > wordScreeningQuestions.length * 0.6) reason = 'insufficient';
+  else if (ranked[0].score === ranked[8].score || ranked[count - 1].score === ranked[count].score) reason = 'cutoff_tie';
+  const candidates = reason ? [] : ranked.slice(0, count).map((row) => row.type);
+  return { version: 'word-narrative-v1', responses: { ...responses }, ranked, scores: Object.fromEntries(ranked.map((row) => [row.type, row.score])), candidates, needsClarification: Boolean(reason), unclear: Boolean(reason), reason, missing };
+}
 
 const q1 = [
   {
@@ -1446,6 +1505,7 @@ function buildSubtypeBehaviorQuestions(core) {
     id: `${set.subtype.id}_behavior_${index + 1}`,
     format: 'abc',
     subtypeChoice: true,
+    allowUnknown: true,
     q: item.q,
     qEn: set.subtype.qEn,
     options: set.subtype.options.map((option) => ({
@@ -1489,13 +1549,14 @@ function resolvePhase4Subtype(subtypeQuestions) {
     votes[value] += 1;
     if (!order.includes(value)) order.push(value);
   });
-  const subtypeCode = ['sp', 'so', 'sx'].sort((a, b) => {
+  const subtypeRanking = ['sp', 'so', 'sx'].sort((a, b) => {
     const diff = votes[b] - votes[a];
     if (diff !== 0) return diff;
     const ai = order.includes(a) ? order.indexOf(a) : 99;
     const bi = order.includes(b) ? order.indexOf(b) : 99;
     return ai - bi;
-  })[0];
+  });
+  const subtypeCode = votes[subtypeRanking[0]] >= 2 && votes[subtypeRanking[0]] > votes[subtypeRanking[1]] ? subtypeRanking[0] : null;
   const option = subtypeQuestions[0]?.options?.find((candidate) => candidate.value === subtypeCode);
   return {
     subtypeCode,
@@ -1519,7 +1580,7 @@ function resolvePhase4Wing(wingQuestions) {
     .map((wing) => ({ wing: Number(wing), count: votes[wing] }))
     .sort((a, b) => b.count - a.count);
   return {
-    wingNum: ranked[0] ? ranked[0].wing : null,
+    wingNum: ranked[0] && ranked[0].count >= 2 && (!ranked[1] || ranked[0].count > ranked[1].count) ? ranked[0].wing : null,
     wingVotes: votes,
     wingText: evidence.join(' / ')
   };
@@ -1639,6 +1700,14 @@ function renderQuestions(containerId, items, prefix) {
   items.forEach((item) => {
     const legendId = `${prefix}-legend-${item.id}`;
     const hintId = `${prefix}-hint-${item.id}`;
+    if (item.format === 'word') {
+      root.innerHTML += `<div class="er-word-card er-question-page" id="${prefix}-block-${item.id}">
+        <fieldset id="${prefix}-fieldset-${item.id}" aria-labelledby="${legendId}">
+          <legend id="${legendId}" class="er-word-term">${getQuestionText(item)}</legend>
+          <div class="er-word-choices">${[['Y', '예', 'Yes'], ['U', '모르겠다', 'Not sure'], ['N', '아니요', 'No']].map(([value, ko, en]) => `<label class="er-word-choice"><input type="radio" name="${item.id}" value="${value}" class="sr-only peer"><span>${pageLang === 'en' ? en : ko}</span></label>`).join('')}</div>
+        </fieldset></div>`;
+      return;
+    }
     if (item.format === 'abc') {
       root.innerHTML += `
         <div class="bg-white p-5 sm:p-7 rounded-xl border border-gray-100 shadow-sm" id="${prefix}-block-${item.id}">
@@ -1654,6 +1723,7 @@ function renderQuestions(containerId, items, prefix) {
                   </div>
                 </label>
               `).join('')}
+              ${item.allowUnknown ? `<label class="block cursor-pointer"><input type="radio" name="${item.id}" value="U" class="sr-only peer"><div class="rounded-xl border-2 border-gray-200 p-3 text-sm text-gray-500 peer-checked:border-[#30322D] peer-checked:bg-[#FBFAF5]">${pageLang === 'en' ? 'Not sure / none fits' : '모르겠다 / 어느 쪽도 가깝지 않다'}</div></label>` : ''}
             </div>
           </fieldset>
         </div>`;
@@ -1716,6 +1786,7 @@ function renderQuestions(containerId, items, prefix) {
       </div>`;
   });
   bindResponseTimingForRenderedQuestions(root, items, prefix);
+  if (testState.assessmentVersion === 'word-narrative-v1') bindAssessmentPager(root, items, prefix);
 }
 
 function toScore(raw) {
@@ -1744,6 +1815,7 @@ function recordResponseFirstAnswer(questionId) {
 
 function bindResponseTimingForRenderedQuestions(root, items, prefix) {
   if (!root || !items || !items.length) return;
+  if (prefix === 'word') return;
   if (prefix === 'p1') ensureResponseTimingStarted();
   items.forEach((item) => {
     const inputs = root.querySelectorAll ? root.querySelectorAll(`input[name="${item.id}"]`) : [];
@@ -1797,7 +1869,14 @@ function getDominantCenter(centerScore) {
   return entries[0][0] || null;
 }
 
-function getLikertResponseStats(responses) {
+function getLikertResponseStats(responses, assessmentVersion) {
+  if (assessmentVersion === 'word-narrative-v1') {
+    const values = Object.entries(responses || {})
+      .filter(([id, value]) => !id.startsWith('word_') && ['A', 'B', 'U', 'sp', 'so', 'sx'].includes(value))
+      .map(([, value]) => value);
+    const unknownCount = values.filter((value) => value === 'U').length;
+    return { likertCount: 0, unknownCount, totalCount: values.length, straightLineRatio: 0, unknownRatio: values.length ? unknownCount / values.length : 0 };
+  }
   const values = Object.values(responses || {}).filter((raw) => raw !== 'A' && raw !== 'B' && raw !== 'heart' && raw !== 'head' && raw !== 'body' && raw !== 'sp' && raw !== 'sx' && raw !== 'so');
   const likert = values.filter((raw) => raw !== 'U' && Number.isFinite(Number(raw))).map((raw) => String(raw));
   const unknownCount = values.filter((raw) => raw === 'U').length;
@@ -1820,9 +1899,9 @@ function addQualityFlag(flags, code, severity, label, evidence) {
   flags.push({ code, severity, label, evidence });
 }
 
-function buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked, instinctPct, confidence }) {
+function buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked, instinctPct, confidence, assessmentVersion }) {
   const flags = [];
-  const responseStats = getLikertResponseStats(responses || {});
+  const responseStats = getLikertResponseStats(responses || {}, assessmentVersion);
   const timing = timings || {};
   const avgSecondsPerAnswered = Number(timing.avgSecondsPerAnswered) || 0;
   const answeredCount = Number(timing.answeredCount) || 0;
@@ -1899,6 +1978,13 @@ function getRecentStatePressure() {
 }
 
 function addInstinctScoresFromResponses(responses, instinctScores) {
+  if (Object.keys(responses || {}).some((id) => id.startsWith('narrative_instinct_'))) {
+    buildNarrativeInstinctQuestions().forEach((question) => {
+      const answer = responses[question.id];
+      if (['sp', 'sx', 'so'].includes(answer)) instinctScores[answer] += 1;
+    });
+    return instinctScores;
+  }
   q1.forEach((item) => {
     if (item.inst) {
       const score = toScore(responses[item.id]);
@@ -2088,6 +2174,10 @@ function scorePhase1Item(item, raw, addScore) {
 
 function maybeShowPhase4(resultData) {
   const resolution = getCoreResolution(resultData.final);
+  if (resultData.assessmentVersion === 'word-narrative-v1') {
+    const meta = resultData.narrativeMeta || {};
+    if (!meta.totalPairs || meta.answeredPairs !== meta.totalPairs || (meta.decisiveAnswers || 0) < Math.max(2, Math.ceil((meta.totalQuestions || 0) / 2))) return false;
+  }
   const phase4Set = resolution.coreResolved ? phase4TypeSets[resolution.core] : null;
   if (!phase4Set) return false;
 
@@ -2096,6 +2186,13 @@ function maybeShowPhase4(resultData) {
     ...buildWingQuestionSet(resolution.core)
   ];
   testState.pendingResult = resultData;
+  if (resultData.assessmentVersion === 'word-narrative-v1') {
+    showAssessmentStage('detail');
+    renderQuestions('phase4-container', testState.phase4Questions, 'p4');
+    saveAssessmentSession();
+    requestAnimationFrame(() => scrollToTopSmart());
+    return true;
+  }
   renderQuestions('phase4-container', testState.phase4Questions, 'p4');
   document.getElementById('phase1-form').classList.add('hidden');
   document.getElementById('phase2-form').classList.add('hidden');
@@ -2129,6 +2226,9 @@ function validate(items, prefix, msgId) {
   msg.setAttribute('aria-live', 'polite');
   msg.classList.toggle('hidden', ok);
   if (!ok && first) {
+    const root = first.parentElement;
+    const item = items.find((question) => first.id === `${prefix}-block-${question.id}`);
+    if (item && root && root.showAssessmentQuestion) root.showAssessmentQuestion(item.id);
     first.scrollIntoView({behavior:'smooth', block:'center'});
     const firstInput = first.querySelector('input[type="radio"]');
     if (firstInput) firstInput.focus();
@@ -2328,6 +2428,7 @@ function buildPostTieQuestion(typeA, typeB) {
 }
 
 function renderTypeElimination() {
+  if (testState.assessmentVersion === 'word-narrative-v1') return renderWordScreening();
   const root = document.getElementById('elim-container');
   if (!root) return;
   const markLabel = uiText('elimMark');
@@ -2360,6 +2461,349 @@ function renderTypeElimination() {
     input.addEventListener('change', sync);
     sync();
   });
+}
+
+function showAssessmentStage(stage) {
+  testState.stage = stage;
+  const visible = { words: 'phase0-form', clarify: 'phase1-form', narrative: 'phase2-form', tiebreak: 'phase3-form', detail: 'phase4-form' }[stage];
+  ['phase0-form', 'phase1-form', 'phase2-form', 'phase3-form', 'phase4-form'].forEach((id) => document.getElementById(id)?.classList.toggle('hidden', id !== visible));
+  const step = { words: 1, clarify: 1, narrative: 2, tiebreak: 2, detail: 3 }[stage] || 1;
+  document.getElementById('step-counter').innerText = `${step} / 3`;
+  document.getElementById('step-label').innerText = pageLang === 'en' ? ['Words about me', 'Stories and motivations', 'Subtype and wing'][step - 1] : ['나를 닮은 단어', '이야기와 내적 동기', '하위유형과 날개'][step - 1];
+  setProgress(stage === 'clarify' ? 100 / 3 : (step - 1) / 3 * 100);
+}
+
+function resumeAssessmentAfterGate() {
+  if (testState.stage === 'result') {
+    document.getElementById('result-view')?.classList.remove('hidden');
+    document.getElementById('progress-container')?.classList.add('hidden');
+    return;
+  }
+  document.getElementById('progress-container')?.classList.remove('hidden');
+  showAssessmentStage(testState.stage);
+  const specs = {
+    words: ['elim-container', 'word', wordScreeningQuestions],
+    narrative: ['phase2-container', 'p2', testState.phase2Questions],
+    tiebreak: ['phase3-container', 'p3', testState.phase3Question ? [testState.phase3Question] : []],
+    detail: ['phase4-container', 'p4', testState.phase4Questions]
+  };
+  const spec = specs[testState.stage];
+  if (spec) {
+    const [id, prefix, questions] = spec;
+    const root = document.getElementById(id);
+    const question = questions[Math.min(testState.pagerPositions[prefix] || 0, questions.length - 1)];
+    if (question && root?.showAssessmentQuestion) root.showAssessmentQuestion(question.id);
+  }
+}
+
+function saveAssessmentSession() {
+  try {
+    const storage = window.sessionStorage;
+    if (!storage) return;
+    storage.setItem(ASSESSMENT_SESSION_KEY, JSON.stringify({
+      version: testState.assessmentVersion,
+      stage: testState.stage === 'result' ? (testState.phase4Questions.length ? 'detail' : 'narrative') : testState.stage,
+      wordResponses: testState.wordResponses,
+      narrativeResponses: testState.narrativeResponses,
+      candidateTypes: testState.candidateTypes,
+      pagerPositions: testState.pagerPositions,
+      reflection: String(testState.reflection || '').slice(0, 600),
+      responseTiming: testState.responseTiming
+    }));
+  } catch (_err) { /* Storage can be unavailable in a private or embedded browser. */ }
+}
+
+function clearAssessmentSession() {
+  try { window.sessionStorage?.removeItem(ASSESSMENT_SESSION_KEY); } catch (_err) {}
+}
+
+function restartAssessment() {
+  clearAssessmentSession();
+  window.location.reload();
+}
+
+function getValidSavedAssessment(saved) {
+  if (!saved || saved.version !== 'word-narrative-v1') return null;
+  const wordResponses = {};
+  wordScreeningQuestions.forEach((question) => {
+    const value = saved.wordResponses && saved.wordResponses[question.id];
+    if (['Y', 'N', 'U'].includes(value)) wordResponses[question.id] = value;
+  });
+  const narrativeResponses = {};
+  Object.entries(saved.narrativeResponses || {}).forEach(([id, value]) => {
+    if (/^(narrative_|post_tb_|p4_)/.test(id) && ['A', 'B', 'U', 'sp', 'so', 'sx'].includes(value)) narrativeResponses[id] = value;
+  });
+  const candidateTypes = [...new Set(saved.candidateTypes || [])].filter((type) => Number.isInteger(type) && type >= 1 && type <= 9);
+  const validStages = ['words', 'clarify', 'narrative', 'tiebreak', 'detail'];
+  let stage = validStages.includes(saved.stage) ? saved.stage : 'words';
+  if (Object.keys(wordResponses).length !== wordScreeningQuestions.length) stage = 'words';
+  if (['narrative', 'tiebreak', 'detail'].includes(stage) && ![3, 4].includes(candidateTypes.length)) stage = 'clarify';
+  const pagerPositions = {};
+  Object.entries(saved.pagerPositions || {}).forEach(([key, value]) => {
+    if (['word', 'p2', 'p3', 'p4'].includes(key) && Number.isInteger(value) && value >= 0) pagerPositions[key] = value;
+  });
+  return { stage, wordResponses, narrativeResponses, candidateTypes, pagerPositions, reflection: typeof saved.reflection === 'string' ? saved.reflection.slice(0, 600) : '', responseTiming: saved.responseTiming };
+}
+
+function restoreAssessmentSession() {
+  let saved;
+  try { saved = getValidSavedAssessment(JSON.parse(window.sessionStorage?.getItem(ASSESSMENT_SESSION_KEY) || 'null')); } catch (_err) { return false; }
+  if (!saved) return false;
+  const timing = saved.responseTiming;
+  delete saved.responseTiming;
+  Object.assign(testState, saved);
+  if (timing && typeof timing.startedAt === 'string' && Number.isFinite(Date.parse(timing.startedAt)) && timing.firstAnswerAt && typeof timing.firstAnswerAt === 'object') {
+    testState.responseTiming.startedAt = timing.startedAt;
+    testState.responseTiming.firstAnswerAt = Object.fromEntries(Object.entries(timing.firstAnswerAt).filter(([id, value]) => !id.startsWith('word_') && typeof value === 'string' && Number.isFinite(Date.parse(value))));
+  }
+  testState.screening = scoreWordScreening(testState.wordResponses);
+  testState.screening.candidates = testState.candidateTypes.slice();
+  const targetStage = saved.stage;
+  renderWordScreening();
+  if (targetStage === 'clarify') renderCandidateClarification();
+  if (['narrative', 'tiebreak', 'detail'].includes(targetStage)) {
+    startNarrativeStage(testState.candidateTypes);
+    if (['tiebreak', 'detail'].includes(targetStage) && testState.phase2Questions.every((question) => testState.narrativeResponses[question.id])) {
+      submitNarrativePhase();
+      if (targetStage === 'detail' && testState.stage === 'tiebreak' && testState.narrativeResponses[testState.phase3Question.id]) submitNarrativeTieBreak();
+    }
+  }
+  const reflection = document.getElementById('narrative-reflection');
+  if (reflection) reflection.value = testState.reflection;
+  return true;
+}
+
+function bindAssessmentPager(root, items, prefix) {
+  if (!root || !items.length || !root.querySelectorAll) return;
+  const pages = Array.from(root.querySelectorAll(`[id^="${prefix}-block-"]`));
+  if (!pages.length) return;
+  const submitId = { word: 'elim-submit-btn', p2: 'phase2-submit-btn', p3: 'phase3-submit-btn', p4: 'phase4-submit-btn' }[prefix];
+  if (!submitId) return;
+  const responses = prefix === 'word' ? testState.wordResponses : testState.narrativeResponses;
+  let advanceTimer = null;
+  items.forEach((item, itemIndex) => {
+    root.querySelectorAll(`input[name="${item.id}"]`).forEach((input) => {
+      input.checked = responses[item.id] === input.value;
+      input.addEventListener('change', () => {
+        responses[item.id] = input.value;
+        if (item.instinctChoice) testState.phase1Responses[item.id] = input.value;
+        saveAssessmentSession();
+        update();
+      });
+      if (prefix === 'word') input.addEventListener('click', () => {
+        clearTimeout(advanceTimer);
+        advanceTimer = setTimeout(() => {
+          if (index === itemIndex && input.checked && index < pages.length - 1) { index += 1; update(true); saveAssessmentSession(); }
+        }, 150);
+      });
+    });
+  });
+  const nav = document.createElement('div');
+  nav.className = 'er-question-nav';
+  nav.innerHTML = `<button type="button" data-page-prev>${pageLang === 'en' ? 'Previous' : '이전'}</button><span class="er-question-count" aria-live="polite"></span><button type="button" data-page-next>${pageLang === 'en' ? 'Next' : '다음'}</button>`;
+  root.appendChild(nav);
+  const prev = nav.querySelector('[data-page-prev]');
+  const next = nav.querySelector('[data-page-next]');
+  const count = nav.querySelector('.er-question-count');
+  let index = Math.min(testState.pagerPositions[prefix] || 0, pages.length - 1);
+  function update(focus = false) {
+    pages.forEach((page, position) => {
+      page.classList.add('er-question-page');
+      page.classList.toggle('hidden', position !== index);
+      page.hidden = position !== index;
+    });
+    testState.pagerPositions[prefix] = index;
+    prev.disabled = index === 0;
+    const answered = Boolean(root.querySelector(`input[name="${items[index].id}"]:checked`));
+    next.disabled = !answered;
+    next.classList.toggle('hidden', index === pages.length - 1);
+    count.textContent = `${index + 1} / ${pages.length}`;
+    const submit = document.getElementById(submitId);
+    if (submit) { submit.classList.toggle('hidden', index !== pages.length - 1); submit.disabled = !answered; }
+    const reflection = document.getElementById('narrative-reflection')?.closest('label, .er-reflection-card, .er-reflection-input');
+    if (prefix === 'p2' && reflection) reflection.classList.toggle('hidden', index !== pages.length - 1);
+    const step = prefix === 'word' ? 0 : prefix === 'p4' ? 2 : 1;
+    setProgress((step + (index + (answered ? 1 : 0)) / pages.length) / 3 * 100);
+    if (focus) {
+      const legend = pages[index].querySelector('legend');
+      if (legend) { legend.setAttribute('tabindex', '-1'); legend.focus({ preventScroll: true }); }
+      scheduleEmbedResize();
+    }
+  }
+  prev.addEventListener('click', () => { clearTimeout(advanceTimer); if (index > 0) { index -= 1; update(true); saveAssessmentSession(); } });
+  next.addEventListener('click', () => { clearTimeout(advanceTimer); if (root.querySelector(`input[name="${items[index].id}"]:checked`) && index < pages.length - 1) { index += 1; update(true); saveAssessmentSession(); } });
+  root.showAssessmentQuestion = (questionId) => { const position = items.findIndex((item) => item.id === questionId); if (position >= 0) { index = position; update(true); } };
+  update();
+}
+
+function renderWordScreening() {
+  showAssessmentStage('words');
+  renderQuestions('elim-container', wordScreeningQuestions, 'word');
+}
+
+function renderCandidateClarification() {
+  showAssessmentStage('clarify');
+  const root = document.getElementById('phase1-container');
+  root.innerHTML = `<fieldset class="er-candidate-clarification"><legend>${pageLang === 'en' ? 'Words leave several possibilities open. Choose 3 or 4 patterns you recognize from repeated experiences.' : '단어만으로는 후보를 충분히 좁히기 어렵습니다. 실제 경험에서 반복되는 이야기 3~4개를 골라 주세요.'}</legend><div class="er-candidate-options">${[4, 8, 2, 6, 1, 7, 3, 9, 5].map((type) => `<label class="er-narrative-option"><input type="checkbox" name="narrative-candidate" value="${type}" ${testState.candidateTypes.includes(type) ? 'checked' : ''}><span>${pageLang === 'en' ? TYPE_PROMPT_EN[type] : deep[type].map((question) => question.q).join(' ')}</span></label>`).join('')}</div></fieldset><button type="button" class="er-question-back" onclick="reviewWordScreening()">${pageLang === 'en' ? 'Review my word responses' : '단어 응답 돌아보기'}</button>`;
+  root.querySelectorAll('input[name="narrative-candidate"]').forEach((input) => input.addEventListener('change', () => {
+    const checked = Array.from(root.querySelectorAll('input[name="narrative-candidate"]:checked'));
+    if (checked.length > 4) { input.checked = false; return; }
+    testState.candidateTypes = checked.map((entry) => Number(entry.value));
+    saveAssessmentSession();
+  }));
+  saveAssessmentSession();
+}
+
+function reviewWordScreening() {
+  renderWordScreening();
+  saveAssessmentSession();
+}
+
+function submitWordScreening() {
+  if (!validate(wordScreeningQuestions, 'word', 'validation-msg-elim')) return;
+  wordScreeningQuestions.forEach((question) => { testState.wordResponses[question.id] = document.querySelector(`input[name="${question.id}"]:checked`).value; });
+  testState.screening = scoreWordScreening(testState.wordResponses);
+  testState.candidateTypes = testState.screening.candidates.slice();
+  testState.narrativeResponses = {};
+  testState.phase1Responses = {};
+  testState.pagerPositions.p2 = 0;
+  testState.pagerPositions.p3 = 0;
+  testState.pagerPositions.p4 = 0;
+  if (testState.screening.needsClarification) renderCandidateClarification();
+  else startNarrativeStage(testState.candidateTypes);
+}
+
+function submitCandidateClarification() {
+  const candidates = Array.from(document.querySelectorAll('input[name="narrative-candidate"]:checked')).map((input) => Number(input.value));
+  const msg = document.getElementById('validation-msg-1');
+  if (![3, 4].includes(candidates.length)) {
+    msg.textContent = pageLang === 'en' ? 'Please choose 3 or 4 patterns to compare.' : '비교할 이야기 3~4개를 골라 주세요.';
+    msg.classList.remove('hidden');
+    return;
+  }
+  msg.classList.add('hidden');
+  testState.screening.candidates = candidates.slice();
+  testState.screening.clarifiedByNarrative = true;
+  startNarrativeStage(candidates);
+}
+
+function buildNarrativeInstinctQuestions() {
+  const original = q1.find((question) => question.id === 'instinct_attention_1');
+  return [
+    { ...original, id: 'narrative_instinct_1', allowUnknown: true },
+    { id: 'narrative_instinct_2', format: 'abc', instinctChoice: true, allowUnknown: true,
+      q: '낯선 일을 시작할 때, 준비하면서 가장 먼저 신경 쓰는 장면은?', qEn: 'When starting something unfamiliar, which preparation gets your attention first?',
+      options: [
+        { value: 'sp', inst: 'sp', text: '체력과 시간, 필요한 비용을 점검한다. 일상이 무너지지 않을 여유가 있어야 움직이기 편하다.', textEn: 'I check energy, time, and costs. I need enough room to keep daily life working.' },
+        { value: 'sx', inst: 'sx', text: '나를 끌어당기는 대상이나 가능성을 찾아본다. 강하게 마음이 움직여야 깊이 들어가고 싶어진다.', textEn: 'I look for the person or possibility that draws me in. A strong pull makes me want to engage deeply.' },
+        { value: 'so', inst: 'so', text: '함께할 사람들과 역할을 살핀다. 내가 어떤 관계 속에서 무엇을 맡을지 알면 방향이 잡힌다.', textEn: 'I look at people and roles. Knowing where I fit and contribute gives me direction.' }
+      ] },
+    { id: 'narrative_instinct_3', format: 'abc', instinctChoice: true, allowUnknown: true,
+      q: '바쁜 한 주가 지나고 내 생활을 돌아볼 때, 빠져 있으면 가장 먼저 보완하고 싶은 것은?', qEn: 'After a busy week, which missing part do you most want to restore?',
+      options: [
+        { value: 'so', inst: 'so', text: '사람들과 연결되어 있다는 느낌. 모임과 관계의 흐름에서 내가 떨어져 있지 않은지 살핀다.', textEn: 'A sense of connection with people. I check whether I have lost touch with groups and relationships.' },
+        { value: 'sp', inst: 'sp', text: '몸과 생활의 안정. 잠, 식사, 돈, 혼자 쉴 시간 중 흐트러진 부분을 먼저 정리한다.', textEn: 'A stable body and daily life. I first attend to sleep, food, money, or time to rest.' },
+        { value: 'sx', inst: 'sx', text: '강하게 몰입하고 살아 있다는 느낌. 마음을 움직이는 사람이나 일에 깊이 연결되고 싶다.', textEn: 'A sense of intensity and aliveness. I want deep engagement with a person or pursuit that moves me.' }
+      ] }
+  ];
+}
+
+function buildNarrativeQuestions(candidates) {
+  const sets = { '1_3': tb31, '1_4': tb14, '1_5': tb15, '1_6': tb16, '1_7': tb71, '1_8': tb18, '1_9': tb19, '2_4': tb24, '2_6': tb26, '2_8': tb28, '2_9': tb29, '3_5': tb35, '3_6': tb36, '3_7': tb37, '3_8': tb38, '3_9': tb39, '4_5': tb45, '4_6': tb46, '4_7': tb47, '4_8': tb48, '5_6': tb56, '5_8': tb58, '5_9': tb59, '6_8': tb68, '6_9': tb69, '7_8': tb78, '8_9': tb89 };
+  const types = [...new Set(candidates)].sort((a, b) => a - b);
+  const pairs = [];
+  types.forEach((leftType, leftIndex) => types.slice(leftIndex + 1).forEach((rightType) => {
+    const key = `${leftType}_${rightType}`;
+    const dedicated = (sets[key] || []).filter((question) => question.format === 'ab');
+    const custom = tbCustomMap[key];
+    for (let index = 0; index < 2; index += 1) {
+      const source = dedicated[index];
+      const left = source ? getOptionText(source, source.leftType === leftType ? 'a' : 'b') : pageLang === 'en' ? questionTextEn[deep[leftType][index].id] || TYPE_PROMPT_EN[leftType] : index === 0 && custom ? custom.a : deep[leftType][index].q;
+      const right = source ? getOptionText(source, source.leftType === rightType ? 'a' : 'b') : pageLang === 'en' ? questionTextEn[deep[rightType][index].id] || TYPE_PROMPT_EN[rightType] : index === 0 && custom ? custom.b : deep[rightType][index].q;
+      pairs.push({
+        id: `narrative_${key}_${index + 1}`, format: 'ab', narrativePair: key, leftType, rightType,
+        q: source ? getQuestionText(source) : index === 0 && custom ? custom.q : '최근 불편했던 경험을 떠올려 보세요. 겉으로 한 행동보다, 그 행동으로 지키고 싶었던 마음에 더 가까운 쪽은?',
+        qEn: source ? getQuestionText(source) : 'Recall a recent difficult experience. Which inner concern were you trying to protect?',
+        a: left, b: right, aEn: left, bEn: right
+      });
+    }
+  }));
+  return [...pairs.filter((_, index) => index % 2 === 0), ...pairs.filter((_, index) => index % 2 === 1), ...buildNarrativeInstinctQuestions()];
+}
+
+function startNarrativeStage(candidates) {
+  testState.candidateTypes = candidates.slice();
+  if (testState.screening) testState.screening.candidates = candidates.slice();
+  testState.phase2Questions = buildNarrativeQuestions(candidates);
+  testState.phase3Question = null;
+  testState.phase4Questions = [];
+  testState.pendingResult = null;
+  showAssessmentStage('narrative');
+  renderQuestions('phase2-container', testState.phase2Questions, 'p2');
+  saveAssessmentSession();
+}
+
+function scoreNarrativeResponses(questions, responses) {
+  const final = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  const evidence = {1:[],2:[],3:[],4:[],5:[],6:[],7:[],8:[],9:[]};
+  const exposure = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  let decisiveAnswers = 0;
+  const answeredPairs = new Set();
+  const allPairs = new Set();
+  questions.filter((question) => question.narrativePair).forEach((question) => {
+    exposure[question.leftType] += 1;
+    exposure[question.rightType] += 1;
+    allPairs.add(question.narrativePair);
+    const answer = responses[question.id];
+    if (!['A', 'B'].includes(answer)) return;
+    const type = answer === 'A' ? question.leftType : question.rightType;
+    final[type] += 1;
+    evidence[type].push({ points: 1, text: answer === 'A' ? question.a : question.b });
+    decisiveAnswers += 1;
+    answeredPairs.add(question.narrativePair);
+  });
+  return { final, evidence, narrativeMeta: { exposure, decisiveAnswers, totalQuestions: questions.filter((question) => question.narrativePair).length, answeredPairs: answeredPairs.size, totalPairs: allPairs.size } };
+}
+
+function submitNarrativePhase() {
+  if (!validate(testState.phase2Questions, 'p2', 'validation-msg-2')) return;
+  testState.phase2Questions.forEach((question) => {
+    const value = document.querySelector(`input[name="${question.id}"]:checked`).value;
+    testState.narrativeResponses[question.id] = value;
+    if (question.instinctChoice) testState.phase1Responses[question.id] = value;
+  });
+  const scored = scoreNarrativeResponses(testState.phase2Questions, testState.narrativeResponses);
+  testState.narrativeMeta = scored.narrativeMeta;
+  const result = { ...scored, assessmentVersion: testState.assessmentVersion, screening: testState.screening, candidateTypes: testState.candidateTypes.slice(), recentStress: 3, stateStressAdjustment: { applied: false }, tb7w6: 0, tb7w8: 0, sxBoost: 0, counterSignals: null, phase4: null, postTieApplied: false };
+  const ranked = testState.candidateTypes.map((type) => ({ type, score: result.final[type] })).sort((a, b) => b.score - a.score);
+  testState.pendingResult = result;
+  if (ranked[0].score > 0 && ranked[0].score - ranked[1].score <= 1 && ranked[1].score > ranked[2].score) {
+    testState.phase3Question = { ...buildPostTieQuestion(ranked[0].type, ranked[1].type), q: '둘 다 닮아 보일 때, 나를 더 자주 움직인 속마음은 어느 쪽인가요?', qEn: 'When both sound familiar, which inner concern has driven you more often?' };
+    showAssessmentStage('tiebreak');
+    renderQuestions('phase3-container', [testState.phase3Question], 'p3');
+    saveAssessmentSession();
+    return;
+  }
+  saveAssessmentSession();
+  if (maybeShowPhase4(result)) return;
+  renderResultFromScores(result);
+}
+
+function submitNarrativeTieBreak() {
+  if (!testState.phase3Question || !testState.pendingResult || !validate([testState.phase3Question], 'p3', 'validation-msg-3')) return;
+  const question = testState.phase3Question;
+  const answer = document.querySelector(`input[name="${question.id}"]:checked`).value;
+  testState.narrativeResponses[question.id] = answer;
+  const result = { ...testState.pendingResult, final: { ...testState.pendingResult.final }, evidence: Object.fromEntries(Object.entries(testState.pendingResult.evidence).map(([type, entries]) => [type, entries.slice()])), postTieApplied: ['A', 'B'].includes(answer) };
+  if (result.postTieApplied) {
+    const type = answer === 'A' ? question.leftType : question.rightType;
+    result.final[type] += 1;
+    result.evidence[type].push({ points: 1, text: answer === 'A' ? question.a : question.b });
+  }
+  testState.pendingResult = result;
+  saveAssessmentSession();
+  if (maybeShowPhase4(result)) return;
+  renderResultFromScores(result);
 }
 
 function readEliminatedTypesFromUi() {
@@ -2417,6 +2861,7 @@ function selectCandidateTypesWithElimination(ranked, eliminated) {
 }
 
 function submitTypeElimination() {
+  if (testState.assessmentVersion === 'word-narrative-v1') return submitWordScreening();
   const eliminated = readEliminatedTypesFromUi();
   const maxElim = TEST_CONFIG.thresholds.maxEliminatedTypes;
   const msg = document.getElementById('validation-msg-elim');
@@ -2443,6 +2888,7 @@ function submitTypeElimination() {
 }
 
 function submitPhase1() {
+  if (testState.assessmentVersion === 'word-narrative-v1') return submitCandidateClarification();
   if (!validate(q1, 'p1', 'validation-msg-1')) return;
   testState.phase3Question = null;
   testState.phase4Questions = [];
@@ -2614,6 +3060,7 @@ function submitPhase1() {
 }
 
 function submitPhase2() {
+  if (testState.assessmentVersion === 'word-narrative-v1') return submitNarrativePhase();
   if (!validate(testState.phase2Questions, 'p2', 'validation-msg-2')) return;
 
   const final = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
@@ -2772,6 +3219,7 @@ function submitPhase2() {
 }
 
 function submitPhase3() {
+  if (testState.assessmentVersion === 'word-narrative-v1') return submitNarrativeTieBreak();
   if (!testState.phase3Question) return;
   if (!validate([testState.phase3Question], 'p3', 'validation-msg-3')) return;
   if (!testState.pendingResult) return;
@@ -2801,6 +3249,12 @@ function submitPhase4() {
   if (!testState.phase4Questions.length) return;
   if (!validate(testState.phase4Questions, 'p4', 'validation-msg-4')) return;
   if (!testState.pendingResult) return;
+  testState.phase4Questions.forEach((question) => {
+    testState.narrativeResponses[question.id] = document.querySelector(`input[name="${question.id}"]:checked`).value;
+  });
+  const reflection = document.getElementById('narrative-reflection');
+  if (reflection) testState.reflection = String(reflection.value || '').slice(0, 600);
+  saveAssessmentSession();
 
   const subtypeResult = resolvePhase4Subtype(testState.phase4Questions.filter((q) => q.subtypeChoice));
   const wingResult = resolvePhase4Wing(testState.phase4Questions.filter((q) => q.wingChoice));
@@ -2819,7 +3273,7 @@ function submitPhase4() {
 }
 
 function snapshotAllDiagnosticResponses() {
-  const out = { ...testState.phase1Responses };
+  const out = { ...testState.phase1Responses, ...testState.narrativeResponses };
   const take = (id) => {
     if (!id) return;
     const el = document.querySelector(`input[name="${id}"]:checked`);
@@ -2887,6 +3341,10 @@ function getFinalSubtypeCode(instinctCode) {
 
 function formatReportHeadline(resultData) {
   const core = resultData.core;
+  if (resultData.assessmentVersion === 'word-narrative-v1') {
+    const identity = `${core}${resultData.wingNum ? `w${resultData.wingNum}` : '번'}`;
+    return resultData.phase4 && resultData.phase4.subtypeCode ? `${identity} · ${resultData.instinctLabel}` : identity;
+  }
   const instCode = getFinalSubtypeCode(resultData.instinctCode);
   const instincts = window.ERDiagnosticReportContent && window.ERDiagnosticReportContent.instincts;
   const instLabel = (instincts && instincts[instCode] && instincts[instCode].label) || instCode;
@@ -3542,11 +4000,14 @@ function buildReportEvidenceCopy(model) {
 
 function buildPremiumReportModel(resultData) {
   const contentApi = window.ERDiagnosticReportContent || {};
-  const subtypeCode = getFinalSubtypeCode(resultData.instinctCode);
+  const subtypePending = resultData.assessmentVersion === 'word-narrative-v1' && !(resultData.phase4 && resultData.phase4.subtypeCode);
+  const subtypeCode = subtypePending ? null : getFinalSubtypeCode(resultData.instinctCode);
   const selectedWing = resultData.phase4 && resultData.phase4.wingNum
     ? resultData.phase4.wingNum
     : resultData.wingNum;
-  const reportContent = contentApi.getContent
+  const reportContent = subtypePending && contentApi.getCoreContent
+    ? contentApi.getCoreContent(resultData.core, selectedWing)
+    : contentApi.getContent && !subtypePending
     ? contentApi.getContent(resultData.core, subtypeCode, selectedWing)
     : null;
   const fallbackContent = reportContent || {
@@ -3569,9 +4030,11 @@ function buildPremiumReportModel(resultData) {
     nextSteps: [],
     gospel: {}
   };
-  const instinctRows = normalizeMetricRows(resultData.instinctMetrics || []).map((row, index) => ({
+  const instinctRows = (resultData.assessmentVersion === 'word-narrative-v1'
+    ? (resultData.instinctMetrics || [])
+    : normalizeMetricRows(resultData.instinctMetrics || [])).map((row, index) => ({
     ...row,
-    active: index === 0 || row.code === subtypeCode
+    active: resultData.assessmentVersion === 'word-narrative-v1' ? row.code === subtypeCode : index === 0 || row.code === subtypeCode
   }));
   const supportMaterials = buildReportSupportSelection(resultData, instinctRows);
   const coreScoreForWing = Math.max(1, Number(resultData.final && resultData.final[resultData.core]) || 0);
@@ -3595,13 +4058,24 @@ function buildPremiumReportModel(resultData) {
     tieState: resultData.tieState,
     stateStressAdjustment: resultData.stateStressAdjustment
   });
+  if (resultData.assessmentVersion === 'word-narrative-v1') {
+    confidenceExplanation.label = resultData.coreResolved ? '핵심 동기 후보가 좁혀졌습니다' : '핵심 동기를 더 확인해 주세요';
+    confidenceExplanation.summary = '단어는 후보를 고르는 데 사용하고, 최종 유형은 상황 속 동기 선택으로 비교했습니다. 이 점수는 유형일 확률이나 검증된 정확도를 뜻하지 않습니다.';
+    confidenceExplanation.reasons = [
+      `${(resultData.candidateTypes || []).length}개 후보를 같은 수의 비교 질문으로 살펴봤습니다.`,
+      resultData.coreResolved ? '상황 질문에서 가장 앞선 후보가 나타났습니다.' : '상황 질문의 응답이 나뉘거나 비교 근거가 부족합니다.',
+      subtypePending ? '하위유형은 추가 확인이 필요합니다.' : '하위유형은 해당 유형의 생활 장면 응답으로 확인했습니다.',
+      selectedWing ? '날개는 인접한 두 유형의 표현 방식을 별도로 비교했습니다.' : '날개는 추가 확인이 필요합니다.'
+    ];
+  }
 
   return {
     ...resultData,
     subtypeCode,
+    subtypePending,
     selectedWing,
     coreTone: getReportCoreTone(resultData.core),
-    reportKey: selectedWing ? `${subtypeCode}_${resultData.core}w${selectedWing}` : `${subtypeCode}_${resultData.core}`,
+    reportKey: selectedWing ? `${subtypeCode || 'pending'}_${resultData.core}w${selectedWing}` : `${subtypeCode || 'pending'}_${resultData.core}`,
     content: fallbackContent,
     instinctRows,
     wingRows,
@@ -3609,18 +4083,50 @@ function buildPremiumReportModel(resultData) {
     confidenceExplanation,
     display: {
       headline: formatReportHeadline(resultData),
-      final: `${subtypeCode} ${resultData.wingCode}`,
+      final: `${subtypeCode || '하위유형 확인 중'} ${resultData.wingCode}`,
       core: resultData.coreDisplay,
       subtype: resultData.phase4
         ? `하위유형: ${resultData.instinctLabel}`
         : `제 1본능: ${resultData.instinctLabel}`,
       wing: resultData.wing,
-      confidence: getReportConfidenceDisplay(resultData.confidence),
+      confidence: resultData.assessmentVersion === 'word-narrative-v1' ? (resultData.coreResolved ? '자기이해를 위한 잠정 결과' : '추가 확인 필요') : getReportConfidenceDisplay(resultData.confidence),
       stressGrowth: resultData.coreResolved
         ? `통합 방향 ${arrowLines[resultData.core].growth}번 · 스트레스 방향 ${arrowLines[resultData.core].stress}번`
         : '코어 확정 후 확인 가능합니다.'
     }
   };
+}
+
+function renderScreeningSummary(model) {
+  const screening = model.screening;
+  if (!screening || !Array.isArray(screening.ranked)) return '';
+  const candidates = model.candidateTypes || screening.candidates || [];
+  const total = candidates.reduce((sum, type) => sum + Math.max(0, Number(model.final && model.final[type]) || 0), 0);
+  const rows = candidates.map((type) => {
+    const row = screening.ranked.find((item) => item.type === type) || {};
+    const score = Math.max(0, Number(model.final && model.final[type]) || 0);
+    return { ...row, type, score, share: total ? score / total * 100 : 0 };
+  }).sort((a, b) => b.score - a.score);
+  return `<section id="report-screening" class="er-report-section er-report-screening">
+    <div class="er-report-section-head"><h2>단어에서 동기로, 후보를 비교한 과정</h2>
+      <p>단어의 예·아니요·모르겠다를 구분해 후보를 골랐습니다. 아래 막대는 후보들의 서사형 응답 점유율이며 유형일 확률이 아닙니다.</p></div>
+    ${screening.unclear || screening.needsClarification ? '<p class="er-report-microcopy">단어만으로 후보가 좁혀지지 않아, 추가 동기 묘사에서 고른 후보를 비교했습니다.</p>' : ''}
+    <div class="er-report-screening-rows">${rows.map((row) => `<article class="er-report-screening-row">
+      <div><h3>${row.type}번</h3><p>단어 응답 · 예 ${Number(row.yes) || 0} / 모르겠다 ${Number(row.unsure) || 0} / 아니요 ${Number(row.no) || 0}</p></div>
+      <strong>${total ? `${row.share.toFixed(0)}%` : '비교 근거 부족'}</strong>
+      <div class="er-report-bar-track" aria-hidden="true"><span class="er-report-bar er-report-bar-green" style="width:${clampReportPercent(row.share)}%"></span></div>
+    </article>`).join('')}</div>
+    <p class="er-report-microcopy">단어 점수는 최종 유형 점수에 합산하지 않았습니다. 후보 밖의 유형도 실제 경험과 맞지 않는다면 다시 살펴볼 수 있습니다.</p>
+  </section>`;
+}
+
+function renderNarrativeReflection(model) {
+  const reflection = String(model.narrativeReflection || '').trim().slice(0, 600);
+  if (!reflection) return '';
+  return `<section id="report-reflection" class="er-report-section er-report-reflection">
+    <div class="er-report-section-head"><h2>내가 남긴 실제 장면</h2><p>점수에 반영하지 않은 나의 기록입니다. 위 해석과 닮은 점, 다른 점을 함께 살펴보세요.</p></div>
+    <blockquote>${escapeReportHtml(reflection)}</blockquote>
+  </section>`;
 }
 
 function renderPremiumReport(model) {
@@ -3700,6 +4206,11 @@ function renderPremiumReport(model) {
         <div class="er-report-hero-inner">
           <p class="er-report-kicker">ER Enneagram Premium Report</p>
           <p class="er-report-hero-type" id="res-final">${escapeReportHtml(model.display.headline)}</p>
+          <dl class="er-report-identity" aria-label="핵심 유형, 날개와 하위유형">
+            <div><dt>핵심 유형</dt><dd>${escapeReportHtml(model.display.core)}</dd></div>
+            <div><dt>날개</dt><dd id="res-wing">${escapeReportHtml(model.display.wing)}</dd></div>
+            <div><dt>하위유형</dt><dd id="res-instincts">${escapeReportHtml(model.instinctLabel || model.display.subtype)}</dd></div>
+          </dl>
           <h1>${escapeReportHtml(c.heroStatement)}</h1>
           <p>${escapeReportHtml(c.definition)}</p>
           <div class="er-report-hero-answer">
@@ -3707,16 +4218,15 @@ function renderPremiumReport(model) {
             <strong>${escapeReportHtml(c.motivation)}</strong>
             <small>${escapeReportHtml(c.fear)}</small>
           </div>
-          <div class="er-report-hero-badges" aria-label="진단 결과 요약">
-            <span id="res-instincts">${escapeReportHtml(c.subtypeLabel || model.display.subtype)}</span>
-            <span id="res-wing">${escapeReportHtml(model.display.wing)}</span>
-            <span class="er-report-hero-code">${escapeReportHtml(model.display.final)}</span>
-          </div>
           <span id="confidence-badge" class="er-report-confidence">${escapeReportHtml(model.display.confidence)}</span>
         </div>
       </section>
 
       ${langNotice}
+
+      ${renderScreeningSummary(model)}
+
+      ${renderNarrativeReflection(model)}
 
       ${executiveSummaryHtml}
 
@@ -3766,20 +4276,21 @@ function renderPremiumReport(model) {
         </div>
         <div class="er-report-visual-grid">
           <div class="er-report-panel">
-            <h3>내 안에서 가장 강하게 반응한 에너지</h3>
+            <h3>하위유형의 세 생활 영역</h3>
             <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.instinctLine)}</p>
             ${model.instinctRows.map((row) => buildReportMetricBar(row, { tone: 'gold' })).join('')}
           </div>
           <div class="er-report-panel">
-            <h3>비슷하게 함께 나타나는 성향</h3>
+            <h3>인접한 두 날개 비교</h3>
             <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.wingLine)}</p>
             ${model.wingRows.map((row) => buildReportMetricBar(row, { tone: 'green' })).join('')}
-            <p class="er-report-microcopy">코어 점수 대비 인접 날개 반응의 활성도를 보여줍니다.</p>
+            <p class="er-report-microcopy">${model.assessmentVersion === 'word-narrative-v1' ? '하위유형·날개 그래프는 각각 세 질문 중 선택한 비율입니다. 모르겠다는 어느 쪽에도 배분하지 않습니다.' : '코어 점수 대비 인접 날개 반응의 활성도를 보여줍니다.'}</p>
           </div>
         </div>
         <div class="er-report-panel">
           <h3 id="top3-title">헷갈릴 수 있는 가까운 유형들</h3>
           <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.closeTypeLine)}</p>
+          <p class="er-report-microcopy">상위 세 유형의 점수 합을 기준으로 한 상대점유율이며, 유형일 확률은 아닙니다.</p>
           <div id="res-top3" class="er-report-toptypes">${top3Html}</div>
         </div>
       </section>
@@ -3872,7 +4383,7 @@ function renderPremiumReport(model) {
           <div class="er-report-tools">
             <button type="button" onclick="shareTestResult()">결과 공유하기</button>
             <button type="button" id="download-pdf-btn" onclick="downloadResultPdf()">결과 PDF 다운로드</button>
-            <button type="button" id="restart-test-btn" onclick="location.reload()">처음부터 다시하기</button>
+            <button type="button" id="restart-test-btn" onclick="restartAssessment()">처음부터 다시하기</button>
           </div>
           <p id="result-disclaimer">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
         </div>
@@ -3917,10 +4428,13 @@ function renderLowConfidenceGate(model) {
           <h3>타이핑 세션에서 함께 확인해 보세요</h3>
           <p>사전 설문과 1:1 인터뷰로 핵심 유형, 하위유형, 날개를 함께 확인하는 유형(Typing) 상담입니다. 검사 점수만으로 확정하기 어려운 지금 같은 경우에 가장 정확한 다음 단계입니다.</p>
           <a href="#" class="er-report-gate-primary" data-report-program-key="identity_session">타이핑 세션(유형 확인 상담) 신청</a>
-          <button type="button" class="er-report-gate-retry" onclick="location.reload()">처음부터 다시 검사하기</button>
+          <button type="button" class="er-report-gate-retry" onclick="restartAssessment()">처음부터 다시 검사하기</button>
         </div>
         <p class="er-report-gate-tip">최근 2주가 평소와 많이 달랐다면, 마음이 안정된 시기의 나를 기준으로 다시 응답해 보세요. 같은 결과가 반복되면 타이핑 세션에서 함께 확인하는 것이 가장 정확합니다.</p>
       </section>
+      ${renderScreeningSummary(model)}
+      ${renderNarrativeReflection(model)}
+      <div id="experiment-result-panel" class="hidden"></div>
     </article>
   `;
   bindReportApplyNavigation(host);
@@ -3968,8 +4482,12 @@ if (typeof window !== 'undefined') {
   window.renderPremiumReport = renderPremiumReport;
 }
 
-function renderResultFromScores({ final, evidence, recentStress, stateStressAdjustment, tb7w6, tb7w8, sxBoost, counterSignals, phase4, postTieApplied }) {
-  const ranked = Object.keys(final).map((k)=>({type:parseInt(k,10), score:final[k]})).sort((a,b)=>b.score-a.score);
+function renderResultFromScores({ final, evidence, recentStress, stateStressAdjustment, tb7w6, tb7w8, sxBoost, counterSignals, phase4, postTieApplied, assessmentVersion, screening, candidateTypes, narrativeMeta }) {
+  const wordNarrative = assessmentVersion === 'word-narrative-v1';
+  const reflectionInput = document.getElementById('narrative-reflection');
+  const narrativeReflection = wordNarrative ? String((reflectionInput && reflectionInput.value) || testState.reflection || '').trim().slice(0, 600) : '';
+  const rankedTypes = wordNarrative && candidateTypes && candidateTypes.length ? candidateTypes : Object.keys(final).map(Number);
+  const ranked = rankedTypes.map((type) => ({ type, score: final[type] || 0 })).sort((a, b) => b.score - a.score);
   const core = ranked[0].type;
   const second = ranked[1];
   const max = ranked[0].score;
@@ -3993,7 +4511,12 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
   ) confidence = '높음';
   if (max === sec) confidence = '낮음';
 
-  const coreResolved = max !== sec && diff >= TEST_CONFIG.thresholds.coreReserveDiff;
+  let coreResolved = max !== sec && diff >= TEST_CONFIG.thresholds.coreReserveDiff;
+  if (wordNarrative) {
+    const enoughComparisons = narrativeMeta && narrativeMeta.decisiveAnswers >= Math.max(2, Math.ceil(narrativeMeta.totalQuestions / 2)) && narrativeMeta.answeredPairs === narrativeMeta.totalPairs;
+    coreResolved = coreResolved && !!enoughComparisons;
+    confidence = coreResolved ? '보통' : '낮음';
+  }
 
   const inst = {sp:0,sx:0,so:0};
   const instName = pageLang === 'en'
@@ -4014,7 +4537,9 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
     else if (soLead >= TEST_CONFIG.corrections.soPenaltyLowLead) soPenalty = TEST_CONFIG.corrections.soPenaltyLow;
     if (soPenalty > 0) inst.so -= soPenalty;
   }
-  const instinctPct = buildInstinctPctFromScores(inst);
+  const instinctPct = wordNarrative
+    ? Object.fromEntries(['sp', 'so', 'sx'].map((code) => [code, clampReportPercent((Number(phase4 && phase4.subtypeVotes ? phase4.subtypeVotes[code] : inst[code]) || 0) / 3 * 100)]))
+    : buildInstinctPctFromScores(inst);
 
   const instRank = Object.keys(inst).map((k)=>({code:k,name:instName[k],score:inst[k]})).sort((a,b)=>b.score-a.score);
   let instinctCode = instRank[0].code;
@@ -4028,6 +4553,10 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
   if (phase4 && phase4.subtypeCode) {
     instinctCode = phase4.subtypeCode;
     instinctLabel = phase4.subtypeLabel || instName[phase4.subtypeCode] || phase4.subtypeCode;
+  }
+  if (wordNarrative && !(phase4 && phase4.subtypeCode)) {
+    instinctCode = null;
+    instinctLabel = pageLang === 'en' ? 'Subtype needs more observation' : '하위유형 추가 확인 필요';
   }
 
   let wing = pageLang === 'en' ? 'Not activated' : '활성화 안됨';
@@ -4070,6 +4599,15 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
       wingNum = phase4.wingNum;
     }
   }
+  if (wordNarrative && coreResolved) {
+    wingNum = phase4 && phase4.wingNum || null;
+    wing = wingNum ? `${wingNum}번 날개` : '날개 추가 확인 필요';
+    wingCode = wingNum ? `${core}w${wingNum}` : `${core}번 · 날개 확인 중`;
+    wingMetrics = [core === 1 ? 9 : core - 1, core === 9 ? 1 : core + 1].map((wing) => ({
+      wing, label: `${core}w${wing}`, score: Number(phase4 && phase4.wingVotes && phase4.wingVotes[wing]) || 0,
+      percent: (Number(phase4 && phase4.wingVotes && phase4.wingVotes[wing]) || 0) / 3 * 100
+    }));
+  }
 
   document.getElementById('phase2-form').classList.add('hidden');
   document.getElementById('phase3-form').classList.add('hidden');
@@ -4077,7 +4615,11 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
   document.getElementById('progress-container').classList.add('hidden');
   document.getElementById('result-view').classList.remove('hidden');
 
-  const instinctMetrics = instRank.map((row) => ({
+  const instinctMetrics = wordNarrative ? ['sp', 'so', 'sx'].map((code) => ({
+    code, label: instName[code], score: Number(phase4 && phase4.subtypeVotes && phase4.subtypeVotes[code]) || 0,
+    percent: (Number(phase4 && phase4.subtypeVotes && phase4.subtypeVotes[code]) || 0) / 3 * 100,
+    caption: code === instinctCode ? '세 생활 장면에서 가장 많이 선택한 본능' : ''
+  })) : instRank.map((row) => ({
     code: row.code,
     label: instName[row.code],
     score: row.score,
@@ -4091,6 +4633,7 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
   const allResponses = snapshotAllDiagnosticResponses();
   const responseTiming = buildTimingSnapshot(allResponses);
   const responseQuality = buildResponseQualitySnapshot({
+    assessmentVersion,
     responses: allResponses,
     timings: responseTiming,
     scoringAxes,
@@ -4099,7 +4642,9 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
     confidence
   });
   const tieSnapshot = JSON.parse(JSON.stringify(testState.tie));
+  const assessmentMetadata = { assessmentVersion, screening, candidateTypes, narrativeMeta, narrativeReflection };
   const premiumModel = buildPremiumReportModel({
+    ...assessmentMetadata,
     final,
     evidence,
     ranked,
@@ -4137,13 +4682,14 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
 
   if (window.ERDiagnosticExperiment && typeof window.ERDiagnosticExperiment.onResultReady === 'function') {
     window.ERDiagnosticExperiment.onResultReady({
+      ...assessmentMetadata,
       final,
       evidence,
       ranked,
       top3Total,
       confidence,
       coreResolved,
-      core,
+      core: wordNarrative && !coreResolved ? null : core,
       second,
       diff,
       phase4,
@@ -4166,12 +4712,23 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
 
   const pdfBtn = document.getElementById('download-pdf-btn');
   if (pdfBtn) pdfBtn.onclick = downloadResultPdf;
+  if (wordNarrative) {
+    testState.stage = 'result';
+    testState.reflection = narrativeReflection;
+    saveAssessmentSession();
+  }
+  requestAnimationFrame(() => scrollToTopSmart());
 }
 
 localizeStaticTestPage();
-renderTypeElimination();
-renderQuestions('phase1-container', q1, 'p1');
-setProgress(20);
+if (!restoreAssessmentSession()) renderWordScreening();
+const narrativeReflectionInput = document.getElementById('narrative-reflection');
+if (narrativeReflectionInput && narrativeReflectionInput.addEventListener) {
+  narrativeReflectionInput.addEventListener('input', () => {
+    testState.reflection = String(narrativeReflectionInput.value || '').slice(0, 600);
+    saveAssessmentSession();
+  });
+}
 if (typeof window !== 'undefined') {
   window.submitTypeElimination = submitTypeElimination;
 }

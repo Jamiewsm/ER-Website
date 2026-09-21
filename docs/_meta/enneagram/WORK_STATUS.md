@@ -4,14 +4,14 @@ kb_id: enneagram_test_meta.work_status
 schema_version: 1
 title: "ER Enneagram Test — Work Status"
 created_at: "2026-05-06"
-last_updated: "2026-06-22"
+last_updated: "2026-09-21"
 retrieval_tags:
   - work_status
   - phase_progress
   - lock_state
   - project_complete
 current_phase: 7
-current_task: "premium report Phase A QA complete; P2 result_consult PRs pending Cursor merge"
+current_task: "word-narrative-v1 premium assessment implemented and verified; awaiting Cursor merge"
 checkpoint_plan: []
 checkpoint: null
 paused: true
@@ -26,6 +26,13 @@ project_status: "manual_updates_after_phase_6"
 ---
 
 # Work Status — 자동화 완료 후 수동 개선 진행
+
+## 2026-09-21 사용자 요청에 따른 단어·서사형 검사
+
+- `codex/premium-word-narrative`의 수동 변경이며 운영 반영/배포 완료를 뜻하지 않는다. 자동화의 `paused: true`는 유지한다.
+- 117개 단어의 예/모르겠다/아니요 → 3~4개 후보의 동기 비교 → 해당 유형의 하위유형·날개 각 3문항으로 이어진다. 선택적인 경험 기록은 채점하지 않는다.
+- 새 흐름의 단어 점수는 후보 선별에만 사용한다. 동률·불충분한 비교·하위유형/날개 미확정 상태를 별도로 표시하며, 기존 채점과 `word-narrative-v1`을 구분한다.
+- 상세 범위·검증·잔여 사항은 [작업 계획](../../projects/premium-word-narrative-20260921/plan.md)과 [맥락 기록](../../projects/premium-word-narrative-20260921/context-notes.md)을 기준으로 한다. 아래 6월 스냅샷은 변경 전 기록이다.
 
 ## 2026-06-20 현재 운영 코드 스냅샷
 

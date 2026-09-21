@@ -775,6 +775,31 @@
     instincts: INSTINCTS,
     cores: CORE,
     reports,
+    getCoreContent(core, wing) {
+      const c = CORE[core];
+      if (!c) return null;
+      const content = makeContent(core, 'sp', wing);
+      return {
+        ...content,
+        key: `core_${core}${wing ? `w${wing}` : ''}`,
+        fallbackKey: `core_${core}`,
+        subtype: null,
+        subtypeLabel: '하위유형 추가 확인 필요',
+        subtypeInsight: '세 생활 영역의 응답이 나뉘어 하위유형을 아직 정하지 않았습니다.',
+        formation: c.formation,
+        actionPlan: c.recovery.slice(0, 2),
+        synthesis: {
+          ...(CORE_SYNTHESIS[core] || {}),
+          ...(wing ? (WING_SYNTHESIS[`${core}w${wing}`] || {}) : {}),
+          title: `${core}번 ${c.name}의 핵심 동기`,
+          paragraph: c.definition,
+          protects: c.motivation,
+          overuses: c.fear,
+          instinctSignal: '하위유형 응답이 나뉘었습니다. 생활 장면을 더 관찰해 주세요.',
+          wingSignal: wing ? `${wing}번 날개를 선택한 응답이 더 많았습니다.` : '날개 응답이 나뉘어 추가 확인이 필요합니다.'
+        }
+      };
+    },
     getContent(core, subtype, wing) {
       const inst = subtype && INSTINCTS[subtype] ? subtype : "sp";
       const withWing = wing ? `${inst}_${core}w${wing}` : null;
