@@ -5,8 +5,8 @@ import vm from 'node:vm';
 
 const source = readFileSync(new URL('../js/diagnostic-experiment.js', import.meta.url), 'utf8');
 
-function loadExperimentModule() {
-  const windowStub = {
+function loadExperimentModule({ windowOverrides = {}, documentOverrides = {} } = {}) {
+  const windowStub = Object.assign({
     location: { search: '' },
     addEventListener() {},
     sessionStorage: {
@@ -14,13 +14,13 @@ function loadExperimentModule() {
       setItem() {},
       removeItem() {}
     }
-  };
-  const documentStub = {
+  }, windowOverrides);
+  const documentStub = Object.assign({
     documentElement: { lang: 'ko' },
     readyState: 'complete',
     getElementById() { return null; },
     addEventListener() {}
-  };
+  }, documentOverrides);
   const context = vm.createContext({
     window: windowStub,
     document: documentStub,
@@ -108,6 +108,156 @@ test('experiment row keeps analytics-ready payload for calibration', () => {
   assert.deepEqual(payload.stateStressAdjustment, { applied: false });
   assert.deepEqual(payload.phase4Result, { subtypeCode: 'sx_2', subtypeLabel: '성적 2번', wingNum: 3 });
   assert.deepEqual(payload.timings, { totalSeconds: 420, avgSecondsPerAnswered: 8.4 });
+  assert.equal(Object.hasOwn(payload, 'assessmentVersion'), false);
+  assert.equal(Object.hasOwn(payload, 'screening'), false);
+  assert.equal(Object.hasOwn(payload, 'narrativeReflection'), false);
+});
+
+test('word-narrative experiment row preserves screening separately from narrative evidence', () => {
+  const api = loadExperimentModule();
+  const screening = {
+    version: 'word-screening-v1',
+    responses: { word_1_1: 'yes', word_2_1: 'no', word_3_1: 'unsure' },
+    ranked: [
+      { type: 1, yes: 10, no: 1, unsure: 2, score: 9 },
+      { type: 6, yes: 9, no: 2, unsure: 2, score: 7 },
+      { type: 9, yes: 8, no: 3, unsure: 2, score: 5 },
+      { type: 2, yes: 7, no: 4, unsure: 2, score: 3 }
+    ],
+    candidates: [1, 6, 9, 2],
+    unclear: true
+  };
+  const row = api._test.buildRow(
+    { participantName: 'Test User', consentAccepted: true },
+    {
+      assessmentVersion: 'word-narrative-v1',
+      screening,
+      narrativeReflection: '  최근에 약속을 지키려다 갈등이 생겼습니다.  ',
+      responses: { narrative_1: 'A' },
+      evidence: { 1: ['narrative_1'] }
+    },
+    'ambiguous'
+  );
+
+  const payload = plain(row.result_summary.experiment_payload);
+  assert.equal(payload.assessmentVersion, 'word-narrative-v1');
+  assert.deepEqual(payload.screening, screening);
+  assert.equal(payload.narrativeReflection, '최근에 약속을 지키려다 갈등이 생겼습니다.');
+  assert.deepEqual(plain(row.responses), { narrative_1: 'A' });
+  assert.deepEqual(plain(row.evidence), { 1: ['narrative_1'] });
+  assert.equal(row.consent_version, '2026-09-21');
+});
+
+test('optional narrative reflection is trimmed, limited to 600 characters, and absent when blank', () => {
+  const api = loadExperimentModule();
+  function reflection(value) {
+    return api._test.buildExperimentAnalyticsPayload({
+      assessmentVersion: 'word-narrative-v1',
+      narrativeReflection: value
+    }).narrativeReflection;
+  }
+
+  assert.equal(reflection('  ' + '가'.repeat(601) + '  '), '가'.repeat(600));
+  assert.equal(reflection(' \n '), null);
+  assert.equal(reflection(undefined), null);
+  assert.equal(reflection({ text: 'unrecognized value' }), null);
+});
+
+test('experiment reflection is saved only by explicit submission with consent', async () => {
+  const inserts = [];
+  const listeners = {};
+  const host = { classList: { remove() {} }, innerHTML: '' };
+  const submit = { addEventListener(name, listener) { listeners[name] = listener; } };
+  const status = { textContent: '' };
+  const meta = { participantName: 'Test User', consentAccepted: false };
+  const api = loadExperimentModule({
+    windowOverrides: {
+      location: { search: '?experiment=1' },
+      __ER_DIAGNOSTIC_EXPERIMENT__: meta,
+      supabaseClient: {
+        from(table) {
+          assert.equal(table, 'diagnostic_experiment_sessions');
+          return { async insert(row) { inserts.push(plain(row)); return { error: null }; } };
+        }
+      }
+    },
+    documentOverrides: {
+      getElementById(id) {
+        return {
+          'experiment-result-panel': host,
+          'experiment-submit-btn': submit,
+          'experiment-submit-status': status
+        }[id] || null;
+      },
+      querySelector() { return { value: 'correct' }; }
+    }
+  });
+
+  api.onResultReady({
+    assessmentVersion: 'word-narrative-v1',
+    narrativeReflection: '작성한 경험 메모'
+  });
+  assert.equal(inserts.length, 0, 'rendering a result must not submit responses or free text');
+  assert.match(host.innerHTML, /제출하기를 누르면 검사 응답·결과와 선택해서 작성한 경험 메모가 함께 저장됩니다/);
+
+  await listeners.click();
+  assert.equal(inserts.length, 0, 'explicit submission still requires consent');
+  assert.match(status.textContent, /저장 동의 정보가 없습니다/);
+
+  meta.consentAccepted = true;
+  await listeners.click();
+  assert.equal(inserts.length, 1);
+  assert.equal(inserts[0].result_summary.experiment_payload.narrativeReflection, '작성한 경험 메모');
+  assert.equal(inserts[0].consent_accepted, true);
+});
+
+test('experiment consent gate hides every restored stage then resumes it without repeated gating', () => {
+  const ids = ['experiment-gate', 'experiment-closed', 'experiment-gate-start', 'experiment-participant-name', 'experiment-consent', 'experiment-gate-error', 'phase0-form', 'phase1-form', 'phase2-form', 'phase3-form', 'phase4-form', 'result-view', 'progress-container'];
+  const handlers = {};
+  const windowHandlers = {};
+  const elements = Object.fromEntries(ids.map((id) => {
+    const classes = new Set();
+    return [id, {
+      value: id === 'experiment-participant-name' ? 'Test User' : '',
+      checked: id === 'experiment-consent',
+      dataset: {},
+      classList: {
+        add: (name) => classes.add(name),
+        remove: (name) => classes.delete(name),
+        contains: (name) => classes.has(name)
+      },
+      addEventListener(event, handler) { handlers[`${id}:${event}`] = handler; }
+    }];
+  }));
+  let resumeCount = 0;
+  loadExperimentModule({
+    windowOverrides: {
+      location: { search: '?experiment=1' },
+      addEventListener(event, handler) { windowHandlers[event] = handler; },
+      resumeAssessmentAfterGate() {
+        resumeCount += 1;
+        elements['phase4-form'].classList.remove('hidden');
+        elements['progress-container'].classList.remove('hidden');
+      }
+    },
+    documentOverrides: { getElementById: (id) => elements[id] || null }
+  });
+
+  for (const id of ['phase0-form', 'phase1-form', 'phase2-form', 'phase3-form', 'phase4-form', 'result-view', 'progress-container']) {
+    assert.equal(elements[id].classList.contains('hidden'), true, `${id} must not bypass consent after session restore`);
+  }
+  assert.equal(elements['experiment-gate'].classList.contains('hidden'), false);
+
+  handlers['experiment-gate-start:click']();
+  assert.equal(resumeCount, 1);
+  assert.equal(elements['experiment-gate'].classList.contains('hidden'), true);
+  assert.equal(elements['phase4-form'].classList.contains('hidden'), false);
+  assert.equal(elements['phase0-form'].classList.contains('hidden'), true, 'resuming must not reset the assessment to the word stage');
+
+  windowHandlers.load();
+  assert.equal(resumeCount, 1);
+  assert.equal(elements['experiment-gate'].classList.contains('hidden'), true, 'late initialization must preserve accepted consent');
+  assert.equal(elements['phase4-form'].classList.contains('hidden'), false);
 });
 
 test('experiment feedback UI collects structured reviewer notes', () => {

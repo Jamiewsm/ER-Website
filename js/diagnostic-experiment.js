@@ -6,7 +6,7 @@
 (function () {
   var EXP_QUERY = "experiment";
   var EXP_STORAGE_KEY = "er_experiment_mode";
-  var CONSENT_VERSION = "2026-04-28";
+  var CONSENT_VERSION = "2026-09-21";
 
   function safeSessionStorage() {
     try {
@@ -60,38 +60,39 @@
     );
   }
 
+  function hideAssessmentForGate() {
+    ["phase0-form", "phase1-form", "phase2-form", "phase3-form", "phase4-form", "result-view", "progress-container"].forEach(function (id) {
+      var element = document.getElementById(id);
+      if (element) element.classList.add("hidden");
+    });
+  }
+
   function showGate() {
     var gate = document.getElementById("experiment-gate");
     var closed = document.getElementById("experiment-closed");
-    var phase0 = document.getElementById("phase0-form");
-    var phase1 = document.getElementById("phase1-form");
-    var progress = document.getElementById("progress-container");
     if (gate) gate.classList.remove("hidden");
     if (closed) closed.classList.add("hidden");
-    if (phase0) phase0.classList.add("hidden");
-    if (phase1) phase1.classList.add("hidden");
-    if (progress) progress.classList.add("hidden");
+    hideAssessmentForGate();
   }
 
   function showClosedMessage() {
     var closed = document.getElementById("experiment-closed");
     var gate = document.getElementById("experiment-gate");
-    var phase0 = document.getElementById("phase0-form");
-    var phase1 = document.getElementById("phase1-form");
-    var progress = document.getElementById("progress-container");
     if (closed) closed.classList.remove("hidden");
     if (gate) gate.classList.add("hidden");
-    if (phase0) phase0.classList.add("hidden");
-    if (phase1) phase1.classList.add("hidden");
-    if (progress) progress.classList.add("hidden");
+    hideAssessmentForGate();
   }
 
   function hideGateShowTest() {
     var gate = document.getElementById("experiment-gate");
+    if (gate) gate.classList.add("hidden");
+    if (typeof window.resumeAssessmentAfterGate === "function") {
+      window.resumeAssessmentAfterGate();
+      return;
+    }
     var phase0 = document.getElementById("phase0-form");
     var phase1 = document.getElementById("phase1-form");
     var progress = document.getElementById("progress-container");
-    if (gate) gate.classList.add("hidden");
     if (phase0) phase0.classList.remove("hidden");
     if (phase1) phase1.classList.add("hidden");
     if (progress) progress.classList.remove("hidden");
@@ -156,8 +157,8 @@
       "</p>" +
       '<p class="text-xs text-amber-800/90 leading-relaxed">' +
       txt(
-        "아래에서 결과가 본인에게 얼마나 맞는지 선택한 뒤 제출해 주세요. 데이터는 진단 문항 가중치 개선에만 쓰이며, 삭제를 원하면 운영자에게 요청할 수 있습니다.",
-        "Please rate how well the result fits you, then submit. Data is used only to improve scoring; you may request deletion from the operator."
+        "아래에서 결과가 본인에게 얼마나 맞는지 선택한 뒤 제출해 주세요. 제출하기를 누르면 검사 응답·결과와 선택해서 작성한 경험 메모가 함께 저장됩니다. 데이터는 진단 문항 가중치 개선에만 쓰이며, 삭제를 원하면 운영자에게 요청할 수 있습니다.",
+        "Please rate how well the result fits you, then submit. Clicking Submit saves your answers, results, and any optional experience reflection you wrote. Data is used only to improve scoring; you may request deletion from the operator."
       ) +
       "</p>" +
       '<div class="space-y-2">' +
@@ -359,7 +360,7 @@
     var phase4 = payload.phase4 || null;
     var second = payload.second || ranked[1] || null;
 
-    return {
+    var analytics = {
       result: {
         core: payload.core || null,
         subtype: phase4 && phase4.subtypeCode ? phase4.subtypeCode : null,
@@ -389,6 +390,14 @@
       phase4Result: phase4,
       timings: payload.responseTiming || null,
     };
+    if (payload.assessmentVersion === "word-narrative-v1") {
+      analytics.assessmentVersion = payload.assessmentVersion;
+      analytics.screening = payload.screening || null;
+      analytics.narrativeReflection = typeof payload.narrativeReflection === "string"
+        ? payload.narrativeReflection.trim().slice(0, 600) || null
+        : null;
+    }
+    return analytics;
   }
 
   function buildRow(meta, payload, selfAssessment, selfNote, knownCore, knownSubtype, knownWing, feedbackDetail) {
@@ -484,6 +493,8 @@
       if (gate) gate.classList.add("hidden");
       return;
     }
+    var meta = getMeta();
+    if (meta && meta.consentAccepted === true) return;
     showGate();
     bindGate();
   }

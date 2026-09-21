@@ -37,7 +37,7 @@ test('all 9 countertype filters are declared with expected core and instinct', (
 test('countertype filters are routed for candidate types and scored separately', () => {
   const routing = sliceBetween('testState.phase2Questions = [];', '// 상위 2개 유형 점수 차이가');
   const scoring = sliceBetween('if (q.counterType) {', 'let w = q.weight || TEST_CONFIG.weights.phase2Base;');
-  const reportModelInput = sliceBetween('if (counterSignals && counterSignals[core]) {', 'const instinctPct = buildInstinctPctFromScores(inst);');
+  const reportModelInput = sliceBetween('if (counterSignals && counterSignals[core]) {', 'const instRank = Object.keys(inst)');
 
   assert.match(routing, /topTypes\.forEach\(\(t\)=>\{ if \(deep\[t\]\)/);
   assert.match(routing, /topTypes\.forEach\(\(t\) => \{\s*if \(counterTypeQuestions\[t\]\) testState\.phase2Questions\.push\(counterTypeQuestions\[t\]\);/);

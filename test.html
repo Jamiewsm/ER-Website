@@ -7,6 +7,7 @@
   <title>ER Enneagram Test</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css">
   <link rel="stylesheet" href="css/test.css">
 </head>
 <body class="min-h-screen pb-20 bg-[#FBFAF5] relative">
@@ -28,12 +29,12 @@
       </div>
     </div>
   </div>
-  <main id="test-main-content" class="max-w-3xl mx-auto pt-12 px-4 sm:px-6 transition-opacity duration-500 opacity-0">
-    <header class="text-center mb-10">
-      <span id="test-pill" class="bg-[#657453] text-white px-4 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-widest">Narrative Interview</span>
-      <h1 id="test-title" class="text-3xl font-extrabold text-gray-900 mt-2">적응형 에니어그램 심층 진단</h1>
-      <p id="test-subtitle" class="mt-4 text-gray-600 leading-relaxed text-sm">행동 뒤의 핵심 동기를 탐색하고, 2단계 타이브레이커로 경합 유형을 좁힙니다.</p>
-      <p id="test-disclaimer" class="text-xs text-gray-400 mt-4">* 본 진단은 자가탐색 참고용이며, 의학적 또는 임상적 진단을 대체하지 않습니다.</p>
+  <main id="test-main-content" class="er-test-main transition-opacity duration-500 opacity-0">
+    <header class="er-test-header">
+      <span id="test-pill" class="er-test-brand">ER 프리미엄 검사</span>
+      <h1 id="test-title">나를 이해하는 작은 시작</h1>
+      <p id="test-subtitle">단어에서 시작해, 나의 행동 뒤에 있는 마음을 살펴봅니다.</p>
+      <p id="test-disclaimer">본 검사는 자기이해를 위한 참고 자료이며, 의학적 또는 임상적 진단을 대체하지 않습니다.</p>
     </header>
 
     <div id="experiment-closed" class="hidden mb-10">
@@ -63,7 +64,7 @@
         </div>
         <label class="flex items-start gap-2 text-sm text-gray-800 cursor-pointer">
           <input id="experiment-consent" type="checkbox" class="mt-1 accent-[#30322D]" />
-          <span>이름·응답·결과·자기평가를 ER 진단 개선 목적으로 저장하는 것에 동의합니다.</span>
+          <span>이름·응답·결과·자기평가와 선택한 경험 메모를 ER 진단 개선 목적으로 저장하는 것에 동의합니다. 실제 저장은 결과 화면에서 제출하기를 누를 때 이루어집니다.</span>
         </label>
         <p id="experiment-gate-error" class="text-sm text-red-600 hidden" role="alert"></p>
         <button id="experiment-gate-start" type="button"
@@ -73,74 +74,79 @@
       </div>
     </div>
 
-    <div id="progress-container" class="mb-8" aria-live="polite">
-      <div class="flex justify-between text-xs text-gray-400 font-medium mb-2">
-        <span id="step-label">1단계: 확실히 아닌 유형 제거</span>
-        <span id="step-counter">1 / 5</span>
+    <div id="progress-container" class="er-test-progress" aria-live="polite">
+      <div class="er-test-progress-labels">
+        <span id="step-label">단어로 시작하기</span>
+        <span id="step-counter">1 / 117</span>
       </div>
-      <div id="progress-track" class="w-full bg-gray-200 rounded-full h-1.5" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-        <div id="progress-bar" class="bg-[#657453] h-1.5 rounded-full smooth" style="width:20%"></div>
+      <div id="progress-track" role="progressbar" aria-label="검사 진행률" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+        <div id="progress-bar" class="smooth" style="width:0%"></div>
       </div>
     </div>
 
-    <form id="phase0-form" class="space-y-8" novalidate>
-      <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-gray-200 text-center">
-        <p id="elim-intro-title" class="font-semibold text-gray-700">0단계: 확실히 아닌 유형 걸러내기</p>
-        <p id="elim-intro-desc" class="text-sm text-gray-500 mt-1">아래 아홉 가지 중 “이건 정말 내가 아니야”라고 느껴지는 유형만 표시해 주세요. 확신이 없으면 건드리지 않아도 됩니다. 최대 6개까지 제외할 수 있습니다.</p>
-        <p id="elim-hint" class="text-xs text-gray-400 mt-3">선택 = 확실히 아님 · 남은 유형만 다음 단계에서 집중적으로 비교합니다.</p>
+    <form id="phase0-form" class="er-test-phase" novalidate>
+      <div class="er-phase-intro">
+        <h2 id="elim-intro-title">단어로 만나는 나</h2>
+        <p id="elim-intro-desc">117개의 단어를 하나씩 살펴보며, 평소의 나와 가까운지 예 / 모르겠다 / 아니요로 답해 주세요.</p>
+        <p id="elim-hint" class="er-phase-hint">되고 싶은 모습보다, 자연스럽게 드러나는 나를 떠올려 주세요.</p>
       </div>
-      <div id="elim-container" class="grid gap-3 sm:grid-cols-1"></div>
-      <div class="text-center pt-2">
-        <p id="validation-msg-elim" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">확실히 아닌 유형은 최대 6개까지 고를 수 있습니다. 적어도 3개 후보는 남겨 주세요.</p>
-        <button id="elim-submit-btn" type="button" onclick="submitTypeElimination()" class="bg-[#30322D] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">이어서 질문 시작</button>
+      <div id="elim-container"></div>
+      <div class="er-phase-actions">
+        <p id="validation-msg-elim" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">각 단어에 답해 주세요. 잘 모르겠다면 모르겠다를 선택할 수 있습니다.</p>
+        <button id="elim-submit-btn" type="button" onclick="submitTypeElimination()" class="er-test-primary">나의 이야기로 이어가기</button>
       </div>
     </form>
 
-    <form id="phase1-form" class="space-y-10 hidden" novalidate>
-      <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-gray-200 text-center">
-        <p id="phase1-intro-title" class="font-semibold text-gray-700">1부: 일상적 자동반응 패턴</p>
-        <p id="phase1-intro-desc" class="text-sm text-gray-500 mt-1">불안/압박 상황에서 어떤 대처가 자동으로 나오는지 체크해 주세요.</p>
+    <form id="phase1-form" class="er-test-phase hidden" novalidate>
+      <div class="er-phase-intro">
+        <h2 id="phase1-intro-title">나의 이야기 살펴보기</h2>
+        <p id="phase1-intro-desc">일상에서 반복되는 장면을 떠올리고, 내 마음과 가까운 이야기를 골라 주세요.</p>
       </div>
       <div id="phase1-container" class="space-y-6"></div>
-      <div class="text-center pt-6">
+      <div class="er-phase-actions">
         <p id="validation-msg-1" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button id="phase1-submit-btn" type="button" onclick="submitPhase1()" class="bg-[#30322D] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">2단계로 이동</button>
+        <button id="phase1-submit-btn" type="button" onclick="submitPhase1()" class="er-test-primary">다음 이야기 살펴보기</button>
       </div>
     </form>
 
-    <form id="phase2-form" class="space-y-10 hidden" novalidate>
-      <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-[#657453] text-center">
-        <p id="phase2-intro-title" class="font-bold text-[#30322D] text-lg">1차 분석 완료</p>
-        <p id="phase2-intro-desc" class="text-sm text-gray-600 mt-2">후보 유형 경합을 줄이기 위한 심층 질문입니다.</p>
+    <form id="phase2-form" class="er-test-phase hidden" novalidate>
+      <div class="er-phase-intro">
+        <h2 id="phase2-intro-title">닮은 마음, 다른 이유</h2>
+        <p id="phase2-intro-desc">비슷한 행동을 하더라도 이유는 다를 수 있습니다. 내 마음이 먼저 향하는 쪽을 골라 주세요.</p>
       </div>
       <div id="phase2-container" class="space-y-6"></div>
-      <div class="text-center pt-6">
+      <div class="er-reflection-input">
+        <label id="reflection-label" for="narrative-reflection">내가 떠올린 한 장면</label>
+        <p id="reflection-hint">선택 사항. 실제로 겪은 장면과 그때 중요했던 것을 2~3문장으로 적어 주세요. 이 글은 점수에 반영하지 않고 결과지에서 다시 보여 드립니다.</p>
+        <textarea id="narrative-reflection" name="narrative-reflection" rows="4" maxlength="600" aria-describedby="reflection-hint" placeholder="그때 나는 어떤 마음이었나요?"></textarea>
+      </div>
+      <div class="er-phase-actions">
         <p id="validation-msg-2" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button id="phase2-submit-btn" type="button" onclick="submitPhase2()" class="bg-[#657453] hover:bg-[#566647] text-white font-bold py-4 px-12 rounded-full shadow-lg">결과 보기</button>
+        <button id="phase2-submit-btn" type="button" onclick="submitPhase2()" class="er-test-primary">이어서 살펴보기</button>
       </div>
     </form>
 
-    <form id="phase3-form" class="space-y-10 hidden" novalidate>
-      <div class="bg-orange-50 p-6 rounded-2xl border border-orange-200 text-center">
-        <p id="phase3-intro-title" class="font-bold text-orange-800 text-lg">마지막 정밀 감별</p>
-        <p id="phase3-intro-desc" class="text-sm text-orange-700 mt-2">상위 2개 유형이 모두 높게 경합 중입니다. 최종 확정을 위해 아래 문항 1개만 선택해 주세요.</p>
+    <form id="phase3-form" class="er-test-phase hidden" novalidate>
+      <div class="er-phase-intro">
+        <h2 id="phase3-intro-title">한 번 더 마음을 살펴볼게요</h2>
+        <p id="phase3-intro-desc">두 가지 마음이 비슷하게 나타났습니다. 더 자주 경험하는 쪽을 골라 주세요.</p>
       </div>
       <div id="phase3-container" class="space-y-6"></div>
-      <div class="text-center pt-6">
+      <div class="er-phase-actions">
         <p id="validation-msg-3" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">문항을 선택해 주세요.</p>
-        <button id="phase3-submit-btn" type="button" onclick="submitPhase3()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
+        <button id="phase3-submit-btn" type="button" onclick="submitPhase3()" class="er-test-primary">이어서 살펴보기</button>
       </div>
     </form>
 
-    <form id="phase4-form" class="space-y-10 hidden" novalidate>
-      <div class="bg-[#FBFAF5] p-6 rounded-2xl border border-[#657453] text-center">
-        <p id="phase4-intro-title" class="font-bold text-[#30322D] text-lg">최종 하위유형/날개 판별</p>
-        <p id="phase4-intro-desc" class="text-sm text-gray-600 mt-2">확정된 기본 유형에 맞춰 하위유형과 날개를 한 번 더 정밀하게 확인합니다.</p>
+    <form id="phase4-form" class="er-test-phase hidden" novalidate>
+      <div class="er-phase-intro">
+        <h2 id="phase4-intro-title">나만의 표현 방식</h2>
+        <p id="phase4-intro-desc">어디에 관심이 향하고, 어떤 방식으로 행동하는지 살펴보며 하위유형과 날개를 확인합니다.</p>
       </div>
       <div id="phase4-container" class="space-y-6"></div>
-      <div class="text-center pt-6">
+      <div class="er-phase-actions">
         <p id="validation-msg-4" class="text-red-500 font-medium mb-4 hidden text-sm" role="alert" aria-live="polite">모든 문항에 응답해 주세요.</p>
-        <button id="phase4-submit-btn" type="button" onclick="submitPhase4()" class="bg-[#30322D] hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full shadow-lg">최종 결과 보기</button>
+        <button id="phase4-submit-btn" type="button" onclick="submitPhase4()" class="er-test-primary">나의 결과 읽기</button>
       </div>
     </form>
 

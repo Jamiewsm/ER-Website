@@ -1,5 +1,7 @@
 # ER Test Active Evolution Implementation Plan
 
+> 2026-09-21 사용자 요청으로 검사 진입 흐름을 개편했다. `word-narrative-v1` 변경의 활성 기준은 [단어·서사형 검사 계획](../../projects/premium-word-narrative-20260921/plan.md)이며 아래 기존 기준은 이 변경 이전의 기록이다. 기존 운영 경로 유지, 트랙 분리, 실증 검증 원칙은 계속 적용한다.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 현재 운영 중인 ER 테스트(`test.html -> js/test.js`)를 퇴보 없이 발전시켜, 단순 유형 결과가 아니라 신뢰도·응답 품질·상담 확인 질문·실험 데이터 기반 개선이 가능한 타이핑 플랫폼으로 만든다.
