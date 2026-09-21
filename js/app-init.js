@@ -1,6 +1,14 @@
 // ER App: App initialization — DOM events, hashchange, Supabase init
 // --- Initialization ---
 function runAppInit() {
+    const kakaoLink = document.getElementById('er-kakao-channel-link');
+    const kakaoURL = window.ER_SOCIAL?.kakaoChannelURL || '';
+    if (kakaoLink && /^https:\/\/pf\.kakao\.com\/_[A-Za-z0-9]+\/?$/.test(kakaoURL)) {
+        kakaoLink.href = kakaoURL.replace(/\/$/, '') + '/chat';
+        kakaoLink.hidden = false;
+        kakaoLink.classList.add('inline-flex');
+    }
+
     window.addEventListener('scroll', () => {
         const nav = document.getElementById('navbar');
         if(window.scrollY > 20) {
