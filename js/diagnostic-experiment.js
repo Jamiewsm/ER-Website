@@ -6,7 +6,7 @@
 (function () {
   var EXP_QUERY = "experiment";
   var EXP_STORAGE_KEY = "er_experiment_mode";
-  var CONSENT_VERSION = "2026-09-21";
+  var CONSENT_VERSION = "2026-09-21-choice-only";
 
   function safeSessionStorage() {
     try {
@@ -126,7 +126,7 @@
       if (!consentEl.checked) {
         if (errEl) {
           errEl.textContent = txt(
-            "저장·연구 목적 동의에 체크해 주세요.",
+            "검사 자료 저장에 동의해 주세요.",
             "Please confirm consent to store responses."
           );
           errEl.classList.remove("hidden");
@@ -157,8 +157,8 @@
       "</p>" +
       '<p class="text-xs text-amber-800/90 leading-relaxed">' +
       txt(
-        "아래에서 결과가 본인에게 얼마나 맞는지 선택한 뒤 제출해 주세요. 제출하기를 누르면 검사 응답·결과와 선택해서 작성한 경험 메모가 함께 저장됩니다. 데이터는 진단 문항 가중치 개선에만 쓰이며, 삭제를 원하면 운영자에게 요청할 수 있습니다.",
-        "Please rate how well the result fits you, then submit. Clicking Submit saves your answers, results, and any optional experience reflection you wrote. Data is used only to improve scoring; you may request deletion from the operator."
+        "결과가 본인과 얼마나 잘 맞는지 선택해 주세요. 제출하기를 누르면 이름, 검사 응답과 결과, 선택한 평가가 저장됩니다. 자료는 검사 개선에만 사용하며, 삭제를 원하시면 운영자에게 요청할 수 있습니다.",
+        "Please rate how well the result fits you, then submit. Clicking Submit saves your name, answers, results, and selected feedback. Data is used only to improve scoring; you may request deletion from the operator."
       ) +
       "</p>" +
       '<div class="space-y-2">' +
@@ -181,61 +181,29 @@
       '<div class="grid gap-3 sm:grid-cols-3">' +
       '<div>' +
       '<label for="experiment-known-core" class="text-xs font-semibold text-gray-700">' +
-      txt("상담에서 확정된 기본유형", "Counsel-confirmed core type") +
+      txt("상담에서 확인한 기본 유형", "Counsel-confirmed core type") +
       "</label>" +
-      '<input id="experiment-known-core" type="text" maxlength="30" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
-      txt("예: 3번", "e.g. Type 3") +
-      '">' +
+      '<select id="experiment-known-core" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm">' +
+      '<option value="">' + txt('기본 유형 선택 안 함', 'Core type not selected') + '</option>' +
+      Array.from({ length: 9 }, function (_, i) { return '<option value="' + (i + 1) + '">' + txt((i + 1) + '번', 'Type ' + (i + 1)) + '</option>'; }).join('') +
+      '</select>' +
       "</div>" +
       '<div>' +
       '<label for="experiment-known-subtype" class="text-xs font-semibold text-gray-700">' +
-      txt("상담에서 확정된 하위유형", "Counsel-confirmed subtype") +
+      txt("상담에서 확인한 하위유형", "Counsel-confirmed subtype") +
       "</label>" +
-      '<input id="experiment-known-subtype" type="text" maxlength="30" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
-      txt("예: so", "e.g. so") +
-      '">' +
+      '<select id="experiment-known-subtype" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm">' +
+      '<option value="">' + txt('하위유형 선택 안 함', 'Subtype not selected') + '</option>' +
+      ['sp', 'so', 'sx'].map(function (code) { var names = { sp: txt('자기보존', 'Self-preservation'), so: txt('사회적', 'Social'), sx: txt('성적(일대일)', 'One-to-one') }; return '<option value="' + code + '">' + names[code] + '</option>'; }).join('') +
+      '</select>' +
       "</div>" +
       '<div>' +
       '<label for="experiment-known-wing" class="text-xs font-semibold text-gray-700">' +
-      txt("상담에서 확정된 날개", "Counsel-confirmed wing") +
+      txt("상담에서 확인한 날개", "Counsel-confirmed wing") +
       "</label>" +
-      '<input id="experiment-known-wing" type="text" maxlength="30" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
-      txt("예: 3w4", "e.g. 3w4") +
-      '">' +
-      "</div>" +
-      "</div>" +
-      '<div>' +
-      '<label for="experiment-self-note" class="text-xs font-semibold text-gray-700">' +
-      txt("메모 (선택)", "Notes (optional)") +
-      "</label>" +
-      '<textarea id="experiment-self-note" rows="3" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
-      txt("알고 있는 타입, 피드백 등", "Known type, feedback, etc.") +
-      '"></textarea>' +
-      "</div>" +
-      '<div class="grid gap-3 md:grid-cols-3">' +
-      '<div>' +
-      '<label for="experiment-accurate-parts" class="text-xs font-semibold text-gray-700">' +
-      txt("결과에서 맞았던 부분", "What felt accurate") +
-      "</label>" +
-      '<textarea id="experiment-accurate-parts" rows="3" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
-      txt("예: 관계에서 반복되는 패턴", "e.g. the relationship pattern") +
-      '"></textarea>' +
-      "</div>" +
-      '<div>' +
-      '<label for="experiment-inaccurate-parts" class="text-xs font-semibold text-gray-700">' +
-      txt("결과에서 틀렸던 부분", "What felt inaccurate") +
-      "</label>" +
-      '<textarea id="experiment-inaccurate-parts" rows="3" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
-      txt("예: 동기 설명, 하위유형", "e.g. motivation or subtype") +
-      '"></textarea>' +
-      "</div>" +
-      '<div>' +
-      '<label for="experiment-consultation-check" class="text-xs font-semibold text-gray-700">' +
-      txt("상담에서 꼭 확인해야 할 것", "Must-check in consultation") +
-      "</label>" +
-      '<textarea id="experiment-consultation-check" rows="3" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" placeholder="' +
-      txt("예: 2번과 9번 혼동", "e.g. 2 vs 9 confusion") +
-      '"></textarea>' +
+      '<select id="experiment-known-wing" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" disabled>' +
+      '<option value="">' + txt('기본 유형을 먼저 선택해 주세요', 'Select a core type first') + '</option>' +
+      '</select>' +
       "</div>" +
       "</div>" +
       '<button type="button" id="experiment-submit-btn" class="w-full sm:w-auto bg-[#30322D] hover:bg-[#202219] text-white font-bold py-3 px-8 rounded-full text-sm">' +
@@ -243,6 +211,17 @@
       "</button>" +
       '<p id="experiment-submit-status" class="text-xs text-gray-600 min-h-[1.25rem]"></p>' +
       "</div>";
+
+    var coreSelect = document.getElementById("experiment-known-core");
+    var wingSelect = document.getElementById("experiment-known-wing");
+    if (coreSelect && wingSelect) coreSelect.addEventListener("change", function () {
+      var core = Number(coreSelect.value);
+      wingSelect.disabled = !core;
+      wingSelect.innerHTML = '<option value="">' + txt('날개 선택 안 함', 'Wing not selected') + '</option>' +
+        (core ? [core === 1 ? 9 : core - 1, core === 9 ? 1 : core + 1].map(function (wing) {
+          return '<option value="' + core + 'w' + wing + '">' + txt(wing + '번 날개', 'Wing ' + wing) + '</option>';
+        }).join('') : '');
+    });
 
     var statusEl = document.getElementById("experiment-submit-status");
     var submitBtn = document.getElementById("experiment-submit-btn");
@@ -252,18 +231,14 @@
       if (!selfEl) {
         if (statusEl)
           statusEl.textContent = txt(
-            "자기평가를 선택해 주세요.",
+            "결과가 나와 얼마나 잘 맞는지 선택해 주세요.",
             "Please select how well the result fits."
           );
         return;
       }
-      var note = (document.getElementById("experiment-self-note") || {}).value || "";
       var knownCore = ((document.getElementById("experiment-known-core") || {}).value || "").trim();
       var knownSubtype = ((document.getElementById("experiment-known-subtype") || {}).value || "").trim();
       var knownWing = ((document.getElementById("experiment-known-wing") || {}).value || "").trim();
-      var accurateParts = ((document.getElementById("experiment-accurate-parts") || {}).value || "").trim();
-      var inaccurateParts = ((document.getElementById("experiment-inaccurate-parts") || {}).value || "").trim();
-      var consultationCheck = ((document.getElementById("experiment-consultation-check") || {}).value || "").trim();
       var meta = getMeta();
       var participantName = meta && typeof meta.participantName === "string"
         ? meta.participantName.trim()
@@ -301,15 +276,10 @@
         Object.assign({}, meta, { participantName: participantName, consentAccepted: true }),
         payload,
         selfEl.value,
-        note.slice(0, 4000),
+        null,
         knownCore.slice(0, 30),
         knownSubtype.slice(0, 30),
-        knownWing.slice(0, 30),
-        {
-          accurateParts: accurateParts.slice(0, 2000),
-          inaccurateParts: inaccurateParts.slice(0, 2000),
-          consultationCheck: consultationCheck.slice(0, 2000),
-        }
+        knownWing.slice(0, 30)
       );
       var res = await window.supabaseClient
         .from("diagnostic_experiment_sessions")
@@ -363,7 +333,13 @@
     var analytics = {
       result: {
         core: payload.core || null,
-        subtype: phase4 && phase4.subtypeCode ? phase4.subtypeCode : null,
+        subtype: (function () {
+          if (!(phase4 && phase4.subtypeCode)) return null;
+          var code = String(phase4.subtypeCode).trim().toLowerCase();
+          if (/^(sp|sx|so)_[1-9]$/.test(code)) return code;
+          if (/^(sp|sx|so)$/.test(code) && payload.core) return code + '_' + payload.core;
+          return phase4.subtypeCode;
+        })(),
         wing: phase4 && phase4.wingNum ? phase4.wingNum : null,
         confidence: payload.confidence || payload.confidenceLabel || null,
         coreResolved: !!payload.coreResolved,
@@ -390,12 +366,9 @@
       phase4Result: phase4,
       timings: payload.responseTiming || null,
     };
-    if (payload.assessmentVersion === "word-narrative-v1") {
+    if (payload.assessmentVersion === "word-narrative-v2") {
       analytics.assessmentVersion = payload.assessmentVersion;
       analytics.screening = payload.screening || null;
-      analytics.narrativeReflection = typeof payload.narrativeReflection === "string"
-        ? payload.narrativeReflection.trim().slice(0, 600) || null
-        : null;
     }
     return analytics;
   }
@@ -407,7 +380,14 @@
       var pct = total > 0 ? ((x.score / total) * 100).toFixed(2) : "0";
       return { type: x.type, score: x.score, relative_pct: pct };
     });
-    var feedback = feedbackDetail || {};
+    // 이전 호출이 주관식 내용을 넘겨도 새 제출에는 포함하지 않는다.
+    knownCore = /^[1-9]$/.test(String(knownCore || '')) ? String(knownCore) : null;
+    knownSubtype = ['sp', 'so', 'sx'].includes(knownSubtype) ? knownSubtype : null;
+    // Analyzer expects combined instinct/core codes (e.g. so_4), matching fixture + countertype audit.
+    if (knownSubtype && knownCore) knownSubtype = knownSubtype + '_' + knownCore;
+    var coreNumber = Number(knownCore);
+    var validWings = coreNumber ? [coreNumber + 'w' + (coreNumber === 1 ? 9 : coreNumber - 1), coreNumber + 'w' + (coreNumber === 9 ? 1 : coreNumber + 1)] : [];
+    knownWing = validWings.includes(knownWing) ? knownWing : null;
 
     return {
       participant_name: String(meta.participantName || "").trim(),
@@ -440,9 +420,9 @@
             subtype: knownSubtype || null,
             wing: knownWing || null,
           },
-          accurate_parts: feedback.accurateParts || null,
-          inaccurate_parts: feedback.inaccurateParts || null,
-          consultation_check: feedback.consultationCheck || null,
+          accurate_parts: null,
+          inaccurate_parts: null,
+          consultation_check: null,
         },
       },
       tie_break_log: {
@@ -457,7 +437,7 @@
       self_reported_core: knownCore || null,
       self_reported_subtype: knownSubtype || null,
       self_reported_wing: knownWing || null,
-      self_note: selfNote || null,
+      self_note: null,
       user_agent: String(navigator.userAgent || "").slice(0, 500),
     };
   }

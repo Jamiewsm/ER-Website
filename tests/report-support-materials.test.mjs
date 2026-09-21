@@ -115,7 +115,7 @@ test('selectSupportMaterials adds adult suppression material without parent reso
   assert.equal(result.repressedInstinct.code, 'so');
   assert.deepEqual(result.materials.map((material) => material.id), ['social_instinct_repressed']);
   assert.equal(result.materials[0].typeTitle, '내 자유와 계획이 가장 중요한 사람');
-  assert.match(result.materials[0].reportSummary, /집단 소속/);
+  assert.match(result.materials[0].reportSummary, /모임에서의 역할/);
   assert.ok(result.materials[0].focusAreas.length > 0);
   assert.ok(result.materials[0].practicePrompts.length > 0);
   assert.equal(result.pendingMaterials.length, 0);
@@ -138,7 +138,7 @@ test('selectSupportMaterials builds parent package with child and sibling resour
     'child_type_conversation_principles',
     'sibling_conflict_mediation'
   ]);
-  assert.equal(result.materials[0].typeTitle, '조용하고 덜 침투적인 8번');
+  assert.equal(result.materials[0].typeTitle, '조용하고 간섭을 덜 하는 8번');
   assert.equal(result.materials[1].typeTitle, '8번 유형 엄마');
   assert.equal(result.materials[2].typeTitle, '충성하는 사람 / 의심하는 사람');
   assert.equal(result.materials[3].typeTitle, '충성스러운 아이');
@@ -159,7 +159,7 @@ test('selectSupportMaterials adds self-preservation suppression material now tha
     'self_preservation_instinct_repressed',
     'mother_type_traits'
   ]);
-  assert.equal(result.materials[0].typeTitle, '머리는 멀리 가지만 몸과 현실은 뒤에 남는 사람');
+  assert.equal(result.materials[0].typeTitle, '생각에 몰두하다 몸과 생활을 챙기지 못하는 사람');
   assert.deepEqual(result.pendingMaterials.map((material) => material.id), []);
 });
 

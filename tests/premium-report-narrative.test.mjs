@@ -1,4 +1,4 @@
-// 단어·서사형 검사 결과지의 후보 비교, 미확정 해석, 경험 메모와 제출 연결을 검증한다.
+// 단어·서사형 검사 결과지의 후보 비교, 미확정 해석, 주관식 제거와 제출 연결을 검증한다.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -96,16 +96,16 @@ function plain(value) {
 
 function screeningFixture(candidates = [4, 6, 7, 9]) {
   return {
-    version: 'word-screening-v1',
+    version: 'word-narrative-v2',
     candidates,
     unclear: false,
-    ranked: candidates.map((type) => ({ type, yes: 8, unsure: 3, no: 2, score: 6 }))
+    ranked: candidates.map((type) => ({ type, yes: 6, unsure: 2, no: 1, score: 6 }))
   };
 }
 
 function reportFixture(overrides = {}) {
   return {
-    assessmentVersion: 'word-narrative-v1',
+    assessmentVersion: 'word-narrative-v2',
     core: 4,
     coreResolved: true,
     coreDisplay: '4번',
@@ -134,19 +134,13 @@ function reportFixture(overrides = {}) {
   };
 }
 
-test('experience reflection is escaped as text, trimmed, and limited before HTML rendering', () => {
-  const { context } = loadReport();
-  const attack = '<img src=x onerror="alert(1)"><script>alert(2)</script>&\'';
-  const raw = attack + '가'.repeat(600) + '잘려야 하는 끝';
-  context.model = { narrativeReflection: `  ${raw}  ` };
-  const html = vm.runInContext('renderNarrativeReflection(model)', context);
-  const escaped = raw.slice(0, 600)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  assert.match(html, /id="report-reflection"/);
-  assert.ok(html.includes(`<blockquote>${escaped}</blockquote>`));
-  assert.doesNotMatch(html, /<img|<script|잘려야 하는 끝/);
-  assert.equal(vm.runInContext("renderNarrativeReflection({ narrativeReflection: '   ' })", context), '');
+test('complete reports discard stale narrative reflection from old payloads', () => {
+  const { context, getElement } = loadReport();
+  context.model = reportFixture({ narrativeReflection: '<script>privateReflection</script>' });
+  vm.runInContext('renderPremiumReport(buildPremiumReportModel(model))', context);
+  const html = getElement('result-view').innerHTML;
+  assert.match(html, /id="report-screening"/);
+  assert.doesNotMatch(html, /report-reflection|privateReflection|<textarea/);
 });
 
 test('four candidate comparison uses all four narrative scores and excludes noncandidates', () => {
@@ -161,7 +155,7 @@ test('four candidate comparison uses all four narrative scores and excludes nonc
   assert.deepEqual(rows.map((match) => [Number(match[1]), Number(match[2])]), [[4, 40], [6, 30], [7, 20], [9, 10]]);
   assert.equal(rows.reduce((sum, match) => sum + Number(match[2]), 0), 100);
   assert.doesNotMatch(html, /<h3>2번<\/h3>/);
-  assert.match(html, /예 8 \/ 모르겠다 3 \/ 아니요 2/);
+  assert.match(html, /예 6 \/ 모르겠다 2 \/ 아니요 1/);
   assert.match(html, /유형일 확률이 아닙니다/);
 });
 
@@ -187,7 +181,7 @@ test('pending subtype and wing stay explicit while the headline remains concise'
   assert.match(model.display.wing, /추가 확인 필요/);
   assert.doesNotMatch(JSON.stringify(model.display), /자기보존|순수유형|pure core/);
   assert.match(model.confidenceExplanation.summary, /검증된 정확도를 뜻하지 않습니다/);
-  assert.equal(vm.runInContext("formatReportHeadline({ assessmentVersion: 'word-narrative-v1', core: 4, wingNum: 5, instinctLabel: '사회적', phase4: { subtypeCode: 'so' } })", context), '4w5 · 사회적');
+  assert.equal(vm.runInContext("formatReportHeadline({ assessmentVersion: 'word-narrative-v2', core: 4, wingNum: 5, instinctLabel: '사회적', phase4: { subtypeCode: 'so' } })", context), '4w5 · 사회적');
 });
 
 test('core-only content contains the actual core material without a fallback subtype identity', () => {
@@ -245,7 +239,7 @@ test('complete report with unresolved subtype and wing never presents sp or pure
   assert.equal(experimentResults[0].reportKey, 'pending_4');
 });
 
-test('low evidence result keeps candidate comparison, escaped reflection and experiment submission host', () => {
+test('low evidence result keeps candidate comparison and submission without stale free text', () => {
   const { context, getElement, experimentResults } = loadReport();
   const reflection = '<script>alert(1)</script> 나의 기록' + '가'.repeat(700);
   getElement('narrative-reflection').value = reflection;
@@ -259,14 +253,14 @@ test('low evidence result keeps candidate comparison, escaped reflection and exp
   const html = getElement('result-view').innerHTML;
   assert.match(html, /er-report-gate/);
   assert.match(html, /id="report-screening"/);
-  assert.match(html, /id="report-reflection"/);
+  assert.doesNotMatch(html, /id="report-reflection"/);
   assert.match(html, /id="experiment-result-panel"/);
-  assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+  assert.doesNotMatch(html, /나의 기록|alert\(1\)/);
   assert.doesNotMatch(html, /<script>/);
   assert.equal((html.match(/class="er-report-screening-row"/g) || []).length, 4);
   assert.equal(experimentResults.length, 1, 'an inconclusive result must still expose the optional experiment submission');
   assert.equal(experimentResults[0].coreResolved, false);
-  assert.equal(experimentResults[0].narrativeReflection, reflection.slice(0, 600));
+  assert.equal(Object.hasOwn(experimentResults[0], 'narrativeReflection'), false);
   assert.deepEqual(plain(experimentResults[0].screening.candidates), [4, 6, 7, 9]);
 });
 

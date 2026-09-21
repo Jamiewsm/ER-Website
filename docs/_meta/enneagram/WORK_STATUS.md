@@ -11,7 +11,7 @@ retrieval_tags:
   - lock_state
   - project_complete
 current_phase: 7
-current_task: "word-narrative-v1 premium assessment implemented and verified; awaiting Cursor merge"
+current_task: "word-narrative-v2 Korean review and choice-only assessment verified; PR #154 awaiting Cursor merge"
 checkpoint_plan: []
 checkpoint: null
 paused: true
@@ -29,10 +29,11 @@ project_status: "manual_updates_after_phase_6"
 
 ## 2026-09-21 사용자 요청에 따른 단어·서사형 검사
 
-- `codex/premium-word-narrative`의 수동 변경이며 운영 반영/배포 완료를 뜻하지 않는다. 자동화의 `paused: true`는 유지한다.
-- 117개 단어의 예/모르겠다/아니요 → 3~4개 후보의 동기 비교 → 해당 유형의 하위유형·날개 각 3문항으로 이어진다. 선택적인 경험 기록은 채점하지 않는다.
-- 새 흐름의 단어 점수는 후보 선별에만 사용한다. 동률·불충분한 비교·하위유형/날개 미확정 상태를 별도로 표시하며, 기존 채점과 `word-narrative-v1`을 구분한다.
-- 상세 범위·검증·잔여 사항은 [작업 계획](../../projects/premium-word-narrative-20260921/plan.md)과 [맥락 기록](../../projects/premium-word-narrative-20260921/context-notes.md)을 기준으로 한다. 아래 6월 스냅샷은 변경 전 기록이다.
+- `codex/premium-korean-review`의 수동 변경이며 운영 반영/배포 완료를 뜻하지 않는다. 자동화의 `paused: true`는 유지한다.
+- 81개 단어의 예/모르겠다/아니요 → 3~4개 후보의 동기 비교 → 해당 유형의 하위유형·날개 각 3문항으로 이어진다. 주관식 경험 기록은 제거했고 선택지만 저장한다.
+- 새 흐름의 단어 점수는 후보 선별에만 사용한다. 동률·불충분한 비교·하위유형/날개 미확정 상태를 별도로 표시하며, `assessmentVersion: word-narrative-v2`로 기존 채점/`word-narrative-v1`과 구분한다.
+- 실험 제출의 확인 하위유형은 `so_4`처럼 instinct+core 결합 코드로 저장해 분석 스크립트 카운터타입 감사에 포함되게 한다.
+- 상세 범위·검증·잔여 사항은 [작업 계획](../../projects/premium-korean-review-20260921/plan.md)과 [맥락 기록](../../projects/premium-korean-review-20260921/context-notes.md)을 기준으로 한다. 아래 6월 스냅샷은 변경 전 기록이다.
 
 ## 2026-06-20 현재 운영 코드 스냅샷
 

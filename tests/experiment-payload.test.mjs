@@ -130,7 +130,7 @@ test('word-narrative experiment row preserves screening separately from narrativ
   const row = api._test.buildRow(
     { participantName: 'Test User', consentAccepted: true },
     {
-      assessmentVersion: 'word-narrative-v1',
+      assessmentVersion: 'word-narrative-v2',
       screening,
       narrativeReflection: '  최근에 약속을 지키려다 갈등이 생겼습니다.  ',
       responses: { narrative_1: 'A' },
@@ -140,30 +140,43 @@ test('word-narrative experiment row preserves screening separately from narrativ
   );
 
   const payload = plain(row.result_summary.experiment_payload);
-  assert.equal(payload.assessmentVersion, 'word-narrative-v1');
+  assert.equal(payload.assessmentVersion, 'word-narrative-v2');
   assert.deepEqual(payload.screening, screening);
-  assert.equal(payload.narrativeReflection, '최근에 약속을 지키려다 갈등이 생겼습니다.');
+  assert.equal(Object.hasOwn(payload, 'narrativeReflection'), false);
   assert.deepEqual(plain(row.responses), { narrative_1: 'A' });
   assert.deepEqual(plain(row.evidence), { 1: ['narrative_1'] });
-  assert.equal(row.consent_version, '2026-09-21');
+  assert.equal(row.consent_version, '2026-09-21-choice-only');
 });
 
-test('optional narrative reflection is trimmed, limited to 600 characters, and absent when blank', () => {
+test('new submissions discard all legacy free-text feedback fields', () => {
   const api = loadExperimentModule();
-  function reflection(value) {
-    return api._test.buildExperimentAnalyticsPayload({
-      assessmentVersion: 'word-narrative-v1',
-      narrativeReflection: value
-    }).narrativeReflection;
-  }
-
-  assert.equal(reflection('  ' + '가'.repeat(601) + '  '), '가'.repeat(600));
-  assert.equal(reflection(' \n '), null);
-  assert.equal(reflection(undefined), null);
-  assert.equal(reflection({ text: 'unrecognized value' }), null);
+  const row = plain(api._test.buildRow({}, {
+    assessmentVersion: 'word-narrative-v2', narrativeReflection: 'old private reflection'
+  }, 'correct', 'old private note', '4', 'so', '4w5', {
+    accurateParts: 'old private accurate', inaccurateParts: 'old private inaccurate', consultationCheck: 'old private consultation'
+  }));
+  assert.equal(row.self_note, null);
+  assert.equal(row.result_summary.feedback_detail.accurate_parts, null);
+  assert.equal(row.result_summary.feedback_detail.inaccurate_parts, null);
+  assert.equal(row.result_summary.feedback_detail.consultation_check, null);
+  assert.doesNotMatch(JSON.stringify(row), /old private|narrativeReflection/);
+  assert.deepEqual(row.result_summary.feedback_detail.confirmed_type, { core: '4', subtype: 'so_4', wing: '4w5' });
 });
 
-test('experiment reflection is saved only by explicit submission with consent', async () => {
+test('confirmed type choices reject invalid values and nonadjacent wings', () => {
+  const api = loadExperimentModule();
+  for (const [core, subtype, wing, expected] of [
+    ['1', 'sp', '1w9', ['1', 'sp_1', '1w9']],
+    ['9', 'sx', '9w1', ['9', 'sx_9', '9w1']],
+    ['4', 'so', '4w7', ['4', 'so_4', null]],
+    ['free text', 'other', '4w5', [null, null, null]]
+  ]) {
+    const row = api._test.buildRow({}, {}, 'correct', null, core, subtype, wing);
+    assert.deepEqual([row.self_reported_core, row.self_reported_subtype, row.self_reported_wing], expected);
+  }
+});
+
+test('choice-only experiment data is saved only by explicit submission with consent', async () => {
   const inserts = [];
   const listeners = {};
   const host = { classList: { remove() {} }, innerHTML: '' };
@@ -194,11 +207,13 @@ test('experiment reflection is saved only by explicit submission with consent', 
   });
 
   api.onResultReady({
-    assessmentVersion: 'word-narrative-v1',
+    assessmentVersion: 'word-narrative-v2',
     narrativeReflection: '작성한 경험 메모'
   });
   assert.equal(inserts.length, 0, 'rendering a result must not submit responses or free text');
-  assert.match(host.innerHTML, /제출하기를 누르면 검사 응답·결과와 선택해서 작성한 경험 메모가 함께 저장됩니다/);
+  assert.match(host.innerHTML, /이름, 검사 응답과 결과, 선택한 평가가 저장됩니다/);
+  assert.doesNotMatch(host.innerHTML, /<textarea|experiment-self-note|experiment-accurate-parts/);
+  assert.equal((host.innerHTML.match(/<select /g) || []).length, 3);
 
   await listeners.click();
   assert.equal(inserts.length, 0, 'explicit submission still requires consent');
@@ -207,7 +222,7 @@ test('experiment reflection is saved only by explicit submission with consent', 
   meta.consentAccepted = true;
   await listeners.click();
   assert.equal(inserts.length, 1);
-  assert.equal(inserts[0].result_summary.experiment_payload.narrativeReflection, '작성한 경험 메모');
+  assert.doesNotMatch(JSON.stringify(inserts[0]), /narrativeReflection|작성한 경험 메모/);
   assert.equal(inserts[0].consent_accepted, true);
 });
 
@@ -260,9 +275,11 @@ test('experiment consent gate hides every restored stage then resumes it without
   assert.equal(elements['phase4-form'].classList.contains('hidden'), false);
 });
 
-test('experiment feedback UI collects structured reviewer notes', () => {
-  assert.match(source, /experiment-accurate-parts/);
-  assert.match(source, /experiment-inaccurate-parts/);
-  assert.match(source, /experiment-consultation-check/);
-  assert.match(source, /feedback_detail/);
+test('assessment and feedback markup contain no free-response controls', () => {
+  const html = readFileSync(new URL('../test.html', import.meta.url), 'utf8');
+  assert.doesNotMatch(html, /<textarea|narrative-reflection/);
+  assert.doesNotMatch(source, /<textarea|experiment-self-note|experiment-accurate-parts|experiment-inaccurate-parts|experiment-consultation-check/);
+  assert.match(source, /<select id="experiment-known-core"/);
+  assert.match(source, /<select id="experiment-known-subtype"/);
+  assert.match(source, /<select id="experiment-known-wing"/);
 });

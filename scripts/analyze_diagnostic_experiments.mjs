@@ -32,11 +32,15 @@ function normalizeCore(value) {
   return match ? Number(match[0]) : null;
 }
 
-function normalizeSubtype(value) {
+function normalizeSubtype(value, coreHint) {
   if (value === undefined || value === null) return null;
   const text = String(value).trim().toLowerCase();
-  const match = text.match(/\b(sp|sx|so)[_\-\s]*([1-9])\b/);
-  return match ? `${match[1]}_${match[2]}` : null;
+  const combined = text.match(/\b(sp|sx|so)[_\-\s]*([1-9])\b/);
+  if (combined) return `${combined[1]}_${combined[2]}`;
+  const bare = text.match(/^(sp|sx|so)$/);
+  if (!bare) return null;
+  const core = normalizeCore(coreHint);
+  return core ? `${bare[1]}_${core}` : null;
 }
 
 function getExperimentPayload(row) {
@@ -62,7 +66,10 @@ function getConfirmedCore(row) {
 }
 
 function getPredictedSubtype(row) {
-  return normalizeSubtype(getExperimentPayload(row)?.result?.subtype ?? row?.result_summary?.subtype);
+  return normalizeSubtype(
+    getExperimentPayload(row)?.result?.subtype ?? row?.result_summary?.subtype,
+    getPredictedCore(row)
+  );
 }
 
 function getConfirmedSubtype(row) {
@@ -71,7 +78,8 @@ function getConfirmedSubtype(row) {
     feedback?.confirmed_type?.subtype ??
       row?.self_reported_subtype ??
       row?.known_subtype ??
-      row?.confirmed_subtype
+      row?.confirmed_subtype,
+    getConfirmedCore(row)
   );
 }
 

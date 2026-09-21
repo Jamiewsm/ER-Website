@@ -28,14 +28,14 @@ test('premium report model calls ERReportSupportMaterials selector', () => {
 
 test('premium report renderer includes support materials section and nav link', () => {
   assert.match(testJs, /id="report-support"/);
-  assert.match(testJs, /Support Materials/);
+  assert.match(testJs, /참고 자료/);
   assert.match(testJs, /결과에 따라 함께 보면 좋은 자료/);
   assert.match(testJs, /href="#report-support"/);
 });
 
 test('premium report renderer includes application hook before next-step CTA', () => {
   assert.match(testJs, /id="report-application"/);
-  assert.match(testJs, /이해에서 끝나지 않고, 실제 관계를 돕는 지도/);
+  assert.match(testJs, /나와 주변 사람에게 적용하기/);
   assert.match(testJs, /er-report-application-map/);
   assert.match(testJs, /내가 지키려는 것/);
   assert.match(testJs, /건강할 때 드러나는 강점/);
@@ -50,8 +50,8 @@ test('premium report first screen includes executive summary card', () => {
   assert.match(testJs, /function renderExecutiveSummaryCard/);
   assert.match(testJs, /id="report-executive"/);
   assert.match(testJs, /이 결과에서 가장 먼저 볼 것/);
-  assert.match(testJs, /Close Types/);
-  assert.match(testJs, /Counseling Focus/);
+  assert.match(testJs, /함께 살펴볼 유형/);
+  assert.match(testJs, /상담에서 확인할 점/);
   assert.match(testJs, /href="#report-executive"/);
   assert.match(testCss, /\.er-report-executive/);
   assert.match(testCss, /\.er-report-executive-grid/);
@@ -61,7 +61,7 @@ test('premium report first screen includes executive summary card', () => {
 test('premium report body uses personal synthesis instead of repeated subtype notes', () => {
   assert.match(testJs, /c\.synthesis/);
   assert.match(testJs, /class="er-report-synthesis"/);
-  assert.match(testJs, /Personal Synthesis/);
+  assert.match(testJs, /유형·하위유형·날개 함께 읽기/);
   assert.match(testJs, /무엇을 지키는가/);
   assert.match(testJs, /압박에서 과해지는 것/);
   assert.match(testJs, /가까운 사람이 경험하는 것/);
@@ -160,7 +160,7 @@ test('phase 1 uses a shorter forced center screen plus behavior-recall type item
   assert.match(centerBlock, /생각보다 차갑게 대하거나 거절했을 때/);
   assert.match(centerBlock, /일이 예상과 다르게 틀어졌을 때/);
   // A/B 강제선택에는 억지 선택을 막는 비채점 옵션.
-  assert.match(testJs, /둘 다 아니다 \(비채점\)/);
+  assert.match(testJs, /모르겠다 \/ 둘 다 아니다/);
   assert.match(testJs, /if \(raw === 'U'\) return;/);
   assert.match(testJs, /if \(choice === 'U'\) return;/);
 
