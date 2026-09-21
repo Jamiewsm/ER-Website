@@ -12,6 +12,7 @@ function readyConfig() {
     recipientName: '가상 수령 주체', receiptNotice: '가상 테스트 영수증 안내',
     bank: { confirmed: true, name: '가상 은행', number: 'TEST-NOT-AN-ACCOUNT', holder: '가상 예금주' },
     zelle: { confirmed: true, address: 'synthetic@example.invalid', holder: 'TEST RECIPIENT' },
+    venmo: { confirmed: true, address: '202-555-0100', holder: 'VENMO TEST RECIPIENT' },
   };
 }
 
@@ -68,11 +69,11 @@ test('each payment method needs its own confirmation, holder, receipt notice, an
     const config = readyConfig(); config[field] = '';
     assert.equal(createApp(config).context.getScholarshipPaymentConfig('KR').ready, false);
   }
-  for (const [region, key, fields] of [['KR', 'bank', ['confirmed', 'holder', 'name', 'number']], ['US', 'zelle', ['confirmed', 'holder', 'address']]]) {
+  for (const [region, key, fields] of [['KR', 'bank', ['confirmed', 'holder', 'name', 'number']], ['US', 'zelle', ['confirmed', 'holder', 'address']], ['US', 'venmo', ['confirmed', 'holder', 'address']]]) {
     for (const field of fields) {
       const config = readyConfig(); config[key][field] = '';
       const context = createApp(config).context;
-      assert.equal(context.getScholarshipPaymentConfig(region).ready, false);
+      assert.equal(context.getScholarshipPaymentConfig(region, key).ready, false);
       assert.equal(context.getScholarshipPaymentConfig(region === 'KR' ? 'US' : 'KR').ready, true);
     }
   }
@@ -129,8 +130,8 @@ test('a fresh US transfer inquiry selects USD even when local selection defaults
   const config = readyConfig(); config.bank.confirmed = false;
   const { context } = createApp(config);
   const html = context.renderApply({ track: 'support', intent: 'transfer', region: 'US' });
-  assert.match(html, /value="US" selected/);
-  assert.doesNotMatch(html, /option value="KR"/);
+  assert.match(html, /value="zelle" selected/);
+  assert.doesNotMatch(html, /option value="bank"/);
   assert.match(html, /name="privacy_agree" required/);
   assert.match(html, /name="turnstile_token"/);
 });
@@ -138,7 +139,7 @@ test('a fresh US transfer inquiry selects USD even when local selection defaults
 test('inquiry submission reuses protected intake without course or payment registration metadata', async () => {
   const { context, calls } = createApp();
   await context.submitScholarshipInquiry(formEvent({
-    category: '장학 후원 입금 확인 요청', support_region: 'US', support_amount: '30.25', support_date: '2026-09-20',
+    category: '장학 후원 입금 확인 요청', support_method: 'zelle', support_amount: '30.25', support_date: '2026-09-20',
   }), true);
   assert.equal(calls.requests.length, 1);
   const body = calls.requests[0].body;
@@ -200,4 +201,50 @@ test('clipboard failure exposes manual copy; native share cancellation is quiet'
   context.navigator.share = async () => { throw { name: 'AbortError' }; };
   await context.shareScholarshipPage();
   assert.equal(get('scholarship-share-status').textContent, '');
+});
+
+
+test('Venmo has independent instructions, USD selection, schedule guidance, and a refreshable inquiry route', () => {
+  const { context, get } = createApp();
+  context.changeScholarshipRegion('US');
+  context.selectScholarshipAmount(30);
+  context.changeScholarshipService('venmo');
+  assert.equal(context.scholarshipSelection.amount, '30');
+  assert.match(get('scholarship-giving-panel').outerHTML, /value="venmo" selected/);
+  context.changeScholarshipFrequency('monthly');
+  assert.match(context.scholarshipFrequencyNote(), /Venmo.*Schedule/);
+  context.showScholarshipTransfer({ preventDefault() {} });
+  const html = get('scholarship-transfer').innerHTML;
+  assert.match(html, /VENMO TEST RECIPIENT/);
+  assert.match(html, /202-555-0100/);
+  assert.match(html, /Pay\/Request/);
+  assert.match(html, /service=venmo/);
+  assert.doesNotMatch(html, /Zelle 수취인|synthetic@example.invalid/);
+  const fresh = createApp().context.renderApply({ track: 'support', intent: 'transfer', region: 'US', service: 'venmo' });
+  assert.match(fresh, /value="venmo" selected/);
+});
+
+test('Venmo confirmation requests preserve the actual service in the existing message', async () => {
+  const { context, calls } = createApp();
+  await context.submitScholarshipInquiry(formEvent({
+    category: '장학 후원 입금 확인 요청', support_method: 'venmo', support_amount: '30.25', support_date: '2026-09-21',
+  }), true);
+  assert.equal(calls.requests.length, 1);
+  assert.match(calls.requests[0].body.message, /송금 방법: Venmo/);
+  assert.match(calls.requests[0].body.message, /\$30.25 USD/);
+  assert.equal(calls.requests[0].body.program_key, undefined);
+});
+
+test('unconfirmed Venmo and unknown payment methods cannot fall through to a confirmed Zelle account', async () => {
+  const config = readyConfig(); config.venmo.confirmed = false;
+  const { context, calls } = createApp(config);
+  context.changeScholarshipRegion('US');
+  context.changeScholarshipService('venmo');
+  assert.match(context.renderScholarshipGivingPanel(), /disabled[^>]*>후원 접수 준비 중/);
+  const form = context.renderApply({ track: 'support', intent: 'transfer', region: 'US', service: 'zelle' });
+  assert.doesNotMatch(form, /option value="venmo"/);
+  for (const method of ['venmo', 'unknown', null]) {
+    await context.submitScholarshipInquiry(formEvent({ support_method: method, support_amount: '30', support_date: '2026-09-21' }), true);
+  }
+  assert.equal(calls.requests.length, 0);
 });

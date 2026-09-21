@@ -1,9 +1,11 @@
 // Scholarship giving uses bank apps; this page never verifies or initiates a payment.
-var scholarshipSelection = { region: 'KR', frequency: 'once', amount: '' };
+var scholarshipSelection = { region: 'KR', service: 'zelle', frequency: 'once', amount: '' };
 
-function getScholarshipPaymentConfig(region = 'KR') {
+function getScholarshipPaymentConfig(region = 'KR', service = scholarshipSelection.service) {
     const config = window.ER_SCHOLARSHIP_SUPPORT || {};
-    const method = region === 'US' ? config.zelle : config.bank;
+    const key = region === 'US' ? (service === 'venmo' ? 'venmo' : 'zelle') : 'bank';
+    const label = key === 'bank' ? '한국 계좌이체' : key === 'venmo' ? 'Venmo' : 'Zelle';
+    const method = config[key];
     const commonReady = config.acceptingContributions === true
         && typeof config.recipientName === 'string' && config.recipientName.trim()
         && typeof config.receiptNotice === 'string' && config.receiptNotice.trim();
@@ -12,7 +14,7 @@ function getScholarshipPaymentConfig(region = 'KR') {
             ? typeof method.address === 'string' && method.address.trim()
             : typeof method.name === 'string' && method.name.trim()
                 && typeof method.number === 'string' && method.number.trim());
-    return { config, method, ready: Boolean(commonReady && detailsReady) };
+    return { config, method, key, label, ready: Boolean(commonReady && detailsReady) };
 }
 
 function parseScholarshipAmount(raw, region) {
@@ -49,9 +51,16 @@ function renderScholarshipGivingPanel() {
                     <label for="scholarship-region" class="mb-2 block text-sm font-bold text-er-inkSoft">후원 방법</label>
                     <select id="scholarship-region" class="min-h-11 w-full rounded-xl border border-er-sand bg-er-base px-4 py-3 text-er-body" onchange="changeScholarshipRegion(this.value)">
                         <option value="KR" ${region === 'KR' ? 'selected' : ''}>한국 · 계좌이체 (원)</option>
-                        <option value="US" ${region === 'US' ? 'selected' : ''}>미국 · Zelle (USD)</option>
+                        <option value="US" ${region === 'US' ? 'selected' : ''}>미국 · Zelle / Venmo (USD)</option>
                     </select>
                 </div>
+                ${region === 'US' ? `<div>
+                    <label for="scholarship-service" class="mb-2 block text-sm font-bold text-er-inkSoft">송금 앱</label>
+                    <select id="scholarship-service" class="min-h-11 w-full rounded-xl border border-er-sand bg-er-base px-4 py-3 text-er-body" onchange="changeScholarshipService(this.value)">
+                        <option value="zelle" ${scholarshipSelection.service !== 'venmo' ? 'selected' : ''}>Zelle · 은행 앱</option>
+                        <option value="venmo" ${scholarshipSelection.service === 'venmo' ? 'selected' : ''}>Venmo</option>
+                    </select>
+                </div>` : ''}
                 <fieldset>
                     <legend class="mb-2 text-sm font-bold text-er-inkSoft">참여 방식</legend>
                     <div class="grid grid-cols-2 gap-2">
@@ -73,7 +82,7 @@ function renderScholarshipGivingPanel() {
                 </div>
                 ${!ready ? '<p class="text-sm leading-relaxed text-er-body break-keep">후원 접수를 준비하고 있습니다. 시작 일정이나 참여 방법은 아래 문의 창구로 연락해 주세요.</p>' : ''}
                 <button type="submit" ${ready ? '' : 'disabled'} class="${scholarshipButtonStyle(true)} w-full">${ready ? '입금 방법 확인하기' : '후원 접수 준비 중'}</button>
-                <p class="text-xs leading-relaxed text-er-muted break-keep">송금은 은행 앱에서 직접 진행합니다. 이 페이지에서 자동으로 결제되거나 출금되지 않습니다.</p>
+                <p class="text-xs leading-relaxed text-er-muted break-keep">송금은 은행 또는 Venmo 앱에서 직접 진행합니다. 이 페이지에서 자동으로 결제되거나 출금되지 않습니다.</p>
             </form>
             <div id="scholarship-transfer" class="hidden mt-6 border-t border-er-sand pt-6" tabindex="-1"></div>
             <a href="#apply?track=support" class="mt-5 flex min-h-11 items-center justify-center text-sm font-bold text-er-green underline underline-offset-4">장학 후원 문의하기</a>
@@ -82,16 +91,26 @@ function renderScholarshipGivingPanel() {
 
 function scholarshipFrequencyNote() {
     if (scholarshipSelection.frequency === 'once') return '한 번의 참여도 감사히 모아 사역자의 반액 장학을 이어갑니다.';
+    if (scholarshipSelection.region === 'US' && scholarshipSelection.service === 'venmo') {
+        return 'Venmo 앱의 Schedule에서 매월 송금을 설정할 수 있습니다. 예약 변경과 해지도 Venmo 앱에서 직접 관리합니다.';
+    }
     return scholarshipSelection.region === 'US'
         ? 'Zelle 예약 송금 지원 여부는 이용 은행에서 확인해 주세요. 예약과 해지는 은행 앱에서 직접 관리합니다.'
         : '매월 후원은 은행 앱에서 자동이체를 설정해 주세요. 금액 변경과 해지도 은행 앱에서 직접 관리합니다.';
 }
 
 function changeScholarshipRegion(region) {
-    scholarshipSelection = { region: region === 'US' ? 'US' : 'KR', frequency: scholarshipSelection.frequency, amount: '' };
+    scholarshipSelection = { region: region === 'US' ? 'US' : 'KR', service: 'zelle', frequency: scholarshipSelection.frequency, amount: '' };
     const panel = document.getElementById('scholarship-giving-panel');
     if (panel) panel.outerHTML = renderScholarshipGivingPanel();
     document.getElementById('scholarship-region')?.focus();
+}
+
+function changeScholarshipService(service) {
+    scholarshipSelection.service = service === 'venmo' ? 'venmo' : 'zelle';
+    const panel = document.getElementById('scholarship-giving-panel');
+    if (panel) panel.outerHTML = renderScholarshipGivingPanel();
+    document.getElementById('scholarship-service')?.focus();
 }
 
 function changeScholarshipFrequency(frequency) {
@@ -120,7 +139,7 @@ function selectScholarshipAmount(amount) {
 function showScholarshipTransfer(event) {
     event.preventDefault();
     const { region, frequency } = scholarshipSelection;
-    const { ready, config, method } = getScholarshipPaymentConfig(region);
+    const { ready, config, method, key, label } = getScholarshipPaymentConfig(region);
     if (!ready) return;
     const input = document.getElementById('scholarship-amount');
     const amount = parseScholarshipAmount(input?.value, region);
@@ -138,21 +157,21 @@ function showScholarshipTransfer(event) {
         <h3 class="text-lg font-bold text-er-inkSoft">${frequency === 'monthly' ? '매월 ' : ''}${formatScholarshipAmount(amount, region)} 함께하기</h3>
         <dl class="mt-4 space-y-3 text-sm text-er-body">
             <div><dt class="text-er-muted">후원금 수령 주체</dt><dd class="mt-1 break-keep">${escapeHtml(config.recipientName)}</dd></div>
-            <div><dt class="text-er-muted">${region === 'US' ? 'Zelle 수취인' : escapeHtml(method.name) + ' 예금주'}</dt><dd class="mt-1">${escapeHtml(method.holder)}</dd></div>
+            <div><dt class="text-er-muted">${region === 'US' ? label + ' 수취인' : escapeHtml(method.name) + ' 예금주'}</dt><dd class="mt-1">${escapeHtml(method.holder)}</dd></div>
         </dl>
-        <label for="scholarship-transfer-address" class="mt-4 block text-xs text-er-muted">${region === 'US' ? 'Zelle 등록 이메일 또는 미국 전화번호' : '계좌번호'}</label>
+        <label for="scholarship-transfer-address" class="mt-4 block text-xs text-er-muted">${region === 'US' ? label + ' 등록 이메일 또는 미국 전화번호' : '계좌번호'}</label>
         <input id="scholarship-transfer-address" readonly value="${escapeHtml(address)}" class="mt-1 min-h-11 w-full rounded-xl border border-er-sand bg-er-base px-3 text-sm text-er-inkSoft" onclick="this.select()">
-        <button type="button" onclick="copyScholarshipAddress()" class="${scholarshipButtonStyle()} mt-3 w-full">${region === 'US' ? 'Zelle 수취 정보 복사' : '계좌번호 복사'}</button>
+        <button type="button" onclick="copyScholarshipAddress()" class="${scholarshipButtonStyle()} mt-3 w-full">${region === 'US' ? label + ' 수취 정보 복사' : '계좌번호 복사'}</button>
         <p id="scholarship-copy-status" role="status" class="mt-2 text-xs text-er-muted"></p>
         <ol class="mt-5 list-decimal space-y-2 pl-5 text-sm leading-relaxed text-er-body">
-            <li>${region === 'US' ? '이용하시는 미국 은행 앱의 Zelle 메뉴를 엽니다.' : '이용하시는 은행 앱에서 계좌이체를 엽니다.'}</li>
+            <li>${key === 'venmo' ? 'Venmo 앱의 Pay/Request에서 위 전화번호로 수취인을 찾습니다.' : region === 'US' ? '이용하시는 미국 은행 앱의 Zelle 메뉴를 엽니다.' : '이용하시는 은행 앱에서 계좌이체를 엽니다.'}</li>
             <li>위 입금처를 입력하고, 표시되는 수취인 이름을 확인합니다.</li>
-            <li>${region === 'US' ? 'Zelle 송금 메모' : '받는 분 통장 표시 또는 송금 메모'}에 <strong>반드시 ‘후원’을 포함</strong>해 주세요. 예: 후원 홍길동</li>
+            <li>${region === 'US' ? label + ' 송금 메모' : '받는 분 통장 표시 또는 송금 메모'}에 <strong>반드시 ‘후원’을 포함</strong>해 주세요. 예: 후원 홍길동</li>
             <li>${formatScholarshipAmount(amount, region)}을 송금합니다.</li>
         </ol>
         ${frequency === 'monthly' ? `<p class="mt-4 text-sm leading-relaxed text-er-body">${scholarshipFrequencyNote()}</p>` : ''}
         <p class="mt-4 text-xs leading-relaxed text-er-muted break-keep">${escapeHtml(config.receiptNotice)}</p>
-        <a href="#apply?track=support&intent=transfer&region=${region}" class="${scholarshipButtonStyle()} mt-5 w-full">송금 후 입금 확인 요청하기</a>
+        <a href="#apply?track=support&intent=transfer&region=${region}&service=${key}" class="${scholarshipButtonStyle()} mt-5 w-full">송금 후 입금 확인 요청하기</a>
         <p class="mt-3 text-xs leading-relaxed text-er-muted break-keep">확인 요청은 선택 사항입니다. 실제 입금 여부는 담당자가 확인하며, 요청만으로 입금이 확정되지는 않습니다.</p>`;
     transfer.classList.remove('hidden');
     transfer.focus();
@@ -164,7 +183,7 @@ async function copyScholarshipAddress() {
     if (!input || !status) return;
     try {
         await navigator.clipboard.writeText(input.value);
-        status.textContent = '복사했습니다. 은행 앱에서 수취인 이름을 확인해 주세요.';
+        status.textContent = '복사했습니다. 송금 앱에서 수취인 이름을 확인해 주세요.';
     } catch (_error) {
         input.focus(); input.select();
         status.textContent = '자동 복사가 지원되지 않습니다. 선택된 정보를 직접 복사해 주세요.';
@@ -248,7 +267,8 @@ function renderScholarshipInquiry(payload) {
         </div></div>`;
     }
     const region = payload?.region === 'US' || payload?.region === 'KR' ? payload.region : scholarshipSelection.region;
-    const transfer = payload?.intent === 'transfer' && getScholarshipPaymentConfig(region).ready;
+    const { key: selectedMethod, ready } = getScholarshipPaymentConfig(region, payload?.service || scholarshipSelection.service);
+    const transfer = payload?.intent === 'transfer' && ready;
     const title = transfer ? '입금 확인 요청하기' : '장학 후원 문의하기';
     const inputClass = 'mt-2 min-h-11 w-full rounded-xl border border-er-sand bg-er-base px-4 py-3 text-er-body';
     return `<div class="min-h-screen bg-er-base px-4 py-12 sm:px-6">
@@ -262,7 +282,7 @@ function renderScholarshipInquiry(payload) {
                 <div><label for="scholarship-name" class="text-sm font-bold text-er-inkSoft">${transfer ? '입금자 이름' : '이름'}</label><input id="scholarship-name" name="name" required maxlength="100" autocomplete="name" class="${inputClass}"></div>
                 <div><label for="scholarship-contact" class="text-sm font-bold text-er-inkSoft">연락받으실 이메일 또는 전화번호</label><input id="scholarship-contact" name="contact" required maxlength="200" class="${inputClass}"></div>
                 ${transfer ? `<div class="grid gap-4 sm:grid-cols-2">
-                    <div><label for="scholarship-inquiry-region" class="text-sm font-bold text-er-inkSoft">송금 방법</label><select id="scholarship-inquiry-region" name="support_region" class="${inputClass}" onchange="document.getElementById('scholarship-inquiry-amount').value = ''">${['KR', 'US'].filter(value => getScholarshipPaymentConfig(value).ready).map(value => `<option value="${value}" ${region === value ? 'selected' : ''}>${value === 'US' ? 'Zelle · USD' : '한국 계좌이체 · 원'}</option>`).join('')}</select></div>
+                    <div><label for="scholarship-inquiry-method" class="text-sm font-bold text-er-inkSoft">송금 방법</label><select id="scholarship-inquiry-method" name="support_method" class="${inputClass}" onchange="document.getElementById('scholarship-inquiry-amount').value = ''">${['bank', 'zelle', 'venmo'].map(key => getScholarshipPaymentConfig(key === 'bank' ? 'KR' : 'US', key)).filter(payment => payment.ready).map(payment => `<option value="${payment.key}" ${selectedMethod === payment.key ? 'selected' : ''}>${payment.label} · ${payment.key === 'bank' ? '원' : 'USD'}</option>`).join('')}</select></div>
                     <div><label for="scholarship-date" class="text-sm font-bold text-er-inkSoft">송금일</label><input id="scholarship-date" name="support_date" type="date" required class="${inputClass}"></div>
                     <div class="sm:col-span-2"><label for="scholarship-inquiry-amount" class="text-sm font-bold text-er-inkSoft">실제로 송금한 금액</label><input id="scholarship-inquiry-amount" name="support_amount" inputmode="decimal" required maxlength="12" value="${escapeHtml(region === scholarshipSelection.region ? scholarshipSelection.amount : '')}" class="${inputClass}"></div>
                 </div>` : ''}
@@ -284,8 +304,10 @@ async function submitScholarshipInquiry(event, transfer) {
     const data = new FormData(form);
     const lines = ['목적: 기본과정·심화과정·코치트레이닝 사역자 반액 장학', '개인정보 처리 동의: 동의함'];
     if (transfer) {
-        const region = data.get('support_region') === 'US' ? 'US' : 'KR';
-        if (!getScholarshipPaymentConfig(region).ready) {
+        const methodKey = data.get('support_method');
+        const region = methodKey === 'bank' ? 'KR' : 'US';
+        const { ready, label } = getScholarshipPaymentConfig(region, methodKey);
+        if (!['bank', 'zelle', 'venmo'].includes(methodKey) || !ready) {
             setApplySubmitStatus('선택하신 방법의 후원 접수가 아직 시작되지 않았습니다. 문의 창구로 연락해 주세요.', 'error');
             return;
         }
@@ -294,7 +316,7 @@ async function submitScholarshipInquiry(event, transfer) {
             setApplySubmitStatus('송금 방법과 실제 송금한 금액을 확인해 주세요.', 'error');
             return;
         }
-        lines.push('처리 구분: 입금 확인 요청 (미확인·후원자 입력)', `송금 방법: ${region === 'US' ? 'Zelle' : '한국 계좌이체'}`,
+        lines.push('처리 구분: 입금 확인 요청 (미확인·후원자 입력)', `송금 방법: ${label}`,
             `송금액: ${formatScholarshipAmount(amount, region)}`, `송금일: ${data.get('support_date')}`);
     }
     const note = String(data.get('support_note') || '').trim();
