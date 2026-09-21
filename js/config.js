@@ -37,3 +37,15 @@ window.ER_EXPERT_COHORT_MENTORING = {
   keyYear: 2026,
 };
 window.TURNSTILE_SITE_KEY = "0x4AAAAAACmAr1w7-5BNiCHZ";
+
+// Scholarship transfer instructions. Enable only after the receiving arrangement is confirmed.
+// Public recipient details only: never put credentials or donor data in this config.
+window.ER_SCHOLARSHIP_SUPPORT = {
+  inquiriesEnabled: false, // Enable after the scholarship receipt email is deployed and verified.
+  acceptingContributions: false,
+  recipientName: '',
+  receiptNotice: '입금 확인 후 요청하신 분께 후원금 수령 확인서를 보내드립니다. 이 확인서는 소득·세액공제용 기부금영수증이 아닙니다.',
+  bank: { confirmed: true, name: '카카오뱅크', number: '3333-37-8817302', holder: '손지영' },
+  zelle: { confirmed: true, address: '214-966-5153', holder: 'Sungman Woo' },
+  venmo: { confirmed: true, address: '214-966-5153', holder: 'Sungman Woo' }
+};

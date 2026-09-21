@@ -156,7 +156,7 @@ function renderSection(sectionId, payload = null, options = {}) {
             coaches: '코치진 소개',
             coach_training: 'ER 전문가 과정',
             community: '회복 이야기',
-            support: '사역지원',
+            support: '장학 후원',
             apply: '신청',
             notices: '공지사항',
             coach_portal: '코치 포털',
