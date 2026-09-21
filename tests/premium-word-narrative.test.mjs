@@ -6,15 +6,15 @@ import vm from 'node:vm';
 
 const source = fs.readFileSync(new URL('../js/test.js', import.meta.url), 'utf8');
 const expectedWords = [
-  '윤리적인|일관성 있는|양심적인|완벽한|비판적인|규범적인|합리적인|정확한|설교적인|간섭하는|공정한|원칙적인|도덕적인',
-  '희생하는|상냥한|섬세한|배려심이 깊은|다정한|겸손한|신체에 접촉하는|관대한|소유욕이 강한|보호적인|봉사적인|이타적인|사교적인',
-  '활동적인|역량을 강화하는|목표지향적인|근면한|책임감 있는|융통성 있는|능률적인|최고가 되고 싶은|인정받고 싶은|유능한|열정적인|야망적인|매력적인',
-  '고상한|상상력이 풍부한|직관적인|낭만적인|자기 연민적인|개성이 강한|생각이 깊은|집중하는|비밀스러운|심미적인|특색있는|표현적인|독립적인',
-  '현명한|철저한|차분한|사려 깊은|예리한|학구적인|재치 있는|사색적인|분석적인|전문적인|인색한|논리적인|호기심 강한',
-  '준비성 있는|공손한|협조적인|순종적인|전통을 따르는|실용적인|충성심 있는|신뢰성 있는|의존적인|신중한|소심한|걱정이 많은|의심 많은',
-  '외향적인|정열적인|낙관적인|충동적인|현실도피적인|거리낌 없는|산만한|개방적인|수다스러운|활기찬|쾌활한|다재다능한|자발적인',
-  '자신감 있는|지도력 있는|용감한|도전적인|지배력 있는|권위있는|억척스러운|단호한|현실적인|방어적인|진취적인|결단력 있는|완고한',
-  '침착한|나서지 않는|태평스러운|양보하는|안정적인|평화로운|중립적인|수용적인|조화로운|너그러운|참을성 있는|느긋한|편견 없는'
+  '일관성 있는|양심적인|완벽을 추구하는|비판적인|합리적인|정확한|간섭하는|공정한|원칙적인',
+  '희생하는|배려심이 깊은|다정한|겸손한|스킨십을 좋아하는|베풀기 좋아하는|소유욕이 강한|보호하려는|사교적인',
+  '목표 지향적인|부지런한|책임감 있는|융통성 있는|효율을 중시하는|최고가 되고 싶은|인정받고 싶은|유능한|야심 있는',
+  '상상력이 풍부한|직관적인|낭만적인|자신을 가엾게 여기는|개성이 강한|생각이 깊은|속마음을 잘 드러내지 않는|아름다움에 민감한|독립적인',
+  '철저한|차분한|사려 깊은|예리한|학구적인|재치 있는|분석적인|인색한|호기심이 많은',
+  '준비성 있는|예의 바른|협조적인|순종적인|전통을 따르는|충성심이 강한|의존적인|걱정이 많은|의심이 많은',
+  '외향적인|낙관적인|충동적인|현실을 피하려는|거리낌 없는|산만한|개방적인|쾌활한|다재다능한',
+  '자신감 있는|주도적인|용감한|도전적인|지배하려는|끈질긴|단호한|현실적인|방어적인',
+  '나서지 않는|양보하는|감정 기복이 적은|평화를 추구하는|중립적인|수용적인|참을성 있는|느긋한|편견 없는'
 ];
 
 function loadRuntime(search = '') {
@@ -55,14 +55,15 @@ function loadRuntime(search = '') {
   return { context, evaluate, answers, storage, elements };
 }
 
-test('all 117 original words are preserved, with equal type counts and English aliases', () => {
+test('81 distinct words have equal type counts and English aliases', () => {
   const { evaluate, elements } = loadRuntime();
   const questions = evaluate('wordScreeningQuestions');
-  assert.equal(questions.length, 117);
-  assert.equal(new Set(questions.map((question) => question.id)).size, 117);
+  assert.equal(questions.length, 81);
+  assert.equal(new Set(questions.map((question) => question.id)).size, 81);
+  assert.equal(new Set(questions.map((question) => question.q)).size, 81);
   expectedWords.forEach((words, index) => {
     const typeWords = questions.filter((question) => question.type === index + 1);
-    assert.equal(typeWords.length, 13);
+    assert.equal(typeWords.length, 9);
     assert.deepEqual(typeWords.map((question) => question.q), words.split('|'));
     assert.ok(typeWords.every((question) => question.qEn && !/[가-힣]/.test(question.qEn)));
   });
@@ -77,7 +78,7 @@ test('not sure is recorded separately from no and an unanswered item', () => {
   const { evaluate } = loadRuntime();
   const result = evaluate("scoreWordScreening({ word_1_01: 'Y', word_1_02: 'U', word_1_03: 'N' })");
   const first = result.ranked.find((row) => row.type === 1);
-  assert.deepEqual(first, { type: 1, yes: 1, no: 1, unsure: 1, missing: 10, score: 1 });
+  assert.deepEqual(first, { type: 1, yes: 1, no: 1, unsure: 1, missing: 6, score: 1 });
   assert.equal(result.reason, 'incomplete');
   assert.deepEqual(result.candidates, []);
 });
@@ -88,8 +89,8 @@ function screenWithCounts(evaluate, counts) {
 
 test('clear boundaries keep three candidates and a close fourth expands to four', () => {
   const { evaluate } = loadRuntime();
-  assert.deepEqual(screenWithCounts(evaluate, [13, 10, 8, 5, 4, 3, 2, 1, 0]).candidates, [1, 2, 3]);
-  assert.deepEqual(screenWithCounts(evaluate, [13, 10, 8, 7, 3, 2, 1, 0, 0]).candidates, [1, 2, 3, 4]);
+  assert.deepEqual(screenWithCounts(evaluate, [9, 8, 6, 3, 2, 1, 0, 0, 0]).candidates, [1, 2, 3]);
+  assert.deepEqual(screenWithCounts(evaluate, [9, 8, 6, 5, 3, 2, 1, 0, 0]).candidates, [1, 2, 3, 4]);
 });
 
 test('all unsure, all equal, and cutoff ties never select candidates by type number', () => {
@@ -99,7 +100,7 @@ test('all unsure, all equal, and cutoff ties never select candidates by type num
     assert.equal(result.unclear, true);
     assert.deepEqual(result.candidates, []);
   }
-  const cutoff = screenWithCounts(evaluate, [13, 11, 8, 8, 8, 2, 1, 0, 0]);
+  const cutoff = screenWithCounts(evaluate, [9, 8, 6, 6, 6, 2, 1, 0, 0]);
   assert.equal(cutoff.reason, 'cutoff_tie');
   assert.deepEqual(cutoff.candidates, []);
 });
@@ -125,7 +126,7 @@ test('every three- and four-candidate combination receives equal pair exposure',
 
 test('narratives can overturn the word leader and unknown choices add no core score', () => {
   const { evaluate } = loadRuntime();
-  const screened = screenWithCounts(evaluate, [8, 0, 0, 9, 0, 0, 0, 0, 13]);
+  const screened = screenWithCounts(evaluate, [6, 0, 0, 7, 0, 0, 0, 0, 9]);
   assert.equal(screened.candidates[0], 9);
   const result = evaluate(`(() => {
     const questions = buildNarrativeQuestions([9, 4, 1]);
@@ -161,15 +162,16 @@ test('subtype and wing ties or only one decisive answer remain unresolved', () =
   assert.equal(evaluate('resolvePhase4Subtype(buildSubtypeBehaviorQuestions(7))').subtypeCode, null);
 });
 
-test('session round trip preserves word answers, page and optional reflection without adding word timings', () => {
+test('session round trip preserves choices and page while dropping old free text', () => {
   const { evaluate, context, storage } = loadRuntime();
   vm.runInContext("testState.wordResponses = { word_1_01: 'Y', word_5_02: 'U' }; testState.pagerPositions.word = 8; testState.reflection = '내 경험'; saveAssessmentSession();", context);
   assert.equal(storage.size, 1);
-  vm.runInContext("testState.wordResponses = {}; testState.pagerPositions = {}; testState.reflection = '';", context);
+  assert.doesNotMatch(storage.get('er_word_narrative_v2'), /reflection|내 경험/);
+  vm.runInContext("testState.wordResponses = {}; testState.pagerPositions = {}; delete testState.reflection;", context);
   assert.equal(evaluate('restoreAssessmentSession()'), true);
   assert.deepEqual(evaluate('testState.wordResponses'), { word_1_01: 'Y', word_5_02: 'U' });
   assert.equal(evaluate('testState.pagerPositions.word'), 8);
-  assert.equal(evaluate('testState.reflection'), '내 경험');
+  assert.equal(evaluate("Object.hasOwn(testState, 'reflection')"), false);
   assert.deepEqual(evaluate('testState.responseTiming.firstAnswerAt'), {});
   assert.equal(evaluate("getValidSavedAssessment({version: 'old-version'})"), null);
   vm.runInContext('clearAssessmentSession()', context);
@@ -187,7 +189,7 @@ test('narrative unknown ratio includes every answered choice and excludes word s
   const stats = evaluate(`getLikertResponseStats({
     ...Object.fromEntries(Array.from({length: 21}, (_, index) => ['narrative_' + index, index < 8 ? 'U' : index < 19 ? 'A' : 'sp'])),
     word_1_01: 'U', word_1_02: 'U'
-  }, 'word-narrative-v1')`);
+  }, 'word-narrative-v2')`);
   assert.equal(stats.unknownCount, 8);
   assert.equal(stats.totalCount, 21);
   assert.equal(stats.unknownRatio, 8 / 21);
@@ -200,7 +202,7 @@ test('uncompared candidates cannot be silently discarded before subtype and wing
     const questions = buildNarrativeQuestions([1, 2, 3, 9]);
     const responses = Object.fromEntries(questions.map((question) => [question.id, question.rightType === 9 ? 'U' : 'A']));
     const result = scoreNarrativeResponses(questions, responses);
-    return { ...result.narrativeMeta, mayContinue: maybeShowPhase4({ ...result, assessmentVersion: 'word-narrative-v1' }) };
+    return { ...result.narrativeMeta, mayContinue: maybeShowPhase4({ ...result, assessmentVersion: 'word-narrative-v2' }) };
   })()`);
   assert.equal(partial.decisiveAnswers, 6);
   assert.equal(partial.totalQuestions, 12);
@@ -210,26 +212,46 @@ test('uncompared candidates cannot be silently discarded before subtype and wing
   const complete = evaluate(`(() => {
     const questions = buildNarrativeQuestions([1, 2, 3, 9]);
     const responses = Object.fromEntries(questions.map((question) => [question.id, 'A']));
-    return maybeShowPhase4({ ...scoreNarrativeResponses(questions, responses), assessmentVersion: 'word-narrative-v1' });
+    return maybeShowPhase4({ ...scoreNarrativeResponses(questions, responses), assessmentVersion: 'word-narrative-v2' });
   })()`);
   assert.equal(complete, true);
 });
 
 test('restoring the detail stage reconstructs candidates, narrative scores and prior choices', () => {
   const { evaluate, context, answers, storage } = loadRuntime();
-  const wordResponses = evaluate("Object.fromEntries(wordScreeningQuestions.map((question) => [question.id, Number(question.id.split('_')[2]) <= ({1:13,2:10,3:8}[question.type] || 0) ? 'Y' : 'N']))");
+  const wordResponses = evaluate("Object.fromEntries(wordScreeningQuestions.map((question) => [question.id, Number(question.id.split('_')[2]) <= ({1:9,2:8,3:6}[question.type] || 0) ? 'Y' : 'N']))");
   const questions = evaluate('buildNarrativeQuestions([1, 2, 3])');
   const narrativeResponses = Object.fromEntries(questions.map((question) => [question.id, question.narrativePair ? 'A' : 'sp']));
   narrativeResponses.p4_1_subtype_behavior_1 = 'sp';
   Object.assign(answers, narrativeResponses);
-  storage.set('er_word_narrative_v1', JSON.stringify({ version: 'word-narrative-v1', stage: 'detail', candidateTypes: [1, 2, 3], wordResponses, narrativeResponses, reflection: '지난주 경험', pagerPositions: { p4: 1 } }));
+  storage.set('er_word_narrative_v2', JSON.stringify({ version: 'word-narrative-v2', stage: 'detail', candidateTypes: [1, 2, 3], wordResponses, narrativeResponses, reflection: '지난주 경험', pagerPositions: { p4: 1 } }));
   assert.equal(evaluate('restoreAssessmentSession()'), true);
   assert.equal(evaluate('testState.stage'), 'detail');
   assert.deepEqual(evaluate('testState.candidateTypes'), [1, 2, 3]);
   assert.equal(evaluate('testState.pendingResult.final[1]'), 4);
   assert.equal(evaluate('testState.narrativeResponses.p4_1_subtype_behavior_1'), 'sp');
   assert.equal(evaluate('testState.pagerPositions.p4'), 1);
-  assert.equal(evaluate('testState.reflection'), '지난주 경험');
+  assert.equal(evaluate("Object.hasOwn(testState, 'reflection')"), false);
   vm.runInContext('restartAssessment()', context);
   assert.equal(storage.size, 0);
+});
+
+
+test('old questionnaire sessions cannot reinterpret revised word IDs', () => {
+  const { evaluate, storage } = loadRuntime();
+  const old = { version: 'word-narrative-v1', stage: 'words', wordResponses: { word_1_01: 'Y' }, reflection: 'old private text' };
+  storage.set('er_word_narrative_v1', JSON.stringify(old));
+  assert.equal(evaluate('restoreAssessmentSession()'), false);
+  storage.set('er_word_narrative_v2', JSON.stringify(old));
+  assert.equal(evaluate('restoreAssessmentSession()'), false);
+  assert.deepEqual(evaluate('testState.wordResponses'), {});
+});
+
+
+test('all subtype result labels use plain Korean names without unexplained nicknames', () => {
+  const { evaluate } = loadRuntime();
+  for (let core = 1; core <= 9; core += 1) {
+    const labels = evaluate(`buildSubtypeBehaviorQuestions(${core})[0].options.map(option => option.label)`);
+    assert.deepEqual(labels, ['자기보존', '사회적', '성적(일대일)']);
+  }
 });
