@@ -38,14 +38,9 @@ window.ER_EXPERT_COHORT_MENTORING = {
 };
 window.TURNSTILE_SITE_KEY = "0x4AAAAAACmAr1w7-5BNiCHZ";
 
-// Scholarship transfer instructions. Enable only after the receiving arrangement is confirmed.
-// Public recipient details only: never put credentials or donor data in this config.
+// Operator-confirmed public support accounts; no payment or intake service settings.
 window.ER_SCHOLARSHIP_SUPPORT = {
-  inquiriesEnabled: false, // Enable after the scholarship receipt email is deployed and verified.
-  acceptingContributions: false,
-  recipientName: '',
-  receiptNotice: '입금 확인 후 요청하신 분께 후원금 수령 확인서를 보내드립니다. 이 확인서는 소득·세액공제용 기부금영수증이 아닙니다.',
-  bank: { confirmed: true, name: '카카오뱅크', number: '3333-37-8817302', holder: '손지영' },
-  zelle: { confirmed: true, address: '214-966-5153', holder: 'Sungman Woo' },
-  venmo: { confirmed: true, address: '214-966-5153', holder: 'Sungman Woo' }
+  receiptNotice: '수령 확인서가 필요하면 송금 날짜·금액·입금자명(또는 Zelle/Venmo 표시 이름)을 적어 hello@er-coaching.com으로 요청해 주세요. 입금 확인 후 보내드리며, 이 확인서는 소득·세액공제용 기부금영수증이 아닙니다.',
+  bank: { name: '카카오뱅크', number: '3333-37-8817302', holder: '손지영' },
+  us: { methods: 'Zelle / Venmo', address: '214-966-5153', holder: 'Sungman Woo' }
 };

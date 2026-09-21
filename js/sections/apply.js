@@ -811,7 +811,7 @@ function renderApply(payload = null) {
 }
 
 function renderThankYou(payload = null) {
-    if (payload?.scholarshipInquiry) return renderScholarshipInquiryThankYou(payload);
+    if (payload?.scholarshipInquiry) return renderScholarshipInquiry();
     if (isParentingWorkshopFocus(payload?.focus)) {
         return `
             <div class="min-h-screen bg-er-base px-4 py-14">
