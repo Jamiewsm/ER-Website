@@ -333,7 +333,13 @@
     var analytics = {
       result: {
         core: payload.core || null,
-        subtype: phase4 && phase4.subtypeCode ? phase4.subtypeCode : null,
+        subtype: (function () {
+          if (!(phase4 && phase4.subtypeCode)) return null;
+          var code = String(phase4.subtypeCode).trim().toLowerCase();
+          if (/^(sp|sx|so)_[1-9]$/.test(code)) return code;
+          if (/^(sp|sx|so)$/.test(code) && payload.core) return code + '_' + payload.core;
+          return phase4.subtypeCode;
+        })(),
         wing: phase4 && phase4.wingNum ? phase4.wingNum : null,
         confidence: payload.confidence || payload.confidenceLabel || null,
         coreResolved: !!payload.coreResolved,
@@ -377,6 +383,8 @@
     // 이전 호출이 주관식 내용을 넘겨도 새 제출에는 포함하지 않는다.
     knownCore = /^[1-9]$/.test(String(knownCore || '')) ? String(knownCore) : null;
     knownSubtype = ['sp', 'so', 'sx'].includes(knownSubtype) ? knownSubtype : null;
+    // Analyzer expects combined instinct/core codes (e.g. so_4), matching fixture + countertype audit.
+    if (knownSubtype && knownCore) knownSubtype = knownSubtype + '_' + knownCore;
     var coreNumber = Number(knownCore);
     var validWings = coreNumber ? [coreNumber + 'w' + (coreNumber === 1 ? 9 : coreNumber - 1), coreNumber + 'w' + (coreNumber === 9 ? 1 : coreNumber + 1)] : [];
     knownWing = validWings.includes(knownWing) ? knownWing : null;

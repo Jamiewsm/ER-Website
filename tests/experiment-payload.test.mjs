@@ -160,15 +160,15 @@ test('new submissions discard all legacy free-text feedback fields', () => {
   assert.equal(row.result_summary.feedback_detail.inaccurate_parts, null);
   assert.equal(row.result_summary.feedback_detail.consultation_check, null);
   assert.doesNotMatch(JSON.stringify(row), /old private|narrativeReflection/);
-  assert.deepEqual(row.result_summary.feedback_detail.confirmed_type, { core: '4', subtype: 'so', wing: '4w5' });
+  assert.deepEqual(row.result_summary.feedback_detail.confirmed_type, { core: '4', subtype: 'so_4', wing: '4w5' });
 });
 
 test('confirmed type choices reject invalid values and nonadjacent wings', () => {
   const api = loadExperimentModule();
   for (const [core, subtype, wing, expected] of [
-    ['1', 'sp', '1w9', ['1', 'sp', '1w9']],
-    ['9', 'sx', '9w1', ['9', 'sx', '9w1']],
-    ['4', 'so', '4w7', ['4', 'so', null]],
+    ['1', 'sp', '1w9', ['1', 'sp_1', '1w9']],
+    ['9', 'sx', '9w1', ['9', 'sx_9', '9w1']],
+    ['4', 'so', '4w7', ['4', 'so_4', null]],
     ['free text', 'other', '4w5', [null, null, null]]
   ]) {
     const row = api._test.buildRow({}, {}, 'correct', null, core, subtype, wing);
