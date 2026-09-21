@@ -828,12 +828,8 @@
                                     </p>
                                     <div class="grid sm:grid-cols-2 gap-4">
                                         <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Enneagram Spectrum Advanced Certification</h4>
-                                            <p class="text-xs text-gray-500">Dr. Wagner (International Enneagram Association)</p>
-                                        </div>
-                                        <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
-                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">IEA Accredited Instructor</h4>
-                                            <p class="text-xs text-gray-500">국제 에니어그램 협회 인증 전문가</p>
+                                            <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">Enneagram Spectrum Advanced Certified Instructor</h4>
+                                            <p class="text-xs text-gray-500">Jerry Wagner, PhD</p>
                                         </div>
                                         <div class="p-4 bg-er-base rounded-2xl border border-white/30 shadow-soft floating-card">
                                             <h4 class="font-bold text-er-dark text-xs md:text-sm mb-1">SOIM GLTC Instructor</h4>

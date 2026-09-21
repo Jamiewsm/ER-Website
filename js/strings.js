@@ -340,8 +340,7 @@
           certs: [
             '한양대학교 역사학과 졸업',
             'Arizona State University 심리학 석사 과정',
-            'Enneagram Spectrum 공인 트레이너 · 강사 자격 과정 운영 (Jerry Wagner, PhD)',
-            'IEA Accredited Instructor',
+            'Enneagram Spectrum Advanced Certified Instructor',
             'The Redeemed Enneagram 저자',
             'SOIM 글로벌 리더십 강사'
           ],
