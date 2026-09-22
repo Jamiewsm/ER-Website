@@ -1,0 +1,11 @@
+# 결정 기록
+- 학생 10명은 onboarding 예약 상태. 임의 계정 생성 없이 첫 로그인 시 멘토 연결 필요.
+- A반 준비보고서 1건 존재. 질문 정의 변경 없이 self_observation 본문을 유지한다.
+- 새 원문의 추가 패널 영상은 선택 시청이며 기존 필수 사전 영상 안내를 대체한다.
+- A반은 한국시간 기준(화 20:00 KST). B반은 달라스시간 기준(목 08:30 America/Chicago). 서머타임 종료 후에도 B반은 달라스 08:30 유지(CST=14:30Z).
+- Backend track: supabase. Production applied migration version 20260922115726 (same filename in this PR). Do not reapply with a different version.
+- Before snapshot: private output/october/before.json. Prepared transaction ran once with ROLLBACK, then COMMIT. No application/payment/email status or student answers were changed.
+- A: 8 Tuesday sessions 2026-10-06 through 2026-11-24. B: 8 lesson rows; October at 13:30Z, November 11/5·12·19 at 14:30Z (Dallas 08:30 fixed). Chanmi mentor enrollments use Africa/Dar_es_Salaam.
+- All 10 onboarding reservations have the confirmed mentor. Student claims remain pending; no user accounts were fabricated.
+- One existing preparation draft hash unchanged after updates. No outbound mail sent.
+- Tests: isolated Postgres onboarding + reserved mentors, 10 passed.
