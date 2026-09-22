@@ -7,6 +7,7 @@ on:
       - 'supabase/migrations/20260915003*.sql'
       - 'supabase/migrations/20260919001000_education_welcome_pending_deadline.sql'
       - 'supabase/migrations/20260920001000_program_application_approval_archive.sql'
+      - 'supabase/migrations/20260922115726_education_reserved_mentors.sql'
       - 'supabase/manual/education-public-notices.pending.sql'
       - 'supabase/functions/_shared/email-templates.ts'
       - 'supabase/functions/_shared/program-pricing.ts'
