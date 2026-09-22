@@ -187,6 +187,90 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
 input:checked + .er-word-choice { background: var(--er-report-gold); border-color: var(--er-report-gold); color: var(--er-report-cream); }
 .er-word-choice:has(input:focus-visible) { outline: 3px solid var(--er-report-gold); outline-offset: 4px; }
 
+/* 이야기로 후보 좁히기 — 옵션 카드 간격/본문 줄간격 */
+.er-candidate-clarification {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.er-candidate-clarification > legend {
+  padding: 0;
+  margin: 0 0 16px;
+  color: var(--er-report-dark);
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+.er-candidate-options {
+  display: grid;
+  gap: 12px;
+}
+
+.er-narrative-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px 14px;
+  align-items: start;
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid var(--er-report-sand);
+  border-radius: 16px;
+  background: var(--er-report-cream);
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+
+.er-narrative-option:hover {
+  background: var(--er-report-tint);
+  border-color: var(--er-report-gold);
+}
+
+.er-narrative-option:has(input:checked) {
+  border-color: var(--er-report-gold);
+  background: var(--er-report-tint);
+  box-shadow: inset 0 0 0 1px var(--er-report-gold);
+}
+
+.er-narrative-option input {
+  margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--er-report-gold);
+}
+
+.er-narrative-option-body {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.er-narrative-option-text {
+  color: var(--er-report-text);
+  font-size: 15px;
+  line-height: 1.7;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.er-question-back {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--er-report-gold-strong);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
 .er-question-nav { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; }
 .er-question-count { color: var(--er-report-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 
@@ -1773,6 +1857,9 @@ body {
   .er-word-term { min-height: 112px; }
   .er-word-choices { gap: 8px; }
   .er-word-choice { padding-inline: 4px; font-size: 14px; }
+  .er-candidate-options { gap: 10px; }
+  .er-narrative-option { padding: 14px 14px; gap: 10px 12px; }
+  .er-narrative-option-text { font-size: 14px; line-height: 1.65; }
   .er-question-page:not(.er-word-card) legend { font-size: 18px; }
   .er-question-page label > div { padding: 16px; font-size: 14px; }
   .er-question-nav button { padding: 12px 20px; }
