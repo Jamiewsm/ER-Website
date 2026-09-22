@@ -2639,7 +2639,14 @@ function renderWordScreening() {
 function renderCandidateClarification() {
   showAssessmentStage('clarify');
   const root = document.getElementById('phase1-container');
-  root.innerHTML = `<fieldset class="er-candidate-clarification"><legend>${pageLang === 'en' ? 'Words leave several possibilities open. Choose 3 or 4 patterns you recognize from repeated experiences.' : '단어만으로는 후보를 충분히 좁히기 어렵습니다. 실제 경험에서 반복되는 이야기 3~4개를 골라 주세요.'}</legend><div class="er-candidate-options">${[4, 8, 2, 6, 1, 7, 3, 9, 5].map((type) => `<label class="er-narrative-option"><input type="checkbox" name="narrative-candidate" value="${type}" ${testState.candidateTypes.includes(type) ? 'checked' : ''}><span>${pageLang === 'en' ? TYPE_PROMPT_EN[type] : deep[type].map((question) => question.q).join(' ')}</span></label>`).join('')}</div></fieldset><button type="button" class="er-question-back" onclick="reviewWordScreening()">${pageLang === 'en' ? 'Review my word responses' : '단어 응답 돌아보기'}</button>`;
+  const optionsHtml = [4, 8, 2, 6, 1, 7, 3, 9, 5].map((type) => {
+    const checked = testState.candidateTypes.includes(type) ? 'checked' : '';
+    const body = pageLang === 'en'
+      ? `<span class="er-narrative-option-text">${TYPE_PROMPT_EN[type]}</span>`
+      : deep[type].map((question) => `<span class="er-narrative-option-text">${question.q}</span>`).join('');
+    return `<label class="er-narrative-option"><input type="checkbox" name="narrative-candidate" value="${type}" ${checked}><span class="er-narrative-option-body">${body}</span></label>`;
+  }).join('');
+  root.innerHTML = `<fieldset class="er-candidate-clarification"><legend>${pageLang === 'en' ? 'Words leave several possibilities open. Choose 3 or 4 patterns you recognize from repeated experiences.' : '단어만으로는 후보를 충분히 좁히기 어렵습니다. 실제 경험에서 반복되는 이야기 3~4개를 골라 주세요.'}</legend><div class="er-candidate-options">${optionsHtml}</div></fieldset><button type="button" class="er-question-back" onclick="reviewWordScreening()">${pageLang === 'en' ? 'Review my word responses' : '단어 응답 돌아보기'}</button>`;
   root.querySelectorAll('input[name="narrative-candidate"]').forEach((input) => input.addEventListener('change', () => {
     const checked = Array.from(root.querySelectorAll('input[name="narrative-candidate"]:checked'));
     if (checked.length > 4) { input.checked = false; return; }
