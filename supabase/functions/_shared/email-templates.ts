@@ -51,6 +51,19 @@ export function applicantReceivedHtml(input: {
   );
 }
 
+export function scholarshipInquiryReceivedHtml(input: {
+  name: string;
+  transferRequest: boolean;
+}): string {
+  const title = input.transferRequest ? '장학 후원 입금 확인 요청을 받았습니다' : '장학 후원 문의를 받았습니다';
+  return wrapEmail(title, `
+    <p>${escapeHtml(input.name)}님, 마음을 함께해 주셔서 감사합니다.</p>
+    <p>${input.transferRequest ? '실제 입금 내역을 확인한 뒤' : '문의 내용을 확인한 뒤'} 남겨주신 연락처로 안내드리겠습니다.</p>
+    <p>이 메일은 요청 접수 안내이며, 입금 확인서나 기부금영수증이 아닙니다.</p>
+    <p>추가로 전하실 내용은 이 메일에 답장해 주세요.</p>
+  `);
+}
+
 export function basicCourseApplicantReceivedHtml(input: {
   name: string;
   programLabel: string;
