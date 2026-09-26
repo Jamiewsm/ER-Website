@@ -1,0 +1,14 @@
+# 웰컴메일 준비 결정 기록
+
+- 2026-09-26. 멘토가 각자 보내지 않고 대표가 A·B반 학생에게 안내한다. 실제 발송은 사용자가 최종 본문을 확인하고 오케이한 뒤에만 허용된다.
+- 기존 `education-onboarding-email`은 신청 ID만 받아 DB의 확정 수신자와 발송 기록을 확인한다. 임의 수신자나 본문 입력 기능은 추가하지 않는다.
+- 공용 `APPLICATION_FROM_EMAIL`은 다른 신청 메일도 사용하므로 변경하지 않는다. welcome 본문에 대표 인사와 서명을 넣는다. 운영 발신 표시 이름은 별도 확인 대상이다.
+- PDF는 `https://coach.er-coaching.com/assets/guides/er-basic-student-guide.pdf`로 연결한다. 첨부 기능이나 새 의존성은 추가하지 않는다. 링크의 실제 공개 여부는 배포 담당자가 확인한다.
+- 첫 수업과 제출 기한은 DB `starts_at`·`due_at`을 기존 한국 시간 형식으로 표시한다. B반 이름이나 날짜를 템플릿에 하드코딩하지 않는다. `schedule_note`에는 회의 접속 정보가 섞여 있으므로 메일이나 미리보기에 출력하지 않는다. 해외 사용자는 포털의 표시 시간대 설정과 회차별 일정 확인으로 안내한다.
+- 기본과정 제목에만 새 본문과 PDF 링크를 적용한다. 성장과정 등 다른 과정의 일반 등록 안내와 미제출 알림은 그대로 유지한다.
+- 미리보기에는 실학생 개인정보를 넣지 않는다. 미리보기 파일은 서버 템플릿에서 직접 생성하며 사용자 검토용으로만 보관한다.
+- 2026-09-26. `node --test tests/education-onboarding-email.test.mjs tests/education-email-delivery-guard.test.mjs tests/education-onboarding.test.mjs tests/welcome-email-copy.test.mjs` 63개 통과. 실제 메일·운영 DB 호출 없이 mock와 격리 DB로 실행했다. `git diff --check`도 통과했다.
+- HEAD의 변경 전 템플릿과 새 템플릿에서 익명 A·B반의 D-3/D-1 알림 및 성장과정 welcome을 각각 생성해 subject/html/text 전체가 일치함을 확인했다. 기본과정 메일만 변경된다.
+- 승인용 미리보기의 A반 첫 수업과 보고서 기한은 2026-10-06 20:00 KST, B반은 2026-10-01 22:30 KST다. 부모 작업에서 읽기 전용으로 확인한 운영 반 데이터를 사용했다.
+- Chromium 800·390·320px에서 A·B반 총 6개 렌더 검사를 통과했고, 모바일 390px 이미지를 시각적으로 확인했다. 실제 Gmail·Outlook 수신 렌더나 도착 확인을 의미하지 않는다.
+- 사용자 승인·실발송은 남아 있다. 커밋·푸시·배포·운영 데이터 변경은 이 하위 작업에서 실행하지 않았다.

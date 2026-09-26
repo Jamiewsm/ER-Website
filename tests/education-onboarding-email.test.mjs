@@ -124,6 +124,41 @@ test('head chooses one student and sends a short portal welcome using DB-derived
   assert.equal(h.calls.rpc.at(-1).args.p_provider_id, 'synthetic-provider-id');
 });
 
+test('basic welcome carries the representative message and PDF link without exposing meeting notes', async () => {
+  const h = harness({ payload: {
+    course_title: '성경적 에니어그램 기본과정',
+    schedule_note: '회의 ID synthetic-meeting-id / 암호 synthetic-password',
+  } });
+  assert.equal((await h.invoke()).status, 200);
+  const { body } = h.calls.emails[0];
+  assert.equal(body.subject, '[ER] 에니어그램 기본과정에 오신 것을 환영합니다');
+  assert.equal(body.from, 'ER <enrollment@er-coaching.com>');
+  assert.equal(body.reply_to, 'json@er-coaching.com');
+  for (const content of [body.html, body.text]) {
+    assert.match(content, /ER 대표 손지영/);
+    assert.match(content, /손지영 드림/);
+    assert.match(content, /수업 전 준비/);
+    assert.match(content, /교재와 주차별 과제, 멘토 피드백/);
+    assert.match(content, /포털 설정에서 표시 시간대를 선택/);
+    assert.match(content, /이 메일에 회신/);
+    assert.match(content, /https:\/\/coach\.er-coaching\.com\/assets\/guides\/er-basic-student-guide\.pdf/);
+    assert.doesNotMatch(content, /synthetic-meeting-id|synthetic-password|ER 교육 운영팀/);
+  }
+  assert.equal(body.attachments, undefined);
+});
+
+test('non-basic welcome keeps the general registration copy and omits the basic-course PDF', async () => {
+  const h = harness({ payload: { course_title: '성장과정 101' } });
+  assert.equal((await h.invoke()).status, 200);
+  const { body } = h.calls.emails[0];
+  assert.equal(body.subject, '[ER] 등록 확정 및 내 교실 이용 안내');
+  for (const content of [body.html, body.text]) {
+    assert.match(content, /성장과정 101/);
+    assert.match(content, /ER 교육 운영팀/);
+    assert.doesNotMatch(content, /기본과정|er-basic-student-guide|대표 손지영|손지영 드림/);
+  }
+});
+
 for (const options of [{ role: 'coach' }, { inactive: true }, { noUser: true }]) {
   test(`unauthorized actor cannot create a durable claim ${JSON.stringify(options)}`, async () => {
     const h = harness(options);
@@ -243,7 +278,9 @@ test('enabled scheduler sends a portal reminder without answer contents', async 
   assert.deepEqual(await response.json(), { ok: true, dry_run: false, eligible: 1, sent: 1, skipped: 0, failed: 0 });
   assert.equal(h.calls.rpc.find((call) => call.name === 'edu_claim_onboarding_email').args.p_kind, 'reminder_3d');
   assert.match(h.calls.emails[0].body.text, /아직 자기관찰보고서 제출이 확인되지 않아/);
-  assert.doesNotMatch(h.calls.emails[0].body.text, /가장 중요한 가치|어린 시절|회원가입/);
+  assert.equal(h.calls.emails[0].body.subject, '[ER] 자기관찰보고서 제출 안내');
+  assert.match(h.calls.emails[0].body.text, /ER 교육 운영팀/);
+  assert.doesNotMatch(h.calls.emails[0].body.text, /가장 중요한 가치|어린 시절|회원가입|대표 손지영|er-basic-student-guide/);
   assert.deepEqual(h.calls.delays, [1000]);
 });
 
