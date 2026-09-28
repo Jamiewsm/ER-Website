@@ -57,6 +57,9 @@ jobs:
             tests/question-copy-regression.test.mjs \
             tests/tie-breaker-routing.test.mjs \
             tests/experiment-payload.test.mjs \
+            tests/assessment-feedback-ui.test.mjs \
+            tests/premium-word-narrative.test.mjs \
+            tests/premium-report-narrative.test.mjs \
             tests/weight-calibration-workflow.test.mjs \
             tests/countertype-routing.test.mjs
           do

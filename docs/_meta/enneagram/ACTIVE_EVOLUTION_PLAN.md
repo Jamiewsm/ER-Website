@@ -1,5 +1,7 @@
 # ER Test Active Evolution Implementation Plan
 
+> 2026-09-28 수동 개선의 활성 기준은 [검사 평가·개선 계획](../../projects/premium-assessment-quality-20260928/plan.md)과 [검증 기록](../../projects/premium-assessment-quality-20260928/verification.md)이다. 안내·후보 재검토·선택형 평가·버전별 분석을 구현하며 체감 일치도와 검사 타당도 검증을 구분한다. 예약 자동화는 재개하지 않는다.
+
 > 2026-09-21 사용자 요청으로 검사 진입 흐름을 개편했다. 후속 한국어 정리와 주관식 제거를 포함한 `word-narrative-v2`의 활성 기준은 [검사 정리 계획](../../projects/premium-korean-review-20260921/plan.md)이며 아래 기존 기준은 이 변경 이전의 기록이다. 기존 운영 경로 유지, 트랙 분리, 실증 검증 원칙은 계속 적용한다.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
