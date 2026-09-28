@@ -18,3 +18,7 @@ verify_jwt = true
 # GitHub 스케줄러는 학생 JWT 대신 전용 비밀키를 함수 안에서 검증한다.
 [functions.education-onboarding-reminders]
 verify_jwt = false
+
+# 공개 평가 함수는 내부에서 Turnstile과 origin·입력·중복을 검증한다.
+[functions.submit-assessment-feedback]
+verify_jwt = false
