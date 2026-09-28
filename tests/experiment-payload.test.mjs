@@ -156,14 +156,16 @@ test('new submissions discard all legacy free-text feedback fields', () => {
     accurateParts: 'old private accurate', inaccurateParts: 'old private inaccurate', consultationCheck: 'old private consultation'
   }));
   assert.equal(row.self_note, null);
-  assert.equal(row.result_summary.feedback_detail.accurate_parts, null);
-  assert.equal(row.result_summary.feedback_detail.inaccurate_parts, null);
-  assert.equal(row.result_summary.feedback_detail.consultation_check, null);
+  assert.deepEqual(row.result_summary.feedback_detail.matching_parts, []);
+  assert.deepEqual(row.result_summary.feedback_detail.mismatching_parts, []);
+  assert.deepEqual(row.result_summary.feedback_detail.difficulties, []);
+  assert.equal(row.result_summary.feedback_detail.comparison_source, 'participant_report');
+  assert.equal(Object.hasOwn(row.result_summary.feedback_detail, 'confirmed_type'), false);
   assert.doesNotMatch(JSON.stringify(row), /old private|narrativeReflection/);
-  assert.deepEqual(row.result_summary.feedback_detail.confirmed_type, { core: '4', subtype: 'so_4', wing: '4w5' });
+  assert.deepEqual(row.result_summary.feedback_detail.reported_type, { core: '4', subtype: 'so_4', wing: '4w5' });
 });
 
-test('confirmed type choices reject invalid values and nonadjacent wings', () => {
+test('participant-reported type choices reject invalid values and nonadjacent wings', () => {
   const api = loadExperimentModule();
   for (const [core, subtype, wing, expected] of [
     ['1', 'sp', '1w9', ['1', 'sp_1', '1w9']],
@@ -174,56 +176,6 @@ test('confirmed type choices reject invalid values and nonadjacent wings', () =>
     const row = api._test.buildRow({}, {}, 'correct', null, core, subtype, wing);
     assert.deepEqual([row.self_reported_core, row.self_reported_subtype, row.self_reported_wing], expected);
   }
-});
-
-test('choice-only experiment data is saved only by explicit submission with consent', async () => {
-  const inserts = [];
-  const listeners = {};
-  const host = { classList: { remove() {} }, innerHTML: '' };
-  const submit = { addEventListener(name, listener) { listeners[name] = listener; } };
-  const status = { textContent: '' };
-  const meta = { participantName: 'Test User', consentAccepted: false };
-  const api = loadExperimentModule({
-    windowOverrides: {
-      location: { search: '?experiment=1' },
-      __ER_DIAGNOSTIC_EXPERIMENT__: meta,
-      supabaseClient: {
-        from(table) {
-          assert.equal(table, 'diagnostic_experiment_sessions');
-          return { async insert(row) { inserts.push(plain(row)); return { error: null }; } };
-        }
-      }
-    },
-    documentOverrides: {
-      getElementById(id) {
-        return {
-          'experiment-result-panel': host,
-          'experiment-submit-btn': submit,
-          'experiment-submit-status': status
-        }[id] || null;
-      },
-      querySelector() { return { value: 'correct' }; }
-    }
-  });
-
-  api.onResultReady({
-    assessmentVersion: 'word-narrative-v2',
-    narrativeReflection: '작성한 경험 메모'
-  });
-  assert.equal(inserts.length, 0, 'rendering a result must not submit responses or free text');
-  assert.match(host.innerHTML, /이름, 검사 응답과 결과, 선택한 평가가 저장됩니다/);
-  assert.doesNotMatch(host.innerHTML, /<textarea|experiment-self-note|experiment-accurate-parts/);
-  assert.equal((host.innerHTML.match(/<select /g) || []).length, 3);
-
-  await listeners.click();
-  assert.equal(inserts.length, 0, 'explicit submission still requires consent');
-  assert.match(status.textContent, /저장 동의 정보가 없습니다/);
-
-  meta.consentAccepted = true;
-  await listeners.click();
-  assert.equal(inserts.length, 1);
-  assert.doesNotMatch(JSON.stringify(inserts[0]), /narrativeReflection|작성한 경험 메모/);
-  assert.equal(inserts[0].consent_accepted, true);
 });
 
 test('experiment consent gate hides every restored stage then resumes it without repeated gating', () => {
@@ -282,4 +234,78 @@ test('assessment and feedback markup contain no free-response controls', () => {
   assert.match(source, /<select id="experiment-known-core"/);
   assert.match(source, /<select id="experiment-known-subtype"/);
   assert.match(source, /<select id="experiment-known-wing"/);
+});
+
+
+test('precise choice feedback maps to legacy column while retaining version and participant source', () => {
+  const api = loadExperimentModule();
+  const metadata = {
+    attemptId: 'f364011f-1da3-4f78-9cd0-5799bd015556', revision: 2,
+    versions: { assessment: 'word-narrative-v2', scoring: 'candidate-review-2026-09-28' },
+    initialCandidates: [1, 2, 3], reviewedCandidates: [4, 5, 6],
+    initialResult: { core: null, coreResolved: false }, reviewHistory: [{ revision: 1 }]
+  };
+  for (const [rating, deferred, expected] of [[1, false, 'incorrect'], [2, false, 'incorrect'], [3, false, 'ambiguous'], [4, false, 'correct'], [5, false, 'correct'], [null, true, 'ambiguous']]) {
+    const row = plain(api._test.buildRow({}, { assessmentMetadata: metadata }, 'incorrect', null, '4', 'so', '4w5', {
+      rating, deferred, matching_parts: ['core', 'description'], mismatching_parts: ['wing'], difficulties: ['words', 'length']
+    }));
+    assert.equal(row.self_assessment, expected);
+    assert.deepEqual(row.result_summary.feedback_detail, {
+      survey_version: 'result-feedback-v1', rating, deferred,
+      matching_parts: ['core', 'description'], mismatching_parts: ['wing'], difficulties: ['words', 'length'],
+      comparison_source: 'participant_report', reported_type: { core: '4', subtype: 'so_4', wing: '4w5' }
+    });
+    assert.deepEqual(row.result_summary.experiment_payload.assessmentMetadata, metadata);
+  }
+});
+
+test('public feedback whitelists only selected answers, result, and reproducible versions', () => {
+  const api = loadExperimentModule();
+  const metadata = {
+    attemptId: 'f364011f-1da3-4f78-9cd0-5799bd015556', revision: 2, variant: 'word',
+    versions: { assessment: 'word-narrative-v2', instructions: '2026-09-28', questions: 'questions-v1', scoring: 'scoring-v1', report: 'report-v1', private: 'not-public' },
+    reviewedCandidates: [6, 4, 9, 1], questionOrder: ['private-answer'], optionOrder: { private: 'answer' }
+  };
+  const row = plain(api._test.buildPublicFeedbackPayload({
+    core: 4, coreResolved: true, phase4: { subtypeCode: 'so_4', wingNum: 5 },
+    assessmentMetadata: metadata, responses: { private: 'raw-response' }, screening: { responses: { secret: 'yes' }, candidates: [1, 2, 3] },
+    participantName: 'Private Name', narrativeReflection: 'Private text'
+  }, { rating: 4, deferred: false, consent: true, matching_parts: ['core'], mismatching_parts: ['description'], difficulties: ['length'] }, 'one-time-token'));
+  assert.deepEqual(row, {
+    attempt_id: metadata.attemptId, revision: 2,
+    result: { core: 4, core_resolved: true, subtype: 'so', wing: 5, candidate_types: [6, 4, 9, 1] },
+    versions: { assessment: 'word-narrative-v2', instructions: '2026-09-28', questions: 'questions-v1', scoring: 'scoring-v1', report: 'report-v1', survey: 'result-feedback-v1' },
+    variant: 'word', rating: 4, deferred: false, matching_parts: ['core'], mismatching_parts: ['description'], difficulties: ['length'],
+    consent_version: '2026-09-28-feedback-v1', consent_accepted: true, turnstile_token: 'one-time-token'
+  });
+  assert.doesNotMatch(JSON.stringify(row), /Private|private|responses|questionOrder|optionOrder|screening|narrativeReflection/);
+  const unresolved = plain(api._test.buildPublicFeedbackPayload({ core: 4, coreResolved: false, phase4: { subtypeCode: 'sp', wingNum: 5 }, assessmentMetadata: metadata }, { rating: 5, deferred: true, consent: true }, 'token'));
+  assert.deepEqual(unresolved.result, { core: null, core_resolved: false, subtype: null, wing: null, candidate_types: [6, 4, 9, 1] });
+  assert.equal(unresolved.rating, null);
+  assert.equal(unresolved.deferred, true);
+});
+
+test('public feedback refuses missing or malformed metadata, consent, rating, and security token', () => {
+  const api = loadExperimentModule();
+  const valid = {
+    assessmentMetadata: {
+      attemptId: 'f364011f-1da3-4f78-9cd0-5799bd015556', revision: 0, variant: 'word', reviewedCandidates: [1, 2, 3],
+      versions: { assessment: 'a', instructions: 'i', questions: 'q', scoring: 's', report: 'r' }
+    }
+  };
+  const detail = { rating: 3, consent: true };
+  for (const patch of [{ attemptId: '' }, { revision: -1 }, { revision: 2147483648 }, { revision: '0' }, { variant: 'sentence' }, { reviewedCandidates: [] }, { versions: { ...valid.assessmentMetadata.versions, report: 'unsafe version' } }]) {
+    assert.throws(() => api._test.buildPublicFeedbackPayload({ assessmentMetadata: { ...valid.assessmentMetadata, ...patch } }, detail, 'token'), /metadata_missing/);
+  }
+  assert.throws(() => api._test.buildPublicFeedbackPayload({}, detail, 'token'), /metadata_missing/);
+  for (const invalid of [{ rating: 6, consent: true }, { rating: 1, consent: false }, { consent: true }]) {
+    assert.throws(() => api._test.buildPublicFeedbackPayload(valid, invalid, 'token'), /incomplete/);
+  }
+  assert.throws(() => api._test.buildPublicFeedbackPayload(valid, detail, ''), /incomplete/);
+  const reviewed = plain(api._test.buildPublicFeedbackPayload({ assessmentMetadata: { ...valid.assessmentMetadata, revision: 21 } }, detail, 'token'));
+  assert.equal(reviewed.attempt_id, valid.assessmentMetadata.attemptId, 'later reviews retain the original attempt identity');
+  assert.equal(reviewed.revision, 21);
+  assert.deepEqual(plain(api._test.normalizeFeedback({ rating: 2, matching_parts: ['core', 'core', 'unknown'], mismatching_parts: ['core', 'wing'], difficulties: ['words', 'none', 'unknown'] })), {
+    survey_version: 'result-feedback-v1', rating: 2, deferred: false, matching_parts: ['core'], mismatching_parts: ['wing'], difficulties: ['none']
+  });
 });
