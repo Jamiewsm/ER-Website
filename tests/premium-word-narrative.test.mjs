@@ -224,7 +224,7 @@ test('restoring the detail stage reconstructs candidates, narrative scores and p
   const narrativeResponses = Object.fromEntries(questions.map((question) => [question.id, question.narrativePair ? 'A' : 'sp']));
   narrativeResponses.p4_1_subtype_behavior_1 = 'sp';
   Object.assign(answers, narrativeResponses);
-  storage.set('er_word_narrative_v2', JSON.stringify({ version: 'word-narrative-v2', stage: 'detail', candidateTypes: [1, 2, 3], wordResponses, narrativeResponses, reflection: '지난주 경험', pagerPositions: { p4: 1 } }));
+  storage.set('er_word_narrative_v2', JSON.stringify({ version: 'word-narrative-v2', assessmentMetadata: evaluate('createAssessmentMetadata()'), stage: 'detail', candidateTypes: [1, 2, 3], wordResponses, narrativeResponses, reflection: '지난주 경험', pagerPositions: { p4: 1 } }));
   assert.equal(evaluate('restoreAssessmentSession()'), true);
   assert.equal(evaluate('testState.stage'), 'detail');
   assert.deepEqual(evaluate('testState.candidateTypes'), [1, 2, 3]);
@@ -252,6 +252,59 @@ test('all subtype result labels use plain Korean names without unexplained nickn
   const { evaluate } = loadRuntime();
   for (let core = 1; core <= 9; core += 1) {
     const labels = evaluate(`buildSubtypeBehaviorQuestions(${core})[0].options.map(option => option.label)`);
-    assert.deepEqual(labels, ['자기보존', '사회적', '성적(일대일)']);
+    assert.deepEqual(labels, ['자기보존(자본)', '사회적(사본)', '성적·일대일(성본)']);
   }
+});
+
+test('clear word candidates still enter the nine-pattern review and can be replaced', () => {
+  const { evaluate, context, answers, elements } = loadRuntime();
+  Object.assign(answers, evaluate("Object.fromEntries(wordScreeningQuestions.map(q => [q.id, Number(q.id.split('_')[2]) <= ({1:9,2:8,3:6}[q.type] || 0) ? 'Y' : 'N']))"));
+  vm.runInContext('submitWordScreening()', context);
+  assert.equal(evaluate('testState.stage'), 'clarify');
+  assert.deepEqual(evaluate('testState.screening.suggestedCandidates'), [1, 2, 3]);
+  assert.deepEqual(evaluate('testState.assessmentMetadata.initialCandidates'), [1, 2, 3]);
+  assert.equal((elements.get('phase1-container').innerHTML.match(/name="narrative-candidate"/g) || []).length, 9);
+  context.document.querySelectorAll = (selector) => selector.includes('narrative-candidate') ? [4, 7, 9].map(value => ({ value })) : [];
+  vm.runInContext('submitCandidateClarification()', context);
+  assert.equal(evaluate('testState.stage'), 'narrative');
+  assert.deepEqual(evaluate('testState.candidateTypes'), [4, 7, 9]);
+  assert.deepEqual(evaluate('testState.screening.suggestedCandidates'), [1, 2, 3]);
+  assert.deepEqual(evaluate('testState.assessmentMetadata.reviewedCandidates'), [4, 7, 9]);
+  context.document.querySelectorAll = () => [{ value: '1' }, { value: '2' }];
+  vm.runInContext("testState.stage='clarify'; submitCandidateClarification()", context);
+  assert.equal(evaluate('testState.stage'), 'clarify');
+});
+
+test('a partial-word session keeps the first complete suggestion and creates a new ID only on restart', () => {
+  const { evaluate, context, answers } = loadRuntime();
+  const attemptId = evaluate('testState.assessmentMetadata.attemptId');
+  vm.runInContext("testState.wordResponses={word_1_01:'Y'}; saveAssessmentSession(); restoreAssessmentSession()", context);
+  assert.equal(evaluate('testState.assessmentMetadata.attemptId'), attemptId);
+  Object.assign(answers, evaluate("Object.fromEntries(wordScreeningQuestions.map(q => [q.id, Number(q.id.split('_')[2]) <= ({1:9,2:8,3:6}[q.type] || 0) ? 'Y' : 'N']))"));
+  vm.runInContext('submitWordScreening()', context);
+  assert.deepEqual(evaluate('testState.assessmentMetadata.initialCandidates'), [1, 2, 3]);
+  const metadata = evaluate('testState.assessmentMetadata');
+  assert.equal(metadata.versions.scoring, 'candidate-review-2026-09-28');
+  assert.equal(metadata.variant, 'word');
+  assert.equal(metadata.questionOrder.filter(id => id.startsWith('word_')).length, 81);
+  assert.deepEqual(metadata.optionOrder.word_1_01, ['Y', 'U', 'N']);
+  vm.runInContext('restartAssessment()', context);
+  assert.notEqual(evaluate('testState.assessmentMetadata.attemptId'), attemptId);
+});
+
+test('pre-review v2 progress keeps words but moves to candidate review under current instructions', () => {
+  const { evaluate, storage } = loadRuntime();
+  const words = evaluate("Object.fromEntries(wordScreeningQuestions.map(q => [q.id, 'U']))");
+  storage.set('er_word_narrative_v2', JSON.stringify({ version: 'word-narrative-v2', stage: 'detail', wordResponses: words, candidateTypes: [1,2,3], narrativeResponses: { narrative_1_2_1: 'A' } }));
+  assert.equal(evaluate('restoreAssessmentSession()'), true);
+  assert.equal(evaluate('testState.stage'), 'clarify');
+  assert.deepEqual(evaluate('testState.wordResponses'), words);
+  assert.deepEqual(evaluate('testState.narrativeResponses'), {});
+});
+
+test('both languages explain usual reactions and the question context', () => {
+  const { evaluate, elements } = loadRuntime('?lang=en');
+  assert.match(elements.get('assessment-guidance-context').textContent, /calm moments.*pressure or conflict.*situation/);
+  assert.match(evaluate('TEST_UI.ko.guidanceContext'), /편안할 때.*부담이나 갈등.*상황/);
+  assert.doesNotMatch(evaluate('TEST_UI.ko.phase1IntroDesc'), /좁히기 어렵/);
 });

@@ -7,25 +7,29 @@ const TEST_UI = {
   ko: {
     loadingKicker: '진단 페이지 준비 중',
     title: '내 행동 뒤에 있는 마음',
-    subtitle: '평소 성향과 일상에서의 선택을 살펴보며, 내가 왜 그렇게 행동하는지 알아봅니다.',
+    subtitle: '여러 상황에서 오래 반복되는 반응과 그 이유를 살펴봅니다.',
+    guidanceTitle: '어떤 모습을 떠올리면 좋을까요?',
+    guidanceBaseline: '최근 며칠의 기분이나 특별한 사건보다, 여러 상황에서 반복되어 온 평소 모습을 떠올려 주세요.',
+    guidanceContext: '편안할 때와 일상적인 부담이나 갈등을 겪을 때를 함께 생각해 주세요. 상황이 제시되면 그때 평소 보이는 반응을 골라 주세요.',
+    guidanceUnknown: '되고 싶은 모습보다 실제로 자주 나타나는 모습에 답해 주세요. 판단하기 어렵다면 모르겠다를 선택해도 괜찮습니다.',
     disclaimer: '* 이 검사는 자신을 이해하기 위한 참고 자료이며, 의학적·임상적 진단을 대신하지 않습니다.',
     elimIntroTitle: '나를 닮은 단어',
-    elimIntroDesc: '바라는 모습보다 평소의 나를 떠올려 보세요. 단어가 나와 닮았다면 예, 판단이 어렵다면 모르겠다, 다르다면 아니요를 선택해 주세요.',
+    elimIntroDesc: '여러 상황에서 반복되는 평소의 나를 떠올려 보세요. 닮았다면 예, 판단이 어렵다면 모르겠다, 다르다면 아니요를 선택해 주세요.',
     elimHint: '정답은 없습니다. 단어는 비교할 후보를 찾는 데만 사용합니다.',
-    elimSubmit: '상황별 질문 시작',
+    elimSubmit: '비교할 후보 살펴보기',
     elimTooMany: '확실히 아닌 유형은 최대 6개까지 고를 수 있습니다. 적어도 3개 후보는 남겨 주세요.',
     elimMark: '확실히 아님',
-    phase1IntroTitle: '이야기로 후보 좁히기',
-    phase1IntroDesc: '단어 응답만으로는 유형을 좁히기 어렵습니다. 아래 설명 중 평소 내 모습과 가까운 것을 골라 주세요.',
+    phase1IntroTitle: '비교할 후보를 직접 살펴보기',
+    phase1IntroDesc: '단어로 제안한 후보는 출발점입니다. 아홉 설명을 모두 읽고, 실제로 반복되는 내 모습과 가까운 이야기 3~4개를 골라 주세요. 선택된 이야기를 다른 이야기로 바꿀 수 있습니다.',
     phase1Submit: '선택한 이야기 비교하기',
     phase2IntroTitle: '같은 행동, 다른 마음',
-    phase2IntroDesc: '평소의 경험을 떠올리며 내 마음과 더 가까운 답을 골라 주세요. 판단하기 어렵다면 모르겠다를 선택해도 됩니다.',
+    phase2IntroDesc: '각 문항에 적힌 상황에서 반복되는 실제 반응과 이유를 떠올려 주세요. 편안한 모습만 고르거나 최근 사건 하나로 판단하지 않아도 됩니다. 구분하기 어렵다면 모르겠다를 선택해 주세요.',
     phase2Submit: '다음 단계로',
     phase3IntroTitle: '비슷하게 나온 두 유형 비교하기',
     phase3IntroDesc: '두 유형의 점수가 비슷합니다. 평소 행동의 이유를 한 번 더 살펴보겠습니다.',
     phase3Submit: '다음 단계로',
     phase4IntroTitle: '하위유형과 날개 알아보기',
-    phase4IntroDesc: '같은 유형 안에서도 관심사와 행동 방식은 다를 수 있습니다. 평소 내 모습과 가까운 답을 골라 주세요.',
+    phase4IntroDesc: '같은 유형 안에서도 하위유형의 표현과 날개는 다를 수 있습니다. 각 상황에서 반복되는 반응을 골라 주세요. 날개는 인접 유형의 표현을 살펴보는 후순위 탐색입니다.',
     phase4Submit: '최종 결과 보기',
     requiredAll: '모든 문항에 응답해 주세요.',
     requiredOne: '답을 하나 선택해 주세요.',
@@ -51,25 +55,29 @@ const TEST_UI = {
   en: {
     loadingKicker: 'Preparing assessment page',
     title: 'What moves you from within',
-    subtitle: 'Start with familiar words, then explore the motivations that repeat in your life.',
+    subtitle: 'Explore the reactions and motivations that repeat across situations over time.',
+    guidanceTitle: 'Which version of myself should I consider?',
+    guidanceBaseline: 'Recall your usual patterns across situations over time, rather than a recent mood or an exceptional event.',
+    guidanceContext: 'Include calm moments and everyday pressure or conflict. When a situation is described, choose your usual response in that context.',
+    guidanceUnknown: 'Answer for what you actually tend to do, rather than who you wish to be. It is fine to choose Not sure.',
     disclaimer: '* This assessment is for self-exploration and does not replace medical or clinical diagnosis.',
     elimIntroTitle: 'Words that sound like me',
-    elimIntroDesc: 'Think of your everyday self. Choose Yes if the word fits, Not sure if it is unclear, or No if it does not.',
+    elimIntroDesc: 'Think of your usual self across situations. Choose Yes if the word fits, Not sure if it is unclear, or No if it does not.',
     elimHint: 'There are no right answers. Words only select the possibilities to explore next.',
-    elimSubmit: 'Explore the stories',
+    elimSubmit: 'Review the possibilities',
     elimTooMany: 'You can mark at most 6 types as clearly not you. Please keep at least 3 candidates.',
     elimMark: 'Clearly not me',
-    phase1IntroTitle: 'Narrow the possibilities through stories',
-    phase1IntroDesc: 'Your word responses leave several possibilities open. Choose the recurring motivations to compare.',
+    phase1IntroTitle: 'Review the possibilities yourself',
+    phase1IntroDesc: 'The word suggestions are a starting point. Read all nine patterns and choose 3 or 4 that recur in your life. You can replace any selected pattern.',
     phase1Submit: 'Compare these stories',
     phase2IntroTitle: 'Similar actions, different motivations',
-    phase2IntroDesc: 'Recall a real experience and choose the inner response that repeats more often. It is fine to choose neither.',
+    phase2IntroDesc: 'Consider your recurring response and motivation in the situation described. Include everyday pressure as well as calm moments, rather than one recent event. Choose Not sure if you cannot distinguish the options.',
     phase2Submit: 'Continue',
     phase3IntroTitle: 'Explore two close patterns',
     phase3IntroDesc: 'Two patterns remain close. Consider once more what tends to drive your response.',
     phase3Submit: 'Continue',
     phase4IntroTitle: 'The finer details of your pattern',
-    phase4IntroDesc: 'Explore subtype and wing through repeated behavior. Choose Not sure when no option fits.',
+    phase4IntroDesc: 'Consider recurring responses in each situation. Subtype patterns vary within a core type; wing is a later exploration of adjacent types. Choose Not sure when no option fits.',
     phase4Submit: 'See final result',
     requiredAll: 'Please answer every question before continuing.',
     requiredOne: 'Please select one option to continue.',
@@ -156,6 +164,10 @@ function localizeStaticTestPage() {
     'test-title': 'title',
     'test-subtitle': 'subtitle',
     'test-disclaimer': 'disclaimer',
+    'assessment-guidance-title': 'guidanceTitle',
+    'assessment-guidance-baseline': 'guidanceBaseline',
+    'assessment-guidance-context': 'guidanceContext',
+    'assessment-guidance-unknown': 'guidanceUnknown',
     'elim-intro-title': 'elimIntroTitle',
     'elim-intro-desc': 'elimIntroDesc',
     'elim-hint': 'elimHint',
@@ -568,8 +580,31 @@ const TEST_CONFIG = {
   }
 };
 
+const ASSESSMENT_VERSIONS = Object.freeze({
+  assessment: 'word-narrative-v2',
+  instructions: '2026-09-28',
+  questions: 'word-narrative-2026-09-21',
+  scoring: 'candidate-review-2026-09-28',
+  report: 'evidence-2026-09-28'
+});
+
+function createAssessmentMetadata() {
+  const attemptId = window.crypto && typeof window.crypto.randomUUID === 'function'
+    ? window.crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (character) => {
+      const value = Math.floor(Math.random() * 16);
+      return (character === 'x' ? value : (value & 3) | 8).toString(16);
+    });
+  return { attemptId, versions: { ...ASSESSMENT_VERSIONS }, variant: 'word', revision: 0,
+    initialCandidates: [], reviewedCandidates: [], questionOrder: [], optionOrder: {},
+    initialResult: null, reviewHistory: [] };
+}
+
 const testState = {
   assessmentVersion: 'word-narrative-v2',
+  assessmentMetadata: createAssessmentMetadata(),
+  resultData: null,
+  latestResultSnapshot: null,
   stage: 'words',
   wordResponses: {},
   narrativeResponses: {},
@@ -627,6 +662,17 @@ const testState = {
 };
 
 const ASSESSMENT_SESSION_KEY = 'er_word_narrative_v2';
+
+function recordAssessmentQuestionOrder(items) {
+  const metadata = testState.assessmentMetadata;
+  items.forEach((item) => {
+    if (!metadata.questionOrder.includes(item.id)) metadata.questionOrder.push(item.id);
+    metadata.optionOrder[item.id] = item.format === 'word' ? ['Y', 'U', 'N']
+      : item.format === 'ab' ? ['A', 'B', 'U']
+      : item.format === 'abc' ? [...item.options.map((option) => option.value), ...(item.allowUnknown ? ['U'] : [])]
+      : ['1', '2', '3', '4', '5', '6', 'U'];
+  });
+}
 const WORD_SCREENING_BANK = [
   { type: 1, ko: '일관성 있는|양심적인|완벽을 추구하는|비판적인|합리적인|정확한|간섭하는|공정한|원칙적인', en: 'Consistent|Conscientious|Perfection-seeking|Critical|Rational|Accurate|Interfering|Fair|Principled' },
   { type: 2, ko: '희생하는|배려심이 깊은|다정한|겸손한|스킨십을 좋아하는|베풀기 좋아하는|소유욕이 강한|보호하려는|사교적인', en: 'Self-sacrificing|Considerate|Affectionate|Humble|Physically affectionate|Generous|Possessive|Protective|Sociable' },
@@ -1508,7 +1554,7 @@ function buildSubtypeBehaviorQuestions(core) {
     qEn: set.subtype.qEn,
     options: set.subtype.options.map((option) => ({
       ...option,
-      label: { sp: '자기보존', so: '사회적', sx: '성적(일대일)' }[option.value],
+      label: { sp: '자기보존(자본)', so: '사회적(사본)', sx: '성적·일대일(성본)' }[option.value],
       labelEn: { sp: 'Self-preservation', so: 'Social', sx: 'One-to-one' }[option.value],
       text: item[option.value] || option.text,
       textEn: item[`${option.value}En`] || option.textEn
@@ -1561,8 +1607,35 @@ function resolvePhase4Subtype(subtypeQuestions) {
   return {
     subtypeCode,
     subtypeLabel: option ? (pageLang === 'en' ? option.labelEn : option.label) : subtypeCode,
-    subtypeVotes: votes
+    subtypeVotes: votes,
+    subtypeEvidence: summarizeInstinctVotes(votes, subtypeQuestions.length,
+      subtypeQuestions.filter((question) => document.querySelector(`input[name="${question.id}"]:checked`)?.value === 'U').length)
   };
+}
+
+function summarizeInstinctVotes(votes, total, unsure) {
+  const cleanVotes = Object.fromEntries(['sp', 'so', 'sx'].map((code) => [code, Math.max(0, Number(votes[code]) || 0)]));
+  const ranked = Object.keys(cleanVotes).sort((a, b) => cleanVotes[b] - cleanVotes[a]);
+  const decisive = Object.values(cleanVotes).reduce((sum, count) => sum + count, 0);
+  return { votes: cleanVotes, total, unsure, missing: Math.max(0, total - decisive - unsure), measured: decisive + unsure > 0,
+    leader: cleanVotes[ranked[0]] >= 2 && cleanVotes[ranked[0]] > cleanVotes[ranked[1]] ? ranked[0] : null };
+}
+
+function crossCheckSubtypeEvidence(phase4, responses) {
+  const questions = buildNarrativeInstinctQuestions();
+  const votes = { sp: 0, so: 0, sx: 0 };
+  let unsure = 0;
+  questions.forEach((question) => {
+    const answer = responses[question.id];
+    if (Object.hasOwn(votes, answer)) votes[answer] += 1;
+    else if (answer === 'U') unsure += 1;
+  });
+  const common = summarizeInstinctVotes(votes, questions.length, unsure);
+  const subtypeVotes = phase4.subtypeVotes || {};
+  const subtype = phase4.subtypeEvidence || summarizeInstinctVotes(subtypeVotes, 3,
+    Math.max(0, 3 - Object.values(subtypeVotes).reduce((sum, count) => sum + (Number(count) || 0), 0)));
+  const conflict = Boolean(common.leader && subtype.leader && common.leader !== subtype.leader);
+  return { status: conflict ? 'conflict' : common.leader && subtype.leader ? 'aligned' : 'insufficient', common, subtype };
 }
 
 function resolvePhase4Wing(wingQuestions) {
@@ -1696,6 +1769,7 @@ const postTieBreakerMap = {
 
 function renderQuestions(containerId, items, prefix) {
   const root = document.getElementById(containerId);
+  if (testState.assessmentVersion === 'word-narrative-v2') recordAssessmentQuestionOrder(items);
   root.innerHTML = '';
   items.forEach((item) => {
     const legendId = `${prefix}-legend-${item.id}`;
@@ -1899,7 +1973,7 @@ function addQualityFlag(flags, code, severity, label, evidence) {
   flags.push({ code, severity, label, evidence });
 }
 
-function buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked, instinctPct, confidence, assessmentVersion }) {
+function buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked, instinctPct, confidence, assessmentVersion, instinctCrossCheck }) {
   const flags = [];
   const responseStats = getLikertResponseStats(responses || {}, assessmentVersion);
   const timing = timings || {};
@@ -1928,7 +2002,13 @@ function buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked,
   if (!centerCoreAligned && confidence !== '높음') {
     addQualityFlag(flags, 'center_core_mismatch', 'caution', '센터 응답과 코어 결과가 충돌함', `센터는 ${dominantCenter}, 코어 ${topType}번은 ${coreCenter} 센터입니다.`);
   }
-  if (instinctTop < 35 || instinctGap < 10) {
+  if (assessmentVersion === 'word-narrative-v2' && instinctCrossCheck) {
+    if (instinctCrossCheck.status === 'conflict') {
+      addQualityFlag(flags, 'subtype_observation_conflict', 'caution', '하위유형 관찰이 엇갈림', '공통 관심 영역과 유형별 표현에서 서로 다른 영역의 응답이 더 많아 하위유형을 보류했습니다.');
+    } else if (instinctCrossCheck.status === 'insufficient') {
+      addQualityFlag(flags, 'instinct_unclear', 'caution', '하위유형 비교 근거가 부족함', '공통 관심 영역 또는 유형별 표현의 세 문항에서 뚜렷한 응답 경향이 나타나지 않았습니다.');
+    }
+  } else if (instinctTop < 35 || instinctGap < 10) {
     addQualityFlag(flags, 'instinct_unclear', 'caution', '본능 점수가 선명하지 않음', `최상위 본능 ${instinctTop}%, 2순위와 차이 ${instinctGap}%`);
   }
 
@@ -2465,6 +2545,8 @@ function renderTypeElimination() {
 
 function showAssessmentStage(stage) {
   testState.stage = stage;
+  document.getElementById('result-view')?.classList.add('hidden');
+  document.getElementById('progress-container')?.classList.remove('hidden');
   const visible = { words: 'phase0-form', clarify: 'phase1-form', narrative: 'phase2-form', tiebreak: 'phase3-form', detail: 'phase4-form' }[stage];
   ['phase0-form', 'phase1-form', 'phase2-form', 'phase3-form', 'phase4-form'].forEach((id) => document.getElementById(id)?.classList.toggle('hidden', id !== visible));
   const step = { words: 1, clarify: 1, narrative: 2, tiebreak: 2, detail: 3 }[stage] || 1;
@@ -2502,7 +2584,11 @@ function saveAssessmentSession() {
     if (!storage) return;
     storage.setItem(ASSESSMENT_SESSION_KEY, JSON.stringify({
       version: testState.assessmentVersion,
-      stage: testState.stage === 'result' ? (testState.phase4Questions.length ? 'detail' : 'narrative') : testState.stage,
+      stage: testState.stage,
+      assessmentMetadata: testState.assessmentMetadata,
+      screening: testState.screening,
+      resultData: testState.resultData,
+      latestResultSnapshot: testState.latestResultSnapshot,
       wordResponses: testState.wordResponses,
       narrativeResponses: testState.narrativeResponses,
       candidateTypes: testState.candidateTypes,
@@ -2518,7 +2604,13 @@ function clearAssessmentSession() {
 
 function restartAssessment() {
   clearAssessmentSession();
+  testState.assessmentMetadata = createAssessmentMetadata();
+  try { window.sessionStorage?.removeItem('er_latest_test_result'); } catch (_err) {}
   window.location.reload();
+}
+
+function validCandidateTypes(types) {
+  return [...new Set(Array.isArray(types) ? types : [])].filter((type) => Number.isInteger(type) && type >= 1 && type <= 9);
 }
 
 function getValidSavedAssessment(saved) {
@@ -2532,16 +2624,40 @@ function getValidSavedAssessment(saved) {
   Object.entries(saved.narrativeResponses || {}).forEach(([id, value]) => {
     if (/^(narrative_|post_tb_|p4_)/.test(id) && ['A', 'B', 'U', 'sp', 'so', 'sx'].includes(value)) narrativeResponses[id] = value;
   });
-  const candidateTypes = [...new Set(saved.candidateTypes || [])].filter((type) => Number.isInteger(type) && type >= 1 && type <= 9);
-  const validStages = ['words', 'clarify', 'narrative', 'tiebreak', 'detail'];
+  const candidateTypes = validCandidateTypes(saved.candidateTypes);
+  const currentMetadata = saved.assessmentMetadata;
+  const compatible = currentMetadata && typeof currentMetadata.attemptId === 'string'
+    && /^[a-f0-9-]{36}$/i.test(currentMetadata.attemptId)
+    && currentMetadata.variant === 'word'
+    && Object.entries(ASSESSMENT_VERSIONS).every(([key, value]) => currentMetadata.versions?.[key] === value)
+    && Number.isInteger(currentMetadata.revision) && currentMetadata.revision >= 0;
+  const assessmentMetadata = compatible ? {
+    ...createAssessmentMetadata(),
+    ...currentMetadata,
+    initialCandidates: validCandidateTypes(currentMetadata.initialCandidates),
+    reviewedCandidates: validCandidateTypes(currentMetadata.reviewedCandidates),
+    questionOrder: Array.isArray(currentMetadata.questionOrder) ? currentMetadata.questionOrder.filter((id) => typeof id === 'string') : [],
+    optionOrder: currentMetadata.optionOrder && typeof currentMetadata.optionOrder === 'object' ? currentMetadata.optionOrder : {},
+    reviewHistory: Array.isArray(currentMetadata.reviewHistory) ? currentMetadata.reviewHistory : []
+  } : createAssessmentMetadata();
+  const validStages = ['words', 'clarify', 'narrative', 'tiebreak', 'detail', 'result'];
   let stage = validStages.includes(saved.stage) ? saved.stage : 'words';
   if (Object.keys(wordResponses).length !== wordScreeningQuestions.length) stage = 'words';
-  if (['narrative', 'tiebreak', 'detail'].includes(stage) && ![3, 4].includes(candidateTypes.length)) stage = 'clarify';
+  else if (!compatible || (['narrative', 'tiebreak', 'detail', 'result'].includes(stage) && ![3, 4].includes(candidateTypes.length))) stage = 'clarify';
+  const screening = scoreWordScreening(wordResponses);
+  screening.suggestedCandidates = compatible && saved.screening ? validCandidateTypes(saved.screening.suggestedCandidates) : screening.candidates.slice();
+  screening.reviewedCandidates = compatible ? validCandidateTypes(assessmentMetadata.reviewedCandidates) : [];
+  screening.candidates = candidateTypes.slice();
+  if (!compatible) assessmentMetadata.initialCandidates = screening.suggestedCandidates.slice();
+  const resultData = compatible && saved.resultData && saved.resultData.final && saved.resultData.evidence ? saved.resultData : null;
+  if (stage === 'result' && !resultData) stage = 'clarify';
   const pagerPositions = {};
   Object.entries(saved.pagerPositions || {}).forEach(([key, value]) => {
     if (['word', 'p2', 'p3', 'p4'].includes(key) && Number.isInteger(value) && value >= 0) pagerPositions[key] = value;
   });
-  return { stage, wordResponses, narrativeResponses, candidateTypes, pagerPositions, responseTiming: saved.responseTiming };
+  return { stage, wordResponses, narrativeResponses: compatible ? narrativeResponses : {}, candidateTypes, pagerPositions,
+    assessmentMetadata, screening: compatible && !saved.screening ? null : screening, resultData, latestResultSnapshot: compatible ? saved.latestResultSnapshot || null : null,
+    responseTiming: compatible ? saved.responseTiming : null };
 }
 
 function restoreAssessmentSession() {
@@ -2555,9 +2671,15 @@ function restoreAssessmentSession() {
     testState.responseTiming.startedAt = timing.startedAt;
     testState.responseTiming.firstAnswerAt = Object.fromEntries(Object.entries(timing.firstAnswerAt).filter(([id, value]) => !id.startsWith('word_') && typeof value === 'string' && Number.isFinite(Date.parse(value))));
   }
-  testState.screening = scoreWordScreening(testState.wordResponses);
-  testState.screening.candidates = testState.candidateTypes.slice();
   const targetStage = saved.stage;
+  testState.phase1Responses = Object.fromEntries(Object.entries(testState.narrativeResponses).filter(([id]) => id.startsWith('narrative_instinct_')));
+  if (targetStage === 'result') {
+    testState.phase2Questions = buildNarrativeQuestions(testState.candidateTypes);
+    const core = testState.latestResultSnapshot?.core;
+    if (core && saved.resultData.phase4) testState.phase4Questions = [...buildSubtypeBehaviorQuestions(core), ...buildWingQuestionSet(core)];
+    renderResultFromScores({ ...saved.resultData, assessmentMetadata: testState.assessmentMetadata, screening: testState.screening });
+    return true;
+  }
   renderWordScreening();
   if (targetStage === 'clarify') renderCandidateClarification();
   if (['narrative', 'tiebreak', 'detail'].includes(targetStage)) {
@@ -2646,7 +2768,9 @@ function renderCandidateClarification() {
       : deep[type].map((question) => `<span class="er-narrative-option-text">${question.q}</span>`).join('');
     return `<label class="er-narrative-option"><input type="checkbox" name="narrative-candidate" value="${type}" ${checked}><span class="er-narrative-option-body">${body}</span></label>`;
   }).join('');
-  root.innerHTML = `<fieldset class="er-candidate-clarification"><legend>${pageLang === 'en' ? 'Words leave several possibilities open. Choose 3 or 4 patterns you recognize from repeated experiences.' : '단어만으로는 후보를 충분히 좁히기 어렵습니다. 실제 경험에서 반복되는 이야기 3~4개를 골라 주세요.'}</legend><div class="er-candidate-options">${optionsHtml}</div></fieldset><button type="button" class="er-question-back" onclick="reviewWordScreening()">${pageLang === 'en' ? 'Review my word responses' : '단어 응답 돌아보기'}</button>`;
+  root.innerHTML = `<fieldset class="er-candidate-clarification"><legend>${pageLang === 'en' ? 'Choose 3 or 4 recurring patterns to compare.' : '반복되는 내 모습과 가까운 이야기 3~4개를 골라 주세요.'}</legend><p class="er-candidate-review-note">${pageLang === 'en' ? 'Selected patterns are suggestions from your words or your previous review. Read all nine; a pattern outside the suggestions may fit you better. To replace a choice when four are selected, deselect one first.' : '선택 표시는 단어에서 제안된 후보 또는 내가 앞서 고른 후보입니다. 아홉 설명을 모두 읽어 주세요. 표시되지 않은 이야기가 더 가까울 수도 있습니다. 4개를 고른 뒤 바꾸려면 먼저 하나를 해제해 주세요.'}</p><div class="er-candidate-options">${optionsHtml}</div></fieldset><button type="button" class="er-question-back" onclick="reviewWordScreening()">${pageLang === 'en' ? 'Review my word responses' : '단어 응답 돌아보기'}</button>`;
+  testState.assessmentMetadata.optionOrder.candidate_review = [4, 8, 2, 6, 1, 7, 3, 9, 5];
+  if (!testState.assessmentMetadata.questionOrder.includes('candidate_review')) testState.assessmentMetadata.questionOrder.push('candidate_review');
   root.querySelectorAll('input[name="narrative-candidate"]').forEach((input) => input.addEventListener('change', () => {
     const checked = Array.from(root.querySelectorAll('input[name="narrative-candidate"]:checked'));
     if (checked.length > 4) { input.checked = false; return; }
@@ -2661,18 +2785,51 @@ function reviewWordScreening() {
   saveAssessmentSession();
 }
 
+function resetNarrativeProgress() {
+  testState.narrativeResponses = {};
+  testState.phase1Responses = {};
+  testState.phase2Questions = [];
+  testState.phase3Question = null;
+  testState.phase4Questions = [];
+  testState.pendingResult = null;
+  testState.resultData = null;
+  testState.latestResultSnapshot = null;
+  testState.narrativeMeta = null;
+  testState.responseTiming = { startedAt: null, firstAnswerAt: {}, completedAt: null, totalSeconds: 0, answeredCount: 0, avgSecondsPerAnswered: 0 };
+  ['p2', 'p3', 'p4'].forEach((prefix) => { testState.pagerPositions[prefix] = 0; });
+  ['phase2-container', 'phase3-container', 'phase4-container', 'result-view'].forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) element.innerHTML = '';
+  });
+  try { window.sessionStorage?.removeItem('er_latest_test_result'); } catch (_err) {}
+  if (window.ERDiagnosticExperiment?.onAssessmentReview) window.ERDiagnosticExperiment.onAssessmentReview();
+}
+
+function reviewAssessmentCandidates() {
+  const metadata = testState.assessmentMetadata;
+  if (testState.latestResultSnapshot) {
+    metadata.reviewHistory.push({ revision: metadata.revision, candidates: testState.candidateTypes.slice(), result: testState.latestResultSnapshot,
+      questionOrder: metadata.questionOrder.slice(), optionOrder: JSON.parse(JSON.stringify(metadata.optionOrder)) });
+    metadata.revision += 1;
+  }
+  metadata.questionOrder = wordScreeningQuestions.map((question) => question.id);
+  metadata.optionOrder = Object.fromEntries(wordScreeningQuestions.map((question) => [question.id, ['Y', 'U', 'N']]));
+  resetNarrativeProgress();
+  renderCandidateClarification();
+  requestAnimationFrame(() => scrollToTopSmart());
+}
+
 function submitWordScreening() {
   if (!validate(wordScreeningQuestions, 'word', 'validation-msg-elim')) return;
   wordScreeningQuestions.forEach((question) => { testState.wordResponses[question.id] = document.querySelector(`input[name="${question.id}"]:checked`).value; });
+  const firstSuggestions = testState.screening?.suggestedCandidates;
   testState.screening = scoreWordScreening(testState.wordResponses);
+  testState.screening.suggestedCandidates = firstSuggestions ? firstSuggestions.slice() : testState.screening.candidates.slice();
+  testState.screening.reviewedCandidates = [];
+  if (!firstSuggestions) testState.assessmentMetadata.initialCandidates = testState.screening.suggestedCandidates.slice();
   testState.candidateTypes = testState.screening.candidates.slice();
-  testState.narrativeResponses = {};
-  testState.phase1Responses = {};
-  testState.pagerPositions.p2 = 0;
-  testState.pagerPositions.p3 = 0;
-  testState.pagerPositions.p4 = 0;
-  if (testState.screening.needsClarification) renderCandidateClarification();
-  else startNarrativeStage(testState.candidateTypes);
+  resetNarrativeProgress();
+  renderCandidateClarification();
 }
 
 function submitCandidateClarification() {
@@ -2685,6 +2842,8 @@ function submitCandidateClarification() {
   }
   msg.classList.add('hidden');
   testState.screening.candidates = candidates.slice();
+  testState.screening.reviewedCandidates = candidates.slice();
+  testState.assessmentMetadata.reviewedCandidates = candidates.slice();
   testState.screening.clarifiedByNarrative = true;
   startNarrativeStage(candidates);
 }
@@ -2776,7 +2935,9 @@ function submitNarrativePhase() {
   });
   const scored = scoreNarrativeResponses(testState.phase2Questions, testState.narrativeResponses);
   testState.narrativeMeta = scored.narrativeMeta;
-  const result = { ...scored, assessmentVersion: testState.assessmentVersion, screening: testState.screening, candidateTypes: testState.candidateTypes.slice(), recentStress: 3, stateStressAdjustment: { applied: false }, tb7w6: 0, tb7w8: 0, sxBoost: 0, counterSignals: null, phase4: null, postTieApplied: false };
+  const result = { ...scored, assessmentVersion: testState.assessmentVersion, assessmentMetadata: testState.assessmentMetadata,
+    screening: testState.screening, candidateTypes: testState.candidateTypes.slice(), recentStress: null,
+    stateStressAdjustment: { applied: false, measured: false, recentStress: null }, tb7w6: 0, tb7w8: 0, sxBoost: 0, counterSignals: null, phase4: null, postTieApplied: false };
   const ranked = testState.candidateTypes.map((type) => ({ type, score: result.final[type] })).sort((a, b) => b.score - a.score);
   testState.pendingResult = result;
   if (ranked[0].score > 0 && ranked[0].score - ranked[1].score <= 1 && ranked[1].score > ranked[2].score) {
@@ -3265,6 +3426,7 @@ function submitPhase4() {
       subtypeCode: subtypeResult.subtypeCode,
       subtypeLabel: subtypeResult.subtypeLabel,
       subtypeVotes: subtypeResult.subtypeVotes,
+      subtypeEvidence: subtypeResult.subtypeEvidence,
       wingNum: wingResult.wingNum,
       wingVotes: wingResult.wingVotes,
       wingText: wingResult.wingText
@@ -3498,13 +3660,16 @@ function buildReportMetricBar(row, options) {
   const label = escapeReportHtml(row.label);
   const caption = row.caption ? `<span class="er-report-metric-caption">${escapeReportHtml(row.caption)}</span>` : '';
   const value = Number.isFinite(Number(row.percent)) ? Number(row.percent).toFixed(0) : '0';
+  const displayValue = Number.isInteger(row.countTotal)
+    ? row.measured === false ? '미측정' : `${row.countTotal}개 중 ${Number(row.score) || 0}응답`
+    : `${value}%`;
   const active = row.active ? ' is-active' : '';
   const tone = options && options.tone ? options.tone : 'gold';
   return `
     <div class="er-report-metric${active}">
       <div class="er-report-metric-head">
         <span>${label}</span>
-        <strong>${value}%</strong>
+        <strong>${displayValue}</strong>
       </div>
       <div class="er-report-bar-track" aria-hidden="true">
         <span class="er-report-bar er-report-bar-${tone}" style="width:${clampReportPercent(row.percent)}%"></span>
@@ -3554,6 +3719,8 @@ function buildReportSupportSelection(resultData, instinctRows) {
   if (!supportApi || typeof supportApi.selectSupportMaterials !== 'function') {
     return { materials: [], pendingMaterials: [], recommendedSlots: [], repressedInstinct: { code: null } };
   }
+  const holdInstinctSupport = resultData.assessmentVersion === 'word-narrative-v2'
+    && ['conflict', 'insufficient'].includes(resultData.phase4?.instinctCrossCheck?.status);
   return supportApi.selectSupportMaterials({
     audience: getReportAudience(),
     adultType: resultData.core,
@@ -3564,8 +3731,8 @@ function buildReportSupportSelection(resultData, instinctRows) {
     includeChildMaterials: isTruthyReportParam(['includeChildMaterials', 'childMaterials']),
     hasMultipleChildren: isTruthyReportParam(['hasMultipleChildren', 'siblings', 'sibling']),
     needsSiblingMediation: isTruthyReportParam(['needsSiblingMediation', 'siblingConflict']),
-    instinctPct: resultData.instinctPct || null,
-    instinctRows
+    instinctPct: holdInstinctSupport ? null : resultData.instinctPct || null,
+    instinctRows: holdInstinctSupport ? [] : instinctRows
   });
 }
 
@@ -4064,8 +4231,10 @@ function buildPremiumReportModel(resultData) {
     confidenceExplanation.reasons = [
       `${(resultData.candidateTypes || []).length}개 후보를 같은 수의 비교 질문으로 살펴봤습니다.`,
       resultData.coreResolved ? '상황 질문에서 다른 후보보다 점수가 높은 유형이 나타났습니다.' : '여러 유형의 점수가 비슷하거나, 비교할 수 있는 답이 부족합니다.',
-      subtypePending ? '하위유형은 추가 확인이 필요합니다.' : '하위유형은 해당 유형의 생활 장면 응답으로 확인했습니다.',
-      selectedWing ? '날개는 인접한 두 유형의 표현 방식을 별도로 비교했습니다.' : '날개는 추가 확인이 필요합니다.'
+      resultData.phase4?.instinctCrossCheck?.status === 'conflict' ? '공통 관심 영역과 유형별 표현의 응답이 달라 하위유형을 보류했습니다. 이 차이만으로 핵심 유형을 바꾸지 않았습니다.'
+        : subtypePending ? '하위유형은 추가 확인이 필요합니다.' : '하위유형은 해당 유형의 생활 장면 응답을 바탕으로 잠정적으로 살펴봤습니다.',
+      selectedWing ? '날개는 인접한 두 유형의 표현을 비교한 후순위 탐색 결과입니다.' : '날개는 추가 확인이 필요합니다.',
+      '현재 스트레스 수준은 이번 검사에서 측정하지 않았습니다.'
     ];
   }
 
@@ -4085,7 +4254,7 @@ function buildPremiumReportModel(resultData) {
       headline: formatReportHeadline(resultData),
       final: `${subtypeCode || '하위유형 확인 중'} ${resultData.wingCode}`,
       core: resultData.coreDisplay,
-      subtype: resultData.phase4
+      subtype: resultData.assessmentVersion === 'word-narrative-v2' || resultData.phase4
         ? `하위유형: ${resultData.instinctLabel}`
         : `제 1본능: ${resultData.instinctLabel}`,
       wing: resultData.wing,
@@ -4110,14 +4279,33 @@ function renderScreeningSummary(model) {
   return `<section id="report-screening" class="er-report-section er-report-screening">
     <div class="er-report-section-head"><h2>단어에서 동기로, 후보를 비교한 과정</h2>
       <p>단어의 예·아니요·모르겠다를 구분해 후보를 골랐습니다. 아래 막대는 상황 질문에서 각 후보가 받은 점수의 비율이며 유형일 확률이 아닙니다.</p></div>
-    ${screening.unclear || screening.needsClarification ? '<p class="er-report-microcopy">단어만으로 후보가 좁혀지지 않아, 추가 설명을 읽고 직접 고른 후보를 비교했습니다.</p>' : ''}
+    <p class="er-report-microcopy">단어의 제안을 참고하고 아홉 설명을 읽은 뒤 직접 고른 후보를 비교했습니다. 단어에서 제안한 후보와 재검토한 선택은 구분해 기록합니다.</p>
     <div class="er-report-screening-rows">${rows.map((row) => `<article class="er-report-screening-row">
       <div><h3>${row.type}번</h3><p>단어 응답 · 예 ${Number(row.yes) || 0} / 모르겠다 ${Number(row.unsure) || 0} / 아니요 ${Number(row.no) || 0}</p></div>
       <strong>${total ? `${row.share.toFixed(0)}%` : '비교 근거 부족'}</strong>
       <div class="er-report-bar-track" aria-hidden="true"><span class="er-report-bar er-report-bar-green" style="width:${clampReportPercent(row.share)}%"></span></div>
     </article>`).join('')}</div>
     <p class="er-report-microcopy">단어 점수는 최종 유형 점수에 합산하지 않았습니다. 결과가 실제 내 모습과 다르다면 후보에 없던 유형도 다시 살펴볼 수 있습니다.</p>
+    <button type="button" class="er-question-back" onclick="reviewAssessmentCandidates()">${pageLang === 'en' ? 'Review the candidates again' : '후보 다시 살펴보기'}</button>
+    <p class="er-report-microcopy">${pageLang === 'en' ? 'Your word responses will be kept. Narrative and detail questions will start again, with the first result kept separately in this attempt.' : '단어 응답은 유지하고 상황·세부 질문에 다시 답합니다. 첫 결과는 이번 검사 이력에 별도로 남깁니다.'}</p>
   </section>`;
+}
+
+function renderInstinctCrossCheck(model) {
+  const check = model.phase4?.instinctCrossCheck;
+  if (!check) return '';
+  const labels = { sp: '자기보존(자본)', so: '사회적(사본)', sx: '성적·일대일(성본)' };
+  const counts = (summary) => `${['sp', 'so', 'sx'].map((code) => `${labels[code]} ${summary.total}개 중 ${summary.votes[code]}응답`).join(' · ')} · 보류 ${summary.unsure}개${summary.missing ? ` · 미응답 ${summary.missing}개` : ''}`;
+  const explanation = check.status === 'conflict'
+    ? `공통 관심 영역에서는 ${labels[check.common.leader]}, 유형별 표현에서는 ${labels[check.subtype.leader]} 응답이 더 많았습니다. 서로 다른 질문 묶음의 관찰이 엇갈려 하위유형을 보류했습니다. 이 차이만으로 핵심 유형을 바꾸지 않습니다.`
+    : check.status === 'aligned'
+      ? '두 질문 묶음에서 같은 영역의 응답이 더 많았습니다. 하위유형을 이해하는 참고 근거이며, 독립적으로 정확성을 입증한 것은 아닙니다.'
+      : '한쪽 또는 양쪽 질문 묶음의 응답이 뚜렷하지 않아 충분히 비교하기 어렵습니다. 나타난 경향은 실제 생활에서 더 살펴볼 단서입니다.';
+  return `<div class="er-report-panel er-report-instinct-check"><h3>하위유형 응답 비교</h3>
+    <p>${escapeReportHtml(explanation)}</p>
+    <p><strong>공통 관심 영역</strong><br>${escapeReportHtml(counts(check.common))}</p>
+    <p><strong>유형별 하위유형 표현</strong><br>${escapeReportHtml(counts(check.subtype))}</p>
+    <p class="er-report-microcopy">응답 개수는 하위유형일 확률이 아닙니다. 유형은 3센터·9유형으로, 하위유형은 자본·성본·사본으로 구분해 살펴봅니다.</p></div>`;
 }
 
 function renderPremiumReport(model) {
@@ -4266,17 +4454,19 @@ function renderPremiumReport(model) {
         </div>
         <div class="er-report-visual-grid">
           <div class="er-report-panel">
-            <h3>하위유형의 세 생활 영역</h3>
+            <h3>유형별 하위유형 표현</h3>
             <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.instinctLine)}</p>
             ${model.instinctRows.map((row) => buildReportMetricBar(row, { tone: 'gold' })).join('')}
+            ${model.assessmentVersion === 'word-narrative-v2' ? `<p class="er-report-microcopy">${model.phase4 ? `3개 문항 중 보류 ${model.instinctRows[0]?.unsure || 0}개` : '세부 질문 미측정'}</p>` : ''}
           </div>
           <div class="er-report-panel">
             <h3>인접한 두 날개 비교</h3>
             <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.wingLine)}</p>
             ${model.wingRows.map((row) => buildReportMetricBar(row, { tone: 'green' })).join('')}
-            <p class="er-report-microcopy">${model.assessmentVersion === 'word-narrative-v2' ? '하위유형·날개 그래프는 각각 세 질문 중 선택한 비율입니다. 모르겠다는 어느 쪽에도 배분하지 않습니다.' : '코어 점수 대비 인접 날개 반응의 활성도를 보여줍니다.'}</p>
+            <p class="er-report-microcopy">${model.assessmentVersion === 'word-narrative-v2' ? `3개 문항 중 보류 ${model.wingRows[0]?.unsure || 0}개. 날개는 후순위 탐색이며, 모르겠다는 어느 쪽에도 배분하지 않습니다. 응답 개수는 확률이 아닙니다.` : '코어 점수 대비 인접 날개 반응의 활성도를 보여줍니다.'}</p>
           </div>
         </div>
+        ${renderInstinctCrossCheck(model)}
         <div class="er-report-panel">
           <h3 id="top3-title">헷갈릴 수 있는 가까운 유형들</h3>
           <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.closeTypeLine)}</p>
@@ -4420,7 +4610,7 @@ function renderLowConfidenceGate(model) {
           <a href="#" class="er-report-gate-primary" data-report-program-key="identity_session">유형 확인 상담 신청</a>
           <button type="button" class="er-report-gate-retry" onclick="restartAssessment()">처음부터 다시 검사하기</button>
         </div>
-        <p class="er-report-gate-tip">최근 2주가 평소와 많이 달랐다면, 마음이 안정된 시기의 나를 기준으로 다시 응답해 보세요. 같은 결과가 반복되면 유형 상담에서 함께 살펴보세요.</p>
+        <p class="er-report-gate-tip">최근의 특별한 사건 하나보다, 여러 상황에서 반복되어 온 반응을 함께 살펴보세요. 편안할 때와 일상의 부담·갈등을 함께 떠올리고, 각 문항에 제시된 상황을 기준으로 답해 주세요. 현재 스트레스 수준은 이번 검사에서 측정하지 않았습니다.</p>
       </section>
       ${renderScreeningSummary(model)}
       <div id="experiment-result-panel" class="hidden"></div>
@@ -4471,8 +4661,23 @@ if (typeof window !== 'undefined') {
   window.renderPremiumReport = renderPremiumReport;
 }
 
-function renderResultFromScores({ final, evidence, recentStress, stateStressAdjustment, tb7w6, tb7w8, sxBoost, counterSignals, phase4, postTieApplied, assessmentVersion, screening, candidateTypes, narrativeMeta }) {
+function renderResultFromScores({ final, evidence, recentStress, stateStressAdjustment, tb7w6, tb7w8, sxBoost, counterSignals, phase4, postTieApplied, assessmentVersion, assessmentMetadata, screening, candidateTypes, narrativeMeta }) {
   const wordNarrative = assessmentVersion === 'word-narrative-v2';
+  if (wordNarrative) {
+    recentStress = null;
+    stateStressAdjustment = { applied: false, measured: false, recentStress: null };
+    if (assessmentMetadata) testState.assessmentMetadata = assessmentMetadata;
+    if (candidateTypes) testState.candidateTypes = candidateTypes.slice();
+    if (screening) testState.screening = screening;
+    if (phase4) {
+      const instinctCrossCheck = crossCheckSubtypeEvidence(phase4, { ...testState.phase1Responses, ...testState.narrativeResponses });
+      phase4 = { ...phase4, instinctCrossCheck };
+      if (instinctCrossCheck.status === 'conflict') {
+        phase4.subtypeCode = null;
+        phase4.subtypeLabel = null;
+      }
+    }
+  }
   const rankedTypes = wordNarrative && candidateTypes && candidateTypes.length ? candidateTypes : Object.keys(final).map(Number);
   const ranked = rankedTypes.map((type) => ({ type, score: final[type] || 0 })).sort((a, b) => b.score - a.score);
   const core = ranked[0].type;
@@ -4508,7 +4713,7 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
   const inst = {sp:0,sx:0,so:0};
   const instName = pageLang === 'en'
     ? { sp: 'Self-preservation', sx: 'One-to-one', so: 'Social' }
-    : { sp:'자기보존', sx:'성적(일대일)', so:'사회적' };
+    : { sp:'자기보존(자본)', sx:'성적·일대일(성본)', so:'사회적(사본)' };
   addInstinctScoresFromResponses(testState.phase1Responses, inst);
   if (counterSignals && counterSignals[core]) {
     inst.sp += counterSignals[core].sp || 0;
@@ -4592,7 +4797,10 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
     wingCode = wingNum ? `${core}w${wingNum}` : `${core}번 · 날개 확인 중`;
     wingMetrics = [core === 1 ? 9 : core - 1, core === 9 ? 1 : core + 1].map((wing) => ({
       wing, label: `${core}w${wing}`, score: Number(phase4 && phase4.wingVotes && phase4.wingVotes[wing]) || 0,
-      percent: (Number(phase4 && phase4.wingVotes && phase4.wingVotes[wing]) || 0) / 3 * 100
+      percent: (Number(phase4 && phase4.wingVotes && phase4.wingVotes[wing]) || 0) / 3 * 100,
+      countTotal: 3,
+      unsure: phase4 ? Math.max(0, 3 - Object.values(phase4.wingVotes || {}).reduce((sum, count) => sum + count, 0)) : 0,
+      measured: Boolean(phase4)
     }));
   }
 
@@ -4605,7 +4813,10 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
   const instinctMetrics = wordNarrative ? ['sp', 'so', 'sx'].map((code) => ({
     code, label: instName[code], score: Number(phase4 && phase4.subtypeVotes && phase4.subtypeVotes[code]) || 0,
     percent: (Number(phase4 && phase4.subtypeVotes && phase4.subtypeVotes[code]) || 0) / 3 * 100,
-    caption: code === instinctCode ? '세 생활 장면에서 가장 많이 선택한 본능' : ''
+    countTotal: 3,
+    unsure: phase4 ? phase4.instinctCrossCheck.subtype.unsure : 0,
+    measured: Boolean(phase4),
+    caption: code === instinctCode ? '유형별 생활 장면에서 가장 많이 선택한 표현' : ''
   })) : instRank.map((row) => ({
     code: row.code,
     label: instName[row.code],
@@ -4626,12 +4837,24 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
     scoringAxes,
     ranked,
     instinctPct,
-    confidence
+    confidence,
+    instinctCrossCheck: phase4?.instinctCrossCheck
   });
   const tieSnapshot = JSON.parse(JSON.stringify(testState.tie));
-  const assessmentMetadata = { assessmentVersion, screening, candidateTypes, narrativeMeta };
+  if (wordNarrative) {
+    const metadata = testState.assessmentMetadata;
+    const snapshot = { revision: metadata.revision, completedAt: getIsoNow(), core: coreResolved ? core : null,
+      subtype: phase4?.subtypeCode || null, wing: wingNum, candidateTypes: (candidateTypes || []).slice(),
+      final: { ...final }, responses: { ...allResponses },
+      screening: { suggestedCandidates: (screening?.suggestedCandidates || []).slice(), responses: { ...testState.wordResponses } } };
+    if (!testState.latestResultSnapshot) testState.latestResultSnapshot = snapshot;
+    if (!metadata.initialResult) metadata.initialResult = JSON.parse(JSON.stringify(snapshot));
+    testState.resultData = { final, evidence, recentStress, stateStressAdjustment, tb7w6, tb7w8, sxBoost, counterSignals,
+      phase4, postTieApplied, assessmentVersion, candidateTypes, narrativeMeta };
+  }
+  const assessmentContext = { assessmentVersion, assessmentMetadata: wordNarrative ? JSON.parse(JSON.stringify(testState.assessmentMetadata)) : null, screening, candidateTypes, narrativeMeta };
   const premiumModel = buildPremiumReportModel({
-    ...assessmentMetadata,
+    ...assessmentContext,
     final,
     evidence,
     ranked,
@@ -4669,7 +4892,7 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
 
   if (window.ERDiagnosticExperiment && typeof window.ERDiagnosticExperiment.onResultReady === 'function') {
     window.ERDiagnosticExperiment.onResultReady({
-      ...assessmentMetadata,
+      ...assessmentContext,
       final,
       evidence,
       ranked,
