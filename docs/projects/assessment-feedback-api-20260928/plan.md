@@ -8,7 +8,7 @@
 
 ## 요청 계약
 
-부모 작업에서 전달한 `attempt_id`, `revision`(0–20), `result`, `versions`, `variant: word`, `rating` 또는 `deferred`, 일치·불일치 영역과 어려움 배열, 명시적 동의, Turnstile 토큰만 받는다. 알 수 없는 필드는 거부한다. 이름·연락처·원응답·주관식·IP·사용자 에이전트는 저장하지 않는다.
+부모 작업에서 전달한 `attempt_id`, `revision`(0–2147483647), `result`, `versions`, `variant: word`, `rating` 또는 `deferred`, 일치·불일치 영역과 어려움 배열, 명시적 동의, Turnstile 토큰만 받는다. 알 수 없는 필드는 거부한다. 이름·연락처·원응답·주관식·IP·사용자 에이전트는 저장하지 않는다.
 
 ## 처리와 권한
 
@@ -18,7 +18,7 @@
 - RLS와 명시적 권한 회수로 anon/authenticated의 직접 읽기·쓰기를 차단한다. 함수의 service_role만 SELECT/INSERT한다.
 - `attempt_id + revision`은 유일하다. 정규화된 본문 fingerprint가 같으면 중복 성공, 다르면 409이며 기존 행을 변경하지 않는다.
 - 이미 저장된 동일 본문과 동일 검증 토큰의 재전송은 저장된 토큰 hash를 비교해 성공을 재확인한다. 저장되지 않은 요청은 반드시 challenge 검증을 통과해야 한다. 토큰 원문은 저장하지 않는다.
-- 새 rate-limit 저장소는 만들지 않는다. Turnstile의 단회 토큰, 요청 크기·revision 제한, 중복 키가 기본 방어이며 분산 호출 제한은 제공하지 않는다는 한계를 기록한다.
+- 새 rate-limit 저장소는 만들지 않는다. Turnstile의 단회 토큰, 요청 크기 제한, 중복 키가 기본 방어이며 분산 호출 제한은 제공하지 않는다는 한계를 기록한다.
 
 ## 검증
 

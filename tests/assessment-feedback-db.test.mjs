@@ -46,14 +46,19 @@ test('migration grants only server SELECT/INSERT and preserves old rows across r
     await assert.rejects(db.query('DELETE FROM diagnostic_result_feedback'), /permission denied/);
 
     for (const invalid of [
-      { revision: 21 }, { revision: -1 }, { rating: 0 }, { rating: 6 }, { rating: null }, { deferred: true },
+      { revision: -1 }, { rating: 0 }, { rating: 6 }, { rating: null }, { deferred: true },
       { consent_accepted: false }, { consent_version: 'old' }, { variant: 'legacy' },
       { matching_parts: ['unknown'] }, { mismatching_parts: ['core'] }, { difficulties: ['none', 'words'] },
       { difficulties: ['other'] }, { result: [] }, { versions: [] }, { body_fingerprint: 'not-a-hash' },
     ]) {
       await assert.rejects(db.query(insert, values({ revision: 2, challenge_fingerprint: 'd'.repeat(64), ...invalid })), /check constraint/, JSON.stringify(invalid));
     }
+    for (const revision of [1.5, 2147483648]) {
+      await assert.rejects(db.query(insert, values({ revision, challenge_fingerprint: 'd'.repeat(64) })), /invalid input syntax for type integer|out of range/, String(revision));
+    }
     await db.query(insert, values({ revision: 2, rating: null, deferred: true, challenge_fingerprint: 'd'.repeat(64) }));
-    assert.equal((await db.query('SELECT count(*)::int AS count FROM diagnostic_result_feedback')).rows[0].count, 3);
+    await db.query(insert, values({ revision: 21, challenge_fingerprint: 'e'.repeat(64) }));
+    await db.query(insert, values({ revision: 2147483647, challenge_fingerprint: 'f'.repeat(64) }));
+    assert.equal((await db.query('SELECT count(*)::int AS count FROM diagnostic_result_feedback')).rows[0].count, 5);
   } finally { await db.close(); }
 });

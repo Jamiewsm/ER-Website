@@ -29,3 +29,9 @@
 - 부모 작업의 추가 승인으로 `.github/workflows/education-backend.yml`의 기존 PGlite job에 API·DB 테스트 step 하나와 정확한 경로 trigger를 연결했다. 별도 job이나 패키지는 추가하지 않았다. 웹 작업이 수정하는 `er-test-pr-review.yml`은 건드리지 않았다.
 - 자동 배포 흐름은 site/test runtime 경로만 대상으로 한다. 이 Supabase 전용 변경은 merge 후에도 migration·함수·secret 설정을 별도로 적용해야 하며 공개 UI 활성화보다 먼저 완료해야 한다.
 - 마지막 실행은 공개 API·격리 DB·기존 실험 payload 회귀를 합쳐 23개 테스트가 통과했다. 테스트 두 파일의 `node --check`, workflow YAML 파싱, `git diff --check`도 통과했다. 변경 경로를 `scripts/infer_deploy_track.mjs`에 넣은 결과는 `track: skip`이다.
+
+## 교차 검토 후 revision 범위 수정
+
+- 부모 작업의 요청으로 임의의 20회 상한을 제거하고 API와 SQL의 revision 범위를 0–2147483647로 통일했다. 시도 UUID를 새로 만들 수 있어 낮은 상한은 남용 방지 효과가 없고 정상 재평가만 막을 수 있다.
+- revision 21과 2147483647 저장 성공, -1·1.5·2147483648 거부를 API 및 격리 DB에서 확인했다. revision은 재평가 순서이며 독립 참가자 수가 아니다.
+- 공개 API·격리 DB·기존 실험 payload 회귀를 합쳐 24개 테스트가 통과했다. 두 테스트 파일의 `node --check`와 `git diff --check`도 통과했다. 실제 DB에는 적용하지 않았다.

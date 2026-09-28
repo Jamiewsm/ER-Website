@@ -112,10 +112,18 @@ test('pending type and deferred rating remain null rather than guessed', async (
   assert.equal([...h.rows.values()][0].rating, null);
 });
 
+test('revision 21 and the PostgreSQL integer maximum are valid', async () => {
+  for (const revision of [21, 2147483647]) {
+    const h = harness(); const body = payload(); body.revision = revision;
+    assert.equal((await h.invoke(body)).status, 200);
+    assert.equal([...h.rows.values()][0].revision, revision);
+  }
+});
+
 test('invalid enums, unknown fields, incompatible results and ratings never reach DB or verification', async () => {
   const mutations = [
     (p) => { p.name = 'not collected'; }, (p) => { p.result.email = 'not collected'; }, (p) => { p.versions.extra = 'v1'; },
-    (p) => { p.attempt_id = 'invalid'; }, (p) => { p.revision = -1; }, (p) => { p.revision = 21; }, (p) => { p.revision = 1.5; },
+    (p) => { p.attempt_id = 'invalid'; }, (p) => { p.revision = -1; }, (p) => { p.revision = 2147483648; }, (p) => { p.revision = 1.5; },
     (p) => { p.rating = 0; }, (p) => { p.rating = 6; }, (p) => { p.rating = '4'; }, (p) => { p.rating = null; },
     (p) => { p.deferred = true; }, (p) => { p.deferred = 'false'; },
     (p) => { p.variant = 'legacy'; }, (p) => { p.consent_accepted = false; }, (p) => { p.consent_version = 'old'; },

@@ -3,7 +3,7 @@ CREATE TABLE public.diagnostic_result_feedback (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at timestamptz NOT NULL DEFAULT now(),
   attempt_id uuid NOT NULL,
-  revision integer NOT NULL CHECK (revision BETWEEN 0 AND 20),
+  revision integer NOT NULL CHECK (revision BETWEEN 0 AND 2147483647),
   result jsonb NOT NULL CHECK (jsonb_typeof(result) = 'object'),
   versions jsonb NOT NULL CHECK (jsonb_typeof(versions) = 'object'),
   variant text NOT NULL CHECK (variant = 'word'),

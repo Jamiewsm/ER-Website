@@ -10,5 +10,6 @@
 - [x] 기존 PGlite CI job에 API·DB 테스트와 경로 trigger 연결.
 - [x] diff 범위와 비밀정보·PII 비수집 확인.
 - [x] 논리 단위 커밋과 부모 작업 인계를 위한 검증·운영 적용 조건 정리.
+- [x] 재평가 revision 범위를 PostgreSQL integer에 맞추고 21·최댓값 허용 및 음수·소수·초과값 거부 검증.
 
 운영 DB migration 적용·함수 배포·실제 고객 제출 검증은 이번 작업에 포함하지 않는다.

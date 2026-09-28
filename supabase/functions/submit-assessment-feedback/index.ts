@@ -41,7 +41,7 @@ function choiceArray(value: unknown, allowed: string[]): value is string[] {
 function validatePayload(input: unknown): { feedback: Feedback; token: string } | null {
   if (!exactKeys(input, ['attempt_id', 'revision', 'result', 'versions', 'variant', 'rating', 'deferred', 'matching_parts', 'mismatching_parts', 'difficulties', 'consent_version', 'consent_accepted', 'turnstile_token'])) return null;
   if (typeof input.attempt_id !== 'string' || !/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(input.attempt_id)) return null;
-  if (!Number.isInteger(input.revision) || Number(input.revision) < 0 || Number(input.revision) > 20) return null;
+  if (!Number.isInteger(input.revision) || Number(input.revision) < 0 || Number(input.revision) > 2147483647) return null;
   if (input.variant !== 'word' || input.consent_version !== CONSENT_VERSION || input.consent_accepted !== true) return null;
   if (typeof input.deferred !== 'boolean') return null;
   if (input.deferred ? input.rating !== null : !Number.isInteger(input.rating) || Number(input.rating) < 1 || Number(input.rating) > 5) return null;
