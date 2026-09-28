@@ -20,3 +20,4 @@
 - 최초 후보가 빈 배열인 사례는 포함 실패로 계산하고, 자료가 없는 경우와 분리한다. 하위유형 비교에는 확정 사례 일치율과 함께 보류·결측 사례 수도 남긴다.
 - 교차 검토에서 실명 게이트 복원, 보조자료의 보류 무시, 통계 분모 누락, PDF 평가 UI 노출을 수정했다. 상세 증거는 verification.md에 기록했다.
 - 운영 단계는 Supabase 적용·실제 토큰 확인 → test PR 머지·CI 배포 → 실제 제출 검증 순서다. 이 작업에서는 머지·운영 DB 적용·배포를 수행하지 않는다.
+- PR은 [서버 #160](https://github.com/Jamiewsm/ER-Website/pull/160), [검사 #161](https://github.com/Jamiewsm/ER-Website/pull/161)로 분리해 생성·첨부했다. 검사 PR은 서버 적용 선행 조건을 표시한 draft다.
