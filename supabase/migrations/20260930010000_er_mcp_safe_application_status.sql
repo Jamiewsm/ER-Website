@@ -23,6 +23,13 @@ BEGIN
   IF current_row.archived_at IS NOT NULL
     OR current_row.status IN ('confirmed', 'cancelled')
     OR current_row.confirmed_at IS NOT NULL
+    -- Payment fields exist in production but are absent from older schema snapshots.
+    OR to_jsonb(current_row)->>'paid_at' IS NOT NULL
+    OR to_jsonb(current_row)->>'stripe_checkout_session_id' IS NOT NULL
+    OR to_jsonb(current_row)->>'stripe_payment_intent_id' IS NOT NULL
+    OR to_jsonb(current_row)->>'paypal_order_id' IS NOT NULL
+    OR to_jsonb(current_row)->>'paypal_capture_id' IS NOT NULL
+    OR to_jsonb(current_row)->>'checkout_url' IS NOT NULL
     OR EXISTS (SELECT 1 FROM public.edu_enrollments WHERE application_id = p_id)
     OR EXISTS (SELECT 1 FROM public.edu_registration_onboarding WHERE application_id = p_id)
   THEN
