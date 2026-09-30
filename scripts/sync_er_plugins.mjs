@@ -6,7 +6,8 @@ import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = dirname(dirname(fileURLToPath(import.meta.url)));
+// An automation can run the reviewed script from origin/main via a temporary file.
+const root = process.env.ER_PLUGIN_SOURCE_ROOT || dirname(dirname(fileURLToPath(import.meta.url)));
 const personalRoot = join(homedir(), 'plugins');
 const helper = join(homedir(), '.codex/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py');
 const names = ['er-education', 'er-coach', 'er-website'];

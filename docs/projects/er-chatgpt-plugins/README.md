@@ -33,5 +33,5 @@
 - 이 저장소의 MCP 코드가 `main`에 합쳐질 때만 Edge Function이 자동 배포된다. 배포가 성공해야 운영 도구 동작이 바뀐다.
 - 기존 도구의 이름과 입력 스키마는 호환되게 유지한다. 서버 결과와 DB 운영 데이터는 배포·변경 직후 최신 값이 반환된다.
 - ChatGPT 개발자 모드의 도구 설명·스키마 변경은 연결 Refresh가 필요하다. 공개 플러그인으로 게시한 경우 OpenAI의 지속 검토가 적용되지만 즉시 반영은 보장되지 않는다.
-- Codex 로컬 패키지의 지침이나 URL이 바뀌면 `git fetch origin main` 후 `node scripts/sync_er_plugins.mjs --ref origin/main --apply`로 개인 패키지를 동기화한다. 스크립트는 변경된 패키지만 cachebuster를 갱신하고 다시 설치한다. 일반 웹사이트 UI·테스트 코드 변경은 MCP 계약을 바꾸지 않으므로 플러그인 재설치가 필요하지 않다.
+- Codex 로컬 패키지의 지침이나 URL이 바뀌면 `git fetch origin main` 후 `node scripts/sync_er_plugins.mjs --ref origin/main --apply`로 개인 패키지를 동기화한다. 등록된 주기 작업은 이 절차를 병합된 `main`에서 자동 실행한다. 스크립트는 변경된 패키지만 cachebuster를 갱신하고 다시 설치한다. 일반 웹사이트 UI·테스트 코드 변경은 MCP 계약을 바꾸지 않으므로 플러그인 재설치가 필요하지 않다.
 - ER Website 코드 자체의 머지·배포는 기존 `site`/`test` 트랙과 `DEPLOY_LEDGER` 절차를 따른다. MCP 배포가 웹사이트 코드를 배포하지 않는다.
