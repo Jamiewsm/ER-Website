@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "er_education": {
+      "type": "http",
+      "url": "https://osdynbadhtfgoxilgmpy.supabase.co/functions/v1/er-education-mcp"
+    }
+  }
+}
