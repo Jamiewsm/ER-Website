@@ -20,9 +20,9 @@
 ## 연결 활성화 순서
 
 1. CoachPortal-WebApp의 동의 화면 PR을 배포하고 `https://coach.er-coaching.com/oauth-consent.html` 응답을 확인한다.
-2. Supabase 대시보드에서 OAuth 2.1 Server를 켜고, Authorization Path를 `/oauth-consent.html`로 설정한다. Auth Site URL이 `https://coach.er-coaching.com`인지 확인한다. 기존 Site URL을 바꾸어야 한다면 기존 로그인·메일 링크 영향부터 검증한다.
-3. JWT signing key가 ES256 또는 RS256인지 확인한다. legacy HS256이면 별도 키 전환 계획이 필요하다.
-4. Dynamic client registration과 사용자 동의 정책을 설정한다. 등록된 클라이언트·승인 기록을 운영자가 확인할 수 있어야 한다.
+2. ER Website의 `/oauth-consent.html` 브리지를 site 트랙으로 배포하고, `authorization_id`가 코치 포털 동의 화면까지 전달되는지 확인한다. 기존 Auth Site URL `https://er-coaching.com`을 유지한다.
+3. Supabase 대시보드에서 OAuth 2.1 Server를 켜고, Authorization Path를 `/oauth-consent.html`로 설정한다. Dynamic OAuth Apps를 허용하고 연결된 앱을 정기적으로 확인한다.
+4. JWT signing key가 ES256 또는 RS256인지 확인한다. legacy HS256이면 별도 키 전환 계획이 필요하다.
 5. GitHub ER-Website 저장소 Secrets에 `SUPABASE_ACCESS_TOKEN`을 설정한다. 토큰은 대화나 파일에 붙여 넣지 않는다. MCP 함수 변경이 `main`에 합쳐지면 `Deploy ER MCP servers`가 검사 후 세 함수를 함께 배포한다.
 6. 운영 DB 백업과 기존 신청·등록·결제 의존성을 확인한 뒤 `20260930010000_er_mcp_safe_application_status.sql`을 적용한다. 이 마이그레이션은 수석코치만 미확정·미연동·결제 미진행 신청의 제한된 상태를 바꾸도록 한다. 함수 배포가 먼저 끝나면 상태 변경 도구는 마이그레이션 전까지 오류로 닫힌다. CI는 DB 마이그레이션을 자동 적용하지 않는다.
 7. 인증 없이 `initialize`가 401과 OAuth 발견 헤더를 반환하는지, 로그인한 수석코치·멘토·학생 계정에서 허용된 도구만 데이터에 접근하는지 MCP Inspector로 검사한다. 학생 계정에서 관리자 신청 도구가 거부되어야 한다.

@@ -4,6 +4,7 @@ export const DEFAULT_SITE = 'https://er-coaching.com';
 /** Only these paths may change on site deploy. Test runtime is preserved from live. */
 export const SITE_OVERLAY_GLOBS = [
   'index.html',
+  'oauth-consent.html',
   'christian-enneagram/**',
   'theology/**',
   'biblical-enneagram/**',
