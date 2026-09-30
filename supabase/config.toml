@@ -18,3 +18,13 @@ verify_jwt = true
 # GitHub 스케줄러는 학생 JWT 대신 전용 비밀키를 함수 안에서 검증한다.
 [functions.education-onboarding-reminders]
 verify_jwt = false
+
+# MCP middleware performs OAuth discovery and verifies the user's JWT itself.
+[functions.er-education-mcp]
+verify_jwt = false
+
+[functions.er-coach-mcp]
+verify_jwt = false
+
+[functions.er-website-mcp]
+verify_jwt = false
