@@ -19,6 +19,10 @@ verify_jwt = true
 [functions.education-onboarding-reminders]
 verify_jwt = false
 
+# 공개 평가 함수는 내부에서 Turnstile과 origin·입력·중복을 검증한다.
+[functions.submit-assessment-feedback]
+verify_jwt = false
+
 # MCP middleware performs OAuth discovery and verifies the user's JWT itself.
 [functions.er-education-mcp]
 verify_jwt = false
