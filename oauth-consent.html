@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>ER 계정 연결</title>
+</head>
+<body>
+  <p id="status" role="status">ER 포털의 계정 연결 화면으로 이동하고 있습니다.</p>
+  <script>
+    const authorizationId = new URLSearchParams(location.search).get('authorization_id');
+    if (authorizationId && /^[A-Za-z0-9_-]{8,256}$/.test(authorizationId)) {
+      const consentUrl = new URL('https://coach.er-coaching.com/oauth-consent');
+      consentUrl.searchParams.set('authorization_id', authorizationId);
+      location.replace(consentUrl.href);
+    } else {
+      document.getElementById('status').textContent =
+        '유효한 연결 요청이 없습니다. ChatGPT 또는 Codex에서 다시 연결해 주세요.';
+    }
+  </script>
+</body>
+</html>
