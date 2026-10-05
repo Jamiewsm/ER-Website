@@ -5,9 +5,13 @@ CREATE FUNCTION public.edu_stamp_completion() RETURNS trigger
 LANGUAGE plpgsql SET search_path='' AS $$BEGIN
  IF TG_OP='UPDATE' AND OLD.completed_at IS NOT NULL THEN
   NEW.completed_at:=OLD.completed_at;
+ ELSIF TG_OP='UPDATE' AND OLD.status='completed' THEN
+  -- 기존 완료 과정은 실제 수료일을 보충할 때까지 미확인 상태를 유지한다.
+  NEW.completed_at:=NEW.completed_at;
  ELSE
-  NEW.completed_at:=CASE WHEN NEW.status='completed' THEN now() ELSE NULL END;
+  NEW.completed_at:=CASE WHEN NEW.status='completed' THEN coalesce(NEW.completed_at,now()) ELSE NULL END;
  END IF;
+ IF NEW.completed_at>now() THEN RAISE EXCEPTION 'edu_invalid_completion_date'; END IF;
  RETURN NEW;
 END$$;
 CREATE TRIGGER edu_stamp_completion BEFORE INSERT OR UPDATE ON public.edu_cohorts
