@@ -6,7 +6,7 @@ import { createDB, asUser, users, uid } from './helpers/education-db.mjs';
 
 async function fixture() {
   const db = await createDB();
-  await db.exec(`ALTER TABLE auth.users ADD COLUMN email_confirmed_at timestamptz;
+  await db.exec(`ALTER TABLE auth.users ADD COLUMN email_confirmed_at timestamptz,ADD COLUMN raw_user_meta_data jsonb DEFAULT '{}';
     UPDATE auth.users SET email_confirmed_at=now();
     ALTER TABLE program_applications ALTER COLUMN id SET DEFAULT gen_random_uuid();
     ALTER TABLE program_applications ADD COLUMN name text, ADD COLUMN user_id uuid REFERENCES auth.users,
@@ -21,7 +21,7 @@ async function fixture() {
       SELECT '${uid(502)}',id,'심화과정 201 Parenting 스터디','growth_201_2026' FROM edu_courses WHERE code='growth_201';
     INSERT INTO edu_classes(id,cohort_id,title) VALUES
       ('${uid(601)}','${uid(501)}','하위유형 스터디'),('${uid(602)}','${uid(502)}','Parenting 스터디');`);
-  for (const file of ['20260908091000_education_registration_capacity.sql','20260915003000_education_onboarding.sql','20261005043528_student_study_enrollment.sql']) {
+  for (const file of ['20260908091000_education_registration_capacity.sql','20260915003000_education_onboarding.sql','20261005043528_student_study_enrollment.sql','20261005070000_er_account_consent.sql']) {
     await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
   }
   return db;
