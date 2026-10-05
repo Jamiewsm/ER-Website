@@ -76,6 +76,10 @@ test('신청 이메일은 인증 계정에서 가져오며 중복 신청·다른
     const a=(await db.query('SELECT * FROM program_applications WHERE id=$1',[id])).rows[0];
     assert.equal(a.user_id,users.empty.id); assert.equal(a.contact,users.empty.email); assert.equal(a.requested_class_id,uid(601));
     await asUser(db,users.student,async()=>assert.equal((await db.query('SELECT * FROM edu_my_applications()')).rows.length,0));
+    await db.query("INSERT INTO edu_classes(id,cohort_id,title) VALUES($1,$2,'다른 일정')",[uid(603),uid(501)]);
+    await asUser(db,users.head,()=>assert.rejects(db.query("SELECT edu_confirm_registration($1,$2,$3,'신청 학생',true)",[id,uid(603),users.empty.email]),/edu_requested_class_mismatch/));
+    assert.equal((await db.query('SELECT status FROM program_applications WHERE id=$1',[id])).rows[0].status,'received');
+    assert.equal((await db.query('SELECT * FROM edu_registration_onboarding WHERE application_id=$1',[id])).rows.length,0);
     await asUser(db,users.head,()=>db.query("SELECT edu_confirm_registration($1,$2,$3,'신청 학생',true)",[id,uid(601),users.empty.email]));
     await asUser(db,users.empty,async()=>{
       assert.equal((await db.query('SELECT edu_claim_registrations() AS n')).rows[0].n,1);

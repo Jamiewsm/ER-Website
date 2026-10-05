@@ -1,5 +1,8 @@
 # 작업 맥락
 
+- 사용자가 백업 전 머지·배포 후 백업·검증 순서를 명시적으로 지시했다. 실제 DB 적용은 비파괴 추가 migration으로 진행하고 증거·교육 기록 삭제는 실행하지 않는다. 기존 배포 전 전체 백업 조건과 다른 승인된 순서임을 기록한다.
+- PR 리뷰에서 같은 기수의 다른 반으로 승인될 수 있는 누락을 확인했다. 승인 onboarding과 실제 enrollment의 trigger로 requested_class_id 불일치를 차단한다. 기존 요청 반이 null인 행은 기존 승인 동작을 유지한다.
+
 - 사용자가 기존 Resend API 키를 Supabase SMTP에 직접 입력·저장했다. Management API에서 host smtp.resend.com, port 465, user resend, 발신 enrollment@er-coaching.com, 이름 ER을 확인했다. 키 값은 출력하거나 보관하지 않았다. 실제 인증 이메일 수신은 아직 검증하지 않았다.
 - 코치 백업 도구 실행으로 보고서 55건·첨부 2개·실패 0을 확인했다. 학생별 미연결 55건으로 purge_gate.ok=false다. 전체 교육 DB·Storage 백업·복원 완료로 취급하지 않는다.
 

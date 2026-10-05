@@ -64,4 +64,18 @@ END $$;
 
 REVOKE ALL ON FUNCTION public.edu_application_options(),public.edu_my_applications(),public.edu_request_enrollment(uuid,text) FROM PUBLIC,anon;
 GRANT EXECUTE ON FUNCTION public.edu_application_options(),public.edu_my_applications(),public.edu_request_enrollment(uuid,text) TO authenticated;
+-- 승인 결과와 실제 반 배정 모두 신청한 반을 따른다. 기존 null 신청은 유지한다.
+CREATE FUNCTION public.edu_validate_requested_class() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$BEGIN
+ IF EXISTS(SELECT 1 FROM public.program_applications a WHERE a.id=NEW.application_id
+  AND a.requested_class_id IS NOT NULL AND a.requested_class_id IS DISTINCT FROM NEW.class_id) THEN
+  RAISE EXCEPTION 'edu_requested_class_mismatch';
+ END IF;
+ RETURN NEW;
+END$$;
+REVOKE ALL ON FUNCTION public.edu_validate_requested_class() FROM PUBLIC,anon,authenticated,service_role;
+CREATE TRIGGER edu_validate_requested_class BEFORE INSERT OR UPDATE ON public.edu_registration_onboarding
+ FOR EACH ROW EXECUTE FUNCTION public.edu_validate_requested_class();
+CREATE TRIGGER edu_validate_requested_class BEFORE INSERT OR UPDATE ON public.edu_enrollments
+ FOR EACH ROW EXECUTE FUNCTION public.edu_validate_requested_class();
 COMMIT;
