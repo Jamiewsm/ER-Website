@@ -20,7 +20,8 @@ CREATE TABLE public.er_memberships (
 INSERT INTO public.er_memberships SELECT id,'legacy',NULL FROM auth.users;
 CREATE TABLE public.er_consent_events (
  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
- user_id uuid NOT NULL REFERENCES auth.users ON DELETE CASCADE,
+ -- 연락처 없는 내부 식별자로 탈퇴 후 최소 증거를 분리 보관한다.
+ user_id uuid NOT NULL,
  purpose text NOT NULL CHECK(purpose IN ('policy_notice','terms_acceptance','privacy_required','news_email','events_email','kakao_messages')),
  action text NOT NULL CHECK(action IN ('acknowledge','accept','agree','reject','withdraw')),
  version text NOT NULL REFERENCES public.er_consent_documents,
@@ -33,7 +34,7 @@ CREATE INDEX er_consent_events_subject ON public.er_consent_events(user_id,purpo
 CREATE TABLE public.er_consent_requests (
  user_id uuid NOT NULL REFERENCES auth.users ON DELETE CASCADE,
  request_id uuid NOT NULL,
- payload jsonb NOT NULL,
+ payload_digest text NOT NULL,
  result_revision bigint NOT NULL,
  PRIMARY KEY(user_id,request_id)
 );
@@ -41,6 +42,15 @@ ALTER TABLE public.er_consent_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.er_memberships ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.er_consent_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.er_consent_requests ENABLE ROW LEVEL SECURITY;
+CREATE TABLE public.er_consent_retention (
+ user_id uuid NOT NULL,
+ purpose text NOT NULL,
+ retired_at timestamptz NOT NULL,
+ purge_after timestamptz NOT NULL,
+ PRIMARY KEY(user_id,purpose)
+);
+ALTER TABLE public.er_consent_retention ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.er_consent_retention FROM anon,authenticated,service_role;
 REVOKE ALL ON public.er_consent_documents,public.er_memberships,public.er_consent_events,public.er_consent_requests FROM anon,authenticated,service_role;
 REVOKE ALL ON SEQUENCE public.er_consent_events_id_seq FROM anon,authenticated,service_role;
 GRANT SELECT,INSERT ON public.er_consent_documents TO service_role;
@@ -48,13 +58,48 @@ GRANT SELECT,INSERT ON public.er_consent_documents TO service_role;
 CREATE FUNCTION public.er_consent_immutable() RETURNS trigger
 LANGUAGE plpgsql SET search_path='' AS $$BEGIN RAISE EXCEPTION 'er_consent_immutable'; END$$;
 CREATE TRIGGER er_documents_immutable BEFORE UPDATE OR DELETE ON public.er_consent_documents FOR EACH ROW EXECUTE FUNCTION public.er_consent_immutable();
--- Auth 계정 삭제에 따른 FK cascade는 허용하고 직접 수정·삭제는 금지한다.
+-- 만료된 목적의 증거만 파기한다. 중첩 trigger라는 이유로 삭제를 허용하지 않는다.
 CREATE FUNCTION public.er_event_immutable() RETURNS trigger
 LANGUAGE plpgsql SET search_path='' AS $$BEGIN
- IF TG_OP='DELETE' AND pg_trigger_depth()>1 THEN RETURN OLD; END IF;
+ IF TG_OP='DELETE' AND EXISTS(SELECT 1 FROM public.er_consent_retention r
+  WHERE r.user_id=OLD.user_id AND r.purpose=OLD.purpose AND r.purge_after<=now()) THEN RETURN OLD; END IF;
  RAISE EXCEPTION 'er_consent_immutable';
 END$$;
 CREATE TRIGGER er_events_immutable BEFORE UPDATE OR DELETE ON public.er_consent_events FOR EACH ROW EXECUTE FUNCTION public.er_event_immutable();
+CREATE FUNCTION public.er_retire_consent() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$BEGIN
+ IF NEW.action IN ('withdraw','reject') THEN
+  INSERT INTO public.er_consent_retention VALUES(NEW.user_id,NEW.purpose,now(),now()+interval '5 years')
+  ON CONFLICT(user_id,purpose) DO UPDATE SET retired_at=excluded.retired_at,purge_after=excluded.purge_after;
+ ELSE
+  DELETE FROM public.er_consent_retention WHERE user_id=NEW.user_id AND purpose=NEW.purpose;
+ END IF;
+ RETURN NEW;
+END$$;
+CREATE TRIGGER er_retire_consent AFTER INSERT ON public.er_consent_events FOR EACH ROW EXECUTE FUNCTION public.er_retire_consent();
+CREATE FUNCTION public.er_retire_account_consent() RETURNS trigger
+LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$BEGIN
+ PERFORM pg_advisory_xact_lock(hashtextextended('er_consent:'||OLD.id::text,0));
+ INSERT INTO public.er_consent_retention
+ SELECT OLD.id,purpose,now(),now()+interval '5 years' FROM public.er_consent_events WHERE user_id=OLD.id GROUP BY purpose
+ ON CONFLICT(user_id,purpose) DO UPDATE SET retired_at=excluded.retired_at,purge_after=excluded.purge_after;
+ RETURN OLD;
+END$$;
+CREATE TRIGGER er_retire_account_consent BEFORE DELETE ON auth.users FOR EACH ROW EXECUTE FUNCTION public.er_retire_account_consent();
+CREATE FUNCTION public.er_purge_expired_consent() RETURNS bigint
+LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$DECLARE subject uuid; removed bigint; total bigint:=0; BEGIN
+ FOR subject IN SELECT DISTINCT user_id FROM public.er_consent_retention WHERE purge_after<=now() LOOP
+  PERFORM pg_advisory_xact_lock(hashtextextended('er_consent:'||subject::text,0));
+  DELETE FROM public.er_consent_events e USING public.er_consent_retention r
+   WHERE e.user_id=subject AND r.user_id=e.user_id AND r.purpose=e.purpose AND r.purge_after<=now();
+  GET DIAGNOSTICS removed=ROW_COUNT;
+  total:=total+removed;
+  DELETE FROM public.er_consent_retention WHERE user_id=subject AND purge_after<=now();
+ END LOOP;
+ RETURN total;
+END$$;
+REVOKE ALL ON FUNCTION public.er_retire_consent(),public.er_retire_account_consent(),public.er_purge_expired_consent() FROM PUBLIC,anon,authenticated,service_role;
+GRANT EXECUTE ON FUNCTION public.er_purge_expired_consent() TO service_role;
 CREATE FUNCTION public.er_validate_documents() RETURNS trigger
 LANGUAGE plpgsql SET search_path='' AS $$DECLARE d jsonb; seen text[] := '{}'; BEGIN
  FOR d IN SELECT value FROM jsonb_array_elements(NEW.documents) LOOP
@@ -105,10 +150,13 @@ BEGIN
  END IF;
  request_uuid := (p_payload->>'request_id')::uuid;
  IF request_uuid IS NULL OR p_source NOT IN ('email_signup','member_completion','settings') THEN RAISE EXCEPTION 'er_invalid_consent'; END IF;
+ -- 탈퇴와 저장이 동시에 실행돼도 Auth 행 잠금과 목적 잠금의 순서를 유지한다.
+ PERFORM 1 FROM auth.users WHERE id=p_user FOR KEY SHARE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'er_account_required'; END IF;
  PERFORM pg_advisory_xact_lock(hashtextextended('er_consent:'||p_user::text,0));
  SELECT * INTO prior FROM public.er_consent_requests WHERE user_id=p_user AND request_id=request_uuid;
  IF FOUND THEN
-  IF prior.payload<>p_payload THEN RAISE EXCEPTION 'er_idempotency_conflict'; END IF;
+  IF prior.payload_digest<>encode(sha256(convert_to(p_payload::text,'UTF8')),'hex') THEN RAISE EXCEPTION 'er_idempotency_conflict'; END IF;
   RETURN prior.result_revision;
  END IF;
  SELECT coalesce(max(id),0) INTO revision FROM public.er_consent_events WHERE user_id=p_user;
@@ -146,7 +194,7 @@ BEGIN
   UPDATE public.er_memberships SET status='active',completed_at=now() WHERE user_id=p_user;
  END IF;
  SELECT max(id) INTO revision FROM public.er_consent_events WHERE user_id=p_user;
- INSERT INTO public.er_consent_requests VALUES(p_user,request_uuid,p_payload,revision);
+ INSERT INTO public.er_consent_requests VALUES(p_user,request_uuid,encode(sha256(convert_to(p_payload::text,'UTF8')),'hex'),revision);
  RETURN revision;
 END$$;
 

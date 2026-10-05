@@ -10,6 +10,9 @@ on:
       - 'supabase/migrations/20260922115726_education_reserved_mentors.sql'
       - 'supabase/migrations/*_student_study_enrollment.sql'
       - 'supabase/migrations/*_er_account_consent.sql'
+      - 'supabase/migrations/*_er_consent_retention_schedule.sql'
+      - 'supabase/migrations/*_education_record_retention.sql'
+      - 'docs/projects/account-consent/APPROVED-DOCUMENTS.json'
       - 'tests/er-account-consent.test.mjs'
       - 'tests/er-consent-concurrency.test.mjs'
       - 'supabase/manual/education-public-notices.pending.sql'
@@ -40,6 +43,7 @@ jobs:
       - run: npm ci --prefix tests/education --ignore-scripts
       - run: npm test --prefix tests/education
       - run: node --test tests/er-account-consent.test.mjs
+      - run: node --test tests/education-record-retention.test.mjs
       - run: node --test tests/basic-course-october-supabase.test.mjs
       - name: Install local PostgreSQL test tools
         run: |

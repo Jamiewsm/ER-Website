@@ -1,5 +1,13 @@
 # 계정 동의 검증
 
+## 보관 정책 승인 후 검증
+
+- `node --test tests/er-account-consent.test.mjs` 기존 PGlite 모듈 지정 후 5개 통과. 탈퇴 후 최소 증거 보존, 목적별 만료 파기·재동의를 검증했다.
+- `node --test tests/education-record-retention.test.mjs` 기존 PGlite 모듈 지정 후 1개 통과. 수료 시각 보존, 1년 경과 시 원문·첨부 접근 제한과 수석 조회를 검증했다.
+- `PG_BIN_DIR=... node --test tests/er-consent-concurrency.test.mjs` 로컬 PostgreSQL 18 독립 세션 경쟁 검사 통과.
+- `npm test --prefix tests/education` 기존 PGlite 모듈 지정 후 137개 통과.
+- Resend SMTP 저장 설정은 Management API로 확인했다. 실제 인증 이메일 수신, 전체 DB·Storage 복원, 운영 migration·문서 공개·배포는 아직 확인하거나 실행하지 않았다.
+
 2026-10-05. 합성 계정·문서와 격리 DB로 검증했다. 운영 문서는 공개하지 않았다.
 
 - `node --test tests/er-account-consent.test.mjs tests/education-student-enrollment.test.mjs` — 7개 통과. 필수 누락, 다른 회원 지정, 테이블 직접 접근, 원자적 이메일 가입, 인증 후 가입 완료, 중복 저장, 문구 변경, revision 충돌, 목적별 철회, 발송 대상 제외, 회원 삭제의 증거 정리 검증.

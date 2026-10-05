@@ -106,6 +106,35 @@ test('목적별 철회는 기존 동의 버전을 참조하며 발송 대상에�
   await assert.rejects(db.query('UPDATE er_consent_events SET action=$1',['agree']),/er_consent_immutable/);
   await assert.rejects(db.query('UPDATE er_consent_documents SET version=$1',['altered']),/er_consent_immutable/);
   await db.query('DELETE FROM auth.users WHERE id=$1',[u.id]);
-  assert.equal((await db.query('SELECT * FROM er_consent_events WHERE user_id=$1',[u.id])).rows.length,0);
+  assert.equal((await db.query('SELECT * FROM er_consent_events WHERE user_id=$1',[u.id])).rows.length,8);
+  assert.equal((await db.query('SELECT * FROM er_consent_requests WHERE user_id=$1',[u.id])).rows.length,0);
+  assert.equal((await db.query('SELECT er_purge_expired_consent() AS n')).rows[0].n,0);
+  await db.exec('SET ROLE service_role');
+  assert.equal((await db.query("SELECT * FROM er_email_recipients('events_email')")).rows.length,0);
+  await assert.rejects(db.query('SELECT * FROM er_consent_retention'),/permission denied/);
+  await db.exec('RESET ROLE');
+  await db.query("UPDATE er_consent_retention SET purge_after=now()-interval '1 second' WHERE user_id=$1 AND purpose='news_email'",[u.id]);
+  assert.equal((await db.query('SELECT er_purge_expired_consent() AS n')).rows[0].n,2);
+  assert.equal((await db.query('SELECT * FROM er_consent_events WHERE user_id=$1',[u.id])).rows.length,6);
+  await assert.rejects(db.query('DELETE FROM er_consent_events WHERE user_id=$1',[u.id]),/er_consent_immutable/);
+  await db.query("UPDATE er_consent_retention SET purge_after=now()-interval '1 second' WHERE user_id=$1",[u.id]);
+  assert.equal((await db.query('SELECT er_purge_expired_consent() AS n')).rows[0].n,6);
+  assert.equal((await db.query('SELECT er_purge_expired_consent() AS n')).rows[0].n,0);
+ }finally{await db.close()}
+});
+test('재동의는 목적의 만료를 해제하고 다른 목적의 만료·권한은 유지한다',async()=>{
+ const db=await consentFixture();try {
+  await publish(db);const u=await account(db,806,{er_consent:payload({changes:{...changes,news_email:'agree'}})});
+  await asUser(db,u,async()=>{
+   let s=await state(db);
+   await save(db,payload({revision:s.revision,changes:{news_email:'withdraw'}}));
+   await assert.rejects(db.query('SELECT er_purge_expired_consent()'),/permission denied/);
+   s=await state(db);
+   await save(db,payload({revision:s.revision,changes:{news_email:'agree'}}));
+  });
+  assert.equal((await db.query('SELECT * FROM er_consent_retention WHERE user_id=$1 AND purpose=$2',[u.id,'news_email'])).rows.length,0);
+  assert.equal((await db.query('SELECT * FROM er_consent_retention WHERE user_id=$1',[u.id])).rows.length,2);
+  assert.equal((await db.query('SELECT er_purge_expired_consent() AS n')).rows[0].n,0);
+  assert.equal((await db.query('SELECT payload_digest FROM er_consent_requests WHERE user_id=$1',[u.id])).rows[0].payload_digest.length,64);
  }finally{await db.close()}
 });
