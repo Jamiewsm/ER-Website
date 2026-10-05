@@ -6,6 +6,7 @@
 - 기존 수석코치 승인 후 계정 연결, 취소된 대기 신청 재신청, 기존 기본반 수강생 추가 스터디 신청과 기본반 등록 보존을 검사했다.
 - 포털 브라우저는 이 마이그레이션을 사용하는 격리 DB로 1280px·390px·320px 신청부터 승인 후 교실 연결까지 통과했다.
 - 운영 DB는 반·기수 구성을 읽기만 했다. 운영 마이그레이션 적용과 실제 사용자 승인은 미실행.
+- API PR. https://github.com/Jamiewsm/ER-Website/pull/165. 화면 PR. https://github.com/Jamiewsm/CoachPortal-WebApp/pull/56. 두 PR은 운영 반영 전 상태다.
 
 ## 적용과 복구
 
