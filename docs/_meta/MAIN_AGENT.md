@@ -1,6 +1,6 @@
-# Main Agent (Cursor Cloud) — 조율 SSOT
+# Main Agent (Cursor / Codex) — 조율 SSOT
 
-사용자가 지정한 **메인 에이전트**는 Cursor Cloud Agent입니다. 다른 에이전트(Claude scheduled, Codex, 수동 Claude/Cursor 세션)의 작업을 **추적·병합·배포** 할 때 이 문서를 먼저 읽습니다.
+**Cursor와 Codex 모두** PR 병합·배포 조율을 담당할 수 있습니다. 다른 에이전트의 작업을 추적·병합·배포할 때 이 문서를 먼저 읽습니다. 같은 PR은 한 에이전트가 조율하며, 검증과 최신 main 상태를 확인한 뒤 병합합니다. 직접 `wrangler deploy`는 모든 에이전트에게 금지됩니다.
 
 ## Cold-start 체크리스트 (매 세션)
 
@@ -25,7 +25,7 @@
 
 **규칙:** `lock_holder` 가 살아 있고 `lock_expires_at` 이 미래면 에니어그램 `_meta` 락 파일은 **수정하지 않음**. 사용자가 "에니어그램 작업 일시정지" 한 상태(`paused: true`)도 유지.
 
-## GitHub PR / 머지 (메인 agent 전용)
+## GitHub PR / 머지 (Cursor / Codex)
 
 `main` 은 **protected** — 직접 push 불가, PR 머지 필수.
 
@@ -85,7 +85,7 @@ git fetch origin main && git checkout main && git pull
 - **GitHub Actions `Deploy Production`** (`.github/workflows/deploy-production.yml`) — **유일한 production deploy 경로**
   - `main` merge path filter → site full / test-only bundle 자동
   - `repository_dispatch` / `workflow_dispatch` / PR label `deploy/*` / comment `/deploy test`
-- **Codex/Claude** — merge handoff 후 `node scripts/submit_deploy_request.mjs --track … --by …` ([DEPLOY_REQUEST_PROTOCOL.md](./DEPLOY_REQUEST_PROTOCOL.md))
+- **Cursor / Codex** — PR 병합 후 CI 결과와 실제 배포 상태를 확인합니다. `submit_deploy_request.mjs`는 복구·브랜치 preview에만 사용합니다 ([DEPLOY_REQUEST_PROTOCOL.md](./DEPLOY_REQUEST_PROTOCOL.md)).
 - **메인 agent** — PR merge 조율, Actions run 성공 확인, ledger drift 수습. 로컬 wrangler 금지
 - **Secrets (사용자 1회):** `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
 - **Cloudflare Pages git auto-deploy** 와 중복되면 하나만 사용 (Actions 권장)
