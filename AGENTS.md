@@ -13,7 +13,7 @@
 | [docs/_meta/DEPLOYMENT_SAFETY.md](./docs/_meta/DEPLOYMENT_SAFETY.md) | test-only bundle, wrangler 금지, verify, merge 순서 |
 | [docs/_meta/DEPLOY_REQUEST_PROTOCOL.md](./docs/_meta/DEPLOY_REQUEST_PROTOCOL.md) | **다른 AI → CI 배포 요청** (CLI / label / comment) |
 | [docs/_meta/GITHUB_ACTIONS_SETUP.md](./docs/_meta/GITHUB_ACTIONS_SETUP.md) | Secrets, labels, Cloudflare 중복 deploy 방지 |
-| [docs/_meta/MAIN_AGENT.md](./docs/_meta/MAIN_AGENT.md) | PR merge·배포 **조율** (Cursor Cloud 메인) |
+| [docs/_meta/MAIN_AGENT.md](./docs/_meta/MAIN_AGENT.md) | PR merge·배포 **조율** (Cursor / Codex) |
 
 ### Cold-start (Codex / Claude / Cursor 공통)
 
@@ -22,7 +22,7 @@
 3. `gh pr list --state open` — stale draft·위험 PR 확인
 4. 작업 **track** 선언: `site` | `test` | `supabase` 중 **하나**
 5. 다른 track 파일 touch 금지 (예: test PR에서 `index.html` / `js/sections/home.js` 수정 금지)
-6. **push·PR까지** — merge는 Cursor Cloud 메인. **merge 후 production deploy는 CI가 자동** (사용자·Cursor에게 "배포해줘" 금지)
+6. **Cursor와 Codex는 PR 병합·배포 조율 가능** — 검증 통과와 최신 main 기준을 확인한 뒤 병합한다. **merge 후 production deploy는 CI가 자동** (사용자·Cursor에게 "배포해줘" 금지)
 
 PR이 `main`에 merge되면 `Auto Deploy On Merge` workflow가 track을 추론해 `Deploy Production`을 실행한다. Codex/Claude는 `submit_deploy_request.mjs`를 **merge 후 호출할 필요 없음** (복구·브랜치 preview만 예외).
 
@@ -34,7 +34,8 @@ PR이 `main`에 merge되면 `Auto Deploy On Merge` workflow가 track을 추론�
 |---|:---:|:---:|:---:|:---:|
 | branch / commit / push | ✅ | ✅ | ✅ | ✅ |
 | PR 생성 | ✅ | ✅ | ✅ | ✅ |
-| **PR merge** | ❌ | ❌ | **✅** | ❌ (기본) |
+| **PR merge** | ✅ | ❌ | ✅ | ✅ |
+| **배포 조율·CI 결과 확인** | ✅ | ❌ | ✅ | ✅ |
 | **`wrangler deploy`** | ❌ | ❌ | ❌ (CI가 실행) | ❌ |
 | **배포 요청 (`submit_deploy_request.mjs`)** | 복구·preview만 | 복구·preview만 | 복구만 | 복구만 |
 | **DEPLOY_LEDGER 갱신** | ❌ | ❌ | CI bot + 확인 | ❌ |
@@ -49,9 +50,9 @@ PR이 `main`에 merge되면 `Auto Deploy On Merge` workflow가 track을 추론�
 
 ---
 
-## 메인 에이전트 (Cursor Cloud)
+## 병합·배포 조율 에이전트 (Cursor / Codex)
 
-사용자 지정 **메인 에이전트**는 PR 머지·배포·다른 agent 작업 조율을 담당합니다.
+**Cursor와 Codex 모두** PR 병합·배포·다른 agent 작업 조율을 담당할 수 있습니다. 같은 PR의 병합·배포 조율은 한 에이전트가 맡아 중복 실행을 피합니다. 모든 에이전트의 직접 `wrangler deploy`는 금지하며 실제 웹사이트 배포는 CI가 실행합니다.
 
 - **조율 SSOT:** [docs/_meta/MAIN_AGENT.md](./docs/_meta/MAIN_AGENT.md)
 - **GitHub:** `main` 은 protected → PR merge 필요
