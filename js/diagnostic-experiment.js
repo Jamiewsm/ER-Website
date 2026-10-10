@@ -1,5 +1,5 @@
 /**
- * ER 진단 실험 모드 (?experiment=1)
+ * 결과의 선택형 평가와 별도 실명 진단 실험 제출을 관리한다.
  * - 실명·동의 후 테스트 시작, 완료 후 자기평가와 함께 Supabase에 제출
  * - 사이트 오픈 전 소수 초대용. 일반 공개 시 URL 제거·정책 재검토 권장.
  */
@@ -142,164 +142,304 @@
         startedAt: new Date().toISOString(),
       });
       hideGateShowTest();
+      if (pendingExperimentResult) {
+        var result = pendingExperimentResult;
+        pendingExperimentResult = null;
+        onResultReady(result);
+      }
     });
   }
 
-  function mountResultUi(payload) {
+  var SURVEY_VERSION = "result-feedback-v1";
+  var FEEDBACK_CONSENT_VERSION = "2026-09-28-feedback-v1";
+  var PARTS = ["core", "subtype", "wing", "description"];
+  var DIFFICULTIES = ["words", "context", "multiple", "none_fit", "length", "none"];
+  var feedbackStates = Object.create(null);
+  var activeFeedback = null;
+  var pendingExperimentResult = null;
+
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function allowedChoices(values, allowed) {
+    return allowed.filter(function (value) { return Array.isArray(values) && values.includes(value); });
+  }
+
+  function normalizeFeedback(detail) {
+    detail = detail || {};
+    var deferred = detail.deferred === true;
+    var rating = !deferred && Number.isInteger(detail.rating) && detail.rating >= 1 && detail.rating <= 5 ? detail.rating : null;
+    var matching = allowedChoices(detail.matching_parts, PARTS);
+    var difficulties = allowedChoices(detail.difficulties, DIFFICULTIES);
+    return {
+      survey_version: SURVEY_VERSION,
+      rating: rating,
+      deferred: deferred,
+      matching_parts: matching,
+      mismatching_parts: allowedChoices(detail.mismatching_parts, PARTS).filter(function (part) { return !matching.includes(part); }),
+      difficulties: difficulties.includes("none") ? ["none"] : difficulties,
+    };
+  }
+
+  function legacySelfAssessment(detail) {
+    return detail.deferred || detail.rating === 3 || detail.rating === null ? "ambiguous" : detail.rating >= 4 ? "correct" : "incorrect";
+  }
+
+  function validType(value) {
+    return Number.isInteger(value) && value >= 1 && value <= 9;
+  }
+
+  function publicResult(payload) {
+    var metadata = payload.assessmentMetadata || {};
+    var core = payload.coreResolved === true && validType(payload.core) ? payload.core : null;
+    var phase4 = payload.phase4 || {};
+    var subtype = String(phase4.subtypeCode || "").split("_")[0];
+    var wing = phase4.wingNum;
+    var candidates = metadata.reviewedCandidates || (payload.screening || {}).candidates || [];
+    return {
+      core: core,
+      core_resolved: core !== null,
+      subtype: core && ["sp", "sx", "so"].includes(subtype) ? subtype : null,
+      wing: core && [core === 1 ? 9 : core - 1, core === 9 ? 1 : core + 1].includes(wing) ? wing : null,
+      candidate_types: Array.isArray(candidates) ? candidates.filter(function (value, index) { return validType(value) && candidates.indexOf(value) === index; }) : [],
+    };
+  }
+
+  function buildPublicFeedbackPayload(payload, detail, token) {
+    var metadata = payload.assessmentMetadata || {};
+    var versions = metadata.versions || {};
+    var feedback = normalizeFeedback(detail);
+    var result = publicResult(payload);
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(metadata.attemptId || "") ||
+      !Number.isInteger(metadata.revision) || metadata.revision < 0 || metadata.revision > 2147483647 ||
+      metadata.variant !== "word" ||
+      result.candidate_types.length < 3 || result.candidate_types.length > 4 ||
+      !["assessment", "instructions", "questions", "scoring", "report"].every(function (key) { return typeof versions[key] === "string" && /^[A-Za-z0-9._-]{1,64}$/.test(versions[key]); })) {
+      throw new Error("feedback_metadata_missing");
+    }
+    if ((feedback.rating === null && !feedback.deferred) || detail.consent !== true || !token) throw new Error("feedback_incomplete");
+    return {
+      attempt_id: metadata.attemptId,
+      revision: metadata.revision,
+      result: result,
+      versions: { assessment: versions.assessment, instructions: versions.instructions, questions: versions.questions, scoring: versions.scoring, report: versions.report, survey: SURVEY_VERSION },
+      variant: "word",
+      rating: feedback.rating,
+      deferred: feedback.deferred,
+      matching_parts: feedback.matching_parts,
+      mismatching_parts: feedback.mismatching_parts,
+      difficulties: feedback.difficulties,
+      consent_version: FEEDBACK_CONSENT_VERSION,
+      consent_accepted: true,
+      turnstile_token: token,
+    };
+  }
+
+  function setFeedbackStatus(state, message) {
+    state.message = message;
+    if (activeFeedback && activeFeedback.state === state) activeFeedback.status.textContent = message;
+  }
+
+  function syncFeedbackState(state) {
+    if (!activeFeedback || activeFeedback.state !== state) return;
+    var view = activeFeedback;
+    view.submit.disabled = state.submitting || state.sent || state.conflict;
+    view.fields.disabled = state.submitting || state.sent;
+    if (view.retry) view.retry.disabled = state.submitting || state.sent;
+    [view.intro, view.fields, view.submit, view.securityGroup].forEach(function (element) {
+      if (element) element.hidden = state.sent;
+    });
+    view.status.textContent = state.message;
+  }
+
+  function clearWidget(view) {
+    view.token = "";
+    view.widgetGeneration += 1;
+    if (view.widgetId !== null && window.turnstile && typeof window.turnstile.remove === "function") {
+      try { window.turnstile.remove(view.widgetId); } catch (e) { /* 이미 제거된 위젯은 다음 렌더에서 대체한다. */ }
+    }
+    view.widgetId = null;
+  }
+
+  function mountFeedbackTurnstile(view) {
+    if (activeFeedback !== view || view.experiment || view.state.sent || view.state.submitting || view.widgetId !== null) return;
+    var sitekey = String(window.TURNSTILE_SITE_KEY || "").trim();
+    if (!sitekey || !window.turnstile || typeof window.turnstile.render !== "function") {
+      view.security.textContent = txt("보안 확인을 불러오지 못했습니다. 잠시 후 보안 확인 다시 시도를 눌러 주세요.", "Security verification is unavailable. Try security verification again shortly.");
+      return;
+    }
+    var generation = ++view.widgetGeneration;
+    function current() { return activeFeedback === view && view.widgetGeneration === generation && !view.state.sent; }
+    view.security.textContent = txt("보안 확인을 완료해 주세요.", "Please complete security verification.");
+    try {
+      view.widgetId = window.turnstile.render(view.widget, {
+        sitekey: sitekey, action: "assessment-feedback", theme: "light", size: "compact",
+        callback: function (token) {
+          if (!current()) return;
+          view.token = typeof token === "string" ? token : "";
+          view.security.textContent = txt("보안 확인이 완료되었습니다.", "Security verification completed.");
+        },
+        "expired-callback": function () {
+          if (!current()) return;
+          view.token = "";
+          view.security.textContent = txt("보안 확인이 만료되었습니다. 보안 확인 다시 시도를 눌러 주세요.", "Security verification expired. Try security verification again.");
+        },
+        "error-callback": function () {
+          if (!current()) return;
+          view.token = "";
+          view.security.textContent = txt("보안 확인에 실패했습니다. 보안 확인 다시 시도를 눌러 주세요.", "Security verification failed. Try security verification again.");
+        },
+      });
+    } catch (e) {
+      clearWidget(view);
+      view.security.textContent = txt("보안 확인을 표시하지 못했습니다. 다시 시도해 주세요.", "Unable to display security verification. Please try again.");
+    }
+  }
+
+  function resetFeedbackTurnstile(view) {
+    clearWidget(view);
+    view.widget.innerHTML = "";
+    mountFeedbackTurnstile(view);
+  }
+
+  function checkboxMarkup(id, label, checked) {
+    return '<label><input type="checkbox" id="' + id + '"' + (checked ? ' checked' : '') + '><span>' + label + '</span></label>';
+  }
+
+  function mountResultUi(payload, experiment) {
     var host = document.getElementById("experiment-result-panel");
     if (!host) return;
-
+    if (activeFeedback) clearWidget(activeFeedback);
+    var metadata = payload.assessmentMetadata || {};
+    var key = (experiment ? "experiment:" : "public:") + (metadata.attemptId || "legacy") + ":" + (metadata.revision || 0);
+    var state = feedbackStates[key];
+    if (!state) {
+      var sent = false;
+      try { var storage = safeSessionStorage(); sent = storage && storage.getItem("er_feedback_sent:" + key) === "1"; } catch (e) { /* 저장소 없이도 현재 화면의 중복 제출은 차단한다. */ }
+      state = feedbackStates[key] = { payload: payload, rating: null, deferred: false, matching_parts: [], mismatching_parts: [], difficulties: [], consent: false, knownCore: "", knownSubtype: "", knownWing: "", sent: !!sent, submitting: false, conflict: false, message: sent ? txt("제출되었습니다. 감사합니다.", "Submitted. Thank you.") : "" };
+    }
+    var partNames = { core: txt("유형", "Core type"), subtype: txt("하위유형", "Subtype"), wing: txt("날개", "Wing"), description: txt("결과 설명", "Result description") };
+    var difficultyNames = { words: txt("단어의 뜻", "Word meanings"), context: txt("상황을 떠올리기", "Recalling a situation"), multiple: txt("여러 답이 비슷함", "Several answers fit"), none_fit: txt("맞는 답이 없음", "No answer fits"), length: txt("검사 길이", "Test length"), none: txt("어려움 없음", "No difficulty") };
+    var ratingNames = [txt("전혀 비슷하지 않다", "Not at all similar"), txt("별로 비슷하지 않다", "Not very similar"), txt("어느 정도 비슷하다", "Somewhat similar"), txt("많이 비슷하다", "Very similar"), txt("매우 비슷하다", "Extremely similar")];
     host.classList.remove("hidden");
-    host.innerHTML =
-      '<div class="rounded-2xl border border-amber-200 bg-amber-50/80 p-6 space-y-4">' +
-      '<p class="text-sm font-bold text-amber-900">' +
-      txt("실험 데이터 제출", "Submit experiment data") +
-      "</p>" +
-      '<p class="text-xs text-amber-800/90 leading-relaxed">' +
-      txt(
-        "결과가 본인과 얼마나 잘 맞는지 선택해 주세요. 제출하기를 누르면 이름, 검사 응답과 결과, 선택한 평가가 저장됩니다. 자료는 검사 개선에만 사용하며, 삭제를 원하시면 운영자에게 요청할 수 있습니다.",
-        "Please rate how well the result fits you, then submit. Clicking Submit saves your name, answers, results, and selected feedback. Data is used only to improve scoring; you may request deletion from the operator."
-      ) +
-      "</p>" +
-      '<div class="space-y-2">' +
-      '<p class="text-xs font-semibold text-gray-700">' +
-      txt("이 결과가 나에게", "This result feels") +
-      "</p>" +
-      '<label class="flex items-center gap-2 text-sm text-gray-800 cursor-pointer">' +
-      '<input type="radio" name="experiment-self" value="correct" class="accent-[#30322D]">' +
-      txt("맞는 편이다", "Mostly accurate") +
-      "</label>" +
-      '<label class="flex items-center gap-2 text-sm text-gray-800 cursor-pointer">' +
-      '<input type="radio" name="experiment-self" value="ambiguous" class="accent-[#30322D]">' +
-      txt("애매하다", "Unclear / mixed") +
-      "</label>" +
-      '<label class="flex items-center gap-2 text-sm text-gray-800 cursor-pointer">' +
-      '<input type="radio" name="experiment-self" value="incorrect" class="accent-[#30322D]">' +
-      txt("맞지 않는 편이다", "Mostly inaccurate") +
-      "</label>" +
-      "</div>" +
-      '<div class="grid gap-3 sm:grid-cols-3">' +
-      '<div>' +
-      '<label for="experiment-known-core" class="text-xs font-semibold text-gray-700">' +
-      txt("상담에서 확인한 기본 유형", "Counsel-confirmed core type") +
-      "</label>" +
-      '<select id="experiment-known-core" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm">' +
-      '<option value="">' + txt('기본 유형 선택 안 함', 'Core type not selected') + '</option>' +
-      Array.from({ length: 9 }, function (_, i) { return '<option value="' + (i + 1) + '">' + txt((i + 1) + '번', 'Type ' + (i + 1)) + '</option>'; }).join('') +
-      '</select>' +
-      "</div>" +
-      '<div>' +
-      '<label for="experiment-known-subtype" class="text-xs font-semibold text-gray-700">' +
-      txt("상담에서 확인한 하위유형", "Counsel-confirmed subtype") +
-      "</label>" +
-      '<select id="experiment-known-subtype" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm">' +
-      '<option value="">' + txt('하위유형 선택 안 함', 'Subtype not selected') + '</option>' +
-      ['sp', 'so', 'sx'].map(function (code) { var names = { sp: txt('자기보존', 'Self-preservation'), so: txt('사회적', 'Social'), sx: txt('성적(일대일)', 'One-to-one') }; return '<option value="' + code + '">' + names[code] + '</option>'; }).join('') +
-      '</select>' +
-      "</div>" +
-      '<div>' +
-      '<label for="experiment-known-wing" class="text-xs font-semibold text-gray-700">' +
-      txt("상담에서 확인한 날개", "Counsel-confirmed wing") +
-      "</label>" +
-      '<select id="experiment-known-wing" class="mt-1 w-full rounded-xl border border-gray-200 p-3 text-sm" disabled>' +
-      '<option value="">' + txt('기본 유형을 먼저 선택해 주세요', 'Select a core type first') + '</option>' +
-      '</select>' +
-      "</div>" +
-      "</div>" +
-      '<button type="button" id="experiment-submit-btn" class="w-full sm:w-auto bg-[#30322D] hover:bg-[#202219] text-white font-bold py-3 px-8 rounded-full text-sm">' +
-      txt("제출하기", "Submit") +
-      "</button>" +
-      '<p id="experiment-submit-status" class="text-xs text-gray-600 min-h-[1.25rem]"></p>' +
-      "</div>";
+    host.innerHTML = '<section class="er-result-feedback" aria-labelledby="feedback-title">' +
+      '<div id="feedback-intro"><h3 id="feedback-title">' + txt("이 결과는 나와 얼마나 비슷한가요?", "How much does this result resemble you?") + '</h3>' +
+      '<p>' + txt("평가는 선택사항입니다. 제출하지 않아도 결과와 상담 안내를 이용할 수 있습니다.", "Feedback is optional. Your results and consultation information remain available without submitting.") + '</p>' +
+      '<p>' + (experiment ? txt("제출하기를 누르면 이름, 검사 응답과 결과, 선택한 평가가 저장됩니다. 검사 개선에 사용하며 삭제는 운영자에게 요청할 수 있습니다.", "Submitting saves your name, answers, results, and selected feedback for test improvement. You may request deletion from the operator.") : txt("이름·연락처·원래 검사 답변은 보내지 않습니다. 선택형 평가, 결과 요약과 검사·평가 버전만 익명으로 저장해 검사 개선에 사용합니다.", "We do not send your name, contact details, or original answers. Only selected feedback, the result summary, and test/survey versions are stored anonymously to improve the test.")) + '</p>' +
+      '</div><fieldset id="feedback-fields"><legend class="sr-only">' + txt("결과 평가", "Result feedback") + '</legend>' +
+      '<fieldset><legend>' + txt("나와 비슷한 정도", "How similar it feels") + '</legend><div class="er-feedback-options er-feedback-rating">' +
+      ratingNames.map(function (label, i) { var value = i + 1; return '<label><input type="radio" name="assessment-feedback-rating" id="feedback-rating-' + value + '" value="' + value + '"' + (state.rating === value ? ' checked' : '') + '><span>' + value + ' · ' + label + '</span></label>'; }).join('') +
+      '<label><input type="radio" name="assessment-feedback-rating" id="feedback-rating-deferred" value="deferred"' + (state.deferred ? ' checked' : '') + '><span>' + txt("아직 판단하기 어렵다", "Not ready to judge") + '</span></label></div></fieldset>' +
+      ['matching_parts', 'mismatching_parts'].map(function (field) { return '<fieldset><legend>' + (field === 'matching_parts' ? txt("비슷하게 느낀 부분 (선택)", "Parts that fit (optional)") : txt("다르게 느낀 부분 (선택)", "Parts that differ (optional)")) + '</legend><div class="er-feedback-options er-feedback-parts">' + PARTS.map(function (part) { return checkboxMarkup('feedback-' + field + '-' + part, partNames[part], state[field].includes(part)); }).join('') + '</div></fieldset>'; }).join('') +
+      '<fieldset><legend>' + txt("답하기 어려웠던 점 (선택)", "What was difficult to answer (optional)") + '</legend><div class="er-feedback-options">' + DIFFICULTIES.map(function (item) { return checkboxMarkup('feedback-difficulties-' + item, difficultyNames[item], state.difficulties.includes(item)); }).join('') + '</div></fieldset>' +
+      (experiment ? '<fieldset><legend>' + txt("이전에 상담에서 안내받은 유형(본인 기억) · 선택", "Type discussed in a previous consultation (your recollection) · optional") + '</legend><div class="er-feedback-parts">' +
+        '<label for="experiment-known-core">' + txt("유형", "Core type") + '</label><select id="experiment-known-core"><option value="">' + txt("선택 안 함", "Not selected") + '</option>' + [1,2,3,4,5,6,7,8,9].map(function (core) { return '<option value="' + core + '">' + core + '</option>'; }).join('') + '</select>' +
+        '<label for="experiment-known-subtype">' + txt("하위유형", "Subtype") + '</label><select id="experiment-known-subtype"><option value="">' + txt("선택 안 함", "Not selected") + '</option><option value="sp">' + txt("자본 · 자기보존", "Self-preservation") + '</option><option value="sx">' + txt("성본 · 일대일", "One-to-one") + '</option><option value="so">' + txt("사본 · 사회적", "Social") + '</option></select>' +
+        '<label for="experiment-known-wing">' + txt("날개", "Wing") + '</label><select id="experiment-known-wing"></select></div></fieldset>' : '') +
+      '<label class="er-feedback-consent"><input type="checkbox" id="feedback-consent"' + (state.consent ? ' checked' : '') + '><span>' + txt("위 내용을 읽었으며 검사 개선을 위한 자료 저장에 동의합니다.", "I have read the above and consent to storing this data for test improvement.") + '</span></label></fieldset>' +
+      (experiment ? '' : '<div id="feedback-security" class="er-feedback-turnstile"><div id="feedback-turnstile-widget"></div><p id="feedback-security-status" role="status" aria-live="polite"></p><button id="feedback-security-retry" type="button">' + txt("보안 확인 다시 시도", "Retry security verification") + '</button></div>') +
+      '<button type="button" id="experiment-submit-btn" class="er-test-primary er-feedback-submit">' + txt("평가 제출하기", "Submit feedback") + '</button><p id="experiment-submit-status" class="er-feedback-status" role="status" aria-live="polite"></p></section>';
 
-    var coreSelect = document.getElementById("experiment-known-core");
-    var wingSelect = document.getElementById("experiment-known-wing");
-    if (coreSelect && wingSelect) coreSelect.addEventListener("change", function () {
-      var core = Number(coreSelect.value);
-      wingSelect.disabled = !core;
-      wingSelect.innerHTML = '<option value="">' + txt('날개 선택 안 함', 'Wing not selected') + '</option>' +
-        (core ? [core === 1 ? 9 : core - 1, core === 9 ? 1 : core + 1].map(function (wing) {
-          return '<option value="' + core + 'w' + wing + '">' + txt(wing + '번 날개', 'Wing ' + wing) + '</option>';
-        }).join('') : '');
+    var view = activeFeedback = { host: host, state: state, key: key, experiment: experiment, intro: document.getElementById("feedback-intro"), submit: document.getElementById("experiment-submit-btn"), fields: document.getElementById("feedback-fields"), status: document.getElementById("experiment-submit-status"), securityGroup: document.getElementById("feedback-security"), widget: document.getElementById("feedback-turnstile-widget"), security: document.getElementById("feedback-security-status"), retry: document.getElementById("feedback-security-retry"), widgetId: null, widgetGeneration: 0, token: "" };
+    [1,2,3,4,5,"deferred"].forEach(function (value) {
+      document.getElementById("feedback-rating-" + value).addEventListener("change", function (event) {
+        if (!event.target.checked) return;
+        state.deferred = value === "deferred";
+        state.rating = state.deferred ? null : value;
+      });
     });
-
-    var statusEl = document.getElementById("experiment-submit-status");
-    var submitBtn = document.getElementById("experiment-submit-btn");
-
-    submitBtn.addEventListener("click", async function () {
-      var selfEl = document.querySelector('input[name="experiment-self"]:checked');
-      if (!selfEl) {
-        if (statusEl)
-          statusEl.textContent = txt(
-            "결과가 나와 얼마나 잘 맞는지 선택해 주세요.",
-            "Please select how well the result fits."
-          );
-        return;
-      }
-      var knownCore = ((document.getElementById("experiment-known-core") || {}).value || "").trim();
-      var knownSubtype = ((document.getElementById("experiment-known-subtype") || {}).value || "").trim();
-      var knownWing = ((document.getElementById("experiment-known-wing") || {}).value || "").trim();
-      var meta = getMeta();
-      var participantName = meta && typeof meta.participantName === "string"
-        ? meta.participantName.trim()
-        : "";
-      if (!meta || !participantName) {
-        if (statusEl)
-          statusEl.textContent = txt(
-            "세션 정보가 없습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.",
-            "Session lost. Refresh and try again."
-          );
-        return;
-      }
-      if (meta.consentAccepted !== true) {
-        if (statusEl)
-          statusEl.textContent = txt(
-            "저장 동의 정보가 없습니다. 페이지를 새로고침한 뒤 이름과 동의 체크 후 다시 진행해 주세요.",
-            "Consent information is missing. Refresh, enter your name, confirm consent, and try again."
-          );
-        return;
-      }
-
-      if (!window.supabaseClient) {
-        if (statusEl)
-          statusEl.textContent = txt(
-            "저장 서버에 연결되지 않았습니다. 설정을 확인해 주세요.",
-            "Storage is not configured."
-          );
-        return;
-      }
-
-      submitBtn.disabled = true;
-      if (statusEl) statusEl.textContent = txt("제출 중…", "Submitting…");
-
-      var row = buildRow(
-        Object.assign({}, meta, { participantName: participantName, consentAccepted: true }),
-        payload,
-        selfEl.value,
-        null,
-        knownCore.slice(0, 30),
-        knownSubtype.slice(0, 30),
-        knownWing.slice(0, 30)
-      );
-      var res = await window.supabaseClient
-        .from("diagnostic_experiment_sessions")
-        .insert(row);
-
-      if (res.error) {
-        console.error("diagnostic experiment submit failed", res.error);
-        submitBtn.disabled = false;
-        if (statusEl)
-          statusEl.textContent =
-            txt("제출 실패: ", "Failed: ") + (res.error.message || String(res.error));
-        return;
-      }
-
-      if (statusEl)
-        statusEl.textContent = txt(
-          "제출되었습니다. 감사합니다.",
-          "Submitted. Thank you."
-        );
+    ["matching_parts", "mismatching_parts", "difficulties"].forEach(function (field) {
+      (field === "difficulties" ? DIFFICULTIES : PARTS).forEach(function (value) {
+        document.getElementById("feedback-" + field + "-" + value).addEventListener("change", function (event) {
+          state[field] = state[field].filter(function (item) { return item !== value; });
+          if (event.target.checked) state[field].push(value);
+          if (!event.target.checked) return;
+          if (field === "difficulties") {
+            state.difficulties = value === "none" ? ["none"] : state.difficulties.filter(function (item) { return item !== "none"; });
+            DIFFICULTIES.forEach(function (item) { document.getElementById("feedback-difficulties-" + item).checked = state.difficulties.includes(item); });
+          } else {
+            var other = field === "matching_parts" ? "mismatching_parts" : "matching_parts";
+            state[other] = state[other].filter(function (item) { return item !== value; });
+            document.getElementById("feedback-" + other + "-" + value).checked = false;
+          }
+        });
+      });
     });
+    document.getElementById("feedback-consent").addEventListener("change", function (event) { state.consent = event.target.checked; });
+    if (experiment) bindReportedType(state);
+    else {
+      view.retry.addEventListener("click", function () { if (!state.submitting && !state.sent) resetFeedbackTurnstile(view); });
+      mountFeedbackTurnstile(view);
+    }
+    view.submit.addEventListener("click", function () { return submitFeedback(view); });
+    syncFeedbackState(state);
+  }
+
+  function bindReportedType(state) {
+    var core = document.getElementById("experiment-known-core");
+    var subtype = document.getElementById("experiment-known-subtype");
+    var wing = document.getElementById("experiment-known-wing");
+    function updateWings() {
+      var value = Number(state.knownCore);
+      wing.disabled = !value;
+      wing.innerHTML = '<option value="">' + txt("선택 안 함", "Not selected") + '</option>' + (value ? [value === 1 ? 9 : value - 1, value === 9 ? 1 : value + 1].map(function (item) { return '<option value="' + value + 'w' + item + '">' + item + '</option>'; }).join('') : '');
+      wing.value = state.knownWing;
+    }
+    core.value = state.knownCore;
+    subtype.value = state.knownSubtype;
+    updateWings();
+    core.addEventListener("change", function () { state.knownCore = core.value; state.knownWing = ""; updateWings(); });
+    subtype.addEventListener("change", function () { state.knownSubtype = subtype.value; });
+    wing.addEventListener("change", function () { state.knownWing = wing.value; });
+  }
+
+  async function submitFeedback(view) {
+    var state = view.state;
+    if (activeFeedback !== view || state.submitting || state.sent || state.conflict) return;
+    var detail = normalizeFeedback(state);
+    if (detail.rating === null && !detail.deferred) return setFeedbackStatus(state, txt("비슷한 정도 또는 판단하기 어려움을 선택해 주세요.", "Select a rating or not ready to judge."));
+    if (!state.consent) return setFeedbackStatus(state, txt("자료 저장에 동의한 뒤 제출해 주세요.", "Please consent to data storage before submitting."));
+    var meta = getMeta();
+    if (view.experiment && (!meta || !String(meta.participantName || "").trim() || meta.consentAccepted !== true)) return setFeedbackStatus(state, txt("이름과 저장 동의 정보가 없습니다. 처음 화면에서 다시 확인해 주세요.", "Name or consent information is missing. Please confirm it on the first screen."));
+    if (!view.experiment && !view.token) return setFeedbackStatus(state, txt("보안 확인을 완료한 뒤 제출해 주세요.", "Complete security verification before submitting."));
+    if (!window.supabaseClient) return setFeedbackStatus(state, txt("저장 서버에 연결되지 않았습니다. 잠시 후 다시 시도해 주세요.", "Storage is unavailable. Please try again shortly."));
+    state.submitting = true;
+    setFeedbackStatus(state, txt("제출 중…", "Submitting…"));
+    syncFeedbackState(state);
+    try {
+      var response;
+      if (view.experiment) {
+        response = await window.supabaseClient.from("diagnostic_experiment_sessions").insert(buildRow(meta, state.payload, legacySelfAssessment(detail), null, state.knownCore, state.knownSubtype, state.knownWing, detail));
+        if (!response || response.error) throw new Error("feedback_save_failed");
+      } else {
+        var body = buildPublicFeedbackPayload(state.payload, state, view.token);
+        view.token = "";
+        response = await window.supabaseClient.functions.invoke("submit-assessment-feedback", { body: body });
+        if (!response || response.error || !response.data || response.data.saved !== true) {
+          var code = response && response.data && response.data.error;
+          var context = response && response.error && response.error.context;
+          if (!code && context && typeof context.clone === "function") {
+            try { code = (await context.clone().json()).error; } catch (e) { /* 응답 본문을 읽지 못해도 실패로 처리한다. */ }
+          }
+          throw new Error(code === "revision_conflict" ? code : "feedback_save_failed");
+        }
+      }
+      state.sent = true;
+      try { var storage = safeSessionStorage(); if (storage) storage.setItem("er_feedback_sent:" + view.key, "1"); } catch (e) { /* 서버의 시도·회차 중복 검사와 현재 화면 상태를 유지한다. */ }
+      setFeedbackStatus(state, txt("제출되었습니다. 감사합니다.", "Submitted. Thank you."));
+      if (activeFeedback && activeFeedback.state === state && !view.experiment) {
+        clearWidget(activeFeedback);
+        activeFeedback.security.textContent = "";
+      }
+    } catch (error) {
+      state.conflict = !!(error && error.message === "revision_conflict");
+      setFeedbackStatus(state, state.conflict ? txt("이 결과에 대한 평가는 이미 저장되어 변경할 수 없습니다. 후보를 재검토해 새 결과를 만든 경우 다시 평가할 수 있습니다.", "Feedback for this result was already saved and cannot be changed. You can rate a new result after reviewing the candidates.") : error && error.message === "feedback_metadata_missing" ? txt("검사 정보가 없어 평가를 저장할 수 없습니다. 결과는 계속 확인할 수 있습니다.", "Test metadata is missing, so feedback cannot be saved. Your result remains available.") : txt("제출하지 못했습니다. 선택한 내용은 유지됩니다. 잠시 후 다시 시도해 주세요.", "Submission failed. Your selections are preserved. Please try again shortly."));
+    } finally {
+      state.submitting = false;
+      syncFeedbackState(state);
+      if (!state.sent && !state.conflict && activeFeedback && activeFeedback.state === state && !view.experiment) resetFeedbackTurnstile(activeFeedback);
+    }
   }
 
   function roundPercent(value) {
@@ -332,7 +472,7 @@
 
     var analytics = {
       result: {
-        core: payload.core || null,
+        core: payload.coreResolved === false ? null : payload.core || null,
         subtype: (function () {
           if (!(phase4 && phase4.subtypeCode)) return null;
           var code = String(phase4.subtypeCode).trim().toLowerCase();
@@ -370,6 +510,7 @@
       analytics.assessmentVersion = payload.assessmentVersion;
       analytics.screening = payload.screening || null;
     }
+    if (payload.assessmentMetadata) analytics.assessmentMetadata = clone(payload.assessmentMetadata);
     return analytics;
   }
 
@@ -389,6 +530,7 @@
     var validWings = coreNumber ? [coreNumber + 'w' + (coreNumber === 1 ? 9 : coreNumber - 1), coreNumber + 'w' + (coreNumber === 9 ? 1 : coreNumber + 1)] : [];
     knownWing = validWings.includes(knownWing) ? knownWing : null;
 
+    var detail = normalizeFeedback(feedbackDetail);
     return {
       participant_name: String(meta.participantName || "").trim(),
       consent_version: meta.consentVersion || CONSENT_VERSION,
@@ -414,16 +556,10 @@
         confidence_explanation: payload.confidenceExplanation || null,
         scoring_axes: payload.scoringAxes || null,
         experiment_payload: buildExperimentAnalyticsPayload(payload),
-        feedback_detail: {
-          confirmed_type: {
-            core: knownCore || null,
-            subtype: knownSubtype || null,
-            wing: knownWing || null,
-          },
-          accurate_parts: null,
-          inaccurate_parts: null,
-          consultation_check: null,
-        },
+        feedback_detail: Object.assign({}, detail, {
+          comparison_source: "participant_report",
+          reported_type: { core: knownCore || null, subtype: knownSubtype || null, wing: knownWing || null },
+        }),
       },
       tie_break_log: {
         tie: payload.tieSnapshot || {},
@@ -433,7 +569,7 @@
         state_stress_adjustment: payload.stateStressAdjustment || null,
       },
       evidence: payload.evidence || {},
-      self_assessment: selfAssessment,
+      self_assessment: feedbackDetail && (detail.rating !== null || detail.deferred) ? legacySelfAssessment(detail) : selfAssessment,
       self_reported_core: knownCore || null,
       self_reported_subtype: knownSubtype || null,
       self_reported_wing: knownWing || null,
@@ -443,9 +579,12 @@
   }
 
   function onResultReady(payload) {
-    if (!isExperimentMode()) return;
+    var experiment = isExperimentMode();
     var meta = getMeta();
-    if (!meta || !meta.participantName) return;
+    if (experiment && (!meta || !meta.participantName || meta.consentAccepted !== true)) {
+      pendingExperimentResult = clone(payload || {});
+      return;
+    }
 
     var finalEl = document.getElementById("res-final");
     var coreEl = document.getElementById("res-core");
@@ -453,7 +592,7 @@
     var instEl = document.getElementById("res-instincts");
     var badgeEl = document.getElementById("confidence-badge");
 
-    var enriched = Object.assign({}, payload, {
+    var enriched = Object.assign({}, clone(payload || {}), {
       pageLang: document.documentElement.lang === "en" ? "en" : "ko",
       resFinalText: finalEl ? finalEl.innerText.trim() : "",
       coreDisplay: coreEl ? coreEl.innerText.trim() : "",
@@ -462,7 +601,7 @@
       confidenceLabel: badgeEl ? badgeEl.innerText.trim() : "",
     });
 
-    mountResultUi(enriched);
+    mountResultUi(enriched, experiment);
   }
 
   function init() {
@@ -487,12 +626,23 @@
   window.addEventListener("load", init);
   setTimeout(init, 0);
 
+  window.onERAssessmentFeedbackTurnstileReady = function () { if (activeFeedback) mountFeedbackTurnstile(activeFeedback); };
+
   window.ERDiagnosticExperiment = {
     isExperimentMode: isExperimentMode,
     onResultReady: onResultReady,
+    onAssessmentReview: function () {
+      pendingExperimentResult = null;
+      if (!activeFeedback) return;
+      clearWidget(activeFeedback);
+      activeFeedback.host.classList.add("hidden");
+      activeFeedback = null;
+    },
     _test: {
       buildExperimentAnalyticsPayload: buildExperimentAnalyticsPayload,
       buildRow: buildRow,
+      buildPublicFeedbackPayload: buildPublicFeedbackPayload,
+      normalizeFeedback: normalizeFeedback,
     },
   };
 })();

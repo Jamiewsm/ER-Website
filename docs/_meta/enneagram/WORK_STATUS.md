@@ -4,14 +4,14 @@ kb_id: enneagram_test_meta.work_status
 schema_version: 1
 title: "ER Enneagram Test — Work Status"
 created_at: "2026-05-06"
-last_updated: "2026-09-21"
+last_updated: "2026-09-28"
 retrieval_tags:
   - work_status
   - phase_progress
   - lock_state
   - project_complete
 current_phase: 7
-current_task: "word-narrative-v2 Korean review and choice-only assessment verified; PR #154 awaiting Cursor merge"
+current_task: "premium assessment quality locally verified; API PR #160 and dependent test draft PR #161 open"
 checkpoint_plan: []
 checkpoint: null
 paused: true
@@ -26,6 +26,13 @@ project_status: "manual_updates_after_phase_6"
 ---
 
 # Work Status — 자동화 완료 후 수동 개선 진행
+
+## 2026-09-28 사용자 요청에 따른 평가·개선 기반
+
+- 안내·후보 재검토·하위유형 보류·선택형 평가·버전별 분석을 구현하고 로컬 검증했다. [작업 계획](../../projects/premium-assessment-quality-20260928/plan.md), [검증 기록](../../projects/premium-assessment-quality-20260928/verification.md), [파일럿 절차](../../projects/premium-assessment-quality-20260928/pilot-protocol.md)를 후속 기준으로 삼는다.
+- test 및 supabase 트랙을 별도 PR로 전달한다. 평가 서버의 migration·함수·Turnstile 운영 확인 후 test PR을 머지해야 한다. 로컬 구현 완료와 운영 적용은 구분한다.
+- 서버 PR #160과 검사 draft PR #161을 생성·첨부했다. #161의 draft는 #160 서버 적용을 선행 조건으로 명시한 상태다. 두 PR 모두 이 작업에서 머지하지 않았다.
+- 체감 일치도는 검증된 정확도가 아니다. 새 문항 전체 교체·AI API·자동 연구 배정은 추가하지 않았다. 자동화의 `paused: true`를 유지한다.
 
 ## 2026-09-21 사용자 요청에 따른 단어·서사형 검사
 
