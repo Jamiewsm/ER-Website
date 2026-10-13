@@ -7,6 +7,7 @@ function usage() {
   return [
     'Usage:',
     '  node scripts/analyze_diagnostic_experiments.mjs --fixture tests/fixtures/diagnostic-experiments.sample.json',
+    '  node scripts/analyze_diagnostic_experiments.mjs --input export.json --assessment-version word-narrative-v2 --lang en',
     '',
     'Input: Supabase diagnostic_experiment_sessions rows exported as a JSON array.'
   ].join('\n');
@@ -18,6 +19,12 @@ function parseArgs(argv) {
     const arg = argv[i];
     if (arg === '--fixture' || arg === '--input') {
       out.input = argv[i + 1];
+      i += 1;
+    } else if (arg === '--assessment-version' || arg === '--lang') {
+      const value = argv[i + 1];
+      if (!value || value.startsWith('--')) throw new Error(`Missing value for ${arg}.`);
+      if (arg === '--lang' && !['ko', 'en'].includes(value)) throw new Error('--lang must be ko or en.');
+      out[arg === '--lang' ? 'lang' : 'assessmentVersion'] = value;
       i += 1;
     } else if (arg === '--help' || arg === '-h') {
       out.help = true;
@@ -49,6 +56,14 @@ function getExperimentPayload(row) {
 
 function getFeedback(row) {
   return row?.result_summary?.feedback_detail || {};
+}
+
+function getAssessmentVersion(row) {
+  return String(getExperimentPayload(row)?.assessmentVersion || 'unversioned');
+}
+
+function getLanguage(row) {
+  return String(row?.lang || getExperimentPayload(row)?.pageLang || 'unknown').toLowerCase();
 }
 
 function getPredictedCore(row) {
@@ -105,8 +120,8 @@ function getTiePair(row) {
   if (!topPair) return null;
   const first = normalizeCore(topPair.first);
   const second = normalizeCore(topPair.second);
-  if (!first || !second) return null;
-  return `${first}-${second}`;
+  if (!first || !second || first === second) return null;
+  return [first, second].sort((a, b) => a - b).join('-');
 }
 
 function increment(map, key) {
@@ -115,7 +130,7 @@ function increment(map, key) {
 }
 
 function pct(numerator, denominator) {
-  if (!denominator) return '0.0%';
+  if (!denominator) return 'N/A';
   return `${((numerator / denominator) * 100).toFixed(1)}%`;
 }
 
@@ -130,6 +145,7 @@ function summarize(rows) {
   const qualityFlag = { correct: 0, total: 0 };
   const tiePair = new Map();
   const countertype = { miss: 0, total: 0 };
+  const cohorts = new Map();
   let usable = 0;
 
   rows.forEach((row) => {
@@ -140,6 +156,7 @@ function summarize(rows) {
 
     if (!predictedCore || !confirmedCore) return;
     usable += 1;
+    increment(cohorts, `${getAssessmentVersion(row)} / ${getLanguage(row)}`);
 
     const coreCorrect = predictedCore === confirmedCore;
     increment(coreMatrix, `${predictedCore} -> ${confirmedCore}`);
@@ -166,19 +183,23 @@ function summarize(rows) {
       tiePair.set(pair, current);
     }
 
-    if (COUNTERTYPES.has(predictedSubtype) || COUNTERTYPES.has(confirmedSubtype)) {
+    if (confirmedSubtype && (COUNTERTYPES.has(predictedSubtype) || COUNTERTYPES.has(confirmedSubtype))) {
       countertype.total += 1;
       if (predictedSubtype !== confirmedSubtype) countertype.miss += 1;
     }
   });
 
-  return { usable, coreMatrix, subtypeMatrix, lowConfidence, qualityFlag, tiePair, countertype };
+  return { usable, coreMatrix, subtypeMatrix, lowConfidence, qualityFlag, tiePair, countertype, cohorts };
 }
 
 function renderReport(summary) {
   const lines = [];
   lines.push('ER diagnostic experiment analysis');
   lines.push(`usable rows: ${summary.usable}`);
+  lines.push('cohorts (assessment version / language)');
+  sortedEntries(summary.cohorts).forEach(([key, count]) => lines.push(`${key} ${count}`));
+  if (summary.cohorts.size > 1) lines.push('Mixed cohorts: use --assessment-version and --lang to compare one questionnaire version and language at a time.');
+  lines.push('N/A means no labeled rows are available for that metric.');
   lines.push('');
   lines.push('predicted_core -> confirmed_core count');
   sortedEntries(summary.coreMatrix).forEach(([key, count]) => lines.push(`${key} ${count}`));
@@ -216,7 +237,14 @@ function main() {
   if (!Array.isArray(rows)) {
     throw new Error('Input JSON must be an array of diagnostic experiment rows.');
   }
-  console.log(renderReport(summarize(rows)));
+  const selected = rows.filter((row) =>
+    (!args.assessmentVersion || getAssessmentVersion(row) === args.assessmentVersion) &&
+    (!args.lang || getLanguage(row) === args.lang)
+  );
+  if (args.assessmentVersion || args.lang) {
+    console.log(`selected rows: ${selected.length}/${rows.length} (assessment version: ${args.assessmentVersion || 'all'}, language: ${args.lang || 'all'})`);
+  }
+  console.log(renderReport(summarize(selected)));
 }
 
 main();

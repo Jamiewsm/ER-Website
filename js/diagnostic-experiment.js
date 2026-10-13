@@ -465,7 +465,27 @@
     mountResultUi(enriched);
   }
 
+  function localizeGateCopy() {
+    var copy = {
+      "experiment-closed-title": txt("진단 테스트 제한 안내", "Assessment access"),
+      "experiment-closed-description": txt("죄송합니다. 현재 진단 테스트는 초대받으신 분들만 참여하실 수 있습니다.", "This assessment is currently available to invited participants."),
+      "experiment-closed-caption": txt("(정식 오픈 전 실험 운영 중입니다.)", "(A pilot is running before the public launch.)"),
+      "experiment-gate-title": txt("실험 참가 (비공개)", "Private pilot participation"),
+      "experiment-gate-description": txt("초대받은 분만 이용해 주세요. 입력하신 이름과 응답은 진단 알고리즘 개선을 위해 저장됩니다. 삭제를 원하시면 운영자에게 요청할 수 있습니다.", "Please participate only if invited. Your name and responses are stored to improve the assessment. You can contact the administrator to request deletion."),
+      "experiment-name-label": txt("실명 (필수)", "Full name (required)"),
+      "experiment-consent-label": txt("이름·응답·결과·자기평가를 ER 진단 개선 목적으로 저장하는 것에 동의합니다. 실제 저장은 결과 화면에서 제출하기를 누를 때 이루어집니다.", "I consent to storing my name, responses, result, and self-assessment to improve the ER assessment. They are stored when I press Submit on the result screen."),
+      "experiment-gate-start": txt("동의하고 진단 시작", "Agree and begin")
+    };
+    Object.keys(copy).forEach(function (id) {
+      var element = document.getElementById(id);
+      if (element) element.textContent = copy[id];
+    });
+    var name = document.getElementById("experiment-participant-name");
+    if (name) name.placeholder = txt("홍길동", "Your full name");
+  }
+
   function init() {
+    localizeGateCopy();
     if (!isExperimentMode()) {
       var closed = document.getElementById("experiment-closed");
       var gate = document.getElementById("experiment-gate");

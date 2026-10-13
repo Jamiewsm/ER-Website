@@ -326,7 +326,11 @@
     return core === 9 ? 1 : core + 1;
   }
 
-  function makeWingNote(core, wing) {
+  function makeWingNote(core, wing, lang) {
+    if (lang === 'en') {
+      if (!wing) return 'The responses do not yet distinguish which adjacent wing is closer; further reflection is needed.';
+      return `Alongside Type ${core}'s core motivation, Type ${wing} tendencies may also appear. Notice how both are expressed in everyday life.`;
+    }
     if (!wing) return "두 날개 중 어느 쪽이 더 가까운지는 추가로 살펴볼 필요가 있습니다.";
     return `${core}번의 핵심 동기와 함께 ${wing}번의 성향도 나타날 수 있습니다. 일상에서 두 성향이 어떻게 드러나는지 살펴보세요.`;
   }
@@ -670,7 +674,762 @@
     }
   };
 
-  function makeFallbackSynthesis(c, inst, wing) {
+  // Keep English interpretation content alongside the Korean source so every
+  // deployed diagnostic bundle includes both languages at the same depth.
+  const EN_INSTINCTS = {
+    sp: {
+      code: 'sp', label: 'Self-preservation',
+      title: 'An instinct attentive to stability and sustainability in everyday life',
+      lens: 'You feel more at ease when your body, time, finances, energy, and daily rhythm are supported.',
+      risk: 'When protecting stability takes over, you may control life too tightly or carry exhaustion alone.',
+      practice: 'Reduce one demand in today\'s schedule and acknowledge a signal your body has already been sending.'
+    },
+    so: {
+      code: 'so', label: 'Social',
+      title: 'An instinct attentive to belonging, roles, and the flow of relationships',
+      lens: 'You readily notice your place and responsibilities within the communities you belong to.',
+      risk: 'When identity becomes tied to a role or contribution, your own needs and limits may be postponed.',
+      practice: 'Try setting down one responsibility today and notice whether connection can remain without that role.'
+    },
+    sx: {
+      code: 'sx', label: 'Sexual / One-to-one',
+      title: 'An instinct drawn to vitality through attraction and deep engagement',
+      lens: 'One vivid connection or focused interest may energize you more than many moderate experiences.',
+      risk: 'When only intense experiences feel alive, everyday care and steady responsibilities can seem less valuable.',
+      practice: 'Express your care in a way that respects the other person\'s limits and sustains connection over time.'
+    }
+  };
+
+  const EN_CORE = {
+    1: {
+      name: 'Reformer',
+      hero: 'Learning to hold principles with room to breathe',
+      definition: 'This pattern is strongly oriented toward responsibility, sound principles, and correcting what seems wrong.',
+      motivation: 'To live as a good and responsible person',
+      fear: 'Being exposed as wrong, flawed, or irresponsible',
+      cycle: ['Notice a standard being missed', 'Feel responsible for putting it right', 'Check and control more strictly', 'Order returns briefly while tension remains', 'Raise expectations for yourself and others again'],
+      formation: 'At some point you may have learned that getting things right and avoiding mistakes made life safer. This strategy can develop responsibility, but when it becomes rigid, the voice of evaluation can drown out acceptance of who you are.',
+      falseSelf: ['Feeling that love depends on meeting your standards', 'Suppressing emotion to maintain the correct attitude', 'Holding on to other people\'s shortcomings'],
+      restoredSelf: ['Taking responsibility without needing to be perfect', 'Using standards to support people\'s lives', 'Speaking honestly about the sadness and hopes beneath anger'],
+      career: {
+        strength: ['You can be deeply trusted where accuracy, quality, and ethical responsibility matter.', 'Your ability to set standards and refine details helps work reach a dependable finish.'],
+        watch: ['A focus on details can obscure the bigger picture and deadlines; believing only you can do it properly can make delegation difficult.', 'When you are sure your approach is right, a colleague\'s different approach can easily seem wrong.'],
+        practice: ['Share work when it is sufficiently developed rather than waiting for perfection, then refine it through feedback.', 'When you want to correct something, distinguish an essential principle from a personal preference.', 'Acknowledge what went well aloud before suggesting an improvement so the conversation supports cooperation.']
+      },
+      relationship: {
+        strength: ['Keeping promises and remaining consistent brings a sense of security and trust.', 'You sincerely want the relationship to become healthier and more mature.'],
+        watch: ['The other person may feel evaluated before feeling loved; repeated small corrections can create distance.', 'Suppressing anger to maintain a proper attitude can make your true feelings emerge late and coldly.'],
+        practice: ['Before offering a correction, first express one thing you appreciate or think went well.', 'Speak early in the first person, such as "I felt uncomfortable about this," instead of holding it in.', 'Practice responding to a mistake with "That can happen" to reduce relational tension.']
+      },
+      parenting: {
+        strength: ['You naturally teach responsibility, honesty, and discernment between right and wrong.', 'Consistent standards and promises give a child a stable framework.'],
+        watch: ['High expectations can leave a child feeling never good enough or encourage hiding mistakes.', 'Wanting to raise a child well may often be expressed through reminders and correction.'],
+        practice: ['Praise effort and the motive behind it specifically rather than only grades or results.', 'Say "It is okay; that can happen" first after a mistake so your child experiences love that does not change.', 'Allow yourself to believe that you can be a good parent without being a perfect parent.']
+      },
+      stress: ['Your tone becomes cooler and small errors seem larger', 'Anger builds inside while you try to contain it outwardly'],
+      recovery: ['Pause before judging something as good or bad', 'Extend the same kindness to yourself when you make a mistake'],
+      roadmap: ['Ask what your standard is meant to serve', 'Pause the impulse to correct immediately', 'Choose a moment when love comes before being right', 'Practice letting an imperfect process unfold'],
+      prayer: 'Lord, help me open my hands to receive grace before tightening my grip on being right.',
+      declaration: 'I am loved before I am perfect, and that love helps me take responsibility again.',
+      programs: ['Type discovery consultation', 'Recovery coaching: 8 sessions', 'ER coach training']
+    },
+    2: {
+      name: 'Helper',
+      hero: 'Loved even before becoming someone others need',
+      definition: 'This pattern notices other people\'s needs and seeks warm, meaningful relationships.',
+      motivation: 'To feel loved and needed',
+      fear: 'Being unwanted, unnecessary, or abandoned',
+      cycle: ['Notice another person\'s needs quickly', 'Adapt and offer help first', 'Hope for gratitude and a special response', 'Feel hurt when the response is small', 'Give more or try to manage the relationship'],
+      formation: 'You may have learned early to read people\'s feelings and meet their needs as a way to receive love. That sensitivity is a gift, but when overused it can make your own needs difficult to express.',
+      falseSelf: ['Believing you must be needed to be loved', 'Waiting for others to notice what you have not asked for', 'Unspoken expectations and hurt beneath helping'],
+      restoredSelf: ['Knowing you are worthy of love before doing anything for someone', 'Finding courage to state your needs honestly', 'Loving freely without trying to direct another person'],
+      career: {
+        strength: ['You bring strengths to care, mediation, communication, and work that requires attention to people.', 'You can read a team\'s atmosphere and help people feel connected.'],
+        watch: ['A growing need for appreciation can make refusal difficult and lead to overwork.', 'Expecting others to recognize your effort can turn into resentment or burnout.'],
+        practice: ['Before accepting a request, say, "Let me check and get back to you."', 'Practice one intentional refusal this week and observe whether connection remains.', 'Write one sentence about what you need before helping someone else.']
+      },
+      relationship: {
+        strength: ['You are warm and devoted and notice another person\'s feelings carefully.', 'You help people close to you feel cared for and loved.'],
+        watch: ['The other person may sometimes feel pressured to be grateful.', 'Hurt may accumulate when you wait for someone to guess an unspoken need.'],
+        practice: ['Express a wish directly: "I would appreciate it if you could..."', 'Ask whether you are helping freely or mainly hoping for recognition.', 'Show what is in your heart before waiting for the other person to notice.']
+      },
+      parenting: {
+        strength: ['You respond warmly to a child\'s emotions and needs.', 'You can create a home where children feel emotionally safe.'],
+        watch: ['Strong devotion can leave a child feeling responsible for not disappointing you.', 'Hurt about a child\'s independence may be communicated as guilt.'],
+        practice: ['Leave one task for your child to do independently instead of doing everything.', 'Say, "You can follow your own path; I can be okay without you beside me."', 'Reserve time to care for yourself without expecting your child to repay your love.']
+      },
+      stress: ['Other people\'s reactions feel more important and hurt increases', 'When help is not received, you may control or push harder'],
+      recovery: ['State your own need in one sentence', 'Check your motives and limits before offering help'],
+      roadmap: ['Notice what you want', 'Name a need before someone asks', 'Move toward love without an exchange of favors', 'Practice both requests and refusals'],
+      prayer: 'Lord, help me serve freely from the love I have already received, rather than striving to earn love.',
+      declaration: 'I am loved as I am, even before I become someone others need.',
+      programs: ['Relationship pattern coaching', 'Recovery coaching: 8 sessions', 'ER coach training']
+    },
+    3: {
+      name: 'Achiever',
+      hero: 'Already enough before any achievement',
+      definition: 'This pattern adapts to goals and has a strong capacity to turn effort into results.',
+      motivation: 'To be recognized as capable and valuable',
+      fear: 'Being seen as a failure or as having no value',
+      cycle: ['Notice a situation where your value may be judged', 'Try to prove yourself through results', 'Set feelings aside and move efficiently', 'Gain recognition while feeling less connected inside', 'Seek a larger result to confirm your worth again'],
+      formation: 'Repeated experiences may have made performance and praise feel like the language of love. Competence is a gift, but overusing it can tie your sense of worth to results.',
+      falseSelf: ['Fearing you have no value unless you succeed', 'Adapting yourself to the image others expect', 'Hiding sadness and fatigue behind performance'],
+      restoredSelf: ['Knowing your value exists before your accomplishments', 'Being truthful about failure and vulnerability', 'Resting within the process rather than only after results'],
+      career: {
+        strength: ['You often excel at setting goals, taking action, and managing results.', 'You adapt quickly and can motivate people toward a shared purpose.'],
+        watch: ['You may see slower colleagues as inefficient or notice your own burnout late.', 'A focus on performance can obscure people\'s feelings and the meaning of the process.'],
+        practice: ['Put rest and relationships into your schedule as real commitments.', 'Before reporting a result, reflect on the experience of the people who worked with you.', 'Share something that went poorly with a person you trust.']
+      },
+      relationship: {
+        strength: ['You help people create practical changes and tangible outcomes.', 'You can encourage those close to you to grow and express their strengths.'],
+        watch: ['Someone close to you may need to be heard before receiving a solution.', 'Busyness and efficiency may leave the other person feeling that work comes first.'],
+        practice: ['Ask, "Would you like me to listen, or shall we look for a solution together?"', 'Protect time for a walk, meal, or conversation with no performance goal.', 'Let someone close to you see fatigue and vulnerability as well as your capable side.']
+      },
+      parenting: {
+        strength: ['You help children develop purpose, perseverance, and a willingness to try.', 'You recognize potential and encourage its development.'],
+        watch: ['A child may connect achievement with love and feel they must succeed to be accepted.', 'Time together can become another opportunity to check performance.'],
+        practice: ['Say, "I am happy you are here," regardless of grades or results.', 'Offer warmth after an attempt or failure as well as after a win.', 'Set aside your phone and work so you can be fully present together.']
+      },
+      stress: ['Even rest feels like preparation for the next result', 'Feelings become muted and relationships begin to feel like tasks'],
+      recovery: ['Make deliberate time without an achievement goal', 'Tell someone close to you about disappointment and fatigue'],
+      roadmap: ['Notice what you are trying to prove', 'Pause the urge to compensate immediately with performance', 'Acknowledge your worth apart from results', 'Repeat restful time and honest conversations'],
+      prayer: 'Lord, deepen my trust that I am loved as I am, beyond the work I have accomplished.',
+      declaration: 'I am already loved and enough before I achieve anything.',
+      programs: ['Type discovery consultation', 'Recovery coaching: 8 sessions', 'Relationship pattern coaching']
+    },
+    4: {
+      name: 'Individualist',
+      hero: 'Discovering that love remains even in a sense of lack',
+      definition: 'This pattern is attentive to emotional depth, personal meaning, and a distinct sense of identity.',
+      motivation: 'To be understood as your authentic self and experience meaningful uniqueness',
+      fear: 'Remaining ordinary, deficient, or without a meaningful identity',
+      cycle: ['Notice what seems missing or lost', 'Move further into your emotions', 'Search for a personal meaning and identity', 'Feel briefly authentic while becoming more isolated', 'Return to comparison and a sense of lack'],
+      formation: 'A sense of not being fully understood or being compared with others may have stayed with you. Depth is a gift, but overusing it can make a sense of deficiency part of your identity.',
+      falseSelf: ['Believing you are deficient or uniquely wounded', 'Treating feelings as the whole truth', 'Discounting ordinary love while longing for an ideal'],
+      restoredSelf: ['Seeing what is already present even amid a sense of lack', 'Respecting feelings without becoming confined by them', 'Finding meaning in everyday life'],
+      career: {
+        strength: ['You bring originality to creativity, interpretation, storytelling, and work requiring deep empathy.', 'You notice subtle feelings and meanings others may pass over.'],
+        watch: ['Waves of emotion can unsettle concentration and the rhythm of work.', 'Thinking your work is not special enough can delay starting or finishing it.'],
+        practice: ['Create a routine of beginning at an agreed time even without inspiration.', 'Use one completed step today as a measure of progress.', 'When comparison appears, write three strengths you already have.']
+      },
+      relationship: {
+        strength: ['You meet hidden feelings and wounds with depth and sincerity.', 'You bring truthfulness, beauty, and emotional depth to relationships.'],
+        watch: ['The other person may feel that even their closeness never quite reaches you.', 'Comparing an ideal with reality can obscure the value of the relationship you have.'],
+        practice: ['Pause before reacting to hurt and distinguish what happened from what you feel.', 'Thank the other person aloud for an ordinary act of care.', 'Explain your feelings calmly rather than expecting someone to understand them completely.']
+      },
+      parenting: {
+        strength: ['You deeply respect a child\'s feelings and individuality.', 'You offer rich support for a child\'s self-expression.'],
+        watch: ['Changes in your own emotions may affect your child\'s sense of steadiness.', 'Wishing for exceptional qualities may make an ordinary day feel insufficient.'],
+        practice: ['When emotions become intense, settle yourself before responding to your child.', 'Tell your child that an ordinary day can be good enough.', 'Offer acceptance of who your child is before asking for special achievement or expression.']
+      },
+      stress: ['Comparison and shame grow while you retreat inward', 'Only intense emotions seem real'],
+      recovery: ['Name the feeling, then return to your body and present circumstances', 'Write down three things already given to you'],
+      roadmap: ['Notice the language of deficiency', 'Care for your body before sinking further into emotion', 'Turn your attention toward gratitude', 'Practice steady participation in ordinary life'],
+      prayer: 'Lord, help me live today within the love already given to me, rather than remain bound to what I do not have.',
+      declaration: 'I am not defined by deficiency; I am a distinct person formed within deep love.',
+      programs: ['Type discovery consultation', 'Recovery coaching: 8 sessions', 'ER coach training']
+    },
+    5: {
+      name: 'Investigator',
+      hero: 'Learning the joy of participation beyond time alone',
+      definition: 'This pattern observes, seeks understanding, and carefully preserves energy and personal space.',
+      motivation: 'To understand enough and be prepared to engage with the world',
+      fear: 'Being overwhelmed by demands, incapable, or depleted',
+      cycle: ['Experience incoming demands and stimulation', 'Withdraw to gain distance and information', 'Wait to act until you have analyzed and understood', 'Feel safer while participation and connection diminish', 'Withdraw again because more preparation seems necessary'],
+      formation: 'Protecting your own space and energy may have been especially important at some point. Insight is a gift, but overusing distance can leave you observing life more than participating in it.',
+      falseSelf: ['Believing you must know enough before stepping out', 'Reducing needs and feelings to stay safe', 'Experiencing relationship demands as an intrusion'],
+      restoredSelf: ['Trusting that you can participate without complete preparation', 'Enjoying the sharing of knowledge with people', 'Experiencing renewed energy through small connections'],
+      career: {
+        strength: ['You bring strengths to analysis, research, systems design, and work requiring deep expertise.', 'You can identify the central issue without being swept away by immediate emotion.'],
+        watch: ['Waiting for complete understanding can delay action and collaboration.', 'Working alone can make it easy to miss opportunities to ask for help or share progress.'],
+        practice: ['Take a first step when you understand enough, rather than waiting to know everything.', 'Share brief progress updates regularly to reduce distance in collaboration.', 'Offer an initial thought in a meeting before it is fully polished.']
+      },
+      relationship: {
+        strength: ['You offer thoughtful conversation, calm judgment, and dependable trust.', 'You respect another person\'s independence without making excessive demands.'],
+        watch: ['Someone may experience you as emotionally distant or assume you have closed your heart.', 'Repeatedly postponing plans to conserve energy can gradually create distance.'],
+        practice: ['Express a simple feeling when it happens, such as "I feel tired right now."', 'Explain your need for time alone in advance so withdrawal is easier to understand.', 'Spend time beside the other person and remember that presence can communicate love.']
+      },
+      parenting: {
+        strength: ['You support a child\'s thinking, curiosity, and independence.', 'Your measured approach can provide a steady atmosphere.'],
+        watch: ['Limited emotional expression can make your love hard for a child to recognize.', 'A child\'s needs may feel overwhelming when your own space is interrupted.'],
+        practice: ['Increase affection through a hug or shared play as well as explanation.', 'Say "I love you" often and clearly.', 'Plan restorative time before your energy is depleted so you can be present with your child.']
+      },
+      stress: ['You avoid people and demands and retreat into information', 'A small request can feel like a major intrusion'],
+      recovery: ['Participate in one small way before your explanation is complete', 'State a feeling or need briefly'],
+      roadmap: ['Notice a demand you are avoiding', 'Pause the urge for more preparation', 'Move from observing to participating', 'Repeat small acts of sharing and working together'],
+      prayer: 'Lord, help me enter today\'s relationships with trust, without waiting until I understand everything.',
+      declaration: 'I can share the wisdom I have received with love, rather than hide in fear of depletion.',
+      programs: ['Type discovery consultation', 'Recovery coaching: 8 sessions', 'Relationship pattern coaching']
+    },
+    6: {
+      name: 'Loyalist',
+      hero: 'Learning trust within uncertainty',
+      definition: 'This pattern is attentive to risk and seeks reliable support, guidance, and foundations.',
+      motivation: 'To feel secure within dependable guidance and support',
+      fear: 'Being exposed to danger without anyone or anything to rely on',
+      cycle: ['Notice an uncertain variable', 'Check whether a risk has been missed', 'Test authorities, systems, or people', 'Feel briefly reassured before doubt returns', 'Try to manage anxiety with more checking and preparation'],
+      formation: 'You may have learned to seek safety when dependable guidance was uncertain or prediction mattered. Carefulness is a gift, but overusing it can strengthen anxiety more than trust.',
+      falseSelf: ['Believing you can act only when everything is certain', 'Repeatedly testing people and systems', 'Preparing excessively in an effort to control anxiety'],
+      restoredSelf: ['Taking a step in trust while uncertainty remains', 'Recognizing risk without allowing it to rule', 'Speaking honestly about doubt and checking it together'],
+      career: {
+        strength: ['You identify risks, prepare carefully, and help teams develop reliable plans.', 'Your loyalty and responsibility can support people through difficult work.'],
+        watch: ['Seeing worst-case scenarios first can delay decisions or cause opportunities to be missed.', 'Frequent questions and checks can communicate your anxiety to the people around you.'],
+        practice: ['When postponing a decision, ask whether more information is needed or whether you are afraid.', 'Write the worst-case scenario alongside its realistic likelihood and a way to respond.', 'Share anxiety with a trusted person before it grows further in private.']
+      },
+      relationship: {
+        strength: ['You are loyal, attentive, and willing to stand beside someone in difficulty.', 'You notice what could threaten a relationship and want to protect it.'],
+        watch: ['The other person may feel continually tested or doubted.', 'Anxiety may increase checking questions or lead you to close your heart and create distance.'],
+        practice: ['Before presenting a suspicion as fact, ask whether current anxiety is influencing it.', 'Express the need for reassurance honestly: "I have been feeling anxious lately."', 'Recall and acknowledge one experience of received trust instead of testing the other person\'s love.']
+      },
+      parenting: {
+        strength: ['You care deeply about a child\'s safety and provide dependable preparation.', 'You teach responsibility and awareness of risks.'],
+        watch: ['Frequent warnings can make a child feel the world is more dangerous than it is.', 'Overprotection may reduce opportunities for a child to practice confidence.'],
+        practice: ['Alongside a concern, offer reassurance such as "It is okay; you can try."', 'Allow your child to make a choice and experience a manageable failure within safe limits.', 'Let your child see you settle your own anxiety; that example itself can provide security.']
+      },
+      stress: ['Checking, questions, and worst-case scenarios increase', 'You cling to authority or oppose it strongly'],
+      recovery: ['Distinguish what needs checking from what can be entrusted', 'Tell a trusted person about your anxiety and reflect on it together'],
+      roadmap: ['Name your anxiety', 'Pause the urge to check once more', 'Move from control toward trust', 'Repeat small decisions and acts of entrusting'],
+      prayer: 'Lord, help me hold on to Your unchanging love instead of trying to hold every variable.',
+      declaration: 'I can take a step within trust without first securing perfect safety.',
+      programs: ['Type discovery consultation', 'Relationship pattern coaching', 'Career and calling coaching']
+    },
+    7: {
+      name: 'Enthusiast',
+      hero: 'Enjoying new possibilities while valuing present relationships',
+      definition: 'This pattern finds energy in new possibilities, enjoyable experiences, and an open range of choices.',
+      motivation: 'To stay free, fulfilled, and open to meaningful possibilities',
+      fear: 'Being trapped in frustration, heavy emotions, or a loss of options',
+      cycle: ['Notice uncomfortable feelings or limits', 'Turn toward new possibilities and plans', 'Avoid heaviness through enjoyment and speed', 'Feel briefly renewed while deeper feelings are postponed', 'Seek stronger stimulation when emptiness appears'],
+      formation: 'There may have been a time when remaining with heavy feelings was difficult to bear. Seeing possibilities is a gift, but overusing it can lead to avoiding the present.',
+      falseSelf: ['Fearing that stopping will leave you trapped or deprived', 'Moving to another stimulus before experiencing pain', 'Treating responsibility and limits as enemies of freedom'],
+      restoredSelf: ['Staying with small pleasures in the present', 'Trusting that you can move through pain', 'Using freedom with love and responsibility'],
+      career: {
+        strength: ['You generate ideas, see possibilities, and energize people around new directions.', 'You connect different perspectives and adapt with optimism.'],
+        watch: ['Completion and repeated tasks may suffer when interest fades.', 'Keeping options open can scatter attention and reduce depth.'],
+        practice: ['Make a rule of completing one existing task before beginning something new.', 'Remember that tolerating a dull phase is also a skill, and keep a small deadline through to the end.', 'Set a time frame to focus on one choice rather than expanding the options indefinitely.']
+      },
+      relationship: {
+        strength: ['You bring vitality, playfulness, and a hopeful sense of possibility.', 'You help people see more than the difficulty in front of them.'],
+        watch: ['Optimism may arrive before the other person has had space for pain.', 'Changing direction quickly can leave an important conversation unfinished.'],
+        practice: ['Stay beside someone who is struggling and listen through without immediately offering a solution or a positive interpretation.', 'When discomfort appears, remain with the question "What am I feeling right now?" before moving elsewhere.', 'Practice being faithful to ordinary, repeated moments in the relationship.']
+      },
+      parenting: {
+        strength: ['You encourage curiosity, play, and a willingness to explore.', 'You offer children a sense of hope and new possibility.'],
+        watch: ['Quickly brightening a child\'s sadness or fear can encourage suppressing those feelings.', 'Inconsistent rules and unfinished activities can make limits difficult to learn.'],
+        practice: ['Acknowledge a child\'s sadness or anger fully before saying that things will get better.', 'Keep promised rules and routines even when they are not enjoyable so your child experiences a stable framework.', 'Model finishing an activity you have started together.']
+      },
+      stress: ['Plans multiply while your attention becomes more scattered', 'Restrictions bring greater impatience and irritation'],
+      recovery: ['Acknowledge your present feelings before adding a new plan', 'Practice finishing one small thing all the way through'],
+      roadmap: ['Notice the feeling you are avoiding', 'Pause the urge to change direction immediately', 'Move from stimulation toward the fullness of the present', 'Repeat small completions and deep conversations'],
+      prayer: 'Lord, help me remain in the moment You have given today, rather than keep seeking more possibilities.',
+      declaration: 'I can learn fullness in the present instead of running from every limit.',
+      programs: ['Results interpretation consultation', 'Enneagram foundations: 8 weeks', 'Type discovery consultation']
+    },
+    8: {
+      name: 'Challenger',
+      hero: 'Using your strength to protect the people who matter',
+      definition: 'This pattern acts directly, protects what matters, and resists being controlled or made vulnerable.',
+      motivation: 'To protect yourself and others and retain agency',
+      fear: 'Being powerless, harmed, or controlled',
+      cycle: ['Notice a threat, weakness, or loss of control', 'Take charge and move directly', 'Increase intensity to protect what matters', 'Regain influence while others become guarded', 'Feel you must become stronger to remain safe'],
+      formation: 'Being strong and taking control may have helped when vulnerability seemed unsafe. Strength is a gift, but overusing it can conceal tenderness and make receiving help difficult.',
+      falseSelf: ['Believing vulnerability will allow others to hurt you', 'Using intensity to secure safety and respect', 'Protecting others without revealing your own need'],
+      restoredSelf: ['Using strength without overpowering people', 'Letting trusted people see tenderness and need', 'Sharing responsibility and receiving support'],
+      career: {
+        strength: ['You make decisions, confront difficult issues, and act decisively.', 'You protect people and resources when leadership is needed.'],
+        watch: ['A strong pace and tone can discourage colleagues from offering another view.', 'Taking control of everything may hide the need to share responsibility.'],
+        practice: ['Pause to hear other opinions before pushing a decision forward.', 'Lower your voice one level when you want to speak strongly so your message can be heard more easily.', 'Begin with a question rather than an instruction to turn the same energy toward cooperation.']
+      },
+      relationship: {
+        strength: ['You offer loyalty, honesty, and active protection.', 'You are willing to face a difficult conversation rather than leave it hidden.'],
+        watch: ['The other person may feel instructed or controlled rather than respected.', 'Treating tender feelings as weakness can make affection and vulnerability difficult to show.'],
+        practice: ['Express one vulnerable feeling to someone close, such as "I am sorry" or "This is hard for me too."', 'Ask whether strength meant to protect is being experienced as pressure.', 'When you want to control something, practice trusting the other person with a small responsibility.']
+      },
+      parenting: {
+        strength: ['You help a child develop courage, independence, and a sense of protection.', 'You show that difficult situations can be faced directly.'],
+        watch: ['Intensity can make a child reluctant to express fear or disagreement.', 'Expecting strength may leave little space for a child\'s vulnerability.'],
+        practice: ['View a child\'s vulnerability as a signal to receive with care rather than a defect to fix.', 'Pause when angry and model expressing your heart through words rather than force.', 'Show honestly that a parent can be vulnerable and sorry too, so your child learns that vulnerability is safe.']
+      },
+      stress: ['Your voice becomes stronger and compromise becomes harder', 'Vulnerability and sadness are expressed as anger'],
+      recovery: ['Ask about the other person\'s fear before using your strength', 'Acknowledge one vulnerable feeling within yourself'],
+      roadmap: ['Notice what you want to protect', 'Pause the immediate impulse to take control', 'Turn strength toward loving protection', 'Repeat speaking truth with gentleness'],
+      prayer: 'Lord, let my strength protect and support people rather than press them down.',
+      declaration: 'I can entrust my strength within love without needing to be strong all the time to be safe.',
+      programs: ['Relationship pattern coaching', 'Recovery coaching: 8 sessions', 'Leadership and calling coaching']
+    },
+    9: {
+      name: 'Peacemaker',
+      hero: 'Preserving peace while expressing your own thoughts',
+      definition: 'This pattern reduces tension, understands different perspectives, and seeks steady connection.',
+      motivation: 'To maintain peace, connection, and a stable sense of belonging',
+      fear: 'Losing connection through conflict or disruption',
+      cycle: ['Notice tension or differing wishes', 'Adapt to keep the situation calm', 'Set aside your own preference', 'Appear okay while decisions and feelings remain unresolved', 'Grow less engaged or quietly resistant'],
+      formation: 'Keeping things calm and adapting may have helped you remain connected. Peace is a gift, but overusing adaptation can make your own wishes difficult to hear.',
+      falseSelf: ['Believing your preference matters less than keeping peace', 'Postponing important choices and difficult conversations', 'Dulling feelings so tension seems smaller'],
+      restoredSelf: ['Recognizing that your presence and preferences matter', 'Remaining connected while speaking a different opinion', 'Taking a small, clear step toward what you want'],
+      career: {
+        strength: ['You calm tension, see several perspectives, and support collaboration.', 'Your steady presence helps a team work without unnecessary conflict.'],
+        watch: ['Postponing priorities and difficult conversations can cause work to stall.', 'Adapting to everyone can obscure your own opinions and contributions.'],
+        practice: ['Express a clear preference at least once in a meeting, such as "I prefer this approach."', 'Handle an important task you want to postpone as the first task of the day.', 'Share progress and results actively rather than leaving your contribution unseen.']
+      },
+      relationship: {
+        strength: ['You provide warmth, patience, and room for different perspectives.', 'People can feel accepted and less pressured beside you.'],
+        watch: ['The other person may learn your true preference only after a long delay.', 'Avoiding disagreement can leave both people uncertain about what is real.'],
+        practice: ['Begin with a small preference, saying "I prefer this" instead of "Anything is fine."', 'Address something uncomfortable briefly while it is still small instead of covering it over.', 'Before adapting to another person, first ask what you want right now.']
+      },
+      parenting: {
+        strength: ['You can offer a calm, accepting atmosphere for a child.', 'You respect individuality and avoid unnecessary pressure.'],
+        watch: ['Avoiding conflict can postpone needed discipline and boundaries.', 'Unclear parental feelings and opinions can make it difficult for a child to sense direction.'],
+        practice: ['Explain a necessary limit clearly and consistently when it arises.', 'Say "This is what I think" so your child can see your position.', 'Help your child experience that love remains after working through a disagreement.']
+      },
+      stress: ['Energy falls and everything except urgent tasks is delayed', 'You say things are fine while resentment builds inside'],
+      recovery: ['State clearly one thing you want today', 'Address a small disagreement briefly rather than avoiding it'],
+      roadmap: ['Notice a moment when your own presence disappears', 'Pause the urge to postpone', 'Work through conflict together instead of covering it over', 'Repeat small decisions and expressions of boundaries'],
+      prayer: 'Lord, help me respond with my own voice within love rather than remain silent just to keep peace.',
+      declaration: 'I am loved even when I am clearly present; I do not need to disappear to preserve peace.',
+      programs: ['Type discovery consultation', 'Relationship pattern coaching', 'Career and calling coaching']
+    }
+  };
+
+  const EN_CORE_SYNTHESIS = {
+    4: {
+      title: 'Returning to the love already given rather than making lack your identity',
+      paragraph: 'A Type 4 result suggests a strong orientation toward emotional depth and a distinct identity. At its best, this pattern notices subtle feelings others miss. Under pressure, attention can become fixed on what is absent or insufficient, making ordinary care and help harder to receive.',
+      protects: 'Personal truthfulness, uniqueness, and emotional depth that is not easily explained',
+      overuses: 'Comparison, the language of lack, and spending a long time inside difficult feelings',
+      closePeople: 'They may experience your sensitivity and depth while feeling that their efforts to reach you never quite feel sufficient.',
+      counseling: 'Explore whether a sense of lack points to a present need or has become a familiar way of describing yourself.',
+      instinctSignal: 'Instinct scores suggest the life situations where concerns about lack and uniqueness appear first.',
+      wingSignal: 'Wing scores offer a supporting clue about whether depth is analyzed inwardly or expressed through relationships and action.',
+      closeTypeSignal: 'Nearby types help a conversation distinguish overlapping needs for meaning, withdrawal, achievement, and stability.'
+    },
+    7: {
+      title: 'Energized by possibility and learning to stay with important feelings',
+      paragraph: 'A Type 7 result suggests that new possibilities and changes of direction readily renew your vitality. At its best, this pattern brings energy and a wider view to others. When difficult realities or heavy emotions last, you may move to another option or plan before fully experiencing them.',
+      protects: 'Freedom from confinement, vitality, and open choices',
+      overuses: 'Speed, optimism, and new plans; sadness, limits, and completion may be postponed',
+      closePeople: 'They may feel energized with you while finding it difficult to share a painful story all the way through.',
+      counseling: 'Notice the moment when an uncomfortable feeling is quickly turned into a possibility, and explore staying present in a relationship.',
+      instinctSignal: 'Instinct scores suggest where the search for freedom and vitality appears first.',
+      wingSignal: 'Wing scores offer a supporting clue about whether possibilities are connected more gently or pursued more directly.',
+      closeTypeSignal: 'Nearby types help distinguish avoidance through enjoyment, the need for agency, and the need for security.'
+    },
+    9: {
+      title: 'Creating calm while learning a peace where your own presence remains',
+      paragraph: 'A Type 9 result suggests a strong ability to reduce tension and soften the flow of relationships. At its best, this pattern creates a safe atmosphere where people can breathe. Under prolonged pressure, your own opinions and wishes may become less clear while decisions are delayed and things appear okay on the surface.',
+      protects: 'Relational peace, connection, and a stable sense of belonging',
+      overuses: 'Silence, delay, and numbing; reducing tension instead of addressing it directly',
+      closePeople: 'They may feel comfortable with you but learn your true opinion late or experience unexpected stubbornness.',
+      counseling: 'Explore naming small preferences, tolerating disagreement, and distinguishing avoidance from consideration.',
+      instinctSignal: 'Instinct scores suggest whether preserving calm appears first in daily life, intimacy, or community.',
+      wingSignal: 'Wing scores offer a supporting clue about whether peace is maintained through standards or protective strength.',
+      closeTypeSignal: 'Nearby types help clarify overlapping reactions involving avoidance, anxiety, agency, and responsibility.'
+    }
+  };
+
+  const EN_SUBTYPE_SYNTHESIS = {
+    sp_1: {
+      title: 'Building a responsible daily life while making room to breathe',
+      paragraph: 'Self-preservation Type 1 seeks stability through the body, time, money, and an orderly daily life. At its best, this brings dependable responsibility and careful quality. Under pressure, even rest may remain tense, and a small disruption to routine can become self-criticism.',
+      protects: 'An orderly life, responsibility, and trustworthy standards',
+      overuses: 'Checking, worry, and self-pressure; noticing what needs fixing even when rest is needed',
+      closePeople: 'They may see you as conscientious and reliable while experiencing everyday standards as evaluation.',
+      counseling: 'Explore the boundary between responsibility and anxious self-control.',
+      instinctSignal: 'When self-preservation is prominent, Type 1 standards tend to appear first in daily management and physical stability.'
+    },
+    so_1: {
+      title: 'Setting community standards while keeping people at the center',
+      paragraph: 'Social Type 1 strongly wants a team, family, or community to move in a sound direction. At its best, this establishes fairness and responsibility. Under pressure, dwelling on shortcomings and correcting the atmosphere can make relationships rigid.',
+      protects: 'Fairness, community trust, and standards that apply to everyone',
+      overuses: 'Criticism, pressure to be exemplary, and appeals to principle; different approaches can seem inadequate',
+      closePeople: 'They may trust your principles while feeling evaluated or in need of correction beside you.',
+      counseling: 'Distinguish standards that support people from standards that increase relational tension.',
+      instinctSignal: 'When the social instinct is prominent, Type 1 standards tend to appear first in roles, responsibility, and community order.'
+    },
+    sx_1: {
+      title: 'Protecting loved ones and ideals without letting correction replace love',
+      paragraph: 'Sexual / One-to-one Type 1 strongly wants a close person or important cause to become more truthful and good. At its best, this creates deep commitment and focused change. Under pressure, caring may be expressed as forceful correction and disappointment.',
+      protects: 'Truth in close relationships, ideals, and clarity you do not want to compromise',
+      overuses: 'Forceful correction, disappointment, and high relational expectations; emotional intensity rises easily',
+      closePeople: 'They may recognize your sincerity and passion while feeling that closeness brings stricter treatment.',
+      counseling: 'Explore the love, fear, and anger beneath the wish to change someone.',
+      instinctSignal: 'When the one-to-one instinct is prominent, Type 1 standards tend to appear first in close relationships and strong attraction.'
+    },
+    sp_2: {
+      title: 'Creating safety through gentle care and learning to ask directly',
+      paragraph: 'Self-preservation Type 2 tends to care for close people warmly and without appearing demanding. At its best, this brings comfortable care and security in close relationships. Under pressure, waiting to be noticed instead of asking directly may allow hurt to build.',
+      protects: 'Security with close people, the wish to receive care, and comfortable connection',
+      overuses: 'Indirect expectations, waiting to be cared for, and hurt; direct requests arrive late',
+      closePeople: 'They may feel your warmth while finding it difficult to know exactly what you want.',
+      counseling: 'Separate the wish to offer help from the wish to receive it.',
+      instinctSignal: 'When self-preservation is prominent, the Type 2 wish for love tends to appear through stable daily life and care from close people.'
+    },
+    so_2: {
+      title: 'Becoming important to others while receiving love beyond your role',
+      paragraph: 'Social Type 2 connects people and creates influence within relationships and community. At its best, this brings warm leadership and service. Under pressure, seeking love through roles and contributions can push personal needs into the background.',
+      protects: 'Relational meaning, influence, and the feeling of being needed',
+      overuses: 'Excessive responsibility, expectations of recognition, and managing relationships; rest outside a role becomes difficult',
+      closePeople: 'They may appreciate your care while sometimes feeling obliged to be grateful.',
+      counseling: 'Explore the boundaries between service and recognition, influence and the wish for love.',
+      instinctSignal: 'When the social instinct is prominent, the Type 2 wish to be needed tends to appear first in roles and relational networks.'
+    },
+    sx_2: {
+      title: 'Drawing close through attraction and devotion while allowing love to be free',
+      paragraph: 'Sexual / One-to-one Type 2 may feel strongly drawn to a particular person and want to be special to them. At its best, this offers intense affection and devotion. Under pressure, emotional intensity and personal attraction may be overused to secure love.',
+      protects: 'Special intimacy, the feeling of being chosen, and a strong affectionate bond',
+      overuses: 'Emotional pressure, attraction, and giving with expectations; love can become something to manage',
+      closePeople: 'They may feel your devotion while sometimes becoming emotionally overwhelmed by the relationship.',
+      counseling: 'Explore expressing the need for love directly while respecting the other person\'s freedom.',
+      instinctSignal: 'When the one-to-one instinct is prominent, the Type 2 need for love tends to appear first in a specific relationship and strong attraction.'
+    },
+    sp_3: {
+      title: 'Earning trust through steady action while knowing rest does not reduce your worth',
+      paragraph: 'Self-preservation Type 3 values practical results, stability, and reliability as much as visible recognition. At its best, this produces steady and capable action. Under pressure, even rest can be measured by productivity, and fatigue may be recognized late.',
+      protects: 'Competence, practical stability, and reliable execution',
+      overuses: 'Overwork, efficiency, and self-management; stopping can feel like falling behind',
+      closePeople: 'They may see you as dependable and practical while feeling that work comes before feelings and rest.',
+      counseling: 'Separate stability gained through achievement from the value of your existence itself.',
+      instinctSignal: 'When self-preservation is prominent, Type 3 achievement tends to appear first in daily security and practical results.'
+    },
+    so_3: {
+      title: 'Creating influence through achievement while finding truth beyond an image',
+      paragraph: 'Social Type 3 quickly reads the significance of visible position, role, and performance. At its best, this gives a team direction and motivation. Under pressure, appearances and results may take priority over real feelings, delaying awareness of inner fatigue.',
+      protects: 'Reputation, influence, and an image of competence',
+      overuses: 'Comparison, managing your image, and performance pressure; vulnerability becomes harder to show',
+      closePeople: 'They may find you engaging and motivating while feeling that a role comes before your real heart.',
+      counseling: 'Explore the feelings and identity that remain when achievement is set down.',
+      instinctSignal: 'When the social instinct is prominent, Type 3 achievement tends to appear first in evaluation, roles, and influence.'
+    },
+    sx_3: {
+      title: 'Helping a loved one shine while stepping beyond a tailored image',
+      paragraph: 'Sexual / One-to-one Type 3 wants to be loved as attractive and capable within a particular relationship. At its best, this helps a close person grow and shine. Under pressure, adapting to the image that person wants can conceal real fatigue and needs.',
+      protects: 'A lovable image, attractiveness, and competence recognized by someone close',
+      overuses: 'Tailored self-expression, managing attraction, and hiding feelings; real wishes may be expressed late',
+      closePeople: 'They may receive encouragement and energy while seeing an impressive image before your real feelings.',
+      counseling: 'Explore the difference between the self presented to earn love and what you actually feel.',
+      instinctSignal: 'When the one-to-one instinct is prominent, Type 3 achievement tends to appear first in attraction and a close person\'s reactions.'
+    },
+    sp_4: {
+      title: 'Quietly enduring pain while returning to the body and everyday life',
+      paragraph: 'Self-preservation Type 4 often preserves depth by enduring hurt and lack privately. At its best, this brings mature perseverance and sensitive insight. Under pressure, enduring alone can delay asking for help, caring for the body, and receiving ordinary stability.',
+      protects: 'Inner uniqueness, deep feelings kept private, and experiences that are hard to explain',
+      overuses: 'Endurance, comparison, and coping alone; requests for help arrive late',
+      closePeople: 'They may recognize your depth and sensitivity without knowing how much you are hurting.',
+      counseling: 'Notice when endurance becomes a defense that obstructs recovery.',
+      instinctSignal: 'When self-preservation is prominent, the Type 4 sense of lack tends to appear first around the body, energy, and daily stability.'
+    },
+    so_4: {
+      title: 'Longing for real belonging amid comparison and shame',
+      paragraph: 'Social Type 4 is sensitive to where you belong among people and what seems missing in you. At its best, this deeply understands exclusion and loneliness. Under pressure, comparison and shame can make surrounding affection and acceptance harder to recognize.',
+      protects: 'Authentic belonging, personal meaning, and the wish to be understood',
+      overuses: 'Comparison, shame, and the language of lack; feeling left out persists',
+      closePeople: 'They may feel deeply understood while also feeling that being together never quite fills the gap.',
+      counseling: 'Distinguish present loneliness from a sense of deficiency created by comparison.',
+      instinctSignal: 'When the social instinct is prominent, the Type 4 sense of lack tends to appear first in belonging, comparison, and relational position.'
+    },
+    sx_4: {
+      title: 'Holding emotional truth without turning love into competition',
+      paragraph: 'Sexual / One-to-one Type 4 experiences vivid emotional intensity within particular relationships and desires. At its best, this brings authenticity and creativity. Under pressure, jealousy, competition, and forceful expression may become ways to prove both hurt and love.',
+      protects: 'Intense authenticity, a special connection, and a self that cannot easily be replaced',
+      overuses: 'Jealousy, comparison, and emotional intensity; love can become a struggle for proof rather than safety',
+      closePeople: 'They may feel your intensity and truthfulness while being drawn into powerful emotional waves.',
+      counseling: 'Explore the actual needs and desire for security beneath jealousy and hurt.',
+      instinctSignal: 'When the one-to-one instinct is prominent, the Type 4 sense of lack tends to appear first in particular relationships and strong attraction.'
+    },
+    sp_5: {
+      title: 'Protecting space and energy while restoring connection through small participation',
+      paragraph: 'Self-preservation Type 5 places great value on boundaries around time, space, and energy. At its best, this supports concentration and deep expertise. Under pressure, withdrawing from demands into an ever-smaller space can delay real relational participation.',
+      protects: 'Personal space, energy, and safety from depletion',
+      overuses: 'Withdrawal, reducing needs, and minimizing demands; even needed connection can feel burdensome',
+      closePeople: 'They may experience your calm and depth while finding your inner life and daily world difficult to enter.',
+      counseling: 'Distinguish conserving energy from avoiding relationships and choose small steps of participation.',
+      instinctSignal: 'When self-preservation is prominent, Type 5 distancing tends to appear first around space, the body, and everyday energy.'
+    },
+    so_5: {
+      title: 'Belonging through knowledge and ideals while building actual connection with people',
+      paragraph: 'Social Type 5 seeks meaningful community through expertise, principles, and high standards. At its best, this offers deep insight and clear criteria. Under pressure, staying in a world of concepts can displace attention to the wishes of people close to you.',
+      protects: 'Expertise, meaningful standards, and a deep sense of belonging',
+      overuses: 'Distant observation, explaining feelings through concepts, and intellectual superiority; emotional needs are noticed late',
+      closePeople: 'They may value your insight while feeling analyzed more than accompanied.',
+      counseling: 'Separate connecting through knowledge from experiencing real intimacy.',
+      instinctSignal: 'When the social instinct is prominent, Type 5 understanding tends to appear first in expertise, standards, and intellectual belonging.'
+    },
+    sx_5: {
+      title: 'Seeking a few deeply trusted connections while expressing more and testing less',
+      paragraph: 'Sexual / One-to-one Type 5 may want one deeply trustworthy person or shared world rather than many relationships. At its best, this offers private depth and faithfulness. Under pressure, opening your heart may be delayed by prolonged testing of whether someone is safe enough.',
+      protects: 'Deep trust, safe intimacy, and an inner world free from intrusion',
+      overuses: 'Testing, concealing inner feelings, and withdrawal; even a close person can be kept waiting outside',
+      closePeople: 'They may feel a special depth while struggling to know your feelings or experiencing a sudden closing of connection.',
+      counseling: 'Explore both waiting for trust and expressing your heart in small, manageable ways.',
+      instinctSignal: 'When the one-to-one instinct is prominent, Type 5 distancing tends to appear first in deep intimacy and testing trust.'
+    },
+    sp_6: {
+      title: 'Seeking warm security while learning trust beyond repeated checking',
+      paragraph: 'Self-preservation Type 6 seeks calm through safe people, familiar relationships, and warm surroundings. At its best, this provides faithful and attentive protection. Under pressure, repeated checking and reassurance may replace making a decision yourself.',
+      protects: 'Protection, stability, and dependable people and surroundings',
+      overuses: 'Checking, dependence, and worry; uncertainty returns even after reassurance',
+      closePeople: 'They may experience your loyalty and warmth while repeated checking feels burdensome or distrustful.',
+      counseling: 'Explore the safety of receiving support alongside the trust required to make a small choice yourself.',
+      instinctSignal: 'When self-preservation is prominent, Type 6 uncertainty tends to appear first in everyday safety and close protective relationships.'
+    },
+    so_6: {
+      title: 'Creating safety through rules and responsibility while learning trust beyond fixed guidance',
+      paragraph: 'Social Type 6 quickly checks what is right, who is responsible, and which standards should be followed. At its best, this supports faithful responsibility and team stability. Under pressure, rules and authority may be clung to too tightly or opposed with equal force.',
+      protects: 'Predictable standards, responsibility, and a dependable order',
+      overuses: 'Duty, verification, and rigid loyalty; anxiety grows when guidance becomes uncertain',
+      closePeople: 'They may see you as reliable while feeling continually asked to confirm standards and responsibility.',
+      counseling: 'Distinguish trust in guidance from control held in place by anxiety.',
+      instinctSignal: 'When the social instinct is prominent, Type 6 security tends to appear first through rules, authority, and shared responsibility.'
+    },
+    sx_6: {
+      title: 'Meeting anxiety with strength while naming the fear beneath defense',
+      paragraph: 'Sexual / One-to-one Type 6 may confront uncertainty more strongly or try to appear fearless. At its best, this expresses courage and loyalty. Under pressure, testing, opposition, and a forceful attitude can conceal the anxiety beneath them.',
+      protects: 'Safety, respect, and strength that resists being harmed',
+      overuses: 'Forcefulness, testing, and opposition; confrontation comes before acknowledging anxiety',
+      closePeople: 'They may experience your courage and loyalty while feeling tested or challenged within the relationship.',
+      counseling: 'Explore the fear and need for trust behind a forceful response.',
+      instinctSignal: 'When the one-to-one instinct is prominent, Type 6 uncertainty tends to appear first in close relationships and the balance of power.'
+    },
+    sp_7: {
+      title: 'Preparing resources and options while receiving enough in the present',
+      paragraph: 'Self-preservation Type 7 protects freedom through practical resources, networks, and future options as well as enjoyment. At its best, this creates realistic opportunity and vitality. Under pressure, multiplying plans and options can push present feelings and completion aside.',
+      protects: 'Resources, options, and freedom from a confined daily life',
+      overuses: 'Planning, networks, and securing options; difficult feelings are postponed until after the next event',
+      closePeople: 'They may experience your practicality and energy while the next plan takes priority over being together deeply.',
+      counseling: 'Distinguish the impulse to create more options from the feeling that needs attention now.',
+      instinctSignal: 'When self-preservation is prominent, Type 7 freedom tends to appear first through resources, everyday arrangements, and networks.'
+    },
+    so_7: {
+      title: 'Contributing hopeful ideals while honestly acknowledging your own wishes',
+      paragraph: 'Social Type 7 offers bright possibilities and ideals for people and community. At its best, this brings hope and generosity. Under pressure, personal wishes may be hidden behind noble reasons, or uncomfortable feelings quickly turned into a positive story.',
+      protects: 'An image of contributing, ideals, and the possibility that everyone can benefit',
+      overuses: 'Avoiding personal wants, appealing to hopeful causes, and quick positive reframing; real feelings appear late',
+      closePeople: 'They may receive hope while feeling that a difficult experience has been interpreted positively too quickly.',
+      counseling: 'Separate the wish to be seen as good from your actual needs and desires.',
+      instinctSignal: 'When the social instinct is prominent, Type 7 freedom tends to appear first through community ideals, roles, and contribution.'
+    },
+    sx_7: {
+      title: 'Engaging with what draws you while remaining attentive to a loved one\'s heart',
+      paragraph: 'Sexual / One-to-one Type 7 finds strong vitality in vivid attraction, immersion, and new possibilities. At its best, this gives a close person energy and courage. Under pressure, stronger stimulation and the next possibility may replace ordinary or difficult feelings.',
+      protects: 'Vitality, deep engagement, and freedom from confinement',
+      overuses: 'Intensity, optimism, and the next possibility; difficult relational conversations may be postponed',
+      closePeople: 'They may feel energized with you while sensing that painful stories are not heard all the way through.',
+      counseling: 'Explore attraction and avoidance alongside freedom and responsibility within relationships.',
+      instinctSignal: 'When the one-to-one instinct is prominent, Type 7 freedom tends to appear first in strong attraction and immersion.'
+    },
+    sp_8: {
+      title: 'Protecting daily life and family while learning to entrust things to others',
+      paragraph: 'Self-preservation Type 8 acts directly to protect resources, physical safety, family, and personal territory. At its best, this provides dependable protection and action. Under pressure, safety may seem to require controlling everything while the wish for comfort or support is hidden.',
+      protects: 'Autonomy, resources, and the safety of your people and personal territory',
+      overuses: 'Taking control, pushing, and independence; receiving help may feel like weakness',
+      closePeople: 'They may feel protected while also feeling controlled rather than accompanied.',
+      counseling: 'Explore the boundary between protective strength and a defensive need to control.',
+      instinctSignal: 'When self-preservation is prominent, Type 8 strength tends to appear first around resources, the body, and practical protection.'
+    },
+    so_8: {
+      title: 'Leading to protect people while keeping protection from becoming pressure',
+      paragraph: 'Social Type 8 seeks to protect vulnerable people and those you stand with, and to confront injustice in community. At its best, this expresses strong protection and loyalty. Under pressure, acting for everyone can become an increasingly forceful voice that leaves others tense.',
+      protects: 'Community, vulnerable people, loyalty, and justice',
+      overuses: 'Forceful leadership, pressure, and dividing people into sides; protection can feel like control',
+      closePeople: 'They may experience your loyalty and protection while finding disagreement difficult to voice.',
+      counseling: 'Distinguish a concern for justice from anger, and protection from control.',
+      instinctSignal: 'When the social instinct is prominent, Type 8 strength tends to appear first in community protection, loyalty, and roles.'
+    },
+    sx_8: {
+      title: 'Seeking a strong bond without turning love into control',
+      paragraph: 'Sexual / One-to-one Type 8 brings strong commitment, directness, and wholehearted energy to a close relationship. At its best, this offers deep protection and courage. Under pressure, fear of losing a loved one can intensify the grip on agency and control.',
+      protects: 'A chosen relationship, strong commitment, and freedom from being controlled',
+      overuses: 'Control, jealousy, and intensity; intimacy can become a contest of power',
+      closePeople: 'They may feel your intensity and protection while needing more room to breathe in the relationship.',
+      counseling: 'Explore strong love, the need for control, and fear of revealing vulnerability.',
+      instinctSignal: 'When the one-to-one instinct is prominent, Type 8 strength tends to appear first in close bonds and relational agency.'
+    },
+    sp_9: {
+      title: 'Keeping a comfortable routine while allowing your wishes to stay awake',
+      paragraph: 'Self-preservation Type 9 lowers tension through physical comfort, routine, and familiar surroundings. At its best, this provides steadiness and a calm atmosphere. Under pressure, comforting habits can postpone important feelings and decisions until your own wishes become unclear.',
+      protects: 'A comfortable daily life, physical steadiness, and dependable routines',
+      overuses: 'Numbing, habitual avoidance, and delay; comfort can be mistaken for real peace',
+      closePeople: 'They may find you comfortable and stable while feeling that important conversations are repeatedly postponed.',
+      counseling: 'Distinguish physical stability from avoidance and disengagement.',
+      instinctSignal: 'When self-preservation is prominent, Type 9 calm tends to appear first around the body, routine, and daily stability.'
+    },
+    so_9: {
+      title: 'Helping people stay connected while keeping your own voice within a role',
+      paragraph: 'Social Type 9 naturally adapts to community atmosphere and the flow of relationships to reduce tension. At its best, this helps people remain together with a sense of safety. Under pressure, fitting the role and atmosphere can delay expressing your true opinion.',
+      protects: 'Belonging, relational peace, and the flow that keeps people together',
+      overuses: 'Adapting to a role instead of your own thoughts, silence, and delay; preferences are pushed aside',
+      closePeople: 'They may experience your cooperation and calm while learning what you really think only later.',
+      counseling: 'Distinguish consideration from hiding your wishes, and belonging from a real choice.',
+      instinctSignal: 'When the social instinct is prominent, Type 9 calm tends to appear first in community atmosphere and roles.'
+    },
+    sx_9: {
+      title: 'Adapting to someone close while expressing your own thoughts',
+      paragraph: 'Sexual / One-to-one Type 9 finds stability in deep connection and a sense of unity with a particular person. At its best, this offers gentle intimacy and acceptance. Under pressure, adapting to the other person\'s wishes and emotions can delay the expression of your own opinions and anger.',
+      protects: 'Deep intimacy, harmony, and security within love',
+      overuses: 'Merging, hiding your wishes, and late expression of anger; what you want disappears behind the other person\'s wants',
+      closePeople: 'They may experience your gentleness and depth while eventually feeling unsure of your true heart.',
+      counseling: 'Explore the boundaries between love and merging, consideration and losing yourself.',
+      instinctSignal: 'When the one-to-one instinct is prominent, Type 9 calm tends to appear first in a close relationship and deep connection.'
+    }
+  };
+
+  const EN_WING_SYNTHESIS = {
+    '1w9': { wingSignal: 'A Type 9 wing may add a quieter, enduring approach to standards, reducing open conflict while holding your position calmly.' },
+    '1w2': { wingSignal: 'A Type 2 wing may direct standards toward helping and improving others; also explore relational expectations and hurt.' },
+    '2w1': { wingSignal: 'A Type 1 wing may add duty and standards to helping; notice when service becomes correction or obligation.' },
+    '2w3': { wingSignal: 'A Type 3 wing may express the wish for love through attraction and achievement; distinguish a recognized role from your actual needs.' },
+    '3w2': { wingSignal: 'A Type 2 wing may express achievement through helping and connecting people; consider both recognition and warm contribution.' },
+    '3w4': { wingSignal: 'A Type 4 wing may add uniqueness and emotional depth to achievement; explore the difference between an image and your actual identity.' },
+    '4w3': { wingSignal: 'A Type 3 wing may add outward expression and a wish for recognition to uniqueness; explore the boundary between authenticity and image.' },
+    '4w5': { wingSignal: 'A Type 5 wing may add a tendency to observe and analyze feelings privately rather than express them immediately.' },
+    '5w4': { wingSignal: 'A Type 4 wing may add personal meaning and emotional depth to knowledge and distance; explore the boundary between uniqueness and isolation.' },
+    '5w6': { wingSignal: 'A Type 6 wing may add risk checking and preparation to the search for understanding; distinguish useful preparation from anxiety.' },
+    '6w5': { wingSignal: 'A Type 5 wing may add more private analysis of uncertainty; consider the balance between collecting information and practicing trust.' },
+    '6w7': { wingSignal: 'A Type 7 wing may reduce anxiety through distraction and new options; consider worry alongside optimism that avoids difficult feelings.' },
+    '7w6': { wingSignal: 'A Type 6 wing may add checking for dependable people and safe foundations while you explore possibilities.' },
+    '7w8': { wingSignal: 'A Type 8 wing may make the movement to protect freedom more direct and forceful.' },
+    '8w7': { wingSignal: 'A Type 7 wing may express strength and agency more quickly and expansively; pacing and intensity deserve attention.' },
+    '8w9': { wingSignal: 'A Type 9 wing may express strength more quietly and steadily; explore firm resistance beneath an outwardly calm appearance.' },
+    '9w8': { wingSignal: 'A Type 8 wing may add protective strength and firm resistance to the way you preserve calm.' },
+    '9w1': { wingSignal: 'A Type 1 wing may maintain calm through standards and responsibility; consider delay alongside quiet criticism.' }
+  };
+
+  const EN_REPORT_SYNTHESIS = {
+    sx_7w8: {
+      title: 'Actively exploring new possibilities while attending to a loved one\'s heart',
+      paragraph: 'The Sexual / One-to-one 7w8 combination finds vitality through vivid attraction and new possibilities, with the Type 8 wing adding a more direct pursuit of what you want. At its best, this gives a close person energy and courage. When difficult feelings last, you may move quickly toward another possibility or restored agency instead of remaining with the feeling.',
+      protects: 'Relational vitality, deep engagement, and freedom from confinement',
+      overuses: 'Speed, optimism, and forceful action; sadness, limits, and completion can be postponed',
+      closePeople: 'They may feel energized with you while finding it difficult to share a painful story all the way through.',
+      counseling: 'Notice when discomfort is turned into possibility and explore the difficulty of tolerating a loss of agency.',
+      instinctSignal: 'When the one-to-one instinct is prominent, the Type 7 pattern tends to appear first in attraction, relational intensity, and immersion.',
+      wingSignal: EN_WING_SYNTHESIS['7w8'].wingSignal,
+      closeTypeSignal: 'With Type 7 and Type 8 tendencies both present, explore the boundary between avoiding discomfort and protecting agency.'
+    },
+    sp_4w5: {
+      title: 'Enduring a sense of lack while returning to the body and daily life',
+      paragraph: 'The Self-preservation 4w5 combination quietly preserves emotional depth and uniqueness, while the Type 5 wing adds private analysis and organization of feelings. At its best, this offers sensitive insight and authenticity. Under pressure, endurance can delay receiving ordinary help, physical care, and steady routines.',
+      protects: 'Personal truthfulness, emotional depth, and an inner uniqueness that is hard to explain',
+      overuses: 'Endurance, comparison, and processing alone; asking for help and caring for your body can come late',
+      closePeople: 'They may experience your depth and sensitivity while feeling that closeness never quite reaches you.',
+      counseling: 'Explore whether lack reflects a present need or an identity defense, and where physical stability and asking for help become difficult.',
+      instinctSignal: 'When self-preservation is prominent, concerns about lack and uniqueness tend to appear first around the body, energy, and daily security.',
+      wingSignal: EN_WING_SYNTHESIS['4w5'].wingSignal,
+      closeTypeSignal: 'If Types 5 and 9 also appear alongside Type 4, explore the different reasons for depth and withdrawal.'
+    },
+    so_9w8: {
+      title: 'Reducing tension among people while allowing your strength and opinion to be seen',
+      paragraph: 'The Social 9w8 combination reads community atmosphere and lowers conflict, with the Type 8 wing adding steady protective energy. At its best, this is a stabilizing presence for others. Under prolonged pressure, outward calm can conceal growing anger and stubbornness while important decisions are postponed.',
+      protects: 'Relational peace and belonging, and a steady shelter that protects people',
+      overuses: 'Silence, delay, and numbing; calming the atmosphere instead of addressing tension directly',
+      closePeople: 'They may find you comfortable and dependable while learning your true opinion late or encountering unexpected resistance.',
+      counseling: 'Explore expressing small preferences, tolerating conflict, and distinguishing protection from avoidance.',
+      instinctSignal: 'When the social instinct is prominent, the Type 9 pattern tends to appear first in community atmosphere, roles, and relational flow.',
+      wingSignal: EN_WING_SYNTHESIS['9w8'].wingSignal,
+      closeTypeSignal: 'If Type 8 also appears alongside Type 9, explore the boundary between actual strength and silence that avoids conflict.'
+    }
+  };
+
+  const EN_PROGRAM_COPY = {
+    identity_session: {
+      program: 'Type discovery consultation',
+      reasonPrimary: 'This connects directly with the central motivation behind your recurring pattern.',
+      reasonSecondary: 'A useful next step for confirming your type and motivation in real life.',
+      outcome: 'Use a questionnaire and interview to explore your type, core motivation, and defensive patterns.'
+    },
+    result_consult: {
+      program: 'Results interpretation consultation',
+      reasonPrimary: 'An initial conversation to check how the report fits actual situations in your life.',
+      reasonSecondary: 'Review the report\'s key statements and score patterns with a counselor.',
+      outcome: 'A one-hour review of your core type, subtype, wing, confidence indicators, and nearby types.'
+    },
+    coaching_single: {
+      program: 'Individual coaching: 1 session',
+      reasonPrimary: 'Connect the patterns in your report with everyday relationship situations.',
+      reasonSecondary: 'Focus on one recurring response within a short period.',
+      outcome: 'A 60-minute coaching session applying emotional and relational insights to actual situations.'
+    },
+    recovery_journey_4: {
+      program: 'Recovery coaching: 4 sessions',
+      reasonPrimary: 'Move from recognizing a pattern to building a practical routine over a focused course.',
+      reasonSecondary: 'Establish a direction for recovery through a short, focused series.',
+      outcome: 'Four focused sessions to connect pattern awareness with practical changes in everyday life.'
+    },
+    recovery_journey_8: {
+      program: 'Recovery coaching: 8 sessions',
+      reasonPrimary: 'Support ongoing change across feelings, relationships, and practical routines.',
+      reasonSecondary: 'Develop recovery into a consistent habit through a sustained coaching series.',
+      outcome: 'Eight sessions for deeper work on feelings, relationships, and repeated practice.'
+    },
+    couple_coaching: {
+      program: 'Couples coaching: 1 session',
+      reasonPrimary: 'Explore the patterns that appear between you in relationship situations.',
+      reasonSecondary: 'Clarify recurring misunderstandings within your relationship.',
+      outcome: 'Read recurring conflict patterns together and develop a more helpful way to communicate.'
+    },
+    parenting_workshop: {
+      program: 'Enneagram for Parenting: 4 weeks',
+      reasonPrimary: 'Explore recurring patterns that appear in parenting.',
+      reasonSecondary: 'Apply your results to the parent-child relationship.',
+      outcome: 'A four-week online workshop to understand differences between your temperament and your child\'s.'
+    },
+    basic_course: {
+      program: 'Biblical Enneagram foundations: 8 weeks',
+      reasonPrimary: 'Expand your diagnostic insights through a structured eight-week learning experience.',
+      reasonSecondary: 'Study the core motivations of all nine types and perspectives on recovery.',
+      outcome: 'Eight weeks of online learning with individual mentoring; meeting times are arranged with participants.'
+    },
+    coach_training: {
+      program: 'ER coach training',
+      reasonPrimary: 'Explore a calling to support other people\'s recovery journeys.',
+      reasonSecondary: 'Develop leadership, ministry, and coaching skills systematically.',
+      outcome: 'A training journey through foundational study, a study group, and a one-year coaching school.'
+    }
+  };
+
+  function makeNextSteps(core, c, lang) {
+    const catalog = window.ERProgramCatalog;
+    const steps = catalog && typeof catalog.buildNextSteps === 'function'
+      ? catalog.buildNextSteps(CORE[core].programs)
+      : c.programs.map((program, index) => ({
+        rank: index + 1, program,
+        reason: index === 0
+          ? (lang === 'en' ? 'This connects directly with the central motivation behind your recurring pattern.' : '현재 반복 패턴의 중심 동기와 가장 직접적으로 연결됩니다.')
+          : (lang === 'en' ? 'An area worth exploring more deeply after reading the report.' : '결과지를 읽은 뒤 더 깊이 다루면 좋은 적용 영역입니다.'),
+        outcome: index === 0
+          ? (lang === 'en' ? 'Recognize automatic responses and connect a direction for recovery with daily practice.' : '자동반응을 알아차리고 회복 방향을 일상 훈련으로 연결합니다.')
+          : (lang === 'en' ? 'Use your type\'s strengths more healthily within relationships and your calling.' : '관계와 소명 안에서 유형의 선물을 더 건강하게 사용하도록 돕습니다.')
+      }));
+    if (lang !== 'en') return steps;
+    return steps.map((step, index) => {
+      const copy = EN_PROGRAM_COPY[step.programKey];
+      if (!copy) return step;
+      return {
+        ...step,
+        program: copy.program,
+        reason: index === 0 ? copy.reasonPrimary : copy.reasonSecondary,
+        outcome: copy.outcome,
+        ...(typeof step.priceLabel === 'string' ? {
+          priceLabel: step.priceLabel.replace(/1시간/g, '1 hour').replace(/1회/g, '1 session')
+        } : {})
+      };
+    });
+  }
+
+  function makeFallbackSynthesis(c, inst, wing, lang) {
+    if (lang === 'en') {
+      return {
+        title: `A personal interpretation of ${inst.label} ${c.name}${wing ? ` with a Type ${wing} wing` : ''}`,
+        paragraph: `${inst.lens} When this instinct meets the ${c.name}'s core motivation, your recurring pattern may appear more clearly in particular situations. This interpretation offers a map for noticing what you protect and what you overuse in everyday life.`,
+        protects: c.motivation,
+        overuses: c.fear,
+        closePeople: 'People close to you may experience a recurring response that includes both strengths and defenses.',
+        counseling: 'Explore how this interpretation matches recurring situations in your actual life.',
+        instinctSignal: `The ${inst.label} instinct suggests the life area where the pattern tends to appear first.`,
+        wingSignal: wing ? `A Type ${wing} wing suggests an additional tendency in the expression of your core type.` : 'Further reflection is needed to distinguish which adjacent wing is closer.',
+        closeTypeSignal: 'Nearby types offer clues for exploring why similar-looking responses may have different motivations.'
+      };
+    }
     return {
       title: `${inst.label} ${c.name}${wing ? ` · ${wing}번 날개` : ""}의 개인별 해석`,
       paragraph: `${inst.lens} 이 본능이 ${c.name}의 핵심 동기와 만나면, 반복 패턴은 특정 장면에서 더 뚜렷하게 나타납니다. 이 결과는 유형 이름을 붙이는 데서 끝나지 않고, 내가 무엇을 지키려 하고 무엇을 과하게 사용하는지 읽기 위한 지도입니다.`,
@@ -684,41 +1443,50 @@
     };
   }
 
-  function getSynthesis(core, instinctCode, wing, c, inst) {
+  function getSynthesis(core, instinctCode, wing, c, inst, lang) {
     const exactKey = `${instinctCode}_${core}${wing ? `w${wing}` : ""}`;
     const subtypeKey = `${instinctCode}_${core}`;
     const wingKey = wing ? `${core}w${wing}` : null;
+    const coreSynthesis = lang === 'en' ? EN_CORE_SYNTHESIS : CORE_SYNTHESIS;
+    const subtypeSynthesis = lang === 'en' ? EN_SUBTYPE_SYNTHESIS : SUBTYPE_SYNTHESIS;
+    const wingSynthesis = lang === 'en' ? EN_WING_SYNTHESIS : WING_SYNTHESIS;
+    const reportSynthesis = lang === 'en' ? EN_REPORT_SYNTHESIS : REPORT_SYNTHESIS;
     return {
-      ...makeFallbackSynthesis(c, inst, wing),
-      ...(CORE_SYNTHESIS[core] || {}),
-      ...(REPORT_SYNTHESIS[subtypeKey] || {}),
-      ...(SUBTYPE_SYNTHESIS[subtypeKey] || {}),
-      ...(wingKey && WING_SYNTHESIS[wingKey] ? WING_SYNTHESIS[wingKey] : {}),
-      ...(REPORT_SYNTHESIS[exactKey] || {})
+      ...makeFallbackSynthesis(c, inst, wing, lang),
+      ...(coreSynthesis[core] || {}),
+      ...(reportSynthesis[subtypeKey] || {}),
+      ...(subtypeSynthesis[subtypeKey] || {}),
+      ...(wingKey && wingSynthesis[wingKey] ? wingSynthesis[wingKey] : {}),
+      ...(reportSynthesis[exactKey] || {})
     };
   }
 
-  function makeContent(core, instinctCode, wing) {
-    const c = CORE[core] || CORE[3];
-    const inst = INSTINCTS[instinctCode] || INSTINCTS.sp;
-    const synthesis = getSynthesis(core, instinctCode, wing, c, inst);
+  function makeContent(core, instinctCode, wing, lang) {
+    const english = lang === 'en';
+    const cores = english ? EN_CORE : CORE;
+    const instincts = english ? EN_INSTINCTS : INSTINCTS;
+    const c = cores[core] || cores[3];
+    const inst = instincts[instinctCode] || instincts.sp;
+    const synthesis = getSynthesis(core, instinctCode, wing, c, inst, lang);
     return {
       key: `${instinctCode}_${core}${wing ? `w${wing}` : ""}`,
       fallbackKey: `${instinctCode}_${core}`,
       core,
       coreName: c.name,
       subtype: instinctCode,
-      subtypeLabel: `${inst.label} ${core}번`,
+      subtypeLabel: english ? `${inst.label} Type ${core}` : `${inst.label} ${core}번`,
       wing,
       heroStatement: c.hero,
       definition: c.definition,
-      subtypeInsight: `${inst.title}. ${inst.lens} ${core}번 ${c.name}의 핵심 동기와 만나면, 이 본능은 당신의 반복 패턴이 어디에서 가장 먼저 드러나는지를 보여줍니다.`,
-      wingNote: makeWingNote(core, wing),
+      subtypeInsight: english
+        ? `${inst.title}. ${inst.lens} Together with Type ${core}'s ${c.name} motivation, this instinct suggests where your recurring pattern tends to appear first.`
+        : `${inst.title}. ${inst.lens} ${core}번 ${c.name}의 핵심 동기와 만나면, 이 본능은 당신의 반복 패턴이 어디에서 가장 먼저 드러나는지를 보여줍니다.`,
+      wingNote: makeWingNote(core, wing, lang),
       synthesis,
       motivation: c.motivation,
       fear: c.fear,
       cycle: c.cycle,
-      formation: `${c.formation} 특히 ${inst.label} 본능이 앞설 때는 ${inst.risk}`,
+      formation: english ? `${c.formation} ${inst.risk}` : `${c.formation} 특히 ${inst.label} 본능이 앞설 때는 ${inst.risk}`,
       falseSelf: c.falseSelf,
       restoredSelf: c.restoredSelf,
       career: c.career,
@@ -730,42 +1498,34 @@
       actionPlan: [
         c.recovery[0],
         inst.practice,
-        "가까운 사람에게 오늘 내 마음을 한 문장으로 말하기"
+        english ? 'Tell someone close to you how you feel today in one sentence' : "가까운 사람에게 오늘 내 마음을 한 문장으로 말하기"
       ],
-      weeklyPractice: "이번 주에는 결과를 바꾸려 하기보다 평소의 반응이 나타나는 순간을 하루 한 번 기록하세요.",
-      relationshipSentence: "내가 바로 해결하기 전에, 먼저 네 마음을 듣고 싶어.",
-      reflectionQuestion: "지금 내가 지키려는 것은 사랑인가, 두려움인가?",
+      weeklyPractice: english ? 'Once a day this week, record a moment when your usual response appears, before trying to change the outcome.' : "이번 주에는 결과를 바꾸려 하기보다 평소의 반응이 나타나는 순간을 하루 한 번 기록하세요.",
+      relationshipSentence: english ? 'Before I try to solve this, I would like to hear how you feel.' : "내가 바로 해결하기 전에, 먼저 네 마음을 듣고 싶어.",
+      reflectionQuestion: english ? 'Is love or fear guiding what I am trying to protect right now?' : "지금 내가 지키려는 것은 사랑인가, 두려움인가?",
       gospel: {
-        falseBelief: `${c.fear}을 피해야만 내가 안전하고 사랑받을 수 있다는 믿음`,
+        falseBelief: english ? `Believing I can be safe and loved only by avoiding this fear: ${c.fear.toLowerCase()}.` : `${c.fear}을 피해야만 내가 안전하고 사랑받을 수 있다는 믿음`,
         truth: c.declaration,
-        repentance: "두려움이 이끌던 생존 방식을 잠시 내려놓고, 이미 충분히 사랑받는 본래의 나로 돌아가 보는 것입니다.",
+        repentance: english ? 'Set down, for a moment, the survival strategy driven by fear and return to who you are, already fully loved.' : "두려움이 이끌던 생존 방식을 잠시 내려놓고, 이미 충분히 사랑받는 본래의 나로 돌아가 보는 것입니다.",
         prayer: c.prayer,
         declaration: c.declaration
       },
-      nextSteps: (window.ERProgramCatalog && typeof window.ERProgramCatalog.buildNextSteps === 'function')
-        ? window.ERProgramCatalog.buildNextSteps(c.programs)
-        : c.programs.map((program, index) => ({
-          rank: index + 1,
-          program,
-          reason: index === 0
-            ? "현재 반복 패턴의 중심 동기와 가장 직접적으로 연결됩니다."
-            : "결과지를 읽은 뒤 더 깊이 다루면 좋은 적용 영역입니다.",
-          outcome: index === 0
-            ? "자동반응을 알아차리고 회복 방향을 일상 훈련으로 연결합니다."
-            : "관계와 소명 안에서 유형의 선물을 더 건강하게 사용하도록 돕습니다."
-        }))
+      nextSteps: makeNextSteps(core, c, lang)
     };
   }
 
   const reports = {};
+  const reportsEn = {};
   Object.keys(CORE).forEach((coreKey) => {
     const core = Number(coreKey);
     Object.keys(INSTINCTS).forEach((instinctCode) => {
       const content = makeContent(core, instinctCode, null);
       reports[content.fallbackKey] = content;
+      reportsEn[content.fallbackKey] = makeContent(core, instinctCode, null, 'en');
       [leftWing(core), rightWing(core)].forEach((wing) => {
         const wingContent = makeContent(core, instinctCode, wing);
         reports[wingContent.key] = wingContent;
+        reportsEn[wingContent.key] = makeContent(core, instinctCode, wing, 'en');
       });
     });
   });
@@ -774,35 +1534,44 @@
     instincts: INSTINCTS,
     cores: CORE,
     reports,
-    getCoreContent(core, wing) {
-      const c = CORE[core];
+    getCoreContent(core, wing, lang) {
+      const english = lang === 'en';
+      const c = (english ? EN_CORE : CORE)[core];
       if (!c) return null;
-      const content = makeContent(core, 'sp', wing);
+      const content = makeContent(core, 'sp', wing, lang);
       return {
         ...content,
         key: `core_${core}${wing ? `w${wing}` : ''}`,
         fallbackKey: `core_${core}`,
         subtype: null,
-        subtypeLabel: '하위유형 추가 확인 필요',
-        subtypeInsight: '세 생활 영역의 응답이 나뉘어 하위유형을 아직 정하지 않았습니다.',
+        subtypeLabel: english ? 'Subtype needs further confirmation' : '하위유형 추가 확인 필요',
+        subtypeInsight: english ? 'Responses across the three life areas are mixed, so no subtype has been assigned yet.' : '세 생활 영역의 응답이 나뉘어 하위유형을 아직 정하지 않았습니다.',
         formation: c.formation,
         actionPlan: c.recovery.slice(0, 2),
         synthesis: {
-          ...(CORE_SYNTHESIS[core] || {}),
-          ...(wing ? (WING_SYNTHESIS[`${core}w${wing}`] || {}) : {}),
-          title: `${core}번 ${c.name}의 핵심 동기`,
+          ...(english ? {
+            closePeople: 'People close to you may experience both the strengths and defenses of this recurring pattern.',
+            counseling: 'Explore how the core motivation fits repeated situations in your actual life before deciding on a subtype.',
+            closeTypeSignal: 'Nearby types offer clues for distinguishing the motivations behind similar-looking responses.'
+          } : {}),
+          ...((english ? EN_CORE_SYNTHESIS : CORE_SYNTHESIS)[core] || {}),
+          ...(wing ? ((english ? EN_WING_SYNTHESIS : WING_SYNTHESIS)[`${core}w${wing}`] || {}) : {}),
+          title: english ? `The core motivation of Type ${core}: ${c.name}` : `${core}번 ${c.name}의 핵심 동기`,
           paragraph: c.definition,
           protects: c.motivation,
           overuses: c.fear,
-          instinctSignal: '하위유형 응답이 나뉘었습니다. 생활 장면을 더 관찰해 주세요.',
-          wingSignal: wing ? `${wing}번 날개를 선택한 응답이 더 많았습니다.` : '날개 응답이 나뉘어 추가 확인이 필요합니다.'
+          instinctSignal: english ? 'Subtype responses were mixed. Continue observing everyday situations.' : '하위유형 응답이 나뉘었습니다. 생활 장면을 더 관찰해 주세요.',
+          wingSignal: english
+            ? (wing ? `More responses favored the Type ${wing} wing.` : 'Wing responses were mixed and need further confirmation.')
+            : (wing ? `${wing}번 날개를 선택한 응답이 더 많았습니다.` : '날개 응답이 나뉘어 추가 확인이 필요합니다.')
         }
       };
     },
-    getContent(core, subtype, wing) {
+    getContent(core, subtype, wing, lang) {
       const inst = subtype && INSTINCTS[subtype] ? subtype : "sp";
       const withWing = wing ? `${inst}_${core}w${wing}` : null;
-      return reports[withWing] || reports[`${inst}_${core}`] || reports[`sp_${core}`] || reports.sp_3;
+      const localizedReports = lang === 'en' ? reportsEn : reports;
+      return localizedReports[withWing] || localizedReports[`${inst}_${core}`] || localizedReports[`sp_${core}`] || localizedReports.sp_3;
     }
   };
 })();
