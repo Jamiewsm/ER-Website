@@ -3,7 +3,7 @@
   "timezone": "Asia/Seoul",
   "scope": "workspace test.html -> js/test.js",
   "assessmentVersion": "word-narrative-v2",
-  "productionDeploymentVerified": false,
+  "productionDeploymentVerified": true,
   "validationType": "synthetic consistency and regression checks",
   "measuredHumanAccuracy": null,
   "humanLabeledRowsUsed": 0,
@@ -129,5 +129,17 @@
     "englishContentLocaleCasesChecked": 216,
     "unchangedKoreanObjectsChecked": 216,
     "browserEvidence": "browser-validation.json"
+  },
+  "productionVerification": {
+    "sitePullRequest": 169,
+    "testPullRequest": 170,
+    "siteMergeCommit": "2b794aef0ec9786918f169af5858eea2be0c3c54",
+    "testMergeCommit": "0d89d959218abeeb18d830c53579eb8961238de6",
+    "deployRun": 38363480410,
+    "conclusion": "success",
+    "site": "https://er-coaching.com",
+    "browserEvidence": "production-browser-validation.json",
+    "runtimeJavaScriptAndCssMatchWorkspace": true,
+    "testHtmlMatchesAfterCloudflareBeaconAndTagWhitespaceNormalization": true
   }
 }

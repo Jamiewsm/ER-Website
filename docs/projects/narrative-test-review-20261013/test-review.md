@@ -1,6 +1,6 @@
 # 내러티브 테스트 리뷰와 정확도 검증
 
-검토일: 2026-10-13, 한국 시간. 기준은 이 작업 공간의 `test.html → js/test.js` 및 `assessmentVersion: word-narrative-v2`이다. 과거 39문항 검사와 운영에서 로드하지 않는 helper는 별도로 평가했다. 이 문서는 운영 배포 완료를 뜻하지 않는다.
+검토일: 2026-10-13, 한국 시간. 기준은 이 작업 공간의 `test.html → js/test.js` 및 `assessmentVersion: word-narrative-v2`이다. 과거 39문항 검사와 운영에서 로드하지 않는 helper는 별도로 평가했다. 아래 최종 배포 검증까지 완료했으며, 실제 운영 사이트에서도 같은 기능을 확인했다.
 
 현재 검사에는 후보별 비교 기회를 같게 만들고, 동률·불충분한 응답을 보류하는 장치가 있다. 이번 검증에서 운영 채점의 합성 사례 1,785개가 예상대로 동작했다. 같은 세션에서 공식 Supabase 프로젝트 `osdynbadhtfgoxilgmpy`의 `public.diagnostic_experiment_sessions`를 읽기 전용 집계로 확인한 결과, 제출된 실제 기록은 0건이었다. 버전·언어별 집계 결과도 빈 배열이었다. 따라서 실제 유형 판별 정확도와 자기평가 일치도는 모두 산출할 수 없다. 개인정보나 개별 응답 원문은 조회하지 않았다.
 
@@ -95,3 +95,12 @@ node scripts/analyze_diagnostic_experiments.mjs \
 - 실제 Chrome에서 한국어·영어 검사를 완료했다. 320/375/1280px 결과의 가로 넘침 없음, 단어 청크 보존, 응답 저장·복원, 영어 공유 URL의 `lang=en`, 인쇄 언어를 확인했다. 동의 없는 서버 제출은 하지 않았다.
 - 관련 사이트 회귀검증 **53/53 통과** 및 소개 화면 한국어·영어 전환 검증. 사이트와 검사 변경은 각각 별도 PR로 배포한다.
 - 브라우저 증거는 [browser-validation.json](browser-validation.json), 채점·데이터 검증 범위는 [diagnostic-validation.json](diagnostic-validation.json)에 기록한다.
+
+
+## 8. 운영 사이트 반영 확인
+
+사이트 표시명 변경은 [PR #169](https://github.com/Jamiewsm/ER-Website/pull/169), 영어 결과·검증 보완은 [PR #170](https://github.com/Jamiewsm/ER-Website/pull/170)으로 분리해 병합했다. [CI 배포 #38363480410](https://github.com/Jamiewsm/ER-Website/actions/runs/38363480410)은 test/site 배포·운영 마커 검사·배포 기록 갱신까지 성공했다.
+
+운영 [한국어 검사](https://er-coaching.com/test.html?lang=ko)와 [영어 검사](https://er-coaching.com/test.html?lang=en)를 실제 Chrome에서 완료했다. 저장 응답 복원, 언어가 유지된 공유 링크, 인쇄 화면, 320/375/1280px 단어 청크 보존과 가로 넘침 없음을 다시 확인했다. 영어 결과에는 한국어가 노출되지 않았다. 주요 JavaScript·CSS 다섯 파일은 작업 공간과 SHA-256이 일치하고, test.html은 Cloudflare 주입 beacon 및 태그 사이 공백을 정규화한 후 원본과 같았다.
+
+운영 증거는 [production-browser-validation.json](production-browser-validation.json)에 저장했다. 검증은 합성 응답으로 수행했으며 실험 제출·개인정보 저장을 하지 않았다.
