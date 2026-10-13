@@ -1,4 +1,4 @@
-// 단어 선별과 서사형 변별을 연결하고 프리미엄 검사 결과를 표시한다.
+// 단어 선별과 서사형 변별을 연결하고 내러티브 검사 결과를 표시한다.
 const params = new URLSearchParams(window.location.search || '');
 const pageLang = params.get('lang') === 'en' ? 'en' : 'ko';
 document.documentElement.lang = pageLang === 'en' ? 'en' : 'ko';
@@ -80,8 +80,8 @@ const TEST_UI = {
     step5Label: 'Phase 5: Confirm subtype and wing',
     analysisReportTitle: 'Analysis summary',
     top3Title: 'Top 3 relative shares and evidence',
-    consultText: 'Your top two results are very close. For clearer typing, we recommend a free 1:1 session.',
-    consultBtn: 'Book a free 1:1 session',
+    consultText: 'Your top two results are close. A report interpretation consultation can help clarify your core type, subtype, wing, and recurring motivations.',
+    consultBtn: 'Book a report consultation',
     shareBtn: 'Share result',
     downloadPdf: 'Download result PDF',
     restart: 'Start over',
@@ -146,11 +146,19 @@ const TYPE_ELIMINATION_SKETCHES = {
   }
 };
 
+function testCopy(ko, en) {
+  return pageLang === 'en' ? en : ko;
+}
+
 function uiText(key) {
   return (TEST_UI[pageLang] && TEST_UI[pageLang][key]) || TEST_UI.ko[key] || key;
 }
 
 function localizeStaticTestPage() {
+  document.title = testCopy('ER 내러티브 테스트', 'ER Narrative Test');
+  const brand = document.getElementById('test-pill');
+  if (brand) brand.textContent = document.title;
+  document.getElementById('progress-track')?.setAttribute('aria-label', testCopy('검사 진행률', 'Assessment progress'));
   const map = {
     'loading-kicker': 'loadingKicker',
     'test-title': 'title',
@@ -1494,6 +1502,67 @@ const WING_BEHAVIOR_PROMPTS = {
   9: ['실제로 했던 행동은 긴장을 낮추고 상황을 부드럽게 지나가게 하는 쪽에 가까웠다.', '분명히 말하기보다 분위기가 거칠어지지 않게 조절했다.', '갈등이 커질 것 같으면 일단 늦추거나 우회했다.']
 };
 
+// English behavior items mirror each Korean item rather than repeating a single subtype description.
+const SUBTYPE_BEHAVIOR_ITEMS_EN = {
+  1: [
+    { q: 'After seeing something that falls short of your standards, which response resembles what you actually do?', sp: 'Rather than speaking out, I go home and review what I missed and what was my responsibility.', so: 'I get frustrated when people do not follow the same standards and explain what I see as the right approach.', sx: 'I address the person directly and feel it must be corrected even if the relationship becomes uncomfortable.' },
+    { q: 'When you see a possibility of mistakes, what do you do more often?', sp: 'I repeatedly check supplies, sequence, and deadlines so that I do not make a mistake.', so: 'When a team lacks clear standards, I try to organize its rules and direction.', sx: 'When someone’s attitude or habits fall short of my standards, I point it out and press for change.' },
+    { q: 'After feeling angry, which thoughts or actions usually follow?', sp: 'I keep thinking I should have done better and push myself harder.', so: 'I feel frustrated that people neglect the basics and try to establish clear standards.', sx: 'I feel relief when the problem is corrected immediately rather than endured or overlooked.' }
+  ],
+  2: [
+    { q: 'When you want care or attention from someone close, how do you act?', sp: 'Rather than asking directly, I act affectionate or show I am struggling and wait for the other person to notice.', so: 'I move closer to influential people and take on an essential role in a group.', sx: 'I focus attention on someone I like and show my appeal so that they feel drawn to me.' },
+    { q: 'When you feel hurt or overlooked, which response appears more often?', sp: 'I act as though I am fine but remain hurt that no one took care of me.', so: 'I lose heart when my contribution to the group is not acknowledged.', sx: 'When someone misses my feelings, I contact them more often or repeatedly check how they feel about me.' },
+    { q: 'When someone needs help, what do you automatically do?', sp: 'I offer warm care while hiding my own wish to lean on someone.', so: 'I take on needed tasks and connect people while extending my influence in the organization.', sx: 'I focus my energy on one person to build a special relationship.' }
+  ],
+  3: [
+    { q: 'When you need to show results, what do you actually do more often?', sp: 'I work steadily and reliably rather than drawing attention to myself.', so: 'I pursue recognized status, qualifications, or visible achievements.', sx: 'I adjust my appearance and behavior to match what someone I like or people around me expect.' },
+    { q: 'When you might fail or look inadequate, which response is closer?', sp: 'I quietly try to make up for it with dependable results and responsibility.', so: 'I seek new achievements to restore a positive reputation or status.', sx: 'I pay attention to my clothing and manner and show my competence so that someone is not disappointed.' },
+    { q: 'Which behavior repeats when you seek recognition?', sp: 'I build trust as someone who quietly gets things done well.', so: 'I step forward publicly or show strong results to be recognized as outstanding.', sx: 'I reshape myself to fit someone’s ideal image.' }
+  ],
+  4: [
+    { q: 'When you are emotionally distressed, how do you actually handle the pain?', sp: 'I tell almost no one, endure it alone, and later find myself exhausted.', so: 'I want to express feeling left behind or compared with others.', sx: 'When I envy someone, competitiveness and a sharp reaction arise before sadness.' },
+    { q: 'When you feel something is missing in you, what do you usually do?', sp: 'I hide the pain and take pride in enduring it alone.', so: 'I express my sense of inadequacy or shame, hoping someone will understand it.', sx: 'When I feel outdone, I try to beat the other person to show I am not inadequate.' },
+    { q: 'Which pattern repeats even in a happy or peaceful situation?', sp: 'Although I look fine, I keep enduring private pain.', so: 'Others seem to have what they need, while something feels missing in me.', sx: 'When someone has what I lack, I try to surpass them rather than only feeling envious.' }
+  ],
+  5: [
+    { q: 'When several people contact you or ask for things at once, what do you usually do?', sp: 'I reduce contact or meetings to protect time and space alone.', so: 'Rather than mixing widely, I connect with people who share my field of interest.', sx: 'I keep most people at a distance but share deeply with one person I trust.' },
+    { q: 'When your energy is low, how do you recover?', sp: 'I arrange time and space to rest alone and return to a familiar routine.', so: 'I find meaning by studying or exploring a field I consider important.', sx: 'I talk with someone who understands me deeply or immerse myself in ideas that matter to me.' },
+    { q: 'Which pattern repeats as a relationship becomes closer?', sp: 'I first check whether the person respects my time and space.', so: 'I mainly become close to people who share interests or specialized knowledge.', sx: 'When I feel I can trust someone completely, I become more deeply involved than expected.' }
+  ],
+  6: [
+    { q: 'When you feel anxious or threatened, what do you actually do?', sp: 'I approach warmly and without seeming threatening, building closeness with people who may help me.', so: 'I find clear rules, authority, or instructions and feel reassured by following them.', sx: 'I act strongly or confront the threat first so that I do not appear afraid.' },
+    { q: 'When you need to trust someone, what do you do more often?', sp: 'I build a warm relationship to find out whether the person can protect me.', so: 'I check the guiding standards and who is responsible for what.', sx: 'I deliberately disagree or react strongly to test whether someone can be trusted.' },
+    { q: 'When the future feels uncertain, what do you usually do?', sp: 'I find people to rely on and arrange practical support in daily life.', so: 'I clarify rules and duties to reduce ambiguity.', sx: 'I show strength first to remove a threat.' }
+  ],
+  7: [
+    { q: 'When your desires conflict with responsibilities, what do you actually do more often?', sp: 'I quickly gather opportunities and information that benefit me and people close to me.', so: 'I postpone what I want and first follow shared plans or do what others expect.', sx: 'I immerse myself in a person or pursuit that feels inspiring or ideal rather than in small pleasures.' },
+    { q: 'When you feel bored or that something is missing, what do you look for?', sp: 'I look for helpful people, useful information, and new things to try.', so: 'I take on a role to remain a good person rather than immediately pursuing my own enjoyment.', sx: 'When daily life feels dull, I seek a person or possibility that strongly captivates me.' },
+    { q: 'When you could appear selfish in front of others, how do you respond?', sp: 'I secure what I need while considering how to share it with people close to me.', so: 'I yield or join in first because putting my desires first could look selfish.', sx: 'When a person or idea seems ideal, I am drawn into its possibilities more than its practical conditions.' }
+  ],
+  8: [
+    { q: 'When it matters who makes the decisions, how do you act?', sp: 'Rather than arguing openly, I quietly secure the resources and choices I need for my life.', so: 'When I see an imbalance of power, I intervene even without being asked.', sx: 'I strongly press my wishes to lead the relationship or situation.' },
+    { q: 'When you see unfairness, which response is closer?', sp: 'I strongly defend the areas directly connected with my survival and practical interests.', so: 'I step in when my people or team are mistreated, even without personal benefit.', sx: 'I increase my intensity until the other person backs down.' },
+    { q: 'Which description fits how you use your strength?', sp: 'I secure the money or resources I need and directly obtain what I want.', so: 'I use strength to protect people close to me and remain loyal to them rather than to show off.', sx: 'I try to make a powerful impression and lead the relationship.' }
+  ],
+  9: [
+    { q: 'When you postpone your own problems and needs, what do you actually do?', sp: 'I eat, watch videos, or sleep to feel physically comfortable and forget complicated problems for a while.', so: 'When the group’s work is not moving, I put my needs aside and fill the gap.', sx: 'I adopt an important person’s opinions and goals as my own and reduce my own voice.' },
+    { q: 'When avoiding conflict or an uncomfortable decision, which approach is closer?', sp: 'I immerse myself in familiar activities to forget uncomfortable feelings.', so: 'I stay busy participating and helping until there is little time to face my own problems.', sx: 'I accommodate someone so much that I stop expressing my own thoughts clearly.' },
+    { q: 'Even when low on energy, what do you keep doing?', sp: 'I ease life’s pressure through small habits that make my body comfortable.', so: 'When a group or people around me need something, I act even beyond my limits.', sx: 'I follow someone close to me and postpone what I need to do first.' }
+  ]
+};
+
+const WING_BEHAVIOR_PROMPTS_EN = {
+  1: ['My actual behavior focused on correcting problems or setting standards.', 'Under pressure, I checked principles, procedures, and accuracy first.', 'Even when a relationship became uncomfortable, I tried to clarify what was right.'],
+  2: ['My actual behavior focused on another person’s needs or repairing a relationship.', 'I looked first at what the other person wanted rather than at my own needs.', 'I took the initiative to become someone the other person needed.'],
+  3: ['My actual behavior focused on getting results or adjusting my role to appear capable.', 'I quickly tried to recover so that my performance or image would not suffer.', 'I changed my behavior to fit the role people expected.'],
+  4: ['I thought for a long time about my feelings and what felt disappointing or missing.', 'I kept exploring the meaning of an uncomfortable feeling rather than quickly moving past it.', 'Losing my distinct feelings felt more uncomfortable than letting something pass ordinarily.'],
+  5: ['My actual behavior focused on stepping back to secure thinking space and energy.', 'I gathered information and worked it out alone rather than reacting immediately.', 'As demands increased, I reduced contact and protected my space.'],
+  6: ['My actual behavior focused on checking risks and building a safety net.', 'I rechecked details that others had passed over.', 'I looked for reliable people, rules, or backup plans before acting.'],
+  7: ['My actual behavior focused on finding alternatives when something was blocked.', 'When the mood became heavy, I planned another activity to change how I felt.', 'When I saw frustrating restrictions, I imagined new approaches or better options.'],
+  8: ['My actual behavior focused on setting boundaries and reclaiming control.', 'When I felt someone crossed a boundary, I intervened directly.', 'When my views or rights felt ignored, I asserted them more strongly.'],
+  9: ['My actual behavior focused on lowering tension and letting the situation pass smoothly.', 'I adjusted to prevent a harsh atmosphere rather than speaking clearly.', 'When conflict seemed likely to grow, I delayed or found a way around it.']
+};
+
 function buildSubtypeBehaviorQuestions(core) {
   const set = phase4TypeSets[core];
   const items = SUBTYPE_BEHAVIOR_ITEMS[core];
@@ -1505,13 +1574,13 @@ function buildSubtypeBehaviorQuestions(core) {
     subtypeChoice: true,
     allowUnknown: true,
     q: item.q,
-    qEn: set.subtype.qEn,
+    qEn: SUBTYPE_BEHAVIOR_ITEMS_EN[core]?.[index]?.q || set.subtype.qEn,
     options: set.subtype.options.map((option) => ({
       ...option,
       label: { sp: '자기보존', so: '사회적', sx: '성적(일대일)' }[option.value],
       labelEn: { sp: 'Self-preservation', so: 'Social', sx: 'One-to-one' }[option.value],
       text: item[option.value] || option.text,
-      textEn: item[`${option.value}En`] || option.textEn
+      textEn: SUBTYPE_BEHAVIOR_ITEMS_EN[core]?.[index]?.[option.value] || item[`${option.value}En`] || option.textEn
     }))
   }));
 }
@@ -1531,11 +1600,13 @@ function buildWingQuestionSet(core) {
     q: index === 0
       ? '다음 중 최근 실제로 했던 행동에 더 가까운 것은?'
       : '스트레스를 받거나 마음이 불안할 때 더 자주 하는 행동은?',
-    qEn: base.qEn,
+    qEn: index === 0
+      ? 'Which is closer to something you have actually done recently?'
+      : 'Which behavior repeats more often when you feel stressed or unsettled?',
     a: leftPrompts[index] || base.a,
     b: rightPrompts[index] || base.b,
-    aEn: base.aEn,
-    bEn: base.bEn
+    aEn: WING_BEHAVIOR_PROMPTS_EN[base.leftWing]?.[index] || base.aEn,
+    bEn: WING_BEHAVIOR_PROMPTS_EN[base.rightWing]?.[index] || base.bEn
   }));
 }
 
@@ -1916,20 +1987,21 @@ function buildResponseQualitySnapshot({ responses, timings, scoringAxes, ranked,
   const instinctSecond = instinctValues[1] || 0;
   const instinctGap = Math.max(0, instinctTop - instinctSecond);
 
-  if (answeredCount >= 20 && avgSecondsPerAnswered > 0 && avgSecondsPerAnswered < 4) {
-    addQualityFlag(flags, 'too_fast_total', 'caution', '응답 시간이 매우 짧음', `${answeredCount}문항 평균 ${avgSecondsPerAnswered.toFixed(1)}초`);
+  const minimumTimedAnswers = assessmentVersion === 'word-narrative-v2' ? 8 : 20;
+  if (answeredCount >= minimumTimedAnswers && avgSecondsPerAnswered > 0 && avgSecondsPerAnswered < 4) {
+    addQualityFlag(flags, 'too_fast_total', 'caution', testCopy('응답 시간이 매우 짧음', 'Very short response time'), testCopy(`${answeredCount}문항 평균 ${avgSecondsPerAnswered.toFixed(1)}초`, `${answeredCount} questions, average ${avgSecondsPerAnswered.toFixed(1)} seconds`));
   }
   if (responseStats.likertCount >= 8 && responseStats.straightLineRatio >= 0.75) {
-    addQualityFlag(flags, 'straight_lining', 'low', '같은 점수 반복이 많음', `리커트 응답의 ${Math.round(responseStats.straightLineRatio * 100)}%가 같은 값입니다.`);
+    addQualityFlag(flags, 'straight_lining', 'low', testCopy('같은 점수 반복이 많음', 'Repeated identical ratings'), testCopy(`리커트 응답의 ${Math.round(responseStats.straightLineRatio * 100)}%가 같은 값입니다.`, `${Math.round(responseStats.straightLineRatio * 100)}% of scale responses have the same rating.`));
   }
   if (responseStats.totalCount >= 8 && responseStats.unknownRatio >= 0.25) {
-    addQualityFlag(flags, 'unknown_overuse', 'caution', '판단하기 어렵다는 답이 많음', `응답 중 ${Math.round(responseStats.unknownRatio * 100)}%가 잘 모르겠다/둘 다 아니다입니다.`);
+    addQualityFlag(flags, 'unknown_overuse', 'caution', testCopy('판단하기 어렵다는 답이 많음', 'Many uncertain responses'), testCopy(`응답 중 ${Math.round(responseStats.unknownRatio * 100)}%가 잘 모르겠다/둘 다 아니다입니다.`, `${Math.round(responseStats.unknownRatio * 100)}% of responses are Not sure or Neither.`));
   }
   if (!centerCoreAligned && confidence !== '높음') {
-    addQualityFlag(flags, 'center_core_mismatch', 'caution', '센터 응답과 코어 결과가 충돌함', `센터는 ${dominantCenter}, 코어 ${topType}번은 ${coreCenter} 센터입니다.`);
+    addQualityFlag(flags, 'center_core_mismatch', 'caution', testCopy('센터 응답과 코어 결과가 충돌함', 'Center responses and core result differ'), testCopy(`센터는 ${dominantCenter}, 코어 ${topType}번은 ${coreCenter} 센터입니다.`, `The dominant center is ${dominantCenter}; Type ${topType} belongs to the ${coreCenter} center.`));
   }
   if (instinctTop < 35 || instinctGap < 10) {
-    addQualityFlag(flags, 'instinct_unclear', 'caution', '본능 점수가 선명하지 않음', `최상위 본능 ${instinctTop}%, 2순위와 차이 ${instinctGap}%`);
+    addQualityFlag(flags, 'instinct_unclear', 'caution', testCopy('본능 점수가 선명하지 않음', 'Instinct scores are not distinct'), testCopy(`최상위 본능 ${instinctTop}%, 2순위와 차이 ${instinctGap}%`, `Leading instinct ${instinctTop}%, gap to second ${instinctGap}%`));
   }
 
   const level = flags.some((flag) => flag.severity === 'low')
@@ -2101,7 +2173,7 @@ function applyStateStressAdjustment(final, evidence, recentStress) {
   if (evidence && evidence[6]) {
     evidence[6].push({
       points: -adjustment.type6Damp,
-      text: '[상태성 불안 보정] 최근 2주 상태 문항이 높아 6번의 위험 확인 반응을 그대로 확정하지 않고 1/5/9 감별 기준으로 보정했습니다.'
+      text: testCopy('[상태성 불안 보정] 최근 2주 상태 문항이 높아 6번의 위험 확인 반응을 그대로 확정하지 않고 1/5/9 감별 기준으로 보정했습니다.', '[Temporary-state adjustment] Recent stress responses were high, so Type 6 risk-checking responses were adjusted using distinctions from Types 1, 5, and 9.')
     });
   }
   return adjustment;
@@ -2144,7 +2216,7 @@ function scorePhase1Item(item, raw, addScore) {
   if (item.format === 'ab') {
     if (raw === 'U') return;
     const type = raw === 'A' ? item.leftType : item.rightType;
-    const text = raw === 'A' ? item.a : item.b;
+    const text = getOptionText(item, raw === 'A' ? 'a' : 'b');
     addScore(type, TEST_CONFIG.weights.phase1Binary, item.id, text);
     return;
   }
@@ -2760,7 +2832,7 @@ function scoreNarrativeResponses(questions, responses) {
     if (!['A', 'B'].includes(answer)) return;
     const type = answer === 'A' ? question.leftType : question.rightType;
     final[type] += 1;
-    evidence[type].push({ points: 1, text: answer === 'A' ? question.a : question.b });
+    evidence[type].push({ points: 1, text: getOptionText(question, answer === 'A' ? 'a' : 'b') });
     decisiveAnswers += 1;
     answeredPairs.add(question.narrativePair);
   });
@@ -2800,7 +2872,7 @@ function submitNarrativeTieBreak() {
   if (result.postTieApplied) {
     const type = answer === 'A' ? question.leftType : question.rightType;
     result.final[type] += 1;
-    result.evidence[type].push({ points: 1, text: answer === 'A' ? question.a : question.b });
+    result.evidence[type].push({ points: 1, text: getOptionText(question, answer === 'A' ? 'a' : 'b') });
   }
   testState.pendingResult = result;
   saveAssessmentSession();
@@ -3071,7 +3143,7 @@ function submitPhase2() {
   [...q1, ...testState.phase2Questions].forEach((q)=>{ questionText[q.id] = q.q; });
   const addScore = (type, points, qid, txt=null) => {
     final[type] += points;
-    evidence[type].push({points, text: txt || questionText[qid] || qid});
+    evidence[type].push({points, text: txt || (pageLang === 'en' ? questionTextEn[qid] : questionText[qid]) || qid});
   };
 
   let tb3sxCore = null, tb3sxInstinct = null, tb7w6 = 0, tb7w8 = 0;
@@ -3122,7 +3194,7 @@ function submitPhase2() {
       else if (q.id.startsWith('tb_8_9_') && testState.tie.t89.enabled) w = testState.tie.t89.weight;
       else if (q.id.startsWith('tb_gen_') && testState.tie.tGeneric.enabled) w = testState.tie.tGeneric.weight;
       const chosen = choice === 'A' ? q.leftType : q.rightType;
-      addScore(chosen, w, q.id, choice === 'A' ? q.a : q.b);
+      addScore(chosen, w, q.id, getOptionText(q, choice === 'A' ? 'a' : 'b'));
       return;
     }
     const val = toScore(document.querySelector(`input[name="${q.id}"]:checked`).value);
@@ -3234,7 +3306,7 @@ function submitPhase3() {
     testState.pendingResult.final[boostType] += TEST_CONFIG.weights.postTieBreak;
     testState.pendingResult.evidence[boostType].push({
       points: TEST_CONFIG.weights.postTieBreak,
-      text: `[최종 타이브레이커] ${boostText}`
+      text: `${testCopy('[최종 타이브레이커]', '[Final comparison]')} ${boostText}`
     });
     postTieApplied = true;
   }
@@ -3342,12 +3414,12 @@ function getFinalSubtypeCode(instinctCode) {
 function formatReportHeadline(resultData) {
   const core = resultData.core;
   if (resultData.assessmentVersion === 'word-narrative-v2') {
-    const identity = `${core}${resultData.wingNum ? `w${resultData.wingNum}` : '번'}`;
+    const identity = resultData.wingNum ? `${core}w${resultData.wingNum}` : testCopy(`${core}번`, `Type ${core}`);
     return resultData.phase4 && resultData.phase4.subtypeCode ? `${identity} · ${resultData.instinctLabel}` : identity;
   }
   const instCode = getFinalSubtypeCode(resultData.instinctCode);
   const instincts = window.ERDiagnosticReportContent && window.ERDiagnosticReportContent.instincts;
-  const instLabel = (instincts && instincts[instCode] && instincts[instCode].label) || instCode;
+  const instLabel = pageLang === 'en' ? { sp: 'Self-preservation', so: 'Social', sx: 'One-to-one' }[instCode] || instCode : (instincts && instincts[instCode] && instincts[instCode].label) || instCode;
   const wingPart = resultData.wingNum
     ? `w${resultData.wingNum}`
     : (pageLang === 'en' ? 'core only' : '순수유형');
@@ -3544,9 +3616,80 @@ function buildReportListItems(items) {
 }
 
 function getReportConfidenceDisplay(confidence) {
-  if (confidence === '높음') return '높음';
-  if (confidence === '낮음') return '확인 필요';
-  return '중간 이상';
+  if (confidence === '높음') return testCopy("높음", "High");
+  if (confidence === '낮음') return testCopy("확인 필요", "Needs confirmation");
+  return testCopy("중간 이상", "Moderate or above");
+}
+
+// Selection remains shared with Korean; only the report-facing resource copy changes.
+const REPORT_SUPPORT_COPY_EN = {
+  social_instinct_repressed: {
+    displayName: 'Understanding a less-attended social instinct',
+    reportSummary: 'You may overlook your role in a group, its atmosphere, or how your actions affect others. This does not mean you dislike people. Coordinating with others may require more deliberate attention as relationships become more complex.',
+    focusAreas: ['Your sense of position and role in a group', 'Balancing directness with considerate communication', 'The social feelings your children or teammates experience'],
+    practicePrompts: ['Review both your intention and the impact someone experienced', 'Express your view at least once in a meeting or gathering', 'Offer empathy before solutions when a child struggles with friends'],
+    titles: ['A critic who speaks without filtering', 'Warm once close, but initially distant', 'Quietly achieving without seeking attention', 'Distinctive without trying to impress', 'An observer most comfortable alone', 'A more skeptical and rebellious realist', 'Someone who prioritizes personal freedom and plans', 'A more blunt and forceful challenger', 'A peacemaker who quietly disappears']
+  },
+  sexual_instinct_repressed: {
+    displayName: 'Understanding a less-attended one-to-one instinct',
+    reportSummary: 'Initiating a deeper conversation or expressing feelings directly may feel demanding. This does not mean you lack affection. Emotionally intense relationships may tire you easily.',
+    focusAreas: ['Taking initiative in one-to-one relationships', 'Distinguishing a pause from avoidance during conflict', 'Sharing affection through time together'],
+    practicePrompts: ['Create a focused ten-minute conversation', 'Name an uncomfortable feeling in one sentence before setting it aside', 'Express affection in words and actions as well as fulfilling responsibilities'],
+    titles: ['Type 1 who swallows anger', 'Type 2 who wants closeness but hesitates to initiate', 'Type 3 who quietly builds achievements', 'Type 4 who hurts quietly', 'Type 5 who withdraws further', 'Type 6 who is more cautious and less certain', 'Type 7 who is more cautious and listens well', 'Type 8 who is quiet and less intrusive', 'Type 9 who feels more passive or low on energy']
+  },
+  self_preservation_instinct_repressed: {
+    displayName: 'Understanding a less-attended self-preservation instinct',
+    reportSummary: 'You may postpone caring for health, money, time, or safety. This does not mean you lack practical ability. Even after noticing a need, it may take time to attend to it.',
+    focusAreas: ['Bodily signals and recovery rhythms', 'Practical resources such as money and time', 'Protecting your boundaries while helping and serving'],
+    practicePrompts: ['Put meals, sleep, and medical appointments in your calendar first', 'Before starting something new, write down three costs or risks', 'Check your schedule before answering a request'],
+    titles: ['Living rightly for others while neglecting yourself', 'Giving everything while refusing help', 'Focusing on success while neglecting its foundations', 'Turning feelings inward while scattering energy outward', 'Absorbed in thought while neglecting body and daily life', 'Worrying about major dangers while overlooking everyday risks', 'Seeing big possibilities while underestimating costs', 'A strong protector who neglects personal health', 'Putting both your thoughts and daily needs last']
+  },
+  mother_type_traits: {
+    displayName: 'Understanding your type as a mother',
+    reportSummary: 'Explore both the strengths your core pattern offers your child and the difficulties that may arise under stress.',
+    focusAreas: ['Positive effects your child experiences', 'Parenting difficulties linked to your patterns', 'Practical adjustments you can begin today'],
+    practicePrompts: ['Ask your child to name one strength they experience in you', 'Record recurring words and demands when stressed', 'Relax one parenting standard this week and prioritize connection']
+  },
+  child_observation_checklist: {
+    displayName: 'Child pattern observation checklist',
+    reportSummary: 'Observe needs and fears that recur across situations without fixing a child to a single number.',
+    focusAreas: ['Recurring behavior and stress signals', 'Motivations beneath outward behavior', 'Helpful parental responses and words to avoid'],
+    practicePrompts: ['Observe recurring patterns for at least two weeks rather than relying on one scene', 'Note the need beneath the child’s behavior first', 'Open a conversation with observation questions rather than a definitive label'],
+    titles: ['Principled / Perfection-seeking', 'Helpful / People-pleasing', 'Achieving / Image-oriented', 'Individual / Romantic', 'Investigative / Observant', 'Loyal / Questioning', 'Enthusiastic / Pleasure-seeking', 'Challenging / Protective', 'Peaceful / Mediating']
+  },
+  child_type_conversation_principles: {
+    displayName: 'Conversation principles for different child patterns',
+    reportSummary: 'Use conversations that affirm a child’s inherent value without intensifying their core fears.',
+    focusAreas: ['Words that may be especially hurtful', 'Phrases that avoid triggering a core fear', 'Communicating that a child is valued as they are'],
+    practicePrompts: ['Prepare a safe opening sentence before correcting', 'Reduce comparisons and conditional praise', 'Review expressions that may trigger the child’s core fear'],
+    titles: ['A child who seeks perfection', 'A helpful child', 'An achieving child', 'A child who values beauty', 'An observant child', 'A loyal child', 'An enthusiastic child', 'A protective child', 'A peaceful child']
+  },
+  sibling_conflict_mediation: {
+    displayName: 'Twenty phrases for mediating sibling conflict',
+    reportSummary: 'Practical language helps a parent act as a mediator when siblings argue.',
+    focusAreas: ['The first thirty seconds of a conflict', 'Helping children hear each other’s feelings', 'Restoration without force and shared family rules'],
+    practicePrompts: ['Stop physical fighting before asking who started', 'Name each child’s feelings in one sentence', 'Address recurring conflict with shared rules as well as words']
+  }
+};
+
+function localizeReportSupportSelection(selection) {
+  if (pageLang !== 'en') return selection;
+  const translate = (material) => {
+    const copy = REPORT_SUPPORT_COPY_EN[material.id];
+    if (!copy) return material;
+    const typeTitle = copy.titles && material.type ? copy.titles[material.type - 1]
+      : material.type && material.id === 'mother_type_traits' ? `Type ${material.type} mother` : null;
+    return { ...material, ...copy, typeTitle };
+  };
+  return {
+    ...selection,
+    materials: (selection.materials || []).map(translate),
+    pendingMaterials: (selection.pendingMaterials || []).map(translate),
+    repressedInstinct: {
+      ...selection.repressedInstinct,
+      label: { sp: 'Self-preservation', so: 'Social', sx: 'One-to-one' }[selection.repressedInstinct?.code] || ''
+    }
+  };
 }
 
 function buildReportSupportSelection(resultData, instinctRows) {
@@ -3554,7 +3697,7 @@ function buildReportSupportSelection(resultData, instinctRows) {
   if (!supportApi || typeof supportApi.selectSupportMaterials !== 'function') {
     return { materials: [], pendingMaterials: [], recommendedSlots: [], repressedInstinct: { code: null } };
   }
-  return supportApi.selectSupportMaterials({
+  return localizeReportSupportSelection(supportApi.selectSupportMaterials({
     audience: getReportAudience(),
     adultType: resultData.core,
     coreType: resultData.core,
@@ -3566,7 +3709,7 @@ function buildReportSupportSelection(resultData, instinctRows) {
     needsSiblingMediation: isTruthyReportParam(['needsSiblingMediation', 'siblingConflict']),
     instinctPct: resultData.instinctPct || null,
     instinctRows
-  });
+  }));
 }
 
 function getReportCoreTone(coreType) {
@@ -3582,13 +3725,13 @@ function renderSupportMaterialsSection(selection) {
   if (!materials.length) return '';
   const cards = materials.map((material) => {
     const isSuppression = Boolean(material.suppressionCode);
-    const kicker = isSuppression ? '낮은 본능 보조 해석' : '추천 보조자료';
+    const kicker = isSuppression ? testCopy("낮은 본능 보조 해석", "Exploring a less-attended instinct") : testCopy("추천 보조자료", "Recommended resource");
     const title = material.typeTitle || material.displayName;
     const focus = material.focusAreas && material.focusAreas.length
-      ? `<h4>중점적으로 볼 부분</h4><ul>${buildReportListItems(material.focusAreas)}</ul>`
+      ? `<h4>${testCopy("중점적으로 볼 부분", "Areas to explore")}</h4><ul>${buildReportListItems(material.focusAreas)}</ul>`
       : '';
     const practice = material.practicePrompts && material.practicePrompts.length
-      ? `<h4>바로 적용할 질문</h4><ul>${buildReportListItems(material.practicePrompts)}</ul>`
+      ? `<h4>${testCopy("바로 적용할 질문", "Questions for practice")}</h4><ul>${buildReportListItems(material.practicePrompts)}</ul>`
       : '';
     return `
       <article class="er-report-support-card${isSuppression ? ' is-suppression' : ''}">
@@ -3602,14 +3745,14 @@ function renderSupportMaterialsSection(selection) {
     `;
   }).join('');
   const repressed = selection.repressedInstinct && selection.repressedInstinct.code
-    ? `<p class="er-report-support-intro">현재 결과에서는 <strong>${escapeReportHtml(selection.repressedInstinct.label || selection.repressedInstinct.code)}</strong> 본능이 낮은 본능 보조 해석 기준에 들어왔습니다. 이는 하위유형을 바꾸는 판정이 아니라, 놓치기 쉬운 삶의 영역을 보완하는 안내입니다.</p>`
-    : '<p class="er-report-support-intro">아래 자료는 결과지의 핵심 유형과 현재 선택된 맥락에 따라 추가로 참고하면 좋은 보조자료입니다.</p>';
+    ? testCopy(`<p class="er-report-support-intro">현재 결과에서는 <strong>${escapeReportHtml(selection.repressedInstinct.label || selection.repressedInstinct.code)}</strong> 본능이 낮은 본능 보조 해석 기준에 들어왔습니다. 이는 하위유형을 바꾸는 판정이 아니라, 놓치기 쉬운 삶의 영역을 보완하는 안내입니다.</p>`, `<p class="er-report-support-intro"><strong>${escapeReportHtml(selection.repressedInstinct.label || selection.repressedInstinct.code)}</strong> met the criteria for a less-attended instinct in these responses. This does not change your subtype; it suggests an area of life that may benefit from more attention.</p>`)
+    : `<p class="er-report-support-intro">${testCopy('아래 자료는 결과지의 핵심 유형과 현재 선택된 맥락에 따라 추가로 참고하면 좋은 보조자료입니다.', 'These resources are selected for the core type and context of your result.')}</p>`;
 
   return `
     <section id="report-support" class="er-report-section er-report-support">
       <div class="er-report-section-head">
-        <span>참고 자료</span>
-        <h2>결과에 따라 함께 보면 좋은 자료</h2>
+        <span>${testCopy("참고 자료", "Resources")}</span>
+        <h2>${testCopy("결과에 따라 함께 보면 좋은 자료", "Resources to explore with your result")}</h2>
       </div>
       ${repressed}
       <div class="er-report-support-grid">${cards}</div>
@@ -3620,79 +3763,79 @@ function renderSupportMaterialsSection(selection) {
 function renderGuidedApplicationSection(model) {
   const c = model.content || {};
   const synthesis = c.synthesis || {};
-  const coreName = c.coreName || `${model.core}번`;
+  const coreName = c.coreName || testCopy(`${model.core}번`, `Type ${model.core}`);
   const firstOf = (items, fallback) => (Array.isArray(items) && items[0]) ? items[0] : fallback;
   const relationshipPractice = c.relationship && c.relationship.practice && c.relationship.practice[0]
     ? c.relationship.practice[0]
-    : '상대가 원하는 도움의 방식과 내가 주고 싶은 도움의 방식을 구분해 보세요.';
+    : testCopy("상대가 원하는 도움의 방식과 내가 주고 싶은 도움의 방식을 구분해 보세요.", "Distinguish the support someone wants from the support you want to give.");
   const careerStrength = c.career && c.career.strength && c.career.strength[0]
     ? c.career.strength[0]
-    : '나의 강점이 어떤 장면에서 건강하게 드러나는지 구체적으로 확인해 보세요.';
+    : testCopy("나의 강점이 어떤 장면에서 건강하게 드러나는지 구체적으로 확인해 보세요.", "Notice a specific situation in which your strengths appear in a healthy way.");
   const parentingPractice = c.parenting && c.parenting.practice && c.parenting.practice[0]
     ? c.parenting.practice[0]
-    : '가까운 사람에게 필요한 반응을 먼저 묻고, 내 자동반응을 조절해 보세요.';
+    : testCopy("가까운 사람에게 필요한 반응을 먼저 묻고, 내 자동반응을 조절해 보세요.", "Ask what response a person close to you needs, then adjust your automatic reaction.");
   const primaryWatch = firstOf(
     [
       ...(c.relationship && c.relationship.watch ? c.relationship.watch : []),
       ...(c.career && c.career.watch ? c.career.watch : []),
       ...(c.falseSelf || [])
     ].filter(Boolean),
-    '강점이 과해지는 순간에는 내가 지키려는 필요와 두려움을 함께 확인해야 합니다.'
+    testCopy("강점이 과해지는 순간에는 내가 지키려는 필요와 두려움을 함께 확인해야 합니다.", "When a strength becomes excessive, explore the need and fear you are protecting.")
   );
   const recoveryHelp = firstOf(
     c.recovery,
-    '압박이 커질수록 혼자 결론내리기보다, 안전한 대화 안에서 내 자동반응을 천천히 확인하는 도움이 필요합니다.'
+    testCopy("압박이 커질수록 혼자 결론내리기보다, 안전한 대화 안에서 내 자동반응을 천천히 확인하는 도움이 필요합니다.", "As pressure increases, a safe conversation can help you explore automatic reactions before drawing conclusions alone.")
   );
-  const protectedNeed = synthesis.protects || c.motivation || '내가 반복해서 지키려는 핵심 필요를 확인하기';
+  const protectedNeed = synthesis.protects || c.motivation || testCopy("내가 반복해서 지키려는 핵심 필요를 확인하기", "Identify the core need you repeatedly protect");
   const pressurePattern = synthesis.overuses || c.fear || primaryWatch;
   const closePeopleGuide = synthesis.closePeople || relationshipPractice;
   const counselingFocus = synthesis.counseling || recoveryHelp;
 
   const applicationMap = [
     {
-      label: '중요한 것',
-      title: '내가 지키려는 것',
-      body: `${coreName}의 반복 패턴은 약점보다 먼저, 내가 무엇을 중요하게 여기고 원하는지 보여줍니다.`,
+      label: testCopy("중요한 것", "What matters"),
+      title: testCopy("내가 지키려는 것", "What you protect"),
+      body: testCopy(`${coreName}의 반복 패턴은 약점보다 먼저, 내가 무엇을 중요하게 여기고 원하는지 보여줍니다.`, `The recurring pattern of ${coreName} shows what matters to you and what you need, alongside areas of difficulty.`),
       value: protectedNeed
     },
     {
-      label: '강점',
-      title: '건강할 때 드러나는 강점',
-      body: '좋은 상태에서 이 성향은 일과 관계에서 도움이 되는 강점으로 나타납니다.',
+      label: testCopy("강점", "Strengths"),
+      title: testCopy("건강할 때 드러나는 강점", "Strengths in a healthy state"),
+      body: testCopy("좋은 상태에서 이 성향은 일과 관계에서 도움이 되는 강점으로 나타납니다.", "In a healthy state, this pattern becomes a strength in work and relationships."),
       value: careerStrength
     },
     {
-      label: '스트레스',
-      title: '압박에서 과해지는 것',
-      body: '스트레스가 커질수록 평소 강점이 지나치게 나타나, 가까운 사람에게 부담을 줄 수 있습니다.',
+      label: testCopy("스트레스", "Stress"),
+      title: testCopy("압박에서 과해지는 것", "What becomes excessive under pressure"),
+      body: testCopy("스트레스가 커질수록 평소 강점이 지나치게 나타나, 가까운 사람에게 부담을 줄 수 있습니다.", "As stress rises, everyday strengths can become excessive and burden people close to you."),
       value: pressurePattern
     },
     {
-      label: '주변의 도움',
-      title: '가까운 사람이 알아야 할 것',
-      body: '나를 고치려 하기보다, 내가 왜 그렇게 반응하는지 함께 살펴볼 때 변화가 시작됩니다.',
+      label: testCopy("주변의 도움", "Support from others"),
+      title: testCopy("가까운 사람이 알아야 할 것", "What people close to you should know"),
+      body: testCopy("나를 고치려 하기보다, 내가 왜 그렇게 반응하는지 함께 살펴볼 때 변화가 시작됩니다.", "Change begins with exploring why you respond this way in a supportive conversation."),
       value: closePeopleGuide
     }
   ];
 
   const steps = [
     {
-      label: '나',
-      title: '나를 이해하는 단계',
-      body: `${coreName}의 핵심 동기와 방어적인 반응을 이해하면, 내가 비슷한 상황에서 왜 같은 선택을 하는지 살펴볼 수 있습니다.`,
+      label: testCopy("나", "Yourself"),
+      title: testCopy("나를 이해하는 단계", "Understanding yourself"),
+      body: testCopy(`${coreName}의 핵심 동기와 방어적인 반응을 이해하면, 내가 비슷한 상황에서 왜 같은 선택을 하는지 살펴볼 수 있습니다.`, `Understanding the core motivation and defensive responses of ${coreName} helps explain choices you repeat in similar situations.`),
       bullets: [protectedNeed, pressurePattern]
     },
     {
-      label: '주변 사람',
-      title: '타인을 이해하는 단계',
-      body: '에니어그램의 실제 가치는 배우자·자녀·동료가 무엇을 지키려 하고 어떤 상황을 힘들어하는지 이해하는 데서 시작됩니다.',
+      label: testCopy("주변 사람", "People around you"),
+      title: testCopy("타인을 이해하는 단계", "Understanding others"),
+      body: testCopy("에니어그램의 실제 가치는 배우자·자녀·동료가 무엇을 지키려 하고 어떤 상황을 힘들어하는지 이해하는 데서 시작됩니다.", "The Enneagram becomes useful when it helps you understand what partners, children, and colleagues protect and what situations they find difficult."),
       bullets: [relationshipPractice, parentingPractice]
     },
     {
-      label: '실천',
-      title: '관계 안에서 돕는 단계',
-      body: '혼자 읽은 통찰은 금방 흐려집니다. 결과지 해석상담과 기본과정은 실제 대화, 갈등, 양육, 리더십 장면에 적용하도록 돕습니다.',
-      bullets: [counselingFocus, '가족·팀·사역 현장에서 꾸준히 실천할 방법 정하기']
+      label: testCopy("실천", "Practice"),
+      title: testCopy("관계 안에서 돕는 단계", "Offering support in relationships"),
+      body: testCopy("혼자 읽은 통찰은 금방 흐려집니다. 결과지 해석상담과 기본과정은 실제 대화, 갈등, 양육, 리더십 장면에 적용하도록 돕습니다.", "Insights need ongoing practice. A report consultation or basic course can help apply them in conversations, conflict, parenting, and leadership."),
+      bullets: [counselingFocus, testCopy("가족·팀·사역 현장에서 꾸준히 실천할 방법 정하기", "Choose an ongoing practice in your family, team, or ministry")]
     }
   ];
 
@@ -3716,11 +3859,11 @@ function renderGuidedApplicationSection(model) {
   return `
     <section id="report-application" class="er-report-section er-report-application">
       <div class="er-report-section-head">
-        <span>일상에 적용하기</span>
-        <h2>나와 주변 사람에게 적용하기</h2>
+        <span>${testCopy("일상에 적용하기", "Everyday application")}</span>
+        <h2>${testCopy("나와 주변 사람에게 적용하기", "Applying this to yourself and others")}</h2>
       </div>
       <div class="er-report-application-hero">
-        <p>결과를 읽으며 내 성향과 바라는 것, 강점을 살펴보세요. 주변 사람과 다른 점을 이해하면, 대화하거나 도움을 줄 때 더 잘 맞는 방법을 찾을 수 있습니다.</p>
+        <p>${testCopy("결과를 읽으며 내 성향과 바라는 것, 강점을 살펴보세요. 주변 사람과 다른 점을 이해하면, 대화하거나 도움을 줄 때 더 잘 맞는 방법을 찾을 수 있습니다.", "Explore your patterns, needs, and strengths as you read. Understanding how others differ helps you find a better way to talk and offer support.")}</p>
       </div>
       <div class="er-report-application-map">${applicationMapCards}</div>
       <div class="er-report-bridge-grid">${cards}</div>
@@ -3730,36 +3873,36 @@ function renderGuidedApplicationSection(model) {
 
 const CONSULTATION_QUESTION_MAP = {
   '1_6': [
-    '계속 확인하는 이유가 기준 미달을 고치려는 것인가요, 빠진 위험을 막으려는 것인가요?',
-    '불확실할 때 분노가 먼저 오나요, 불안이 먼저 오나요?'
+    testCopy("계속 확인하는 이유가 기준 미달을 고치려는 것인가요, 빠진 위험을 막으려는 것인가요?", "Do you keep checking to correct something below your standards, or to prevent an overlooked risk?"),
+    testCopy("불확실할 때 분노가 먼저 오나요, 불안이 먼저 오나요?", "In uncertainty, do you notice anger first or anxiety first?")
   ],
   '2_9': [
-    '맞춰주는 이유가 필요한 존재가 되고 싶어서인가요, 마찰을 줄이고 싶어서인가요?',
-    '거절이 올 때 존재 의미가 흔들리나요, 긴장이 커지는 것이 부담스럽나요?'
+    testCopy("맞춰주는 이유가 필요한 존재가 되고 싶어서인가요, 마찰을 줄이고 싶어서인가요?", "Do you accommodate others to feel needed or to reduce friction?"),
+    testCopy("거절이 올 때 존재 의미가 흔들리나요, 긴장이 커지는 것이 부담스럽나요?", "When refused, does your sense of significance feel shaken, or does increased tension feel burdensome?")
   ],
   '3_6': [
-    '압박을 받으면 빨리 성과를 내야 마음이 놓이나요, 빠진 위험을 확인해야 안정되나요?',
-    '실패 가능성이 보일 때 무능해 보일까 봐 긴장하나요, 대비가 부족할까 봐 긴장하나요?'
+    testCopy("압박을 받으면 빨리 성과를 내야 마음이 놓이나요, 빠진 위험을 확인해야 안정되나요?", "Under pressure, do you settle after achieving something quickly or after checking overlooked risks?"),
+    testCopy("실패 가능성이 보일 때 무능해 보일까 봐 긴장하나요, 대비가 부족할까 봐 긴장하나요?", "When failure is possible, do you fear looking incapable or being insufficiently prepared?")
   ],
   '3_9': [
-    '상대에게 맞추는 이유가 좋은 평가를 받기 위해서인가요, 갈등을 피하기 위해서인가요?',
-    '압박을 받으면 더 열심히 하려고 하나요, 일단 미루고 쉬고 싶어지나요?'
+    testCopy("상대에게 맞추는 이유가 좋은 평가를 받기 위해서인가요, 갈등을 피하기 위해서인가요?", "Do you adapt to others to be seen positively or to avoid conflict?"),
+    testCopy("압박을 받으면 더 열심히 하려고 하나요, 일단 미루고 쉬고 싶어지나요?", "Under pressure, do you work harder or want to postpone things and rest?")
   ],
   '4_7': [
-    '무거운 감정이 올라올 때 그 감정 안으로 더 들어가나요, 아니면 다른 가능성으로 전환하나요?',
-    '반복적 일상에서 공허함이 먼저 오나요, 갇힘과 지루함이 먼저 오나요?'
+    testCopy("무거운 감정이 올라올 때 그 감정 안으로 더 들어가나요, 아니면 다른 가능성으로 전환하나요?", "When heavy feelings arise, do you explore them more deeply or turn to other possibilities?"),
+    testCopy("반복적 일상에서 공허함이 먼저 오나요, 갇힘과 지루함이 먼저 오나요?", "In a repetitive routine, do you first notice emptiness or confinement and boredom?")
   ],
   '5_9': [
-    '물러나는 이유가 에너지 보존인가요, 관계의 긴장을 줄이려는 것인가요?',
-    '침묵할 때 내 공간을 지키는 느낌인가요, 갈등을 덮고 넘어가려는 느낌인가요?'
+    testCopy("물러나는 이유가 에너지 보존인가요, 관계의 긴장을 줄이려는 것인가요?", "Do you withdraw to conserve energy or to reduce tension in a relationship?"),
+    testCopy("침묵할 때 내 공간을 지키는 느낌인가요, 갈등을 덮고 넘어가려는 느낌인가요?", "When silent, do you feel you are protecting your space or trying to let conflict pass?")
   ],
   '6_8': [
-    '강하게 맞설 때 검증하려는 마음인가요, 주도권을 되찾으려는 마음인가요?',
-    '갈등 뒤에 재점검이 남나요, 정리됐다는 느낌이 남나요?'
+    testCopy("강하게 맞설 때 검증하려는 마음인가요, 주도권을 되찾으려는 마음인가요?", "When confronting someone, are you testing trustworthiness or reclaiming control?"),
+    testCopy("갈등 뒤에 재점검이 남나요, 정리됐다는 느낌이 남나요?", "After conflict, do you keep reviewing what happened or feel it has been settled?")
   ],
   '7_9': [
-    '불편함을 피할 때 다른 가능성으로 전환하나요, 익숙한 일에 몰두하며 문제를 미루나요?',
-    '갈등 뒤에 새 계획으로 빨리 이동하나요, 아무 일 없던 것처럼 덮고 싶어지나요?'
+    testCopy("불편함을 피할 때 다른 가능성으로 전환하나요, 익숙한 일에 몰두하며 문제를 미루나요?", "To avoid discomfort, do you shift to other possibilities or delay the problem through familiar activities?"),
+    testCopy("갈등 뒤에 새 계획으로 빨리 이동하나요, 아무 일 없던 것처럼 덮고 싶어지나요?", "After conflict, do you quickly move to a new plan or want to let it pass as though nothing happened?")
   ]
 };
 
@@ -3803,7 +3946,7 @@ function getInstinctClarity(instinctPct, responseQuality) {
 
 function buildConfidenceExplanation({ confidence, diff, core, second, instinctPct, responseQuality, tieState, stateStressAdjustment }) {
   const displayConfidence = getReportConfidenceDisplay(confidence || '보통');
-  const label = `해석 신뢰도: ${displayConfidence}`;
+  const label = testCopy(`해석 신뢰도: ${displayConfidence}`, `Interpretation confidence: ${displayConfidence}`);
   const tone = confidence === '높음' ? 'high' : confidence === '낮음' ? 'low' : 'medium';
   const secondType = second && second.type ? Number(second.type) : null;
   const pairKey = getTypePairKey(core, secondType);
@@ -3820,57 +3963,57 @@ function buildConfidenceExplanation({ confidence, diff, core, second, instinctPc
 
   if (secondType) {
     if (gapPct < 8) {
-      reasons.push(`${core}번과 ${secondType}번 점수 차이가 ${gapPct.toFixed(1)}%로 근접합니다.`);
+      reasons.push(testCopy(`${core}번과 ${secondType}번 점수 차이가 ${gapPct.toFixed(1)}%로 근접합니다.`, `Types ${core} and ${secondType} are close, with a score gap of ${gapPct.toFixed(1)}%.`));
     } else if (gapPct >= 20) {
-      reasons.push(`${core}번이 ${secondType}번보다 ${gapPct.toFixed(1)}% 앞서 결과가 비교적 선명합니다.`);
+      reasons.push(testCopy(`${core}번이 ${secondType}번보다 ${gapPct.toFixed(1)}% 앞서 결과가 비교적 선명합니다.`, `Type ${core} leads Type ${secondType} by ${gapPct.toFixed(1)}%, making the result relatively distinct.`));
     } else {
-      reasons.push(`${core}번이 1순위지만 ${secondType}번 영향도 함께 확인할 필요가 있습니다.`);
+      reasons.push(testCopy(`${core}번이 1순위지만 ${secondType}번 영향도 함께 확인할 필요가 있습니다.`, `Type ${core} ranks first, but the influence of Type ${secondType} also deserves a closer look.`));
     }
   }
 
   reasons.push(instinctClarity.clear
-    ? '본능 점수는 비교적 선명합니다.'
-    : `본능 점수가 선명하지 않습니다. 1위 본능 ${instinctClarity.top}%, 2순위와 차이 ${instinctClarity.gap}%입니다.`);
+    ? testCopy("본능 점수는 비교적 선명합니다.", "The instinct scores are relatively distinct.")
+    : testCopy(`본능 점수가 선명하지 않습니다. 1위 본능 ${instinctClarity.top}%, 2순위와 차이 ${instinctClarity.gap}%입니다.`, `Instinct scores are not distinct. The leading instinct is ${instinctClarity.top}%, with a ${instinctClarity.gap}% gap to the second.`));
 
   if (quality.metrics && quality.metrics.centerCoreAligned === false) {
-    reasons.push('센터 응답과 코어 결과가 충돌합니다. 상담에서 어느 자동반응이 더 반복적인지 확인이 필요합니다.');
+    reasons.push(testCopy("센터 응답과 코어 결과가 충돌합니다. 상담에서 어느 자동반응이 더 반복적인지 확인이 필요합니다.", "Center responses and the core result differ. A consultation can explore which automatic response recurs more consistently."));
   } else if (quality.metrics && quality.metrics.centerCoreAligned === true) {
-    reasons.push('센터 응답은 코어 결과와 대체로 일치합니다.');
+    reasons.push(testCopy("센터 응답은 코어 결과와 대체로 일치합니다.", "Center responses broadly align with the core result."));
   }
 
   if (quality.level === 'low') {
-    reasons.push(`응답 품질 체크에서 해석 주의 신호가 있습니다${qualityLabels.length ? `: ${qualityLabels.join(', ')}` : '.'}`);
+    reasons.push(`${testCopy('응답 품질 체크에서 해석 주의 신호가 있습니다', 'Response-quality checks suggest care in interpretation')}${qualityLabels.length ? `: ${qualityLabels.join(', ')}` : '.'}`);
   } else if (qualityFlags.length) {
-    reasons.push(`응답 품질 체크에서 확인할 항목이 있습니다: ${qualityLabels.join(', ')}`);
+    reasons.push(`${testCopy('응답 품질 체크에서 확인할 항목이 있습니다', 'Response-quality checks suggest items to explore')}: ${qualityLabels.join(', ')}`);
   } else {
-    reasons.push('응답 품질 체크에서 큰 왜곡 신호는 보이지 않습니다.');
+    reasons.push(testCopy("응답 품질 체크에서 큰 왜곡 신호는 보이지 않습니다.", "The response-quality check shows no major warning signs."));
   }
 
   if (pairLabel && isTieEnabledForPair(pairKey, tieState)) {
-    reasons.push(`${pairLabel} 감별 문항이 적용되었습니다.`);
+    reasons.push(testCopy(`${pairLabel} 감별 문항이 적용되었습니다.`, `Questions distinguishing ${pairLabel} were applied.`));
   } else if (pairLabel && consultationQuestions.length && tone !== 'high') {
-    reasons.push(`${pairLabel} 감별은 상담에서 한 번 더 확인하는 것이 좋습니다.`);
+    reasons.push(testCopy(`${pairLabel} 감별은 상담에서 한 번 더 확인하는 것이 좋습니다.`, `A consultation can further explore the distinction between ${pairLabel}.`));
   }
 
   if (stateStressAdjustment && stateStressAdjustment.applied) {
-    reasons.push('최근 스트레스가 6번 관련 불안/확인 반응을 키울 수 있어 상태성 보정을 적용했습니다.');
+    reasons.push(testCopy("최근 스트레스가 6번 관련 불안/확인 반응을 키울 수 있어 상태성 보정을 적용했습니다.", "A temporary-state adjustment was applied because recent stress may amplify Type 6 anxiety and checking responses."));
   }
 
   if (!consultationQuestions.length) {
     consultationQuestions.push(
-      `${core}번 결과가 실제 반복 패턴인지 보려면, 압박이 올 때 먼저 지키려는 것이 무엇인지 확인해 보세요.`
+      testCopy(`${core}번 결과가 실제 반복 패턴인지 보려면, 압박이 올 때 먼저 지키려는 것이 무엇인지 확인해 보세요.`, `To explore whether Type ${core} is a recurring pattern, notice what you first protect under pressure.`)
     );
     if (secondType) {
-      consultationQuestions.push(`${secondType}번과 헷갈린다면, 그 반응이 오래 반복되는 성향인지 최근 상황 반응인지 구분해 보세요.`);
+      consultationQuestions.push(testCopy(`${secondType}번과 헷갈린다면, 그 반응이 오래 반복되는 성향인지 최근 상황 반응인지 구분해 보세요.`, `If Type ${secondType} also fits, distinguish a longstanding pattern from a response to recent circumstances.`));
     }
   }
 
   const requiresCare = tone === 'low' || quality.level === 'low';
   const summary = requiresCare
-    ? '핵심 방향은 보이지만, 가까운 후보와 응답 패턴을 상담에서 함께 확인하면 더 안전합니다.'
+    ? testCopy("핵심 방향은 보이지만, 가까운 후보와 응답 패턴을 상담에서 함께 확인하면 더 안전합니다.", "A core direction is visible, but exploring nearby possibilities and response patterns in consultation would make the interpretation more reliable.")
     : tone === 'high'
-      ? '현재 응답 패턴은 핵심 유형과 보조 지표가 비교적 일관되게 모입니다.'
-      : '핵심 방향은 선명하지만, 가까운 후보와 본능·날개 해석은 상담에서 정리하면 더 정확해집니다.';
+      ? testCopy("현재 응답 패턴은 핵심 유형과 보조 지표가 비교적 일관되게 모입니다.", "Your response patterns show relatively consistent support for the core type and related indicators.")
+      : testCopy("핵심 방향은 선명하지만, 가까운 후보와 본능·날개 해석은 상담에서 정리하면 더 정확해집니다.", "The core direction is clear. A consultation can clarify nearby possibilities and the interpretation of instinct and wing.");
 
   return {
     label,
@@ -3894,21 +4037,21 @@ function renderConfidenceExplanationSection(explanation) {
   return `
     <section id="report-confidence" class="er-report-section er-report-confidence-section is-${escapeReportHtml(explanation.tone || 'medium')}">
       <div class="er-report-section-head">
-        <span>결과 해석</span>
-        <h2>결과의 근거와 더 살펴볼 점</h2>
+        <span>${testCopy("결과 해석", "Understanding your result")}</span>
+        <h2>${testCopy("결과의 근거와 더 살펴볼 점", "What supports your result and what needs a closer look")}</h2>
       </div>
       <div class="er-report-confidence-grid">
         <article class="er-report-confidence-status">
-          <span>결과를 읽는 기준</span>
+          <span>${testCopy("결과를 읽는 기준", "How to read this result")}</span>
           <h3>${escapeReportHtml(explanation.label)}</h3>
           <p>${escapeReportHtml(explanation.summary)}</p>
         </article>
         <article>
-          <h3>판정 근거</h3>
+          <h3>${testCopy("판정 근거", "Evidence for this interpretation")}</h3>
           <ul>${reasons}</ul>
         </article>
         <article>
-          <h3>상담에서 확인할 질문</h3>
+          <h3>${testCopy("상담에서 확인할 질문", "Questions to explore in consultation")}</h3>
           <ol>${questions}</ol>
         </article>
       </div>
@@ -3921,57 +4064,57 @@ function renderExecutiveSummaryCard(model) {
   const c = model.content || {};
   const topTypes = (model.top3 || [])
     .slice(0, 3)
-    .map((item) => `${item.type}번`)
+    .map((item) => testCopy(`${item.type}번`, `Type ${item.type}`))
     .join(' / ');
   const questions = model.confidenceExplanation && model.confidenceExplanation.consultationQuestions
     ? model.confidenceExplanation.consultationQuestions.slice(0, 2)
     : [];
   const focusText = questions.length
-    ? `상담에서는 ${questions.map((q) => `"${q}"`).join('와 ')}를 함께 확인합니다.`
-    : '상담에서는 이 결과가 실제 삶의 반복 장면에서 어떻게 나타나는지 함께 확인합니다.';
+    ? testCopy(`상담에서는 ${questions.map((q) => `"${q}"`).join('와 ')}를 함께 확인합니다.`, `A consultation explores: ${questions.map((q) => `"${q}"`).join(' and ')}`)
+    : testCopy("상담에서는 이 결과가 실제 삶의 반복 장면에서 어떻게 나타나는지 함께 확인합니다.", "A consultation explores how this result appears in recurring situations in your life.");
   const subtypeLine = c.subtypeLabel || model.display.subtype;
   const wingLine = model.selectedWing
-    ? `${model.selectedWing}번의 성향이 핵심 유형의 행동 방식에 함께 나타날 수 있습니다.`
-    : '두 날개 중 어느 쪽이 더 가까운지 추가로 살펴볼 필요가 있습니다.';
+    ? testCopy(`${model.selectedWing}번의 성향이 핵심 유형의 행동 방식에 함께 나타날 수 있습니다.`, `Characteristics of Type ${model.selectedWing} may shape how the core pattern is expressed.`)
+    : testCopy("두 날개 중 어느 쪽이 더 가까운지 추가로 살펴볼 필요가 있습니다.", "Further observation is needed to distinguish which of the two wings is closer.");
 
   return `
-    <section id="report-executive" class="er-report-executive" aria-label="결과 핵심 요약">
+    <section id="report-executive" class="er-report-executive" aria-label="${testCopy('결과 핵심 요약', 'Key result summary')}">
       <div class="er-report-executive-head">
-        <span>핵심 요약</span>
-        <h2>이 결과에서 가장 먼저 볼 것</h2>
-        <p>이 결과를 평소 내 모습과 비교해 보세요. 잘 맞지 않거나 헷갈리는 부분은 상담에서 함께 살펴볼 수 있습니다.</p>
+        <span>${testCopy("핵심 요약", "Key summary")}</span>
+        <h2>${testCopy("이 결과에서 가장 먼저 볼 것", "Where to begin with your result")}</h2>
+        <p>${testCopy("이 결과를 평소 내 모습과 비교해 보세요. 잘 맞지 않거나 헷갈리는 부분은 상담에서 함께 살펴볼 수 있습니다.", "Compare this result with your everyday experience. A consultation can help explore parts that feel unclear or do not fit.")}</p>
       </div>
       <div class="er-report-executive-grid">
         <article>
-          <span>핵심 유형</span>
+          <span>${testCopy("핵심 유형", "Core type")}</span>
           <h3>${escapeReportHtml(model.display.core)} ${escapeReportHtml(c.coreName || '')}</h3>
           <p>${escapeReportHtml(c.motivation || '')}</p>
         </article>
         <article>
-          <span>하위유형</span>
+          <span>${testCopy("하위유형", "Subtype")}</span>
           <h3>${escapeReportHtml(subtypeLine)}</h3>
           <p>${escapeReportHtml(c.definition || '')}</p>
         </article>
         <article>
-          <span>날개</span>
+          <span>${testCopy("날개", "Wing")}</span>
           <h3>${escapeReportHtml(model.display.wing)}</h3>
           <p>${escapeReportHtml(wingLine)}</p>
         </article>
         <article>
-          <span>결과 해석</span>
-          <h3>해석 신뢰도: ${escapeReportHtml(model.display.confidence)}</h3>
+          <span>${testCopy("결과 해석", "Understanding your result")}</span>
+          <h3>${testCopy('해석 신뢰도', 'Interpretation confidence')}: ${escapeReportHtml(model.display.confidence)}</h3>
           <p>${escapeReportHtml(model.confidenceExplanation ? model.confidenceExplanation.summary : '')}</p>
         </article>
       </div>
       <div class="er-report-executive-focus">
         <div>
-          <span>함께 살펴볼 유형</span>
-          <strong>${escapeReportHtml(topTypes || '상담에서 확인')}</strong>
-          <p>헷갈릴 수 있는 가까운 유형들입니다.</p>
+          <span>${testCopy("함께 살펴볼 유형", "Types to explore together")}</span>
+          <strong>${escapeReportHtml(topTypes || testCopy("상담에서 확인", "Explore in consultation"))}</strong>
+          <p>${testCopy('헷갈릴 수 있는 가까운 유형들입니다.', 'These nearby patterns may feel similar.')}</p>
         </div>
         <div>
-          <span>상담에서 확인할 점</span>
-          <strong>결과지 해석상담에서 확인할 핵심 질문</strong>
+          <span>${testCopy("상담에서 확인할 점", "What to explore in consultation")}</span>
+          <strong>${testCopy("결과지 해석상담에서 확인할 핵심 질문", "Key questions for a report consultation")}</strong>
           <p>${escapeReportHtml(focusText)}</p>
         </div>
       </div>
@@ -3987,14 +4130,14 @@ function buildReportEvidenceCopy(model) {
   const topShare = model.top3Total && top ? (top.score / model.top3Total) * 100 : null;
   const secondShare = model.top3Total && second ? (second.score / model.top3Total) * 100 : null;
   const topLine = top && second && Number.isFinite(topShare) && Number.isFinite(secondShare)
-    ? `${top.type}번의 점수가 가장 높고, ${second.type}번이 그다음으로 나타났습니다. 이 차이는 결과를 단정하기보다 실제 삶의 반복 장면에서 함께 확인할 근거입니다.`
-    : '점수는 유형 이름을 확정하는 숫자가 아니라, 평소 어떤 마음으로 반응하는지 보여줍니다.';
+    ? testCopy(`${top.type}번의 점수가 가장 높고, ${second.type}번이 그다음으로 나타났습니다. 이 차이는 결과를 단정하기보다 실제 삶의 반복 장면에서 함께 확인할 근거입니다.`, `Type ${top.type} received the highest score, followed by Type ${second.type}. This difference offers evidence to explore in everyday situations rather than a definitive conclusion.`)
+    : testCopy("점수는 유형 이름을 확정하는 숫자가 아니라, 평소 어떤 마음으로 반응하는지 보여줍니다.", "Scores offer clues about recurring motivations; they do not establish a definitive type.");
 
   return {
     topLine,
-    instinctLine: synthesis.instinctSignal || '본능 점수는 어떤 생활 영역에 관심을 더 기울이는지 보여줍니다.',
-    wingLine: synthesis.wingSignal || '날개 점수는 핵심 유형이 밖으로 표현되는 방식을 확인하는 보조 단서입니다.',
-    closeTypeLine: synthesis.closeTypeSignal || '가까운 유형들은 상담에서 헷갈릴 수 있는 반응의 이유를 정리하는 단서입니다.'
+    instinctLine: synthesis.instinctSignal || testCopy("본능 점수는 어떤 생활 영역에 관심을 더 기울이는지 보여줍니다.", "Instinct scores indicate which areas of life tend to receive more attention."),
+    wingLine: synthesis.wingSignal || testCopy("날개 점수는 핵심 유형이 밖으로 표현되는 방식을 확인하는 보조 단서입니다.", "Wing scores provide an additional clue about how the core pattern is expressed."),
+    closeTypeLine: synthesis.closeTypeSignal || testCopy("가까운 유형들은 상담에서 헷갈릴 수 있는 반응의 이유를 정리하는 단서입니다.", "Nearby types offer clues for exploring similar responses and their different motivations in consultation.")
   };
 }
 
@@ -4006,17 +4149,17 @@ function buildPremiumReportModel(resultData) {
     ? resultData.phase4.wingNum
     : resultData.wingNum;
   const reportContent = subtypePending && contentApi.getCoreContent
-    ? contentApi.getCoreContent(resultData.core, selectedWing)
+    ? contentApi.getCoreContent(resultData.core, selectedWing, pageLang)
     : contentApi.getContent && !subtypePending
-    ? contentApi.getContent(resultData.core, subtypeCode, selectedWing)
+    ? contentApi.getContent(resultData.core, subtypeCode, selectedWing, pageLang)
     : null;
   const fallbackContent = reportContent || {
-    heroStatement: '나를 더 진실하게 마주하는 여정',
-    coreName: `${resultData.core}번`,
-    subtypeLabel: `${subtypeCode} ${resultData.core}번`,
-    definition: '진단 결과를 바탕으로 현재 반복 패턴과 회복 방향을 정리합니다.',
-    motivation: '나의 중심 동기를 이해하고 싶음',
-    fear: '반복되는 반응에 다시 붙들리는 것',
+    heroStatement: testCopy("나를 더 진실하게 마주하는 여정", "A journey toward a more honest understanding of yourself"),
+    coreName: testCopy(`${resultData.core}번`, `Type ${resultData.core}`),
+    subtypeLabel: testCopy(`${subtypeCode} ${resultData.core}번`, `${subtypeCode || 'Subtype pending'} · Type ${resultData.core}`),
+    definition: testCopy("진단 결과를 바탕으로 현재 반복 패턴과 회복 방향을 정리합니다.", "This result explores recurring patterns and possible directions for restoration."),
+    motivation: testCopy("나의 중심 동기를 이해하고 싶음", "Understanding your central motivation"),
+    fear: testCopy("반복되는 반응에 다시 붙들리는 것", "Being caught in recurring reactions"),
     cycle: [],
     falseSelf: [],
     restoredSelf: [],
@@ -4059,13 +4202,13 @@ function buildPremiumReportModel(resultData) {
     stateStressAdjustment: resultData.stateStressAdjustment
   });
   if (resultData.assessmentVersion === 'word-narrative-v2') {
-    confidenceExplanation.label = resultData.coreResolved ? '가장 가까운 유형을 찾았습니다' : '핵심 동기를 더 확인해 주세요';
-    confidenceExplanation.summary = '단어는 후보를 고르는 데 사용하고, 최종 유형은 상황 속 동기 선택으로 비교했습니다. 이 점수는 유형일 확률이나 검증된 정확도를 뜻하지 않습니다.';
+    confidenceExplanation.label = resultData.coreResolved ? testCopy("가장 가까운 유형을 찾았습니다", "Your closest pattern has emerged") : testCopy("핵심 동기를 더 확인해 주세요", "Explore the core motivation further");
+    confidenceExplanation.summary = testCopy("단어는 후보를 고르는 데 사용하고, 최종 유형은 상황 속 동기 선택으로 비교했습니다. 이 점수는 유형일 확률이나 검증된 정확도를 뜻하지 않습니다.", "Words selected the possibilities; the final comparison used motivations in everyday situations. Scores do not represent type probabilities or validated accuracy.");
     confidenceExplanation.reasons = [
-      `${(resultData.candidateTypes || []).length}개 후보를 같은 수의 비교 질문으로 살펴봤습니다.`,
-      resultData.coreResolved ? '상황 질문에서 다른 후보보다 점수가 높은 유형이 나타났습니다.' : '여러 유형의 점수가 비슷하거나, 비교할 수 있는 답이 부족합니다.',
-      subtypePending ? '하위유형은 추가 확인이 필요합니다.' : '하위유형은 해당 유형의 생활 장면 응답으로 확인했습니다.',
-      selectedWing ? '날개는 인접한 두 유형의 표현 방식을 별도로 비교했습니다.' : '날개는 추가 확인이 필요합니다.'
+      testCopy(`${(resultData.candidateTypes || []).length}개 후보를 같은 수의 비교 질문으로 살펴봤습니다.`, `${(resultData.candidateTypes || []).length} possibilities were explored with an equal number of comparison questions.`),
+      resultData.coreResolved ? testCopy("상황 질문에서 다른 후보보다 점수가 높은 유형이 나타났습니다.", "One type received a higher score than the other possibilities in the situation questions.") : testCopy("여러 유형의 점수가 비슷하거나, 비교할 수 있는 답이 부족합니다.", "Several types have similar scores, or too few answers allow a comparison."),
+      subtypePending ? testCopy("하위유형은 추가 확인이 필요합니다.", "Subtype needs further observation.") : testCopy("하위유형은 해당 유형의 생활 장면 응답으로 확인했습니다.", "Subtype was explored through everyday situations specific to this core type."),
+      selectedWing ? testCopy("날개는 인접한 두 유형의 표현 방식을 별도로 비교했습니다.", "Wing was explored through a separate comparison of the two adjacent patterns.") : testCopy("날개는 추가 확인이 필요합니다.", "Wing needs further observation.")
     ];
   }
 
@@ -4083,16 +4226,16 @@ function buildPremiumReportModel(resultData) {
     confidenceExplanation,
     display: {
       headline: formatReportHeadline(resultData),
-      final: `${subtypeCode || '하위유형 확인 중'} ${resultData.wingCode}`,
+      final: `${subtypeCode || testCopy("하위유형 확인 중", "Subtype pending")} ${resultData.wingCode}`,
       core: resultData.coreDisplay,
       subtype: resultData.phase4
-        ? `하위유형: ${resultData.instinctLabel}`
-        : `제 1본능: ${resultData.instinctLabel}`,
+        ? testCopy(`하위유형: ${resultData.instinctLabel}`, `Subtype: ${resultData.instinctLabel}`)
+        : testCopy(`제 1본능: ${resultData.instinctLabel}`, `Leading instinct: ${resultData.instinctLabel}`),
       wing: resultData.wing,
-      confidence: resultData.assessmentVersion === 'word-narrative-v2' ? (resultData.coreResolved ? '자기이해를 위한 잠정 결과' : '추가 확인 필요') : getReportConfidenceDisplay(resultData.confidence),
+      confidence: resultData.assessmentVersion === 'word-narrative-v2' ? (resultData.coreResolved ? testCopy("자기이해를 위한 잠정 결과", "A tentative result for self-understanding") : testCopy("추가 확인 필요", "Further observation needed")) : getReportConfidenceDisplay(resultData.confidence),
       stressGrowth: resultData.coreResolved
-        ? `통합 방향 ${arrowLines[resultData.core].growth}번 · 스트레스 방향 ${arrowLines[resultData.core].stress}번`
-        : '핵심 유형을 확인한 뒤 살펴볼 수 있습니다.'
+        ? testCopy(`통합 방향 ${arrowLines[resultData.core].growth}번 · 스트레스 방향 ${arrowLines[resultData.core].stress}번`, `Growth toward Type ${arrowLines[resultData.core].growth} · Stress toward Type ${arrowLines[resultData.core].stress}`)
+        : testCopy("핵심 유형을 확인한 뒤 살펴볼 수 있습니다.", "Explore these directions after confirming the core type.")
     }
   };
 }
@@ -4108,15 +4251,15 @@ function renderScreeningSummary(model) {
     return { ...row, type, score, share: total ? score / total * 100 : 0 };
   }).sort((a, b) => b.score - a.score);
   return `<section id="report-screening" class="er-report-section er-report-screening">
-    <div class="er-report-section-head"><h2>단어에서 동기로, 후보를 비교한 과정</h2>
-      <p>단어의 예·아니요·모르겠다를 구분해 후보를 골랐습니다. 아래 막대는 상황 질문에서 각 후보가 받은 점수의 비율이며 유형일 확률이 아닙니다.</p></div>
-    ${screening.unclear || screening.needsClarification ? '<p class="er-report-microcopy">단어만으로 후보가 좁혀지지 않아, 추가 설명을 읽고 직접 고른 후보를 비교했습니다.</p>' : ''}
+    <div class="er-report-section-head"><h2>${testCopy("단어에서 동기로, 후보를 비교한 과정", "From words to motivations: how the possibilities were compared")}</h2>
+      <p>${testCopy("단어의 예·아니요·모르겠다를 구분해 후보를 골랐습니다. 아래 막대는 상황 질문에서 각 후보가 받은 점수의 비율이며 유형일 확률이 아닙니다.", "Yes, No, and Not sure word responses selected the possibilities to compare. The bars show relative shares of situation-question scores, not the probability of being a type.")}</p></div>
+    ${screening.unclear || screening.needsClarification ? `<p class="er-report-microcopy">${testCopy("단어만으로 후보가 좁혀지지 않아, 추가 설명을 읽고 직접 고른 후보를 비교했습니다.", "The words did not narrow the possibilities enough, so you read additional descriptions and chose which patterns to compare.")}</p>` : ''}
     <div class="er-report-screening-rows">${rows.map((row) => `<article class="er-report-screening-row">
-      <div><h3>${row.type}번</h3><p>단어 응답 · 예 ${Number(row.yes) || 0} / 모르겠다 ${Number(row.unsure) || 0} / 아니요 ${Number(row.no) || 0}</p></div>
-      <strong>${total ? `${row.share.toFixed(0)}%` : '비교 근거 부족'}</strong>
+      <div><h3>${testCopy(`${row.type}번`, `Type ${row.type}`)}</h3><p>${testCopy('단어 응답 · 예', 'Word responses · Yes')} ${Number(row.yes) || 0} / ${testCopy('모르겠다', 'Not sure')} ${Number(row.unsure) || 0} / ${testCopy('아니요', 'No')} ${Number(row.no) || 0}</p></div>
+      <strong>${total ? `${row.share.toFixed(0)}%` : testCopy("비교 근거 부족", "Insufficient evidence for comparison")}</strong>
       <div class="er-report-bar-track" aria-hidden="true"><span class="er-report-bar er-report-bar-green" style="width:${clampReportPercent(row.share)}%"></span></div>
     </article>`).join('')}</div>
-    <p class="er-report-microcopy">단어 점수는 최종 유형 점수에 합산하지 않았습니다. 결과가 실제 내 모습과 다르다면 후보에 없던 유형도 다시 살펴볼 수 있습니다.</p>
+    <p class="er-report-microcopy">${testCopy("단어 점수는 최종 유형 점수에 합산하지 않았습니다. 결과가 실제 내 모습과 다르다면 후보에 없던 유형도 다시 살펴볼 수 있습니다.", "Word scores were not added to the final type scores. If the result does not fit your lived experience, you can also explore types outside the initial possibilities.")}</p>
   </section>`;
 }
 
@@ -4124,9 +4267,6 @@ function renderPremiumReport(model) {
   const host = document.getElementById('result-view');
   if (!host) return;
   const c = model.content;
-  const langNotice = pageLang === 'en'
-    ? '<div class="er-report-lang-notice">프리미엄 결과지는 현재 한국어로 제공됩니다. English report content will be added in a later version.</div>'
-    : '';
   const top3Total = model.top3Total || 0;
   const top3Html = (model.top3 || []).map((item, index) => {
     const percent = top3Total > 0 ? (item.score / top3Total) * 100 : 0;
@@ -4138,8 +4278,8 @@ function renderPremiumReport(model) {
     return `
       <div class="er-report-toptype">
         <div>
-          <span>${index + 1}순위</span>
-          <strong>${item.type}번</strong>
+          <span>${testCopy(`${index + 1}순위`, `Rank ${index + 1}`)}</span>
+          <strong>${testCopy(`${item.type}번`, `Type ${item.type}`)}</strong>
         </div>
         <div class="er-report-toptype-score">${percent.toFixed(1)}%</div>
         <div class="er-report-bar-track"><span class="er-report-bar er-report-bar-slate" style="width:${clampReportPercent(percent)}%"></span></div>
@@ -4152,7 +4292,7 @@ function renderPremiumReport(model) {
     if (!data) return '';
     if (Array.isArray(data)) return `<ul>${list(data, 2)}</ul>`;
     const sub = (label, items, limit = 1) => (items && items.length) ? `<h4>${label}</h4><ul>${list(items, limit)}</ul>` : '';
-    return `${sub('강점', data.strength)}${sub('함께 살펴볼 점', data.watch)}${sub('오늘부터 이렇게', data.practice)}`;
+    return `${sub(testCopy("강점", "Strengths"), data.strength)}${sub(testCopy("함께 살펴볼 점", "Areas to watch"), data.watch)}${sub(testCopy("오늘부터 이렇게", "A practice for today"), data.practice)}`;
   };
   const roadmap = (items, limit = Infinity) => (items || []).slice(0, limit).map((item, index) => `
     <li>
@@ -4167,24 +4307,24 @@ function renderPremiumReport(model) {
       ? `<em class="er-report-next-price">${escapeReportHtml(step.priceLabel)}</em>`
       : '';
     return `
-    <article class="er-report-next-card is-clickable${index === 0 ? ' is-primary' : ''}" data-report-program-key="${escapeReportHtml(programKey)}" tabindex="0" role="link" aria-label="${escapeReportHtml(step.program)} 신청">
-      <span>${index === 0 ? '가장 추천' : `${step.rank}순위`}</span>
+    <article class="er-report-next-card is-clickable${index === 0 ? ' is-primary' : ''}" data-report-program-key="${escapeReportHtml(programKey)}" tabindex="0" role="link" aria-label="${testCopy('신청: ', 'Apply: ')}${escapeReportHtml(step.program)}">
+      <span>${index === 0 ? testCopy("가장 추천", "First recommendation") : testCopy(`${step.rank}순위`, `Recommendation ${step.rank}`)}</span>
       <h3>${escapeReportHtml(step.program)}</h3>
       ${priceLine}
       <p>${escapeReportHtml(step.reason)}</p>
       <small>${escapeReportHtml(step.outcome)}</small>
-      <span class="er-report-next-cta">신청하기</span>
+      <span class="er-report-next-cta">${testCopy("신청하기", "Apply")}</span>
     </article>
   `;
   }).join('');
   const actionRows = (c.actionPlan || []).slice(0, 2).map((item, index) => `
     <label class="er-report-action-row">
-      <input type="checkbox" data-report-action="${index}" aria-label="오늘의 실천 ${index + 1}">
+      <input type="checkbox" data-report-action="${index}" aria-label="${testCopy('오늘의 실천', 'Today’s practice')} ${index + 1}">
       <span>${escapeReportHtml(item)}</span>
     </label>
   `).join('');
   const supportMaterialsHtml = renderSupportMaterialsSection(model.supportMaterials);
-  const supportNav = supportMaterialsHtml ? '<a href="#report-support">자료</a>' : '';
+  const supportNav = supportMaterialsHtml ? `<a href="#report-support">${testCopy("자료", "Resources")}</a>` : '';
   const applicationHtml = renderGuidedApplicationSection(model);
   const confidenceExplanationHtml = renderConfidenceExplanationSection(model.confidenceExplanation);
   const executiveSummaryHtml = renderExecutiveSummaryCard(model);
@@ -4195,17 +4335,17 @@ function renderPremiumReport(model) {
     <article class="er-premium-report" data-report-key="${escapeReportHtml(model.reportKey)}" data-core-tone="${escapeReportHtml(model.coreTone)}">
       <section class="er-report-hero">
         <div class="er-report-hero-inner">
-          <p class="er-report-kicker">ER Enneagram Premium Report</p>
+          <p class="er-report-kicker">ER Enneagram Narrative Report</p>
           <p class="er-report-hero-type" id="res-final">${escapeReportHtml(model.display.headline)}</p>
-          <dl class="er-report-identity" aria-label="핵심 유형, 날개와 하위유형">
-            <div><dt>핵심 유형</dt><dd>${escapeReportHtml(model.display.core)}</dd></div>
-            <div><dt>날개</dt><dd id="res-wing">${escapeReportHtml(model.display.wing)}</dd></div>
-            <div><dt>하위유형</dt><dd id="res-instincts">${escapeReportHtml(model.instinctLabel || model.display.subtype)}</dd></div>
+          <dl class="er-report-identity" aria-label="${testCopy('핵심 유형, 날개와 하위유형', 'Core type, wing, and subtype')}">
+            <div><dt>${testCopy("핵심 유형", "Core type")}</dt><dd>${escapeReportHtml(model.display.core)}</dd></div>
+            <div><dt>${testCopy("날개", "Wing")}</dt><dd id="res-wing">${escapeReportHtml(model.display.wing)}</dd></div>
+            <div><dt>${testCopy("하위유형", "Subtype")}</dt><dd id="res-instincts">${escapeReportHtml(model.instinctLabel || model.display.subtype)}</dd></div>
           </dl>
           <h1>${escapeReportHtml(c.heroStatement)}</h1>
           <p>${escapeReportHtml(c.definition)}</p>
           <div class="er-report-hero-answer">
-            <span>핵심 동기</span>
+            <span>${testCopy("핵심 동기", "Core motivation")}</span>
             <strong>${escapeReportHtml(c.motivation)}</strong>
             <small>${escapeReportHtml(c.fear)}</small>
           </div>
@@ -4213,46 +4353,45 @@ function renderPremiumReport(model) {
         </div>
       </section>
 
-      ${langNotice}
 
       ${renderScreeningSummary(model)}
 
 
       ${executiveSummaryHtml}
 
-      <nav class="er-report-nav" aria-label="결과지 섹션 이동">
-        <a href="#report-executive">핵심</a>
-        <a href="#report-summary">해석</a>
-        <a href="#report-confidence">신뢰</a>
-        <a href="#report-evidence">근거</a>
-        <a href="#report-pattern">패턴</a>
-        <a href="#report-life">삶</a>
-        <a href="#report-application">적용</a>
+      <nav class="er-report-nav" aria-label="${testCopy('결과지 섹션 이동', 'Report section navigation')}">
+        <a href="#report-executive">${testCopy("핵심", "Summary")}</a>
+        <a href="#report-summary">${testCopy("해석", "Interpretation")}</a>
+        <a href="#report-confidence">${testCopy("신뢰", "Confidence")}</a>
+        <a href="#report-evidence">${testCopy("근거", "Evidence")}</a>
+        <a href="#report-pattern">${testCopy("패턴", "Patterns")}</a>
+        <a href="#report-life">${testCopy("삶", "Life")}</a>
+        <a href="#report-application">${testCopy("적용", "Application")}</a>
         ${supportNav}
-        <a href="#report-growth">회복</a>
-        <a href="#report-next">다음</a>
+        <a href="#report-growth">${testCopy("회복", "Restoration")}</a>
+        <a href="#report-next">${testCopy("다음", "Next steps")}</a>
       </nav>
 
       <section id="report-summary" class="er-report-section">
         <div class="er-report-section-head">
-          <span>전체 보기</span>
-          <h2>당신의 결과를 한 문장으로 읽으면</h2>
+          <span>${testCopy("전체 보기", "The whole picture")}</span>
+          <h2>${testCopy("당신의 결과를 한 문장으로 읽으면", "Reading your result as one connected story")}</h2>
         </div>
         <article class="er-report-synthesis">
-          <span>유형·하위유형·날개 함께 읽기</span>
+          <span>${testCopy("유형·하위유형·날개 함께 읽기", "Reading core type, subtype, and wing together")}</span>
           <h3>${escapeReportHtml(synthesis.title || c.heroStatement)}</h3>
           <p>${escapeReportHtml(synthesis.paragraph || c.definition)}</p>
           <div class="er-report-synthesis-grid">
-            <div><span>무엇을 지키는가</span><strong>${escapeReportHtml(synthesis.protects || c.motivation)}</strong></div>
-            <div><span>압박에서 과해지는 것</span><strong>${escapeReportHtml(synthesis.overuses || c.fear)}</strong></div>
-            <div><span>가까운 사람이 경험하는 것</span><strong>${escapeReportHtml(synthesis.closePeople || '강점과 방어가 함께 섞인 반복 반응으로 보일 수 있습니다.')}</strong></div>
-            <div><span>상담에서 확인할 것</span><strong>${escapeReportHtml(synthesis.counseling || '실제 삶의 반복 장면과 연결해 결과를 확인합니다.')}</strong></div>
+            <div><span>${testCopy("무엇을 지키는가", "What you protect")}</span><strong>${escapeReportHtml(synthesis.protects || c.motivation)}</strong></div>
+            <div><span>${testCopy("압박에서 과해지는 것", "What becomes excessive under pressure")}</span><strong>${escapeReportHtml(synthesis.overuses || c.fear)}</strong></div>
+            <div><span>${testCopy("가까운 사람이 경험하는 것", "What people close to you experience")}</span><strong>${escapeReportHtml(synthesis.closePeople || testCopy("강점과 방어가 함께 섞인 반복 반응으로 보일 수 있습니다.", "Others may experience a recurring response that combines strengths and defenses."))}</strong></div>
+            <div><span>${testCopy("상담에서 확인할 것", "What to confirm in consultation")}</span><strong>${escapeReportHtml(synthesis.counseling || testCopy("실제 삶의 반복 장면과 연결해 결과를 확인합니다.", "Explore the result through recurring situations in everyday life."))}</strong></div>
           </div>
         </article>
         <div class="er-report-summary-strip">
-          <div><span>핵심 유형</span><strong id="res-core">${escapeReportHtml(model.display.core)} ${escapeReportHtml(c.coreName || '')}</strong></div>
-          <div><span>하위유형 · 날개</span><strong>${escapeReportHtml(c.subtypeLabel || model.display.subtype)} · ${escapeReportHtml(model.display.wing)}</strong></div>
-          <div><span>방향</span><strong id="res-arrows">${escapeReportHtml(model.display.stressGrowth)}</strong></div>
+          <div><span>${testCopy("핵심 유형", "Core type")}</span><strong id="res-core">${escapeReportHtml(model.display.core)} ${escapeReportHtml(c.coreName || '')}</strong></div>
+          <div><span>${testCopy("하위유형 · 날개", "Subtype · Wing")}</span><strong>${escapeReportHtml(c.subtypeLabel || model.display.subtype)} · ${escapeReportHtml(model.display.wing)}</strong></div>
+          <div><span>${testCopy("방향", "Growth directions")}</span><strong id="res-arrows">${escapeReportHtml(model.display.stressGrowth)}</strong></div>
         </div>
       </section>
 
@@ -4260,53 +4399,53 @@ function renderPremiumReport(model) {
 
       <section id="report-evidence" class="er-report-section er-report-visuals">
         <div class="er-report-section-head">
-          <span>판단 근거</span>
-          <h2>왜 이 결과가 나왔는가</h2>
+          <span>${testCopy("판단 근거", "Supporting evidence")}</span>
+          <h2>${testCopy("왜 이 결과가 나왔는가", "Why this result emerged")}</h2>
           <p>${escapeReportHtml(evidenceCopy.topLine)}</p>
         </div>
         <div class="er-report-visual-grid">
           <div class="er-report-panel">
-            <h3>하위유형의 세 생활 영역</h3>
+            <h3>${testCopy("하위유형의 세 생활 영역", "Three areas of instinctive attention")}</h3>
             <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.instinctLine)}</p>
             ${model.instinctRows.map((row) => buildReportMetricBar(row, { tone: 'gold' })).join('')}
           </div>
           <div class="er-report-panel">
-            <h3>인접한 두 날개 비교</h3>
+            <h3>${testCopy("인접한 두 날개 비교", "Comparing the two adjacent wings")}</h3>
             <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.wingLine)}</p>
             ${model.wingRows.map((row) => buildReportMetricBar(row, { tone: 'green' })).join('')}
-            <p class="er-report-microcopy">${model.assessmentVersion === 'word-narrative-v2' ? '하위유형·날개 그래프는 각각 세 질문 중 선택한 비율입니다. 모르겠다는 어느 쪽에도 배분하지 않습니다.' : '코어 점수 대비 인접 날개 반응의 활성도를 보여줍니다.'}</p>
+            <p class="er-report-microcopy">${model.assessmentVersion === 'word-narrative-v2' ? testCopy("하위유형·날개 그래프는 각각 세 질문 중 선택한 비율입니다. 모르겠다는 어느 쪽에도 배분하지 않습니다.", "Subtype and wing graphs each show the share of selections across three questions. Not sure responses add no votes to either side.") : testCopy("코어 점수 대비 인접 날개 반응의 활성도를 보여줍니다.", "This shows adjacent-wing responses relative to the core score.")}</p>
           </div>
         </div>
         <div class="er-report-panel">
-          <h3 id="top3-title">헷갈릴 수 있는 가까운 유형들</h3>
+          <h3 id="top3-title">${testCopy("헷갈릴 수 있는 가까운 유형들", "Nearby types that may feel similar")}</h3>
           <p class="er-report-panel-lead">${escapeReportHtml(evidenceCopy.closeTypeLine)}</p>
-          <p class="er-report-microcopy">상위 세 유형의 점수 합에서 각 유형이 차지하는 비율입니다. 해당 유형일 확률은 아닙니다.</p>
+          <p class="er-report-microcopy">${testCopy("상위 세 유형의 점수 합에서 각 유형이 차지하는 비율입니다. 해당 유형일 확률은 아닙니다.", "These are each type’s share of the top three scores, not probabilities of being that type.")}</p>
           <div id="res-top3" class="er-report-toptypes">${top3Html}</div>
         </div>
       </section>
 
       <section id="report-pattern" class="er-report-section">
         <div class="er-report-section-head">
-          <span>반복되는 반응</span>
-          <h2>나의 반복 사이클</h2>
+          <span>${testCopy("반복되는 반응", "Recurring responses")}</span>
+          <h2>${testCopy("나의 반복 사이클", "Your recurring cycle")}</h2>
         </div>
         <ol class="er-report-cycle">${roadmap(c.cycle)}</ol>
         <div class="er-report-formation">
-          <h3 id="analysis-report-title">이 반응이 익숙해진 배경</h3>
+          <h3 id="analysis-report-title">${testCopy("이 반응이 익숙해진 배경", "How this response became familiar")}</h3>
           <p id="res-log">${escapeReportHtml(c.formation)}</p>
         </div>
         <div class="er-report-toggle-card" data-self-toggle>
-          <div class="er-report-toggle-buttons" role="tablist" aria-label="왜곡된 자아와 회복된 자아 보기">
-            <button type="button" class="is-active" data-self-mode="false" aria-label="현재 패턴 보기">현재 패턴 보기</button>
-            <button type="button" data-self-mode="restored" aria-label="회복 방향 보기">회복 방향 보기</button>
+          <div class="er-report-toggle-buttons" role="tablist" aria-label="${testCopy('왜곡된 자아와 회복된 자아 보기', 'Explore defensive and restored patterns')}">
+            <button type="button" class="is-active" data-self-mode="false" aria-label="${testCopy("현재 패턴 보기", "Current pattern")}">${testCopy("현재 패턴 보기", "Current pattern")}</button>
+            <button type="button" data-self-mode="restored" aria-label="${testCopy("회복 방향 보기", "Restoration direction")}">${testCopy("회복 방향 보기", "Restoration direction")}</button>
           </div>
-          <p class="er-report-toggle-state" aria-live="polite">현재 선택: 현재 패턴 보기</p>
+          <p class="er-report-toggle-state" aria-live="polite">${testCopy("현재 선택: 현재 패턴 보기", "Selected: Current pattern")}</p>
           <div class="er-report-self-panel is-false" data-self-panel="false">
-            <h3>왜곡된 자아</h3>
+            <h3>${testCopy("왜곡된 자아", "Defensive self")}</h3>
             <ul>${list(c.falseSelf)}</ul>
           </div>
           <div class="er-report-self-panel is-restored hidden" data-self-panel="restored">
-            <h3>회복된 자아</h3>
+            <h3>${testCopy("회복된 자아", "Restored self")}</h3>
             <ul>${list(c.restoredSelf)}</ul>
           </div>
         </div>
@@ -4314,14 +4453,14 @@ function renderPremiumReport(model) {
 
       <section id="report-life" class="er-report-section">
         <div class="er-report-section-head">
-          <span>일상과 관계</span>
-          <h2>일, 관계, 양육에서 보이는 모습</h2>
+          <span>${testCopy("일상과 관계", "Everyday life and relationships")}</span>
+          <h2>${testCopy("일, 관계, 양육에서 보이는 모습", "How this appears in work, relationships, and parenting")}</h2>
         </div>
         <div class="er-report-life-grid">
-          <article><h3>일과 커리어</h3>${lifeBlock(c.career)}</article>
-          <article><h3>관계에서</h3>${lifeBlock(c.relationship)}</article>
-          <article><h3>자녀 양육에서</h3>${lifeBlock(c.parenting)}</article>
-          <article><h3>스트레스와 회복 신호</h3><h4>스트레스를 받을 때</h4><ul>${list(c.stress, 2)}</ul><h4>회복으로 가는 길</h4><ul>${list(c.recovery, 2)}</ul></article>
+          <article><h3>${testCopy("일과 커리어", "Work and career")}</h3>${lifeBlock(c.career)}</article>
+          <article><h3>${testCopy("관계에서", "In relationships")}</h3>${lifeBlock(c.relationship)}</article>
+          <article><h3>${testCopy("자녀 양육에서", "In parenting")}</h3>${lifeBlock(c.parenting)}</article>
+          <article><h3>${testCopy("스트레스와 회복 신호", "Stress and recovery signals")}</h3><h4>${testCopy("스트레스를 받을 때", "Under stress")}</h4><ul>${list(c.stress, 2)}</ul><h4>${testCopy("회복으로 가는 길", "Moving toward recovery")}</h4><ul>${list(c.recovery, 2)}</ul></article>
         </div>
       </section>
 
@@ -4331,24 +4470,24 @@ function renderPremiumReport(model) {
 
       <section id="report-growth" class="er-report-section er-report-growth">
         <div class="er-report-section-head">
-          <span>회복과 실천</span>
-          <h2>변화의 방향과 오늘의 실천</h2>
+          <span>${testCopy("회복과 실천", "Restoration and practice")}</span>
+          <h2>${testCopy("변화의 방향과 오늘의 실천", "A direction for change and a practice for today")}</h2>
         </div>
         <ol class="er-report-roadmap">${roadmap(c.roadmap, 3)}</ol>
         <div class="er-report-action">
-          <h3>오늘의 실천</h3>
+          <h3>${testCopy("오늘의 실천", "Today’s practice")}</h3>
           ${actionRows}
-          <p class="er-report-action-done hidden">작은 순종이 회복의 방향을 만듭니다.</p>
+          <p class="er-report-action-done hidden">${testCopy("작은 순종이 회복의 방향을 만듭니다.", "A small faithful step helps shape the direction of restoration.")}</p>
         </div>
         <div class="er-report-gospel">
-          <h3>더 깊은 회복으로의 초대</h3>
-          <p class="er-report-gospel-intro">아래는 신앙 안에서 더 깊은 회복을 원하는 분을 위한 안내입니다. 부담 없이, 마음이 머무는 문장만 가져가셔도 좋습니다.</p>
+          <h3>${testCopy("더 깊은 회복으로의 초대", "An invitation to deeper restoration")}</h3>
+          <p class="er-report-gospel-intro">${testCopy("아래는 신앙 안에서 더 깊은 회복을 원하는 분을 위한 안내입니다. 부담 없이, 마음이 머무는 문장만 가져가셔도 좋습니다.", "The following is for readers who wish to explore restoration through faith. Take only the words that feel meaningful to you.")}</p>
           <dl>
-            <dt>내려놓아도 되는 거짓 믿음</dt>
+            <dt>${testCopy("내려놓아도 되는 거짓 믿음", "A false belief you can release")}</dt>
             <dd>${escapeReportHtml(c.gospel.falseBelief || '')}</dd>
-            <dt>기억하면 좋은 진실</dt>
+            <dt>${testCopy("기억하면 좋은 진실", "A truth to remember")}</dt>
             <dd>${escapeReportHtml(c.gospel.truth || '')}</dd>
-            <dt>마음의 기도</dt>
+            <dt>${testCopy("마음의 기도", "A prayer from the heart")}</dt>
             <dd>${escapeReportHtml(c.gospel.prayer || '')}</dd>
           </dl>
         </div>
@@ -4356,26 +4495,26 @@ function renderPremiumReport(model) {
 
       <section id="report-next" class="er-report-section er-report-next">
         <div class="er-report-section-head">
-          <span>다음 단계</span>
-          <h2>혼자 읽고 끝내지 않기 위한 다음 단계</h2>
+          <span>${testCopy("다음 단계", "Next steps")}</span>
+          <h2>${testCopy("혼자 읽고 끝내지 않기 위한 다음 단계", "Taking this understanding into everyday life")}</h2>
         </div>
         <div class="er-report-next-rationale">
-          <h3>결과지 해석상담이나 기본과정을 추천합니다</h3>
-          <p>결과지는 방향을 보여줍니다. 하지만 변화는 실제 관계 장면에서 시작됩니다. 내가 반복해서 피하는 감정, 가까운 사람에게 보이는 반응, 자녀와 배우자 앞에서 자동으로 나오는 말투는 혼자 읽는 것만으로는 잘 보이지 않습니다. 다음 단계는 더 많은 정보가 아니라, 내 패턴을 실제 삶에서 읽는 훈련입니다.</p>
+          <h3>${testCopy("결과지 해석상담이나 기본과정을 추천합니다", "Consider a report consultation or the basic course")}</h3>
+          <p>${testCopy("결과지는 방향을 보여줍니다. 하지만 변화는 실제 관계 장면에서 시작됩니다. 내가 반복해서 피하는 감정, 가까운 사람에게 보이는 반응, 자녀와 배우자 앞에서 자동으로 나오는 말투는 혼자 읽는 것만으로는 잘 보이지 않습니다. 다음 단계는 더 많은 정보가 아니라, 내 패턴을 실제 삶에서 읽는 훈련입니다.", "The report offers a direction. Change takes practice in real relationships. A conversation can help you notice feelings you repeatedly avoid, responses other people experience, and automatic ways of speaking with family. The next step is learning to recognize these patterns in everyday life.")}</p>
         </div>
         <div class="er-report-next-grid">${nextSteps}</div>
         <div id="experiment-result-panel" class="hidden"></div>
         <div class="er-report-final-cta">
           <h2>${escapeReportHtml(c.gospel.declaration || c.heroStatement)}</h2>
-          <p>결과지는 끝이 아니라, 오늘 하나의 작은 회복을 시작하는 지도입니다. 먼저 1시간 결과지 해석상담에서 내 결과가 실제 삶과 어떻게 연결되는지 함께 정리해 보세요.</p>
-          <a href="#" class="er-report-final-primary" data-report-program-key="${escapeReportHtml(finalCtaProgramKey)}">결과지 해석상담 신청</a>
-          <a href="#" class="er-report-final-secondary" data-report-section-nav="programs">전체 프로그램 보기</a>
+          <p>${testCopy("결과지는 끝이 아니라, 오늘 하나의 작은 회복을 시작하는 지도입니다. 먼저 1시간 결과지 해석상담에서 내 결과가 실제 삶과 어떻게 연결되는지 함께 정리해 보세요.", "Use this report as a map for one small step toward restoration today. A one-hour report consultation can help connect your result with everyday experience.")}</p>
+          <a href="#" class="er-report-final-primary" data-report-program-key="${escapeReportHtml(finalCtaProgramKey)}">${testCopy("결과지 해석상담 신청", "Book a report consultation")}</a>
+          <a href="#" class="er-report-final-secondary" data-report-section-nav="programs">${testCopy("전체 프로그램 보기", "Explore all programs")}</a>
           <div class="er-report-tools">
-            <button type="button" onclick="shareTestResult()">결과 공유하기</button>
-            <button type="button" id="download-pdf-btn" onclick="downloadResultPdf()">결과 PDF 다운로드</button>
-            <button type="button" id="restart-test-btn" onclick="restartAssessment()">처음부터 다시하기</button>
+            <button type="button" onclick="shareTestResult()">${testCopy("결과 공유하기", "Share result")}</button>
+            <button type="button" id="download-pdf-btn" onclick="downloadResultPdf()">${testCopy("결과 PDF 다운로드", "Download result PDF")}</button>
+            <button type="button" id="restart-test-btn" onclick="restartAssessment()">${testCopy("처음부터 다시하기", "Start over")}</button>
           </div>
-          <p id="result-disclaimer">* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.</p>
+          <p id="result-disclaimer">${testCopy("* 본 결과는 전문 상담사의 임상적 진단을 대체하지 않습니다.", "* This result does not replace clinical diagnosis by a licensed professional.")}</p>
         </div>
       </section>
     </article>
@@ -4392,35 +4531,35 @@ function renderLowConfidenceGate(model) {
   const qualityFlags = (model.responseQuality && model.responseQuality.flags) || [];
   const hasFlag = (code) => qualityFlags.some((flag) => flag && flag.code === code);
   const stateStressApplied = !!(model.stateStressAdjustment && model.stateStressAdjustment.applied);
-  const reasons = ['두세 유형의 점수가 거의 같은 높이로 나온 경우'];
+  const reasons = [testCopy("두세 유형의 점수가 거의 같은 높이로 나온 경우", "Two or three types received almost equal scores")];
   if (stateStressApplied || Number(model.recentStress) >= TEST_CONFIG.thresholds.stressCorrectionStart) {
-    reasons.push('최근 스트레스나 큰 변화로 평소와 다른 상태에서 응답한 경우');
+    reasons.push(testCopy("최근 스트레스나 큰 변화로 평소와 다른 상태에서 응답한 경우", "Recent stress or major change affected how you answered"));
   }
   if (hasFlag('unknown_overuse')) {
-    reasons.push("'잘 모르겠다' 같은 중립 응답이 많았던 경우");
+    reasons.push(testCopy("'잘 모르겠다' 같은 중립 응답이 많았던 경우", "Many responses were neutral, such as Not sure"));
   }
   if (reasons.length < 3) {
-    reasons.push('응답이 여러 유형의 특징에 고르게 걸쳐 있는 경우');
+    reasons.push(testCopy("응답이 여러 유형의 특징에 고르게 걸쳐 있는 경우", "Responses were spread evenly across several patterns"));
   }
   host.innerHTML = `
     <article class="er-premium-report er-report-gate">
       <section class="er-report-section er-report-gate-card">
         <div class="er-report-section-head">
-          <span>결과 확인 전 안내</span>
-          <h2>현재 응답만으로는 유형을 좁히기 어렵습니다</h2>
+          <span>${testCopy("결과 확인 전 안내", "Before viewing your result")}</span>
+          <h2>${testCopy("현재 응답만으로는 유형을 좁히기 어렵습니다", "These responses do not yet distinguish a core type")}</h2>
         </div>
-        <p class="er-report-gate-lead">이번 응답은 여러 유형에 비슷한 강도로 걸쳐 있어, 해석 신뢰도가 낮게 나왔습니다. 이 상태에서 하나의 유형으로 확정한 결과지를 드리면 잘못된 자기 이해로 이어질 수 있어, 결과지를 바로 보여 드리지 않습니다.</p>
+        <p class="er-report-gate-lead">${testCopy("이번 응답은 여러 유형에 비슷한 강도로 걸쳐 있어, 해석 신뢰도가 낮게 나왔습니다. 이 상태에서 하나의 유형으로 확정한 결과지를 드리면 잘못된 자기 이해로 이어질 수 있어, 결과지를 바로 보여 드리지 않습니다.", "Your responses fit several types with similar strength, so confidence in the interpretation is low. A single-type report would be premature. Further exploration can help you understand which motivations recur in your everyday life.")}</p>
         <div class="er-report-gate-reasons">
-          <h3>신뢰도가 낮게 나오는 흔한 이유</h3>
+          <h3>${testCopy("신뢰도가 낮게 나오는 흔한 이유", "Common reasons for low confidence")}</h3>
           <ul>${reasons.map((item) => `<li>${escapeReportHtml(item)}</li>`).join('')}</ul>
         </div>
         <div class="er-report-gate-session">
-          <h3>유형 상담에서 함께 살펴보세요</h3>
-          <p>유형 상담에서는 사전 설문과 1:1 대화를 통해 핵심 유형, 하위유형, 날개를 함께 살펴봅니다. 검사만으로 판단하기 어렵다면 실제 경험을 이야기하며 확인할 수 있습니다.</p>
-          <a href="#" class="er-report-gate-primary" data-report-program-key="identity_session">유형 확인 상담 신청</a>
-          <button type="button" class="er-report-gate-retry" onclick="restartAssessment()">처음부터 다시 검사하기</button>
+          <h3>${testCopy("유형 상담에서 함께 살펴보세요", "Explore this in a typing consultation")}</h3>
+          <p>${testCopy("유형 상담에서는 사전 설문과 1:1 대화를 통해 핵심 유형, 하위유형, 날개를 함께 살펴봅니다. 검사만으로 판단하기 어렵다면 실제 경험을 이야기하며 확인할 수 있습니다.", "A typing consultation uses a preliminary questionnaire and a one-to-one conversation to explore core type, subtype, and wing. When assessment responses are unclear, discussing lived experiences can help.")}</p>
+          <a href="#" class="er-report-gate-primary" data-report-program-key="identity_session">${testCopy("유형 확인 상담 신청", "Book a typing consultation")}</a>
+          <button type="button" class="er-report-gate-retry" onclick="restartAssessment()">${testCopy("처음부터 다시 검사하기", "Restart the assessment")}</button>
         </div>
-        <p class="er-report-gate-tip">최근 2주가 평소와 많이 달랐다면, 마음이 안정된 시기의 나를 기준으로 다시 응답해 보세요. 같은 결과가 반복되면 유형 상담에서 함께 살펴보세요.</p>
+        <p class="er-report-gate-tip">${testCopy("최근 2주가 평소와 많이 달랐다면, 마음이 안정된 시기의 나를 기준으로 다시 응답해 보세요. 같은 결과가 반복되면 유형 상담에서 함께 살펴보세요.", "If the last two weeks were unusual, try answering with a steadier period of your life in mind. If this result repeats, explore the patterns in a typing consultation.")}</p>
       </section>
       ${renderScreeningSummary(model)}
       <div id="experiment-result-panel" class="hidden"></div>
@@ -4440,7 +4579,7 @@ function bindPremiumReportInteractions(model) {
         const mode = button.getAttribute('data-self-mode');
         buttons.forEach((btn) => btn.classList.toggle('is-active', btn === button));
         panels.forEach((panel) => panel.classList.toggle('hidden', panel.getAttribute('data-self-panel') !== mode));
-        if (state) state.textContent = `현재 선택: ${mode === 'restored' ? '회복 방향 보기' : '현재 패턴 보기'}`;
+        if (state) state.textContent = `${testCopy('현재 선택', 'Selected')}: ${mode === 'restored' ? testCopy('회복 방향 보기', 'Restoration direction') : testCopy('현재 패턴 보기', 'Current pattern')}`;
       });
     });
   });
@@ -4588,8 +4727,8 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
   }
   if (wordNarrative && coreResolved) {
     wingNum = phase4 && phase4.wingNum || null;
-    wing = wingNum ? `${wingNum}번 날개` : '날개 추가 확인 필요';
-    wingCode = wingNum ? `${core}w${wingNum}` : `${core}번 · 날개 확인 중`;
+    wing = wingNum ? testCopy(`${wingNum}번 날개`, `Wing ${wingNum}`) : testCopy('날개 추가 확인 필요', 'Wing needs further observation');
+    wingCode = wingNum ? `${core}w${wingNum}` : testCopy(`${core}번 · 날개 확인 중`, `Type ${core} · Wing pending`);
     wingMetrics = [core === 1 ? 9 : core - 1, core === 9 ? 1 : core + 1].map((wing) => ({
       wing, label: `${core}w${wing}`, score: Number(phase4 && phase4.wingVotes && phase4.wingVotes[wing]) || 0,
       percent: (Number(phase4 && phase4.wingVotes && phase4.wingVotes[wing]) || 0) / 3 * 100
@@ -4605,12 +4744,12 @@ function renderResultFromScores({ final, evidence, recentStress, stateStressAdju
   const instinctMetrics = wordNarrative ? ['sp', 'so', 'sx'].map((code) => ({
     code, label: instName[code], score: Number(phase4 && phase4.subtypeVotes && phase4.subtypeVotes[code]) || 0,
     percent: (Number(phase4 && phase4.subtypeVotes && phase4.subtypeVotes[code]) || 0) / 3 * 100,
-    caption: code === instinctCode ? '세 생활 장면에서 가장 많이 선택한 본능' : ''
+    caption: code === instinctCode ? testCopy('세 생활 장면에서 가장 많이 선택한 본능', 'Most selected instinct across three everyday situations') : ''
   })) : instRank.map((row) => ({
     code: row.code,
     label: instName[row.code],
     score: row.score,
-    caption: row.code === getFinalSubtypeCode(instinctCode) ? '결과지의 주 본능' : ''
+    caption: row.code === getFinalSubtypeCode(instinctCode) ? testCopy('결과지의 주 본능', 'Primary instinct in this report') : ''
   }));
   const scoringAxes = buildScoringAxesSnapshot({
     coreTypeScore: final,
@@ -4730,7 +4869,7 @@ function shareTestResult() {
   const typeResult = finalEl.innerText.trim();
   const instincts = instinctsEl ? instinctsEl.innerText.trim() : '';
   const confidence = badgeEl ? badgeEl.innerText.trim() : '';
-  const shareUrl = 'https://er-coaching.com/test.html';
+  const shareUrl = pageLang === 'en' ? 'https://er-coaching.com/test.html?lang=en' : 'https://er-coaching.com/test.html';
 
   const shareText = pageLang === 'en'
     ? [
@@ -4738,7 +4877,7 @@ function shareTestResult() {
       instincts ? `${instincts}` : '',
       confidence ? `(${confidence})` : '',
       '',
-      'Try the ER Enneagram assessment 👇',
+      'Try the ER Narrative Test 👇',
       shareUrl
     ].filter(Boolean).join('\n')
     : [
@@ -4746,7 +4885,7 @@ function shareTestResult() {
       instincts ? `${instincts}` : '',
       confidence ? `(${confidence})` : '',
       '',
-      'ER 에니어그램 심층 진단으로 알아보기 👇',
+      'ER 내러티브 테스트로 알아보기 👇',
       shareUrl
     ].filter(Boolean).join('\n');
 

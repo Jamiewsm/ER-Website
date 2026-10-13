@@ -1,0 +1,133 @@
+{
+  "reviewDate": "2026-10-13",
+  "timezone": "Asia/Seoul",
+  "scope": "workspace test.html -> js/test.js",
+  "assessmentVersion": "word-narrative-v2",
+  "productionDeploymentVerified": false,
+  "validationType": "synthetic consistency and regression checks",
+  "measuredHumanAccuracy": null,
+  "humanLabeledRowsUsed": 0,
+  "actualExperimentData": {
+    "projectId": "osdynbadhtfgoxilgmpy",
+    "table": "public.diagnostic_experiment_sessions",
+    "inspection": "read-only aggregate supplied by root agent in this session",
+    "submittedRows": 0,
+    "versionLanguageGroups": [],
+    "individualPersonalRecordsRead": false,
+    "selfAssessmentAgreement": null,
+    "referenceLabelCaveat": "confirmed_type currently contains participant-entered choices, not independently verified ground truth"
+  },
+  "baselineRelatedRegression": {
+    "passed": 76,
+    "failed": 0
+  },
+  "currentRuntimeSweeps": {
+    "candidateCombinations": 210,
+    "coherentCandidateProfiles": {
+      "passed": 756,
+      "failed": 0
+    },
+    "allUnknownCandidateSets": {
+      "passed": 210,
+      "failed": 0
+    },
+    "subtypeChoiceTriples": {
+      "passed": 576,
+      "failed": 0
+    },
+    "wingChoiceTriples": {
+      "passed": 243,
+      "failed": 0
+    },
+    "totalSyntheticCases": 1785,
+    "testFile": "tests/narrative-accuracy-validation.test.mjs"
+  },
+  "legacyHelperSimulation": {
+    "passed": 35,
+    "failed": 0,
+    "script": "tests/simulate.mjs",
+    "loadsCurrentRuntime": false,
+    "providedCoreInsteadOfClassifyingCore": true,
+    "validatesHumanAccuracy": false,
+    "subtypeDataEntries": 27,
+    "countertypeDataEntries": 9
+  },
+  "analyzerRegression": {
+    "passed": 5,
+    "failed": 0,
+    "script": "scripts/analyze_diagnostic_experiments.mjs",
+    "testFile": "tests/weight-calibration-workflow.test.mjs",
+    "fixes": [
+      "Exclude rows without reference subtype from countertype miss denominator",
+      "Canonicalize reversed top pairs",
+      "Report N/A for zero denominators",
+      "Allow assessment-version and language filtering and show mixed cohorts"
+    ]
+  },
+  "sampleFixture": {
+    "path": "tests/fixtures/diagnostic-experiments.sample.json",
+    "use": "synthetic regression fixture, not empirical accuracy data",
+    "rows": 4,
+    "assessmentVersion": "unversioned",
+    "language": "unknown",
+    "coreMatches": 2,
+    "subtypeMatches": 2,
+    "lowConfidence": {
+      "matches": 0,
+      "rows": 1
+    },
+    "qualityFlag": {
+      "matches": 0,
+      "rows": 2
+    },
+    "countertype": {
+      "mismatches": 1,
+      "rows": 2
+    }
+  },
+  "beforeIntegrationReproductions": {
+    "englishSubtypeDistinctQuestionsPerCore": 1,
+    "englishWingDistinctQuestionsPerCore": 1,
+    "affectedCores": 9,
+    "fastThreeCandidatePath": {
+      "answeredCount": 15,
+      "averageSeconds": 0.2,
+      "qualityLevel": "good",
+      "flags": [],
+      "fixIntegrationStatus": "verified: v2 minimum 8 timed answers; legacy minimum 20; regression passed"
+    },
+    "uniformAPreferences": {
+      "candidates": [
+        9,
+        4,
+        1
+      ],
+      "scores": {
+        "1": 4,
+        "4": 2,
+        "9": 0
+      },
+      "straightLineRatio": 0,
+      "designChangeStatus": "proposal only"
+    }
+  },
+  "reproductionCommands": [
+    "node --test tests/narrative-accuracy-validation.test.mjs tests/weight-calibration-workflow.test.mjs",
+    "node tests/simulate.mjs",
+    "node scripts/analyze_diagnostic_experiments.mjs --fixture tests/fixtures/diagnostic-experiments.sample.json"
+  ],
+  "limitations": [
+    "Synthetic coherent answers do not model actual human typing accuracy",
+    "Legacy helper tests do not run the current assessment or classify core type",
+    "Independent counselor labels and self-reported labels require separate evaluation",
+    "Candidate screening may exclude the actual core before pairwise comparison",
+    "English wording and report integration verified; no empirical human accuracy data"
+  ],
+  "integrationRegression": {
+    "passed": 145,
+    "failed": 0,
+    "englishContentLocaleCasesChecked": 216,
+    "unchangedKoreanObjectsChecked": 216,
+    "browserEvidence": "browser-validation.json"
+  }
+}

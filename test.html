@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ER Enneagram Test</title>
+  <title>ER 내러티브 테스트</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
   <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css">
@@ -31,7 +31,7 @@
   </div>
   <main id="test-main-content" class="er-test-main transition-opacity duration-500 opacity-0">
     <header class="er-test-header">
-      <span id="test-pill" class="er-test-brand">ER 프리미엄 검사</span>
+      <span id="test-pill" class="er-test-brand">ER 내러티브 테스트</span>
       <h1 id="test-title">내 행동 뒤에 있는 마음</h1>
       <p id="test-subtitle">평소 성향과 일상에서의 선택을 살펴보며, 내가 왜 그렇게 행동하는지 알아봅니다.</p>
       <p id="test-disclaimer">이 검사는 자신을 이해하기 위한 참고 자료이며, 의학적·임상적 진단을 대신하지 않습니다.</p>
@@ -39,11 +39,11 @@
 
     <div id="experiment-closed" class="hidden mb-10">
       <div class="rounded-3xl border border-amber-200 bg-amber-50/90 p-6 sm:p-8 shadow-sm space-y-3 text-center">
-        <p class="text-xs font-bold tracking-wider text-amber-900 uppercase">진단 테스트 제한 안내</p>
-        <p class="text-sm text-amber-900/90 leading-relaxed">
+        <p class="text-xs font-bold tracking-wider text-amber-900 uppercase" id="experiment-closed-title">진단 테스트 제한 안내</p>
+        <p class="text-sm text-amber-900/90 leading-relaxed" id="experiment-closed-description">
           죄송합니다. 현재 진단 테스트는 초대받으신 분들만 참여하실 수 있습니다.
         </p>
-        <p class="text-xs text-amber-800/90">
+        <p class="text-xs text-amber-800/90" id="experiment-closed-caption">
           (정식 오픈 전 실험 운영 중입니다.)
         </p>
       </div>
@@ -52,19 +52,19 @@
     <!-- 실험 모드: test.html?experiment=1 — 소수 초대·실명 동의 후에만 표시 -->
     <div id="experiment-gate" class="hidden mb-10">
       <div class="rounded-3xl border border-amber-200 bg-amber-50/90 p-6 sm:p-8 shadow-sm space-y-4">
-        <p class="text-xs font-bold tracking-wider text-amber-900 uppercase">실험 참가 (비공개)</p>
-        <p class="text-sm text-amber-900/90 leading-relaxed">
+        <p class="text-xs font-bold tracking-wider text-amber-900 uppercase" id="experiment-gate-title">실험 참가 (비공개)</p>
+        <p class="text-sm text-amber-900/90 leading-relaxed" id="experiment-gate-description">
           초대받은 분만 이용해 주세요. 입력하신 이름과 응답은 진단 알고리즘 개선을 위해 저장됩니다. 삭제를 원하시면 운영자에게 요청할 수 있습니다.
         </p>
         <div>
-          <label for="experiment-participant-name" class="block text-xs font-semibold text-gray-700 mb-1">실명 (필수)</label>
+          <label for="experiment-participant-name" class="block text-xs font-semibold text-gray-700 mb-1" id="experiment-name-label">실명 (필수)</label>
           <input id="experiment-participant-name" type="text" autocomplete="name" maxlength="200"
             class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:ring-2 focus:ring-[#30322D]/30 focus:border-[#30322D]"
             placeholder="홍길동" />
         </div>
         <label class="flex items-start gap-2 text-sm text-gray-800 cursor-pointer">
           <input id="experiment-consent" type="checkbox" class="mt-1 accent-[#30322D]" />
-          <span>이름·응답·결과·자기평가를 ER 진단 개선 목적으로 저장하는 것에 동의합니다. 실제 저장은 결과 화면에서 제출하기를 누를 때 이루어집니다.</span>
+          <span id="experiment-consent-label">이름·응답·결과·자기평가를 ER 진단 개선 목적으로 저장하는 것에 동의합니다. 실제 저장은 결과 화면에서 제출하기를 누를 때 이루어집니다.</span>
         </label>
         <p id="experiment-gate-error" class="text-sm text-red-600 hidden" role="alert"></p>
         <button id="experiment-gate-start" type="button"

@@ -156,7 +156,7 @@ body { font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system,
   font-weight: 750;
   letter-spacing: -.035em;
   word-break: keep-all;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 
 .er-word-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
@@ -253,7 +253,7 @@ input:checked + .er-word-choice { background: var(--er-report-gold); border-colo
   font-size: 15px;
   line-height: 1.7;
   word-break: keep-all;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
 }
 
 .er-question-back {
@@ -2060,4 +2060,11 @@ body {
   .er-report-executive {
     background-size: cover;
   }
+}
+
+/* Preserve complete word chunks in the assessment and both report languages. */
+.er-test-main, .er-test-main * {
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
 }

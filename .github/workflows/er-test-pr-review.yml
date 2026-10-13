@@ -47,6 +47,10 @@ jobs:
             tests/deploy-safety.test.mjs
           )
           for optional in \
+            tests/premium-word-narrative.test.mjs \
+            tests/premium-report-narrative.test.mjs \
+            tests/narrative-english-report.test.mjs \
+            tests/narrative-accuracy-validation.test.mjs \
             tests/confidence-card.test.mjs \
             tests/response-quality.test.mjs \
             tests/test-scoring.test.mjs \
