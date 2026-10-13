@@ -7,18 +7,18 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 
 ---
 
-## Live state (마지막 확인: 2026-09-15)
+## Live state (마지막 CI 확인: 2026-10-13 07:35:19 UTC)
 
 | Surface | Git ref (의도) | Live SHA / fingerprint | Deployed at (UTC) | Method | Notes |
 |---------|----------------|------------------------|-------------------|--------|-------|
-| **Site** (landing, menu, home, child-type-test shell) | `origin/main` @ `2ccdf76` | theology TOC single numbers; reading footers match About/Coaches | 2026-09-15 | GitHub Actions Deploy Production (site+test) | PR #142 TOC/footer live 확인 |
-| **Test runtime** | `origin/main` @ `2ccdf76` | CI post-deploy premium markers OK | 2026-09-15 | GitHub Actions test-only bundle | PR #142 deploy track both |
+| **Site** (landing, menu, home, child-type-test shell) | `origin/main` @ `0d89d95` | landing/menu·home design assets·child-type-test guard OK | 2026-10-13T07:35:14Z | GitHub Actions site-only bundle | run 38363480410, track both; 최종 live guard 07:35:19 UTC 통과 |
+| **Test runtime** | `origin/main` @ `0d89d95` | premium runtime·entry scripts·analytics·report CSS/assets guard OK | 2026-10-13T07:34:48Z | GitHub Actions test-only bundle | run 38363480410; 07:34:49 UTC 검증 통과, site deploy 후 07:35:19 UTC 재검증 통과 |
 | **Supabase Edge** | `main` / 별도 branch | (미기록) | — | `supabase functions deploy` | 웹 wrangler deploy 와 **분리** |
 
 ### Drift 요약
 
-- **Site + Test runtime:** 2026-09-15 CI Deploy Production으로 `main` (2ccdf76, PR #142)과 live 동기화됨. 신학 TOC 이중 번호 제거, 안내 페이지 푸터를 ER 소개·코치진 소개와 동일 IA로 맞춤.
-- **CI deploy:** Actions Deploy Production 동작 확인 (run 34996036227). Ledger 직접 push는 branch protection으로 거부되어 PR로 갱신.
+- **Site + Test runtime:** 2026-10-13 CI Deploy Production으로 `main` @ `0d89d95` (PR #169/#170 반영)을 배포·검증했다. 위 SHA는 배포 소스이며 이후 문서 전용 PR #171의 merge SHA `78825e5`와 구분한다.
+- **CI ledger 저장 실패:** run 38363480410의 ledger 생성·runner 로컬 commit은 완료됐지만 protected `main` push는 GH006으로 거부됐다. `continue-on-error: true`로 workflow가 green이어도 원격 ledger 저장 성공을 뜻하지 않는다. 아래 기록은 로그에 근거한 후속 문서 정정이다.
 - **과거 사고 패턴:** full deploy / `.assetsignore` test 제외로 test 404 가능 → bundle prune + assetsignore 수정 (#67).
 
 
@@ -45,6 +45,14 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 | Site | main @ abc1234 | landing markers OK | CI site deploy | cursor-main |
 | Test runtime | main @ def5678 | js/test.js sha256 … | test-only bundle | cursor-main |
 ```
+
+### 2026-10-13 — 내러티브 검사 배포 기록 정정 (#169/#170)
+
+- 배포 소스: [`0d89d959218abeeb18d830c53579eb8961238de6`](https://github.com/Jamiewsm/ER-Website/commit/0d89d959218abeeb18d830c53579eb8961238de6), [Deploy Production run 38363480410](https://github.com/Jamiewsm/ER-Website/actions/runs/38363480410), track `both`.
+- [Test job](https://github.com/Jamiewsm/ER-Website/actions/runs/38363480410/job/115183054818): 2026-10-13 07:34:48 UTC 배포 완료, 07:34:49 UTC live guard 통과.
+- [Site job](https://github.com/Jamiewsm/ER-Website/actions/runs/38363480410/job/115183194583): 2026-10-13 07:35:14 UTC 배포 완료, 07:35:19 UTC 최종 live guard 8개 항목 모두 OK (child-type-test HTML 31,901 bytes). Site-only bundle은 live test runtime을 보존했다.
+- [Ledger job](https://github.com/Jamiewsm/ER-Website/actions/runs/38363480410/job/115183372454): 07:35:28 UTC 파일 생성·runner 로컬 commit `24e3166`; 07:35:29 UTC `GH006: Protected branch update failed for refs/heads/main` 및 `Changes must be made through a pull request`로 push 실패(exit 1). 이 시각은 배포 완료 시각이 아니다.
+- [배포 당시 workflow](https://github.com/Jamiewsm/ER-Website/blob/0d89d959218abeeb18d830c53579eb8961238de6/.github/workflows/deploy-production.yml#L280-L288)의 `continue-on-error: true` 때문에 run은 success였다. [PR #171 검토 지적](https://github.com/Jamiewsm/ER-Website/pull/171#discussion_r4255958413)에 따라 CI 자동 저장 실패와 실제 배포 성공을 구분해 기록한다.
 
 ### 2026-09-15 — reading TOC + footer (#142)
 | Surface | Git ref | Live fingerprint | Method | By |
