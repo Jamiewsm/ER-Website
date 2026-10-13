@@ -51,7 +51,7 @@ function makeBuildFixture() {
   writeFile(source, 'test-results/background_vase.png', 'png');
   writeFile(source, 'test-results/backgrdound_road.png', 'png');
 
-  writeFile(live, 'index.html', 'LIVE LANDING 유형검사 프리미엄 검사 child-type-test/child-type-test.html <script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>');
+  writeFile(live, 'index.html', 'LIVE LANDING 유형검사 내러티브 테스트 child-type-test/child-type-test.html <script defer src="https://static.cloudflareinsights.com/beacon.min.js"></script>');
   writeFile(live, 'js/sections/home.js', 'LIVE HOME home-parent-child-photo.jpg home-couple-photo.jpg home-team-photo.jpg hands and green.png green and seat.png');
 
   return { base, source, live, out };
@@ -59,7 +59,7 @@ function makeBuildFixture() {
 
 function makeVerifyFixture({ omitTestMarker = false } = {}) {
   const root = makeDir('er-deploy-verify-');
-  writeFile(root, 'index.html', '유형검사 프리미엄 검사 child-type-test/child-type-test.html js/sections/home.js?v=20260613g');
+  writeFile(root, 'index.html', '유형검사 내러티브 테스트 child-type-test/child-type-test.html js/sections/home.js?v=20260613g');
   writeFile(root, 'js/sections/home.js', 'home-parent-child-photo.jpg home-couple-photo.jpg home-team-photo.jpg hands and green.png green and seat.png');
   writeFile(root, 'child-type-test/child-type-test.html', 'child type page is present');
   writeFile(root, 'test.html', 'css/test.css js/diagnostic-experiment.js js/report-support-materials.js js/test.js');
@@ -121,7 +121,7 @@ test('live deployment verifier passes required production markers and fails miss
 
 test('live deployment verifier follows production redirects', async () => {
   const bodies = {
-    '/landing.html': '유형검사 프리미엄 검사 child-type-test/child-type-test.html',
+    '/landing.html': '유형검사 내러티브 테스트 child-type-test/child-type-test.html',
     '/js/sections/home.js': 'home-parent-child-photo.jpg home-couple-photo.jpg home-team-photo.jpg hands and green.png green and seat.png',
     '/child-type-test/child-type-test.html': 'child type page is present',
     '/test.html': 'css/test.css js/diagnostic-experiment.js js/report-support-materials.js js/test.js',

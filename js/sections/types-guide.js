@@ -220,7 +220,7 @@ function renderTypesGuide() {
                 <div class="absolute top-[-20%] right-[-10%] w-[360px] h-[360px] bg-er-green/20 rounded-full blur-[110px] pointer-events-none"></div>
                 <div class="max-w-6xl mx-auto relative z-10">
                     <button onclick="renderSection('test')" class="mb-5 px-3 py-1.5 bg-white/10 border border-white/15 rounded-full text-xs font-medium text-white/90 flex items-center gap-1 transition-all hover:bg-white/20 w-fit">
-                        <i class="fas fa-arrow-left"></i> 프리미엄 검사로
+                        <i class="fas fa-arrow-left"></i> 내러티브 테스트로
                     </button>
                     <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] font-bold tracking-widest uppercase text-er-greenTint mb-4">Types Guide</span>
                     <h2 class="font-display text-2xl md:text-4xl font-extrabold tracking-[-0.03em] break-keep">9가지 유형별 회복의 길</h2>

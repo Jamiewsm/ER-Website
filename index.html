@@ -311,7 +311,7 @@
             padding-inline: 0.5rem;
         }
         
-        .break-keep { word-break: keep-all; }
+        .break-keep { word-break: keep-all; overflow-wrap: normal; hyphens: none; }
 
         .desktop-nav button {
             white-space: nowrap;
@@ -387,7 +387,7 @@
                         <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[16rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('test')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
-                                    프리미엄 검사
+                                    내러티브 테스트
                                     <span class="block text-[11px] font-normal text-gray-400 mt-0.5">나의 핵심 동기와 유형을 찾는 검사</span>
                                 </button>
                                 <button onclick="renderSection('types_guide')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
@@ -500,7 +500,7 @@
                         <i class="fas fa-chevron-down mobile-nav-chevron" aria-hidden="true"></i>
                     </button>
                     <div id="mobile-nav-test" class="mobile-nav-panel hidden" aria-hidden="true">
-                        <button type="button" onclick="renderSection('test')" class="mobile-nav-link">프리미엄 검사</button>
+                        <button type="button" onclick="renderSection('test')" class="mobile-nav-link">내러티브 테스트</button>
                         <button type="button" onclick="renderSection('types_guide')" class="mobile-nav-link">유형 알아보기</button>
                     </div>
 
@@ -748,7 +748,7 @@
     <script src="js/strings.js?v=20260921-spectrum-cert"></script>
 
     <!-- App state & utilities -->
-    <script src="js/app-state.js?v=20260801a"></script>
+    <script src="js/app-state.js?v=20261013-narrative-en-v1"></script>
     <script src="js/app-helpers.js?v=20260914a"></script>
     <script src="js/app-charts.js"></script>
     <script src="js/app-adaptive-data.js"></script>
@@ -765,12 +765,12 @@
     <script src="js/sections/parenting.js?v=20260625a"></script>
     <script src="js/sections/coaches.js?v=20260827b"></script>
     <script src="js/sections/coach-training.js?v=20260827b"></script>
-    <script src="js/sections/community.js?v=20260801a"></script>
+    <script src="js/sections/community.js?v=20261013-narrative-en-v1"></script>
     <script src="js/sections/support.js?v=20260921-minister-story"></script>
-    <script src="js/sections/apply.js?v=20260921-accounts"></script>
+    <script src="js/sections/apply.js?v=20261013-narrative-en-v1"></script>
     <script src="js/sections/notices.js?v=20260525f"></script>
-    <script src="js/sections/types-guide.js?v=20260621a"></script>
-    <script src="js/sections/test-embed.js?v=20260611a"></script>
+    <script src="js/sections/types-guide.js?v=20261013-narrative-en-v1"></script>
+    <script src="js/sections/test-embed.js?v=20261013-narrative-en-v1"></script>
     <script src="js/sections/account.js?v=20260914a"></script>
     <script src="js/sections/pages.js?v=20260920-scholarship"></script>
     <script src="js/coach/views.js?v=20260915a"></script>
@@ -781,7 +781,7 @@
     <script src="js/coach/mentoring-hub.js"></script>
 
     <!-- Core routing & init -->
-    <script src="js/app-core.js?v=20260920-scholarship"></script>
+    <script src="js/app-core.js?v=20261013-narrative-en-v1"></script>
     <script src="js/app-init.js?v=20260922-kakao-channel"></script>
     <script src="js/coach-portal.js?v=20260914a"></script>
 </body>
