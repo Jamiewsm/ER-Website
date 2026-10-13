@@ -138,7 +138,7 @@ function renderCommunity() {
                     </div>
                     <div class="mt-8 text-center">
                         <button onclick="renderSection('test')" class="inline-flex items-center gap-2 rounded-full bg-er-green px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-er-greenDark">
-                            먼저 프리미엄 검사 해보기 <i class="fas fa-arrow-right text-[11px]"></i>
+                            먼저 내러티브 테스트 해보기 <i class="fas fa-arrow-right text-[11px]"></i>
                         </button>
                     </div>
                 </div>

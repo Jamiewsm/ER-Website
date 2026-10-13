@@ -149,7 +149,7 @@ function renderSection(sectionId, payload = null, options = {}) {
             home: '홈',
             about: 'ER 소개',
             theology: '신학적 기초',
-            test: '프리미엄 검사',
+            test: '내러티브 테스트',
             types_guide: '유형 안내',
             programs: '서비스 안내',
             parenting: 'Parenting',

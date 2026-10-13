@@ -12,7 +12,7 @@ const CHECKS = [
   {
     path: 'index.html',
     label: 'live landing/menu',
-    markers: ['유형검사', '프리미엄 검사', 'child-type-test/child-type-test.html']
+    markers: ['유형검사', '내러티브 테스트', 'child-type-test/child-type-test.html']
   },
   {
     path: 'js/sections/home.js',
