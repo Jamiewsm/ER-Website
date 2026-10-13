@@ -99,7 +99,9 @@ node scripts/analyze_diagnostic_experiments.mjs \
 
 ## 8. 운영 사이트 반영 확인
 
-사이트 표시명 변경은 [PR #169](https://github.com/Jamiewsm/ER-Website/pull/169), 영어 결과·검증 보완은 [PR #170](https://github.com/Jamiewsm/ER-Website/pull/170)으로 분리해 병합했다. [CI 배포 #38363480410](https://github.com/Jamiewsm/ER-Website/actions/runs/38363480410)은 test/site 배포·운영 마커 검사·배포 기록 갱신까지 성공했다.
+사이트 표시명 변경은 [PR #169](https://github.com/Jamiewsm/ER-Website/pull/169), 영어 결과·검증 보완은 [PR #170](https://github.com/Jamiewsm/ER-Website/pull/170)으로 분리해 병합했다. [CI 배포 #38363480410](https://github.com/Jamiewsm/ER-Website/actions/runs/38363480410)은 커밋 `0d89d959218abeeb18d830c53579eb8961238de6`의 test/site 배포와 운영 마커 검사에 성공했다. Test 배포는 2026-10-13 07:34:48 UTC, site 배포는 07:35:14 UTC에 완료됐고 최종 live guard는 07:35:19 UTC에 통과했다.
+
+배포 기록의 CI 자동 저장은 실패했다. [Ledger job](https://github.com/Jamiewsm/ER-Website/actions/runs/38363480410/job/115183372454)은 파일 생성·runner 로컬 commit `24e3166`까지 수행했지만 protected `main` 직접 push가 GH006으로 거부됐다(exit 1). [당시 workflow](https://github.com/Jamiewsm/ER-Website/blob/0d89d959218abeeb18d830c53579eb8961238de6/.github/workflows/deploy-production.yml#L280-L288)의 `continue-on-error: true` 때문에 run은 success로 표시됐다. [검토 지적](https://github.com/Jamiewsm/ER-Website/pull/171#discussion_r4255958413)에 따라 “배포 기록 갱신까지 성공” 주장을 정정하며, 로그 근거와 배포 시각은 [DEPLOY_LEDGER.md](../../_meta/DEPLOY_LEDGER.md)의 후속 문서 정정에 기록한다.
 
 운영 [한국어 검사](https://er-coaching.com/test.html?lang=ko)와 [영어 검사](https://er-coaching.com/test.html?lang=en)를 실제 Chrome에서 완료했다. 저장 응답 복원, 언어가 유지된 공유 링크, 인쇄 화면, 320/375/1280px 단어 청크 보존과 가로 넘침 없음을 다시 확인했다. 영어 결과에는 한국어가 노출되지 않았다. 주요 JavaScript·CSS 다섯 파일은 작업 공간과 SHA-256이 일치하고, test.html은 Cloudflare 주입 beacon 및 태그 사이 공백을 정규화한 후 원본과 같았다.
 
