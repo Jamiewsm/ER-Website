@@ -21,6 +21,7 @@ function buildSectionHash(sectionId, payload = null) {
     const params = new URLSearchParams();
     if (payload && typeof payload === 'object') {
         Object.entries(payload).forEach(([key, value]) => {
+            if (key === 'applicationReceipt') return;
             if (value !== undefined && value !== null && value !== '') params.set(key, String(value));
         });
     }

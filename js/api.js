@@ -206,6 +206,23 @@ async function handleApplySubmit(event, source, successPayload) {
     : '';
   var isOctoberBasicCourse = requestedProgramKey === 'enneagram_basic_october'
     || requestedProgramKey === 'basic_course_october';
+  // 오래된 일반 폼의 선택지도 필수 입력 없는 기본과정 요청을 보내지 않는다.
+  var basicCategory = /기본과정|basic/i.test(category);
+  if (basicCategory && !isOctoberBasicCourse) {
+    if (!setApplySubmitStatus('기본과정은 기수별 전용 안내에서 신청해 주세요. 아래 기본과정·다음 기수 안내를 확인해 주세요.', 'error')) {
+      alert('기본과정은 기수별 전용 안내에서 신청해 주세요.');
+    }
+    return;
+  }
+  if (isOctoberBasicCourse) {
+    var recruitmentOpen = typeof isBasicCourseRecruitmentOpen === 'function'
+      ? isBasicCourseRecruitmentOpen()
+      : Boolean(window.ERProgramCatalog && window.ERProgramCatalog.isBasicCourseRecruitmentOpen && window.ERProgramCatalog.isBasicCourseRecruitmentOpen());
+    if (!recruitmentOpen) {
+      if (typeof renderSection === 'function') renderSection('apply', { track: 'paid', focus: 'enneagram_basic_october' });
+      return;
+    }
+  }
   if (!name || !contact || !category) {
     if (!setApplySubmitStatus('이름과 연락받으실 곳을 확인해 주세요.', 'error')) {
       alert('이름, 연락처, 신청 분야를 확인해 주세요.');
@@ -285,10 +302,22 @@ async function handleApplySubmit(event, source, successPayload) {
       throw new Error(errorText || 'HTTP ' + response.status);
     }
 
-    if (typeof renderSection === 'function') renderSection('thankyou', successPayload || null);
+    var result;
+    try { result = await response.json(); } catch (_) { throw new Error('application_result_uncertain'); }
+    if (result?.ok !== true || typeof result.id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(result.id)) {
+      throw new Error('application_result_uncertain');
+    }
+    var receipt = { id: result.id, warning: typeof result.warning === 'string' ? result.warning : '' };
+    try {
+      sessionStorage.setItem('er_application_receipt', JSON.stringify({ receipt: receipt, focus: String(successPayload?.focus || ''), savedAt: Date.now() }));
+    } catch (_) {}
+    if (typeof renderSection === 'function') renderSection('thankyou', { ...(successPayload || {}), applicationReceipt: receipt }, { replaceHash: true });
   } catch (err) {
     var msg = err instanceof Error ? err.message : String(err);
-    if (!setApplySubmitStatus('신청을 접수하지 못했습니다. 잠시 후 다시 시도해 주세요.', 'error')) {
+    var failureMessage = msg === 'application_result_uncertain'
+      ? '접수 결과를 확인하지 못했습니다. 중복 신청을 피하려면 재신청하지 말고 담당자에게 문의해 주세요.'
+      : '신청을 접수하지 못했습니다. 잠시 후 다시 시도해 주세요.';
+    if (!setApplySubmitStatus(failureMessage, 'error')) {
       alert('제출에 실패했습니다: ' + msg);
     }
     if (window.turnstile && applyTurnstileWidgetId !== null) {

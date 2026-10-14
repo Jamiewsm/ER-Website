@@ -244,7 +244,7 @@ test('successful focused submission carries parenting focus into confirmation', 
       constructor(form) { this.values = form.values; }
       get(name) { return this.values[name] || ''; }
     },
-    fetch: async () => ({ ok: true }),
+    fetch: async () => ({ ok: true, json: async () => ({ ok: true, id: '20000000-0000-4000-8000-000000000001' }) }),
     renderSection(...args) { renderArgs = args; },
     alert() {},
     setInterval,
@@ -277,7 +277,7 @@ test('October basic course submission preserves the legacy program key and sends
     textContent: '에니어그램 기본과정 신청하기'
   };
   const context = {
-    window: { SUPABASE_CONFIG: { url: 'https://example.supabase.co' }, state: { user: null } },
+    window: { SUPABASE_CONFIG: { url: 'https://example.supabase.co' }, state: { user: null }, ERProgramCatalog: { isBasicCourseRecruitmentOpen: () => true } },
     document: {
       getElementById(id) {
         if (id === 'apply-submit-btn') return submitButton;
@@ -290,7 +290,7 @@ test('October basic course submission preserves the legacy program key and sends
     },
     fetch: async (_url, options) => {
       requestBody = JSON.parse(options.body);
-      return { ok: true };
+      return { ok: true, json: async () => ({ ok: true, id: '20000000-0000-4000-8000-000000000001' }) };
     },
     renderSection() {},
     alert() {},

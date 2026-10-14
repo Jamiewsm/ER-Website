@@ -14,10 +14,17 @@ on:
       - 'basic-course.html'
       - 'child-type-test/**'
       - 'js/sections/home.js'
+      - 'js/sections/apply.js'
+      - 'js/program-catalog.js'
+      - 'js/api.js'
+      - 'js/app-core.js'
       - 'robots.txt'
       - 'sitemap.xml'
       - 'scripts/deploy-tracks.mjs'
       - 'tests/seo-foundation.test.mjs'
+      - 'tests/application-flow.test.mjs'
+      - 'tests/apply-workshop-render.test.mjs'
+      - 'tests/program-catalog-routing.test.mjs'
       - '.github/workflows/site-seo-checks.yml'
       - '.github/workflows/deploy-production.yml'
 permissions:
@@ -30,4 +37,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tests/seo-foundation.test.mjs tests/site-ministry-boundary.test.mjs tests/basic-course-october-site.test.mjs tests/theology-navigation.test.mjs tests/mobile-site-layout.test.mjs tests/infer-deploy-track.test.mjs
+      - name: Check application JavaScript
+        run: |
+          node --check js/api.js
+          node --check js/sections/apply.js
+          node --check js/program-catalog.js
+          node --check js/app-core.js
+      - run: node --test tests/seo-foundation.test.mjs tests/site-ministry-boundary.test.mjs tests/basic-course-october-site.test.mjs tests/theology-navigation.test.mjs tests/mobile-site-layout.test.mjs tests/infer-deploy-track.test.mjs tests/application-flow.test.mjs tests/apply-workshop-render.test.mjs tests/program-catalog-routing.test.mjs
