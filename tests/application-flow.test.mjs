@@ -20,6 +20,7 @@ function app(options = {}) {
     fetch:async (url,init) => {
       requests.push({url,payload:JSON.parse(init.body)});
       if(options.networkError)throw Error('offline');
+      if(options.closedResponse)return {ok:false,status:409,text:async()=>JSON.stringify({error:'recruitment_closed'})};
       return {ok:true,json:async()=> {
         if(options.badJson)throw Error('invalid JSON');
         return options.result || {ok:true,id:receiptId};
@@ -116,6 +117,14 @@ test('focused basic form during an open fixture rejects missing phone then prese
   assert.equal(a.requests[0].payload.phone,'000');
   assert.equal(a.requests[0].payload.covenant_agreed,true);
   assert.equal(a.routes[0][1].applicationReceipt.id,receiptId);
+});
+test('server closure is shown even when the client clock says recruitment is open', async () => {
+  const a=app({open:true,closedResponse:true});
+  await a.submit({phone:'000',category:'성경적 에니어그램 기본과정'},'enneagram_basic_october');
+  assert.equal(a.requests.length,1);assert.equal(a.routes.length,0);
+  assert.match(a.nodes.get('apply-submit-status').textContent,/모집은 마감|재신청하지 말고/);
+  assert.doesNotMatch(a.nodes.get('apply-submit-status').textContent,/다시 시도/);
+  assert.equal(a.saved.size,0);
 });
 for(const warning of ['receipt_email_failed','email_delivery_uncertain','email_sent_record_failed','unknown_future_warning']){
   test('saved application warning is visible without claiming the mail was sent: '+warning, async()=>{

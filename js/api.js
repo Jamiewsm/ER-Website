@@ -299,7 +299,9 @@ async function handleApplySubmit(event, source, successPayload) {
 
     if (!response.ok) {
       var errorText = await response.text();
-      throw new Error(errorText || 'HTTP ' + response.status);
+      var responseError;
+      try { responseError = JSON.parse(errorText); } catch (_) {}
+      throw new Error(responseError?.error === 'recruitment_closed' ? 'recruitment_closed' : errorText || 'HTTP ' + response.status);
     }
 
     var result;
@@ -314,7 +316,9 @@ async function handleApplySubmit(event, source, successPayload) {
     if (typeof renderSection === 'function') renderSection('thankyou', { ...(successPayload || {}), applicationReceipt: receipt }, { replaceHash: true });
   } catch (err) {
     var msg = err instanceof Error ? err.message : String(err);
-    var failureMessage = msg === 'application_result_uncertain'
+    var failureMessage = msg === 'recruitment_closed'
+      ? '이번 기본과정 모집은 마감되었습니다. 재신청하지 말고 다음 기수 안내를 확인해 주세요.'
+      : msg === 'application_result_uncertain'
       ? '접수 결과를 확인하지 못했습니다. 중복 신청을 피하려면 재신청하지 말고 담당자에게 문의해 주세요.'
       : '신청을 접수하지 못했습니다. 잠시 후 다시 시도해 주세요.';
     if (!setApplySubmitStatus(failureMessage, 'error')) {
