@@ -1,6 +1,25 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
 import { inferDeployTrackFromPaths, matchesSitePath, matchesTestPath } from '../scripts/infer_deploy_track.mjs';
+
+for (const [track, deploySite, deployTest] of [['site', 'true', 'false'], ['test', 'false', 'true'], ['both', 'true', 'true']]) {
+  test(`workflow dispatch preserves the requested ${track} track and audit inputs`, () => {
+    const workflow = readFileSync(new URL('../.github/workflows/deploy-production.yml', import.meta.url), 'utf8');
+    const script = workflow.split('          script: |\n')[1].split('\n  deploy-test:')[0]
+      .split('\n').map(line => line.replace(/^ {12}/, '')).join('\n');
+    const inputs = { track, ref: 'approved-release-sha', requested_by: 'auto-merge', reason: 'merged site PR' };
+    const outputs = {};
+    runInNewContext(script, {
+      context: { eventName: 'workflow_dispatch', sha: 'workflow-sha', payload: { inputs } },
+      core: { getInput: () => '', setOutput: (key, value) => { outputs[key] = value; } }
+    });
+    assert.deepEqual(outputs, {
+      ...inputs, sha: 'workflow-sha', deploy_site: deploySite, deploy_test: deployTest
+    });
+  });
+}
 
 test('infers test track from premium test paths', () => {
   const r = inferDeployTrackFromPaths(['js/test.js', 'docs/foo.md']);

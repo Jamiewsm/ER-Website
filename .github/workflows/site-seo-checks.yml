@@ -25,6 +25,7 @@ on:
       - 'tests/application-flow.test.mjs'
       - 'tests/apply-workshop-render.test.mjs'
       - 'tests/program-catalog-routing.test.mjs'
+      - 'tests/infer-deploy-track.test.mjs'
       - '.github/workflows/site-seo-checks.yml'
       - '.github/workflows/deploy-production.yml'
 permissions:
