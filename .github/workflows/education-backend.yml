@@ -28,6 +28,7 @@ on:
       - 'tests/education*'
       - 'tests/education/**'
       - 'tests/basic-course-october-supabase.test.mjs'
+      - 'scripts/build_mcp_deploy_from_disk.py'
       - 'tests/education-registration-notification.test.mjs'
       - 'tests/helpers/education-db.mjs'
       - 'tests/helpers/education-postgres.mjs'
