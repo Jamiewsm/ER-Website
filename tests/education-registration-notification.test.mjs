@@ -334,11 +334,12 @@ test('레지스트리에 없는 성장 과정이나 다른 과정의 기수를 �
 
 function loadIntake(overrides = {}, options = {}) {
   const row = { id: application.id };
-  const calls = { inserts: [], updates: [], emails: [], emailRequests: [] };
+  const calls = { inserts: [], updates: [], emails: [], emailRequests: [], clients: 0, turnstile: 0 };
   const payload = {
     name: application.name, contact: application.contact, phone: '010-0000-0000',
     category: '성경적 에니어그램 기본과정', program_key: application.program_key,
     payment_region: 'KR', payment_preference: 'kr_bank', turnstile_token: 'synthetic-token',
+    covenant_agreed: true,
     ...overrides,
   };
   const environment = {
@@ -346,11 +347,15 @@ function loadIntake(overrides = {}, options = {}) {
     RESEND_API_KEY: 'synthetic-resend', TURNSTILE_SECRET_KEY: 'synthetic-turnstile',
   };
   let handler;
+  class IntakeClock extends Date {
+    static now() { return options.now ?? Date.parse('2026-09-01T12:00:00Z'); }
+  }
   const context = vm.createContext({
-    Request, Response, Headers, URLSearchParams,
+    Request, Response, Headers, URLSearchParams, Date: IntakeClock,
     console: { error() {}, warn() {} },
     Deno: { env: { get: (name) => environment[name] }, serve: (callback) => { handler = callback; } },
     createClient() {
+      calls.clients++;
       return {
         from(table) {
           assert.ok(['program_applications', 'edu_courses', 'edu_cohorts'].includes(table));
@@ -368,6 +373,7 @@ function loadIntake(overrides = {}, options = {}) {
     },
     async fetch(url, init) {
       if (url === 'https://challenges.cloudflare.com/turnstile/v0/siteverify') {
+        calls.turnstile++;
         return new Response(JSON.stringify({ success: true }), { status: 200 });
       }
       assert.equal(url, 'https://api.resend.com/emails');
@@ -378,7 +384,7 @@ function loadIntake(overrides = {}, options = {}) {
       return new Response(JSON.stringify({ id: 'synthetic-email-id' }), { status: 200 });
     },
   });
-  for (const path of ['_shared/cors.ts', '_shared/program-pricing.ts', '_shared/email-templates.ts', '_shared/resend.ts', '_shared/turnstile.ts', 'submit-application/index.ts']) {
+  for (const path of ['_shared/cors.ts', '_shared/program-pricing.ts', '_shared/application-recruitment.ts', '_shared/email-templates.ts', '_shared/resend.ts', '_shared/turnstile.ts', 'submit-application/index.ts']) {
     const source = readFileSync(new URL(`../supabase/functions/${path}`, import.meta.url), 'utf8');
     const script = stripTypeScriptTypes(source)
       .replace(/^import\s[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
@@ -392,6 +398,131 @@ function loadIntake(overrides = {}, options = {}) {
     })),
   };
 }
+
+for (const [label, contact] of [
+  ['missing', undefined], ['null', null], ['empty', ''], ['blank', '   '],
+  ['no email', 'not-an-email'], ['missing domain', 'student@'],
+  ['embedded address', 'Student <student@example.invalid>'],
+  ['multiple addresses', 'one@example.invalid two@example.invalid'],
+  ['header text', 'student@example.invalid\r\nBcc: other@example.invalid'],
+  ['brackets', '<student@example.invalid>'], ['domain leading hyphen', 'student@-example.invalid'],
+  ['domain trailing hyphen', 'student@example-.invalid'], ['empty domain label', 'student@example..invalid'],
+  ['domain underscore', 'student@sub_domain.example.invalid'], ['domain label too long', 'student@' + 'x'.repeat(64) + '.invalid'],
+  ['array', ['student@example.invalid']], ['object', { email: 'student@example.invalid' }],
+  ['number', 123], ['boolean', true],
+]) {
+  test(`모집 중 기본과정은 유효한 단일 이메일 문자열만 받는다: ${label}`, async () => {
+    const h = loadIntake({ contact });
+    assert.equal((await h.invoke()).status, 400);
+    assert.equal(h.calls.clients, 0); assert.equal(h.calls.turnstile, 0);
+    assert.equal(h.calls.inserts.length, 0); assert.equal(h.calls.emails.length, 0);
+  });
+}
+for (const [label, covenant_agreed] of [
+  ['missing', undefined], ['null', null], ['false', false],
+  ['string false', 'false'], ['string true', 'true'], ['checkbox text', 'on'],
+  ['zero', 0], ['one', 1], ['array', []], ['object', {}], ['true array', [true]],
+]) {
+  test(`모집 중 기본과정은 명시적인 boolean true 서약만 받는다: ${label}`, async () => {
+    const h = loadIntake({ covenant_agreed });
+    const response = await h.invoke();
+    assert.equal(response.status, 400); assert.equal((await response.json()).error, 'covenant_required');
+    assert.equal(h.calls.clients, 0); assert.equal(h.calls.turnstile, 0);
+    assert.equal(h.calls.inserts.length, 0); assert.equal(h.calls.emails.length, 0);
+  });
+  test(`마감된 기본과정은 서약 값에 관계없이 외부 호출 전에 닫는다: ${label}`, async () => {
+    const h = loadIntake({ covenant_agreed }, { now: Date.parse('2026-10-14T12:00:00Z') });
+    const response = await h.invoke();
+    assert.equal(response.status, 409); assert.equal((await response.json()).error, 'recruitment_closed');
+    assert.equal(h.calls.clients, 0); assert.equal(h.calls.turnstile, 0);
+    assert.equal(h.calls.inserts.length, 0); assert.equal(h.calls.emails.length, 0);
+  });
+}
+test('마감된 기본과정은 잘못된 이메일도 마감 응답으로 종료한다', async () => {
+  const h = loadIntake({ contact: 'not-an-email' }, { now: Date.parse('2026-10-14T12:00:00Z') });
+  const response = await h.invoke();
+  assert.equal(response.status, 409); assert.equal((await response.json()).error, 'recruitment_closed');
+  assert.equal(h.calls.clients, 0); assert.equal(h.calls.turnstile, 0);
+  assert.equal(h.calls.inserts.length, 0); assert.equal(h.calls.emails.length, 0);
+});
+for (const contact of [
+  'first.last+tag@sub.example.invalid', '  Student@Example.invalid  ',
+  "o'hara@example.invalid", 'customer!tag@example.invalid',
+  "user!#$%&'*+/=?^_`{|}~@example.invalid", 'student@mailhost',
+]) {
+  test(`모집 중 정상 이메일과 기존 서약 동의는 접수·메일 계약을 유지한다: ${contact.trim()}`, async () => {
+    const h = loadIntake({ contact, covenant_agreed: true });
+    const response = await h.invoke();
+    assert.equal(response.status, 200); assert.equal((await response.json()).id, application.id);
+    assert.equal(h.calls.inserts.length, 1); assert.equal(h.calls.emails.length, 2);
+    assert.equal(h.calls.inserts[0].contact, contact.trim());
+    assert.equal(h.calls.inserts[0].covenant_agreed, true);
+    assert.equal(h.calls.emails[1].to[0], contact.trim());
+  });
+  test(`발송 준비 실패 후 기본과정 복구 안내도 저장한 전체 주소를 사용한다: ${contact.trim()}`, async () => {
+    const h = loadIntake({ contact, covenant_agreed: true }, { claimError: true });
+    const response = await h.invoke();
+    assert.equal(response.status, 200); assert.equal((await response.json()).warning, 'email_delivery_claim_failed');
+    assert.equal(h.calls.emails.length, 1, '초기 안내는 준비 실패로 발송하지 않는다');
+    const recovery = loadHandler(h.calls.inserts[0]);
+    assert.equal((await recovery.invoke()).status, 200);
+    assert.equal(recovery.calls.emails.length, 1);
+    assert.equal(recovery.calls.emails[0].to[0], contact.trim());
+  });
+}
+test('기존 기본과정의 메모가 포함된 연락처는 복구 시 기존 추출 호환을 유지한다', async () => {
+  const h = loadHandler({ contact: 'Legacy Student <legacy@example.invalid>' });
+  assert.equal((await h.invoke()).status, 200);
+  assert.equal(h.calls.emails[0].to[0], 'legacy@example.invalid');
+});
+for (const [program_key, category] of [['general', '일반 코칭 상담'], ['parenting_workshop', 'Parenting workshop']]) {
+  test(`기본과정 필수 검증은 ${program_key}의 전화 연락처·서약 선택을 바꾸지 않는다`, async () => {
+    const h = loadIntake({ program_key, category, contact: '010-0000-0000', covenant_agreed: false }, { now: Date.parse('2026-10-14T12:00:00Z') });
+    assert.equal((await h.invoke()).status, 200); assert.equal(h.calls.inserts.length, 1);
+    assert.equal(h.calls.inserts[0].contact, '010-0000-0000');
+    assert.equal(h.calls.inserts[0].covenant_agreed, false); assert.equal(h.calls.emails.length, 1);
+  });
+}
+
+for (const programKey of ['enneagram_basic_july', 'enneagram_basic', 'enneagram_basic_october', 'basic_course_october', '']) {
+  test(`마감 후 기본과정 직접 요청은 저장·보안 API·메일을 호출하지 않는다: ${programKey || 'category inference'}`, async () => {
+    const h = loadIntake({program_key: programKey, client_time: '2026-09-01T12:00:00Z', cohort_key: 'unapproved-future-cohort'}, {now: Date.parse('2026-10-14T12:00:00Z')});
+    const response = await h.invoke();
+    assert.equal(response.status, 409); assert.equal((await response.json()).error, 'recruitment_closed');
+    assert.equal(h.calls.clients, 0); assert.equal(h.calls.turnstile, 0);
+    assert.equal(h.calls.inserts.length, 0); assert.equal(h.calls.updates.length, 0); assert.equal(h.calls.emails.length, 0);
+  });
+}
+test('영문 basic category도 서버 모집 마감을 적용한다', async () => {
+  const h = loadIntake({program_key: '', category: 'Basic course'}, {now: Date.parse('2026-10-14T12:00:00Z')});
+  assert.equal((await h.invoke()).status, 409); assert.equal(h.calls.clients, 0);
+});
+test('승인된 마감 시각까지 접수하고 다음 밀리초부터 서버에서 닫는다', async () => {
+  const cutoff = Date.parse('2026-09-28T23:59:59-07:00');
+  const open = loadIntake({}, {now: cutoff});
+  assert.equal((await open.invoke()).status, 200); assert.equal(open.calls.inserts.length, 1);
+  assert.equal(open.calls.inserts[0].program_key, 'enneagram_basic_july');
+  assert.equal(open.calls.inserts[0].cohort_key, 'enneagram_basic_2026_10');
+  const closed = loadIntake({}, {now: cutoff + 1});
+  assert.equal((await closed.invoke()).status, 409); assert.equal(closed.calls.clients, 0);
+});
+test('서버 시각이 유효하지 않으면 기본과정 접수를 열지 않는다', async () => {
+  const h = loadIntake({}, {now: NaN});
+  assert.equal((await h.invoke()).status, 409); assert.equal(h.calls.clients, 0);
+});
+for (const [programKey, category] of [['parenting_workshop', 'Parenting workshop'], ['general', '일반 코칭 상담']]) {
+  test(`기본과정 마감 후에도 ${programKey}의 기존 접수 흐름은 유지한다`, async () => {
+    const h = loadIntake({program_key: programKey, category}, {now: Date.parse('2026-10-14T12:00:00Z')});
+    assert.equal((await h.invoke()).status, 200); assert.equal(h.calls.inserts.length, 1);
+    assert.equal(h.calls.inserts[0].program_key, programKey); assert.equal(h.calls.inserts[0].cohort_key, null);
+  });
+}
+test('브라우저와 서버가 같은 승인된 기수 마감 시각을 사용한다', () => {
+  const backend = readFileSync(new URL('../supabase/functions/_shared/application-recruitment.ts', import.meta.url), 'utf8');
+  const frontend = readFileSync(new URL('../js/program-catalog.js', import.meta.url), 'utf8');
+  const deadline = text => text.match(/BASIC_COURSE_RECRUITMENT_END = '([^']+)'/)?.[1];
+  assert.ok(deadline(backend)); assert.equal(deadline(backend), deadline(frontend));
+});
 
 for (const [region, discount] of [['KR', false], ['KR', true], ['OVERSEAS', false], ['OVERSEAS', true]]) {
   test(`접수와 복구 안내 본문·금액·중복방지 키가 일치한다 (${region}, 사역자 ${discount})`, async () => {
