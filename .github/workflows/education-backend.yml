@@ -18,6 +18,8 @@ on:
       - 'supabase/manual/education-public-notices.pending.sql'
       - 'supabase/functions/_shared/email-templates.ts'
       - 'supabase/functions/_shared/program-pricing.ts'
+      - 'supabase/functions/_shared/application-recruitment.ts'
+      - 'supabase/functions/submit-application/**'
       - 'supabase/functions/notify-program-application/**'
       - 'supabase/functions/_shared/education-onboarding-*.ts'
       - 'supabase/functions/education-onboarding-email/**'
@@ -26,6 +28,7 @@ on:
       - 'tests/education*'
       - 'tests/education/**'
       - 'tests/basic-course-october-supabase.test.mjs'
+      - 'tests/education-registration-notification.test.mjs'
       - 'tests/helpers/education-db.mjs'
       - 'tests/helpers/education-postgres.mjs'
       - '.github/workflows/education-backend.yml'
@@ -45,6 +48,7 @@ jobs:
       - run: node --test tests/er-account-consent.test.mjs
       - run: node --test tests/education-record-retention.test.mjs
       - run: node --test tests/basic-course-october-supabase.test.mjs
+      - run: node --test tests/education-registration-notification.test.mjs
       - name: Install local PostgreSQL test tools
         run: |
           sudo apt-get update
