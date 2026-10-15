@@ -46,9 +46,9 @@ function renderHome() {
 
     const programCards = [
         {
-            badge: '모집 중',
+            badge: showBasicCourseRecruitment ? '모집 중' : '모집 마감',
             title: '에니어그램 기본과정 8주',
-            text: '10월 첫주 개강 · 정원 8명 · 8주 온라인 과정',
+            text: showBasicCourseRecruitment ? '10월 첫주 개강 · 정원 8명 · 8주 온라인 과정' : '2026년 10월 기수 모집 마감 · 다음 기수 일정은 확정 후 안내',
             price: '한국 ₩450,000 · 미국 $330',
             image: 'background.png',
             position: 'center',

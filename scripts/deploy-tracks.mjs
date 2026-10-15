@@ -23,6 +23,7 @@ export const SITE_OVERLAY_GLOBS = [
   'favicon*.png',
   'js/parents-workshop-promo.js',
   'js/program-catalog.js',
+  'js/api.js',
   'js/app-state.js',
   'js/app-core.js',
   'js/config.js',

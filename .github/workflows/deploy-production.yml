@@ -22,6 +22,7 @@ on:
       - 'parents-workshop.html'
       - 'js/parents-workshop-promo.js'
       - 'js/program-catalog.js'
+      - 'js/api.js'
       - 'images/**'
       - 'ER-logo-*.png'
       - 'test.html'
@@ -125,10 +126,11 @@ jobs:
             };
 
             if (event === 'workflow_dispatch') {
-              applyTrack(core.getInput('track') || 'both');
-              ref = core.getInput('ref') || 'main';
-              requestedBy = core.getInput('requested_by') || 'human';
-              reason = core.getInput('reason') || '';
+              const inputs = context.payload.inputs || {};
+              applyTrack(inputs.track || 'both');
+              ref = inputs.ref || 'main';
+              requestedBy = inputs.requested_by || 'human';
+              reason = inputs.reason || '';
             } else if (event === 'repository_dispatch') {
               const p = context.payload.client_payload || {};
               applyTrack(p.track || 'both');

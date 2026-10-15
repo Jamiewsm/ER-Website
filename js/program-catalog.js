@@ -237,7 +237,7 @@
       PROGRAMS.result_consult.category,
       PROGRAMS.identity_session.category,
       PROGRAMS.coaching_single.category,
-      PROGRAMS.basic_course.category,
+      // 기수·필수 입력이 있는 기본과정은 전용 안내/신청서에서만 접수한다.
       '자녀 양육 코칭 문의',
       PROGRAMS.recovery_journey_4.category,
       PROGRAMS.recovery_journey_8.category,
