@@ -1,6 +1,9 @@
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
+import { execFileSync } from 'node:child_process';
+import { posix } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 function read(path) {
   return readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
@@ -11,6 +14,23 @@ const submit = read('supabase/functions/submit-application/index.ts');
 const notify = read('supabase/functions/notify-program-application/index.ts');
 const templates = read('supabase/functions/_shared/email-templates.ts');
 const pricing = read('supabase/functions/_shared/program-pricing.ts');
+
+for (const [name, verifyJwt] of [['submit-application', false], ['notify-program-application', true]]) {
+  test(`${name} deployment payload includes every relative import and preserves JWT access`, () => {
+    const builder = fileURLToPath(new URL('../scripts/build_mcp_deploy_from_disk.py', import.meta.url));
+    const payload = JSON.parse(execFileSync('python3', [builder, name], { encoding: 'utf8' }));
+    assert.equal(payload.name, name);
+    assert.equal(payload.verify_jwt, verifyJwt);
+    const files = new Map(payload.files.map(file => [file.name, file.content]));
+    assert.ok(files.has(payload.entrypoint_path), 'entrypoint is present');
+    for (const [path, content] of files) {
+      for (const match of content.matchAll(/(?:from\s+|import\s*(?:\(\s*)?)['"](\.[^'"]+)['"]/g)) {
+        const dependency = posix.normalize(posix.join(posix.dirname(path), match[1]));
+        assert.ok(files.has(dependency), `${path} imports missing ${dependency}`);
+      }
+    }
+  });
+}
 
 test('October migration adds cohort, region-aware payment, and email delivery metadata', () => {
   for (const column of [
