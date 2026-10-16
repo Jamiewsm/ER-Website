@@ -21,6 +21,9 @@
 }
 
 html {
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
   scroll-behavior: smooth;
   background: var(--paper);
 }
