@@ -5,7 +5,7 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div className="footer-brand">
-        <span className="brand-mark">ER</span>
+        <span className="brand-mark" role="img" aria-label="ER 공식 로고" />
         <span className="brand-divider" aria-hidden="true" />
         <span className="brand-name">BUSINESS</span>
       </div>

@@ -11,7 +11,7 @@ export function SiteHeader() {
   return (
     <header className="site-header">
       <Link className="brand" href="/" aria-label="ER Business 홈">
-        <span className="brand-mark">ER</span>
+        <span className="brand-mark" role="img" aria-label="ER 공식 로고" />
         <span className="brand-divider" aria-hidden="true" />
         <span className="brand-name">BUSINESS</span>
       </Link>
