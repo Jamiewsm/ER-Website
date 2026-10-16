@@ -21,6 +21,9 @@
 }
 
 html {
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
   scroll-behavior: smooth;
   background: var(--paper);
 }
@@ -105,8 +108,13 @@ summary:focus-visible {
 }
 
 .brand-mark {
-  font-size: 1.45rem;
-  font-weight: 800;
+  display: block;
+  flex: 0 0 auto;
+  width: 64px;
+  height: 32px;
+  background: currentColor;
+  mask: url("/er-logo-mark-source.png") center / contain no-repeat;
+  -webkit-mask: url("/er-logo-mark-source.png") center / contain no-repeat;
 }
 
 .brand-divider {
@@ -2334,7 +2342,8 @@ footer > p {
   }
 
   .brand-mark {
-    font-size: 1.25rem;
+    width: 52px;
+    height: 26px;
   }
 
   .brand-name {
