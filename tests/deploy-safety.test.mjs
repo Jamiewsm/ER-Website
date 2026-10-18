@@ -7,12 +7,19 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
+import { inferDeployTrackFromPaths } from '../scripts/infer_deploy_track.mjs';
 
 const buildScript = fileURLToPath(new URL('../scripts/build_test_only_deploy_bundle.mjs', import.meta.url));
 const siteBuildScript = fileURLToPath(new URL('../scripts/build_site_only_deploy_bundle.mjs', import.meta.url));
 const verifyScript = fileURLToPath(new URL('../scripts/verify_live_test_deploy.mjs', import.meta.url));
 const assetsIgnorePath = fileURLToPath(new URL('../.assetsignore', import.meta.url));
 const execFileAsync = promisify(execFile);
+
+test('security helpers, startup logic, CSS and optimized home images select the site deploy track', () => {
+  for (const path of ['js/app-helpers.js', 'js/app-init.js', 'css/site-tailwind.css', 'assets/er-visual/home-background-1535.webp']) {
+    assert.equal(inferDeployTrackFromPaths([path]).track, 'site', path);
+  }
+});
 
 function makeDir(prefix) {
   return mkdtempSync(join(tmpdir(), prefix));
@@ -57,10 +64,12 @@ function makeBuildFixture() {
   return { base, source, live, out };
 }
 
-function makeVerifyFixture({ omitTestMarker = false } = {}) {
+function makeVerifyFixture({ omitTestMarker = false, optimizedHome = false } = {}) {
   const root = makeDir('er-deploy-verify-');
   writeFile(root, 'index.html', '유형검사 내러티브 테스트 child-type-test/child-type-test.html js/sections/home.js?v=20260613g');
-  writeFile(root, 'js/sections/home.js', 'home-parent-child-photo.jpg home-couple-photo.jpg home-team-photo.jpg hands and green.png green and seat.png');
+  writeFile(root, 'js/sections/home.js', optimizedHome
+    ? 'home-parent-child-768.webp home-couple-768.webp home-team-768.webp home-hands-green-763.webp home-green-seat-764.webp'
+    : 'home-parent-child-photo.jpg home-couple-photo.jpg home-team-photo.jpg hands and green.png green and seat.png');
   writeFile(root, 'child-type-test/child-type-test.html', 'child type page is present');
   writeFile(root, 'test.html', 'css/test.css js/diagnostic-experiment.js js/report-support-materials.js js/test.js');
   writeFile(root, 'js/test.js', omitTestMarker ? 'missing test marker' : 'buildResponseQualitySnapshot buildConfidenceExplanation center_auto_1 instinct_attention_1 SUBTYPE_BEHAVIOR_ITEMS tb_2_9_1 er-report-application-map');
@@ -99,6 +108,13 @@ test('root Worker assets exclude the independently deployed business app', () =>
   assert.match(assetsIgnore, /^business\/\*\*$/m);
 });
 
+test('root Worker excludes the local CSS build tools and source', () => {
+  const assetsIgnore = readFileSync(assetsIgnorePath, 'utf8').split(/\r?\n/);
+  for (const path of ['package.json', 'package-lock.json', 'tailwind.config.cjs', 'css/site-tailwind.input.css']) {
+    assert.ok(assetsIgnore.includes(path), `${path} must not be a public asset`);
+  }
+});
+
 test('live deployment verifier passes required production markers and fails missing test markers', () => {
   const goodRoot = makeVerifyFixture();
   const good = execFileSync(process.execPath, [
@@ -117,6 +133,12 @@ test('live deployment verifier passes required production markers and fails miss
     ], { encoding: 'utf8', stdio: 'pipe', timeout: 5000 }),
     /Missing marker/
   );
+});
+
+test('deployment verifier accepts optimized home assets while keeping premium runtime guards', () => {
+  const root = makeVerifyFixture({ optimizedHome: true });
+  const output = execFileSync(process.execPath, [verifyScript, '--site', `file://${root}`, '--min-child-bytes', '10'], { encoding: 'utf8', timeout: 5000 });
+  assert.match(output, /OK: production deployment guard passed/);
 });
 
 test('live deployment verifier follows production redirects', async () => {
@@ -168,6 +190,7 @@ test('site-only deploy bundle preserves live test runtime and deploys site from 
 
   writeFile(source, 'index.html', 'NEW SITE LANDING');
   writeFile(source, 'js/sections/home.js', 'NEW HOME');
+  writeFile(source, 'css/site-tailwind.css', '.bg-er-base{background-color:#FBFAF5}');
   writeFile(source, 'test.html', 'LEGACY TEST FROM SOURCE MUST NOT WIN');
   writeFile(source, 'js/test.js', "id:'t2', triad:[2,3,4] LEGACY");
   writeFile(source, 'css/test.css', 'legacy css');
@@ -198,6 +221,7 @@ test('site-only deploy bundle preserves live test runtime and deploys site from 
   assert.match(output, /OK: built site-only deploy bundle/);
   assert.equal(readFileSync(join(out, 'index.html'), 'utf8'), 'NEW SITE LANDING');
   assert.equal(readFileSync(join(out, 'js/sections/home.js'), 'utf8'), 'NEW HOME');
+  assert.equal(readFileSync(join(out, 'css/site-tailwind.css'), 'utf8'), readFileSync(join(source, 'css/site-tailwind.css'), 'utf8'));
   assert.equal(readFileSync(join(out, 'js/test.js'), 'utf8'), readFileSync(join(live, 'js/test.js'), 'utf8'));
   assert.doesNotMatch(readFileSync(join(out, 'js/test.js'), 'utf8'), /id:'t2'/);
   assert.equal(existsSync(join(out, 'business')), false);

@@ -1,0 +1,11 @@
+{
+  "name": "er-website",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss --config tailwind.config.cjs --input css/site-tailwind.input.css --output css/site-tailwind.css --minify",
+    "check:css": "node scripts/check_site_css.mjs"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.19"
+  }
+}

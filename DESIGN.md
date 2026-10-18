@@ -17,7 +17,7 @@
 
 ## Color Palette
 
-모든 색은 `index.html`의 Tailwind 토큰으로만 사용한다. **hex 하드코딩 금지.**
+모든 색은 `tailwind.config.cjs`의 Tailwind 토큰으로만 사용한다. **hex 하드코딩 금지.**
 
 ### Core tokens
 
@@ -51,7 +51,7 @@
 
 | 영역 | 상태 | 비고 |
 |---|---|---|
-| `index.html` tailwind.config | ✅ 완료 | 신규 토큰 + 구 토큰명 별칭, SUIT Display 로드 |
+| `tailwind.config.cjs` | ✅ 완료 | 신규 토큰 + 구 토큰명 별칭. `index.html`은 생성한 정적 CSS와 SUIT Display를 로드 |
 | 홈 (`js/sections/home.js`) | ✅ 완료 | 토큰 클래스 치환 + 히어로 SUIT(font-display extrabold). 후기 인용은 Pretendard |
 | 내부 페이지 (programs/parenting/about/apply 등) | ✅ 완료 | 별칭 재매핑으로 일괄 그린 전환. 클래스명 rename(er-accent→er-green 등)은 후속 |
 | 검사 UI (`test.html`, `css/test.css`, `js/test*.js`, `app-adaptive.js`) | ✅ 완료 | 인터랙션 색 그린, 결과지 센터 톤(head/heart/body 시맨틱 색) 유지, terra는 결과지·주의 블록 전용 |
