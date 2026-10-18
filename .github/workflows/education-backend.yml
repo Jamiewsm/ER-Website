@@ -32,6 +32,11 @@ on:
       - 'tests/education-registration-notification.test.mjs'
       - 'tests/helpers/education-db.mjs'
       - 'tests/helpers/education-postgres.mjs'
+      - 'scripts/run_tests.mjs'
+      - 'package.json'
+      - 'tests/run-tests.test.mjs'
+      - 'scripts/update_deploy_ledger.mjs'
+      - 'tests/deploy-ledger*.test.mjs'
       - '.github/workflows/education-backend.yml'
       - '.github/workflows/education-reminders.yml'
 permissions:
@@ -60,3 +65,5 @@ jobs:
           test -x "$PG_TEST_BIN/initdb"
           PG_BIN_DIR="$PG_TEST_BIN" node --test tests/education-concurrency.test.mjs
           PG_BIN_DIR="$PG_TEST_BIN" node --test tests/er-consent-concurrency.test.mjs
+      - name: Run complete root test suite including PostgreSQL races
+        run: npm test

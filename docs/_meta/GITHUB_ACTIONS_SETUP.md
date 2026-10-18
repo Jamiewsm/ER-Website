@@ -59,6 +59,14 @@ gh run list --workflow=deploy-production.yml --limit 3
 
 ## 7. Workflows 요약
 
+### 배포 원장 PR 저장
+
+- Repository Settings → Actions → General → Workflow permissions의 **Allow GitHub Actions to create and approve pull requests**를 켠다. 기본 workflow 권한은 read를 유지한다.
+- Deploy Production은 별도 `bot/deploy-ledger-<run>-<attempt>` 브랜치에 원장만 저장하고 PR을 만든다. workflow에서 승인·main 직접 push·브랜치 보호 우회는 하지 않는다.
+- ledger job 성공은 PR 생성 성공이다. 원격 main 저장은 원장 PR 병합 후 별도 확인한다. PR 병합 시 source SHA·배포 실행·현재 운영 상태를 대조한다.
+- 원장 PR은 docs-only이므로 deploy 라벨을 추가하지 않는다. 저장 실패는 workflow 실패로 드러나며 main 직접 push를 재시도하지 않는다.
+- 기능 PR merge가 자동 시작하는 배포와 원장 PR 저장을 구분한다. 새 PAT는 필요하지 않다.
+
 | Workflow | Trigger |
 |----------|---------|
 | `deploy-production.yml` | dispatch, main push (paths), `/deploy` comment |

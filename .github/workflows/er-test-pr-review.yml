@@ -18,6 +18,9 @@ on:
       - 'scripts/check_premium_test_markers.mjs'
       - 'scripts/deploy-tracks.mjs'
       - 'scripts/verify_live_test_deploy.mjs'
+      - 'scripts/update_deploy_ledger.mjs'
+      - 'scripts/run_tests.mjs'
+      - '.github/workflows/deploy-production.yml'
       - 'scripts/analyze_diagnostic_experiments.mjs'
       - '.github/workflows/er-test-pr-review.yml'
 
@@ -45,6 +48,9 @@ jobs:
           TESTS=(
             tests/premium-test-guard.test.mjs
             tests/deploy-safety.test.mjs
+            tests/deploy-ledger.test.mjs
+            tests/deploy-ledger-cli.test.mjs
+            tests/run-tests.test.mjs
           )
           for optional in \
             tests/premium-word-narrative.test.mjs \

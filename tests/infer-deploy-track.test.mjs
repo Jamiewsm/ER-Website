@@ -7,7 +7,7 @@ import { inferDeployTrackFromPaths, matchesSitePath, matchesTestPath } from '../
 for (const [track, deploySite, deployTest] of [['site', 'true', 'false'], ['test', 'false', 'true'], ['both', 'true', 'true']]) {
   test(`workflow dispatch preserves the requested ${track} track and audit inputs`, () => {
     const workflow = readFileSync(new URL('../.github/workflows/deploy-production.yml', import.meta.url), 'utf8');
-    const script = workflow.split('          script: |\n')[1].split('\n  deploy-test:')[0]
+    const script = workflow.split('          script: |\n')[1].split('\n      - name:')[0]
       .split('\n').map(line => line.replace(/^ {12}/, '')).join('\n');
     const inputs = { track, ref: 'approved-release-sha', requested_by: 'auto-merge', reason: 'merged site PR' };
     const outputs = {};
