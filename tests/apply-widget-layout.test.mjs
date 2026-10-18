@@ -21,3 +21,28 @@ for (const [width, expected] of [[180, 'compact'], [299, 'compact'], [300, 'flex
     assert.equal(rendered.theme, 'light');
   });
 }
+
+test('resizing remounts only across the size boundary and invalidates the old token', () => {
+  let width = 500, resized;
+  const sizes = [];
+  const token = { value: '' };
+  const container = { isConnected: true, innerHTML: '', getBoundingClientRect: () => ({ width }) };
+  const nodes = { 'apply-turnstile-widget': container, 'apply-turnstile-token': token };
+  const app = {
+    ResizeObserver: class { constructor(callback) { resized = callback; } observe() {} disconnect() {} },
+    window: { TURNSTILE_SITE_KEY: 'test-only', turnstile: { render: (_target, config) => { sizes.push(config.size); return 'test'; }, remove() {} } },
+    document: { getElementById: id => nodes[id] || null },
+  };
+  vm.createContext(app);
+  vm.runInContext(source, app);
+  app.mountApplyTurnstileWidget();
+  assert.equal(typeof resized, 'function');
+  token.value = 'old-size-token';
+  width = 180;
+  resized();
+  assert.deepEqual(sizes, ['flexible', 'compact']);
+  assert.equal(token.value, '');
+  width = 190;
+  resized();
+  assert.equal(sizes.length, 2, 'same size mode should not reset a valid widget');
+});
