@@ -101,7 +101,7 @@ jobs:
       ref: ${{ steps.resolve.outputs.ref }}
       requested_by: ${{ steps.resolve.outputs.requested_by }}
       reason: ${{ steps.resolve.outputs.reason }}
-      sha: ${{ steps.resolve.outputs.sha }}
+      sha: ${{ steps.source.outputs.sha }}
       deploy_site: ${{ steps.resolve.outputs.deploy_site }}
       deploy_test: ${{ steps.resolve.outputs.deploy_test }}
     steps:
@@ -178,14 +178,25 @@ jobs:
             core.setOutput('deploy_site', deploySite ? 'true' : 'false');
             core.setOutput('deploy_test', deployTest ? 'true' : 'false');
 
+      - name: Resolve one immutable deployment source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'push' && github.sha || steps.resolve.outputs.ref }}
+
+      - name: Record resolved source SHA
+        id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
   deploy-test:
     needs: resolve
     if: needs.resolve.outputs.track != 'skip' && needs.resolve.outputs.deploy_test == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      verified_at: ${{ steps.verified.outputs.timestamp }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.resolve.outputs.ref }}
+          ref: ${{ needs.resolve.outputs.sha }}
 
       - uses: actions/setup-node@v4
         with:
@@ -212,6 +223,10 @@ jobs:
       - name: Post-deploy verify (premium markers on live)
         run: node "$GITHUB_WORKSPACE/scripts/verify_live_test_deploy.mjs" --site "$SITE_URL" --min-child-bytes 25000
 
+      - name: Record successful test verification time
+        id: verified
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
   deploy-site:
     needs: [resolve, deploy-test]
     if: |
@@ -220,10 +235,12 @@ jobs:
       needs.resolve.outputs.deploy_site == 'true' &&
       (needs.deploy-test.result == 'success' || needs.deploy-test.result == 'skipped')
     runs-on: ubuntu-latest
+    outputs:
+      verified_at: ${{ steps.verified.outputs.timestamp }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.resolve.outputs.ref }}
+          ref: ${{ needs.resolve.outputs.sha }}
 
       - uses: actions/setup-node@v4
         with:
@@ -257,6 +274,10 @@ jobs:
       - name: Post-deploy landing verify
         run: node "$GITHUB_WORKSPACE/scripts/verify_live_test_deploy.mjs" --site "$SITE_URL" --min-child-bytes 25000
 
+      - name: Record successful site verification time
+        id: verified
+        run: echo "timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
   update-ledger:
     needs: [resolve, deploy-site, deploy-test]
     if: |
@@ -274,24 +295,59 @@ jobs:
           node-version: '22'
 
       - name: Update deploy ledger
+        env:
+          SITE_RESULT: ${{ needs.deploy-site.result }}
+          TEST_RESULT: ${{ needs.deploy-test.result }}
+          SOURCE_SHA: ${{ needs.resolve.outputs.sha }}
+          VERIFIED_AT: ${{ needs.deploy-site.outputs.verified_at || needs.deploy-test.outputs.verified_at }}
+          REQUESTED_BY: ${{ needs.resolve.outputs.requested_by }}
+          REASON: ${{ needs.resolve.outputs.reason }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}
         run: |
-          TRACK="${{ needs.resolve.outputs.track }}"
           node scripts/update_deploy_ledger.mjs \
-            --track "$TRACK" \
-            --sha "${{ needs.resolve.outputs.sha }}" \
+            --site-result "$SITE_RESULT" \
+            --test-result "$TEST_RESULT" \
+            --sha "$SOURCE_SHA" \
+            --verified-at "$VERIFIED_AT" \
+            --run-url "$RUN_URL" \
             --method "GitHub Actions Deploy Production" \
-            --by "${{ needs.resolve.outputs.requested_by }}" \
-            --notes "${{ needs.resolve.outputs.reason }}"
+            --by "$REQUESTED_BY" \
+            --notes "$REASON"
 
-      - name: Commit ledger [skip deploy]
-        continue-on-error: true
+      - name: Push isolated ledger branch
+        id: ledger
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="bot/deploy-ledger-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git switch -c "$BRANCH"
           git add docs/_meta/DEPLOY_LEDGER.md
-          git diff --cached --quiet && echo "No ledger changes" && exit 0
           git commit -m "chore(deploy): update DEPLOY_LEDGER [skip deploy]"
-          git push
+          git push origin HEAD:"$BRANCH"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - name: Open ledger pull request
+        id: pr
+        uses: actions/github-script@v7
+        env:
+          LEDGER_BRANCH: ${{ steps.ledger.outputs.branch }}
+          SOURCE_SHA: ${{ needs.resolve.outputs.sha }}
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              ...context.repo,
+              base: 'main',
+              head: process.env.LEDGER_BRANCH,
+              title: `chore(deploy): record ${process.env.SOURCE_SHA.slice(0, 7)} [skip deploy]`,
+              body: [
+                'CI-generated deployment ledger only. No production files change.',
+                `Source: ${process.env.SOURCE_SHA}`,
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                'Merge through the protected-branch PR path after checking the current live deployment.',
+              ].join('\n\n'),
+            });
+            await core.summary.addHeading('Deployment ledger pull request').addLink(`#${pr.number}`, pr.html_url).addRaw('\nPR created; main is updated only after merge.').write();
+            core.setOutput('url', pr.html_url);
 
   notify:
     needs: [resolve, deploy-site, deploy-test, update-ledger]
@@ -307,5 +363,5 @@ jobs:
             echo "- reason: ${{ needs.resolve.outputs.reason }}"
             echo "- site job: ${{ needs.deploy-site.result }}"
             echo "- test job: ${{ needs.deploy-test.result }}"
-            echo "- ledger: ${{ needs.update-ledger.result }}"
+            echo "- ledger PR creation: ${{ needs.update-ledger.result }} (main persistence requires PR merge)"
           } >> "$GITHUB_STEP_SUMMARY"
