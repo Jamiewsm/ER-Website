@@ -39,7 +39,7 @@ test('October public copy keeps capacity at eight without exposing internal clas
 test('October application route uses October focus and collects region-aware payment preferences', () => {
   assert.match(landing, /focus=enneagram_basic_october/);
   assert.doesNotMatch(landing, /focus=enneagram_basic_july/);
-  assert.match(apply, /focus: 'enneagram_basic_october'/);
+  assert.match(apply, /data-apply-focus="enneagram_basic_october"/);
   assert.match(apply, /name="payment_region" required/);
   assert.match(apply, /name="payment_preference" required/);
   assert.match(apply, /name="installment_preference"/);

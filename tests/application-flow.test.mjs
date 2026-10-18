@@ -26,11 +26,10 @@ function app(options = {}) {
         return options.result || {ok:true,id:receiptId};
       }};
     },
-    renderSection(...args){routes.push(args);}, alert(){}, setInterval,clearInterval,
-    buildApplySubmitSource:(...parts)=>parts.filter(Boolean).join(':')
+    renderSection(...args){routes.push(args);}, alert(){}, setInterval,clearInterval
   };
   vm.createContext(context);
-  for(const path of ['js/program-catalog.js','js/sections/support.js','js/sections/apply.js','js/sections/home.js','js/api.js'])vm.runInContext(read(path),context,{filename:path});
+  for(const path of ['js/app-helpers.js','js/program-catalog.js','js/sections/support.js','js/sections/apply.js','js/sections/home.js','js/api.js'])vm.runInContext(read(path),context,{filename:path});
   return {context,clock,nodes,saved,requests,routes,submit:async(values,focus) => context.handleApplySubmit(
     {preventDefault(){},target:{values:{name:'Synthetic',contact:'synthetic@example.test',category:'유형(Typing) 상담 ($100)',turnstile_token:'mock-only',...values}}},
     'paid', focus ? {focus} : undefined)};

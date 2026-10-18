@@ -1,3 +1,16 @@
+// 목적별 신청 화면과 개인정보 안내, 안전한 폼 제출 연결을 렌더링한다.
+function escapeApplyAttribute(value) {
+    return String(value || '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[char]));
+}
+
+function handleApplyFormSubmit(event) {
+    const form = event.currentTarget || event.target;
+    const focus = normalizeApplyFocus(form.dataset.applyFocus);
+    return handleApplySubmit(event, form.dataset.submitSource || 'paid', focus ? { focus } : undefined);
+}
+
 function isParentingWorkshopFocus(focus) {
     const normalizedFocus = String(focus || '').trim();
     return normalizedFocus === 'parenting_workshop' || normalizedFocus === 'parents_workshop';
@@ -177,7 +190,7 @@ function renderParentingWorkshopApply(submitSource) {
                         아래 내용을 남겨주시면 담당자가 확인 후 연락드립니다.
                     </p>
 
-                    <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'parenting_workshop' })">
+                    <form id="apply-form" class="space-y-5" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="parenting_workshop" onsubmit="handleApplyFormSubmit(event)">
                         <input type="hidden" name="category" value="Enneagram for Parenting 4주 ($120)">
 
                         <div>
@@ -273,7 +286,7 @@ function renderBasicCourseApply(submitSource) {
                         신청 접수와 결제 안내를 한 통의 메일로 보내드립니다. 한국은 원화, 해외는 USD 기준이며, 사역자 항목에 체크하시면 50% 할인 금액을 안내합니다. 담당자가 결제 내역과 수강 가능 여부를 확인한 뒤 등록을 확정합니다.
                     </p>
 
-                    <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_october' })">
+                    <form id="apply-form" class="space-y-5" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="enneagram_basic_october" onsubmit="handleApplyFormSubmit(event)">
                         <input type="hidden" name="category" value="성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)">
 
                         <div>
@@ -498,7 +511,7 @@ function renderApply(payload = null) {
     const fromTest = payload?.source === 'test';
     const fromChildTypeTest = payload?.apply_source === 'child_type_test';
     const childTypeResult = fromChildTypeTest ? hydrateChildTypeTestResult() : null;
-    let focus = String(payload?.focus || '').trim();
+    let focus = normalizeApplyFocus(payload?.focus);
     if (focus === 'parents_workshop') focus = 'parenting_workshop';
     if (focus === 'team' || focus === 'business' || focus === 'business_team') {
         return renderBusinessHandoff('contact');
@@ -622,7 +635,7 @@ function renderApply(payload = null) {
         bannerTitle: '아이 검사 후 추천 — 결과 해석상담',
         bannerBody: '아이 유형검사는 방향을 보여줍니다. 해석상담에서는 점수와 상위 후보, 부모의 관찰 편향 가능성을 함께 검토하고 아이에게 맞는 양육 언어와 다음 적용을 정리합니다. (1시간 $50)'
     } : null;
-    const requestedTrack = payload?.track || (fromTest ? 'paid' : 'paid');
+    const requestedTrack = normalizeApplyTrack(payload?.track);
     const track = selectedFocus?.track || requestedTrack;
     const isSupportTrack = track === 'support';
     if (isSupportTrack) return renderScholarshipInquiry(payload);
@@ -630,9 +643,7 @@ function renderApply(payload = null) {
     const isOrgTrack = track === 'org';
     const isParentingApplyContext = focus === 'parenting' || fromChildTypeTest;
     const applyAttribution = fromTest ? 'test' : (fromChildTypeTest ? 'child_type_test' : (payload?.apply_source || ''));
-    const submitSource = typeof buildApplySubmitSource === 'function'
-        ? buildApplySubmitSource(track, focus, applyAttribution)
-        : (fromTest ? 'test' : (focus ? `${track}:${focus}` : track));
+    const submitSource = buildApplySubmitSource(track, focus, applyAttribution);
     if (isParentingWorkshopFocus(focus)) {
         return renderParentingWorkshopApply(submitSource);
     }
@@ -729,7 +740,7 @@ function renderApply(payload = null) {
                         <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">3</span></div>
                     </div>
 
-                    <form id="apply-form" class="space-y-6" onsubmit="handleApplySubmit(event, '${submitSource}')">
+                    <form id="apply-form" class="space-y-6" data-submit-source="${escapeApplyAttribute(submitSource)}" onsubmit="handleApplyFormSubmit(event)">
                         
                         <div>
                             <label for="apply-name" class="block text-sm font-bold text-gray-700 mb-2">이름</label>

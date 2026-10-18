@@ -716,8 +716,28 @@ const APPLY_ATTRIBUTION_SOURCES = new Set([
     'home_card',
     'notice',
     'instagram',
-    'magazine'
+    'magazine',
+    'child_type_test'
 ]);
+
+const APPLY_TRACKS = new Set(['paid', 'org', 'ministry', 'support']);
+const APPLY_FOCUSES = new Set([
+    'parenting', 'parenting_workshop', 'parents_workshop',
+    'enneagram_basic_july', 'basic_course_july', 'enneagram_basic_october',
+    'basic_course_october', 'enneagram_basic', 'couple', 'ministry_team', 'church',
+    'identity_session', 'result_consult', 'coaching_single',
+    'recovery_journey_4', 'recovery_journey_8', 'team', 'business', 'business_team'
+]);
+
+function normalizeApplyTrack(value) {
+    const track = typeof value === 'string' ? value.trim() : '';
+    return APPLY_TRACKS.has(track) ? track : 'paid';
+}
+
+function normalizeApplyFocus(value) {
+    const focus = typeof value === 'string' ? value.trim() : '';
+    return APPLY_FOCUSES.has(focus) ? focus : '';
+}
 
 function normalizeApplyAttribution(value) {
     const raw = String(value || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
@@ -727,10 +747,13 @@ function normalizeApplyAttribution(value) {
 function buildApplySubmitSource(track, focus, attribution) {
     if (attribution === 'test') return 'test';
     const attr = normalizeApplyAttribution(attribution);
-    const focusKey = String(focus || '').trim();
-    const base = focusKey ? `${track}:${focusKey}` : String(track || 'paid');
+    const focusKey = normalizeApplyFocus(focus);
+    const safeTrack = normalizeApplyTrack(track);
+    const base = focusKey ? `${safeTrack}:${focusKey}` : safeTrack;
     return attr ? `${base}:${attr}` : base;
 }
 
 window.normalizeApplyAttribution = normalizeApplyAttribution;
+window.normalizeApplyTrack = normalizeApplyTrack;
+window.normalizeApplyFocus = normalizeApplyFocus;
 window.buildApplySubmitSource = buildApplySubmitSource;
