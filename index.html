@@ -365,11 +365,11 @@
                 
                 <div class="desktop-nav hidden xl:flex space-x-6 items-center">
                     <div class="relative group py-2">
-                        <button onclick="renderSection('about')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
+                        <button type="button" onclick="toggleDesktopNav(this)" aria-expanded="false" aria-controls="desktop-nav-er" class="desktop-nav-trigger text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
                             ER 소개
                             <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
                         </button>
-                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[15rem]">
+                        <div id="desktop-nav-er" class="absolute left-0 top-full hidden pt-3 z-[70] min-w-[15rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('about')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">ER 소개</button>
                                 <a href="/theology/" class="flex min-h-11 w-full items-center rounded-xl px-4 py-2.5 text-left text-sm font-semibold text-er-body hover:bg-er-greenTint">신학적 기초</a>
@@ -380,11 +380,11 @@
                         </div>
                     </div>
                     <div class="relative group py-2">
-                        <button onclick="renderSection('test')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
+                        <button type="button" onclick="toggleDesktopNav(this)" aria-expanded="false" aria-controls="desktop-nav-test" class="desktop-nav-trigger text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
                             유형검사
                             <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
                         </button>
-                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[16rem]">
+                        <div id="desktop-nav-test" class="absolute left-0 top-full hidden pt-3 z-[70] min-w-[16rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('test')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
                                     내러티브 테스트
@@ -398,11 +398,11 @@
                         </div>
                     </div>
                     <div class="relative group py-2">
-                        <button onclick="renderSection('parenting')" class="text-sm font-semibold text-er-dark hover:text-er-accent transition-colors flex items-center gap-1 cursor-pointer">
+                        <button type="button" onclick="toggleDesktopNav(this)" aria-expanded="false" aria-controls="desktop-nav-parenting" class="desktop-nav-trigger text-sm font-semibold text-er-dark hover:text-er-accent transition-colors flex items-center gap-1 cursor-pointer">
                             Parenting
                             <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
                         </button>
-                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[17rem]">
+                        <div id="desktop-nav-parenting" class="absolute left-0 top-full hidden pt-3 z-[70] min-w-[17rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('parenting')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
                                     Parenting 소개
@@ -423,11 +423,11 @@
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
                     <div class="relative group py-2">
-                        <button onclick="renderSection('programs', { tab: 'church' })" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
+                        <button type="button" onclick="toggleDesktopNav(this)" aria-expanded="false" aria-controls="desktop-nav-org" class="desktop-nav-trigger text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
                             교회·사역
                             <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
                         </button>
-                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[14rem]">
+                        <div id="desktop-nav-org" class="absolute left-0 top-full hidden pt-3 z-[70] min-w-[14rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('programs', { tab: 'church' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">교회·사역팀</button>
                                 <button onclick="renderSection('support')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">목회자·선교사 사역지원</button>
@@ -441,11 +441,11 @@
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-er-accent transition-all group-hover:w-full"></span>
                     </button>
                     <div class="relative group py-2">
-                        <button onclick="renderSection('community')" class="text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
+                        <button type="button" onclick="toggleDesktopNav(this)" aria-expanded="false" aria-controls="desktop-nav-community" class="desktop-nav-trigger text-sm font-medium text-gray-500 hover:text-er-dark transition-colors flex items-center gap-1 cursor-pointer">
                             회복 이야기
                             <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
                         </button>
-                        <div class="absolute left-0 top-full hidden group-hover:block pt-3 z-[70] min-w-[14rem]">
+                        <div id="desktop-nav-community" class="absolute left-0 top-full hidden pt-3 z-[70] min-w-[14rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('community')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">회복 이야기</button>
                                 <button onclick="renderSection('notices')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">공지사항</button>
@@ -468,8 +468,8 @@
                 <div class="parenting-hide-on-focused xl:hidden flex items-center gap-1.5 sm:gap-3">
                     <button onclick="renderSection('apply', { track: 'paid' })" aria-label="상담 신청" class="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-er-green px-3 text-xs font-bold text-white shadow-sm transition-colors hover:bg-er-greenDark sm:px-4">상담<span class="hidden sm:inline"> 신청</span></button>
                     <a id="mobile-header-auth-btn" href="https://coach.er-coaching.com/education.html" class="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-er-greenTint px-3 text-[11px] font-bold leading-tight text-er-dark transition-colors hover:bg-er-sand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-er-green focus-visible:ring-offset-2 sm:px-3.5 sm:text-xs" aria-label="ER 교육포털 로그인">교육 로그인</a>
-                    <button onclick="toggleMobileMenu()" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-er-greenTint hover:text-er-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-er-green focus-visible:ring-offset-2" aria-label="메뉴 열기">
-                        <i class="fas fa-bars text-xl"></i>
+                    <button id="mobile-menu-toggle" type="button" onclick="toggleMobileMenu()" class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-er-greenTint hover:text-er-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-er-green focus-visible:ring-offset-2" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobile-menu">
+                        <i class="fas fa-bars text-xl" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
