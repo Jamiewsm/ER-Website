@@ -16,6 +16,8 @@ const row = (text, surface) => text.split('\n').find(line => line.startsWith(`| 
 test('실제 현재 표·heading·drift를 갱신하고 미배포 Test/Edge 행을 보존한다', () => {
   const out = renderDeployLedger(ledger, options);
   assert.match(row(out, 'Site'), new RegExp(options.sha));
+  assert.ok(row(out, 'Site').includes('`source` @'));
+  assert.ok(!row(out, 'Site').includes('origin/main'));
   assert.match(out, /마지막 배포 검증: 2099-10-19T00:00:00Z/);
   assert.equal(row(out, 'Test runtime'), row(ledger, 'Test runtime'));
   assert.equal(row(out, 'Supabase Edge — 신청 관련 2함수'), row(ledger, 'Supabase Edge — 신청 관련 2함수'));

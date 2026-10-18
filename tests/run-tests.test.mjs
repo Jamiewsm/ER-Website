@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { resolvePostgresBinDir } from '../scripts/run_tests.mjs';
 
 function fixture(t) {
-  const dir = mkdtempSync(join(tmpdir(), 'er-pg-tools-'));
+  const dir = mkdtempSync(join(tmpdir(), 'er pg tools-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   for (const name of ['postgres', 'initdb', 'pg_ctl', 'psql']) writeFileSync(join(dir, name), '', { mode: 0o700 });
   return dir;

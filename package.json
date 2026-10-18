@@ -2,6 +2,7 @@
   "name": "er-website",
   "private": true,
   "scripts": {
+    "pretest": "npm ci --prefix tests/education --ignore-scripts",
     "test": "node scripts/run_tests.mjs",
     "build:css": "tailwindcss --config tailwind.config.cjs --input css/site-tailwind.input.css --output css/site-tailwind.css --minify",
     "check:css": "node scripts/check_site_css.mjs"

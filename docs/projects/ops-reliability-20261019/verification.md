@@ -9,6 +9,7 @@
 - DMG SHA-256은 GitHub release의 `2689dc64d6a02e0a66e4585616919060d8fbf5bb06886fccc05b7f87638bf081`과 일치했다. `codesign --verify --deep --strict` 통과, `postgres --version`은16.15다.
 - 앱 GUI·상시 서비스·운영 DB는 시작하지 않았다. 기존 helper가 `/tmp/edu-pg-*`의 일회용 DB와 전용 Unix 소켓을 만들고 TCP listen을 끈다. 합성 Auth/Storage fixture만 사용하고 종료 후 삭제한다.
 - `scripts/run_tests.mjs`와 `npm test`를 추가했다. 명시한 `PG_BIN_DIR` → PATH의 `pg_config --bindir` → 사용자/시스템 Postgres.app 순으로 완전한 도구 경로를 찾는다. 명시한 잘못된 경로는 fallback 없이 실패한다. 외부 DB URL은 허용하지 않는다.
+- npm pretest는 기존 `tests/education` 의존성을 별도 lockfile로 `npm ci --ignore-scripts` 설치한다. fresh checkout도 같은 명령으로 검증하며 DB나 런타임 패키지를 새로 추가하지 않는다. 처음 설치와 반복 실행에는 npm registry 접근이 필요하다.
 
 반복 실행 명령이다.
 
@@ -28,6 +29,7 @@ PG_BIN_DIR="$(pg_config --bindir)" npm test
 - 원장 생성기의 기존 정규식이 실제 현재 Site/Test 행과 heading을 바꾸지 못하는 문제도 임시 복제본 CLI 검사로 재현했다. 원장 파일 자체는 로컬에서 고치지 않았다.
 - 생성기는 실제 성공한 배포 job만 기록한다. 미배포 Test/Edge 행은 보존한다. full SHA·UTC 검증 시각·실행 URL을 검증하고, 누락된 표/이력·오래된 실행을 거부한다. 동일 실행 재기록은 중복을 만들지 않는다.
 - 배포 source를 resolve job에서 한 번 SHA로 고정하고 Site/Test job이 같은 SHA를 checkout한다. 검증 시각은 각 guard 성공 뒤 수집한다. 실패한 트랙을 요청 track만 보고 성공으로 기록하지 않는다.
+- 원장 행에는 `source @ full SHA`로 기록해 비-main ref의 복구·preview 배포를 main 소속으로 잘못 표기하지 않는다.
 - CI는 원장을 별도 bot 브랜치에 push하고 원장 전용 PR을 생성한다. 저장/PR 생성 실패는 더 이상 무시하지 않는다. PR 생성과 main 영구 저장은 별개 상태로 요약에 표시한다. 원장 PR 병합 전 현재 운영 배포를 확인한다.
 - [GitHub 공식 문서](https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/trigger-a-workflow)에 따라 GITHUB_TOKEN의 이벤트 전파에는 제한이 있다. 원장 전용 PR에는 deploy 라벨을 붙이지 않으며 병합이 기능 재배포를 요구하지 않는다. PAT나 새로운 비밀키는 저장하지 않는다.
 

@@ -28,7 +28,7 @@ export function renderDeployLedger(content, { siteResult, testResult, sha, verif
   const updateRow = (surface, label) => {
     const expression = new RegExp('^\\| \\*\\*' + surface + '\\*\\*[^|]*\\|.*$', 'm');
     if (!expression.test(content)) throw new Error(`Ledger row missing: ${surface}`);
-    content = content.replace(expression, () => `| **${surface}**${label} | \`origin/main\` @ \`${sha}\` | source \`${sha}\`; live guard passed | ${verifiedAt} | ${cell(method)} | ${audit} |`);
+    content = content.replace(expression, () => `| **${surface}**${label} | \`source\` @ \`${sha}\` | source \`${sha}\`; live guard passed | ${verifiedAt} | ${cell(method)} | ${audit} |`);
   };
   if (site) updateRow('Site', ' (landing, menu, home, child-type-test shell)');
   if (test) updateRow('Test runtime', '');
