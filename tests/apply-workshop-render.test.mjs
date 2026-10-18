@@ -17,12 +17,10 @@ function loadApplyRenderer(options = {}) {
       ERProgramCatalog: {
         isJulyBasicRecruitmentOpen: () => recruitmentOpen
       }
-    },
-    buildApplySubmitSource(track, focus, attribution) {
-      return [track, focus, attribution].filter(Boolean).join(':');
     }
   };
   vm.createContext(context);
+  vm.runInContext(readFileSync(new URL('../js/app-helpers.js', import.meta.url), 'utf8'), context);
   vm.runInContext(applySource, context, { filename: 'js/sections/apply.js' });
   return context;
 }
@@ -40,7 +38,7 @@ test('parenting workshop link renders a dedicated direct application form', () =
   assert.match(html, /assets\/er-visual\/hero-home\.jpg/);
   assert.match(html, /type="hidden" name="category" value="Enneagram for Parenting 4주 \(\$120\)"/);
   assert.match(html, /4주 워크샵 신청하기/);
-  assert.match(html, /handleApplySubmit\(event, 'paid:parenting_workshop:qr', \{ focus: 'parenting_workshop' \}\)/);
+  assert.match(html, /data-submit-source="paid:parenting_workshop:qr" data-apply-focus="parenting_workshop" onsubmit="handleApplyFormSubmit\(event\)"/);
   assert.doesNotMatch(html, /희망하는 세션|<select/);
   assert.doesNotMatch(html, /Enneagram for Parenting 4주 워크샵 신청합니다\./);
 });
@@ -68,7 +66,7 @@ test('child type test result apply shows parenting-context copy, not adult test 
   // 성인 테스트용 카피는 노출하지 않음.
   assert.doesNotMatch(html, /프리미엄 테스트 후 추천/);
   // 출처 attribution 은 child_type_test 로 유지(상품·가격 무변경).
-  assert.match(html, /handleApplySubmit\(event, 'paid:result_consult:child_type_test'\)/);
+  assert.match(html, /data-submit-source="paid:result_consult:child_type_test" onsubmit="handleApplyFormSubmit\(event\)"/);
 });
 
 test('October Enneagram basic course link renders a dedicated direct application form while recruitment is open', () => {
@@ -85,7 +83,7 @@ test('October Enneagram basic course link renders a dedicated direct application
   assert.doesNotMatch(html, /enneagram-basic-july-2026\.jpg/);
   assert.match(html, /type="hidden" name="category" value="성경적 에니어그램 기본과정 8주 \(\$330 \/ ₩450,000\)"/);
   assert.match(html, /성경적 에니어그램 기본과정 신청하기/);
-  assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_october:instagram', \{ focus: 'enneagram_basic_october' \}\)/);
+  assert.match(html, /data-submit-source="paid:enneagram_basic_october:instagram" data-apply-focus="enneagram_basic_october" onsubmit="handleApplyFormSubmit\(event\)"/);
   assert.match(html, /name="contact"[^>]*type="email"|type="email"[^>]*name="contact"/);
   assert.match(html, /name="phone"[^>]*required/);
   assert.match(html, /연락 및 현금영수증 발급 용도/);

@@ -1,6 +1,11 @@
 // ER-Website: Apply form / Turnstile and submit-application API (depends on config.js; uses global state, renderSection)
 var applyTurnstileWidgetId = null;
 var applyTurnstileInitTimer = null;
+var applyTurnstileResizeObserver = null;
+
+function getApplyTurnstileSize(container) {
+  return typeof container.getBoundingClientRect === 'function' && container.getBoundingClientRect().width < 300 ? 'compact' : 'flexible';
+}
 
 function setApplyTurnstileStatus(message, tone) {
   var el = document.getElementById('apply-turnstile-status');
@@ -50,16 +55,20 @@ function mountApplyTurnstileWidget() {
 
   tokenInput.value = '';
   container.innerHTML = '';
+  if (applyTurnstileResizeObserver) applyTurnstileResizeObserver.disconnect();
+  applyTurnstileResizeObserver = null;
   if (applyTurnstileWidgetId !== null) {
     try { window.turnstile.remove(applyTurnstileWidgetId); } catch (_e) {}
     applyTurnstileWidgetId = null;
   }
 
   try {
+    var widgetSize = getApplyTurnstileSize(container);
     applyTurnstileWidgetId = window.turnstile.render('#apply-turnstile-widget', {
       sitekey: sitekey,
       theme: 'light',
-      size: 'flexible',
+      // flexible도 최소 300px이 필요하므로 실제 폼 안쪽 너비를 기준으로 선택한다.
+      size: widgetSize,
       callback: function (token) {
         tokenInput.value = token;
         setApplyTurnstileStatus('보안 확인이 완료되었습니다. 아래 신청하기를 눌러 주세요.', 'success');
@@ -73,6 +82,19 @@ function mountApplyTurnstileWidget() {
         setApplyTurnstileStatus('보안 확인을 표시하지 못했습니다. 아래 버튼으로 다시 시도해 주세요.', 'error');
       }
     });
+    if (typeof ResizeObserver === 'function') {
+      var resizeObserver = new ResizeObserver(function () {
+        if (applyTurnstileResizeObserver !== resizeObserver) return;
+        if (!container.isConnected) {
+          resizeObserver.disconnect();
+          return;
+        }
+        // 방향 전환으로 크기 모드가 바뀔 때만 토큰을 갱신한다. 작성 내용은 유지한다.
+        if (getApplyTurnstileSize(container) !== widgetSize) mountApplyTurnstileWidget();
+      });
+      applyTurnstileResizeObserver = resizeObserver;
+      resizeObserver.observe(container);
+    }
     setApplyTurnstileStatus('', null);
     return true;
   } catch (err) {

@@ -59,6 +59,7 @@ test('Business links are explicit handoffs, not internal service tabs', () => {
     window: {},
   };
   vm.createContext(context);
+  vm.runInContext(readFileSync(new URL('../js/app-helpers.js', import.meta.url), 'utf8'), context);
   vm.runInContext(programsSource, context, { filename: 'js/sections/programs.js' });
   vm.runInContext(applySource, context, { filename: 'js/sections/apply.js' });
 

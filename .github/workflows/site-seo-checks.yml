@@ -4,6 +4,18 @@ on:
   pull_request:
     paths:
       - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tailwind.config.cjs'
+      - 'css/site-tailwind*'
+      - 'js/**'
+      - 'assets/er-visual/home-*.webp'
+      - 'scripts/check_site_css.mjs'
+      - 'tests/site-navigation.test.mjs'
+      - 'tests/site-initialization.test.mjs'
+      - 'tests/apply-url-security.test.mjs'
+      - 'tests/apply-widget-layout.test.mjs'
+      - 'tests/deploy-safety.test.mjs'
       - 'christian-enneagram/**'
       - 'theology/**'
       - 'biblical-enneagram/**'
@@ -38,10 +50,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm ci --ignore-scripts
+      - run: npm run check:css
       - name: Check application JavaScript
         run: |
           node --check js/api.js
           node --check js/sections/apply.js
           node --check js/program-catalog.js
           node --check js/app-core.js
+          node --check js/app-helpers.js
+          node --check js/app-init.js
       - run: node --test tests/seo-foundation.test.mjs tests/site-ministry-boundary.test.mjs tests/basic-course-october-site.test.mjs tests/theology-navigation.test.mjs tests/mobile-site-layout.test.mjs tests/infer-deploy-track.test.mjs tests/application-flow.test.mjs tests/apply-workshop-render.test.mjs tests/program-catalog-routing.test.mjs
+      - run: node --test tests/apply-url-security.test.mjs tests/apply-widget-layout.test.mjs tests/site-navigation.test.mjs tests/site-initialization.test.mjs tests/portal-entry-navigation.test.mjs tests/deploy-safety.test.mjs

@@ -83,24 +83,29 @@ function runAppInit() {
         const entryRoute = parseSectionHash();
         // 옛 북마크를 뒤로 가기로 다시 열며 반복 이동하지 않도록 현재 기록을 교체한다.
         if (redirectPortalSection(entryRoute.sectionId, entryRoute.payload, true)) return;
+        // OAuth 콜백 해시는 인증 SDK가 읽을 때까지 보존한다.
+        const returnSection = new URLSearchParams(window.location.search || '').get('site_admin');
+        const hasAdminReturn = returnSection === 'coach_admin' || returnSection === 'notices';
+        const pendingSection = parseSectionHash().sectionId;
+        const waitForAuth = entryRoute.sectionId === 'coach_admin' || hasAdminReturn;
+        const renderInitialRoute = (route) => {
+            try {
+                renderSection(route.sectionId, route.payload, { syncHash: false });
+            } catch (e) {
+                if (window.console && window.console.error) window.console.error('renderSection error', e);
+                try { renderSection('home', null, { syncHash: false }); } catch (_) {}
+            }
+        };
+        // 공개 콘텐츠와 작성 중인 폼은 인증 응답을 기다리거나 완료 후 다시 만들지 않는다.
+        if (!waitForAuth) renderInitialRoute(entryRoute);
         try {
             if (typeof initializeSupabase === 'function') await initializeSupabase();
         } catch (e) {
             if (window.console && window.console.error) window.console.error('initializeSupabase error', e);
         }
-        const initialRoute = restoreSiteAdminReturn() || parseSectionHash();
-        try {
-            renderSection(initialRoute.sectionId, initialRoute.payload, { syncHash: false });
-        } catch (e) {
-            if (window.console && window.console.error) window.console.error('renderSection error', e);
-            try { renderSection('home', null, { syncHash: false }); } catch (_) {}
+        if (waitForAuth && state.currentSection === 'home' && (hasAdminReturn || parseSectionHash().sectionId === pendingSection)) {
+            renderInitialRoute(restoreSiteAdminReturn() || parseSectionHash());
         }
-        const schedulePrefetch = window.requestIdleCallback
-            ? (cb) => window.requestIdleCallback(cb, { timeout: 1200 })
-            : (cb) => setTimeout(cb, 900);
-        schedulePrefetch(() => {
-            try { prefetchTestAssets(); } catch (_) {}
-        });
     })();
 }
 

@@ -112,6 +112,7 @@ function renderSection(sectionId, payload = null, options = {}) {
     
     // Close mobile menu
     closeMobileMenu();
+    closeDesktopNavMenus();
     
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'auto' }); 
@@ -143,41 +144,26 @@ function renderSection(sectionId, payload = null, options = {}) {
     if (sectionId !== 'home' && typeof closeParentsWorkshopPromo === 'function') {
         closeParentsWorkshopPromo();
     }
+    const sectionLabels = {
+        home: '홈', about: 'ER 소개', test: '내러티브 테스트', types_guide: '유형 안내',
+        programs: '서비스 안내', parenting: 'Parenting', coaches: '코치진 소개',
+        coach_training: 'ER 전문가 과정', community: '회복 이야기', resources: '자료실',
+        support: '장학 후원', apply: '신청', thankyou: '접수 안내', notices: '공지사항',
+        notice_detail: '공지 상세', privacy: '개인정보처리방침', terms: '이용약관', coach_admin: '코치 승인'
+    };
+    const sectionLabel = Object.prototype.hasOwnProperty.call(sectionLabels, sectionId) ? sectionLabels[sectionId] : sectionLabels.home;
+    document.title = sectionLabel === sectionLabels.home
+        ? 'ER 에니어그램 | 기독교·성경적 에니어그램 교육과 코칭'
+        : sectionLabel + ' | ER';
     // Announce section change to screen readers via dedicated live region
     const srStatus = document.getElementById('sr-status');
     if (srStatus) {
-        const sectionLabels = {
-            home: '홈',
-            about: 'ER 소개',
-            theology: '신학적 기초',
-            test: '내러티브 테스트',
-            types_guide: '유형 안내',
-            programs: '서비스 안내',
-            parenting: 'Parenting',
-            coaches: '코치진 소개',
-            coach_training: 'ER 전문가 과정',
-            community: '회복 이야기',
-            support: '장학 후원',
-            apply: '신청',
-            notices: '공지사항',
-            coach_portal: '코치 포털',
-            coach_admin: '코치 승인',
-            coach_tasks: '훈련 보고서',
-            coach_materials: '자료실',
-            coach_schedule: '주간 일정',
-            coach_notes: '일정 세션 노트',
-            coach_mentoring: '멘토링 허브',
-        };
-        srStatus.textContent = (sectionLabels[sectionId] || sectionId) + ' 페이지로 이동했습니다';
+        srStatus.textContent = sectionLabel + ' 페이지로 이동했습니다';
         setTimeout(() => { srStatus.textContent = ''; }, 1000);
     }
     if (syncHash) syncSectionHash(sectionId, payload, replaceHash);
     
     // Post-render actions
-    if (sectionId === 'home') {
-        setTimeout(() => initCharts('home'), 100);
-    }
-    if(sectionId === 'community') setTimeout(() => initCharts('community'), 100);
     if(sectionId === 'programs') updateProgramView(state.programFilter);
     if(sectionId === 'parenting' && payload?.focus) {
         setTimeout(() => {
@@ -186,7 +172,8 @@ function renderSection(sectionId, payload = null, options = {}) {
         }, 60);
     }
     if (sectionId === 'apply') setTimeout(() => initApplyTurnstile(), 50);
-    if((sectionId === 'home' || sectionId === 'notices' || sectionId === 'notice_detail') && !state.noticesLoaded) {
+    // 홈에는 공지 목록이 없으므로 응답을 기다린 뒤 홈 DOM을 다시 만들지 않는다.
+    if((sectionId === 'notices' || sectionId === 'notice_detail') && !state.noticesLoaded) {
         setTimeout(async () => {
             await loadNotices();
             if (state.currentSection === sectionId) {
@@ -201,9 +188,64 @@ function renderSection(sectionId, payload = null, options = {}) {
     if (sectionId === 'test') setTimeout(() => mountAdaptiveTestIframe(), 0);
 }
 
+let navigationEventsReady = false;
+
+function closeDesktopNavMenus(restoreFocus = false) {
+    document.querySelectorAll?.('.desktop-nav-trigger').forEach((trigger) => {
+        const wasOpen = trigger.getAttribute('aria-expanded') === 'true';
+        trigger.setAttribute('aria-expanded', 'false');
+        document.getElementById(trigger.getAttribute('aria-controls'))?.classList.add('hidden');
+        if (wasOpen && restoreFocus) trigger.focus();
+    });
+}
+
+function ensureNavigationEvents() {
+    if (navigationEventsReady) return;
+    navigationEventsReady = true;
+    const closeOutsideDesktopMenus = (event) => {
+        document.querySelectorAll('.desktop-nav-trigger').forEach((trigger) => {
+            if (!trigger.parentElement.contains(event.target)) {
+                trigger.setAttribute('aria-expanded', 'false');
+                document.getElementById(trigger.getAttribute('aria-controls'))?.classList.add('hidden');
+            }
+        });
+    };
+    document.addEventListener('click', closeOutsideDesktopMenus);
+    document.addEventListener('focusin', closeOutsideDesktopMenus);
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        const desktopOpen = [...document.querySelectorAll('.desktop-nav-trigger')].some((trigger) => trigger.getAttribute('aria-expanded') === 'true');
+        const mobileOpen = document.getElementById('mobile-menu') && !document.getElementById('mobile-menu').classList.contains('hidden');
+        if (!desktopOpen && !mobileOpen) return;
+        event.preventDefault();
+        closeDesktopNavMenus(true);
+        if (mobileOpen) {
+            closeMobileMenu();
+            document.getElementById('mobile-menu-toggle')?.focus();
+        }
+    });
+}
+
+function toggleDesktopNav(trigger) {
+    const panel = document.getElementById(trigger.getAttribute('aria-controls'));
+    if (!panel) return;
+    ensureNavigationEvents();
+    const willOpen = trigger.getAttribute('aria-expanded') !== 'true';
+    closeDesktopNavMenus();
+    if (willOpen) {
+        panel.classList.remove('hidden');
+        trigger.setAttribute('aria-expanded', 'true');
+    }
+}
+
 function closeMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     const backdrop = document.getElementById('mobile-menu-backdrop');
+    const trigger = document.getElementById('mobile-menu-toggle');
+    if (trigger) {
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.setAttribute('aria-label', '메뉴 열기');
+    }
     if (menu) menu.classList.add('hidden');
     if (backdrop) {
         backdrop.classList.add('hidden');
@@ -215,8 +257,14 @@ function closeMobileMenu() {
 }
 
 function openMobileMenu() {
+    ensureNavigationEvents();
     const menu = document.getElementById('mobile-menu');
     const backdrop = document.getElementById('mobile-menu-backdrop');
+    const trigger = document.getElementById('mobile-menu-toggle');
+    if (trigger) {
+        trigger.setAttribute('aria-expanded', 'true');
+        trigger.setAttribute('aria-label', '메뉴 닫기');
+    }
     if (menu) menu.classList.remove('hidden');
     if (backdrop) {
         backdrop.classList.remove('hidden');

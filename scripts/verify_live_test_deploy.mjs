@@ -17,7 +17,13 @@ const CHECKS = [
   {
     path: 'js/sections/home.js',
     label: 'live home design assets',
-    markers: ['home-parent-child-photo.jpg', 'home-couple-photo.jpg', 'home-team-photo.jpg', 'hands and green.png', 'green and seat.png']
+    markers: [
+      ['home-parent-child-photo.jpg', 'home-parent-child-768.webp'],
+      ['home-couple-photo.jpg', 'home-couple-768.webp'],
+      ['home-team-photo.jpg', 'home-team-768.webp'],
+      ['hands and green.png', 'home-hands-green-763.webp'],
+      ['green and seat.png', 'home-green-seat-764.webp']
+    ]
   },
   {
     path: 'test.html',
@@ -111,8 +117,9 @@ async function readSiteText(site, relPath) {
 
 function requireMarkers(body, check) {
   check.markers.forEach((marker) => {
-    if (!body.includes(marker)) {
-      throw new Error(`Missing marker "${marker}" in ${check.path} (${check.label})`);
+    const alternatives = Array.isArray(marker) ? marker : [marker];
+    if (!alternatives.some(value => body.includes(value))) {
+      throw new Error(`Missing marker "${alternatives.join(' or ')}" in ${check.path} (${check.label})`);
     }
   });
 }
