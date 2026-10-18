@@ -7,20 +7,20 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 
 ---
 
-## Live state (마지막 배포 검증: 2026-10-15 00:39:32 UTC)
+## Live state (마지막 배포 검증: 2026-10-18T23:49:32Z)
 
 | Surface | Git ref (의도) | Live SHA / fingerprint | Deployed at (UTC) | Method | Notes |
 |---------|----------------|------------------------|-------------------|--------|-------|
-| **Site** (landing, menu, home, child-type-test shell) | `origin/main` @ `6c1797b63370f1d0b9929f0d23d4a42c55c75b66` | Worker `03a37943-6ec6-43fa-a830-0688a6935253`; 신청 관련 site 7개 source SHA-256 일치 | 2026-10-15T00:36:30Z | GitHub Actions site-only bundle | run 38660871331, track site; deploy-site success / deploy-test skipped; 00:36:32 UTC guard 통과, 00:39:32 UTC 공개 GET 해시 대조 |
+| **Site** (landing, menu, home, child-type-test shell) | `source` @ `6d41f16a1fe31deb01c635fb9a6982ad68b91935` | source `6d41f16a1fe31deb01c635fb9a6982ad68b91935`; live guard passed | 2026-10-18T23:49:32Z | GitHub Actions Deploy Production | guard success; [run](https://github.com/Jamiewsm/ER-Website/actions/runs/39178073612/attempts/1); merged PR #180: fix(ci): PostgreSQL 전체 검사와 배포 원장 PR 저장 복구 |
 | **Test runtime** | 이전 test 배포 기록: `origin/main` @ `0d89d95` | `js/test.js` SHA-256 `3a0a4d5ce571367eb8c73dd73e0e1d59f239489055422be626b8a6e7845da595`; runtime 10개 배포 전후 동일 | 2026-10-13T07:34:48Z (이전 기록 유지) | 이전 test-only 배포; 이번 site-only bundle에서 보존 | 2026-10-15에는 test 재배포 없음; 00:39:32 UTC 보존 확인 시각을 새 배포 시각으로 기록하지 않음 |
 | **Supabase Edge — 신청 관련 2함수** | 서버 source `34a7a2709a27c3dfd7c5769f06e7b7a4d7bb0b52` (#174/#175); 이후 #176/#173은 함수 코드 변경 없음 | `submit-application` v36 / `notify-program-application` v22; ACTIVE, source 13파일 일치 | submit 2026-10-15T00:26:54.944Z / notify 00:26:59.672Z | Supabase MCP Edge Function 배포 | project `osdynbadhtfgoxilgmpy`; JWT false/true 보존; 웹 배포와 분리 |
 
 ### Drift 요약
 
-- **Site:** 실제 배포 source는 `6c1797b` (#173/#174/#175/#176 반영)이며 이후 문서 기록 PR의 merge SHA를 새 배포 SHA로 취급하지 않는다. 배포 코드·테스트·CI 21개 blob이 검증본과 일치했다.
+- **Site:** source `6d41f16a1fe31deb01c635fb9a6982ad68b91935`; 2026-10-18T23:49:32Z live guard success. [배포 실행](https://github.com/Jamiewsm/ER-Website/actions/runs/39178073612/attempts/1)과 원장 PR 병합 커밋을 구분한다.
 - **Test runtime:** 이전 배포 기록 `0d89d95`를 유지한다. 이번 두 site-only CI의 deploy-test는 모두 skipped였고 live runtime 10개는 배포 전후 SHA-256이 같다.
 - **Supabase 신청 함수:** 웹 CI와 별도로 submit v36 / notify v22를 배포하고 source 13파일 및 기존 JWT false/true를 대조했다. 기존 신청·학생 데이터 변경이나 실제 신청·메일 발송은 하지 않았다.
-- **CI ledger 저장 실패:** run 38660855498 및 38660871331의 ledger 생성·runner 로컬 commit은 완료됐지만 main 직접 push는 `GH006: Changes must be made through a pull request`로 거부됐다. `continue-on-error: true`로 workflow가 green이어도 ledger 저장 성공을 뜻하지 않는다. 이번 수정은 실제 배포 로그에 근거한 문서 전용 기록 정정이며 직접 main push 재시도·보호 규칙 변경·CI 개편·재배포를 하지 않는다.
+- **CI ledger 저장:** 보호된 main에 직접 push하지 않고 CI 원장 PR로 저장한다. 이전 GH006 실패 기록은 아래 배포 이력에 보존한다.
 - **과거 사고 패턴:** full deploy / `.assetsignore` test 제외로 test 404 가능 → bundle prune + assetsignore 수정 (#67).
 
 
@@ -37,6 +37,12 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 **금지:** Track B 작업을 Track A PR에 섞기. Track A merge 시 test runtime이 legacy로 rollback 되지 않도록, test 변경은 **먼저 main 동기화 + test-only deploy** 또는 CI 분리 deploy.
 
 ---
+
+<!-- deploy-run:https://github.com/Jamiewsm/ER-Website/actions/runs/39178073612/attempts/1 -->
+### 2026-10-18T23:49:32Z — deploy site
+- Source: `6d41f16a1fe31deb01c635fb9a6982ad68b91935`. 검증 시각이며 별도 실제 upload 완료 시각을 추정하지 않는다.
+- Site job: success; Test job: skipped. 성공한 트랙만 위 표를 갱신한다.
+- [배포 및 guard 로그](https://github.com/Jamiewsm/ER-Website/actions/runs/39178073612/attempts/1), by auto-merge. merged PR #180: fix(ci): PostgreSQL 전체 검사와 배포 원장 PR 저장 복구
 
 ## 갱신 템플릿 (배포 후 복사)
 
