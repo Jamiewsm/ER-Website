@@ -11,6 +11,13 @@ function handleApplyFormSubmit(event) {
     return handleApplySubmit(event, form.dataset.submitSource || 'paid', focus ? { focus } : undefined);
 }
 
+function renderApplyPrivacyNotice() {
+    return `<p class="text-xs leading-relaxed text-er-muted break-keep">
+        입력하신 정보는 신청 접수와 연락·등록 안내에 사용됩니다. 나누고 싶은 이야기는 필요한 내용만 적어 주세요.
+        <a href="/#privacy" target="_blank" rel="noopener noreferrer" class="font-bold text-er-green underline underline-offset-2">개인정보 안내 (새 창)</a>에서 처리 항목과 열람·정정·삭제 요청 방법을 확인할 수 있습니다.
+    </p>`;
+}
+
 function isParentingWorkshopFocus(focus) {
     const normalizedFocus = String(focus || '').trim();
     return normalizedFocus === 'parenting_workshop' || normalizedFocus === 'parents_workshop';
@@ -220,7 +227,8 @@ function renderParentingWorkshopApply(submitSource) {
                         </div>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                            <p class="mb-1 text-xs font-bold text-gray-600">보안 확인</p>
+                            ${renderApplyPrivacyNotice()}
+                            <p class="mb-1 mt-3 text-xs font-bold text-gray-600">보안 확인</p>
                             <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 신청 버튼을 눌러 주세요.</p>
                             <p id="apply-turnstile-status" class="mb-2 hidden text-xs text-gray-500 break-keep" role="status" aria-live="polite"></p>
                             <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
@@ -446,7 +454,8 @@ function renderBasicCourseApply(submitSource) {
                         </label>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                            <p class="mb-1 text-xs font-bold text-gray-600">보안 확인</p>
+                            ${renderApplyPrivacyNotice()}
+                            <p class="mb-1 mt-3 text-xs font-bold text-gray-600">보안 확인</p>
                             <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 신청 버튼을 눌러 주세요.</p>
                             <p id="apply-turnstile-status" class="mb-2 hidden text-xs text-gray-500 break-keep" role="status" aria-live="polite"></p>
                             <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
@@ -794,7 +803,8 @@ function renderApply(payload = null) {
                         </div>
 
                         <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                            <p class="text-xs font-bold text-gray-600 mb-1">보안 확인</p>
+                            ${renderApplyPrivacyNotice()}
+                            <p class="text-xs font-bold text-gray-600 mb-1 mt-3">보안 확인</p>
                             <p class="text-[11px] text-gray-500 mb-2 break-keep">스팸 방지를 위해 아래 확인을 완료한 뒤 신청하기를 눌러 주세요.</p>
                             <p id="apply-turnstile-status" class="text-xs text-gray-500 mb-2 break-keep hidden" role="status" aria-live="polite"></p>
                             <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
@@ -807,6 +817,7 @@ function renderApply(payload = null) {
                         <button id="apply-submit-btn" type="submit" class="w-full py-4 bg-er-dark text-white rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-all hover:-translate-y-1">
                             신청하기
                         </button>
+                        <p id="apply-submit-status" class="hidden text-sm leading-relaxed break-keep" role="status" aria-live="polite"></p>
                     </form>
 
                     <p class="mt-6 border-t border-gray-100 pt-5 text-center text-xs text-er-primary">

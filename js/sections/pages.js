@@ -5,13 +5,22 @@ function renderPrivacy() {
             <div class="max-w-4xl mx-auto">
                 <div class="mb-10">
                     <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Privacy</span>
-                    <h2 class="text-3xl md:text-4xl font-bold text-er-dark mt-3">개인정보를 다루는 마음</h2>
-                    <p class="mt-3 text-sm text-gray-500 break-keep">공개 사이트의 신청과 로그인 과정에서 받은 정보를 어떤 태도로 다루는지 차분히 안내합니다.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-er-dark mt-3">개인정보 안내</h2>
+                    <p class="mt-3 text-sm text-gray-500 break-keep">공개 웹사이트의 상담·과정 신청과 문의에 적용되는 안내입니다. 계정과 교육포털에는 가입 시 제공하는 별도 안내도 적용됩니다.</p>
                 </div>
                 <div class="space-y-4 text-sm text-gray-600 leading-relaxed">
-                    <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">ER은 신청서, 로그인, 문의 과정에서 이름, 연락처, 이메일, 제출 메시지와 같은 최소한의 정보를 받습니다.</div>
-                    <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">받은 정보는 상담 안내, 협력 응답, 장학 후원 문의 응대와 입금 확인, 운영상 필요한 계정 확인 목적에만 사용합니다.</div>
-                    <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft floating-card">법적 보관 의무가 없는 한, 운영 목적이 끝난 정보는 정리 대상이 됩니다. 더 자세한 정책은 추후 별도 문서로 정리할 예정입니다.</div>
+                    <section class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft">
+                        <h3 class="mb-2 font-bold text-er-ink">받는 정보</h3>
+                        <p>이름, 연락처·이메일, 신청 분야와 작성하신 메시지를 받습니다. 과정에 따라 전화번호·카카오톡 ID, 거주 국가·희망 시간, 에니어그램 경험·소개 경로, 결제 지역·수단·입금자명, 사역 정보나 대리 신청자의 이름·연락처·관계를 추가로 받습니다. 각 폼에서 필수로 표시된 항목은 접수에 필요하며, 선택 항목은 비워 두실 수 있습니다.</p>
+                    </section>
+                    <section class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft">
+                        <h3 class="mb-2 font-bold text-er-ink">사용 목적과 처리 서비스</h3>
+                        <p>신청 접수, 담당자 응답, 일정·등록·납부 확인과 접수·운영 안내에 사용합니다. 신청 정보 저장에는 Supabase, 운영자 알림과 접수 안내 메일 발송에는 Resend, 스팸 방지에는 Cloudflare Turnstile을 사용합니다. 메일 처리에는 이메일 주소와 안내 내용이, 보안 확인에는 토큰과 요청 IP 등이 전달됩니다.</p>
+                    </section>
+                    <section class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-6 shadow-soft">
+                        <h3 class="mb-2 font-bold text-er-ink">보관과 권리 요청</h3>
+                        <p>신청 처리와 필요한 운영 기록 확인을 위해 보관합니다. 보관 여부와 삭제 가능 범위를 확인하거나 열람·정정·삭제·처리 중단을 요청하려면 <a href="mailto:hello@er-coaching.com" class="font-bold text-er-green underline underline-offset-2">hello@er-coaching.com</a>으로 연락해 주세요. 본인 확인 후 처리 가능 범위와 제한 사유를 안내합니다. 메시지에는 비밀번호나 불필요한 민감 정보를 적지 말아 주세요.</p>
+                    </section>
                 </div>
             </div>
         </div>

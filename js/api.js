@@ -59,7 +59,8 @@ function mountApplyTurnstileWidget() {
     applyTurnstileWidgetId = window.turnstile.render('#apply-turnstile-widget', {
       sitekey: sitekey,
       theme: 'light',
-      size: 'flexible',
+      // flexible도 최소 300px이 필요하므로 실제 폼 안쪽 너비를 기준으로 선택한다.
+      size: typeof container.getBoundingClientRect === 'function' && container.getBoundingClientRect().width < 300 ? 'compact' : 'flexible',
       callback: function (token) {
         tokenInput.value = token;
         setApplyTurnstileStatus('보안 확인이 완료되었습니다. 아래 신청하기를 눌러 주세요.', 'success');
