@@ -19,3 +19,7 @@
 - 방향 전환 중 위젯 overflow도 실제 재현 후 수정했다. ResizeObserver는 모드가 바뀔 때만 재마운트하며 토큰만 재검증한다.
 - 실제 제출은 브라우저에서 가로채서 오류 응답으로 대체했다. 로컬 테스트 sitekey는 세션 메모리에만 적용했다.
 - 전체 검사 환경 제약과 개발 의존성 advisory는 verification.md에 기록했다. 관련126검사와 CSS/문법/배포 보호 검사는 통과했다.
+- PR #179는 자동 조율 에이전트가 4458c13으로 병합했다. 운영 run39139119560의 site 배포·guard 성공, test 트랙 skipped/10파일 보존을 독립 확인했다.
+- 운영9파일 SHA-256이 로컬 검증 파일과 일치했다. 별도 비인증 브라우저의 홈·키보드/모바일 메뉴·320px compact Turnstile 완료·개인정보 새 창·허용되지 않은 일반 URL 값의 fallback을 확인했다. 실제 저장·발송·로그인은 하지 않았다.
+- ledger job의 초록 표시와 달리 main push가 GH006으로 거부돼 원장은 이전 배포 상태다. 기능 배포와 원장 저장을 혼동하지 않고 후속 항목으로 기록한다.
+- 최종 운영 증거는 최신 origin/main에서 분기한 codex/website-improvement-verification-20261019의 문서 커밋으로 보관한다. 기존 output 미추적 파일은 유지한다.
