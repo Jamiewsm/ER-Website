@@ -39,10 +39,18 @@ function renderHome() {
 
     const stats = [
         { value: '400+', label: '누적인원' },
-        { value: '98%', label: '만족도' },
+        { value: '온라인', label: '교육·코칭' },
         { value: '10년+', label: '전문가 경험' },
-        { value: '4.9/5', label: '후기 평점' }
+        { value: '맞춤 코칭', label: '개인·가정·공동체' }
     ];
+
+    const images = {
+        background: { src: 'assets/er-visual/home-background-1535.webp', srcset: 'assets/er-visual/home-background-480.webp 480w, assets/er-visual/home-background-768.webp 768w, assets/er-visual/home-background-1535.webp 1535w', width: 1535, height: 1024 },
+        parenting: { src: 'assets/er-visual/home-parent-child-768.webp', srcset: 'assets/er-visual/home-parent-child-480.webp 480w, assets/er-visual/home-parent-child-768.webp 768w, assets/er-visual/home-parent-child-1100.webp 1100w', width: 1100, height: 605 },
+        couple: { src: 'assets/er-visual/home-couple-768.webp', srcset: 'assets/er-visual/home-couple-480.webp 480w, assets/er-visual/home-couple-768.webp 768w, assets/er-visual/home-couple-1100.webp 1100w', width: 1100, height: 605 },
+        team: { src: 'assets/er-visual/home-team-768.webp', srcset: 'assets/er-visual/home-team-480.webp 480w, assets/er-visual/home-team-768.webp 768w, assets/er-visual/home-team-1100.webp 1100w', width: 1100, height: 605 },
+        hands: { src: 'assets/er-visual/home-hands-green-763.webp', srcset: 'assets/er-visual/home-hands-green-480.webp 480w, assets/er-visual/home-hands-green-763.webp 763w', width: 763, height: 386 }
+    };
 
     const programCards = [
         {
@@ -50,7 +58,7 @@ function renderHome() {
             title: '에니어그램 기본과정 8주',
             text: showBasicCourseRecruitment ? '10월 첫주 개강 · 정원 8명 · 8주 온라인 과정' : '2026년 10월 기수 모집 마감 · 다음 기수 일정은 확정 후 안내',
             price: '한국 ₩450,000 · 미국 $330',
-            image: 'background.png',
+            image: images.background,
             position: 'center',
             button: '자세히 보기',
             action: "window.location.href='/basic-course.html'"
@@ -60,7 +68,7 @@ function renderHome() {
             title: 'Enneagram for Parenting',
             text: '부모의 반응 패턴과 아이의 기질을 이해하는 4주 과정',
             price: '$120',
-            image: 'home-parent-child-photo.jpg',
+            image: images.parenting,
             position: 'center top',
             button: '양육 여정 보기',
             action: "renderSection('parenting')",
@@ -72,7 +80,7 @@ function renderHome() {
             title: '무료 에니어그램 검사',
             text: '내 반복 패턴을 먼저 정리하는 10분 테스트',
             price: '무료',
-            image: 'hands and green.png',
+            image: images.hands,
             position: 'center',
             button: '검사하기',
             action: "renderSection('test')"
@@ -82,7 +90,7 @@ function renderHome() {
             title: '결과지 해석상담',
             text: '결과지를 함께 읽으며 핵심 유형·하위유형·날개·신뢰도 정리',
             price: '$50',
-            image: 'home-couple-photo.jpg',
+            image: images.couple,
             position: 'center top',
             button: '상담 신청하기',
             action: "renderSection('apply', { track: 'paid', focus: 'result_consult' })"
@@ -122,7 +130,7 @@ function renderHome() {
             eyebrow: '부모와 자녀',
             title: '아이를 바꾸기 전에, 아이를 이해하는 눈이 필요합니다',
             text: '아이의 행동 뒤에는 각자의 두려움과 욕구가 있고, 부모의 반응 뒤에도 익숙한 패턴이 있습니다.',
-            image: 'home-parent-child-photo.jpg',
+            image: images.parenting,
             position: 'center top',
             caption: '행동보다 마음을 이해하는 부모교육',
             points: ['부모의 유형과 양육 패턴', '자녀의 기질과 반응 이해', '반복되는 부모-자녀 갈등 분석'],
@@ -132,7 +140,7 @@ function renderHome() {
             eyebrow: '부부와 가정',
             title: '판단을 멈추고, 긍휼과 은혜로 다시 연결되기',
             text: '부부 갈등은 한 번의 사건보다 말투와 침묵, 통제와 회피, 인정 욕구가 반복되며 만들어지는 패턴일 때가 많습니다.',
-            image: 'home-couple-photo.jpg',
+            image: images.couple,
             position: 'center top',
             caption: '상대를 고치려는 자리에서, 이해하는 자리로',
             points: ['같은 문제로 반복되는 갈등 이해', '배우자의 방어기제를 자극하지 않는 대화', '복음 안에서 안전한 관계 다시 세우기'],
@@ -142,7 +150,7 @@ function renderHome() {
             eyebrow: '교회·사역팀',
             title: '다름을 이해하고, 복음 안에서 함께 섬기는 공동체로',
             text: '사역 현장의 오해와 소진은 헌신의 부족이 아니라, 서로 다른 동기와 소통 방식이 겹치며 생길 때가 많습니다.',
-            image: 'home-team-photo.jpg',
+            image: images.team,
             position: 'center top',
             caption: '각 사람의 은사를 존중하며 함께 섬기는 사역팀',
             points: ['사역자의 강점과 소명 이해', '리더와 사역팀의 소통·의사결정 패턴', '갈등을 줄이고 동역을 세우는 공동체 언어'],
@@ -221,7 +229,7 @@ function renderHome() {
 
                         <div class="mt-7 flex max-w-2xl flex-col gap-3 sm:mt-9 sm:flex-row">
                             <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg bg-er-green px-6 py-4 text-sm font-extrabold text-white shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark active:scale-95">
-                                나에게 맞는 프로그램 찾기
+                                관계·부부 코칭 보기
                                 <i class="fas fa-arrow-right text-xs opacity-80" aria-hidden="true"></i>
                             </button>
                             <button onclick="renderSection('test')" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg border border-[#ded6c8] bg-white/80 px-6 py-4 text-sm font-extrabold text-er-ink shadow-sm transition-all hover:border-[#7f8b68] hover:bg-white active:scale-95">
@@ -232,7 +240,7 @@ function renderHome() {
                     </div>
 
                     <div class="relative min-h-[360px] overflow-hidden sm:min-h-[500px] lg:min-h-[720px]">
-                        <img src="background.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center; filter:saturate(1.03) contrast(0.98) brightness(1.04);">
+                        <img src="${images.background.src}" srcset="${images.background.srcset}" sizes="(min-width: 1520px) 798px, (min-width: 1024px) 53vw, 100vw" width="1535" height="1024" fetchpriority="high" decoding="async" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center; filter:saturate(1.03) contrast(0.98) brightness(1.04);">
                         <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
 
@@ -302,7 +310,7 @@ function renderHome() {
                         ${restorationCards.map((card) => `
                             <article class="group rounded-2xl border border-er-sand/60 bg-er-surface p-4 shadow-[0_16px_45px_rgba(84,72,52,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(84,72,52,0.12)]">
                                 <div class="aspect-[16/10] overflow-hidden rounded-[1.15rem] bg-er-greenTint">
-                                    <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]" style="object-position:${card.position}; filter:saturate(0.96) brightness(1.04);">
+                                    <img src="${card.image.src}" srcset="${card.image.srcset}" sizes="(min-width: 1480px) 422px, (min-width: 1024px) 30vw, (min-width: 640px) calc(100vw - 144px), calc(100vw - 112px)" width="${card.image.width}" height="${card.image.height}" loading="lazy" decoding="async" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]" style="object-position:${card.position}; filter:saturate(0.96) brightness(1.04);">
                                 </div>
                                 <div class="px-2 pb-2 pt-5">
                                     <p class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-xs font-black text-er-green ring-1 ring-[#dce5ce]">${card.eyebrow}</p>
@@ -340,7 +348,7 @@ function renderHome() {
                                 ${programCards.map((card) => `
                                     <article class="group flex min-h-[24rem] flex-col rounded-2xl border border-er-sand/60 bg-er-surface p-4 shadow-[0_14px_40px_rgba(94,77,47,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(94,77,47,0.11)]">
                                         <div class="relative aspect-[1.45] overflow-hidden rounded-[1.15rem] bg-er-greenTint">
-                                            <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
+                                            <img src="${card.image.src}" srcset="${card.image.srcset}" sizes="(min-width: 1280px) 10vw, (min-width: 1024px) 22vw, (min-width: 640px) 40vw, calc(100vw - 112px)" width="${card.image.width}" height="${card.image.height}" loading="lazy" decoding="async" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
                                             <span class="absolute left-3 top-3 rounded-full bg-er-green px-3 py-1 text-[10px] font-black text-er-surface shadow-sm">${card.badge}</span>
                                         </div>
                                         <div class="flex flex-1 flex-col pt-5">
@@ -358,7 +366,7 @@ function renderHome() {
 
                             <div class="mt-9 text-center">
                                 <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.6rem] w-full items-center justify-center gap-3 rounded-xl bg-er-green px-6 py-4 text-base font-black text-er-surface shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark sm:w-auto sm:min-w-[18rem] sm:px-9">
-                                    전체 프로그램 보기
+                                    관계·부부 코칭 보기
                                     <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -394,7 +402,7 @@ function renderHome() {
 
                     <div class="mt-10 overflow-hidden rounded-2xl border border-[#d8cbb8] bg-er-green text-er-surface shadow-[0_24px_60px_rgba(101,116,83,0.18)]">
                         <div class="relative min-h-[21rem] px-6 py-10 sm:px-10 lg:px-20 lg:py-14">
-                            <img src="green and seat.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center right; filter:saturate(0.94) brightness(0.92);">
+                            <img src="assets/er-visual/home-green-seat-764.webp" srcset="assets/er-visual/home-green-seat-480.webp 480w, assets/er-visual/home-green-seat-764.webp 764w" sizes="(min-width: 1480px) 1344px, 100vw" width="764" height="391" loading="lazy" decoding="async" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center right; filter:saturate(0.94) brightness(0.92);">
                             <div class="absolute inset-0 bg-gradient-to-r from-er-greenDeep via-[#3f5530]/88 to-er-greenDeep/12"></div>
                             <div class="relative max-w-xl">
                                 <h2 class="text-3xl font-black leading-tight tracking-[-0.02em] break-keep sm:text-4xl">지금, 당신의 변화를 시작하세요</h2>
