@@ -13,3 +13,7 @@
 - 원장 CLI 임시 복제본 검사는 실제 현재 Site 행이 바뀌지 않는 실패를 재현했다. 생성기 수정 후 통과했다. 공개 runtime은 변경하지 않았다.
 - resolve job의 실제 checkout SHA를 배포 두 job에 고정한다. success 트랙과 guard 시각만 원장에 기록하고 보호 main 직접 push를 PR로 바꾼다. 원장 PR 생성 실패를 숨기지 않는다.
 - PR #180 독립 리뷰의 두 항목을 반영했다. 원장 source 행은 SHA만 정확히 기록하며 main 소속을 추정하지 않는다. npm pretest가 기존 교육 패키지를 lockfile/ignore-scripts로 준비해 fresh checkout에서도 전체 검사가 가능하게 한다. 도구 경로 fixture도 실제 공백 경로로 검사한다.
+- fresh clone의 root npm ci 이후 npm test549/549, 최종 Ubuntu CI도549/549와 별도교육205/205 통과. main 보호 JSON 해시는 유지됐다.
+- #180은6d41f16으로 병합되고 CI run39178073612가 site-only 배포·guard 성공·test10파일 보존을 확인했다. CI가 만든 원장 #181을 현재운영 확인 후 일반 PR 경로로 병합했다. 원격 main dfd5051의 원장 source는6d41f16이며 원장 merge와 배포 SHA를 구분한다.
+- 배포 전후 공개20파일 해시가 같고 비HTML18개는 로컬 source와도 일치했다. 실제 홈→상담 신청,320px 가로넘침 없음, 운영 위젯 완료를 확인했다. 원문 토큰·실제 신청/메일·운영 DB 쓰기 없음.
+- 최종 증거는 codex/ops-verification-20261019에서 별도 문서 커밋으로 보관한다. 기존 output 미추적 파일은 보존한다.

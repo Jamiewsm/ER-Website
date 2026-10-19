@@ -1,0 +1,129 @@
+{
+  "site": "https://er-coaching.com",
+  "phase": "after CI run 39178073612 and ledger PR 181",
+  "sourceSha": "6d41f16a1fe31deb01c635fb9a6982ad68b91935",
+  "workerVersion": "7cd8682d-ab05-482c-9866-3acc3d805ef0",
+  "htmlNormalization": "DOMParser serialization after removing only Cloudflare beacon script elements",
+  "files": [
+    {
+      "path": "index.html",
+      "status": 200,
+      "bytes": 51536,
+      "sha256": "f896899690e64cf4775eaacb4f4ee8b51fcfe7551527a1ab2045dc54f49d8ba9"
+    },
+    {
+      "path": "js/app-helpers.js",
+      "status": 200,
+      "bytes": 34612,
+      "sha256": "7e4009715956a91d2113a6f4942bc26ca84dd85efcde8312e0aa6edde556c99c"
+    },
+    {
+      "path": "js/app-core.js",
+      "status": 200,
+      "bytes": 13317,
+      "sha256": "c022b0a63868ec50cd1358f1b2f7ed9ec641c7aeac74c404e7bdda7642bf36c3"
+    },
+    {
+      "path": "js/app-init.js",
+      "status": 200,
+      "bytes": 5399,
+      "sha256": "003566617e7c8d247b1743c6d502be937e3b5e6858e2e7ba9ea484d123094285"
+    },
+    {
+      "path": "js/api.js",
+      "status": 200,
+      "bytes": 16126,
+      "sha256": "b9cda3b05f66be5c31410f5ef3ea18ff8c1da28f347e73fa543a27bf70c579d0"
+    },
+    {
+      "path": "js/sections/apply.js",
+      "status": 200,
+      "bytes": 69450,
+      "sha256": "03912cf0b5fc4df21bec18872a15cc1054d188ba6b24b106fad0b65c7beddc40"
+    },
+    {
+      "path": "js/sections/home.js",
+      "status": 200,
+      "bytes": 36008,
+      "sha256": "23c3cd8388823f291f2b68099e39415c9a6bdef2a4182d4fb33e013456230404"
+    },
+    {
+      "path": "js/sections/pages.js",
+      "status": 200,
+      "bytes": 11923,
+      "sha256": "cea39e696f82db0e3b87804e912bd579912ee40ce897312d0ef762e35f96670c"
+    },
+    {
+      "path": "js/sections/programs.js",
+      "status": 200,
+      "bytes": 25292,
+      "sha256": "3da732df1d6b4adf41fff2999a1feed149a0ca9d5935b407a5891246b9d5c745"
+    },
+    {
+      "path": "css/site-tailwind.css",
+      "status": 200,
+      "bytes": 61502,
+      "sha256": "c755bc4e7fcbf7d2d83f06c41859bd0f6e8e65b2cf0047be1129803b45d44a8e"
+    },
+    {
+      "path": "test.html",
+      "status": 200,
+      "bytes": 14283,
+      "sha256": "9a6f3b3112454f2ab4f91045ab6a10b9456dadef244ec12d09b51b8a6394a2ce"
+    },
+    {
+      "path": "css/test.css",
+      "status": 200,
+      "bytes": 50429,
+      "sha256": "01862a71bc2448e7e02948c2532dfafa889dbabd672f7e39f1a6467f8149a077"
+    },
+    {
+      "path": "js/test.js",
+      "status": 200,
+      "bytes": 342575,
+      "sha256": "3a0a4d5ce571367eb8c73dd73e0e1d59f239489055422be626b8a6e7845da595"
+    },
+    {
+      "path": "js/diagnostic-experiment.js",
+      "status": 200,
+      "bytes": 22110,
+      "sha256": "1b0340ee45d016ceaa86a9faacc4a30a50b4d846d2f2ae95f76f89e77016e571"
+    },
+    {
+      "path": "js/diagnostic-report-content.js",
+      "status": 200,
+      "bytes": 172671,
+      "sha256": "a5c4bb03b5694ed5545b64be0d1b60883746c77cdbabd64ffd73d5ca448932aa"
+    },
+    {
+      "path": "js/report-support-materials.js",
+      "status": 200,
+      "bytes": 17846,
+      "sha256": "fba328dfe146cf0d8c39bd70c0f95ba0023ede3ca1b13d8fcb14582099e07bc7"
+    },
+    {
+      "path": "test-results/background.png",
+      "status": 200,
+      "bytes": 1861283,
+      "sha256": "39e2b3f3682e388932af57d86d5bf54f68d252f3ba0b5a1fae0beba79cee6e7d"
+    },
+    {
+      "path": "test-results/background_card.png",
+      "status": 200,
+      "bytes": 1835928,
+      "sha256": "3a8fe940abeeac17f40c302815398bccd5b4805213bacaac164bf0a868e04c55"
+    },
+    {
+      "path": "test-results/background_vase.png",
+      "status": 200,
+      "bytes": 1884044,
+      "sha256": "0080c70261b43d965615a554a4a05544e2c8172e9eec9c8fd6681efcdcf68e34"
+    },
+    {
+      "path": "test-results/backgrdound_road.png",
+      "status": 200,
+      "bytes": 2175678,
+      "sha256": "c10ba329f07c512cd2ab73156cf6901e6152bc7020e15146a49239de4219a7e6"
+    }
+  ]
+}
