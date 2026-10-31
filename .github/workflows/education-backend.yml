@@ -12,6 +12,7 @@ on:
       - 'supabase/migrations/*_er_account_consent.sql'
       - 'supabase/migrations/*_er_consent_retention_schedule.sql'
       - 'supabase/migrations/*_education_record_retention.sql'
+      - 'supabase/migrations/*_application_service_explicit_grants.sql'
       - 'docs/projects/account-consent/APPROVED-DOCUMENTS.json'
       - 'tests/er-account-consent.test.mjs'
       - 'tests/er-consent-concurrency.test.mjs'
