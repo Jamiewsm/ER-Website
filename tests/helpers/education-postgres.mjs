@@ -15,6 +15,7 @@ create schema auth; create schema storage;
 create table auth.users(id uuid primary key,email text);
 create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
 grant usage on schema public,auth,storage to anon,authenticated;
+grant usage on schema public to service_role;
 create table coach_profiles(user_id uuid primary key references auth.users,role text,is_active boolean default true);
 create table coach_mentees(id uuid primary key,coach_user_id uuid references auth.users);
 create table program_applications(id uuid primary key,contact text,cohort_key text,program_key text,status text,
@@ -185,12 +186,28 @@ export async function createPostgres() {
     return {
       version,
       close,
-      async database(name) {
+      async database(name, { applicationMigrations = false } = {}) {
         if (!/^[a-z_]+$/.test(name))
           throw new Error("Invalid synthetic database name");
         await admin.query(`create database ${name};`);
         const client = databaseClient(name);
         await client.query(bootstrap);
+        // Exercise the real application schema without relying on Supabase default ACLs.
+        if (applicationMigrations) {
+          await client.query("drop table public.program_applications;");
+          const legacySchema = await readFile(new URL('../../supabase/coach_portal_schema.sql', import.meta.url), 'utf8');
+          // The metadata migration also updates notices; use its actual legacy table DDL.
+          await client.query(legacySchema.match(/create table if not exists public\.public_notices \([\s\S]*?\n\);/i)[0]);
+          for (const filename of [
+            "20260611160000_program_applications.sql",
+            "20260827135419_october_basic_course_cohort_payment_metadata.sql",
+            "20260915002000_application_confirmation_delivery_guard.sql",
+          ]) {
+            await client.query(await readFile(
+              new URL(`../../supabase/migrations/${filename}`, import.meta.url), "utf8",
+            ));
+          }
+        }
         for (const filename of [
           "20260908090000_education_portal.sql",
           "20260908091000_education_registration_capacity.sql",
