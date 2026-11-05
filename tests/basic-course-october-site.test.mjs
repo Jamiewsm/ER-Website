@@ -68,6 +68,18 @@ test('expert course is an umbrella journey and has no standalone application CTA
   assert.doesNotMatch(notices, /양성반 안내 보기|양성반 신청/);
 });
 
+test('expert course surfaces registered private qualification without claiming national accreditation', () => {
+  assert.match(training, /제 2026-008332호/);
+  assert.match(training, /등록 민간자격/);
+  assert.match(training, /ER 에니어그램 전문가 2급/);
+  assert.match(training, /ER 에니어그램 전문가 1급/);
+  assert.match(training, /pqi\.or\.kr/);
+  assert.match(training, /과정 수료만으로 자격이 자동 부여되지는 않습니다/);
+  assert.doesNotMatch(training, /국가공인|국가자격|국가에서 인정/);
+  assert.doesNotMatch(notices, /국가공인|국가자격/);
+  assert.match(notices, /제 2026-008332호/);
+});
+
 test('July cohort graduation is bundled and October $300 copy is not', () => {
   assert.match(notices, /\{ id: 9, tag: '축하', title: '에니어그램 기본과정 수료 — 7월반 13명'/);
   assert.equal((notices.match(/10월 기수 모집/g) || []).length, 1);

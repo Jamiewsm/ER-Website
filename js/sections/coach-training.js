@@ -10,18 +10,60 @@ function renderCoachTraining() {
                     <p class="mt-4 text-sm md:text-base text-white/80 max-w-3xl mx-auto break-keep leading-relaxed">
                         전문가 과정은 별도의 한 기수나 8주 과정 이름이 아닙니다. 에니어그램 기본과정, 팔로우업 스터디, 1년 코칭스쿨까지 이어지는 전체 훈련 여정을 뜻합니다.
                     </p>
+                    <div class="mt-6 inline-flex flex-wrap items-center justify-center gap-2">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full border border-er-greenTint/40 text-er-greenTint text-[11px] font-bold tracking-wide">등록 민간자격</span>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full border border-white/20 text-white/90 text-[11px] font-semibold tracking-wide">ER 에니어그램 전문가 2급 · 1급</span>
+                    </div>
                 </div>
             </section>
 
             <div class="px-4 sm:px-6 lg:px-8 py-12 md:py-16">
             <div class="max-w-6xl mx-auto">
+                <section aria-labelledby="er-cert-title" class="rounded-[2rem] bg-er-surface border border-er-sand/60 p-6 md:p-8 shadow-soft animate-fade-in-up mb-8">
+                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                        <div>
+                            <p class="text-[10px] font-bold tracking-[0.18em] uppercase text-er-green">Registered Private Qualification</p>
+                            <h3 id="er-cert-title" class="mt-2 text-xl md:text-2xl font-bold text-er-inkSoft break-keep">ER 에니어그램 전문가 자격</h3>
+                            <p class="mt-2 text-sm text-er-body leading-relaxed break-keep max-w-2xl">한국직업능력연구원 민간자격정보서비스에 등록된 민간자격으로, 과정 이수 후 검정에 합격하면 급수별 자격을 취득할 수 있습니다.</p>
+                        </div>
+                        <div class="rounded-2xl border border-er-green/30 bg-er-greenTint/40 px-5 py-4 min-w-[16rem]">
+                            <p class="text-[10px] font-bold tracking-wider uppercase text-er-green">민간자격 등록번호</p>
+                            <p class="mt-1 font-display text-lg md:text-xl font-extrabold text-er-inkSoft tracking-tight">제 2026-008332호</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <article class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-5">
+                            <div class="flex items-center justify-between gap-3">
+                                <h4 class="text-base font-bold text-er-inkSoft break-keep">ER 에니어그램 전문가 2급</h4>
+                                <span class="shrink-0 px-2.5 py-1 rounded-full border border-er-green/30 text-er-green text-[10px] font-bold">2급</span>
+                            </div>
+                            <p class="mt-3 text-sm text-er-body leading-relaxed break-keep">에니어그램 기본과정을 마친 뒤 2급 검정에 응시해 취득할 수 있습니다.</p>
+                        </article>
+                        <article class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-5">
+                            <div class="flex items-center justify-between gap-3">
+                                <h4 class="text-base font-bold text-er-inkSoft break-keep">ER 에니어그램 전문가 1급</h4>
+                                <span class="shrink-0 px-2.5 py-1 rounded-full border border-er-green/30 text-er-green text-[10px] font-bold">1급</span>
+                            </div>
+                            <p class="mt-3 text-sm text-er-body leading-relaxed break-keep">1년 코치훈련을 이수한 뒤 1급 시험에 응시해 취득할 수 있습니다.</p>
+                        </article>
+                    </div>
+
+                    <div class="mt-5 rounded-full bg-er-greenTint border border-er-green/20 px-4 py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-er-body">
+                        <p class="break-keep leading-relaxed">과정 수료만으로 자격이 자동 부여되지는 않습니다. 검정 합격 후 발급됩니다.</p>
+                        <a href="https://pqi.or.kr/inf/qul/infQulList.do" target="_blank" rel="noopener noreferrer" class="shrink-0 font-bold text-er-green hover:text-er-greenDark transition-colors">
+                            민간자격정보서비스에서 조회
+                        </a>
+                    </div>
+                </section>
+
                 <div class="rounded-[2rem] bg-er-surface border border-er-sand/60 p-6 md:p-8 shadow-soft animate-fade-in-up mb-8">
                     <h3 class="text-lg font-bold text-er-inkSoft mb-4">과정 흐름</h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         ${[
-                            ['1단계', '에니어그램 기본과정 8주', '에니어그램 핵심 이론과 ER 관점을 배우고, 실제 적용의 기초를 세웁니다.'],
+                            ['1단계', '에니어그램 기본과정 8주', '에니어그램 핵심 이론과 ER 관점을 배우고, 실제 적용의 기초를 세웁니다. 수료 후 2급 검정에 응시할 수 있습니다.'],
                             ['2단계', '팔로우업 스터디', '기본과정 수료자는 자유롭게 스터디에 참여할 수 있습니다. (격주 운영)'],
-                            ['3단계', '1년 코칭스쿨', '기본과정 수료 + 스터디 2개월 이상 참여 시 지원 가능']
+                            ['3단계', '1년 코칭스쿨', '기본과정 수료 + 스터디 2개월 이상 참여 시 지원 가능. 이수 후 1급 시험에 응시할 수 있습니다.']
                         ].map(([step, title, body]) => `
                             <div class="rounded-2xl bg-er-base/60 border border-er-sand/50 p-5">
                                 <p class="text-[10px] font-bold tracking-wider text-er-green uppercase">${step}</p>
@@ -40,7 +82,7 @@ function renderCoachTraining() {
                             d: [
                                 '에니어그램 핵심 이론 + ER 핵심 관점 정리',
                                 '강의, 과제, 나눔을 통한 실제 적용 훈련',
-                                '수료 후 스터디 참여 자격 부여'
+                                '수료 후 스터디 참여 및 2급 검정 응시 가능'
                             ],
                             o: '나와 타인을 해석하고 돕는 기본 프레임 확보',
                             i: 'fas fa-graduation-cap'
@@ -62,7 +104,7 @@ function renderCoachTraining() {
                             d: [
                                 'A. Formation / B. ER 전문 강사 / C. 코칭 스킬 / D. 통합 실습',
                                 '4개 트랙은 선택이 아닌 필수(의무) 과정',
-                                '월별 랩, 과제, 참관/실습, 연말 리트릿 포함'
+                                '이수 후 ER 에니어그램 전문가 1급 시험 응시 가능'
                             ],
                             o: '정식 코치로 사역할 수 있는 통합 역량 형성',
                             i: 'fas fa-layer-group'
