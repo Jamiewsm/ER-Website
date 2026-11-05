@@ -184,11 +184,11 @@
         },
         training: {
           title: 'ER 전문가 과정',
-          desc: '에니어그램 기본과정부터 스터디와 1년 코칭스쿨까지 이어지는 전체 훈련 여정입니다.',
+          desc: '기본과정·스터디·1년 코칭스쿨 여정과 함께, 등록 민간자격(제 2026-008332호) 2급·1급 취득 경로를 안내합니다.',
           cards: [
-            { b: 'Foundation', t: '에니어그램 기본과정', d: '8주 동안 핵심 이론과 ER 관점을 배우고 실제 적용의 기초를 세웁니다.', i: 'fas fa-chalkboard' },
+            { b: 'Foundation', t: '에니어그램 기본과정', d: '8주 핵심 이론과 ER 관점을 배우고, 수료 후 2급 검정에 응시할 수 있습니다.', i: 'fas fa-chalkboard' },
             { b: 'Study', t: '팔로우업 스터디', d: '기본과정 수료 후 격주 스터디로 학습과 현장 적용을 이어갑니다.', i: 'fas fa-book-reader' },
-            { b: 'Coaching School', t: '1년 코칭스쿨', d: 'Formation, 전문 강사, 코칭 스킬, 통합 실습을 함께 이수합니다.', i: 'fas fa-user-md' }
+            { b: 'Coaching School', t: '1년 코칭스쿨', d: '코치훈련 이수 후 ER 에니어그램 전문가 1급 시험에 응시할 수 있습니다.', i: 'fas fa-user-md' }
           ]
         }
       }
