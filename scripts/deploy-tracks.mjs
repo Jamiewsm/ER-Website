@@ -8,6 +8,7 @@ export const SITE_OVERLAY_GLOBS = [
   'christian-enneagram/**',
   'theology/**',
   'biblical-enneagram/**',
+  'enneagram-certification/**',
   'css/reading.css',
   'design-system/tokens.css',
   '_redirects',

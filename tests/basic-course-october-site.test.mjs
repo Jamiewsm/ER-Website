@@ -60,7 +60,7 @@ test('October application route uses October focus and collects region-aware pay
 });
 
 test('expert course is an umbrella journey and has no standalone application CTA', () => {
-  assert.match(training, /에니어그램 기본과정, 팔로우업 스터디, 1년 코칭스쿨/);
+  assert.match(training, /에니어그램 기본과정, 심화성장 101, 1년 코칭스쿨/);
   assert.match(training, /href="\/basic-course\.html"/);
   assert.doesNotMatch(training, /renderSection\('apply'/);
   assert.doesNotMatch(training, /신청\/문의|코치양성 문의/);
@@ -71,13 +71,14 @@ test('expert course is an umbrella journey and has no standalone application CTA
 test('expert course surfaces registered private qualification without claiming national accreditation', () => {
   assert.match(training, /제 2026-008332호/);
   assert.match(training, /등록 민간자격/);
-  assert.match(training, /ER 에니어그램 전문가 2급/);
-  assert.match(training, /ER 에니어그램 전문가 1급/);
-  assert.match(training, /pqi\.or\.kr/);
-  assert.match(training, /과정 수료만으로 자격이 자동 부여되지는 않습니다/);
-  assert.doesNotMatch(training, /국가공인|국가자격|국가에서 인정/);
+  assert.match(training, /ER에니어그램전문가 2급/);
+  assert.match(training, /ER에니어그램전문가 1급/);
+  assert.match(training, /href="\/enneagram-certification\/"/);
+  assert.match(training, /국가 공인자격이 아니며/);
+  assert.doesNotMatch(training, /국가공인 자격|국가자격|국가에서 인정/);
   assert.doesNotMatch(notices, /국가공인|국가자격/);
   assert.match(notices, /제 2026-008332호/);
+  assert.match(notices, /심화성장 101/);
 });
 
 test('July cohort graduation is bundled and October $300 copy is not', () => {

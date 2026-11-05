@@ -14,7 +14,7 @@
 | 수요 확인 후 | /enneagram-centers/ | 머리·가슴·장 중심 | 유형 탐색 |
 | 수요 확인 후 | /enneagram-subtypes/ | 하위유형과 날개가 다른 점 | 유형 탐색 |
 
-`enneagram-christianity`나 `enneagram-bible`처럼 같은 질문의 문서를 추가로 만들기보다 이미 있는 안내의 내용을 보완한다. 실제 발급 체계가 확인되기 전에는 자격증 페이지나 자격 효력을 주장하는 문구를 만들지 않는다.
+`enneagram-christianity`나 `enneagram-bible`처럼 같은 질문의 문서를 추가로 만들기보다 이미 있는 안내의 내용을 보완한다. 등록 민간자격 안내는 `/enneagram-certification/`에서 표시의무를 갖춰 제공한다. 국가공인·국가자격처럼 표현하지 않는다.
 
 ## 12주 실행 일정
 
