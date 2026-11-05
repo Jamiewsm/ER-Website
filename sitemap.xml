@@ -38,4 +38,10 @@
     <loc>https://er-coaching.com/theology/</loc>
     <lastmod>2026-09-15</lastmod>
   </url>
+  <url>
+    <loc>https://er-coaching.com/enneagram-certification/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
