@@ -76,7 +76,9 @@ function renderSection(sectionId, payload = null, options = {}) {
     const { syncHash = true, replaceHash = false } = options;
     const previousSection = state.currentSection;
     const activeFocus = String(payload?.focus || '').trim();
-    const isParentingFocus = activeFocus === 'parenting_workshop' || activeFocus === 'parents_workshop';
+    const isParentingFocus = activeFocus === 'parenting_workshop'
+        || activeFocus === 'parents_workshop'
+        || activeFocus === 'parenting_seminar';
     const isBasicCourseFocus = (
         activeFocus === 'enneagram_basic_july'
         || activeFocus === 'basic_course_july'

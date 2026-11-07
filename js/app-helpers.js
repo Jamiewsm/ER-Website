@@ -722,7 +722,7 @@ const APPLY_ATTRIBUTION_SOURCES = new Set([
 
 const APPLY_TRACKS = new Set(['paid', 'org', 'ministry', 'support']);
 const APPLY_FOCUSES = new Set([
-    'parenting', 'parenting_workshop', 'parents_workshop',
+    'parenting', 'parenting_workshop', 'parents_workshop', 'parenting_seminar',
     'enneagram_basic_july', 'basic_course_july', 'enneagram_basic_october',
     'basic_course_october', 'enneagram_basic', 'couple', 'ministry_team', 'church',
     'identity_session', 'result_consult', 'coaching_single',

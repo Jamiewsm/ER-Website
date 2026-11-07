@@ -51,6 +51,7 @@ test('favicon assets are transparent, correctly sized, and linked from site page
     'index.html',
     'basic-course.html',
     'parenting-workshop.html',
+    'parenting-seminar.html',
     'parents-brochure.html',
     'parents-workshop.html',
     'child-type-test/child-type-test.html',

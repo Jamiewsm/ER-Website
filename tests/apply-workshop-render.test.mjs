@@ -43,6 +43,39 @@ test('parenting workshop link renders a dedicated direct application form', () =
   assert.doesNotMatch(html, /Enneagram for Parenting 4주 워크샵 신청합니다\./);
 });
 
+test('parenting seminar link renders a dedicated inquiry form distinct from workshop', () => {
+  const renderer = loadApplyRenderer();
+  const html = renderer.renderApply({
+    track: 'paid',
+    focus: 'parenting_seminar',
+    apply_source: 'landing'
+  });
+
+  assert.match(html, /Parenting 세미나/);
+  assert.match(html, /단회 세미나 신청·문의/);
+  assert.match(html, /assets\/parenting\/parenting-seminar-hero\.jpg/);
+  assert.match(html, /type="hidden" name="category" value="Parenting 세미나 문의"/);
+  assert.match(html, /세미나 신청·문의하기/);
+  assert.match(html, /data-submit-source="paid:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
+  assert.match(html, /4주 워크샵과 별개|워크샵 안내/);
+  assert.doesNotMatch(html, /\$120/);
+  assert.doesNotMatch(html, /희망하는 세션|<select/);
+});
+
+test('parenting consult focus uses 우리자녀 기질상담 copy', () => {
+  const renderer = loadApplyRenderer();
+  const html = renderer.renderApply({
+    track: 'paid',
+    focus: 'parenting',
+    apply_source: 'parenting'
+  });
+
+  assert.match(html, /우리자녀 기질상담 신청/);
+  assert.match(html, /우리자녀 기질상담 문의/);
+  assert.doesNotMatch(html, /자녀 양육 코칭 상담/);
+  assert.doesNotMatch(html, /양육 해석상담/);
+});
+
 test('generic paid apply route keeps its selectable application categories', () => {
   const renderer = loadApplyRenderer();
   const html = renderer.renderApply({ track: 'paid' });

@@ -9,7 +9,9 @@ const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url)
 const programsSource = readFileSync(new URL('../js/sections/programs.js', import.meta.url), 'utf8');
 const homeSource = readFileSync(new URL('../js/sections/home.js', import.meta.url), 'utf8');
 const workshopSource = readFileSync(new URL('../parenting-workshop.html', import.meta.url), 'utf8');
+const seminarSource = readFileSync(new URL('../parenting-seminar.html', import.meta.url), 'utf8');
 const childTestSource = readFileSync(new URL('../child-type-test/child-type-test.html', import.meta.url), 'utf8');
+const indexSource = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 function loadParentingRenderer() {
   const context = {};
@@ -68,9 +70,11 @@ test('renderParenting wires existing flows without rebuilding them', () => {
 
   // 아이 유형검사는 기존 독립 페이지로 연결.
   assert.match(html, /child-type-test\/child-type-test\.html/);
-  // 양육 해석상담은 기존 apply parenting focus 재사용 + 랜딩발 출처 attribution.
+  // 우리자녀 기질상담은 기존 apply parenting focus 재사용 + 랜딩발 출처 attribution.
   assert.match(html, /focus: 'parenting',[^}]*apply_source: 'parenting'/);
-  // 4주 과정 "알아보기"는 워크샵 상세 페이지로 안내(상세→신청 퍼널, attribution 유지).
+  assert.match(html, /우리자녀 기질상담 신청/);
+  // 세미나·4주 과정 "알아보기"는 각 상세 페이지로 안내(상세→신청 퍼널, attribution 유지).
+  assert.match(html, /parenting-seminar\.html\?apply_source=parenting/);
   assert.match(html, /parenting-workshop\.html\?apply_source=parenting/);
   // 진단이 아니라 이해의 가설이라는 표현이 포함.
   assert.match(html, /이해의 가설/);
@@ -152,6 +156,22 @@ test('workshop detail page links back into the Parenting journey', () => {
   // F1 이후 고립됐던 워크샵 상세 페이지가 새 여정으로 다시 연결됨.
   assert.match(workshopSource, /href="\/#parenting"/);
   assert.match(workshopSource, /Parenting 여정/);
+});
+
+test('seminar landing is distinct from workshop and wires seminar apply focus', () => {
+  assert.match(seminarSource, /Parenting 세미나/);
+  assert.match(seminarSource, /assets\/parenting\/parenting-seminar-hero\.jpg/);
+  assert.match(seminarSource, /focus=parenting_seminar/);
+  assert.match(seminarSource, /4주 워크샵과 별개|4주 심화/);
+  assert.match(seminarSource, /일정 확정 후 안내/);
+  assert.doesNotMatch(seminarSource, /focus=parenting_workshop/);
+  assert.match(seminarSource, /href="\/#parenting"/);
+});
+
+test('site nav renames counseling and adds seminar entry', () => {
+  assert.match(indexSource, /우리자녀 기질상담 신청/);
+  assert.match(indexSource, /href="\/parenting-seminar"/);
+  assert.doesNotMatch(indexSource, /양육 해석상담/);
 });
 
 test('child type test result offers a journey CTA beyond the paid consult', () => {

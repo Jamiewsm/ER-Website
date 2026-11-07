@@ -51,7 +51,7 @@ test('real source builder bounds track and focus, including direct callers', () 
 
 test('dedicated form renderers never interpolate source into executable handlers', () => {
   const app = renderer();
-  for (const render of [app.renderParentingWorkshopApply, app.renderBasicCourseApply]) {
+  for (const render of [app.renderParentingWorkshopApply, app.renderParentingSeminarApply, app.renderBasicCourseApply]) {
     const html = render(marker);
     assert.doesNotMatch(html, /<span data-er-audit-inert-probe/);
     assert.match(html, /onsubmit="handleApplyFormSubmit\(event\)"/);
@@ -62,7 +62,7 @@ test('static submit adapter preserves source and dedicated program context', () 
   const app = renderer();
   const calls = [];
   app.handleApplySubmit = (...args) => calls.push(args);
-  for (const [source, focus] of [['paid', ''], ['paid:parenting_workshop:qr', 'parenting_workshop'], ['paid:enneagram_basic_october:instagram', 'enneagram_basic_october']]) {
+  for (const [source, focus] of [['paid', ''], ['paid:parenting_workshop:qr', 'parenting_workshop'], ['paid:parenting_seminar:landing', 'parenting_seminar'], ['paid:enneagram_basic_october:instagram', 'enneagram_basic_october']]) {
     const form = { dataset: { submitSource: source, applyFocus: focus } };
     const event = { target: form, currentTarget: form };
     app.handleApplyFormSubmit(event);
