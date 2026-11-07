@@ -77,7 +77,7 @@ function renderCommunity() {
                 <div class="grid lg:grid-cols-[1.05fr_0.95fr] gap-8 mb-10">
                     <div class="bg-er-surface rounded-[2rem] p-6 md:p-8 shadow-soft animate-fade-in-up floating-card border border-er-sand/60">
                         <h3 class="font-bold text-base text-er-inkSoft mb-6 flex items-center gap-2">
-                            <i class="fas fa-church text-er-green"></i> ER이 집중하는 자리
+                            <i class="fas fa-church text-er-green"></i> ER이 섬기는 영역
                         </h3>
                         <p class="text-xs text-er-muted mb-5 break-keep">개인의 회복이 가정과 교회 공동체로 이어지도록 다음 네 영역을 중심으로 섬깁니다.</p>
                         <div class="grid gap-3 sm:grid-cols-2">

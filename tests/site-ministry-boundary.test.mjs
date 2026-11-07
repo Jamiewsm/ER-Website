@@ -97,7 +97,7 @@ test('church programs and forms stay intact with ministry-specific language', ()
   assert.match(applySource, /ministry_team:\s*\{/);
   assert.match(applySource, /사역팀 소통·갈등 프로그램 문의/);
   assert.match(communitySource, /label: '사역팀'.*tab: 'church'/);
-  assert.match(communitySource, /ER이 집중하는 자리/);
+  assert.match(communitySource, /ER이 섬기는 영역/);
   assert.doesNotMatch(communitySource, /impactChart/);
   assert.doesNotMatch(stringsSource, /교회·공동체 프로그램 비중/);
   assert.match(indexHtml, /Parenting/);
