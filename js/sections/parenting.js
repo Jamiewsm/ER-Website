@@ -138,6 +138,11 @@ function openParentingArticle(index) {
 }
 
 function renderParenting(payload = null) {
+    // Parenting 메뉴 진입 시에만 음소거 자동재생. focus 스크롤 재렌더는 썸네일만 유지.
+    const PARENTING_YOUTUBE_ID = 'ZQh01Atj1l0';
+    const parentingVideoAutoplay = !payload?.focus;
+    const parentingVideoSrc = `https://www.youtube.com/embed/${PARENTING_YOUTUBE_ID}?${parentingVideoAutoplay ? 'autoplay=1&' : ''}mute=1&playsinline=1&rel=0&modestbranding=1`;
+
     const problems = [
         ['여러 번 말해야 움직이는 아이 때문에 지칩니다.', 'fas fa-bullhorn'],
         ['아이가 예민하게 반응하는 이유를 모르겠습니다.', 'fas fa-bolt'],
@@ -254,12 +259,24 @@ function renderParenting(payload = null) {
 
     return `
         <div class="bg-er-base min-h-screen">
-            <section class="bg-er-dark text-white py-16 md:py-20 px-6 relative overflow-hidden rounded-b-[3rem]">
+            <section class="bg-er-dark text-white py-12 md:py-16 px-6 relative overflow-hidden rounded-b-[3rem]">
                 <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                 <div class="absolute top-[-20%] right-[-10%] w-[420px] h-[420px] bg-er-accent/20 rounded-full blur-[110px] pointer-events-none"></div>
                 <div class="relative z-10 max-w-4xl mx-auto text-center">
                     <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] md:text-xs font-bold tracking-widest uppercase text-er-accentLight mb-6">ER Parenting</span>
-                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-[1.3] break-keep mb-5">
+                    <div class="mx-auto w-full max-w-3xl rounded-2xl overflow-hidden shadow-soft border border-white/10 bg-black aspect-video">
+                        <iframe
+                            id="parenting-hero-video"
+                            class="w-full h-full"
+                            src="${parentingVideoSrc}"
+                            title="ER Parenting 소개 영상"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen
+                            loading="${parentingVideoAutoplay ? 'eager' : 'lazy'}"
+                        ></iframe>
+                    </div>
+                    <h2 class="mt-8 text-2xl sm:text-3xl md:text-4xl font-extrabold leading-[1.3] break-keep mb-5">
                         아이를 바꾸기 전에,<br>아이를 바라보는 방법부터 달라져야 합니다.
                     </h2>
                     <p class="text-gray-300 text-sm md:text-base max-w-2xl mx-auto break-keep leading-relaxed">

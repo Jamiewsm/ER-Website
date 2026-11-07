@@ -48,6 +48,20 @@ test('renderParenting renders hero, three lenses, and focus anchors', () => {
   assert.match(html, /id="parenting-program"/);   // 홈 Hero 카드가 스크롤하는 상품 계단 앵커
 });
 
+test('renderParenting hero embeds YouTube with muted autoplay on main entry', () => {
+  const { renderParenting } = loadParentingRenderer();
+  const mainHtml = renderParenting();
+  assert.match(mainHtml, /id="parenting-hero-video"/);
+  assert.match(mainHtml, /youtube\.com\/embed\/ZQh01Atj1l0/);
+  assert.match(mainHtml, /autoplay=1/);
+  assert.match(mainHtml, /mute=1/);
+
+  const focusHtml = renderParenting({ focus: 'child' });
+  assert.match(focusHtml, /youtube\.com\/embed\/ZQh01Atj1l0/);
+  assert.match(focusHtml, /mute=1/);
+  assert.doesNotMatch(focusHtml, /autoplay=1/);
+});
+
 test('renderParenting wires existing flows without rebuilding them', () => {
   const { renderParenting } = loadParentingRenderer();
   const html = renderParenting();
