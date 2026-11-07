@@ -1,14 +1,4 @@
 // ER Section: Coach Training
-function renderAdvancedStudyStatus(status) {
-    if (status === 'open') {
-        return '<span class="shrink-0 px-2.5 py-1 rounded-full bg-er-green text-white text-[10px] font-bold">진행 중</span>';
-    }
-    if (status === 'soon') {
-        return '<span class="shrink-0 px-2.5 py-1 rounded-full border border-er-green/30 bg-er-greenTint text-er-green text-[10px] font-bold">모집 준비</span>';
-    }
-    return '<span class="shrink-0 px-2.5 py-1 rounded-full border border-er-sand text-er-muted text-[10px] font-bold">개설 예정</span>';
-}
-
 function renderAdvancedStudyCourse(course) {
     const required = course.required
         ? '<span class="shrink-0 px-2.5 py-1 rounded-full border border-er-green/30 text-er-green text-[10px] font-bold">필수</span>'
@@ -20,10 +10,9 @@ function renderAdvancedStudyCourse(course) {
                     <p class="text-[10px] font-bold tracking-wider text-er-green uppercase">${course.code}</p>
                     <h4 class="mt-1 text-base font-bold text-er-inkSoft break-keep">${course.title}</h4>
                 </div>
-                <div class="flex flex-wrap items-center justify-end gap-1.5">${required}${renderAdvancedStudyStatus(course.status)}</div>
+                ${required}
             </div>
             <p class="text-sm text-er-body leading-relaxed break-keep">${course.blurb}</p>
-            <p class="text-xs text-er-muted leading-relaxed break-keep">${course.note}</p>
         </article>
     `;
 }
@@ -34,33 +23,25 @@ function renderCoachTraining() {
             code: '101',
             title: '하위유형 스터디 I',
             required: true,
-            status: 'open',
-            blurb: '본능과 하위유형의 기초, 유형별 고착의 결을 함께 살핍니다. 1급 과정 지원을 위한 필수 심화입니다.',
-            note: '2026년 하반기 기수 운영 중 · 기본과정 수료자 대상'
+            blurb: '본능과 하위유형의 기초, 유형별 고착의 결을 함께 살핍니다. 1급 과정 지원을 위한 필수 심화입니다.'
         },
         {
             code: '102',
             title: '하위유형 스터디 II',
             required: false,
-            status: 'soon',
-            blurb: '101에서 다룬 하위유형을 더 깊게 확장하고, 역유형과 관계 장면에서의 패턴을 다룹니다.',
-            note: '101 이수 권장 · 다음 기수 일정은 확정 후 안내'
+            blurb: '101에서 다룬 하위유형을 더 깊게 확장하고, 역유형과 관계 장면에서의 패턴을 다룹니다.'
         },
         {
             code: '103',
             title: '트라이타입 스터디',
             required: false,
-            status: 'planned',
-            blurb: '머리·가슴·장의 조합으로 나타나는 트라이타입을 살펴 자기이해와 타인 이해의 폭을 넓힙니다.',
-            note: '개설 예정 · 기본과정 수료자 대상'
+            blurb: '머리·가슴·장의 조합으로 나타나는 트라이타입을 살펴 자기이해와 타인 이해의 폭을 넓힙니다.'
         },
         {
             code: '104',
             title: '습관의 고리 스터디',
             required: false,
-            status: 'planned',
-            blurb: '반복되는 습관의 고리를 알아차리고, 일상의 반응을 부드럽게 바꾸는 연습을 나눕니다.',
-            note: '개설 예정 · 기본과정 수료자 대상'
+            blurb: '반복되는 습관의 고리를 알아차리고, 일상의 반응을 부드럽게 바꾸는 연습을 나눕니다.'
         }
     ];
     const lifeCourses = [
@@ -68,25 +49,19 @@ function renderCoachTraining() {
             code: '201',
             title: '자녀교육',
             required: false,
-            status: 'planned',
-            blurb: '자녀의 기질과 부모인 나의 유형을 함께 보며, 양육의 긴장과 돌봄을 구체적 장면으로 풀어갑니다.',
-            note: '개설 예정 · Parenting 여정과도 연결'
+            blurb: '자녀의 기질과 부모인 나의 유형을 함께 보며, 양육의 긴장과 돌봄을 구체적 장면으로 풀어갑니다.'
         },
         {
             code: '202',
             title: '커플·부부 관계',
             required: false,
-            status: 'planned',
-            blurb: '가까운 관계에서 반복되는 갈등과 돌봄의 패턴을 에니어그램으로 읽고, 대화의 여지를 넓힙니다.',
-            note: '개설 예정 · 기본과정 수료자 대상'
+            blurb: '가까운 관계에서 반복되는 갈등과 돌봄의 패턴을 에니어그램으로 읽고, 대화의 여지를 넓힙니다.'
         },
         {
             code: '203',
             title: '직장생활',
             required: false,
-            status: 'planned',
-            blurb: '일터의 역할·경계·협업 장면에서 드러나는 동기를 살펴 관계와 일의 리듬을 정리합니다.',
-            note: '개설 예정 · 기본과정 수료자 대상'
+            blurb: '일터의 역할·경계·협업 장면에서 드러나는 동기를 살펴 관계와 일의 리듬을 정리합니다.'
         }
     ];
     const storyCourses = [
@@ -94,17 +69,13 @@ function renderCoachTraining() {
             code: '301',
             title: '성경인물 스터디',
             required: false,
-            status: 'planned',
-            blurb: '성경 인물의 이야기를 통해 동기와 고착, 회복의 장면을 함께 읽고 자기 삶에 연결합니다.',
-            note: '개설 예정 · 기본과정 수료자 대상'
+            blurb: '성경 인물의 이야기를 통해 동기와 고착, 회복의 장면을 함께 읽고 자기 삶에 연결합니다.'
         },
         {
             code: '302',
             title: '드라마 스터디',
             required: false,
-            status: 'planned',
-            blurb: '드라마 속 인물과 관계를 관찰하며, 유형·하위유형의 언어를 현장감 있게 익힙니다.',
-            note: '개설 예정 · 기본과정 수료자 대상'
+            blurb: '드라마 속 인물과 관계를 관찰하며, 유형·하위유형의 언어를 현장감 있게 익힙니다.'
         }
     ];
 
@@ -235,16 +206,10 @@ function renderCoachTraining() {
                 </div>
 
                 <section id="advanced-studies" aria-labelledby="advanced-studies-title" class="mt-10 rounded-[2rem] bg-er-surface border border-er-sand/60 p-6 md:p-8 shadow-soft animate-fade-in-up">
-                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-6">
-                        <div>
-                            <p class="text-[10px] font-bold tracking-[0.18em] uppercase text-er-green">Advanced Studies</p>
-                            <h3 id="advanced-studies-title" class="mt-2 text-xl md:text-2xl font-bold text-er-inkSoft break-keep">심화과정 스터디</h3>
-                            <p class="mt-2 text-sm text-er-body leading-relaxed break-keep max-w-3xl">기본과정 수료 후 이어지는 심화 스터디입니다. <strong class="text-er-inkSoft">101만 필수</strong>이고, 102부터는 관심과 시기에 맞게 선택합니다. 별도 전문가 양성반 모집은 받지 않습니다.</p>
-                        </div>
-                        <div class="rounded-2xl bg-er-greenTint/60 border border-er-green/20 px-4 py-3 text-xs text-er-body leading-relaxed break-keep max-w-sm">
-                            <p class="font-bold text-er-inkSoft mb-1">지금 이어지는 과정</p>
-                            <p>101 하위유형 스터디 I — 2026년 하반기 기수 진행 중. 102는 이어서 준비하며, 200·300번대는 개설 일정을 확정하는 대로 안내합니다.</p>
-                        </div>
+                    <div class="mb-6">
+                        <p class="text-[10px] font-bold tracking-[0.18em] uppercase text-er-green">Advanced Studies</p>
+                        <h3 id="advanced-studies-title" class="mt-2 text-xl md:text-2xl font-bold text-er-inkSoft break-keep">심화과정 스터디</h3>
+                        <p class="mt-2 text-sm text-er-body leading-relaxed break-keep max-w-3xl">기본과정 수료 후 이어지는 심화 스터디입니다. <strong class="text-er-inkSoft">101만 필수</strong>이고, 102부터는 관심에 맞게 선택합니다.</p>
                     </div>
 
                     <div class="space-y-8">
@@ -276,8 +241,6 @@ function renderCoachTraining() {
                             </div>
                         </div>
                     </div>
-
-                    <p class="mt-6 text-xs text-er-muted leading-relaxed break-keep">각 과정의 요일·정원·수강료는 기수 확정 후 공지합니다. 시작점이 필요하시면 기본과정부터 확인해 주세요.</p>
                 </section>
 
                 <div class="mt-10 rounded-[2rem] bg-er-surface border border-er-sand/60 p-6 md:p-8 shadow-soft animate-fade-in-up">

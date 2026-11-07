@@ -81,7 +81,7 @@ test('expert course surfaces registered private qualification without claiming n
   assert.match(notices, /심화성장 101|101 하위유형/);
 });
 
-test('expert course catalogs advanced study tracks with 101 required and electives planned', () => {
+test('expert course catalogs advanced study tracks with 101 required and electives', () => {
   assert.match(training, /id="advanced-studies"/);
   assert.match(training, /101/);
   assert.match(training, /하위유형 스터디 I/);
@@ -94,8 +94,7 @@ test('expert course catalogs advanced study tracks with 101 required and electiv
   assert.match(training, /성경인물 스터디/);
   assert.match(training, /드라마 스터디/);
   assert.match(training, /101만 필수/);
-  assert.match(training, /진행 중/);
-  assert.match(training, /개설 예정/);
+  assert.doesNotMatch(training, /진행 중|모집 준비|개설 예정/);
   assert.match(notices, /101 하위유형 스터디/);
 });
 
