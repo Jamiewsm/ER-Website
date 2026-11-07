@@ -174,6 +174,8 @@ async function handleApplySubmit(event, source, successPayload) {
   var kakaoId = (formData.get('kakao_id') || '').toString().trim();
   var country = (formData.get('country') || '').toString().trim();
   var preferredTime = (formData.get('preferred_time') || '').toString().trim();
+  var organization = (formData.get('organization') || '').toString().trim();
+  var role = (formData.get('role') || '').toString().trim();
   var category = (formData.get('category') || '').toString().trim();
   var rawMessage = (formData.get('message') || '').toString().trim();
   var experience = (formData.get('enneagram_experience') || '').toString().trim();
@@ -193,6 +195,8 @@ async function handleApplySubmit(event, source, successPayload) {
   var extraLines = [];
   if (phone) extraLines.push('전화번호: ' + phone);
   if (kakaoId) extraLines.push('카카오톡 ID: ' + kakaoId);
+  if (organization) extraLines.push('교회·기관명: ' + organization);
+  if (role) extraLines.push('역할·직분: ' + role);
   if (country) extraLines.push('거주 국가: ' + country);
   if (preferredTime) extraLines.push('희망 시간대: ' + preferredTime);
   if (isFullTimeMinistry) {
@@ -248,6 +252,13 @@ async function handleApplySubmit(event, source, successPayload) {
   if (!name || !contact || !category) {
     if (!setApplySubmitStatus('이름과 연락받으실 곳을 확인해 주세요.', 'error')) {
       alert('이름, 연락처, 신청 분야를 확인해 주세요.');
+    }
+    return;
+  }
+  var organizationRequired = Boolean(form.querySelector('[name="organization"][required]'));
+  if (organizationRequired && !organization) {
+    if (!setApplySubmitStatus('교회·기관명을 입력해 주세요.', 'error')) {
+      alert('교회·기관명을 입력해 주세요.');
     }
     return;
   }

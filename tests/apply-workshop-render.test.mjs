@@ -302,6 +302,63 @@ test('successful focused submission carries parenting focus into confirmation', 
   assert.equal(renderArgs[1].focus, 'parenting_workshop');
 });
 
+test('parenting seminar hosting submission serializes organization and role into the message', async () => {
+  let requestBody = null;
+  const submitButton = {
+    dataset: { defaultLabel: '세미나 개최 문의하기', loadingLabel: '접수 중...' },
+    disabled: false,
+    textContent: '세미나 개최 문의하기'
+  };
+  const context = {
+    window: { SUPABASE_CONFIG: { url: 'https://example.supabase.co' }, state: { user: null } },
+    document: {
+      getElementById(id) {
+        if (id === 'apply-submit-btn') return submitButton;
+        return null;
+      }
+    },
+    FormData: class FakeFormData {
+      constructor(form) { this.values = form.values; }
+      get(name) { return this.values[name] || ''; }
+    },
+    fetch: async (_url, options) => {
+      requestBody = JSON.parse(options.body);
+      return { ok: true, json: async () => ({ ok: true, id: '20000000-0000-4000-8000-000000000002' }) };
+    },
+    renderSection() {},
+    alert() {},
+    setInterval,
+    clearInterval
+  };
+  vm.createContext(context);
+  vm.runInContext(apiSource, context, { filename: 'js/api.js' });
+
+  await context.handleApplySubmit({
+    preventDefault() {},
+    target: {
+      querySelector(selector) {
+        return selector.includes('organization') ? { required: true } : null;
+      },
+      values: {
+        name: '김담당',
+        organization: '은혜교회',
+        role: '교육목사',
+        contact: 'host@example.com',
+        preferred_time: '3월 / 약 40명',
+        category: 'Parenting 세미나 개최 문의',
+        message: '부모 대상 세미나를 요청합니다.',
+        turnstile_token: 'verified-token'
+      }
+    }
+  }, 'org:parenting_seminar:landing', { focus: 'parenting_seminar' });
+
+  assert.match(requestBody.message, /교회·기관명: 은혜교회/);
+  assert.match(requestBody.message, /역할·직분: 교육목사/);
+  assert.match(requestBody.message, /희망 시간대: 3월 \/ 약 40명/);
+  assert.match(requestBody.message, /부모 대상 세미나를 요청합니다/);
+  assert.equal(requestBody.category, 'Parenting 세미나 개최 문의');
+});
+
 test('October basic course submission preserves the legacy program key and sends cohort/payment metadata', async () => {
   let requestBody = null;
   const submitButton = {
