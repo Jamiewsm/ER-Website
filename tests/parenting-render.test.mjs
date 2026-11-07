@@ -159,11 +159,13 @@ test('workshop detail page redirects to the seminar landing while unpublished', 
   assert.doesNotMatch(workshopSource, /4주 자녀양육 워크샵/);
 });
 
-test('seminar landing wires seminar apply focus without workshop comparison', () => {
+test('seminar landing wires org hosting apply and personal counseling fork', () => {
   assert.match(seminarSource, /Parenting 세미나/);
   assert.match(seminarSource, /assets\/parenting\/parenting-seminar-hero\.jpg/);
-  assert.match(seminarSource, /focus=parenting_seminar/);
-  assert.match(seminarSource, /일정 확정 후 안내/);
+  assert.match(seminarSource, /track=org&focus=parenting_seminar/);
+  assert.match(seminarSource, /track=paid&focus=parenting/);
+  assert.match(seminarSource, /교회·선교단체·기독교 기관/);
+  assert.match(seminarSource, /개인 참가 등록은 받지 않습니다/);
   assert.doesNotMatch(seminarSource, /focus=parenting_workshop/);
   assert.doesNotMatch(seminarSource, /parenting-workshop/);
   assert.doesNotMatch(seminarSource, /세미나 vs 4주/);

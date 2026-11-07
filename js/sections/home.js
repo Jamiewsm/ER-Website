@@ -64,34 +64,34 @@ function renderHome() {
             action: "renderSection('test')"
         },
         {
-            badge: '세미나',
+            badge: '교회·기관',
             title: '결혼·부부 세미나',
-            text: '부부 갈등 패턴을 복음적 시선으로 읽고, 대화의 방향을 잡는 세미나',
-            price: '일정 확정 후 안내',
+            text: '교회·기관 요청으로 개최하는 부부 세미나. 개인 부부는 상담·코칭으로 신청합니다.',
+            price: '개최 맞춤 안내',
             image: images.couple,
             position: 'center top',
-            button: '세미나 문의',
-            action: "renderSection('apply', { track: 'paid', focus: 'couple_seminar', apply_source: 'home_programs' })"
+            button: '개최 문의',
+            action: "renderSection('apply', { track: 'org', focus: 'couple_seminar', apply_source: 'home_programs' })"
         },
         {
-            badge: '세미나',
+            badge: '교회·기관',
             title: '부모교육 세미나',
-            text: '부모와 아이의 기질 차이를 이해하고 양육 방향의 첫걸음을 잡는 세미나',
-            price: '일정 확정 후 안내',
+            text: '교회·기관 요청으로 개최하는 Parenting 세미나. 개인은 기질상담으로 신청합니다.',
+            price: '개최 맞춤 안내',
             image: images.parenting,
             position: 'center top',
             button: '세미나 안내',
             action: "window.location.href='/parenting-seminar.html?apply_source=home_programs'"
         },
         {
-            badge: '세미나',
+            badge: '교회·기관',
             title: '팀워크 세미나',
-            text: '교회·사역팀의 소통·갈등·역할을 에니어그램으로 정렬하는 공동체 세미나',
+            text: '교회·사역팀의 소통·갈등·역할을 정렬하는 공동체 세미나. 기관 요청으로 진행합니다.',
             price: '맞춤 견적',
             image: images.team,
             position: 'center',
-            button: '세미나 문의',
-            action: "renderSection('programs', { tab: 'church' })"
+            button: '개최 문의',
+            action: "renderSection('apply', { track: 'org', focus: 'ministry_team', apply_source: 'home_programs' })"
         },
         {
             badge: showBasicCourseRecruitment ? '모집 중' : '모집 마감',
@@ -359,8 +359,8 @@ function renderHome() {
                     <div class="grid gap-10 lg:grid-cols-[minmax(0,1.28fr)_minmax(410px,0.88fr)] lg:gap-12">
                         <div>
                             <p class="text-sm font-black text-er-green">ER의 대표 프로그램</p>
-                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-er-inkSoft break-keep sm:text-3xl lg:text-[2rem]">검사부터 세미나·과정까지</h2>
-                            <p class="mt-3 text-sm font-semibold leading-7 text-er-muted break-keep">기질 검사, 결혼·부모·팀워크 세미나, 성경적 에니어그램 기본과정과 전문가 과정까지 ER의 대표 프로그램을 소개합니다.</p>
+                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-er-inkSoft break-keep sm:text-3xl lg:text-[2rem]">검사·상담부터 교회 세미나까지</h2>
+                            <p class="mt-3 text-sm font-semibold leading-7 text-er-muted break-keep">개인은 검사와 상담·과정으로, 교회·기관은 결혼·부모·팀워크 세미나 개최 문의로 이어집니다.</p>
 
                             <div class="mt-8 grid gap-4 sm:grid-cols-2">
                                 ${programCards.map((card) => `

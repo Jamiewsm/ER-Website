@@ -45,7 +45,7 @@ test('October basic boost keeps result consultation first and basic course secon
 test('live SPA home highlights core programs and programs section keeps result_consult CTA', () => {
   assert.match(homeSource, /title:\s*'에니어그램 기질 검사'/);
   assert.match(homeSource, /title:\s*'결혼·부부 세미나'/);
-  assert.match(homeSource, /focus:\s*'couple_seminar',\s*apply_source:\s*'home_programs'/);
+  assert.match(homeSource, /track:\s*'org',\s*focus:\s*'couple_seminar',\s*apply_source:\s*'home_programs'/);
   assert.match(homeSource, /title:\s*'부모교육 세미나'/);
   assert.match(homeSource, /title:\s*'팀워크 세미나'/);
   assert.match(homeSource, /title:\s*'성경적 에니어그램 기본과정 8주'/);

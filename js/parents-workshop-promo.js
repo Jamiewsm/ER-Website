@@ -11,9 +11,9 @@
   }
   function parentingBannerGoApply() {
     if (typeof renderSection === 'function') {
-      renderSection('apply', { track: 'paid', focus: 'parenting_seminar', apply_source: 'home_banner' });
+      renderSection('apply', { track: 'org', focus: 'parenting_seminar', apply_source: 'home_banner' });
     } else {
-      window.location.href = '/#apply?track=paid&focus=parenting_seminar&apply_source=home_banner';
+      window.location.href = '/#apply?track=org&focus=parenting_seminar&apply_source=home_banner';
     }
   }
   function maybeShowParentsWorkshopPromo() {}

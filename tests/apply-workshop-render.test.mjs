@@ -42,21 +42,23 @@ test('parenting workshop focus shows unavailable notice instead of an applicatio
   assert.doesNotMatch(html, /\$120/);
 });
 
-test('parenting seminar link renders a dedicated inquiry form distinct from workshop', () => {
+test('parenting seminar link renders a dedicated org hosting inquiry distinct from workshop', () => {
   const renderer = loadApplyRenderer();
   const html = renderer.renderApply({
-    track: 'paid',
+    track: 'org',
     focus: 'parenting_seminar',
     apply_source: 'landing'
   });
 
   assert.match(html, /Parenting 세미나/);
-  assert.match(html, /세미나 신청·문의/);
+  assert.match(html, /교회·기관 개최 문의/);
+  assert.match(html, /개인 참가 등록은 받지 않/);
   assert.doesNotMatch(html, /단회/);
   assert.match(html, /assets\/parenting\/parenting-seminar-hero\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="Parenting 세미나 문의"/);
-  assert.match(html, /세미나 신청·문의하기/);
-  assert.match(html, /data-submit-source="paid:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
+  assert.match(html, /type="hidden" name="category" value="Parenting 세미나 개최 문의"/);
+  assert.match(html, /세미나 개최 문의하기/);
+  assert.match(html, /교회·기관명/);
+  assert.match(html, /data-submit-source="org:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
   assert.doesNotMatch(html, /parenting-workshop/);
   assert.doesNotMatch(html, /\$120/);
   assert.doesNotMatch(html, /희망하는 세션|<select/);
@@ -99,7 +101,7 @@ test('child type test result apply shows parenting-context copy, not adult test 
   // 성인 테스트용 카피는 노출하지 않음.
   assert.doesNotMatch(html, /프리미엄 테스트 후 추천/);
   // 출처 attribution 은 child_type_test 로 유지(상품·가격 무변경).
-  assert.match(html, /data-submit-source="paid:result_consult:child_type_test" onsubmit="handleApplyFormSubmit\(event\)"/);
+  assert.match(html, /data-submit-source="paid:result_consult:child_type_test" data-apply-focus="result_consult" onsubmit="handleApplyFormSubmit\(event\)"/);
 });
 
 test('October Enneagram basic course link renders a dedicated direct application form while recruitment is open', () => {
@@ -298,6 +300,63 @@ test('successful focused submission carries parenting focus into confirmation', 
 
   assert.equal(renderArgs[0], 'thankyou');
   assert.equal(renderArgs[1].focus, 'parenting_workshop');
+});
+
+test('parenting seminar hosting submission serializes organization and role into the message', async () => {
+  let requestBody = null;
+  const submitButton = {
+    dataset: { defaultLabel: '세미나 개최 문의하기', loadingLabel: '접수 중...' },
+    disabled: false,
+    textContent: '세미나 개최 문의하기'
+  };
+  const context = {
+    window: { SUPABASE_CONFIG: { url: 'https://example.supabase.co' }, state: { user: null } },
+    document: {
+      getElementById(id) {
+        if (id === 'apply-submit-btn') return submitButton;
+        return null;
+      }
+    },
+    FormData: class FakeFormData {
+      constructor(form) { this.values = form.values; }
+      get(name) { return this.values[name] || ''; }
+    },
+    fetch: async (_url, options) => {
+      requestBody = JSON.parse(options.body);
+      return { ok: true, json: async () => ({ ok: true, id: '20000000-0000-4000-8000-000000000002' }) };
+    },
+    renderSection() {},
+    alert() {},
+    setInterval,
+    clearInterval
+  };
+  vm.createContext(context);
+  vm.runInContext(apiSource, context, { filename: 'js/api.js' });
+
+  await context.handleApplySubmit({
+    preventDefault() {},
+    target: {
+      querySelector(selector) {
+        return selector.includes('organization') ? { required: true } : null;
+      },
+      values: {
+        name: '김담당',
+        organization: '은혜교회',
+        role: '교육목사',
+        contact: 'host@example.com',
+        preferred_time: '3월 / 약 40명',
+        category: 'Parenting 세미나 개최 문의',
+        message: '부모 대상 세미나를 요청합니다.',
+        turnstile_token: 'verified-token'
+      }
+    }
+  }, 'org:parenting_seminar:landing', { focus: 'parenting_seminar' });
+
+  assert.match(requestBody.message, /교회·기관명: 은혜교회/);
+  assert.match(requestBody.message, /역할·직분: 교육목사/);
+  assert.match(requestBody.message, /희망 시간대: 3월 \/ 약 40명/);
+  assert.match(requestBody.message, /부모 대상 세미나를 요청합니다/);
+  assert.equal(requestBody.category, 'Parenting 세미나 개최 문의');
 });
 
 test('October basic course submission preserves the legacy program key and sends cohort/payment metadata', async () => {
