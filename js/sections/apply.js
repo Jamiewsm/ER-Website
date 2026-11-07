@@ -206,12 +206,12 @@ function renderParentingSeminarApply(submitSource) {
                     />
                     <div class="p-5 sm:p-6">
                         <h1 class="text-[1.7rem] font-bold leading-tight sm:text-3xl">Parenting 세미나</h1>
-                        <p class="mt-2 text-lg font-semibold text-white">단회 세미나 신청·문의</p>
+                        <p class="mt-2 text-lg font-semibold text-white">세미나 신청·문의</p>
                         <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/20 pt-4 text-sm">
-                            <p><span class="block text-[11px] text-white/60">형식</span>단회 세미나</p>
+                            <p><span class="block text-[11px] text-white/60">형식</span>세미나</p>
                             <p><span class="block text-[11px] text-white/60">일정</span>확정 후 안내</p>
                             <p><span class="block text-[11px] text-white/60">참가비</span>확정 후 안내</p>
-                            <p><span class="block text-[11px] text-white/60">형식</span>단회 안내</p>
+                            <p><span class="block text-[11px] text-white/60">안내</span>문의 환영</p>
                         </div>
                         <p class="mt-5 text-sm leading-relaxed text-white/80 break-keep">
                             관심과 문의를 남겨주시면 일정·참가비가 확정되는 대로 안내드립니다.
@@ -566,18 +566,18 @@ function renderApply(payload = null) {
         parenting_seminar: {
             track: 'paid',
             title: 'Parenting 세미나 신청·문의',
-            desc: '단회 Parenting 세미나 관심·문의를 남겨 주세요. 일정과 참가비는 확정 후 안내드립니다.',
-            bannerTitle: 'Parenting 세미나 — 단회 안내',
-            bannerBody: '단회 Parenting 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
+            desc: 'Parenting 세미나 관심·문의를 남겨 주세요. 일정과 참가비는 확정 후 안내드립니다.',
+            bannerTitle: 'Parenting 세미나 안내',
+            bannerBody: 'Parenting 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
             category: 'Parenting 세미나 문의',
             message: 'Parenting 세미나 신청·문의합니다.'
         },
         couple_seminar: {
             track: 'paid',
             title: '결혼·부부 세미나 신청·문의',
-            desc: '단회 결혼·부부 세미나 관심·문의를 남겨 주세요. 일정과 참가비는 확정 후 안내드립니다.',
-            bannerTitle: '결혼·부부 세미나 — 단회 안내',
-            bannerBody: '부부 갈등 패턴을 복음적 시선으로 읽는 단회 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
+            desc: '결혼·부부 세미나 관심·문의를 남겨 주세요. 일정과 참가비는 확정 후 안내드립니다.',
+            bannerTitle: '결혼·부부 세미나 안내',
+            bannerBody: '부부 갈등 패턴을 복음적 시선으로 읽는 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
             category: '결혼·부부 세미나 문의',
             message: '결혼·부부 세미나 신청·문의합니다.'
         },
@@ -726,7 +726,7 @@ function renderApply(payload = null) {
         isSupportTrack
             ? '후원 및 협력 관련 문의를 남겨 주세요.'
             : isMinistryTrack
-                ? '목회자·선교사 사역지원(무료/감면) 신청을 남겨 주세요.'
+                ? '목회자·선교사 사역지원(반액 장학) 신청을 남겨 주세요.'
                 : isOrgTrack
                     ? '교회·선교단체·기독교 기관의 프로그램 문의를 남겨 주세요.'
                     : '신청 내용을 남겨주세요.'
@@ -763,7 +763,7 @@ function renderApply(payload = null) {
             : isSupportTrack
                 ? '후원 문의, 교회·선교단체 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.'
                 : isMinistryTrack
-                    ? '목회자·선교사 대상 무료/감면 사역지원 트랙은 심사 후 배정됩니다.'
+                    ? '목회자·선교사 대상 반액 장학 트랙은 안내 후 적용됩니다.'
                     : isOrgTrack
                         ? '프로그램 규모와 대상에 따라 맞춤 견적으로 안내드립니다.'
                         : ''

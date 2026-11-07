@@ -66,7 +66,7 @@ function renderHome() {
         {
             badge: '세미나',
             title: '결혼·부부 세미나',
-            text: '부부 갈등 패턴을 복음적 시선으로 읽고, 대화의 방향을 잡는 단회 세미나',
+            text: '부부 갈등 패턴을 복음적 시선으로 읽고, 대화의 방향을 잡는 세미나',
             price: '일정 확정 후 안내',
             image: images.couple,
             position: 'center top',
@@ -76,7 +76,7 @@ function renderHome() {
         {
             badge: '세미나',
             title: '부모교육 세미나',
-            text: '부모와 아이의 기질 차이를 이해하고 양육 방향의 첫걸음을 잡는 단회 세미나',
+            text: '부모와 아이의 기질 차이를 이해하고 양육 방향의 첫걸음을 잡는 세미나',
             price: '일정 확정 후 안내',
             image: images.parenting,
             position: 'center top',

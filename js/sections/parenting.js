@@ -245,7 +245,7 @@ function renderParenting(payload = null) {
         ['입문', '우리 아이 유형검사', '부모의 관찰을 통해 아이의 반복적인 동기와 반응 패턴을 탐색합니다. 결과는 아이를 하나의 유형으로 단정하는 진단이 아니라, 부모가 아이를 더 세밀하게 관찰하도록 돕는 이해의 가설입니다.', '아이 유형검사 시작하기', "link:child-type-test/child-type-test.html"],
         ['핵심', '부모–자녀 맞춤 리포트', '아이의 성향 가설, 핵심 욕구, 스트레스 반응, 부모의 양육성향, 주요 갈등 지점, 상황별 도움이 되는 말과 피해야 할 반응, 관계 회복 실천 과제를 담은 맞춤 리포트.', '맞춤 가이드 신청하기', "apply:parenting"],
         ['프리미엄', '우리자녀 기질상담', '검사 결과 검토, 오진 가능성 점검, 실제 갈등 사례 분석, 부모의 자동반응 탐색, 가정별 실천계획 수립.', '우리자녀 기질상담 신청', "apply:parenting"],
-        ['안내', 'Parenting 세미나', '단회 세미나로 부모와 아이의 기질 차이를 살펴보고 양육 방향의 첫걸음을 잡습니다. 일정은 확정 후 안내합니다.', '세미나 안내 보기', "link:parenting-seminar.html?apply_source=parenting"]
+        ['안내', 'Parenting 세미나', '세미나로 부모와 아이의 기질 차이를 살펴보고 양육 방향의 첫걸음을 잡습니다. 일정은 확정 후 안내합니다.', '세미나 안내 보기', "link:parenting-seminar.html?apply_source=parenting"]
     ];
 
     const ladderCta = (label, action) => {
