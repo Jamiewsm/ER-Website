@@ -57,10 +57,12 @@ test('renderParenting hero embeds YouTube with muted autoplay on main entry', ()
   assert.match(mainHtml, /youtube\.com\/embed\/ZQh01Atj1l0/);
   assert.match(mainHtml, /autoplay=1/);
   assert.match(mainHtml, /mute=1/);
+  assert.match(mainHtml, /cc_load_policy=0/);
 
   const focusHtml = renderParenting({ focus: 'child' });
   assert.match(focusHtml, /youtube\.com\/embed\/ZQh01Atj1l0/);
   assert.match(focusHtml, /mute=1/);
+  assert.match(focusHtml, /cc_load_policy=0/);
   assert.doesNotMatch(focusHtml, /autoplay=1/);
 });
 
