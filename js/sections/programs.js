@@ -123,7 +123,10 @@ function updateProgramView(filterType) {
         },
         church: {
             title: '교회·사역팀 프로그램',
-            desc: '교회·선교단체·사역팀의 요청으로 워크숍·세미나를 개최합니다. 개인 상담은 관계·부부 코칭 트랙을 이용해 주세요. 목회자·선교사는 반액 장학으로 별도 안내합니다.',
+            descLines: [
+                '교회·선교단체·사역팀의 요청으로 워크숍·세미나를 개최합니다.',
+                '개인 상담은 관계·부부 코칭 트랙을 이용해 주세요.'
+            ],
             problems: [
                 { t: '공동체 갈등 회복', d: '서로 다른 동기와 소통 방식을 이해하고, 오해와 갈등을 복음 안에서 다룰 수 있는 공통 언어를 세웁니다.', i: 'fas fa-people-group', f: 'church' },
                 { t: '사역자 소진 돌봄', d: '정서적 소진과 관계 피로를 살피고, 회복의 리듬과 건강한 역할 분담을 함께 정리합니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' },
@@ -147,9 +150,15 @@ function updateProgramView(filterType) {
     }
 
     if (introEl) {
+        const descLines = Array.isArray(selected.descLines)
+            ? selected.descLines
+            : (selected.desc ? [selected.desc] : []);
+        const descHtml = descLines.length
+            ? `<p class="mt-2 space-y-1.5 text-xs leading-relaxed text-gray-500 break-keep">${descLines.map((line) => `<span class="block">${line}</span>`).join('')}</p>`
+            : '';
         const ministryNotice = filterType === 'church'
             ? `<div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs">
-                    <span class="text-gray-500 break-keep">목회자·선교사 본인은 반액 장학 트랙으로 안내드립니다.</span>
+                    <span class="text-gray-500 break-keep">목회자·선교사는 반액 장학으로 별도 안내합니다.</span>
                     <button onclick="renderSection('support')" class="inline-flex min-h-11 items-center font-bold text-er-accent transition-colors hover:text-er-dark whitespace-nowrap">
                         사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
                     </button>
@@ -157,7 +166,7 @@ function updateProgramView(filterType) {
             : '';
         introEl.innerHTML = `
             <h3 class="text-lg font-bold text-er-dark mb-1">${selected.title}</h3>
-            ${selected.desc ? `<p class="text-xs text-gray-500 break-keep">${selected.desc}</p>` : ''}
+            ${descHtml}
             ${ministryNotice}
         `;
     }
