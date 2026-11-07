@@ -149,7 +149,7 @@ function updateProgramView(filterType) {
     if (introEl) {
         const ministryNotice = filterType === 'church'
             ? `<div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs">
-                    <span class="text-gray-500 break-keep">목회자·선교사 본인은 무료/감면 사역지원 트랙으로 안내드립니다.</span>
+                    <span class="text-gray-500 break-keep">목회자·선교사 본인은 반액 장학 트랙으로 안내드립니다.</span>
                     <button onclick="renderSection('support')" class="inline-flex min-h-11 items-center font-bold text-er-accent transition-colors hover:text-er-dark whitespace-nowrap">
                         사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
                     </button>
@@ -286,7 +286,7 @@ function renderPrograms() {
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         ${[
                             ['USD 기준', '모든 서비스 가격은 USD 기준으로 안내됩니다. 국가별 결제 수단과 환율에 따라 최종 청구 금액이 달라질 수 있습니다.', null],
-                            ['사역지원 트랙', '목회자·선교사 대상 무료/감면 원칙은 유지됩니다. 사역지원은 별도 심사 후 배정됩니다.', { label: '사역지원 보기', section: 'support' }],
+                            ['사역지원 트랙', '목회자·선교사와 그 가족에게는 모든 프로그램·상담·코칭에 반액 장학을 제공합니다.', { label: '사역지원 보기', section: 'support' }],
                             ['회기 구성 선택', '한 가지 주제를 다루는 1회 코칭과 여러 회기에 걸쳐 실천을 이어가는 4회·8회 패키지를 선택할 수 있습니다. 초기 상담에서 현재 상황과 목표에 맞는 구성을 함께 정리합니다.', null]
                         ].map(([title, desc, link]) => `
                             <div class="rounded-2xl border border-er-sand/50 bg-er-base/60 p-5">

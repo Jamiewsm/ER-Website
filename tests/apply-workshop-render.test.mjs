@@ -51,7 +51,8 @@ test('parenting seminar link renders a dedicated inquiry form distinct from work
   });
 
   assert.match(html, /Parenting 세미나/);
-  assert.match(html, /단회 세미나 신청·문의/);
+  assert.match(html, /세미나 신청·문의/);
+  assert.doesNotMatch(html, /단회/);
   assert.match(html, /assets\/parenting\/parenting-seminar-hero\.jpg/);
   assert.match(html, /type="hidden" name="category" value="Parenting 세미나 문의"/);
   assert.match(html, /세미나 신청·문의하기/);

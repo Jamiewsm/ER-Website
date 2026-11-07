@@ -169,7 +169,7 @@
       category: 'Parenting 세미나 문의',
       track: 'paid',
       focus: 'parenting_seminar',
-      outcome: '단회 세미나로 부모–자녀 기질 이해의 방향을 잡습니다. 일정·참가비는 확정 후 안내합니다.',
+      outcome: '세미나로 부모–자녀 기질 이해의 방향을 잡습니다. 일정·참가비는 확정 후 안내합니다.',
       reasonPrimary: '긴 과정 전에 먼저 방향을 확인하고 싶을 때 좋습니다.',
       reasonSecondary: '부모–자녀 기질 이해의 첫 방향을 잡기 좋습니다.',
       applyMessage: 'Parenting 세미나 신청·문의합니다.'
@@ -182,9 +182,9 @@
       category: '결혼·부부 세미나 문의',
       track: 'paid',
       focus: 'couple_seminar',
-      outcome: '단회 세미나로 부부 갈등 패턴과 대화의 방향을 잡습니다. 일정·참가비는 확정 후 안내합니다.',
+      outcome: '세미나로 부부 갈등 패턴과 대화의 방향을 잡습니다. 일정·참가비는 확정 후 안내합니다.',
       reasonPrimary: '부부 갈등의 방향을 먼저 확인하고 싶을 때 좋습니다.',
-      reasonSecondary: '단회 코칭과 별개의 세미나 문의 창구입니다.',
+      reasonSecondary: '개별 코칭과 별개의 세미나 문의 창구입니다.',
       applyMessage: '결혼·부부 세미나 신청·문의합니다.'
     },
     basic_course: {
