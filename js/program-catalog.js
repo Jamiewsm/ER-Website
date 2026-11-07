@@ -8,6 +8,7 @@
     couple_coaching: { total: 220, sessions: 1, label: '$220' },
     parenting_workshop: { total: 120, sessions: 4, label: '$120' },
     parenting_seminar: { total: 0, sessions: 1, label: '일정 확정 후 안내' },
+    couple_seminar: { total: 0, sessions: 1, label: '일정 확정 후 안내' },
     basic_course: { total: 330, totalKrw: 450000, sessions: 8, label: '$330 / ₩450,000' },
     result_consult: { total: 50, sessions: 1, label: '$50 / 1시간' }
   };
@@ -173,6 +174,19 @@
       reasonSecondary: '부모–자녀 기질 이해의 첫 방향을 잡기 좋습니다.',
       applyMessage: 'Parenting 세미나 신청·문의합니다.'
     },
+    couple_seminar: {
+      key: 'couple_seminar',
+      title: '결혼·부부 세미나',
+      shortTitle: '부부 세미나',
+      price: PRICING.couple_seminar,
+      category: '결혼·부부 세미나 문의',
+      track: 'paid',
+      focus: 'couple_seminar',
+      outcome: '단회 세미나로 부부 갈등 패턴과 대화의 방향을 잡습니다. 일정·참가비는 확정 후 안내합니다.',
+      reasonPrimary: '부부 갈등의 방향을 먼저 확인하고 싶을 때 좋습니다.',
+      reasonSecondary: '단회 코칭과 별개의 세미나 문의 창구입니다.',
+      applyMessage: '결혼·부부 세미나 신청·문의합니다.'
+    },
     basic_course: {
       key: 'basic_course',
       title: '성경적 에니어그램 기본과정 8주',
@@ -257,7 +271,8 @@
       PROGRAMS.recovery_journey_8.category,
       PROGRAMS.couple_coaching.category,
       // parenting_workshop: 현재 공개 모집 없음 — 카탈로그 데이터만 유지
-      PROGRAMS.parenting_seminar.category
+      PROGRAMS.parenting_seminar.category,
+      PROGRAMS.couple_seminar.category
     ];
   }
 

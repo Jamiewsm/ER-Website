@@ -71,7 +71,7 @@ function renderHome() {
             image: images.couple,
             position: 'center top',
             button: '세미나 문의',
-            action: "renderSection('apply', { track: 'paid', focus: 'couple', apply_source: 'home_programs' })"
+            action: "renderSection('apply', { track: 'paid', focus: 'couple_seminar', apply_source: 'home_programs' })"
         },
         {
             badge: '세미나',

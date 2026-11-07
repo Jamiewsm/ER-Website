@@ -129,7 +129,8 @@ function getPaidApplyCategoryOptions() {
         '회복 코칭 4회 ($300)',
         '회복 코칭 8회 ($480)',
         '부부 코칭 1회 ($220)',
-        'Parenting 세미나 문의'
+        'Parenting 세미나 문의',
+        '결혼·부부 세미나 문의'
     ];
 }
 
@@ -567,9 +568,18 @@ function renderApply(payload = null) {
             title: 'Parenting 세미나 신청·문의',
             desc: '단회 Parenting 세미나 관심·문의를 남겨 주세요. 일정과 참가비는 확정 후 안내드립니다.',
             bannerTitle: 'Parenting 세미나 — 단회 안내',
-            bannerBody: '4주 심화 워크샵과 별개의 단회 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
+            bannerBody: '단회 Parenting 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
             category: 'Parenting 세미나 문의',
             message: 'Parenting 세미나 신청·문의합니다.'
+        },
+        couple_seminar: {
+            track: 'paid',
+            title: '결혼·부부 세미나 신청·문의',
+            desc: '단회 결혼·부부 세미나 관심·문의를 남겨 주세요. 일정과 참가비는 확정 후 안내드립니다.',
+            bannerTitle: '결혼·부부 세미나 — 단회 안내',
+            bannerBody: '부부 갈등 패턴을 복음적 시선으로 읽는 단회 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
+            category: '결혼·부부 세미나 문의',
+            message: '결혼·부부 세미나 신청·문의합니다.'
         },
         parenting_workshop: {
             track: 'paid',
