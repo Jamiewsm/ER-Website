@@ -16,21 +16,19 @@
   background-color: #F4EFE4;
   background-image: url("/assets/parenting/parenting-seminar-hero.jpg");
   background-size: cover;
-  background-position: 72% center;
+  background-position: right center;
   background-repeat: no-repeat;
 }
 
 @media (min-width: 640px) {
   .ps-landing .ps-hero {
     min-height: min(78vh, 40rem);
-    background-position: 78% center;
   }
 }
 
 @media (min-width: 1024px) {
   .ps-landing .ps-hero {
     min-height: min(82vh, 44rem);
-    background-position: right center;
   }
 }
 
