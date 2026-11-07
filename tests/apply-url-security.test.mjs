@@ -56,11 +56,12 @@ test('dedicated form renderers never interpolate source into executable handlers
     assert.doesNotMatch(html, /<span data-er-audit-inert-probe/);
     assert.match(html, /onsubmit="handleApplyFormSubmit\(event\)"/);
   }
-  // 4주 워크샵은 공개 모집 중단 — 신청 폼 대신 안내만 렌더한다.
+  // 4주 워크숍은 일정 알림 폼만 열고, source는 attribute로만 주입한다.
   const workshopHtml = app.renderParentingWorkshopApply(marker);
   assert.doesNotMatch(workshopHtml, /<span data-er-audit-inert-probe/);
-  assert.doesNotMatch(workshopHtml, /id="apply-form"/);
-  assert.match(workshopHtml, /data-workshop-status="unavailable"/);
+  assert.match(workshopHtml, /id="apply-form"/);
+  assert.match(workshopHtml, /data-workshop-status="waitlist"/);
+  assert.match(workshopHtml, /onsubmit="handleApplyFormSubmit\(event\)"/);
 });
 
 test('static submit adapter preserves source and dedicated program context', () => {

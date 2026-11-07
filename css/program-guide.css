@@ -11,6 +11,7 @@ h1, h2 { line-height: 1.25; }
 h1 { font-size: clamp(1.9rem, 5vw, 3rem); margin-block: .5rem 1rem; }
 h2 { font-size: clamp(1.2rem, 4vw, 1.5rem); margin-top: 0; }
 .lead { color: #44473f; max-width: 42rem; }
+.guide-audience { margin: 0 0 .85rem; color: #536149; font-size: .92rem; font-weight: 700; }
 a { color: #455638; font-weight: 700; text-underline-offset: .2em; }
 a:focus-visible { outline: 2px solid #455638; outline-offset: 4px; }
 .chunk { display: inline-block; white-space: nowrap; }

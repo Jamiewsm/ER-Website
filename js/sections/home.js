@@ -81,8 +81,8 @@ function renderHome() {
         },
         {
             badge: '교회·기관',
-            title: '결혼·부부 세미나',
-            text: '교회·기관 요청으로 개최하는 부부 세미나. 개인 부부는 상담·코칭으로 신청합니다.',
+            title: '부부 세미나',
+            text: '교회·기관이 교인 부부를 위해 개최를 요청하는 세미나입니다. 개인 부부는 상담·코칭으로 신청합니다.',
             price: '개최 맞춤 안내',
             image: images.couple,
             position: 'center top',
@@ -92,21 +92,21 @@ function renderHome() {
         {
             badge: '교회·기관',
             title: '부모교육 세미나',
-            text: '교회·기관 요청으로 개최하는 Parenting 세미나. 개인은 기질상담으로 신청합니다.',
+            text: '교회·기관이 부모님들을 위해 개최를 요청하는 세미나입니다. 개인은 우리자녀 기질상담·4주 부모교육 워크숍으로 신청합니다.',
             price: '개최 맞춤 안내',
             image: images.parenting,
             position: 'center top',
-            button: '세미나 안내',
+            button: '부모교육 세미나 안내',
             action: "window.location.href='/parenting-seminar.html?apply_source=home_programs'"
         },
         {
-            badge: '교회·기관',
-            title: '팀워크 세미나',
-            text: '교회·사역팀의 소통·갈등·역할을 정렬하는 공동체 세미나. 기관 요청으로 진행합니다.',
+            badge: '사역팀',
+            title: '사역팀 팀워크 세미나',
+            text: '목사·전도사·평신도 사역자가 함께 일할 때의 소통·역할·갈등을 다룹니다. 교인 대상 부모·부부 세미나와는 별도입니다.',
             price: '맞춤 견적',
             image: images.team,
             position: 'center',
-            button: '팀워크 세미나 안내',
+            button: '사역팀 팀워크 안내',
             action: "window.location.href='/church-programs#teamwork'"
         },
         {
@@ -177,10 +177,10 @@ function renderHome() {
             caption: '행동보다 마음을 이해하는 부모교육',
             points: ['부모의 유형과 양육 패턴', '자녀의 기질과 반응 이해', '반복되는 부모-자녀 갈등 분석'],
             participation: [
-                ['우리 가정을 위한 양육 도움', '우리 집의 양육 고민을 상담에서 살피고, 필요에 따라 단기·장기 코칭을 협의합니다. 4주 워크숍에서는 실제 대화와 대응을 연습합니다.', [
-                    ['/#parenting', '양육 상담·코칭 보기'], ['/parenting-workshop', '4주 부모교육 워크숍']
+                ['우리 가정을 위한 양육 도움', '우리 집의 양육 고민을 우리자녀 기질상담에서 살피고, 필요에 따라 단기·장기 코칭을 협의합니다. 4주 부모교육 워크숍에서는 실제 대화와 대응을 연습합니다.', [
+                    ['/#parenting', '우리자녀 기질상담 보기'], ['/parenting-workshop', '4주 부모교육 워크숍']
                 ]],
-                ['우리 공동체를 위한 부모교육', '교회·기독교기관이 부모님들을 위한 세미나 개최를 요청할 수 있습니다.', [
+                ['우리 공동체를 위한 부모교육', '교회·기독교기관이 교인 부모님들을 위한 부모교육 세미나 개최를 요청할 수 있습니다.', [
                     ['/parenting-seminar?apply_source=home_programs', '부모교육 세미나 안내']
                 ]]
             ]
@@ -197,21 +197,21 @@ function renderHome() {
                 ['우리 부부를 위한 관계 코칭', '한 번의 상담으로 반복되는 갈등을 살피고, 필요한 변화에 맞춰 단기·장기 코칭을 협의합니다.', [
                     ['/#apply?track=paid&focus=couple&apply_source=home_relationship_couple', '부부 상담·코칭 신청']
                 ]],
-                ['우리 공동체를 위한 부부 세미나', '교회·기독교기관의 초청으로 부부의 갈등 패턴과 대화 방법을 함께 살핍니다.', [
+                ['우리 공동체를 위한 부부 세미나', '교회·기독교기관이 교인 부부를 위해 부부 세미나 개최를 요청할 수 있습니다.', [
                     ['/church-programs#couple', '부부 세미나 안내']
                 ]]
             ]
         },
         {
-            eyebrow: '교회·사역팀',
-            title: '다름을 이해하고, 복음 안에서 함께 섬기는 공동체로',
-            text: '사역 현장의 오해와 소진은 헌신의 부족이 아니라, 서로 다른 동기와 소통 방식이 겹치며 생길 때가 많습니다.',
+            eyebrow: '사역팀 팀워크',
+            title: '다름을 이해하고, 복음 안에서 함께 섬기는 팀으로',
+            text: '사역 현장의 오해와 소진은 헌신의 부족이 아니라, 목사·전도사·평신도 사역자마다 다른 동기와 소통 방식이 겹치며 생길 때가 많습니다.',
             image: images.team,
             position: 'center top',
-            caption: '각 사람의 은사를 존중하며 함께 섬기는 사역팀',
-            points: ['사역자의 강점과 소명 이해', '리더와 사역팀의 소통·의사결정 패턴', '갈등을 줄이고 동역을 세우는 공동체 언어'],
+            caption: '함께 섬기는 사역팀의 역할과 소통을 정렬합니다',
+            points: ['사역자의 강점과 소명 이해', '리더와 사역팀의 소통·의사결정 패턴', '갈등을 줄이고 동역을 세우는 팀의 언어'],
             participation: [
-                ['우리 사역팀을 위한 팀워크', '교회·기독교기관이 팀의 소통, 역할, 갈등을 다루는 세미나와 워크숍을 요청할 수 있습니다.', [
+                ['우리 사역팀을 위한 팀워크', '교인 대상 세미나가 아닙니다. 교회·기관이 사역팀의 소통·역할·갈등을 다루는 세미나·워크숍 개최를 요청할 수 있습니다.', [
                     ['/church-programs#teamwork', '사역팀 팀워크 안내']
                 ]]
             ]
@@ -384,7 +384,7 @@ function renderHome() {
                         <div>
                             <p class="text-sm font-black text-er-green">ER의 대표 프로그램</p>
                             <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-er-inkSoft break-keep sm:text-3xl lg:text-[2rem]">검사·상담부터 교회 세미나까지</h2>
-                            <p class="mt-3 text-sm font-semibold leading-7 text-er-muted break-keep">개인은 검사와 상담·과정으로, 교회·기관은 결혼·부모·팀워크 세미나 개최 문의로 이어집니다.</p>
+                            <p class="mt-3 text-sm font-semibold leading-7 text-er-muted break-keep">개인은 검사·상담·4주 워크숍으로, 교회·기관은 부모교육·부부 세미나와 사역팀 팀워크 개최 문의로 이어집니다.</p>
 
                             <div class="mt-8 grid gap-4 sm:grid-cols-2">
                                 ${programCards.map((card) => `
@@ -443,8 +443,9 @@ function renderHome() {
                             <div class="relative max-w-xl">
                                 <h2 class="text-3xl font-black leading-tight tracking-[-0.02em] break-keep sm:text-4xl">지금, 당신의 변화를 시작하세요</h2>
                                 <p class="mt-5 text-base font-bold leading-8 text-er-surface/88 break-keep">작은 용기가 큰 변화를 만듭니다.<br>ER이 당신의 여정을 함께할게요.</p>
-                                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                                    <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl bg-er-surface px-8 py-4 text-sm font-black text-er-inkSoft shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:bg-[#f5efe5]">상담 신청하기</button>
+                                <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                                    <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl bg-er-surface px-8 py-4 text-sm font-black text-er-inkSoft shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:bg-[#f5efe5]">상담·코칭 신청</button>
+                                    <a href="/church-programs" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl border border-er-surface/42 bg-er-surface/5 px-8 py-4 text-sm font-black text-er-surface transition-all hover:-translate-y-0.5 hover:bg-er-surface/12">교회·기관 개최 문의</a>
                                     <button onclick="renderSection('test')" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl border border-er-surface/42 bg-er-surface/5 px-8 py-4 text-sm font-black text-er-surface transition-all hover:-translate-y-0.5 hover:bg-er-surface/12">무료 검사로 시작하기</button>
                                 </div>
                             </div>
