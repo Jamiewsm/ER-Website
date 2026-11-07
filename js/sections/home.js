@@ -45,7 +45,7 @@ function renderHome() {
     ];
 
     const images = {
-        background: { src: 'assets/er-visual/home-background-1535.webp', srcset: 'assets/er-visual/home-background-480.webp 480w, assets/er-visual/home-background-768.webp 768w, assets/er-visual/home-background-1535.webp 1535w', width: 1535, height: 1024 },
+        background: { src: 'assets/er-visual/home-background-1535.webp', srcset: 'assets/er-visual/home-background-480.webp 480w, assets/er-visual/home-background-768.webp 768w, assets/er-visual/home-background-1535.webp 1535w', width: 1535, height: 864 },
         parenting: { src: 'assets/er-visual/home-parent-child-768.webp', srcset: 'assets/er-visual/home-parent-child-480.webp 480w, assets/er-visual/home-parent-child-768.webp 768w, assets/er-visual/home-parent-child-1100.webp 1100w', width: 1100, height: 605 },
         couple: { src: 'assets/er-visual/home-couple-768.webp', srcset: 'assets/er-visual/home-couple-480.webp 480w, assets/er-visual/home-couple-768.webp 768w, assets/er-visual/home-couple-1100.webp 1100w', width: 1100, height: 605 },
         team: { src: 'assets/er-visual/home-team-768.webp', srcset: 'assets/er-visual/home-team-480.webp 480w, assets/er-visual/home-team-768.webp 768w, assets/er-visual/home-team-1100.webp 1100w', width: 1100, height: 605 },
@@ -258,7 +258,7 @@ function renderHome() {
                     </div>
 
                     <div class="relative min-h-[360px] overflow-hidden sm:min-h-[500px] lg:min-h-[720px]">
-                        <img src="${images.background.src}" srcset="${images.background.srcset}" sizes="(min-width: 1520px) 798px, (min-width: 1024px) 53vw, 100vw" width="1535" height="1024" fetchpriority="high" decoding="async" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center; filter:saturate(1.03) contrast(0.98) brightness(1.04);">
+                        <img src="${images.background.src}" srcset="${images.background.srcset}" sizes="(min-width: 1520px) 798px, (min-width: 1024px) 53vw, 100vw" width="1535" height="864" fetchpriority="high" decoding="async" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:72% center; filter:saturate(1.02) contrast(0.98) brightness(1.05);">
                         <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
 
