@@ -60,7 +60,7 @@ test('October application route uses October focus and collects region-aware pay
 });
 
 test('expert course is an umbrella journey and has no standalone application CTA', () => {
-  assert.match(training, /에니어그램 기본과정, 심화성장 101, 1년 코칭스쿨/);
+  assert.match(training, /에니어그램 기본과정, 101 하위유형 스터디, 선택 심화, 1년 코칭스쿨/);
   assert.match(training, /href="\/basic-course\.html"/);
   assert.doesNotMatch(training, /renderSection\('apply'/);
   assert.doesNotMatch(training, /신청\/문의|코치양성 문의/);
@@ -78,7 +78,24 @@ test('expert course surfaces registered private qualification without claiming n
   assert.doesNotMatch(training, /국가공인 자격|국가자격|국가에서 인정/);
   assert.doesNotMatch(notices, /국가공인|국가자격/);
   assert.match(notices, /제 2026-008332호/);
-  assert.match(notices, /심화성장 101/);
+  assert.match(notices, /심화성장 101|101 하위유형/);
+});
+
+test('expert course catalogs advanced study tracks with 101 required and electives', () => {
+  assert.match(training, /id="advanced-studies"/);
+  assert.match(training, /101/);
+  assert.match(training, /하위유형 스터디 I/);
+  assert.match(training, /하위유형 스터디 II/);
+  assert.match(training, /트라이타입 스터디/);
+  assert.match(training, /습관의 고리 스터디/);
+  assert.match(training, /자녀교육/);
+  assert.match(training, /커플·부부 관계/);
+  assert.match(training, /직장생활/);
+  assert.match(training, /성경인물 스터디/);
+  assert.match(training, /드라마 스터디/);
+  assert.match(training, /101만 필수/);
+  assert.doesNotMatch(training, /진행 중|모집 준비|개설 예정/);
+  assert.match(notices, /101 하위유형 스터디/);
 });
 
 test('July cohort graduation is bundled and October $300 copy is not', () => {

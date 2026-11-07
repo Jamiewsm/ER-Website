@@ -146,7 +146,7 @@ test('certification page keeps PQI registration facts and advertising disclosure
   assert.match(html, /총비용|합계/);
   assert.match(html, /환불/);
   assert.match(html, /pqi\.or\.kr/);
-  assert.match(html, /심화성장 101/);
+  assert.match(html, /101 하위유형 스터디/);
   assert.doesNotMatch(html, /국가공인 자격|국가자격으로|국가에서 인정한|국가에서 인정받/);
   assert.match(html, /공인자격이 아닙니다/);
 });

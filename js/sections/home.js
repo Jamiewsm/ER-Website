@@ -106,7 +106,7 @@ function renderHome() {
         {
             badge: '양성',
             title: 'ER 전문가 과정',
-            text: '기본과정부터 스터디·1년 코칭스쿨까지 이어지는 전문가 양성 여정',
+            text: '기본과정·101 하위유형 스터디·선택 심화·1년 코칭스쿨로 이어지는 전문가 양성 여정',
             price: '과정 안내',
             image: images.team,
             position: 'center top',
