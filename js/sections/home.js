@@ -258,7 +258,7 @@ function renderHome() {
                     </div>
 
                     <div class="relative min-h-[360px] overflow-hidden sm:min-h-[500px] lg:min-h-[720px]">
-                        <img src="${images.background.src}" srcset="${images.background.srcset}" sizes="(min-width: 1520px) 798px, (min-width: 1024px) 53vw, 100vw" width="1535" height="864" fetchpriority="high" decoding="async" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:72% center; filter:saturate(1.02) contrast(0.98) brightness(1.05);">
+                        <img src="${images.background.src}" srcset="${images.background.srcset}" sizes="(min-width: 1520px) 798px, (min-width: 1024px) 53vw, 100vw" width="1535" height="864" fetchpriority="high" decoding="async" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:right center; filter:saturate(1.02) contrast(0.98) brightness(1.05);">
                         <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
 
