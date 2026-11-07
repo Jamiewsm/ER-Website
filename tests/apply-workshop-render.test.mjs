@@ -42,21 +42,23 @@ test('parenting workshop focus shows unavailable notice instead of an applicatio
   assert.doesNotMatch(html, /\$120/);
 });
 
-test('parenting seminar link renders a dedicated inquiry form distinct from workshop', () => {
+test('parenting seminar link renders a dedicated org hosting inquiry distinct from workshop', () => {
   const renderer = loadApplyRenderer();
   const html = renderer.renderApply({
-    track: 'paid',
+    track: 'org',
     focus: 'parenting_seminar',
     apply_source: 'landing'
   });
 
   assert.match(html, /Parenting 세미나/);
-  assert.match(html, /세미나 신청·문의/);
+  assert.match(html, /교회·기관 개최 문의/);
+  assert.match(html, /개인 참가 등록은 받지 않/);
   assert.doesNotMatch(html, /단회/);
   assert.match(html, /assets\/parenting\/parenting-seminar-hero\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="Parenting 세미나 문의"/);
-  assert.match(html, /세미나 신청·문의하기/);
-  assert.match(html, /data-submit-source="paid:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
+  assert.match(html, /type="hidden" name="category" value="Parenting 세미나 개최 문의"/);
+  assert.match(html, /세미나 개최 문의하기/);
+  assert.match(html, /교회·기관명/);
+  assert.match(html, /data-submit-source="org:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
   assert.doesNotMatch(html, /parenting-workshop/);
   assert.doesNotMatch(html, /\$120/);
   assert.doesNotMatch(html, /희망하는 세션|<select/);
@@ -99,7 +101,7 @@ test('child type test result apply shows parenting-context copy, not adult test 
   // 성인 테스트용 카피는 노출하지 않음.
   assert.doesNotMatch(html, /프리미엄 테스트 후 추천/);
   // 출처 attribution 은 child_type_test 로 유지(상품·가격 무변경).
-  assert.match(html, /data-submit-source="paid:result_consult:child_type_test" onsubmit="handleApplyFormSubmit\(event\)"/);
+  assert.match(html, /data-submit-source="paid:result_consult:child_type_test" data-apply-focus="result_consult" onsubmit="handleApplyFormSubmit\(event\)"/);
 });
 
 test('October Enneagram basic course link renders a dedicated direct application form while recruitment is open', () => {

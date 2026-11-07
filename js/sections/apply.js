@@ -128,9 +128,7 @@ function getPaidApplyCategoryOptions() {
         '우리자녀 기질상담 문의',
         '회복 코칭 4회 ($300)',
         '회복 코칭 8회 ($480)',
-        '부부 코칭 1회 ($220)',
-        'Parenting 세미나 문의',
-        '결혼·부부 세미나 문의'
+        '부부 코칭 1회 ($220)'
     ];
 }
 
@@ -183,10 +181,11 @@ function renderParentingWorkshopApply(_submitSource) {
                 <p class="text-xs font-bold uppercase tracking-[0.16em] text-er-green">안내</p>
                 <h1 class="mt-3 text-2xl font-bold text-er-dark break-keep">4주 Parenting 워크샵</h1>
                 <p class="mt-3 text-sm leading-relaxed text-er-body break-keep">
-                    현재 4주 심화 워크샵은 운영 일정이 없습니다. Parenting 세미나와 기질상담·맞춤 가이드는 계속 안내드립니다.
+                    현재 4주 심화 워크샵은 운영 일정이 없습니다. 개인·가정은 기질상담·맞춤 가이드로, 교회·기관은 Parenting 세미나 개최 문의로 이어가 주세요.
                 </p>
-                <div class="mt-7 flex flex-col gap-3 sm:flex-row">
-                    <a href="/parenting-seminar?apply_source=workshop_unavailable" class="inline-flex min-h-11 items-center justify-center rounded-full bg-er-green px-5 text-sm font-bold text-white hover:bg-er-greenDark">세미나 안내 보기</a>
+                <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                    <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'workshop_unavailable' })" class="inline-flex min-h-11 items-center justify-center rounded-full bg-er-green px-5 text-sm font-bold text-white hover:bg-er-greenDark">기질상담 신청</button>
+                    <a href="/parenting-seminar?apply_source=workshop_unavailable" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">교회·기관 세미나 안내</a>
                     <button type="button" onclick="renderSection('parenting')" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">Parenting 여정 보기</button>
                 </div>
             </div>
@@ -202,35 +201,41 @@ function renderParentingSeminarApply(submitSource) {
                     <img
                         src="/assets/parenting/parenting-seminar-hero.jpg"
                         alt=""
-                        class="parenting-apply-photo h-28 w-full object-cover sm:h-36 lg:h-64"
+                        class="parenting-apply-photo h-28 w-full object-cover object-[72%_center] sm:h-36 lg:h-64"
                     />
                     <div class="p-5 sm:p-6">
                         <h1 class="text-[1.7rem] font-bold leading-tight sm:text-3xl">Parenting 세미나</h1>
-                        <p class="mt-2 text-lg font-semibold text-white">세미나 신청·문의</p>
+                        <p class="mt-2 text-lg font-semibold text-white">교회·기관 개최 문의</p>
                         <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/20 pt-4 text-sm">
-                            <p><span class="block text-[11px] text-white/60">형식</span>세미나</p>
-                            <p><span class="block text-[11px] text-white/60">일정</span>확정 후 안내</p>
-                            <p><span class="block text-[11px] text-white/60">참가비</span>확정 후 안내</p>
-                            <p><span class="block text-[11px] text-white/60">안내</span>문의 환영</p>
+                            <p><span class="block text-[11px] text-white/60">형식</span>초청 세미나</p>
+                            <p><span class="block text-[11px] text-white/60">요청</span>교회·기관</p>
+                            <p><span class="block text-[11px] text-white/60">일정</span>현장 맞춤</p>
+                            <p><span class="block text-[11px] text-white/60">개인</span>상담으로</p>
                         </div>
                         <p class="mt-5 text-sm leading-relaxed text-white/80 break-keep">
-                            관심과 문의를 남겨주시면 일정·참가비가 확정되는 대로 안내드립니다.
+                            교회·선교단체·기독교 기관의 요청으로 개최합니다. 개인 참가 등록은 받지 않으며, 개인·가정은 기질상담으로 신청해 주세요.
                         </p>
                     </div>
                 </section>
 
                 <section class="rounded-lg border border-er-accentLight bg-white p-5 shadow-soft sm:p-7">
-                    <h2 class="text-lg font-bold text-er-dark">신청·문의 정보</h2>
+                    <h2 class="text-lg font-bold text-er-dark">개최 문의 정보</h2>
                     <p class="mb-6 mt-2 text-sm leading-relaxed text-er-primary break-keep">
-                        아래 내용을 남겨주시면 담당자가 확인 후 연락드립니다. 일정이 아직 확정되지 않았어도 관심 접수가 가능합니다.
+                        담당자 정보를 남겨주시면 일정을 조율해 안내드립니다. 개인 참가 희망이라면
+                        <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'seminar_to_counseling' })" class="font-bold text-er-green underline underline-offset-2">우리자녀 기질상담 신청</button>으로 이동해 주세요.
                     </p>
 
                     <form id="apply-form" class="space-y-5" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit(event)">
-                        <input type="hidden" name="category" value="Parenting 세미나 문의">
+                        <input type="hidden" name="category" value="Parenting 세미나 개최 문의">
 
                         <div>
-                            <label for="apply-name" class="mb-2 block text-sm font-bold text-gray-700">이름</label>
-                            <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="성함을 남겨주세요" id="apply-name">
+                            <label for="apply-name" class="mb-2 block text-sm font-bold text-gray-700">담당자 이름</label>
+                            <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="담당자 성함" id="apply-name">
+                        </div>
+
+                        <div>
+                            <label for="apply-org" class="mb-2 block text-sm font-bold text-gray-700">교회·기관명</label>
+                            <input type="text" name="organization" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: ○○교회 / ○○선교단체" id="apply-org">
                         </div>
 
                         <div>
@@ -240,24 +245,24 @@ function renderParentingSeminarApply(submitSource) {
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label for="apply-country" class="mb-2 block text-sm font-bold text-gray-700">거주 국가 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="country" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: USA, Korea" id="apply-country">
+                                <label for="apply-role" class="mb-2 block text-sm font-bold text-gray-700">역할·직분 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="role" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 교육목사, 사역팀장" id="apply-role">
                             </div>
                             <div>
-                                <label for="apply-preferred-time" class="mb-2 block text-sm font-bold text-gray-700">희망 시간대 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="preferred_time" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: Dallas PM" id="apply-preferred-time">
+                                <label for="apply-preferred-time" class="mb-2 block text-sm font-bold text-gray-700">희망 일정·규모 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="preferred_time" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 3월 / 약 40명" id="apply-preferred-time">
                             </div>
                         </div>
 
                         <div>
-                            <label for="apply-message" class="mb-2 block text-sm font-bold text-gray-700">전하고 싶은 내용 <span class="font-normal text-gray-400">(선택)</span></label>
-                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="관심 이유나 궁금한 점을 편하게 남겨주세요." id="apply-message"></textarea>
+                            <label for="apply-message" class="mb-2 block text-sm font-bold text-gray-700">요청 내용 <span class="font-normal text-gray-400">(선택)</span></label>
+                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="대상(부모·사역자 등), 장소, 기대하는 방향을 편하게 남겨주세요." id="apply-message"></textarea>
                         </div>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
                             ${renderApplyPrivacyNotice()}
                             <p class="mb-1 mt-3 text-xs font-bold text-gray-600">보안 확인</p>
-                            <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 신청 버튼을 눌러 주세요.</p>
+                            <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 문의 버튼을 눌러 주세요.</p>
                             <p id="apply-turnstile-status" class="mb-2 hidden text-xs text-gray-500 break-keep" role="status" aria-live="polite"></p>
                             <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
                             <button type="button" id="apply-turnstile-retry" class="mt-2 hidden w-full rounded-lg border border-er-accent/40 py-2 text-xs font-bold text-er-dark hover:bg-er-accentLight/30" onclick="initApplyTurnstile()">
@@ -267,13 +272,13 @@ function renderParentingSeminarApply(submitSource) {
                         </div>
 
                         <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
-                        <button id="apply-submit-btn" type="submit" data-default-label="세미나 신청·문의하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
-                            세미나 신청·문의하기
+                        <button id="apply-submit-btn" type="submit" data-default-label="세미나 개최 문의하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
+                            세미나 개최 문의하기
                         </button>
                     </form>
 
                     <p class="mt-6 border-t border-gray-100 pt-5 text-center text-xs text-er-primary">
-                        신청 전 문의
+                        문의
                         <a href="mailto:restoration.son@gmail.com" class="ml-2 font-bold underline">Email</a>
                         <span class="mx-2 text-er-muted">|</span>
                         ${renderInstagramInquiryLine('parenting')}
@@ -564,22 +569,22 @@ function renderApply(payload = null) {
             message: '우리자녀 기질상담을 신청합니다.'
         },
         parenting_seminar: {
-            track: 'paid',
-            title: 'Parenting 세미나 신청·문의',
-            desc: 'Parenting 세미나 관심·문의를 남겨 주세요. 일정과 참가비는 확정 후 안내드립니다.',
-            bannerTitle: 'Parenting 세미나 안내',
-            bannerBody: 'Parenting 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
-            category: 'Parenting 세미나 문의',
-            message: 'Parenting 세미나 신청·문의합니다.'
+            track: 'org',
+            title: 'Parenting 세미나 개최 문의',
+            desc: '교회·선교단체·기독교 기관의 Parenting 세미나 개최 요청을 남겨 주세요. 개인 참가 등록은 받지 않습니다.',
+            bannerTitle: 'Parenting 세미나 — 교회·기관 개최',
+            bannerBody: '요청하신 현장의 일정·대상·규모에 맞춰 세미나를 준비합니다. 개인·가정은 우리자녀 기질상담으로 신청해 주세요.',
+            category: 'Parenting 세미나 개최 문의',
+            message: '교회·기관 Parenting 세미나 개최를 문의합니다.'
         },
         couple_seminar: {
-            track: 'paid',
-            title: '결혼·부부 세미나 신청·문의',
-            desc: '결혼·부부 세미나 관심·문의를 남겨 주세요. 일정과 참가비는 확정 후 안내드립니다.',
-            bannerTitle: '결혼·부부 세미나 안내',
-            bannerBody: '부부 갈등 패턴을 복음적 시선으로 읽는 세미나입니다. 일정·참가비는 확정되는 대로 개별 안내드립니다.',
-            category: '결혼·부부 세미나 문의',
-            message: '결혼·부부 세미나 신청·문의합니다.'
+            track: 'org',
+            title: '결혼·부부 세미나 개최 문의',
+            desc: '교회·선교단체·기독교 기관의 결혼·부부 세미나 개최 요청을 남겨 주세요. 개인은 부부 상담·코칭으로 신청합니다.',
+            bannerTitle: '결혼·부부 세미나 — 교회·기관 개최',
+            bannerBody: '부부 갈등 패턴을 복음적 시선으로 읽는 세미나를 공동체 요청으로 준비합니다. 개인 부부는 부부 코칭 상담으로 신청해 주세요.',
+            category: '결혼·부부 세미나 개최 문의',
+            message: '교회·기관 결혼·부부 세미나 개최를 문의합니다.'
         },
         parenting_workshop: {
             track: 'paid',
@@ -737,7 +742,15 @@ function renderApply(payload = null) {
         : isMinistryTrack
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
             : isOrgTrack
-                ? ['교회 공동체 워크숍 문의', '사역팀 소통·갈등 프로그램 문의', '교회 리더 디브리핑 문의', '기독교 기관 프로그램 문의']
+                ? [
+                    '교회 공동체 워크숍 문의',
+                    '사역팀 소통·갈등 프로그램 문의',
+                    '팀워크 세미나 개최 문의',
+                    'Parenting 세미나 개최 문의',
+                    '결혼·부부 세미나 개최 문의',
+                    '교회 리더 디브리핑 문의',
+                    '기독교 기관 프로그램 문의'
+                ]
                 : getPaidApplyCategoryOptions();
     const defaultPaidCategory = '테스트 결과지 해석상담 ($50)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
@@ -798,7 +811,7 @@ function renderApply(payload = null) {
                         <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">3</span></div>
                     </div>
 
-                    <form id="apply-form" class="space-y-6" data-submit-source="${escapeApplyAttribute(submitSource)}" onsubmit="handleApplyFormSubmit(event)">
+                    <form id="apply-form" class="space-y-6" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="${escapeApplyAttribute(focus || '')}" onsubmit="handleApplyFormSubmit(event)">
                         
                         <div>
                             <label for="apply-name" class="block text-sm font-bold text-gray-700 mb-2">이름</label>
@@ -915,7 +928,7 @@ function renderThankYou(payload = null) {
                     ${receiptHtml}
                     <p class="text-sm leading-relaxed text-er-primary break-keep">
                         ${seminarThanks
-                            ? '남겨주신 연락처로 일정·참가비가 확정되는 대로 안내드리겠습니다.<br>보통 24시간 이내에 연락드립니다.'
+                            ? '남겨주신 교회·기관 연락처로 개최 일정과 형식을 조율해 안내드리겠습니다.<br>보통 24시간 이내에 연락드립니다.'
                             : '남겨주신 연락처로 일정과 참여 안내를 보내드리겠습니다.<br>보통 24시간 이내에 연락드립니다.'}
                     </p>
                     <div class="mt-8 grid gap-3">

@@ -67,7 +67,7 @@ test('static submit adapter preserves source and dedicated program context', () 
   const app = renderer();
   const calls = [];
   app.handleApplySubmit = (...args) => calls.push(args);
-  for (const [source, focus] of [['paid', ''], ['paid:parenting_workshop:qr', 'parenting_workshop'], ['paid:parenting_seminar:landing', 'parenting_seminar'], ['paid:enneagram_basic_october:instagram', 'enneagram_basic_october']]) {
+  for (const [source, focus] of [['paid', ''], ['paid:parenting_workshop:qr', 'parenting_workshop'], ['org:parenting_seminar:landing', 'parenting_seminar'], ['paid:enneagram_basic_october:instagram', 'enneagram_basic_october']]) {
     const form = { dataset: { submitSource: source, applyFocus: focus } };
     const event = { target: form, currentTarget: form };
     app.handleApplyFormSubmit(event);

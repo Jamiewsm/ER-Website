@@ -714,10 +714,14 @@ const APPLY_ATTRIBUTION_SOURCES = new Set([
     'home_promo',
     'home_banner',
     'home_card',
+    'home_programs',
     'notice',
     'instagram',
     'magazine',
-    'child_type_test'
+    'child_type_test',
+    'parenting',
+    'workshop_unavailable',
+    'seminar_to_counseling'
 ]);
 
 const APPLY_TRACKS = new Set(['paid', 'org', 'ministry', 'support']);
