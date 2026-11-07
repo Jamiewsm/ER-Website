@@ -201,7 +201,7 @@ function renderParentingSeminarApply(submitSource) {
                     <img
                         src="/assets/parenting/parenting-seminar-hero.jpg"
                         alt=""
-                        class="parenting-apply-photo h-28 w-full object-cover object-[72%_center] sm:h-36 lg:h-64"
+                        class="parenting-apply-photo h-28 w-full object-cover object-right sm:h-36 lg:h-64"
                     />
                     <div class="p-5 sm:p-6">
                         <h1 class="text-[1.7rem] font-bold leading-tight sm:text-3xl">Parenting 세미나</h1>
