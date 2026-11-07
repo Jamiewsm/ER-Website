@@ -141,7 +141,7 @@ function renderParenting(payload = null) {
     // Parenting 메뉴 진입 시에만 음소거 자동재생. focus 스크롤 재렌더는 썸네일만 유지.
     const PARENTING_YOUTUBE_ID = 'ZQh01Atj1l0';
     const parentingVideoAutoplay = !payload?.focus;
-    const parentingVideoSrc = `https://www.youtube.com/embed/${PARENTING_YOUTUBE_ID}?${parentingVideoAutoplay ? 'autoplay=1&' : ''}mute=1&playsinline=1&rel=0&modestbranding=1`;
+    const parentingVideoSrc = `https://www.youtube.com/embed/${PARENTING_YOUTUBE_ID}?${parentingVideoAutoplay ? 'autoplay=1&' : ''}mute=1&playsinline=1&rel=0&modestbranding=1&cc_load_policy=0`;
 
     const problems = [
         ['여러 번 말해야 움직이는 아이 때문에 지칩니다.', 'fas fa-bullhorn'],
