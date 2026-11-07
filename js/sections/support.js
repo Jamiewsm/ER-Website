@@ -59,12 +59,12 @@ function renderSupport() {
             <img
                 src="assets/er-visual/support-seminar-hero.jpg"
                 alt=""
-                width="1600"
-                height="901"
+                width="1671"
+                height="941"
                 fetchpriority="high"
                 decoding="async"
                 class="absolute inset-0 h-full w-full object-cover"
-                style="object-position: center 42%;"
+                style="object-position: center 40%;"
             />
             <div class="absolute inset-0 bg-gradient-to-r from-er-base from-35% via-er-base/85 to-transparent" aria-hidden="true"></div>
             <div class="absolute inset-0 bg-gradient-to-b from-er-base/35 via-transparent to-er-base/55" aria-hidden="true"></div>
