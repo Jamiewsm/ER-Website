@@ -129,7 +129,6 @@ function getPaidApplyCategoryOptions() {
         '회복 코칭 4회 ($300)',
         '회복 코칭 8회 ($480)',
         '부부 코칭 1회 ($220)',
-        'Enneagram for Parenting 4주 ($120)',
         'Parenting 세미나 문의'
     ];
 }
@@ -175,91 +174,20 @@ function formatChildTypeTestSummary(summary) {
     return parts.join(', ');
 }
 
-function renderParentingWorkshopApply(submitSource) {
+function renderParentingWorkshopApply(_submitSource) {
+    // 4주 워크샵은 현재 일정·모집 계획이 없어 공개 신청을 받지 않는다.
     return `
         <div class="parenting-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
-            <div class="mx-auto grid max-w-5xl gap-5 lg:grid-cols-[minmax(270px,0.84fr)_minmax(430px,1fr)] lg:items-start">
-                <section class="parenting-apply-intro overflow-hidden rounded-lg border border-er-accentLight bg-er-dark text-white">
-                    <img
-                        src="/assets/er-visual/hero-home.jpg"
-                        alt=""
-                        class="parenting-apply-photo h-28 w-full object-cover sm:h-36 lg:h-64"
-                    />
-                    <div class="p-5 sm:p-6">
-                        <h1 class="text-[1.7rem] font-bold leading-tight sm:text-3xl">Enneagram for Parenting</h1>
-                        <p class="mt-2 text-lg font-semibold text-white">4주 워크샵 신청</p>
-                        <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/20 pt-4 text-sm">
-                            <p><span class="block text-[11px] text-white/60">진행</span>온라인 Zoom</p>
-                            <p><span class="block text-[11px] text-white/60">시간</span>총 10시간</p>
-                            <p><span class="block text-[11px] text-white/60">참가비</span>$120</p>
-                            <p><span class="block text-[11px] text-white/60">모집</span>소규모 선착순</p>
-                        </div>
-                        <p class="mt-5 text-sm leading-relaxed text-white/80 break-keep">
-                            신청 내용을 남겨주시면 일정과 참여 안내를 보내드립니다.
-                        </p>
-                    </div>
-                </section>
-
-                <section class="rounded-lg border border-er-accentLight bg-white p-5 shadow-soft sm:p-7">
-                    <h2 class="text-lg font-bold text-er-dark">신청 정보</h2>
-                    <p class="mb-6 mt-2 text-sm leading-relaxed text-er-primary break-keep">
-                        아래 내용을 남겨주시면 담당자가 확인 후 연락드립니다.
-                    </p>
-
-                    <form id="apply-form" class="space-y-5" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="parenting_workshop" onsubmit="handleApplyFormSubmit(event)">
-                        <input type="hidden" name="category" value="Enneagram for Parenting 4주 ($120)">
-
-                        <div>
-                            <label for="apply-name" class="mb-2 block text-sm font-bold text-gray-700">이름</label>
-                            <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="성함을 남겨주세요" id="apply-name">
-                        </div>
-
-                        <div>
-                            <label for="apply-contact" class="mb-2 block text-sm font-bold text-gray-700">연락받으실 곳</label>
-                            <input type="text" name="contact" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="전화번호 또는 이메일" id="apply-contact">
-                        </div>
-
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div>
-                                <label for="apply-country" class="mb-2 block text-sm font-bold text-gray-700">거주 국가 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="country" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: USA, Korea" id="apply-country">
-                            </div>
-                            <div>
-                                <label for="apply-preferred-time" class="mb-2 block text-sm font-bold text-gray-700">희망 시간대 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="preferred_time" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: Dallas PM" id="apply-preferred-time">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="apply-message" class="mb-2 block text-sm font-bold text-gray-700">전하고 싶은 내용 <span class="font-normal text-gray-400">(선택)</span></label>
-                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="전하고 싶은 내용이 있으시면 편하게 남겨주세요." id="apply-message"></textarea>
-                        </div>
-
-                        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                            ${renderApplyPrivacyNotice()}
-                            <p class="mb-1 mt-3 text-xs font-bold text-gray-600">보안 확인</p>
-                            <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 신청 버튼을 눌러 주세요.</p>
-                            <p id="apply-turnstile-status" class="mb-2 hidden text-xs text-gray-500 break-keep" role="status" aria-live="polite"></p>
-                            <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
-                            <button type="button" id="apply-turnstile-retry" class="mt-2 hidden w-full rounded-lg border border-er-accent/40 py-2 text-xs font-bold text-er-dark hover:bg-er-accentLight/30" onclick="initApplyTurnstile()">
-                                보안 확인 다시 불러오기
-                            </button>
-                            <input type="hidden" name="turnstile_token" value="" id="apply-turnstile-token">
-                        </div>
-
-                        <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
-                        <button id="apply-submit-btn" type="submit" data-default-label="4주 워크샵 신청하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
-                            4주 워크샵 신청하기
-                        </button>
-                    </form>
-
-                    <p class="mt-6 border-t border-gray-100 pt-5 text-center text-xs text-er-primary">
-                        신청 전 문의
-                        <a href="mailto:restoration.son@gmail.com" class="ml-2 font-bold underline">Email</a>
-                        <span class="mx-2 text-er-muted">|</span>
-                        ${renderInstagramInquiryLine('parenting')}
-                    </p>
-                </section>
+            <div class="mx-auto max-w-xl rounded-2xl border border-er-sand bg-white p-6 shadow-soft sm:p-8" data-apply-focus="parenting_workshop" data-workshop-status="unavailable">
+                <p class="text-xs font-bold uppercase tracking-[0.16em] text-er-green">안내</p>
+                <h1 class="mt-3 text-2xl font-bold text-er-dark break-keep">4주 Parenting 워크샵</h1>
+                <p class="mt-3 text-sm leading-relaxed text-er-body break-keep">
+                    현재 4주 심화 워크샵은 운영 일정이 없습니다. Parenting 세미나와 기질상담·맞춤 가이드는 계속 안내드립니다.
+                </p>
+                <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+                    <a href="/parenting-seminar?apply_source=workshop_unavailable" class="inline-flex min-h-11 items-center justify-center rounded-full bg-er-green px-5 text-sm font-bold text-white hover:bg-er-greenDark">세미나 안내 보기</a>
+                    <button type="button" onclick="renderSection('parenting')" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">Parenting 여정 보기</button>
+                </div>
             </div>
         </div>
     `;
@@ -282,14 +210,10 @@ function renderParentingSeminarApply(submitSource) {
                             <p><span class="block text-[11px] text-white/60">형식</span>단회 세미나</p>
                             <p><span class="block text-[11px] text-white/60">일정</span>확정 후 안내</p>
                             <p><span class="block text-[11px] text-white/60">참가비</span>확정 후 안내</p>
-                            <p><span class="block text-[11px] text-white/60">구분</span>4주 워크샵과 별개</p>
+                            <p><span class="block text-[11px] text-white/60">형식</span>단회 안내</p>
                         </div>
                         <p class="mt-5 text-sm leading-relaxed text-white/80 break-keep">
                             관심과 문의를 남겨주시면 일정·참가비가 확정되는 대로 안내드립니다.
-                        </p>
-                        <p class="mt-3 text-xs leading-relaxed text-white/60 break-keep">
-                            4주 심화 과정이 필요하시면
-                            <a href="/parenting-workshop" class="underline text-white/90">워크샵 안내</a>를 확인해 주세요.
                         </p>
                     </div>
                 </section>

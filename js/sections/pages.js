@@ -64,11 +64,11 @@ function renderResources() {
                             <p class="mt-2 text-sm text-gray-600 leading-relaxed break-keep">이번 호 하이라이트 — <strong>Parenting</strong>과 양육의 자기이해. 전체 PDF 전에 웹에서 읽는 짧은 글.</p>
                             <span class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-er-dark">창간호 읽기 <i class="fas fa-arrow-right text-[10px]"></i></span>
                         </div>
-                        <div onclick="window.location.href='/parenting-workshop.html?apply_source=magazine'" class="group bg-er-surface rounded-[2rem] p-6 md:p-7 shadow-soft floating-card cursor-pointer border border-er-sand/60 relative overflow-hidden">
-                            <span class="inline-flex rounded-full bg-[#c47a5a] text-white text-[9px] font-bold px-2.5 py-0.5">모집중</span>
-                            <h3 class="mt-3 text-lg font-bold text-er-dark break-keep">Enneagram for Parenting</h3>
-                            <p class="mt-2 text-sm text-gray-600 leading-relaxed break-keep">매거진 주제와 이어지는 4주 심화 워크샵 — 6월–7월, Zoom, $120</p>
-                            <span class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-er-accent">워크샵 안내 <i class="fas fa-arrow-right text-[10px]"></i></span>
+                        <div onclick="window.location.href='/parenting-seminar.html?apply_source=magazine'" class="group bg-er-surface rounded-[2rem] p-6 md:p-7 shadow-soft floating-card cursor-pointer border border-er-sand/60 relative overflow-hidden">
+                            <span class="inline-flex rounded-full bg-er-green text-white text-[9px] font-bold px-2.5 py-0.5">세미나</span>
+                            <h3 class="mt-3 text-lg font-bold text-er-dark break-keep">Parenting 세미나</h3>
+                            <p class="mt-2 text-sm text-gray-600 leading-relaxed break-keep">매거진 주제와 이어지는 단회 Parenting 세미나 — 일정 확정 후 안내</p>
+                            <span class="mt-4 inline-flex items-center gap-2 text-xs font-bold text-er-accent">세미나 안내 <i class="fas fa-arrow-right text-[10px]"></i></span>
                         </div>
                     </div>
                     

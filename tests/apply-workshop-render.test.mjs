@@ -25,7 +25,7 @@ function loadApplyRenderer(options = {}) {
   return context;
 }
 
-test('parenting workshop link renders a dedicated direct application form', () => {
+test('parenting workshop focus shows unavailable notice instead of an application form', () => {
   const renderer = loadApplyRenderer();
   const html = renderer.renderApply({
     track: 'paid',
@@ -33,14 +33,13 @@ test('parenting workshop link renders a dedicated direct application form', () =
     apply_source: 'qr'
   });
 
-  assert.match(html, /Enneagram for Parenting/);
-  assert.match(html, /4주 워크샵 신청/);
-  assert.match(html, /assets\/er-visual\/hero-home\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="Enneagram for Parenting 4주 \(\$120\)"/);
-  assert.match(html, /4주 워크샵 신청하기/);
-  assert.match(html, /data-submit-source="paid:parenting_workshop:qr" data-apply-focus="parenting_workshop" onsubmit="handleApplyFormSubmit\(event\)"/);
-  assert.doesNotMatch(html, /희망하는 세션|<select/);
-  assert.doesNotMatch(html, /Enneagram for Parenting 4주 워크샵 신청합니다\./);
+  assert.match(html, /4주 Parenting 워크샵/);
+  assert.match(html, /현재 4주 심화 워크샵은 운영 일정이 없습니다/);
+  assert.match(html, /data-workshop-status="unavailable"/);
+  assert.match(html, /parenting-seminar\?apply_source=workshop_unavailable/);
+  assert.doesNotMatch(html, /id="apply-form"/);
+  assert.doesNotMatch(html, /4주 워크샵 신청하기/);
+  assert.doesNotMatch(html, /\$120/);
 });
 
 test('parenting seminar link renders a dedicated inquiry form distinct from workshop', () => {
@@ -57,7 +56,7 @@ test('parenting seminar link renders a dedicated inquiry form distinct from work
   assert.match(html, /type="hidden" name="category" value="Parenting 세미나 문의"/);
   assert.match(html, /세미나 신청·문의하기/);
   assert.match(html, /data-submit-source="paid:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
-  assert.match(html, /4주 워크샵과 별개|워크샵 안내/);
+  assert.doesNotMatch(html, /parenting-workshop/);
   assert.doesNotMatch(html, /\$120/);
   assert.doesNotMatch(html, /희망하는 세션|<select/);
 });

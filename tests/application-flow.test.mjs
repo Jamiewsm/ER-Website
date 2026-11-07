@@ -61,7 +61,7 @@ test('generic categories always use the dedicated basic-course path, before and 
     assert.doesNotMatch(html,/<option[^>]*>[^<]*기본과정/);
     assert.match(html,/기본과정·다음 기수 안내/);
     assert.match(html,/focus=enneagram_basic_october/);
-    assert.match(html,/테스트 결과지 해석상담|Enneagram for Parenting/);
+    assert.match(html,/테스트 결과지 해석상담|Parenting 세미나/);
   }
 });
 test('catalog fallback also excludes basic course from the generic form', () => {

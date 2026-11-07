@@ -170,7 +170,7 @@
       focus: 'parenting_seminar',
       outcome: '단회 세미나로 부모–자녀 기질 이해의 방향을 잡습니다. 일정·참가비는 확정 후 안내합니다.',
       reasonPrimary: '긴 과정 전에 먼저 방향을 확인하고 싶을 때 좋습니다.',
-      reasonSecondary: '4주 워크샵과 별개의 단회 안내 세미나입니다.',
+      reasonSecondary: '부모–자녀 기질 이해의 첫 방향을 잡기 좋습니다.',
       applyMessage: 'Parenting 세미나 신청·문의합니다.'
     },
     basic_course: {
@@ -256,7 +256,7 @@
       PROGRAMS.recovery_journey_4.category,
       PROGRAMS.recovery_journey_8.category,
       PROGRAMS.couple_coaching.category,
-      PROGRAMS.parenting_workshop.category,
+      // parenting_workshop: 현재 공개 모집 없음 — 카탈로그 데이터만 유지
       PROGRAMS.parenting_seminar.category
     ];
   }

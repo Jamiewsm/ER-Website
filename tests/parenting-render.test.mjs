@@ -75,9 +75,10 @@ test('renderParenting wires existing flows without rebuilding them', () => {
   // 우리자녀 기질상담은 기존 apply parenting focus 재사용 + 랜딩발 출처 attribution.
   assert.match(html, /focus: 'parenting',[^}]*apply_source: 'parenting'/);
   assert.match(html, /우리자녀 기질상담 신청/);
-  // 세미나·4주 과정 "알아보기"는 각 상세 페이지로 안내(상세→신청 퍼널, attribution 유지).
+  // 세미나 안내는 상세 페이지로 연결(상세→신청 퍼널, attribution 유지).
   assert.match(html, /parenting-seminar\.html\?apply_source=parenting/);
-  assert.match(html, /parenting-workshop\.html\?apply_source=parenting/);
+  assert.doesNotMatch(html, /parenting-workshop\.html/);
+  assert.doesNotMatch(html, /4주 Parenting 과정/);
   // 진단이 아니라 이해의 가설이라는 표현이 포함.
   assert.match(html, /이해의 가설/);
 });
@@ -151,19 +152,21 @@ test('home featured programs include parenting seminar as the parent-education e
   assert.doesNotMatch(homeSource, /button2: '4주 과정 신청'/);
 });
 
-test('workshop detail page links back into the Parenting journey', () => {
-  // F1 이후 고립됐던 워크샵 상세 페이지가 새 여정으로 다시 연결됨.
-  assert.match(workshopSource, /href="\/#parenting"/);
-  assert.match(workshopSource, /Parenting 여정/);
+test('workshop detail page redirects to the seminar landing while unpublished', () => {
+  assert.match(workshopSource, /url=\/parenting-seminar/);
+  assert.match(workshopSource, /location\.replace\('\/parenting-seminar'\)/);
+  assert.match(workshopSource, /noindex/);
+  assert.doesNotMatch(workshopSource, /4주 자녀양육 워크샵/);
 });
 
-test('seminar landing is distinct from workshop and wires seminar apply focus', () => {
+test('seminar landing wires seminar apply focus without workshop comparison', () => {
   assert.match(seminarSource, /Parenting 세미나/);
   assert.match(seminarSource, /assets\/parenting\/parenting-seminar-hero\.jpg/);
   assert.match(seminarSource, /focus=parenting_seminar/);
-  assert.match(seminarSource, /4주 워크샵과 별개|4주 심화/);
   assert.match(seminarSource, /일정 확정 후 안내/);
   assert.doesNotMatch(seminarSource, /focus=parenting_workshop/);
+  assert.doesNotMatch(seminarSource, /parenting-workshop/);
+  assert.doesNotMatch(seminarSource, /세미나 vs 4주/);
   assert.match(seminarSource, /href="\/#parenting"/);
 });
 

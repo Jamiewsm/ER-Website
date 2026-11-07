@@ -245,8 +245,7 @@ function renderParenting(payload = null) {
         ['입문', '우리 아이 유형검사', '부모의 관찰을 통해 아이의 반복적인 동기와 반응 패턴을 탐색합니다. 결과는 아이를 하나의 유형으로 단정하는 진단이 아니라, 부모가 아이를 더 세밀하게 관찰하도록 돕는 이해의 가설입니다.', '아이 유형검사 시작하기', "link:child-type-test/child-type-test.html"],
         ['핵심', '부모–자녀 맞춤 리포트', '아이의 성향 가설, 핵심 욕구, 스트레스 반응, 부모의 양육성향, 주요 갈등 지점, 상황별 도움이 되는 말과 피해야 할 반응, 관계 회복 실천 과제를 담은 맞춤 리포트.', '맞춤 가이드 신청하기', "apply:parenting"],
         ['프리미엄', '우리자녀 기질상담', '검사 결과 검토, 오진 가능성 점검, 실제 갈등 사례 분석, 부모의 자동반응 탐색, 가정별 실천계획 수립.', '우리자녀 기질상담 신청', "apply:parenting"],
-        ['안내', 'Parenting 세미나', '단회 세미나로 부모와 아이의 기질 차이를 살펴보고 양육 방향의 첫걸음을 잡습니다. 4주 워크샵과 별개이며, 일정은 확정 후 안내합니다.', '세미나 안내 보기', "link:parenting-seminar.html?apply_source=parenting"],
-        ['심화', '4주 Parenting 과정', '1주 부모인 나 이해하기, 2주 아이의 핵심 욕구와 불안, 3주 부모–아이 갈등 조합 분석, 4주 상황별 대화와 훈육 계획 만들기.', '4주 과정 알아보기', "link:parenting-workshop.html?apply_source=parenting"]
+        ['안내', 'Parenting 세미나', '단회 세미나로 부모와 아이의 기질 차이를 살펴보고 양육 방향의 첫걸음을 잡습니다. 일정은 확정 후 안내합니다.', '세미나 안내 보기', "link:parenting-seminar.html?apply_source=parenting"]
     ];
 
     const ladderCta = (label, action) => {
@@ -462,7 +461,7 @@ function renderParenting(payload = null) {
                     <div class="text-center mb-8">
                         <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Step by Step</span>
                         <h3 class="text-xl md:text-2xl font-bold text-er-dark mt-2 break-keep">한 걸음씩 함께합니다</h3>
-                        <p class="mt-2 text-sm text-gray-500 break-keep">무료 자료부터 4주 심화 과정까지, 지금 필요한 만큼만 선택할 수 있습니다.</p>
+                        <p class="mt-2 text-sm text-gray-500 break-keep">무료 자료부터 세미나·상담까지, 지금 필요한 만큼만 선택할 수 있습니다.</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         ${ladder.map(([stage, title, desc, cta, action]) => `
@@ -488,7 +487,6 @@ function renderParenting(payload = null) {
                                 <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">우리자녀 기질상담 신청</button>
                                 <button onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'parenting' })" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">부모–자녀 맞춤 가이드 신청하기</button>
                                 <button onclick="window.location.href='parenting-seminar.html?apply_source=parenting'" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">세미나 안내 보기</button>
-                                <button onclick="window.location.href='parenting-workshop.html?apply_source=parenting'" class="px-5 py-3.5 rounded-full bg-white/10 border border-white/20 text-white text-sm font-bold hover:bg-white/20 transition-all">4주 Parenting 과정 알아보기</button>
                             </div>
                         </div>
                     </div>
