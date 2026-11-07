@@ -255,7 +255,8 @@ async function handleApplySubmit(event, source, successPayload) {
     }
     return;
   }
-  var organizationRequired = Boolean(form.querySelector('[name="organization"][required]'));
+  var organizationRequired = typeof form.querySelector === 'function'
+    && Boolean(form.querySelector('[name="organization"][required]'));
   if (organizationRequired && !organization) {
     if (!setApplySubmitStatus('교회·기관명을 입력해 주세요.', 'error')) {
       alert('교회·기관명을 입력해 주세요.');
