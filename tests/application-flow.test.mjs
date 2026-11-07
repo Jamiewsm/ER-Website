@@ -70,7 +70,7 @@ test('catalog fallback also excludes basic course from the generic form', () => 
 });
 test('closed home and landing agree on recruitment without inventing a new cohort', () => {
   const a=app(), html=a.context.renderHome();
-  const card=html.match(/<article[^>]*>(?:(?!<\/article>)[\s\S])*에니어그램 기본과정 8주(?:(?!<\/article>)[\s\S])*<\/article>/)?.[0];
+  const card=html.match(/<article[^>]*>(?:(?!<\/article>)[\s\S])*성경적 에니어그램 기본과정 8주(?:(?!<\/article>)[\s\S])*<\/article>/)?.[0];
   assert.ok(card);assert.match(card,/모집 마감/);assert.doesNotMatch(card,/모집 중/);
   assert.match(a.context.renderApply({focus:'enneagram_basic_october'}),/모집이 마감/);
   const landing=read('basic-course.html');

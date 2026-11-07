@@ -143,15 +143,12 @@ test('programs section is relabeled to the locked nav IA and redirects parenting
   assert.doesNotMatch(programsSource, /individual:개인\/가정/);
 });
 
-test('home parenting hero card has a dual CTA into the journey and the workshop apply', () => {
-  // 1차 CTA: 양육 여정 보기 → 랜딩 top.
-  assert.match(homeSource, /button: '양육 여정 보기'/);
-  assert.match(homeSource, /action: "renderSection\('parenting'\)"/);
-  // 2차 CTA: 4주 과정 신청 → apply parenting_workshop (home_hero attribution).
-  assert.match(homeSource, /button2: '4주 과정 신청'/);
-  assert.match(homeSource, /focus: 'parenting_workshop', apply_source: 'home_hero'/);
-  // 홈은 정적 /parenting-workshop.html 로 직행하지 않음.
-  assert.doesNotMatch(homeSource, /parenting-workshop\.html/);
+test('home featured programs include parenting seminar as the parent-education entry', () => {
+  assert.match(homeSource, /title: '부모교육 세미나'/);
+  assert.match(homeSource, /parenting-seminar\.html\?apply_source=home_programs/);
+  assert.match(homeSource, /title: '에니어그램 기질 검사'/);
+  assert.doesNotMatch(homeSource, /관계·부부 코칭 보기/);
+  assert.doesNotMatch(homeSource, /button2: '4주 과정 신청'/);
 });
 
 test('workshop detail page links back into the Parenting journey', () => {
