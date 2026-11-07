@@ -51,11 +51,16 @@ test('real source builder bounds track and focus, including direct callers', () 
 
 test('dedicated form renderers never interpolate source into executable handlers', () => {
   const app = renderer();
-  for (const render of [app.renderParentingWorkshopApply, app.renderParentingSeminarApply, app.renderBasicCourseApply]) {
+  for (const render of [app.renderParentingSeminarApply, app.renderBasicCourseApply]) {
     const html = render(marker);
     assert.doesNotMatch(html, /<span data-er-audit-inert-probe/);
     assert.match(html, /onsubmit="handleApplyFormSubmit\(event\)"/);
   }
+  // 4주 워크샵은 공개 모집 중단 — 신청 폼 대신 안내만 렌더한다.
+  const workshopHtml = app.renderParentingWorkshopApply(marker);
+  assert.doesNotMatch(workshopHtml, /<span data-er-audit-inert-probe/);
+  assert.doesNotMatch(workshopHtml, /id="apply-form"/);
+  assert.match(workshopHtml, /data-workshop-status="unavailable"/);
 });
 
 test('static submit adapter preserves source and dedicated program context', () => {
