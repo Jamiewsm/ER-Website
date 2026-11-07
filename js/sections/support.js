@@ -66,8 +66,8 @@ function renderSupport() {
                 class="absolute inset-0 h-full w-full object-cover"
                 style="object-position: center 42%;"
             />
-            <div class="absolute inset-0 bg-[linear-gradient(105deg,#fbfaf5_0%,#fbfaf5_38%,rgba(251,250,245,0.88)_52%,rgba(251,250,245,0.35)_68%,rgba(251,250,245,0.12)_100%)]" aria-hidden="true"></div>
-            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(251,250,245,0.35)_0%,transparent_28%,transparent_72%,rgba(251,250,245,0.55)_100%)]" aria-hidden="true"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-er-base from-35% via-er-base/85 to-transparent" aria-hidden="true"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-er-base/35 via-transparent to-er-base/55" aria-hidden="true"></div>
             <div class="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
                 <div class="max-w-xl">
                     <p class="mb-5 text-sm font-bold text-er-green">ER 사역지원 · 반액 장학</p>
