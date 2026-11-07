@@ -1,0 +1,38 @@
+/* Parenting 세미나 — one-time seminar landing (distinct from 4주 workshop) */
+
+.ps-landing {
+  font-family: "Pretendard", system-ui, sans-serif;
+  color: #44473F;
+  background: #FBFAF5;
+}
+
+.ps-landing .ps-hero {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(251, 250, 245, 0.15) 0%, rgba(251, 250, 245, 0.92) 100%),
+    #EEF3E6;
+}
+
+.ps-landing .ps-hero-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(72vh, 640px);
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+.ps-landing .ps-glass {
+  background: rgba(255, 253, 248, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+}
+
+@media (max-width: 640px) {
+  .ps-landing .ps-hero-img {
+    max-height: min(52vh, 420px);
+    object-position: 62% center;
+  }
+}
