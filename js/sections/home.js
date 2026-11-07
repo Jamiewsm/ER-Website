@@ -1,3 +1,19 @@
+function renderHomeParticipation(participation) {
+    return participation.map(([label, description, links]) => `
+        <details class="mt-3 rounded-xl border border-er-sand bg-er-base px-4 py-3 text-sm break-keep">
+            <summary class="min-h-11 cursor-pointer font-extrabold text-er-green">
+                ${label}
+                <span class="block pt-1 text-xs font-medium text-er-muted">${description}</span>
+            </summary>
+            ${links.map(([href, text]) => `
+                <a href="${href.replaceAll('&', '&amp;')}" class="mt-2 flex min-h-11 items-center font-bold text-er-green underline underline-offset-2">
+                    <span class="inline-block whitespace-nowrap">${text}</span>
+                </a>
+            `).join('')}
+        </details>
+    `).join('');
+}
+
 function renderHome() {
     const stories = Array.isArray(publicTestimonials?.stories) ? publicTestimonials.stories : [];
     const findStory = (matcher, fallback) => stories.find((story) => matcher(story)) || fallback;
@@ -70,8 +86,8 @@ function renderHome() {
             price: '개최 맞춤 안내',
             image: images.couple,
             position: 'center top',
-            button: '개최 문의',
-            action: "renderSection('apply', { track: 'org', focus: 'couple_seminar', apply_source: 'home_programs' })"
+            button: '부부 세미나 안내',
+            action: "window.location.href='/church-programs#couple'"
         },
         {
             badge: '교회·기관',
@@ -90,8 +106,8 @@ function renderHome() {
             price: '맞춤 견적',
             image: images.team,
             position: 'center',
-            button: '개최 문의',
-            action: "renderSection('apply', { track: 'org', focus: 'ministry_team', apply_source: 'home_programs' })"
+            button: '팀워크 세미나 안내',
+            action: "window.location.href='/church-programs#teamwork'"
         },
         {
             badge: showBasicCourseRecruitment ? '모집 중' : '모집 마감',
@@ -105,8 +121,16 @@ function renderHome() {
         },
         {
             badge: '양성',
-            title: 'ER 전문가 과정',
-            text: '기본과정·101 하위유형 스터디·선택 심화·1년 코칭스쿨로 이어지는 전문가 양성 여정',
+            title: '에니어그램 교육',
+            text: '성경적 에니어그램을 삶과 관계, 사역 현장에 적용하는 교육입니다.',
+            participation: [
+                ['개인 수강 과정', '8주 기본과정에서 시작해 심화과정과 코치 트레이닝으로 이어갈 수 있습니다.', [
+                    ['/basic-course', '8주 기본과정 안내'], ['/#coach_training', '심화·코치 트레이닝 안내']
+                ]],
+                ['교회·기관 맞춤 교육', '기본·심화·전문가 교육을 3시간 특강, 2~3회 워크숍 또는 8주 과정으로 협의합니다.', [
+                    ['/church-programs#education', '기관 맞춤 교육 안내']
+                ]]
+            ],
             price: '과정 안내',
             image: images.team,
             position: 'center top',
@@ -152,7 +176,14 @@ function renderHome() {
             position: 'center top',
             caption: '행동보다 마음을 이해하는 부모교육',
             points: ['부모의 유형과 양육 패턴', '자녀의 기질과 반응 이해', '반복되는 부모-자녀 갈등 분석'],
-            action: "renderSection('parenting')"
+            participation: [
+                ['우리 가정을 위한 양육 도움', '우리 집의 양육 고민을 상담에서 살피고, 필요에 따라 단기·장기 코칭을 협의합니다. 4주 워크숍에서는 실제 대화와 대응을 연습합니다.', [
+                    ['/#parenting', '양육 상담·코칭 보기'], ['/parenting-workshop', '4주 부모교육 워크숍']
+                ]],
+                ['우리 공동체를 위한 부모교육', '교회·기독교기관이 부모님들을 위한 세미나 개최를 요청할 수 있습니다.', [
+                    ['/parenting-seminar?apply_source=home_programs', '부모교육 세미나 안내']
+                ]]
+            ]
         },
         {
             eyebrow: '부부와 가정',
@@ -162,7 +193,14 @@ function renderHome() {
             position: 'center top',
             caption: '상대를 고치려는 자리에서, 이해하는 자리로',
             points: ['같은 문제로 반복되는 갈등 이해', '배우자의 방어기제를 자극하지 않는 대화', '복음 안에서 안전한 관계 다시 세우기'],
-            action: "renderSection('apply', { track: 'paid', focus: 'couple', apply_source: 'home_relationship_couple' })"
+            participation: [
+                ['우리 부부를 위한 관계 코칭', '한 번의 상담으로 반복되는 갈등을 살피고, 필요한 변화에 맞춰 단기·장기 코칭을 협의합니다.', [
+                    ['/#apply?track=paid&focus=couple&apply_source=home_relationship_couple', '부부 상담·코칭 신청']
+                ]],
+                ['우리 공동체를 위한 부부 세미나', '교회·기독교기관의 초청으로 부부의 갈등 패턴과 대화 방법을 함께 살핍니다.', [
+                    ['/church-programs#couple', '부부 세미나 안내']
+                ]]
+            ]
         },
         {
             eyebrow: '교회·사역팀',
@@ -172,7 +210,11 @@ function renderHome() {
             position: 'center top',
             caption: '각 사람의 은사를 존중하며 함께 섬기는 사역팀',
             points: ['사역자의 강점과 소명 이해', '리더와 사역팀의 소통·의사결정 패턴', '갈등을 줄이고 동역을 세우는 공동체 언어'],
-            action: "renderSection('apply', { track: 'org', focus: 'ministry_team', apply_source: 'home_relationship_ministry_team' })"
+            participation: [
+                ['우리 사역팀을 위한 팀워크', '교회·기독교기관이 팀의 소통, 역할, 갈등을 다루는 세미나와 워크숍을 요청할 수 있습니다.', [
+                    ['/church-programs#teamwork', '사역팀 팀워크 안내']
+                ]]
+            ]
         }
     ];
 
@@ -328,10 +370,7 @@ function renderHome() {
                                             </li>
                                         `).join('')}
                                     </ul>
-                                    <button onclick="${card.action}" class="mt-6 inline-flex min-h-[2.95rem] w-full items-center justify-center gap-2 rounded-xl bg-er-green px-5 py-3 text-sm font-extrabold text-er-surface shadow-[0_14px_28px_rgba(101,116,83,0.16)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark">
-                                        상담/워크숍 문의
-                                        <i class="fas fa-arrow-right text-xs opacity-80" aria-hidden="true"></i>
-                                    </button>
+                                    ${renderHomeParticipation(card.participation)}
                                 </div>
                             </article>
                         `).join('')}
@@ -357,10 +396,12 @@ function renderHome() {
                                         <div class="flex flex-1 flex-col pt-5">
                                             <h3 class="text-[1.05rem] font-black leading-snug tracking-[-0.01em] text-er-inkSoft break-keep">${card.title}</h3>
                                             <p class="mt-3 text-sm font-medium leading-7 text-[#696a62] break-keep">${card.text}</p>
-                                            <div class="mt-auto pt-6">
-                                                <p class="text-base font-black text-er-inkSoft break-keep">${card.price}</p>
-                                                <button onclick="${card.action}" class="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#dccfbc] bg-er-surface px-4 py-3 text-sm font-extrabold text-er-inkSoft transition-all hover:border-er-green hover:bg-er-green hover:text-er-surface">${card.button}</button>
-                                            </div>
+                                            ${card.participation ? renderHomeParticipation(card.participation) : `
+                                                <div class="mt-auto pt-6">
+                                                    <p class="text-base font-black text-er-inkSoft break-keep">${card.price}</p>
+                                                    <button onclick="${card.action}" class="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#dccfbc] bg-er-surface px-4 py-3 text-sm font-extrabold text-er-inkSoft transition-all hover:border-er-green hover:bg-er-green hover:text-er-surface">${card.button}</button>
+                                                </div>
+                                            `}
                                         </div>
                                     </article>
                                 `).join('')}

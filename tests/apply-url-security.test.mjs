@@ -51,7 +51,7 @@ test('real source builder bounds track and focus, including direct callers', () 
 
 test('dedicated form renderers never interpolate source into executable handlers', () => {
   const app = renderer();
-  for (const render of [app.renderParentingSeminarApply, app.renderBasicCourseApply]) {
+  for (const render of [source => app.renderOrganizationProgramApply(source, 'parenting_seminar'), app.renderBasicCourseApply]) {
     const html = render(marker);
     assert.doesNotMatch(html, /<span data-er-audit-inert-probe/);
     assert.match(html, /onsubmit="handleApplyFormSubmit\(event\)"/);

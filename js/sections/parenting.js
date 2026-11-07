@@ -244,8 +244,9 @@ function renderParenting(payload = null) {
         ['무료', '시작은 가볍게', '인스타그램 콘텐츠, 웹 양육 아티클, 간단한 부모 양육성향 체크, 아이 핵심 욕구 미니 체크리스트.', null, null],
         ['입문', '우리 아이 유형검사', '부모의 관찰을 통해 아이의 반복적인 동기와 반응 패턴을 탐색합니다. 결과는 아이를 하나의 유형으로 단정하는 진단이 아니라, 부모가 아이를 더 세밀하게 관찰하도록 돕는 이해의 가설입니다.', '아이 유형검사 시작하기', "link:child-type-test/child-type-test.html"],
         ['핵심', '부모–자녀 맞춤 리포트', '아이의 성향 가설, 핵심 욕구, 스트레스 반응, 부모의 양육성향, 주요 갈등 지점, 상황별 도움이 되는 말과 피해야 할 반응, 관계 회복 실천 과제를 담은 맞춤 리포트.', '맞춤 가이드 신청하기', "apply:parenting"],
-        ['프리미엄', '우리자녀 기질상담', '검사 결과 검토, 오진 가능성 점검, 실제 갈등 사례 분석, 부모의 자동반응 탐색, 가정별 실천계획 수립.', '우리자녀 기질상담 신청', "apply:parenting"],
-        ['교회·기관', 'Parenting 세미나', '교회·기독교 기관의 요청으로 개최하는 부모교육 세미나입니다. 개인 참가 등록은 받지 않으며, 개인은 위 기질상담으로 신청합니다.', '개최 안내 보기', "link:parenting-seminar.html?apply_source=parenting"]
+        ['프리미엄', '우리자녀 기질상담', '검사 결과 검토, 오진 가능성 점검, 실제 갈등 사례 분석, 부모의 자동반응 탐색, 가정별 실천계획 수립. 필요에 따라 단기·장기 양육 코칭을 협의할 수 있습니다.', '우리자녀 기질상담 신청', "apply:parenting"],
+        ['개인·가정', '4주 부모교육 워크숍', '반복되는 양육 상황을 바탕으로 대화와 대응을 연습합니다. 기본과정 수료 여부와 관계없이 참여할 수 있습니다.', '4주 과정 안내', 'link:/parenting-workshop'],
+        ['교회·기관', '부모교육 세미나', '교회·기독교기관의 요청으로 공동체를 위한 부모교육 세미나를 엽니다.', '개최 안내 보기', 'link:/parenting-seminar?apply_source=parenting']
     ];
 
     const ladderCta = (label, action) => {
@@ -461,7 +462,7 @@ function renderParenting(payload = null) {
                     <div class="text-center mb-8">
                         <span class="text-er-accent font-bold text-xs tracking-widest uppercase">Step by Step</span>
                         <h3 class="text-xl md:text-2xl font-bold text-er-dark mt-2 break-keep">한 걸음씩 함께합니다</h3>
-                        <p class="mt-2 text-sm text-gray-500 break-keep">개인은 자료·검사·상담으로, 교회·기관은 세미나 개최 문의로 이어집니다.</p>
+                        <p class="mt-2 text-sm text-gray-500 break-keep">개인·가정은 상담·코칭과 4주 워크숍으로, 교회·기관은 세미나 개최 문의로 이어집니다.</p>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         ${ladder.map(([stage, title, desc, cta, action]) => `

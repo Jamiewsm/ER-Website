@@ -1,0 +1,27 @@
+* { box-sizing: border-box; }
+html { word-break: keep-all; overflow-wrap: normal; hyphens: none; }
+body { margin: 0; background: #fbfaf5; color: #30322d; font: 1rem/1.7 system-ui, sans-serif; }
+header { background: #fffdf8; border-bottom: 1px solid #e2d8c8; }
+.guide-width { width: min(calc(100% - 2rem), 52rem); margin-inline: auto; }
+.guide-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .75rem; }
+.guide-header img { display: block; height: auto; }
+main { padding-block: clamp(2rem, 6vw, 5rem); }
+.eyebrow { color: #536149; font-weight: 800; }
+h1, h2 { line-height: 1.25; }
+h1 { font-size: clamp(1.9rem, 5vw, 3rem); margin-block: .5rem 1rem; }
+h2 { font-size: clamp(1.2rem, 4vw, 1.5rem); margin-top: 0; }
+.lead { color: #44473f; max-width: 42rem; }
+a { color: #455638; font-weight: 700; text-underline-offset: .2em; }
+a:focus-visible { outline: 2px solid #455638; outline-offset: 4px; }
+.chunk { display: inline-block; white-space: nowrap; }
+.topic-nav, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; }
+.topic-nav { margin-block: 1.5rem; }
+.guide-card { margin-top: 1rem; padding: clamp(1rem, 4vw, 2rem); border: 1px solid #e2d8c8; border-radius: 1rem; background: #fffdf8; scroll-margin-top: 1rem; }
+dt { font-weight: 800; margin-top: .65rem; }
+dd { margin: .1rem 0 0; }
+.actions { margin-top: 1.25rem; }
+.guide-button { display: inline-flex; min-height: 44px; align-items: center; padding: .55rem .9rem; border-radius: .65rem; background: #536149; color: white; text-decoration: none; }
+.guide-button:hover { background: #3e4c34; }
+.guide-weeks { padding-inline-start: 1.25rem; }
+.guide-weeks p { margin: .1rem 0 .85rem; }
+.guide-note { margin-top: 1.5rem; }

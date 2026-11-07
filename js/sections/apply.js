@@ -7,8 +7,11 @@ function escapeApplyAttribute(value) {
 
 function handleApplyFormSubmit(event) {
     const form = event.currentTarget || event.target;
-    const focus = normalizeApplyFocus(form.dataset.applyFocus);
-    return handleApplySubmit(event, form.dataset.submitSource || 'paid', focus ? { focus } : undefined);
+    const selectedTopic = form.elements?.category?.selectedOptions?.[0]?.dataset.focus;
+    const focus = normalizeApplyFocus(selectedTopic || form.dataset.applyFocus);
+    const source = form.dataset.submitSource || 'paid';
+    const submitSource = selectedTopic ? buildApplySubmitSource('org', focus, source.split(':')[2]) : source;
+    return handleApplySubmit(event, submitSource, focus ? { focus } : undefined);
 }
 
 function renderApplyPrivacyNotice() {
@@ -21,14 +24,6 @@ function renderApplyPrivacyNotice() {
 function isParentingWorkshopFocus(focus) {
     const normalizedFocus = String(focus || '').trim();
     return normalizedFocus === 'parenting_workshop' || normalizedFocus === 'parents_workshop';
-}
-
-function isParentingSeminarFocus(focus) {
-    return String(focus || '').trim() === 'parenting_seminar';
-}
-
-function isParentingDedicatedApplyFocus(focus) {
-    return isParentingWorkshopFocus(focus) || isParentingSeminarFocus(focus);
 }
 
 function getErInstagramAccounts() {
@@ -179,13 +174,13 @@ function renderParentingWorkshopApply(_submitSource) {
         <div class="parenting-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
             <div class="mx-auto max-w-xl rounded-2xl border border-er-sand bg-white p-6 shadow-soft sm:p-8" data-apply-focus="parenting_workshop" data-workshop-status="unavailable">
                 <p class="text-xs font-bold uppercase tracking-[0.16em] text-er-green">안내</p>
-                <h1 class="mt-3 text-2xl font-bold text-er-dark break-keep">4주 Parenting 워크샵</h1>
+                <h1 class="mt-3 text-2xl font-bold text-er-dark break-keep">4주 부모교육 워크숍</h1>
                 <p class="mt-3 text-sm leading-relaxed text-er-body break-keep">
-                    현재 4주 심화 워크샵은 운영 일정이 없습니다. 개인·가정은 기질상담·맞춤 가이드로, 교회·기관은 Parenting 세미나 개최 문의로 이어가 주세요.
+                    모집 일정은 확정 후 안내합니다. 기본과정 수료 여부와 관계없이 참여할 수 있습니다.
                 </p>
                 <div class="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                     <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'workshop_unavailable' })" class="inline-flex min-h-11 items-center justify-center rounded-full bg-er-green px-5 text-sm font-bold text-white hover:bg-er-greenDark">기질상담 신청</button>
-                    <a href="/parenting-seminar?apply_source=workshop_unavailable" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">교회·기관 세미나 안내</a>
+                    <a href="/parenting-workshop" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">4주 과정 안내</a>
                     <button type="button" onclick="renderSection('parenting')" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">Parenting 여정 보기</button>
                 </div>
             </div>
@@ -193,27 +188,37 @@ function renderParentingWorkshopApply(_submitSource) {
     `;
 }
 
-function renderParentingSeminarApply(submitSource) {
+const organizationPrograms = {
+    parenting_seminar: ['부모교육 세미나', 'Parenting 세미나 개최 문의'],
+    couple_seminar: ['부부 세미나', '결혼·부부 세미나 개최 문의'],
+    teamwork_seminar: ['사역팀 팀워크 세미나', '팀워크 세미나 개최 문의'],
+    organization_education: ['에니어그램 맞춤 교육', '교회·기관 에니어그램 교육 문의'],
+    church: ['교회·기관 프로그램', '교회 공동체 워크숍 문의'],
+    ministry_team: ['교회·사역팀 프로그램', '사역팀 소통·갈등 프로그램 문의'],
+    church_debrief: ['교회 리더 디브리핑', '교회 리더 디브리핑 문의'],
+    organization_other: ['기타 기독교기관 프로그램', '기독교 기관 프로그램 문의']
+};
+
+function isOrganizationProgramFocus(focus) {
+    return Object.hasOwn(organizationPrograms, focus);
+}
+
+function renderOrganizationProgramApply(submitSource, focus) {
+    const [title] = organizationPrograms[focus];
     return `
         <div class="parenting-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
             <div class="mx-auto grid max-w-5xl gap-5 lg:grid-cols-[minmax(270px,0.84fr)_minmax(430px,1fr)] lg:items-start">
                 <section class="parenting-apply-intro overflow-hidden rounded-lg border border-er-accentLight bg-er-dark text-white">
-                    <img
+                    ${focus === 'parenting_seminar' ? `<img
                         src="/assets/parenting/parenting-seminar-hero.jpg"
                         alt=""
                         class="parenting-apply-photo h-28 w-full object-cover object-right sm:h-36 lg:h-64"
-                    />
+                    />` : ''}
                     <div class="p-5 sm:p-6">
-                        <h1 class="text-[1.7rem] font-bold leading-tight sm:text-3xl">Parenting 세미나</h1>
+                        <h1 class="text-[1.7rem] font-bold leading-tight break-keep sm:text-3xl">${title}</h1>
                         <p class="mt-2 text-lg font-semibold text-white">교회·기관 개최 문의</p>
-                        <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/20 pt-4 text-sm">
-                            <p><span class="block text-[11px] text-white/60">형식</span>초청 세미나</p>
-                            <p><span class="block text-[11px] text-white/60">요청</span>교회·기관</p>
-                            <p><span class="block text-[11px] text-white/60">일정</span>현장 맞춤</p>
-                            <p><span class="block text-[11px] text-white/60">개인</span>상담으로</p>
-                        </div>
                         <p class="mt-5 text-sm leading-relaxed text-white/80 break-keep">
-                            교회·선교단체·기독교 기관의 요청으로 개최합니다. 개인 참가 등록은 받지 않으며, 개인·가정은 기질상담으로 신청해 주세요.
+                            교회·선교단체·기독교기관의 요청으로 진행합니다. 공동체의 필요에 맞춰 일정과 진행 형식을 협의합니다.
                         </p>
                     </div>
                 </section>
@@ -221,12 +226,18 @@ function renderParentingSeminarApply(submitSource) {
                 <section class="rounded-lg border border-er-accentLight bg-white p-5 shadow-soft sm:p-7">
                     <h2 class="text-lg font-bold text-er-dark">개최 문의 정보</h2>
                     <p class="mb-6 mt-2 text-sm leading-relaxed text-er-primary break-keep">
-                        담당자 정보를 남겨주시면 일정을 조율해 안내드립니다. 개인 참가 희망이라면
-                        <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'seminar_to_counseling' })" class="font-bold text-er-green underline underline-offset-2">우리자녀 기질상담 신청</button>으로 이동해 주세요.
+                        담당자 정보를 남겨 주시면 대상·일정·형식을 함께 조율합니다. 기업 팀 교육은 <a href="https://business.er-coaching.com/contact" class="font-bold text-er-green underline">ER Business</a>에서 문의할 수 있습니다.
                     </p>
 
-                    <form id="apply-form" class="space-y-5" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit(event)">
-                        <input type="hidden" name="category" value="Parenting 세미나 개최 문의">
+                    <form id="apply-form" class="space-y-5" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="${focus}" onsubmit="handleApplyFormSubmit(event)">
+                        <div>
+                            <label for="apply-category" class="mb-2 block text-sm font-bold text-gray-700">희망 주제</label>
+                            <select id="apply-category" name="category" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                                ${Object.entries(organizationPrograms).map(([key, [label, category]]) => `
+                                    <option value="${category}" data-focus="${key}" ${key === focus ? 'selected' : ''}>${label}</option>
+                                `).join('')}
+                            </select>
+                        </div>
 
                         <div>
                             <label for="apply-name" class="mb-2 block text-sm font-bold text-gray-700">담당자 이름</label>
@@ -239,7 +250,7 @@ function renderParentingSeminarApply(submitSource) {
                         </div>
 
                         <div>
-                            <label for="apply-contact" class="mb-2 block text-sm font-bold text-gray-700">연락받으실 곳</label>
+                            <label for="apply-contact" class="mb-2 block text-sm font-bold text-gray-700">담당자 연락처</label>
                             <input type="text" name="contact" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="전화번호 또는 이메일" id="apply-contact">
                         </div>
 
@@ -249,14 +260,14 @@ function renderParentingSeminarApply(submitSource) {
                                 <input type="text" name="role" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 교육목사, 사역팀장" id="apply-role">
                             </div>
                             <div>
-                                <label for="apply-preferred-time" class="mb-2 block text-sm font-bold text-gray-700">희망 일정·규모 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <label for="apply-preferred-time" class="mb-2 block text-sm font-bold text-gray-700">희망 일정·예상 인원 <span class="font-normal text-gray-400">(선택)</span></label>
                                 <input type="text" name="preferred_time" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 3월 / 약 40명" id="apply-preferred-time">
                             </div>
                         </div>
 
                         <div>
                             <label for="apply-message" class="mb-2 block text-sm font-bold text-gray-700">요청 내용 <span class="font-normal text-gray-400">(선택)</span></label>
-                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="대상(부모·사역자 등), 장소, 기대하는 방향을 편하게 남겨주세요." id="apply-message"></textarea>
+                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="참여 대상, 희망 지역 또는 온라인 여부, 기대하는 방향을 남겨 주세요." id="apply-message"></textarea>
                         </div>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
@@ -272,8 +283,8 @@ function renderParentingSeminarApply(submitSource) {
                         </div>
 
                         <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
-                        <button id="apply-submit-btn" type="submit" data-default-label="세미나 개최 문의하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
-                            세미나 개최 문의하기
+                        <button id="apply-submit-btn" type="submit" data-default-label="개최 문의 보내기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
+                            개최 문의 보내기
                         </button>
                     </form>
 
@@ -568,24 +579,6 @@ function renderApply(payload = null) {
             category: '우리자녀 기질상담 문의',
             message: '우리자녀 기질상담을 신청합니다.'
         },
-        parenting_seminar: {
-            track: 'org',
-            title: 'Parenting 세미나 개최 문의',
-            desc: '교회·선교단체·기독교 기관의 Parenting 세미나 개최 요청을 남겨 주세요. 개인 참가 등록은 받지 않습니다.',
-            bannerTitle: 'Parenting 세미나 — 교회·기관 개최',
-            bannerBody: '요청하신 현장의 일정·대상·규모에 맞춰 세미나를 준비합니다. 개인·가정은 우리자녀 기질상담으로 신청해 주세요.',
-            category: 'Parenting 세미나 개최 문의',
-            message: '교회·기관 Parenting 세미나 개최를 문의합니다.'
-        },
-        couple_seminar: {
-            track: 'org',
-            title: '결혼·부부 세미나 개최 문의',
-            desc: '교회·선교단체·기독교 기관의 결혼·부부 세미나 개최 요청을 남겨 주세요. 개인은 부부 상담·코칭으로 신청합니다.',
-            bannerTitle: '결혼·부부 세미나 — 교회·기관 개최',
-            bannerBody: '부부 갈등 패턴을 복음적 시선으로 읽는 세미나를 공동체 요청으로 준비합니다. 개인 부부는 부부 코칭 상담으로 신청해 주세요.',
-            category: '결혼·부부 세미나 개최 문의',
-            message: '교회·기관 결혼·부부 세미나 개최를 문의합니다.'
-        },
         parenting_workshop: {
             track: 'paid',
             title: 'Enneagram for Parenting 4주 워크샵 신청',
@@ -616,29 +609,11 @@ function renderApply(payload = null) {
         couple: {
             track: 'paid',
             title: '부부 코칭 상담',
-            desc: '부부의 차이와 오해, 반복되는 갈등 패턴을 함께 정리하고 실제 대화 방식을 설계합니다.',
+            desc: '부부의 차이와 반복되는 갈등 패턴을 함께 정리하고 실제 대화 방식을 설계합니다. 상담 후 필요에 따라 단기·장기 코칭을 협의할 수 있습니다.',
             bannerTitle: '부부 관계 상담 안내',
             bannerBody: '서로의 다름을 문제로만 보지 않고, 반복되는 갈등 구조를 이해하고 대화 가능한 관계로 전환하는 방향을 함께 찾습니다.',
             category: '부부 코칭 1회 ($220)',
             message: '부부 관계 코칭을 원합니다.'
-        },
-        ministry_team: {
-            track: 'org',
-            title: '교회·사역팀 프로그램 문의',
-            desc: '사역자 소진, 공동체 갈등, 리더와 사역팀의 소통 문제를 남겨 주시면 현장에 맞는 워크숍과 후속 코칭 방향을 함께 정리합니다.',
-            bannerTitle: '교회·사역팀 회복 프로그램 안내',
-            bannerBody: '교회의 규모와 현재 고민, 리더 구성과 일정에 맞춰 공동체 회복과 사역 리더십 프로그램을 제안합니다.',
-            category: '사역팀 소통·갈등 프로그램 문의',
-            message: '우리 교회와 사역팀의 관계·소통 회복을 위한 상담을 원합니다.'
-        },
-        church: {
-            track: 'org',
-            title: '교회 프로그램 문의',
-            desc: '사역자 소진, 공동체 갈등, 리더십 소통 문제를 교회 현장에 맞는 워크숍과 후속 코칭으로 제안합니다.',
-            bannerTitle: '교회 공동체 회복 문의 안내',
-            bannerBody: '교회의 규모와 현재 고민, 리더 구성과 일정에 맞춰 공동체 회복 프로그램과 리더십 워크숍 방향을 함께 정리합니다.',
-            category: '교회 공동체 워크숍 문의',
-            message: '우리 교회의 공동체/리더십 회복을 위한 상담을 원합니다.'
         },
         identity_session: {
             track: 'paid',
@@ -696,16 +671,16 @@ function renderApply(payload = null) {
         bannerBody: '아이 유형검사는 방향을 보여줍니다. 해석상담에서는 점수와 상위 후보, 부모의 관찰 편향 가능성을 함께 검토하고 아이에게 맞는 양육 언어와 다음 적용을 정리합니다. (1시간 $50)'
     } : null;
     const requestedTrack = normalizeApplyTrack(payload?.track);
-    const track = selectedFocus?.track || requestedTrack;
+    const track = isOrganizationProgramFocus(focus) ? 'org' : selectedFocus?.track || requestedTrack;
     const isSupportTrack = track === 'support';
     if (isSupportTrack) return renderScholarshipInquiry(payload);
     const isMinistryTrack = track === 'ministry';
-    const isOrgTrack = track === 'org';
     const isParentingApplyContext = focus === 'parenting' || fromChildTypeTest;
     const applyAttribution = fromTest ? 'test' : (fromChildTypeTest ? 'child_type_test' : (payload?.apply_source || ''));
     const submitSource = buildApplySubmitSource(track, focus, applyAttribution);
-    if (isParentingSeminarFocus(focus)) {
-        return renderParentingSeminarApply(submitSource);
+    if (track === 'org') {
+        const organizationFocus = isOrganizationProgramFocus(focus) ? focus : 'church';
+        return renderOrganizationProgramApply(buildApplySubmitSource('org', organizationFocus, applyAttribution), organizationFocus);
     }
     if (isParentingWorkshopFocus(focus)) {
         return renderParentingWorkshopApply(submitSource);
@@ -723,35 +698,21 @@ function renderApply(payload = null) {
             ? '후원·협력 문의'
             : isMinistryTrack
                 ? '사역지원 신청'
-                : isOrgTrack
-                    ? '교회·사역팀 프로그램 문의'
-                    : '상담 및 코칭 신청'
+                : '상담 및 코칭 신청'
     );
     const trackDesc = childResultFocus?.desc || selectedFocus?.desc || (
         isSupportTrack
             ? '후원 및 협력 관련 문의를 남겨 주세요.'
             : isMinistryTrack
                 ? '목회자·선교사 사역지원(반액 장학) 신청을 남겨 주세요.'
-                : isOrgTrack
-                    ? '교회·선교단체·기독교 기관의 프로그램 문의를 남겨 주세요.'
-                    : '신청 내용을 남겨주세요.'
+                : '신청 내용을 남겨주세요.'
     );
 
     const categoryOptions = isSupportTrack
         ? ['후원 문의', '협력 파트너십 문의', '공동 프로그램 제안', '기타 협력 문의']
         : isMinistryTrack
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
-            : isOrgTrack
-                ? [
-                    '교회 공동체 워크숍 문의',
-                    '사역팀 소통·갈등 프로그램 문의',
-                    '팀워크 세미나 개최 문의',
-                    'Parenting 세미나 개최 문의',
-                    '결혼·부부 세미나 개최 문의',
-                    '교회 리더 디브리핑 문의',
-                    '기독교 기관 프로그램 문의'
-                ]
-                : getPaidApplyCategoryOptions();
+            : getPaidApplyCategoryOptions();
     const defaultPaidCategory = '테스트 결과지 해석상담 ($50)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
@@ -766,9 +727,7 @@ function renderApply(payload = null) {
                 ? '후원·협력 전용 창구'
                 : isMinistryTrack
                     ? '사역지원 신청 안내'
-                    : isOrgTrack
-                        ? '교회·사역팀 프로그램 안내'
-                        : ''
+                    : ''
     );
     const bannerBody = childResultFocus?.bannerBody || selectedFocus?.bannerBody || (
         fromTest
@@ -777,9 +736,7 @@ function renderApply(payload = null) {
                 ? '후원 문의, 교회·선교단체 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.'
                 : isMinistryTrack
                     ? '목회자·선교사 대상 반액 장학 트랙은 안내 후 적용됩니다.'
-                    : isOrgTrack
-                        ? '프로그램 규모와 대상에 따라 맞춤 견적으로 안내드립니다.'
-                        : ''
+                    : ''
     );
 
     return `
@@ -796,12 +753,6 @@ function renderApply(payload = null) {
                             <p class="text-sm font-bold text-er-dark mb-1">${bannerTitle}</p>
                             <p class="text-xs text-gray-600 break-keep">${bannerBody}</p>
                         </div>
-                    ` : ''}
-
-                    ${isOrgTrack ? `
-                        <p class="mb-6 rounded-2xl border border-er-sand/60 bg-er-base/60 p-4 text-xs leading-relaxed text-er-body break-keep">
-                            일반 기업·팀 교육이나 조직 컨설팅 문의는 <a href="https://business.er-coaching.com/contact" class="font-bold text-er-green underline decoration-er-green/30 underline-offset-4">ER Business 문의 페이지 <span aria-hidden="true">↗</span></a>에서 접수합니다.
-                        </p>
                     ` : ''}
 
                     <div class="flex items-center justify-between mb-8 px-4 relative">
@@ -842,7 +793,7 @@ function renderApply(payload = null) {
                                 </select>
                                 <div class="absolute right-4 top-3.5 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></div>
                             </div>
-                            ${!isSupportTrack && !isMinistryTrack && !isOrgTrack ? '<p class="mt-2 text-xs leading-relaxed text-er-muted">기본과정은 기수별 전용 안내에서 신청합니다. <a href="/#apply?track=paid&focus=enneagram_basic_october" class="font-bold text-er-green underline underline-offset-2">기본과정·다음 기수 안내</a></p>' : ''}
+                            ${!isSupportTrack && !isMinistryTrack ? '<p class="mt-2 text-xs leading-relaxed text-er-muted">기본과정은 기수별 전용 안내에서 신청합니다. <a href="/#apply?track=paid&focus=enneagram_basic_october" class="font-bold text-er-green underline underline-offset-2">기본과정·다음 기수 안내</a></p>' : ''}
                         </div>
                         
                         <div>
@@ -857,9 +808,7 @@ function renderApply(payload = null) {
                                     ? '후원금은 목회자·선교사 사역지원 트랙의 접근성을 유지하는 데 우선 사용됩니다. 후원은 개별 안내 방식으로 연결됩니다.'
                                     : isMinistryTrack
                                         ? '사역지원 트랙은 월별 슬롯 기반으로 운영됩니다. 접수 후 심사 및 일정 가능 여부를 안내드립니다.'
-                                        : isOrgTrack
-                                            ? '교회·사역팀 프로그램은 대상과 일정에 따라 맞춤 제안으로 안내됩니다.'
-                                            : 'ER의 모든 세션은 USD 기준으로 운영됩니다. 최종 결제 금액은 결제 수단 및 환율에 따라 달라질 수 있습니다.'}
+                                        : 'ER의 모든 세션은 USD 기준으로 운영됩니다. 최종 결제 금액은 결제 수단 및 환율에 따라 달라질 수 있습니다.'}
                                 접수 후 24시간 이내에 담당자가 연락드립니다.
                             </p>
                         </div>
@@ -916,15 +865,15 @@ function renderThankYou(payload = null) {
     if (payload?.scholarshipInquiry) return renderScholarshipInquiry();
     const receipt = applicationReceipt(payload);
     const receiptHtml = renderApplicationReceipt(receipt);
-    if (isParentingDedicatedApplyFocus(payload?.focus)) {
-        const seminarThanks = isParentingSeminarFocus(payload?.focus);
+    if (isOrganizationProgramFocus(payload?.focus) || isParentingWorkshopFocus(payload?.focus)) {
+        const seminarThanks = isOrganizationProgramFocus(payload?.focus);
         return `
             <div class="min-h-screen bg-er-base px-4 py-14">
                 <div class="mx-auto max-w-md rounded-lg border border-er-accentLight bg-white p-8 text-center shadow-soft">
                     <div class="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-green-50 text-xl text-green-600">
                         <i class="fas fa-check"></i>
                     </div>
-                    <h2 class="mb-3 text-xl font-bold text-er-dark">신청이 접수되었습니다</h2>
+                    <h2 class="mb-3 text-xl font-bold text-er-dark">${seminarThanks ? '개최 문의가 접수되었습니다' : '신청이 접수되었습니다'}</h2>
                     ${receiptHtml}
                     <p class="text-sm leading-relaxed text-er-primary break-keep">
                         ${seminarThanks
@@ -935,7 +884,7 @@ function renderThankYou(payload = null) {
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
                             ER 홈페이지로 돌아가기
                         </button>
-                        ${renderInstagramThankYouButtons('parenting')}
+                        ${(!seminarThanks || payload?.focus === 'parenting_seminar') ? renderInstagramThankYouButtons('parenting') : ''}
                     </div>
                 </div>
             </div>

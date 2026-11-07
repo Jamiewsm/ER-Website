@@ -33,10 +33,10 @@ test('parenting workshop focus shows unavailable notice instead of an applicatio
     apply_source: 'qr'
   });
 
-  assert.match(html, /4주 Parenting 워크샵/);
-  assert.match(html, /현재 4주 심화 워크샵은 운영 일정이 없습니다/);
+  assert.match(html, /4주 부모교육 워크숍/);
+  assert.match(html, /모집 일정은 확정 후 안내합니다/);
   assert.match(html, /data-workshop-status="unavailable"/);
-  assert.match(html, /parenting-seminar\?apply_source=workshop_unavailable/);
+  assert.match(html, /parenting-workshop/);
   assert.doesNotMatch(html, /id="apply-form"/);
   assert.doesNotMatch(html, /4주 워크샵 신청하기/);
   assert.doesNotMatch(html, /\$120/);
@@ -52,16 +52,16 @@ test('parenting seminar link renders a dedicated org hosting inquiry distinct fr
 
   assert.match(html, /Parenting 세미나/);
   assert.match(html, /교회·기관 개최 문의/);
-  assert.match(html, /개인 참가 등록은 받지 않/);
+  assert.match(html, /교회·선교단체·기독교기관의 요청으로 진행/);
   assert.doesNotMatch(html, /단회/);
   assert.match(html, /assets\/parenting\/parenting-seminar-hero\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="Parenting 세미나 개최 문의"/);
-  assert.match(html, /세미나 개최 문의하기/);
+  assert.match(html, /value="Parenting 세미나 개최 문의" data-focus="parenting_seminar" selected/);
+  assert.match(html, /개최 문의 보내기/);
   assert.match(html, /교회·기관명/);
   assert.match(html, /data-submit-source="org:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
   assert.doesNotMatch(html, /parenting-workshop/);
   assert.doesNotMatch(html, /\$120/);
-  assert.doesNotMatch(html, /희망하는 세션|<select/);
+  assert.match(html, /<select id="apply-category" name="category" required/);
 });
 
 test('parenting consult focus uses 우리자녀 기질상담 copy', () => {
@@ -530,4 +530,23 @@ test('coach registration email uses notify-program-application with apikey heade
   assert.match(applicationsSource, /sendRegistrationPaymentEmail/);
   assert.match(applicationsSource, /event:\s*'registration'/);
   assert.doesNotMatch(applicationsSource, /create-program-checkout/);
+});
+
+test('organization topics preselect the matching inquiry and submit a changed topic', () => {
+  const renderer = loadApplyRenderer();
+  for (const focus of ['teamwork_seminar', 'couple_seminar', 'organization_education']) {
+    const html = renderer.renderApply({ track: 'org', focus });
+    assert.match(html, new RegExp('data-focus="' + focus + '" selected'));
+    assert.match(html, /name="organization" required/);
+  }
+
+  let submission;
+  renderer.handleApplySubmit = (...args) => { submission = args; };
+  const form = {
+    dataset: { submitSource: 'org:teamwork_seminar:landing', applyFocus: 'teamwork_seminar' },
+    elements: { category: { selectedOptions: [{ dataset: { focus: 'couple_seminar' } }] } }
+  };
+  renderer.handleApplyFormSubmit({ currentTarget: form });
+  assert.equal(submission[1], 'org:couple_seminar:landing');
+  assert.equal(submission[2].focus, 'couple_seminar');
 });

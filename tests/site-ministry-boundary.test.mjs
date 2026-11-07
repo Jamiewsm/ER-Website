@@ -19,7 +19,7 @@ test('main-site identity is church and Christian ministry focused', () => {
   assert.match(indexHtml, /assets\/er-social-share-ministry\.png/);
   assert.match(homeSource, /기독교 에니어그램으로 회복을 배우는 곳/);
   assert.match(homeSource, /가정과 교회 공동체 안에서 관계와 소명을 회복/);
-  assert.match(homeSource, /focus: 'ministry_team'/);
+  assert.match(homeSource, /church-programs#teamwork/);
 });
 
 test('enterprise consulting details are removed from active main-site content', () => {
@@ -67,7 +67,7 @@ test('Business links are explicit handoffs, not internal service tabs', () => {
   assert.match(context.renderApply({ focus: 'team' }), /business\.er-coaching\.com\/contact/);
   assert.match(
     context.renderApply({ track: 'org', focus: 'church' }),
-    /<option selected>교회 공동체 워크숍 문의<\/option>/,
+    /value="교회 공동체 워크숍 문의" data-focus="church" selected/,
   );
 
   let routedApply = null;
@@ -94,7 +94,7 @@ test('church programs and forms stay intact with ministry-specific language', ()
   assert.match(programsSource, /title: '교회·사역팀 프로그램'/);
   assert.match(programsSource, /교회·선교단체·사역팀/);
   assert.match(programsSource, /applyFocus: 'church'/);
-  assert.match(applySource, /ministry_team:\s*\{/);
+  assert.match(applySource, /ministry_team:\s*\[/);
   assert.match(applySource, /사역팀 소통·갈등 프로그램 문의/);
   assert.match(communitySource, /label: '사역팀'.*tab: 'church'/);
   assert.match(communitySource, /ER이 섬기는 영역/);
