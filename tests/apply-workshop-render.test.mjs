@@ -25,7 +25,7 @@ function loadApplyRenderer(options = {}) {
   return context;
 }
 
-test('parenting workshop focus shows unavailable notice instead of an application form', () => {
+test('parenting workshop focus shows schedule waitlist form instead of open enrollment', () => {
   const renderer = loadApplyRenderer();
   const html = renderer.renderApply({
     track: 'paid',
@@ -33,11 +33,13 @@ test('parenting workshop focus shows unavailable notice instead of an applicatio
     apply_source: 'qr'
   });
 
-  assert.match(html, /4주 부모교육 워크숍/);
-  assert.match(html, /모집 일정은 확정 후 안내합니다/);
-  assert.match(html, /data-workshop-status="unavailable"/);
+  assert.match(html, /4주 부모교육 워크숍 일정 알림/);
+  assert.match(html, /모집 일정과 참가비는 확정 후 안내합니다/);
+  assert.match(html, /data-workshop-status="waitlist"/);
   assert.match(html, /parenting-workshop/);
-  assert.doesNotMatch(html, /id="apply-form"/);
+  assert.match(html, /id="apply-form"/);
+  assert.match(html, /일정 알림 남기기/);
+  assert.match(html, /value="4주 부모교육 워크숍 일정 알림"/);
   assert.doesNotMatch(html, /4주 워크샵 신청하기/);
   assert.doesNotMatch(html, /\$120/);
 });
@@ -50,12 +52,12 @@ test('parenting seminar link renders a dedicated org hosting inquiry distinct fr
     apply_source: 'landing'
   });
 
-  assert.match(html, /Parenting 세미나/);
+  assert.match(html, /부모교육 세미나/);
   assert.match(html, /교회·기관 개최 문의/);
   assert.match(html, /교회·선교단체·기독교기관의 요청으로 진행/);
   assert.doesNotMatch(html, /단회/);
   assert.match(html, /assets\/parenting\/parenting-seminar-hero\.jpg/);
-  assert.match(html, /value="Parenting 세미나 개최 문의" data-focus="parenting_seminar" selected/);
+  assert.match(html, /value="부모교육 세미나 개최 문의" data-focus="parenting_seminar" selected/);
   assert.match(html, /개최 문의 보내기/);
   assert.match(html, /교회·기관명/);
   assert.match(html, /data-submit-source="org:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
@@ -189,8 +191,8 @@ test('parenting workshop confirmation uses course-specific response copy', () =>
   const renderer = loadApplyRenderer();
   const html = renderer.renderThankYou({ focus: 'parenting_workshop' });
 
-  assert.match(html, /신청이 접수되었습니다/);
-  assert.match(html, /일정과 참여 안내/);
+  assert.match(html, /일정 알림이 접수되었습니다/);
+  assert.match(html, /모집 일정이 확정되면/);
   assert.match(html, /24시간 이내/);
 });
 
@@ -345,7 +347,7 @@ test('parenting seminar hosting submission serializes organization and role into
         role: '교육목사',
         contact: 'host@example.com',
         preferred_time: '3월 / 약 40명',
-        category: 'Parenting 세미나 개최 문의',
+        category: '부모교육 세미나 개최 문의',
         message: '부모 대상 세미나를 요청합니다.',
         turnstile_token: 'verified-token'
       }
@@ -356,7 +358,7 @@ test('parenting seminar hosting submission serializes organization and role into
   assert.match(requestBody.message, /역할·직분: 교육목사/);
   assert.match(requestBody.message, /희망 시간대: 3월 \/ 약 40명/);
   assert.match(requestBody.message, /부모 대상 세미나를 요청합니다/);
-  assert.equal(requestBody.category, 'Parenting 세미나 개최 문의');
+  assert.equal(requestBody.category, '부모교육 세미나 개최 문의');
 });
 
 test('October basic course submission preserves the legacy program key and sends cohort/payment metadata', async () => {

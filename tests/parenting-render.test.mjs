@@ -156,6 +156,8 @@ test('workshop detail page describes independent participation and pending recru
   assert.match(workshopSource, /4주 부모교육 워크숍/);
   assert.match(workshopSource, /기본과정 수료 여부와 관계없이/);
   assert.match(workshopSource, /모집 일정과 참가비는 확정 후/);
+  assert.match(workshopSource, /focus=parenting_workshop/);
+  assert.match(workshopSource, /일정 알림 남기기/);
   assert.doesNotMatch(workshopSource, /http-equiv="refresh"|\$120/);
 });
 

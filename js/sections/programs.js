@@ -84,8 +84,8 @@ function renderBusinessHandoff(destination = 'programs') {
 function openProgramApply() {
     const isChurchProgram = state.programFilter === 'church';
     renderSection('apply', isChurchProgram
-        ? { track: 'org', focus: 'church' }
-        : { track: 'paid' });
+        ? { track: 'org', focus: 'teamwork_seminar' }
+        : { track: 'paid', focus: 'couple' });
 }
 
 function updateProgramView(filterType) {
@@ -122,23 +122,20 @@ function updateProgramView(filterType) {
             ]
         },
         church: {
-            title: '교회·사역팀 프로그램',
+            title: '사역팀 팀워크',
             descLines: [
-                '교회·선교단체·사역팀의 요청으로 워크숍·세미나를 개최합니다.',
-                '개인 상담은 관계·부부 코칭 트랙을 이용해 주세요.'
+                '목사·전도사·평신도 사역자가 함께 일할 때 필요한 팀워크·소통·역할 정렬을 돕습니다.',
+                '교인을 위한 부모교육·부부 세미나는 Parenting과 관계·부부 메뉴에서 개최를 문의하세요.'
             ],
             problems: [
-                { t: '공동체 갈등 회복', d: '서로 다른 동기와 소통 방식을 이해하고, 오해와 갈등을 복음 안에서 다룰 수 있는 공통 언어를 세웁니다.', i: 'fas fa-people-group', f: 'church' },
-                { t: '사역자 소진 돌봄', d: '정서적 소진과 관계 피로를 살피고, 회복의 리듬과 건강한 역할 분담을 함께 정리합니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' },
-                { t: '사역 리더십과 동역 정렬', d: '리더와 사역팀의 의사결정·소통 패턴을 점검하고, 은사와 역할을 존중하는 동역의 흐름을 설계합니다.', i: 'fas fa-comments', f: 'leadership' }
+                { t: '사역팀 소통이 엇갈려요', d: '같은 비전을 말해도 동기와 업무 방식이 달라 현장에서는 엇박자가 납니다. 서로의 강점과 취약 지점을 먼저 이해합니다.', i: 'fas fa-people-group', f: 'church' },
+                { t: '역할과 의사결정이 불분명해요', d: '리더의 방향과 팀원의 실행이 어긋날 때, 의사결정·보고·피드백의 패턴을 함께 정리합니다.', i: 'fas fa-comments', f: 'leadership' },
+                { t: '동역이 소진으로 이어져요', d: '헌신의 부족이 아니라 맞지 않는 역할과 반복되는 마찰이 소진을 키울 때가 많습니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' }
             ],
             cards: [
-                { b: '세미나', t: '부모교육 세미나', d: '부모와 자녀의 기질 차이와 양육 갈등을 다룹니다.', o: '아이의 마음을 이해하는 대화', i: 'fas fa-child-reaching', href: '/parenting-seminar' },
-                { b: '세미나', t: '부부 세미나', d: '반복되는 부부 갈등과 대화 방식을 다룹니다.', o: '서로의 관점을 묻는 대화', i: 'fas fa-heart', href: '/church-programs#couple' },
-                { b: '세미나', t: '사역팀 팀워크 세미나', d: '사역팀의 역할·소통·갈등을 다룹니다.', o: '팀의 대화와 동역 원칙 정리', i: 'fas fa-people-group', href: '/church-programs#teamwork' },
-                { b: '교육', t: '에니어그램 맞춤 교육', d: '3시간 특강, 2~3회 워크숍, 8주 과정 중 교육 목표에 맞춰 협의합니다.', o: '유형 이해와 사역 현장 적용', i: 'fas fa-chalkboard-teacher', href: '/church-programs#education' },
-                { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등을 다루는 공통 언어 정리', i: 'fas fa-users', applyFocus: 'church' },
-                { b: '집중', t: '집중 워크숍 (6시간)', d: '사역팀·리더 분석 + 갈등 구조 해석 + 적용 설계', p: '$1,800부터', o: '결과: 교회 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'church' }
+                { b: '세미나', t: '사역팀 팀워크 세미나', d: '사역팀의 역할·소통·갈등을 다룹니다. 교인 대상 부모·부부 세미나와는 별도 프로그램입니다.', o: '팀의 대화와 동역 원칙 정리', i: 'fas fa-people-group', href: '/church-programs#teamwork' },
+                { b: '워크숍', t: '사역팀 기본 워크숍 (2시간)', d: '유형 이해 + 사역팀 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 사역팀이 갈등을 다루는 공통 언어 정리', i: 'fas fa-users', applyFocus: 'teamwork_seminar' },
+                { b: '집중', t: '사역팀 집중 워크숍 (6시간)', d: '리더십 코드 + 사역자 역량 + 역할 배치 설계', p: '$1,800부터', o: '결과: 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'teamwork_seminar' }
             ]
         }
     };
@@ -148,8 +145,8 @@ function updateProgramView(filterType) {
 
     if (primaryCtaEl) {
         primaryCtaEl.textContent = filterType === 'church'
-            ? '교회·사역팀 프로그램 문의'
-            : '상담 신청';
+            ? '사역팀 팀워크 개최 문의'
+            : '부부 상담·코칭 신청';
     }
 
     if (introEl) {
@@ -160,11 +157,17 @@ function updateProgramView(filterType) {
             ? `<p class="mt-2 space-y-1.5 text-xs leading-relaxed text-gray-500 break-keep">${descLines.map((line) => `<span class="block">${line}</span>`).join('')}</p>`
             : '';
         const ministryNotice = filterType === 'church'
-            ? `<div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs">
-                    <span class="text-gray-500 break-keep">목회자·선교사는 반액 장학으로 별도 안내합니다.</span>
-                    <button onclick="renderSection('support')" class="inline-flex min-h-11 items-center font-bold text-er-accent transition-colors hover:text-er-dark whitespace-nowrap">
-                        사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
-                    </button>
+            ? `<div class="mt-3 flex flex-col items-center justify-center gap-2 text-xs">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                        <span class="text-gray-500 break-keep">목회자·선교사는 반액 장학으로 별도 안내합니다.</span>
+                        <button onclick="renderSection('support')" class="inline-flex min-h-11 items-center font-bold text-er-accent transition-colors hover:text-er-dark whitespace-nowrap">
+                            사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+                        <a href="/parenting-seminar" class="inline-flex min-h-11 items-center font-bold text-er-accent hover:text-er-dark">부모교육 세미나</a>
+                        <a href="/church-programs#couple" class="inline-flex min-h-11 items-center font-bold text-er-accent hover:text-er-dark">부부 세미나</a>
+                    </div>
                 </div>`
             : '';
         introEl.innerHTML = `
@@ -224,10 +227,10 @@ function renderPrograms() {
                 <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                 <div class="relative z-10 max-w-7xl mx-auto text-center">
                     <h2 class="text-2xl md:text-4xl font-bold mb-3">코칭·프로그램 안내</h2>
-                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">관계·부부 코칭과 교회·사역팀 프로그램을 통해 개인의 회복이 가정과 공동체로 이어지도록 돕습니다. 자녀 양육은 Parenting 메뉴에서 따로 안내합니다.</p>
+                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">관계·부부 코칭과 사역팀 팀워크를 통해 개인의 회복이 가정과 동역으로 이어지도록 돕습니다. 자녀 양육과 부모교육 세미나는 Parenting 메뉴에서 안내합니다.</p>
                     
                     <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
-                        ${['individual:관계·부부', 'church:교회·사역팀'].map(item => {
+                        ${['individual:관계·부부', 'church:사역팀 팀워크'].map(item => {
                             const [key, label] = item.split(':');
                             const isActive = state.programFilter === key;
                             return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
@@ -279,7 +282,7 @@ function renderPrograms() {
                     </div>
                     <div class="text-center mt-10">
                         <button id="program-primary-cta" onclick="openProgramApply()" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
-                            ${state.programFilter === 'church' ? '교회·사역팀 프로그램 문의' : '상담 신청'}
+                            ${state.programFilter === 'church' ? '사역팀 팀워크 개최 문의' : '부부 상담·코칭 신청'}
                         </button>
                     </div>
                 </div>
