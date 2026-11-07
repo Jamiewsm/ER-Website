@@ -20,6 +20,8 @@ export const SITE_OVERLAY_GLOBS = [
   'basic-course.html',
   'parenting-workshop.html',
   'parenting-seminar.html',
+  'church-programs.html',
+  'css/program-guide.css',
   'parents-brochure.html',
   'parents-workshop.html',
   'css/parenting-*.css',

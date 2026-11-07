@@ -133,7 +133,10 @@ function updateProgramView(filterType) {
                 { t: '사역 리더십과 동역 정렬', d: '리더와 사역팀의 의사결정·소통 패턴을 점검하고, 은사와 역할을 존중하는 동역의 흐름을 설계합니다.', i: 'fas fa-comments', f: 'leadership' }
             ],
             cards: [
-                { b: '세미나', t: '팀워크·부부·Parenting 세미나', d: '교회·기관 요청으로 개최\n개인 참가 등록이 아닌 공동체 초청형', p: '맞춤 견적', o: '결과: 현장에 맞는 세미나 형식·일정 제안', i: 'fas fa-chalkboard-teacher', applyFocus: 'ministry_team' },
+                { b: '세미나', t: '부모교육 세미나', d: '부모와 자녀의 기질 차이와 양육 갈등을 다룹니다.', o: '아이의 마음을 이해하는 대화', i: 'fas fa-child-reaching', href: '/parenting-seminar' },
+                { b: '세미나', t: '부부 세미나', d: '반복되는 부부 갈등과 대화 방식을 다룹니다.', o: '서로의 관점을 묻는 대화', i: 'fas fa-heart', href: '/church-programs#couple' },
+                { b: '세미나', t: '사역팀 팀워크 세미나', d: '사역팀의 역할·소통·갈등을 다룹니다.', o: '팀의 대화와 동역 원칙 정리', i: 'fas fa-people-group', href: '/church-programs#teamwork' },
+                { b: '교육', t: '에니어그램 맞춤 교육', d: '3시간 특강, 2~3회 워크숍, 8주 과정 중 교육 목표에 맞춰 협의합니다.', o: '유형 이해와 사역 현장 적용', i: 'fas fa-chalkboard-teacher', href: '/church-programs#education' },
                 { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등을 다루는 공통 언어 정리', i: 'fas fa-users', applyFocus: 'church' },
                 { b: '집중', t: '집중 워크숍 (6시간)', d: '사역팀·리더 분석 + 갈등 구조 해석 + 적용 설계', p: '$1,800부터', o: '결과: 교회 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'church' }
             ]
@@ -200,9 +203,11 @@ function updateProgramView(filterType) {
                 <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
                 <p class="text-sm font-extrabold text-er-dark mb-5">${c.p || ''}</p>
                 <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">기대 효과:</span> ${c.o || ''}</p>
-                <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}'${c.applyFocus ? `, focus: '${c.applyFocus}', source: 'programs'` : ''} })" class="min-h-11 w-full rounded-xl px-4 ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
+                ${c.href
+                    ? `<a href="${c.href}" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-er-sand px-4 text-xs font-bold text-er-green hover:bg-er-greenTint">프로그램 안내</a>`
+                    : `<button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}'${c.applyFocus ? `, focus: '${c.applyFocus}', source: 'programs'` : ''} })" class="min-h-11 w-full rounded-xl px-4 ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
                     신청/문의
-                </button>
+                </button>`}
             </div>
         `).join('');
     }

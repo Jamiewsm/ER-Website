@@ -87,7 +87,7 @@ function app() {
 
 test('desktop disclosures are native buttons controlling initially hidden panels', () => {
   const triggers = [...indexHtml.matchAll(/<button\b[^>]*class="[^"]*desktop-nav-trigger[^>]*>/g)];
-  assert.equal(triggers.length, 5);
+  assert.equal(triggers.length, 6);
   for (const [tag] of triggers) {
     assert.match(tag, /type="button"/);
     assert.match(tag, /aria-expanded="false"/);

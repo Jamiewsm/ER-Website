@@ -152,22 +152,22 @@ test('home featured programs include parenting seminar as the parent-education e
   assert.doesNotMatch(homeSource, /button2: '4주 과정 신청'/);
 });
 
-test('workshop detail page redirects to the seminar landing while unpublished', () => {
-  assert.match(workshopSource, /url=\/parenting-seminar/);
-  assert.match(workshopSource, /location\.replace\('\/parenting-seminar'\)/);
-  assert.match(workshopSource, /noindex/);
-  assert.doesNotMatch(workshopSource, /4주 자녀양육 워크샵/);
+test('workshop detail page describes independent participation and pending recruitment', () => {
+  assert.match(workshopSource, /4주 부모교육 워크숍/);
+  assert.match(workshopSource, /기본과정 수료 여부와 관계없이/);
+  assert.match(workshopSource, /모집 일정과 참가비는 확정 후/);
+  assert.doesNotMatch(workshopSource, /http-equiv="refresh"|\$120/);
 });
 
 test('seminar landing wires org hosting apply and personal counseling fork', () => {
-  assert.match(seminarSource, /Parenting 세미나/);
+  assert.match(seminarSource, /부모교육 세미나/);
   assert.match(seminarSource, /assets\/parenting\/parenting-seminar-hero\.jpg/);
   assert.match(seminarSource, /track=org&focus=parenting_seminar/);
   assert.match(seminarSource, /track=paid&focus=parenting/);
   assert.match(seminarSource, /교회·선교단체·기독교 기관/);
   assert.match(seminarSource, /개인 참가 등록은 받지 않습니다/);
   assert.doesNotMatch(seminarSource, /focus=parenting_workshop/);
-  assert.doesNotMatch(seminarSource, /parenting-workshop/);
+  assert.match(seminarSource, /parenting-workshop/);
   assert.doesNotMatch(seminarSource, /세미나 vs 4주/);
   assert.match(seminarSource, /href="\/#parenting"/);
 });
