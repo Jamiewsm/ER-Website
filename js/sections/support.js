@@ -54,24 +54,37 @@ async function shareScholarshipPage() {
 
 function renderSupport() {
     const { receiptNotice } = window.ER_SCHOLARSHIP_SUPPORT;
-    return `<div class="min-h-screen bg-er-base px-4 pb-16 sm:px-6 md:pb-24 lg:px-8">
-        <section class="mx-auto grid max-w-6xl items-center gap-10 py-12 md:py-20 lg:grid-cols-[1.5fr_1fr] lg:gap-16" aria-labelledby="scholarship-hero-title">
-            <div>
-                <p class="mb-5 text-sm font-bold text-er-green">ER 사역지원 · 반액 장학</p>
-                <h1 id="scholarship-hero-title" class="font-display text-4xl font-extrabold leading-[1.25] tracking-[-0.03em] text-er-ink break-keep md:text-5xl">사역자를 돌보는 일이<br>공동체를 돌보는 일이 되도록</h1>
-                <p class="mt-6 max-w-xl text-lg leading-relaxed text-er-body break-keep">많은 사람의 삶을 돌보는 사역자에게도, 자신의 삶과 관계를 돌아볼 자리가 필요합니다.</p>
-                <p class="mt-4 max-w-xl text-base leading-relaxed text-er-body break-keep">경제적 부담이 배움의 문턱이 되지 않도록, 목회자·선교사·사역자·사모의 <strong>기본과정·심화과정·코치트레이닝 수강료 절반을 장학으로 지원합니다.</strong></p>
-                <p class="mt-4 max-w-xl text-base leading-relaxed text-er-body break-keep">한 사람의 배움과 회복이 섬김의 자리로 이어지도록, 기쁨으로 함께해 주세요.</p>
-                <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-                    <button type="button" onclick="scrollToScholarshipSection('scholarship-giving-panel')" class="${scholarshipButtonStyle(true)}">사역지원에 함께하기</button>
-                    <button type="button" onclick="scrollToScholarshipSection('scholarship-how')" class="min-h-11 text-sm font-bold text-er-green underline underline-offset-4">장학 지원 과정 보기</button>
+    return `<div class="min-h-screen bg-er-base pb-16 md:pb-24">
+        <section class="relative overflow-hidden" aria-labelledby="scholarship-hero-title">
+            <img
+                src="assets/er-visual/support-seminar-hero.jpg"
+                alt=""
+                width="1600"
+                height="901"
+                fetchpriority="high"
+                decoding="async"
+                class="absolute inset-0 h-full w-full object-cover"
+                style="object-position: center 42%;"
+            />
+            <div class="absolute inset-0 bg-[linear-gradient(105deg,#fbfaf5_0%,#fbfaf5_38%,rgba(251,250,245,0.88)_52%,rgba(251,250,245,0.35)_68%,rgba(251,250,245,0.12)_100%)]" aria-hidden="true"></div>
+            <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(251,250,245,0.35)_0%,transparent_28%,transparent_72%,rgba(251,250,245,0.55)_100%)]" aria-hidden="true"></div>
+            <div class="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+                <div class="max-w-xl">
+                    <p class="mb-5 text-sm font-bold text-er-green">ER 사역지원 · 반액 장학</p>
+                    <h1 id="scholarship-hero-title" class="font-display text-4xl font-extrabold leading-[1.25] tracking-[-0.03em] text-er-ink break-keep md:text-5xl">사역자를 돌보는 일이<br>공동체를 돌보는 일이 되도록</h1>
+                    <p class="mt-6 text-lg leading-relaxed text-er-body break-keep">많은 사람의 삶을 돌보는 사역자에게도, 자신의 삶과 관계를 돌아볼 자리가 필요합니다.</p>
+                    <p class="mt-4 text-base leading-relaxed text-er-body break-keep">경제적 부담이 배움의 문턱이 되지 않도록, 목회자·선교사·사역자·사모의 <strong>기본과정·심화과정·코치트레이닝 수강료 절반을 장학으로 지원합니다.</strong></p>
+                    <p class="mt-4 text-base leading-relaxed text-er-body break-keep">한 사람의 배움과 회복이 섬김의 자리로 이어지도록, 기쁨으로 함께해 주세요.</p>
+                    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                        <button type="button" onclick="scrollToScholarshipSection('scholarship-giving-panel')" class="${scholarshipButtonStyle(true)}">사역지원에 함께하기</button>
+                        <button type="button" onclick="scrollToScholarshipSection('scholarship-how')" class="min-h-11 text-sm font-bold text-er-green underline underline-offset-4">장학 지원 과정 보기</button>
+                    </div>
+                    <p class="mt-3 text-sm text-er-muted">계좌를 통한 일시후원으로 참여하실 수 있습니다.</p>
                 </div>
-                <p class="mt-3 text-sm text-er-muted">계좌를 통한 일시후원으로 참여하실 수 있습니다.</p>
             </div>
-            <img src="assets/er-visual/hero-home.jpg" alt="햇살이 들어오는 창가에 놓인 편안한 의자" width="1920" height="2880" class="h-64 w-full rounded-[2rem] object-cover object-bottom sm:h-80 lg:h-[32rem]">
         </section>
 
-        <div class="mx-auto max-w-3xl">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
             <section class="border-t border-er-sand py-12 md:py-20" aria-labelledby="scholarship-why-title">
                 <h2 id="scholarship-why-title" class="text-2xl font-bold leading-snug text-er-inkSoft break-keep">돌보는 사람에게도 돌봄이 필요합니다</h2>
                 <div class="mt-6 max-w-xl space-y-4 text-base leading-relaxed text-er-body break-keep">
