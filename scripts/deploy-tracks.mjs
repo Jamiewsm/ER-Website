@@ -18,6 +18,8 @@ export const SITE_OVERLAY_GLOBS = [
   'css/site-tailwind.css',
   'apply.html',
   'basic-course.html',
+  'css/basic-course-landing.css',
+  'assets/er-visual/basic-course-hero.jpg',
   'parenting-workshop.html',
   'parenting-seminar.html',
   'church-programs.html',
