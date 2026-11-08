@@ -38,7 +38,7 @@ export const SITE_OVERLAY_GLOBS = [
   'js/strings.js',
   'js/sections/**',
   'images/**',
-  'assets/er-social-share-ministry.png',
+  'assets/er-social-share-landing.jpg',
   'assets/er-visual/home-*.webp',
   'assets/parenting/**',
   'ER-logo-*.png',
