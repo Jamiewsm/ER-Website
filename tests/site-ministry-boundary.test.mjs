@@ -16,7 +16,7 @@ test('main-site identity is church and Christian ministry focused', () => {
   assert.match(indexHtml, /기독교 세계관과 에니어그램을 통합해 개인과 가정, 교회와 사역 공동체/);
   assert.match(indexHtml, /사역팀 팀워크/);
   assert.match(indexHtml, /목회자·선교사 사역지원/);
-  assert.match(indexHtml, /assets\/er-social-share-ministry\.png/);
+  assert.match(indexHtml, /assets\/er-social-share-landing\.jpg/);
   assert.match(homeSource, /기독교 에니어그램으로 회복을 배우는 곳/);
   assert.match(homeSource, /가정과 교회 공동체 안에서 관계와 소명을 회복/);
   assert.match(homeSource, /church-programs#teamwork/);
@@ -111,5 +111,5 @@ test('site deploy includes every changed runtime source', () => {
   assert.match(deployTracksSource, /'js\/app-state\.js'/);
   assert.match(deployTracksSource, /'js\/strings\.js'/);
   assert.match(deployTracksSource, /'js\/sections\/\*\*'/);
-  assert.match(deployTracksSource, /'assets\/er-social-share-ministry\.png'/);
+  assert.match(deployTracksSource, /'assets\/er-social-share-landing\.jpg'/);
 });
