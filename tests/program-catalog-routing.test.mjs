@@ -42,11 +42,16 @@ test('October basic boost keeps result consultation first and basic course secon
   assert.equal(steps[2].programKey, 'identity_session');
 });
 
-test('live SPA home and programs sections route the primary consultation CTA to result_consult', () => {
-  assert.match(homeSource, /title:\s*'결과지 해석상담'/);
-  assert.match(homeSource, /price:\s*'\$50'/);
-  assert.match(homeSource, /focus:\s*'result_consult'/);
+test('live SPA home highlights core programs and programs section keeps result_consult CTA', () => {
+  assert.match(homeSource, /title:\s*'에니어그램 기질 검사'/);
+  assert.match(homeSource, /title:\s*'부부 세미나'/);
+  assert.match(homeSource, /church-programs#couple/);
+  assert.match(homeSource, /title:\s*'부모교육 세미나'/);
+  assert.match(homeSource, /title:\s*'사역팀 팀워크 세미나'/);
+  assert.match(homeSource, /title:\s*'성경적 에니어그램 기본과정 8주'/);
+  assert.match(homeSource, /title:\s*'에니어그램 교육'/);
   assert.doesNotMatch(homeSource, /1:1 유형\(Typing\) 상담/);
+  assert.doesNotMatch(homeSource, /관계·부부 코칭 보기/);
 
   assert.match(programsSource, /t:\s*'결과지 해석상담'/);
   assert.match(programsSource, /p:\s*'\$50'/);

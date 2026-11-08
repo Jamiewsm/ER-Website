@@ -14,12 +14,13 @@ const deployTracksSource = readFileSync(new URL('../scripts/deploy-tracks.mjs', 
 
 test('main-site identity is church and Christian ministry focused', () => {
   assert.match(indexHtml, /기독교 세계관과 에니어그램을 통합해 개인과 가정, 교회와 사역 공동체/);
-  assert.match(indexHtml, /교회·사역팀/);
+  assert.match(indexHtml, /사역팀 팀워크/);
   assert.match(indexHtml, /목회자·선교사 사역지원/);
-  assert.match(indexHtml, /assets\/er-social-share-ministry\.png/);
+  assert.match(indexHtml, /assets\/er-social-share-landing\.jpg/);
   assert.match(homeSource, /기독교 에니어그램으로 회복을 배우는 곳/);
   assert.match(homeSource, /가정과 교회 공동체 안에서 관계와 소명을 회복/);
-  assert.match(homeSource, /focus: 'ministry_team'/);
+  assert.match(homeSource, /church-programs#teamwork/);
+  assert.match(homeSource, /교인 대상 부모·부부 세미나와는 별도/);
 });
 
 test('enterprise consulting details are removed from active main-site content', () => {
@@ -59,6 +60,7 @@ test('Business links are explicit handoffs, not internal service tabs', () => {
     window: {},
   };
   vm.createContext(context);
+  vm.runInContext(readFileSync(new URL('../js/app-helpers.js', import.meta.url), 'utf8'), context);
   vm.runInContext(programsSource, context, { filename: 'js/sections/programs.js' });
   vm.runInContext(applySource, context, { filename: 'js/sections/apply.js' });
 
@@ -66,7 +68,7 @@ test('Business links are explicit handoffs, not internal service tabs', () => {
   assert.match(context.renderApply({ focus: 'team' }), /business\.er-coaching\.com\/contact/);
   assert.match(
     context.renderApply({ track: 'org', focus: 'church' }),
-    /<option selected>교회 공동체 워크숍 문의<\/option>/,
+    /value="교회 공동체 워크숍 문의" data-focus="church" selected/,
   );
 
   let routedApply = null;
@@ -77,11 +79,11 @@ test('Business links are explicit handoffs, not internal service tabs', () => {
   context.openProgramApply();
   assert.equal(routedApply.sectionId, 'apply');
   assert.equal(routedApply.payload.track, 'org');
-  assert.equal(routedApply.payload.focus, 'church');
+  assert.equal(routedApply.payload.focus, 'teamwork_seminar');
   context.state.programFilter = 'individual';
   context.openProgramApply();
   assert.equal(routedApply.payload.track, 'paid');
-  assert.equal(routedApply.payload.focus, undefined);
+  assert.equal(routedApply.payload.focus, 'couple');
 
   context.state.currentPayload = { tab: 'unknown' };
   context.state.programFilter = 'unknown';
@@ -90,22 +92,24 @@ test('Business links are explicit handoffs, not internal service tabs', () => {
 });
 
 test('church programs and forms stay intact with ministry-specific language', () => {
-  assert.match(programsSource, /title: '교회·사역팀 프로그램'/);
-  assert.match(programsSource, /교회·선교단체·사역팀/);
-  assert.match(programsSource, /applyFocus: 'church'/);
-  assert.match(applySource, /ministry_team:\s*\{/);
-  assert.match(applySource, /사역팀 소통·갈등 프로그램 문의/);
-  assert.match(communitySource, /label: '사역팀'.*tab: 'church'/);
-  assert.match(communitySource, /ER이 집중하는 자리/);
+  assert.match(programsSource, /title: '사역팀 팀워크'/);
+  assert.match(programsSource, /목사·전도사·평신도 사역자/);
+  assert.match(programsSource, /applyFocus: 'teamwork_seminar'/);
+  assert.doesNotMatch(programsSource, /title: '부모교육 세미나'/);
+  assert.match(applySource, /ministry_team:\s*\[/);
+  assert.match(applySource, /사역팀 팀워크·소통 문의/);
+  assert.match(communitySource, /label: '사역팀'.*사역자 팀워크/);
+  assert.match(communitySource, /ER이 섬기는 영역/);
   assert.doesNotMatch(communitySource, /impactChart/);
   assert.doesNotMatch(stringsSource, /교회·공동체 프로그램 비중/);
   assert.match(indexHtml, /Parenting/);
   assert.match(indexHtml, /전문가 과정/);
+  assert.match(stringsSource, /4주 부모교육 워크숍 — 일정 확정 전/);
 });
 
 test('site deploy includes every changed runtime source', () => {
   assert.match(deployTracksSource, /'js\/app-state\.js'/);
   assert.match(deployTracksSource, /'js\/strings\.js'/);
   assert.match(deployTracksSource, /'js\/sections\/\*\*'/);
-  assert.match(deployTracksSource, /'assets\/er-social-share-ministry\.png'/);
+  assert.match(deployTracksSource, /'assets\/er-social-share-landing\.jpg'/);
 });

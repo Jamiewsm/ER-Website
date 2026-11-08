@@ -1,3 +1,26 @@
+// 목적별 신청 화면과 개인정보 안내, 안전한 폼 제출 연결을 렌더링한다.
+function escapeApplyAttribute(value) {
+    return String(value || '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[char]));
+}
+
+function handleApplyFormSubmit(event) {
+    const form = event.currentTarget || event.target;
+    const selectedTopic = form.elements?.category?.selectedOptions?.[0]?.dataset.focus;
+    const focus = normalizeApplyFocus(selectedTopic || form.dataset.applyFocus);
+    const source = form.dataset.submitSource || 'paid';
+    const submitSource = selectedTopic ? buildApplySubmitSource('org', focus, source.split(':')[2]) : source;
+    return handleApplySubmit(event, submitSource, focus ? { focus } : undefined);
+}
+
+function renderApplyPrivacyNotice() {
+    return `<p class="text-xs leading-relaxed text-er-muted break-keep">
+        입력하신 정보는 신청 접수와 연락·등록 안내에 사용됩니다. 나누고 싶은 이야기는 필요한 내용만 적어 주세요.
+        <a href="/#privacy" target="_blank" rel="noopener noreferrer" class="font-bold text-er-green underline underline-offset-2">개인정보 안내 (새 창)</a>에서 처리 항목과 열람·정정·삭제 요청 방법을 확인할 수 있습니다.
+    </p>`;
+}
+
 function isParentingWorkshopFocus(focus) {
     const normalizedFocus = String(focus || '').trim();
     return normalizedFocus === 'parenting_workshop' || normalizedFocus === 'parents_workshop';
@@ -97,12 +120,10 @@ function getPaidApplyCategoryOptions() {
         '테스트 결과지 해석상담 ($50)',
         '유형(Typing) 상담 ($100)',
         '개별 코칭 1회 ($80)',
-        '성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)',
-        '자녀 양육 코칭 문의',
+        '우리자녀 기질상담 문의',
         '회복 코칭 4회 ($300)',
         '회복 코칭 8회 ($480)',
-        '부부 코칭 1회 ($220)',
-        'Enneagram for Parenting 4주 ($120)'
+        '부부 코칭 1회 ($220)'
     ];
 }
 
@@ -148,84 +169,157 @@ function formatChildTypeTestSummary(summary) {
 }
 
 function renderParentingWorkshopApply(submitSource) {
+    // 일정·참가비 확정 전에는 관심·알림 등록만 받는다.
+    return `
+        <div class="parenting-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
+            <div class="mx-auto max-w-xl rounded-2xl border border-er-sand bg-white p-6 shadow-soft sm:p-8" data-apply-focus="parenting_workshop" data-workshop-status="waitlist">
+                <p class="text-xs font-bold uppercase tracking-[0.16em] text-er-green">개인·가정</p>
+                <h1 class="mt-3 text-2xl font-bold text-er-dark break-keep">4주 부모교육 워크숍 일정 알림</h1>
+                <p class="mt-3 text-sm leading-relaxed text-er-body break-keep">
+                    모집 일정과 참가비는 확정 후 안내합니다. 기본과정 수료 여부와 관계없이 참여할 수 있습니다. 관심 등록을 남겨 주시면 일정이 정해질 때 연락드립니다.
+                </p>
+                <form id="apply-form" class="mt-6 space-y-4" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="parenting_workshop" onsubmit="handleApplyFormSubmit(event)">
+                    <input type="hidden" name="category" value="4주 부모교육 워크숍 일정 알림">
+                    <div>
+                        <label for="apply-name" class="mb-2 block text-sm font-bold text-gray-700">이름</label>
+                        <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="성함" id="apply-name">
+                    </div>
+                    <div>
+                        <label for="apply-contact" class="mb-2 block text-sm font-bold text-gray-700">연락처</label>
+                        <input type="text" name="contact" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="이메일 또는 전화번호" id="apply-contact">
+                    </div>
+                    <div>
+                        <label for="apply-message" class="mb-2 block text-sm font-bold text-gray-700">남기고 싶은 말 <span class="font-normal text-gray-400">(선택)</span></label>
+                        <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="관심 이유나 희망 시간대를 적어 주세요." id="apply-message"></textarea>
+                    </div>
+                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                        ${renderApplyPrivacyNotice()}
+                        <p class="mb-1 mt-3 text-xs font-bold text-gray-600">보안 확인</p>
+                        <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 버튼을 눌러 주세요.</p>
+                        <p id="apply-turnstile-status" class="mb-2 hidden text-xs text-gray-500 break-keep" role="status" aria-live="polite"></p>
+                        <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
+                        <button type="button" id="apply-turnstile-retry" class="mt-2 hidden w-full rounded-lg border border-er-accent/40 py-2 text-xs font-bold text-er-dark hover:bg-er-accentLight/30" onclick="initApplyTurnstile()">
+                            보안 확인 다시 불러오기
+                        </button>
+                        <input type="hidden" name="turnstile_token" value="" id="apply-turnstile-token">
+                    </div>
+                    <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
+                    <button id="apply-submit-btn" type="submit" data-default-label="일정 알림 남기기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
+                        일정 알림 남기기
+                    </button>
+                </form>
+                <div class="mt-6 flex flex-col gap-3 border-t border-er-sand pt-5 sm:flex-row sm:flex-wrap">
+                    <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'workshop_waitlist' })" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">우리자녀 기질상담 신청</button>
+                    <a href="/parenting-workshop" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">4주 과정 안내</a>
+                    <a href="/parenting-seminar" class="inline-flex min-h-11 items-center justify-center rounded-full border border-er-sand px-5 text-sm font-bold text-er-dark hover:bg-er-base">교회·기관 부모교육 세미나</a>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+const organizationPrograms = {
+    parenting_seminar: ['부모교육 세미나', '부모교육 세미나 개최 문의'],
+    couple_seminar: ['부부 세미나', '부부 세미나 개최 문의'],
+    teamwork_seminar: ['사역팀 팀워크 세미나', '사역팀 팀워크 세미나 개최 문의'],
+    organization_education: ['에니어그램 맞춤 교육', '교회·기관 에니어그램 교육 문의'],
+    church: ['교회·기관 프로그램', '교회 공동체 워크숍 문의'],
+    ministry_team: ['사역팀 팀워크·소통', '사역팀 팀워크·소통 문의'],
+    church_debrief: ['교회 리더 디브리핑', '교회 리더 디브리핑 문의'],
+    organization_other: ['기타 기독교기관 프로그램', '기독교 기관 프로그램 문의']
+};
+
+function isOrganizationProgramFocus(focus) {
+    return Object.hasOwn(organizationPrograms, focus);
+}
+
+function renderOrganizationProgramApply(submitSource, focus) {
+    const [title] = organizationPrograms[focus];
     return `
         <div class="parenting-apply-page min-h-screen bg-er-base px-4 pb-12 pt-6 md:px-6 md:py-10">
             <div class="mx-auto grid max-w-5xl gap-5 lg:grid-cols-[minmax(270px,0.84fr)_minmax(430px,1fr)] lg:items-start">
                 <section class="parenting-apply-intro overflow-hidden rounded-lg border border-er-accentLight bg-er-dark text-white">
-                    <img
-                        src="/assets/er-visual/hero-home.jpg"
+                    ${focus === 'parenting_seminar' ? `<img
+                        src="/assets/parenting/parenting-seminar-hero.jpg"
                         alt=""
-                        class="parenting-apply-photo h-28 w-full object-cover sm:h-36 lg:h-64"
-                    />
+                        class="parenting-apply-photo h-28 w-full object-cover object-right sm:h-36 lg:h-64"
+                    />` : ''}
                     <div class="p-5 sm:p-6">
-                        <h1 class="text-[1.7rem] font-bold leading-tight sm:text-3xl">Enneagram for Parenting</h1>
-                        <p class="mt-2 text-lg font-semibold text-white">4주 워크샵 신청</p>
-                        <div class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-white/20 pt-4 text-sm">
-                            <p><span class="block text-[11px] text-white/60">진행</span>온라인 Zoom</p>
-                            <p><span class="block text-[11px] text-white/60">시간</span>총 10시간</p>
-                            <p><span class="block text-[11px] text-white/60">참가비</span>$120</p>
-                            <p><span class="block text-[11px] text-white/60">모집</span>소규모 선착순</p>
-                        </div>
+                        <h1 class="text-[1.7rem] font-bold leading-tight break-keep sm:text-3xl">${title}</h1>
+                        <p class="mt-2 text-lg font-semibold text-white">교회·기관 개최 문의</p>
                         <p class="mt-5 text-sm leading-relaxed text-white/80 break-keep">
-                            신청 내용을 남겨주시면 일정과 참여 안내를 보내드립니다.
+                            교회·선교단체·기독교기관의 요청으로 진행합니다. 공동체의 필요에 맞춰 일정과 진행 형식을 협의합니다.
                         </p>
                     </div>
                 </section>
 
                 <section class="rounded-lg border border-er-accentLight bg-white p-5 shadow-soft sm:p-7">
-                    <h2 class="text-lg font-bold text-er-dark">신청 정보</h2>
+                    <h2 class="text-lg font-bold text-er-dark">개최 문의 정보</h2>
                     <p class="mb-6 mt-2 text-sm leading-relaxed text-er-primary break-keep">
-                        아래 내용을 남겨주시면 담당자가 확인 후 연락드립니다.
+                        담당자 정보를 남겨 주시면 대상·일정·형식을 함께 조율합니다. 기업 팀 교육은 <a href="https://business.er-coaching.com/contact" class="font-bold text-er-green underline">ER Business</a>에서 문의할 수 있습니다.
                     </p>
 
-                    <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'parenting_workshop' })">
-                        <input type="hidden" name="category" value="Enneagram for Parenting 4주 ($120)">
-
+                    <form id="apply-form" class="space-y-5" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="${focus}" onsubmit="handleApplyFormSubmit(event)">
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">이름</label>
-                            <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="성함을 남겨주세요">
+                            <label for="apply-category" class="mb-2 block text-sm font-bold text-gray-700">희망 주제</label>
+                            <select id="apply-category" name="category" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                                ${Object.entries(organizationPrograms).map(([key, [label, category]]) => `
+                                    <option value="${category}" data-focus="${key}" ${key === focus ? 'selected' : ''}>${label}</option>
+                                `).join('')}
+                            </select>
                         </div>
 
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">연락받으실 곳</label>
-                            <input type="text" name="contact" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="전화번호 또는 이메일">
+                            <label for="apply-name" class="mb-2 block text-sm font-bold text-gray-700">담당자 이름</label>
+                            <input type="text" name="name" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="담당자 성함" id="apply-name">
+                        </div>
+
+                        <div>
+                            <label for="apply-org" class="mb-2 block text-sm font-bold text-gray-700">교회·기관명</label>
+                            <input type="text" name="organization" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: ○○교회 / ○○선교단체" id="apply-org">
+                        </div>
+
+                        <div>
+                            <label for="apply-contact" class="mb-2 block text-sm font-bold text-gray-700">담당자 연락처</label>
+                            <input type="text" name="contact" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="전화번호 또는 이메일" id="apply-contact">
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">거주 국가 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="country" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: USA, Korea">
+                                <label for="apply-role" class="mb-2 block text-sm font-bold text-gray-700">역할·직분 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="role" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 교육목사, 사역팀장" id="apply-role">
                             </div>
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">희망 시간대 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="preferred_time" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: Dallas PM">
+                                <label for="apply-preferred-time" class="mb-2 block text-sm font-bold text-gray-700">희망 일정·예상 인원 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="preferred_time" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 3월 / 약 40명" id="apply-preferred-time">
                             </div>
                         </div>
 
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">전하고 싶은 내용 <span class="font-normal text-gray-400">(선택)</span></label>
-                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="전하고 싶은 내용이 있으시면 편하게 남겨주세요."></textarea>
+                            <label for="apply-message" class="mb-2 block text-sm font-bold text-gray-700">요청 내용 <span class="font-normal text-gray-400">(선택)</span></label>
+                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="참여 대상, 희망 지역 또는 온라인 여부, 기대하는 방향을 남겨 주세요." id="apply-message"></textarea>
                         </div>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                            <p class="mb-1 text-xs font-bold text-gray-600">보안 확인</p>
-                            <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 신청 버튼을 눌러 주세요.</p>
+                            ${renderApplyPrivacyNotice()}
+                            <p class="mb-1 mt-3 text-xs font-bold text-gray-600">보안 확인</p>
+                            <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 문의 버튼을 눌러 주세요.</p>
                             <p id="apply-turnstile-status" class="mb-2 hidden text-xs text-gray-500 break-keep" role="status" aria-live="polite"></p>
                             <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
                             <button type="button" id="apply-turnstile-retry" class="mt-2 hidden w-full rounded-lg border border-er-accent/40 py-2 text-xs font-bold text-er-dark hover:bg-er-accentLight/30" onclick="initApplyTurnstile()">
                                 보안 확인 다시 불러오기
                             </button>
-                            <input type="hidden" name="turnstile_token" id="apply-turnstile-token" value="">
+                            <input type="hidden" name="turnstile_token" value="" id="apply-turnstile-token">
                         </div>
 
                         <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
-                        <button id="apply-submit-btn" type="submit" data-default-label="4주 워크샵 신청하기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
-                            4주 워크샵 신청하기
+                        <button id="apply-submit-btn" type="submit" data-default-label="개최 문의 보내기" data-loading-label="접수 중..." class="w-full rounded-lg bg-er-dark py-4 font-bold text-white shadow-md transition-colors hover:bg-gray-800">
+                            개최 문의 보내기
                         </button>
                     </form>
 
                     <p class="mt-6 border-t border-gray-100 pt-5 text-center text-xs text-er-primary">
-                        신청 전 문의
+                        문의
                         <a href="mailto:restoration.son@gmail.com" class="ml-2 font-bold underline">Email</a>
                         <span class="mx-2 text-er-muted">|</span>
                         ${renderInstagramInquiryLine('parenting')}
@@ -274,40 +368,40 @@ function renderBasicCourseApply(submitSource) {
                         신청 접수와 결제 안내를 한 통의 메일로 보내드립니다. 한국은 원화, 해외는 USD 기준이며, 사역자 항목에 체크하시면 50% 할인 금액을 안내합니다. 담당자가 결제 내역과 수강 가능 여부를 확인한 뒤 등록을 확정합니다.
                     </p>
 
-                    <form id="apply-form" class="space-y-5" onsubmit="handleApplySubmit(event, '${submitSource}', { focus: 'enneagram_basic_october' })">
+                    <form id="apply-form" class="space-y-5" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="enneagram_basic_october" onsubmit="handleApplyFormSubmit(event)">
                         <input type="hidden" name="category" value="성경적 에니어그램 기본과정 8주 ($330 / ₩450,000)">
 
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">수강자 이름</label>
-                            <input type="text" name="name" required autocomplete="name" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="실제로 수강하실 분의 성함">
+                            <label for="apply-name" class="mb-2 block text-sm font-bold text-gray-700">수강자 이름</label>
+                            <input type="text" name="name" required autocomplete="name" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="실제로 수강하실 분의 성함" id="apply-name">
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">수강자 이메일</label>
-                                <input type="email" name="contact" required autocomplete="email" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="자동 안내를 받을 이메일">
+                                <label for="apply-contact" class="mb-2 block text-sm font-bold text-gray-700">수강자 이메일</label>
+                                <input type="email" name="contact" required autocomplete="email" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="자동 안내를 받을 이메일" id="apply-contact">
                             </div>
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">수강자 전화번호</label>
+                                <label for="apply-phone" class="mb-2 block text-sm font-bold text-gray-700">수강자 전화번호</label>
                                 <p class="mb-2 text-xs text-gray-500 break-keep">(연락 및 현금영수증 발급 용도)</p>
-                                <input type="tel" name="phone" required autocomplete="tel" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 010-1234-5678">
+                                <input type="tel" name="phone" required autocomplete="tel" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 010-1234-5678" id="apply-phone">
                             </div>
                         </div>
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">카카오톡 ID <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="kakao_id" autocomplete="off" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="카카오톡 ID를 적어주세요">
+                                <label for="apply-kakao-id" class="mb-2 block text-sm font-bold text-gray-700">카카오톡 ID <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="kakao_id" autocomplete="off" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="카카오톡 ID를 적어주세요" id="apply-kakao-id">
                             </div>
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">거주 국가 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="country" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: USA, Korea">
+                                <label for="apply-country" class="mb-2 block text-sm font-bold text-gray-700">거주 국가 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="country" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: USA, Korea" id="apply-country">
                             </div>
                         </div>
 
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">희망 요일·시간대</label>
-                            <input type="text" name="preferred_time" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 목요일 저녁 / Dallas PM">
+                            <label for="apply-preferred-time" class="mb-2 block text-sm font-bold text-gray-700">희망 요일·시간대</label>
+                            <input type="text" name="preferred_time" required class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 목요일 저녁 / Dallas PM" id="apply-preferred-time">
                         </div>
 
                         <div class="rounded-lg border border-amber-200 bg-amber-50 p-4">
@@ -319,8 +413,8 @@ function renderBasicCourseApply(submitSource) {
                                 </span>
                             </label>
                             <div id="basic-course-ministry-details" class="mt-4 hidden" aria-hidden="true">
-                                <label class="mb-2 block text-sm font-bold text-gray-700">사역 정보</label>
-                                <textarea name="ministry_context" rows="2" disabled data-required-when-visible class="w-full resize-none rounded-lg border border-amber-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="지역, 교회, 선교지 또는 소속 단체를 간단히 적어주세요."></textarea>
+                                <label for="apply-ministry-context" class="mb-2 block text-sm font-bold text-gray-700">사역 정보</label>
+                                <textarea name="ministry_context" rows="2" disabled data-required-when-visible class="w-full resize-none rounded-lg border border-amber-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="지역, 교회, 선교지 또는 소속 단체를 간단히 적어주세요." id="apply-ministry-context"></textarea>
                             </div>
                         </div>
 
@@ -335,20 +429,20 @@ function renderBasicCourseApply(submitSource) {
                             <div id="basic-course-proxy-details" class="mt-4 hidden" aria-hidden="true">
                                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                     <div>
-                                        <label class="mb-2 block text-sm font-bold text-gray-700">대리 신청자 이름</label>
-                                        <input type="text" name="proxy_name" disabled data-required-when-visible autocomplete="name" class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="신청서를 작성하시는 분">
+                                        <label for="apply-proxy-name" class="mb-2 block text-sm font-bold text-gray-700">대리 신청자 이름</label>
+                                        <input type="text" name="proxy_name" disabled data-required-when-visible autocomplete="name" class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="신청서를 작성하시는 분" id="apply-proxy-name">
                                     </div>
                                     <div>
-                                        <label class="mb-2 block text-sm font-bold text-gray-700">수강자와의 관계</label>
-                                        <input type="text" name="proxy_relationship" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 부모, 배우자, 후원자">
+                                        <label for="apply-proxy-relationship" class="mb-2 block text-sm font-bold text-gray-700">수강자와의 관계</label>
+                                        <input type="text" name="proxy_relationship" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="예: 부모, 배우자, 후원자" id="apply-proxy-relationship">
                                     </div>
                                     <div>
-                                        <label class="mb-2 block text-sm font-bold text-gray-700">대리 신청자 연락처</label>
-                                        <input type="text" name="proxy_contact" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="이메일 또는 전화번호">
+                                        <label for="apply-proxy-contact" class="mb-2 block text-sm font-bold text-gray-700">대리 신청자 연락처</label>
+                                        <input type="text" name="proxy_contact" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="이메일 또는 전화번호" id="apply-proxy-contact">
                                     </div>
                                     <div>
-                                        <label class="mb-2 block text-sm font-bold text-gray-700">결제자·입금자명</label>
-                                        <input type="text" name="payer_name" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="결제 확인에 사용할 이름">
+                                        <label for="apply-payer-name" class="mb-2 block text-sm font-bold text-gray-700">결제자·입금자명</label>
+                                        <input type="text" name="payer_name" disabled data-required-when-visible class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="결제 확인에 사용할 이름" id="apply-payer-name">
                                     </div>
                                 </div>
                             </div>
@@ -359,16 +453,16 @@ function renderBasicCourseApply(submitSource) {
                             <p class="mt-1 text-xs leading-relaxed text-er-primary break-keep">한국은 카카오뱅크 3333-37-8817302 계좌이체, 미국은 Zelle 또는 Venmo로 안내드립니다.</p>
                             <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
-                                    <label class="mb-2 block text-sm font-bold text-gray-700">결제 지역</label>
-                                    <select name="payment_region" required class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                    <label for="apply-payment-region" class="mb-2 block text-sm font-bold text-gray-700">결제 지역</label>
+                                    <select name="payment_region" required class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" id="apply-payment-region">
                                         <option value="" disabled selected>선택해 주세요</option>
                                         <option value="KR">한국 · 원화(KRW)</option>
                                         <option value="OVERSEAS">미국 · 달러(USD)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="mb-2 block text-sm font-bold text-gray-700">희망 결제수단</label>
-                                    <select name="payment_preference" required class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                    <label for="apply-payment-preference" class="mb-2 block text-sm font-bold text-gray-700">희망 결제수단</label>
+                                    <select name="payment_preference" required class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" id="apply-payment-preference">
                                         <option value="" disabled selected>선택해 주세요</option>
                                         <option value="kr_bank">한국 원화 계좌이체 · ₩450,000</option>
                                         <option value="zelle">미국 Zelle · $330</option>
@@ -377,8 +471,8 @@ function renderBasicCourseApply(submitSource) {
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <label class="mb-2 block text-sm font-bold text-gray-700">납부 방식 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <select name="installment_preference" class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                <label for="apply-installment-preference" class="mb-2 block text-sm font-bold text-gray-700">납부 방식 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <select name="installment_preference" class="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" id="apply-installment-preference">
                                     <option value="full">일시불</option>
                                     <option value="split_consult">2회 분납 상담 요청</option>
                                 </select>
@@ -386,9 +480,9 @@ function renderBasicCourseApply(submitSource) {
                         </div>
 
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">에니어그램을 어느 정도 접해보셨나요?</label>
+                            <label for="apply-enneagram-experience" class="mb-2 block text-sm font-bold text-gray-700">에니어그램을 어느 정도 접해보셨나요?</label>
                             <div class="relative">
-                                <select name="enneagram_experience" required class="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                <select name="enneagram_experience" required class="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" id="apply-enneagram-experience">
                                     <option value="" disabled selected>선택해 주세요</option>
                                     <option>처음 접합니다</option>
                                     <option>책이나 글을 읽어본 적이 있습니다</option>
@@ -402,9 +496,9 @@ function renderBasicCourseApply(submitSource) {
 
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">어디서 알게 되셨나요?</label>
+                                <label for="apply-referral-source" class="mb-2 block text-sm font-bold text-gray-700">어디서 알게 되셨나요?</label>
                                 <div class="relative">
-                                    <select name="referral_source" required class="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent">
+                                    <select name="referral_source" required class="w-full appearance-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" id="apply-referral-source">
                                         <option value="" disabled selected>선택해 주세요</option>
                                         <option>인스타그램</option>
                                         <option>유튜브·영상</option>
@@ -418,14 +512,14 @@ function renderBasicCourseApply(submitSource) {
                                 </div>
                             </div>
                             <div>
-                                <label class="mb-2 block text-sm font-bold text-gray-700">소개해 주신 분 <span class="font-normal text-gray-400">(선택)</span></label>
-                                <input type="text" name="referral_name" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="지인·사역자 소개인 경우">
+                                <label for="apply-referral-name" class="mb-2 block text-sm font-bold text-gray-700">소개해 주신 분 <span class="font-normal text-gray-400">(선택)</span></label>
+                                <input type="text" name="referral_name" class="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="지인·사역자 소개인 경우" id="apply-referral-name">
                             </div>
                         </div>
 
                         <div>
-                            <label class="mb-2 block text-sm font-bold text-gray-700">전하고 싶은 내용 <span class="font-normal text-gray-400">(선택)</span></label>
-                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="신청 동기나 궁금한 점을 편하게 적어주세요."></textarea>
+                            <label for="apply-message" class="mb-2 block text-sm font-bold text-gray-700">전하고 싶은 내용 <span class="font-normal text-gray-400">(선택)</span></label>
+                            <textarea name="message" rows="3" class="w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-er-accent" placeholder="신청 동기나 궁금한 점을 편하게 적어주세요." id="apply-message"></textarea>
                         </div>
 
                         <label class="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 cursor-pointer">
@@ -434,14 +528,15 @@ function renderBasicCourseApply(submitSource) {
                         </label>
 
                         <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                            <p class="mb-1 text-xs font-bold text-gray-600">보안 확인</p>
+                            ${renderApplyPrivacyNotice()}
+                            <p class="mb-1 mt-3 text-xs font-bold text-gray-600">보안 확인</p>
                             <p class="mb-2 text-[11px] text-gray-500 break-keep">스팸 방지를 위해 확인을 완료한 뒤 신청 버튼을 눌러 주세요.</p>
                             <p id="apply-turnstile-status" class="mb-2 hidden text-xs text-gray-500 break-keep" role="status" aria-live="polite"></p>
                             <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
                             <button type="button" id="apply-turnstile-retry" class="mt-2 hidden w-full rounded-lg border border-er-accent/40 py-2 text-xs font-bold text-er-dark hover:bg-er-accentLight/30" onclick="initApplyTurnstile()">
                                 보안 확인 다시 불러오기
                             </button>
-                            <input type="hidden" name="turnstile_token" id="apply-turnstile-token" value="">
+                            <input type="hidden" name="turnstile_token" value="" id="apply-turnstile-token">
                         </div>
 
                         <p id="apply-submit-status" class="hidden rounded-lg px-4 py-3 text-sm break-keep" role="status" aria-live="polite"></p>
@@ -499,7 +594,7 @@ function renderApply(payload = null) {
     const fromTest = payload?.source === 'test';
     const fromChildTypeTest = payload?.apply_source === 'child_type_test';
     const childTypeResult = fromChildTypeTest ? hydrateChildTypeTestResult() : null;
-    let focus = String(payload?.focus || '').trim();
+    let focus = normalizeApplyFocus(payload?.focus);
     if (focus === 'parents_workshop') focus = 'parenting_workshop';
     if (focus === 'team' || focus === 'business' || focus === 'business_team') {
         return renderBusinessHandoff('contact');
@@ -507,12 +602,12 @@ function renderApply(payload = null) {
     const focusConfig = {
         parenting: {
             track: 'paid',
-            title: '자녀 양육 코칭 상담',
-            desc: '부모와 아이의 반응 패턴, 반복되는 충돌 장면, 집에서 바로 적용할 양육 언어를 함께 정리합니다.',
-            bannerTitle: '자녀 양육 상담 안내',
+            title: '우리자녀 기질상담 신청',
+            desc: '부모와 아이의 기질 차이, 반복되는 충돌 장면, 집에서 바로 적용할 양육 언어를 함께 정리합니다.',
+            bannerTitle: '우리자녀 기질상담 안내',
             bannerBody: '아이만 바꾸려 하기보다 부모와 아이의 기질 차이를 함께 읽고, 실제 집 안 대화 장면에 적용하는 방향으로 안내합니다.',
-            category: '자녀 양육 코칭 문의',
-            message: '자녀 양육 문제를 함께 정리받고 싶습니다.'
+            category: '우리자녀 기질상담 문의',
+            message: '우리자녀 기질상담을 신청합니다.'
         },
         parenting_workshop: {
             track: 'paid',
@@ -544,29 +639,11 @@ function renderApply(payload = null) {
         couple: {
             track: 'paid',
             title: '부부 코칭 상담',
-            desc: '부부의 차이와 오해, 반복되는 갈등 패턴을 함께 정리하고 실제 대화 방식을 설계합니다.',
+            desc: '부부의 차이와 반복되는 갈등 패턴을 함께 정리하고 실제 대화 방식을 설계합니다. 상담 후 필요에 따라 단기·장기 코칭을 협의할 수 있습니다.',
             bannerTitle: '부부 관계 상담 안내',
             bannerBody: '서로의 다름을 문제로만 보지 않고, 반복되는 갈등 구조를 이해하고 대화 가능한 관계로 전환하는 방향을 함께 찾습니다.',
             category: '부부 코칭 1회 ($220)',
             message: '부부 관계 코칭을 원합니다.'
-        },
-        ministry_team: {
-            track: 'org',
-            title: '교회·사역팀 프로그램 문의',
-            desc: '사역자 소진, 공동체 갈등, 리더와 사역팀의 소통 문제를 남겨 주시면 현장에 맞는 워크숍과 후속 코칭 방향을 함께 정리합니다.',
-            bannerTitle: '교회·사역팀 회복 프로그램 안내',
-            bannerBody: '교회의 규모와 현재 고민, 리더 구성과 일정에 맞춰 공동체 회복과 사역 리더십 프로그램을 제안합니다.',
-            category: '사역팀 소통·갈등 프로그램 문의',
-            message: '우리 교회와 사역팀의 관계·소통 회복을 위한 상담을 원합니다.'
-        },
-        church: {
-            track: 'org',
-            title: '교회 프로그램 문의',
-            desc: '사역자 소진, 공동체 갈등, 리더십 소통 문제를 교회 현장에 맞는 워크숍과 후속 코칭으로 제안합니다.',
-            bannerTitle: '교회 공동체 회복 문의 안내',
-            bannerBody: '교회의 규모와 현재 고민, 리더 구성과 일정에 맞춰 공동체 회복 프로그램과 리더십 워크숍 방향을 함께 정리합니다.',
-            category: '교회 공동체 워크숍 문의',
-            message: '우리 교회의 공동체/리더십 회복을 위한 상담을 원합니다.'
         },
         identity_session: {
             track: 'paid',
@@ -581,7 +658,7 @@ function renderApply(payload = null) {
             track: 'paid',
             title: '테스트 결과지 해석상담 신청',
             desc: '결과지를 함께 읽으며 핵심 유형, 하위유형, 날개, 신뢰도, 헷갈리는 유형을 1시간 동안 정리합니다. (1시간 $50)',
-            bannerTitle: '프리미엄 테스트 후 추천 — 결과지 해석상담',
+            bannerTitle: '내러티브 테스트 후 추천 — 결과지 해석상담',
             bannerBody: '결과지는 방향을 보여줍니다. 상담에서는 이 결과가 실제 삶의 반복 장면과 어떻게 연결되는지 함께 확인하고, 다음 적용 방향을 정리합니다. (1시간 $50)',
             category: '테스트 결과지 해석상담 ($50)',
             message: '테스트 결과지 해석상담 신청합니다.'
@@ -623,17 +700,18 @@ function renderApply(payload = null) {
         bannerTitle: '아이 검사 후 추천 — 결과 해석상담',
         bannerBody: '아이 유형검사는 방향을 보여줍니다. 해석상담에서는 점수와 상위 후보, 부모의 관찰 편향 가능성을 함께 검토하고 아이에게 맞는 양육 언어와 다음 적용을 정리합니다. (1시간 $50)'
     } : null;
-    const requestedTrack = payload?.track || (fromTest ? 'paid' : 'paid');
-    const track = selectedFocus?.track || requestedTrack;
+    const requestedTrack = normalizeApplyTrack(payload?.track);
+    const track = isOrganizationProgramFocus(focus) ? 'org' : selectedFocus?.track || requestedTrack;
     const isSupportTrack = track === 'support';
     if (isSupportTrack) return renderScholarshipInquiry(payload);
     const isMinistryTrack = track === 'ministry';
-    const isOrgTrack = track === 'org';
     const isParentingApplyContext = focus === 'parenting' || fromChildTypeTest;
     const applyAttribution = fromTest ? 'test' : (fromChildTypeTest ? 'child_type_test' : (payload?.apply_source || ''));
-    const submitSource = typeof buildApplySubmitSource === 'function'
-        ? buildApplySubmitSource(track, focus, applyAttribution)
-        : (fromTest ? 'test' : (focus ? `${track}:${focus}` : track));
+    const submitSource = buildApplySubmitSource(track, focus, applyAttribution);
+    if (track === 'org') {
+        const organizationFocus = isOrganizationProgramFocus(focus) ? focus : 'church';
+        return renderOrganizationProgramApply(buildApplySubmitSource('org', organizationFocus, applyAttribution), organizationFocus);
+    }
     if (isParentingWorkshopFocus(focus)) {
         return renderParentingWorkshopApply(submitSource);
     }
@@ -650,27 +728,21 @@ function renderApply(payload = null) {
             ? '후원·협력 문의'
             : isMinistryTrack
                 ? '사역지원 신청'
-                : isOrgTrack
-                    ? '교회·사역팀 프로그램 문의'
-                    : '상담 및 코칭 신청'
+                : '상담 및 코칭 신청'
     );
     const trackDesc = childResultFocus?.desc || selectedFocus?.desc || (
         isSupportTrack
             ? '후원 및 협력 관련 문의를 남겨 주세요.'
             : isMinistryTrack
-                ? '목회자·선교사 사역지원(무료/감면) 신청을 남겨 주세요.'
-                : isOrgTrack
-                    ? '교회·선교단체·기독교 기관의 프로그램 문의를 남겨 주세요.'
-                    : '신청 내용을 남겨주세요.'
+                ? '목회자·선교사 사역지원(반액 장학) 신청을 남겨 주세요.'
+                : '신청 내용을 남겨주세요.'
     );
 
     const categoryOptions = isSupportTrack
         ? ['후원 문의', '협력 파트너십 문의', '공동 프로그램 제안', '기타 협력 문의']
         : isMinistryTrack
             ? ['목회자 사역지원 신청', '선교사 사역지원 신청', '긴급 지원 요청', '기타 사역지원 문의']
-            : isOrgTrack
-                ? ['교회 공동체 워크숍 문의', '사역팀 소통·갈등 프로그램 문의', '교회 리더 디브리핑 문의', '기독교 기관 프로그램 문의']
-                : getPaidApplyCategoryOptions();
+            : getPaidApplyCategoryOptions();
     const defaultPaidCategory = '테스트 결과지 해석상담 ($50)';
     const selectedCategory = selectedFocus && categoryOptions.includes(selectedFocus.category)
         ? selectedFocus.category
@@ -685,9 +757,7 @@ function renderApply(payload = null) {
                 ? '후원·협력 전용 창구'
                 : isMinistryTrack
                     ? '사역지원 신청 안내'
-                    : isOrgTrack
-                        ? '교회·사역팀 프로그램 안내'
-                        : ''
+                    : ''
     );
     const bannerBody = childResultFocus?.bannerBody || selectedFocus?.bannerBody || (
         fromTest
@@ -695,10 +765,8 @@ function renderApply(payload = null) {
             : isSupportTrack
                 ? '후원 문의, 교회·선교단체 파트너십, 공동 프로그램 협력 요청을 이곳에 남겨주세요. 현재 후원은 개별 안내로 진행됩니다.'
                 : isMinistryTrack
-                    ? '목회자·선교사 대상 무료/감면 사역지원 트랙은 심사 후 배정됩니다.'
-                    : isOrgTrack
-                        ? '프로그램 규모와 대상에 따라 맞춤 견적으로 안내드립니다.'
-                        : ''
+                    ? '목회자·선교사 대상 반액 장학 트랙은 안내 후 적용됩니다.'
+                    : ''
     );
 
     return `
@@ -717,12 +785,6 @@ function renderApply(payload = null) {
                         </div>
                     ` : ''}
 
-                    ${isOrgTrack ? `
-                        <p class="mb-6 rounded-2xl border border-er-sand/60 bg-er-base/60 p-4 text-xs leading-relaxed text-er-body break-keep">
-                            일반 기업·팀 교육이나 조직 컨설팅 문의는 <a href="https://business.er-coaching.com/contact" class="font-bold text-er-green underline decoration-er-green/30 underline-offset-4">ER Business 문의 페이지 <span aria-hidden="true">↗</span></a>에서 접수합니다.
-                        </p>
-                    ` : ''}
-
                     <div class="flex items-center justify-between mb-8 px-4 relative">
                         <div class="absolute top-1/2 left-0 w-full h-px bg-gray-100 -z-10"></div>
                         <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-er-dark text-white flex items-center justify-center text-sm font-bold shadow-lg">1</span></div>
@@ -730,42 +792,43 @@ function renderApply(payload = null) {
                         <div class="bg-white px-2"><span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-bold">3</span></div>
                     </div>
 
-                    <form id="apply-form" class="space-y-6" onsubmit="handleApplySubmit(event, '${submitSource}')">
+                    <form id="apply-form" class="space-y-6" data-submit-source="${escapeApplyAttribute(submitSource)}" data-apply-focus="${escapeApplyAttribute(focus || '')}" onsubmit="handleApplyFormSubmit(event)">
                         
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">이름</label>
-                            <input type="text" name="name" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="성함을 남겨주세요">
+                            <label for="apply-name" class="block text-sm font-bold text-gray-700 mb-2">이름</label>
+                            <input type="text" name="name" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="성함을 남겨주세요" id="apply-name">
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">연락받으실 곳</label>
-                            <input type="text" name="contact" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="010-0000-0000 또는 이메일">
+                            <label for="apply-contact" class="block text-sm font-bold text-gray-700 mb-2">연락받으실 곳</label>
+                            <input type="text" name="contact" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="010-0000-0000 또는 이메일" id="apply-contact">
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">거주 국가</label>
-                                <input type="text" name="country" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="예: USA, Korea, Canada">
+                                <label for="apply-country" class="block text-sm font-bold text-gray-700 mb-2">거주 국가</label>
+                                <input type="text" name="country" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="예: USA, Korea, Canada" id="apply-country">
                             </div>
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2">희망 시간대</label>
-                                <input type="text" name="preferred_time" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="예: Weekday PM (Dallas)">
+                                <label for="apply-preferred-time" class="block text-sm font-bold text-gray-700 mb-2">희망 시간대</label>
+                                <input type="text" name="preferred_time" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all" placeholder="예: Weekday PM (Dallas)" id="apply-preferred-time">
                             </div>
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">희망하는 세션</label>
+                            <label for="apply-category" class="block text-sm font-bold text-gray-700 mb-2">희망하는 세션</label>
                             <div class="relative">
-                                <select name="category" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600">
+                                <select name="category" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 appearance-none focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all text-gray-600" id="apply-category">
                                     ${categoryOptions.map((opt) => `<option ${opt === selectedCategory ? 'selected' : ''}>${opt}</option>`).join('')}
                                 </select>
                                 <div class="absolute right-4 top-3.5 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down"></i></div>
                             </div>
+                            ${!isSupportTrack && !isMinistryTrack ? '<p class="mt-2 text-xs leading-relaxed text-er-muted">기본과정은 기수별 전용 안내에서 신청합니다. <a href="/#apply?track=paid&focus=enneagram_basic_october" class="font-bold text-er-green underline underline-offset-2">기본과정·다음 기수 안내</a></p>' : ''}
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">나누고 싶은 이야기</label>
-                            <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요.">${seededMessage}</textarea>
+                            <label for="apply-message" class="block text-sm font-bold text-gray-700 mb-2">나누고 싶은 이야기</label>
+                            <textarea name="message" rows="4" class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 px-4 focus:ring-2 focus:ring-er-accent focus:border-transparent outline-none transition-all resize-none" placeholder="지금의 고민이나 바라는 도움을 편하게 적어주세요." id="apply-message">${seededMessage}</textarea>
                         </div>
 
                         <div class="bg-er-base/50 p-4 rounded-xl flex gap-3 items-start">
@@ -775,27 +838,27 @@ function renderApply(payload = null) {
                                     ? '후원금은 목회자·선교사 사역지원 트랙의 접근성을 유지하는 데 우선 사용됩니다. 후원은 개별 안내 방식으로 연결됩니다.'
                                     : isMinistryTrack
                                         ? '사역지원 트랙은 월별 슬롯 기반으로 운영됩니다. 접수 후 심사 및 일정 가능 여부를 안내드립니다.'
-                                        : isOrgTrack
-                                            ? '교회·사역팀 프로그램은 대상과 일정에 따라 맞춤 제안으로 안내됩니다.'
-                                            : 'ER의 모든 세션은 USD 기준으로 운영됩니다. 최종 결제 금액은 결제 수단 및 환율에 따라 달라질 수 있습니다.'}
+                                        : 'ER의 모든 세션은 USD 기준으로 운영됩니다. 최종 결제 금액은 결제 수단 및 환율에 따라 달라질 수 있습니다.'}
                                 접수 후 24시간 이내에 담당자가 연락드립니다.
                             </p>
                         </div>
 
                         <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                            <p class="text-xs font-bold text-gray-600 mb-1">보안 확인</p>
+                            ${renderApplyPrivacyNotice()}
+                            <p class="text-xs font-bold text-gray-600 mb-1 mt-3">보안 확인</p>
                             <p class="text-[11px] text-gray-500 mb-2 break-keep">스팸 방지를 위해 아래 확인을 완료한 뒤 신청하기를 눌러 주세요.</p>
                             <p id="apply-turnstile-status" class="text-xs text-gray-500 mb-2 break-keep hidden" role="status" aria-live="polite"></p>
                             <div id="apply-turnstile-widget" class="min-h-[70px] w-full"></div>
                             <button type="button" id="apply-turnstile-retry" class="hidden mt-2 w-full py-2 rounded-lg border border-er-accent/40 text-er-dark text-xs font-bold hover:bg-er-accentLight/30" onclick="initApplyTurnstile()">
                                 보안 확인 다시 불러오기
                             </button>
-                            <input type="hidden" name="turnstile_token" id="apply-turnstile-token" value="">
+                            <input type="hidden" name="turnstile_token" value="" id="apply-turnstile-token">
                         </div>
                         
                         <button id="apply-submit-btn" type="submit" class="w-full py-4 bg-er-dark text-white rounded-xl font-bold shadow-lg hover:bg-gray-800 transition-all hover:-translate-y-1">
                             신청하기
                         </button>
+                        <p id="apply-submit-status" class="hidden text-sm leading-relaxed break-keep" role="status" aria-live="polite"></p>
                     </form>
 
                     <p class="mt-6 border-t border-gray-100 pt-5 text-center text-xs text-er-primary">
@@ -810,25 +873,48 @@ function renderApply(payload = null) {
     `;
 }
 
+function applicationReceipt(payload) {
+    const valid = (value) => value && typeof value === 'object'
+        && typeof value.id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value.id || '');
+    if (valid(payload?.applicationReceipt)) return payload.applicationReceipt;
+    try {
+        const saved = JSON.parse(sessionStorage.getItem('er_application_receipt') || 'null');
+        if (saved && saved.focus === String(payload?.focus || '')
+            && Number.isFinite(saved.savedAt) && Date.now() - saved.savedAt >= 0
+            && Date.now() - saved.savedAt < 30 * 60 * 1000 && valid(saved.receipt)) return saved.receipt;
+    } catch (_) {}
+    return null;
+}
+
+function renderApplicationReceipt(receipt) {
+    if (!receipt) return '';
+    return `<section class="my-5 rounded-xl border border-er-sand bg-er-base p-4 text-left text-sm" role="status"><p class="font-bold text-er-ink">접수번호</p><p class="mt-1 break-all font-mono text-er-body">${receipt.id}</p>${receipt.warning ? '<p class="mt-3 leading-relaxed text-er-body">신청은 접수되었습니다. 안내 메일의 발송 확인이 필요하므로 재신청하지 말고, 담당자에게 이 접수번호를 알려 주세요.</p>' : '<p class="mt-2 text-xs text-er-muted">문의하실 때 이 번호를 알려 주세요.</p>'}</section>`;
+}
+
 function renderThankYou(payload = null) {
     if (payload?.scholarshipInquiry) return renderScholarshipInquiry();
-    if (isParentingWorkshopFocus(payload?.focus)) {
+    const receipt = applicationReceipt(payload);
+    const receiptHtml = renderApplicationReceipt(receipt);
+    if (isOrganizationProgramFocus(payload?.focus) || isParentingWorkshopFocus(payload?.focus)) {
+        const seminarThanks = isOrganizationProgramFocus(payload?.focus);
         return `
             <div class="min-h-screen bg-er-base px-4 py-14">
                 <div class="mx-auto max-w-md rounded-lg border border-er-accentLight bg-white p-8 text-center shadow-soft">
                     <div class="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-green-50 text-xl text-green-600">
                         <i class="fas fa-check"></i>
                     </div>
-                    <h2 class="mb-3 text-xl font-bold text-er-dark">신청이 접수되었습니다</h2>
+                    <h2 class="mb-3 text-xl font-bold text-er-dark">${seminarThanks ? '개최 문의가 접수되었습니다' : '일정 알림이 접수되었습니다'}</h2>
+                    ${receiptHtml}
                     <p class="text-sm leading-relaxed text-er-primary break-keep">
-                        남겨주신 연락처로 일정과 참여 안내를 보내드리겠습니다.<br>
-                        보통 24시간 이내에 연락드립니다.
+                        ${seminarThanks
+                            ? '남겨주신 교회·기관 연락처로 개최 일정과 형식을 조율해 안내드리겠습니다.<br>보통 24시간 이내에 연락드립니다.'
+                            : '모집 일정이 확정되면 남겨주신 연락처로 안내드리겠습니다.<br>보통 24시간 이내에 접수 확인을 드립니다.'}
                     </p>
                     <div class="mt-8 grid gap-3">
                         <button onclick="renderSection('home')" class="w-full rounded-lg bg-er-dark py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
                             ER 홈페이지로 돌아가기
                         </button>
-                        ${renderInstagramThankYouButtons('parenting')}
+                        ${(!seminarThanks || payload?.focus === 'parenting_seminar') ? renderInstagramThankYouButtons('parenting') : ''}
                     </div>
                 </div>
             </div>
@@ -842,8 +928,9 @@ function renderThankYou(payload = null) {
                         <i class="fas fa-check"></i>
                     </div>
                     <h2 class="mb-3 text-xl font-bold text-er-dark">기본과정 신청이 접수되었습니다</h2>
+                    ${receiptHtml}
                     <p class="text-sm leading-relaxed text-er-primary break-keep">
-                        신청 접수와 결제 안내가 담긴 메일을 확인해 주세요. 한국은 원화, 해외는 USD 기준으로 안내하며, 사역자 항목에 체크하신 경우 50% 할인이 적용됩니다.<br>
+                        ${receipt?.warning ? '메일 발송 확인 후 결제 안내를 받으실 수 있습니다.' : '신청 접수와 결제 안내가 담긴 메일을 확인해 주세요.'} 한국은 원화, 해외는 USD 기준으로 안내하며, 사역자 항목에 체크하신 경우 50% 할인이 적용됩니다.<br>
                         담당자가 결제 내역과 수강 가능 여부를 확인한 뒤 등록을 확정하고, <strong>강의계획안과 자기관찰보고서 작성 안내</strong>를 보내드립니다. 메일이 보이지 않으면 스팸함을 확인하거나 <a href="mailto:json@er-coaching.com" class="underline">json@er-coaching.com</a>으로 문의해 주세요.
                     </p>
                     <div class="mt-8 grid gap-3">
@@ -867,6 +954,7 @@ function renderThankYou(payload = null) {
                     <i class="fas fa-check"></i>
                 </div>
                 <h2 class="text-xl font-bold text-gray-900 mb-2">소중한 이야기를 잘 받았습니다</h2>
+                ${receiptHtml}
                 <p class="text-gray-500 mb-8 leading-relaxed text-xs break-keep">
                     마음을 나누어 주셔서 감사합니다.<br>
                     남겨주신 연락처로 곧 정성껏 연락드리겠습니다.

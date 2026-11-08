@@ -1,0 +1,20 @@
+{
+  "name": "er-website",
+  "version": "0.1.0",
+  "description": "ER Website 과정 신청 현황과 처리 상태를 기존 수석코치 권한으로 관리",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ER Website",
+    "shortDescription": "과정 신청 현황과 처리 상태를 확인합니다.",
+    "longDescription": "기존 수석코치 계정으로 연결해 웹사이트 과정 신청 현황을 조회하고 연락 완료, 결제 대기, 대기 상태를 처리합니다.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://er-coaching.com",
+    "defaultPrompt": ["최근 과정 신청 현황을 알려줘", "이 신청서의 처리 상태를 확인해줘"]
+  },
+  "mcpServers": "./.mcp.json"
+}

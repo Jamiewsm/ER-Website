@@ -32,19 +32,11 @@ function renderDetailSkeleton() {
     `;
 }
 function normalizeParentingNoticeHtml(html) {
-    const pdf =
-        typeof PARENTING_MOBILE_BROCHURE_PDF !== 'undefined'
-            ? PARENTING_MOBILE_BROCHURE_PDF
-            : '/parenting-workshop/mobile-brochure.pdf';
+    // 4주 워크샵/브로셔 공개를 내린 뒤, 구 링크는 세미나 안내로 돌린다.
     let out = String(html || '');
     out = out.replace(
-        /href="\/parents-brochure\.html[^"]*"/gi,
-        `href="${pdf}" target="_blank" rel="noopener noreferrer"`
-    );
-    const escaped = pdf.replace(/\//g, '\\/');
-    out = out.replace(
-        new RegExp(`href="${escaped}"(?![^>]*target=)`, 'gi'),
-        `href="${pdf}" target="_blank" rel="noopener noreferrer"`
+        /href="\/(?:parents-brochure\.html|parenting-workshop(?:\.html)?(?:\/mobile-brochure\.pdf)?)[^"]*"/gi,
+        'href="/parenting-seminar.html"'
     );
     return out;
 }
@@ -399,23 +391,18 @@ function renderNoticeDetail(payload) {
     const isParentingNotice = legacyKey === '4';
     const isMagazineNotice = legacyKey === '3';
     const applyOnclick = isParentingNotice
-        ? "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'notice' })"
+        ? "renderSection('apply', { track: 'paid', focus: 'parenting', apply_source: 'notice' })"
         : "renderSection('apply', { track: 'paid' })";
-    const applyLabel = isParentingNotice ? '워크샵 신청하기' : '상담 신청하기';
-    const brochurePdf =
-        typeof PARENTING_MOBILE_BROCHURE_PDF !== 'undefined'
-            ? PARENTING_MOBILE_BROCHURE_PDF
-            : '/parenting-workshop/mobile-brochure.pdf';
+    const applyLabel = isParentingNotice ? '기질상담 신청하기' : '상담 신청하기';
     const noticeCtaBtnClass =
         'inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold break-keep whitespace-nowrap transition-all w-full sm:w-auto min-h-[2.75rem]';
     const parentingLinks = `
-        <a href="/parenting-workshop.html?apply_source=${isMagazineNotice ? 'magazine' : 'notice'}" class="${noticeCtaBtnClass} border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">워크샵 안내</a>
-        <a href="${brochurePdf}" target="_blank" rel="noopener noreferrer" class="${noticeCtaBtnClass} border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">모바일 브로셔</a>`;
+        <a href="/parenting-seminar.html?apply_source=${isMagazineNotice ? 'magazine' : 'notice'}" class="${noticeCtaBtnClass} border border-er-accent/40 text-er-dark hover:bg-er-accentLight/30">교회·기관 세미나 안내</a>`;
     const brochureCta = (isParentingNotice || isMagazineNotice) ? parentingLinks : '';
     const footerHintHtml = isMagazineNotice
-        ? '창간호 하이라이트를 보셨다면<br />워크샵 안내·브로셔 PDF를 확인해 보세요.'
+        ? '창간호 하이라이트를 보셨다면<br />교회·기관용 Parenting 세미나 안내를 확인해 보세요.'
         : isParentingNotice
-            ? '워크샵 안내·모바일 브로셔 PDF를 보거나<br />바로 신청할 수 있습니다.'
+            ? '4주 워크샵은 현재 일정이 없습니다.<br />개인은 기질상담, 교회·기관은 세미나 개최 문의로 이어가 주세요.'
             : '문의하거나 신청하시겠어요?';
 
     return `

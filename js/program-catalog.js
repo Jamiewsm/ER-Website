@@ -7,6 +7,8 @@
     recovery_journey_8: { total: 480, sessions: 8, label: '$480' },
     couple_coaching: { total: 220, sessions: 1, label: '$220' },
     parenting_workshop: { total: 120, sessions: 4, label: '$120' },
+    parenting_seminar: { total: 0, sessions: 1, label: '일정 확정 후 안내' },
+    couple_seminar: { total: 0, sessions: 1, label: '일정 확정 후 안내' },
     basic_course: { total: 330, totalKrw: 450000, sessions: 8, label: '$330 / ₩450,000' },
     result_consult: { total: 50, sessions: 1, label: '$50 / 1시간' }
   };
@@ -159,6 +161,32 @@
       reasonSecondary: '부모-자녀 관계에 결과를 적용하기 좋습니다.',
       applyMessage: 'Enneagram for Parenting 4주 워크샵 신청합니다.'
     },
+    parenting_seminar: {
+      key: 'parenting_seminar',
+      title: 'Parenting 세미나',
+      shortTitle: 'Parenting 세미나',
+      price: PRICING.parenting_seminar,
+      category: 'Parenting 세미나 개최 문의',
+      track: 'org',
+      focus: 'parenting_seminar',
+      outcome: '교회·기관 요청으로 부모–자녀 기질 이해 세미나를 개최합니다. 개인은 기질상담으로 신청합니다.',
+      reasonPrimary: '교회·기관에서 부모교육을 열고 싶을 때 좋습니다.',
+      reasonSecondary: '개인 참가 등록이 아니라 공동체 개최 문의 창구입니다.',
+      applyMessage: '교회·기관 Parenting 세미나 개최를 문의합니다.'
+    },
+    couple_seminar: {
+      key: 'couple_seminar',
+      title: '결혼·부부 세미나',
+      shortTitle: '부부 세미나',
+      price: PRICING.couple_seminar,
+      category: '결혼·부부 세미나 개최 문의',
+      track: 'org',
+      focus: 'couple_seminar',
+      outcome: '교회·기관 요청으로 부부 세미나를 개최합니다. 개인 부부는 상담·코칭으로 신청합니다.',
+      reasonPrimary: '교회·기관에서 부부 세미나를 열고 싶을 때 좋습니다.',
+      reasonSecondary: '개인 부부 상담과 별개의 공동체 개최 문의 창구입니다.',
+      applyMessage: '교회·기관 결혼·부부 세미나 개최를 문의합니다.'
+    },
     basic_course: {
       key: 'basic_course',
       title: '성경적 에니어그램 기본과정 8주',
@@ -237,12 +265,12 @@
       PROGRAMS.result_consult.category,
       PROGRAMS.identity_session.category,
       PROGRAMS.coaching_single.category,
-      PROGRAMS.basic_course.category,
-      '자녀 양육 코칭 문의',
+      // 기수·필수 입력이 있는 기본과정은 전용 안내/신청서에서만 접수한다.
+      '우리자녀 기질상담 문의',
       PROGRAMS.recovery_journey_4.category,
       PROGRAMS.recovery_journey_8.category,
-      PROGRAMS.couple_coaching.category,
-      PROGRAMS.parenting_workshop.category
+      PROGRAMS.couple_coaching.category
+      // parenting_workshop / seminars: 개인 paid 카테고리에서 제외 (세미나는 org 개최 문의)
     ];
   }
 

@@ -26,6 +26,7 @@ test('public account details render without payment controls or intake dependenc
     assert.ok(html.includes(text));
   }
   assert.doesNotMatch(html, /<form\b|<input\b|<select\b|접수 준비|입금 방법 확인|입금 확인 요청|turnstile|정기후원|매월 함께하기|무료 코칭|심사를 통해 선정/);
+  assert.match(html, /모든 프로그램·상담·코칭 비용의 절반을 반액 장학으로 지원합니다/);
   assert.match(html, /mailto:hello@er-coaching.com/);
   assert.equal(context.submitScholarshipInquiry, undefined);
   assert.equal(context.showScholarshipTransfer, undefined);

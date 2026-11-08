@@ -16,7 +16,7 @@ import {
   growthCoursePricing,
   isGrowthCourseProgram,
 } from '../_shared/program-pricing.ts';
-import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
+import { extractEmailFromContact, isValidEmailAddress, sendResendEmail } from '../_shared/resend.ts';
 
 type NotifyEvent = 'registration' | 'pre_survey' | 'graduation';
 
@@ -72,7 +72,10 @@ Deno.serve(async (req) => {
       });
     }
 
-    const applicantEmail = extractEmailFromContact(app.contact);
+    const contact = String(app.contact || '').trim();
+    // 새 기본과정 주소는 접수와 같은 전체 주소를 쓰고, 기존 메모형 연락처는 보존한다.
+    const applicantEmail = app.program_key === BASIC_COURSE_PROGRAM_KEY && isValidEmailAddress(contact)
+      ? contact : extractEmailFromContact(app.contact);
     if (!applicantEmail) {
       return new Response(JSON.stringify({ error: 'no_email_on_contact' }), {
         status: 400,

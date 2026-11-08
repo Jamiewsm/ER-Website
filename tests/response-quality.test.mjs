@@ -132,3 +132,33 @@ test('experiment row preserves response quality and timing metadata', () => {
   assert.match(experimentSource, /response_quality:\s*payload\.responseQuality \|\| null/);
   assert.match(experimentSource, /response_timing:\s*payload\.responseTiming \|\| null/);
 });
+
+
+test('short narrative flow flags very fast answers without changing scores', () => {
+  const context = loadTestScript();
+  const base = {
+    responses: {},
+    timings: { totalSeconds: 3, answeredCount: 15, avgSecondsPerAnswered: 0.2 },
+    scoringAxes: {},
+    ranked: [{ type: 4, score: 4 }, { type: 7, score: 2 }],
+    instinctPct: { sp: 0, sx: 100, so: 0 },
+    confidence: '높음'
+  };
+  const snapshot = (overrides) => {
+    context.qualityInput = { ...base, ...overrides };
+    return vm.runInContext('buildResponseQualitySnapshot(qualityInput)', context);
+  };
+  const narrative = snapshot({ assessmentVersion: 'word-narrative-v2' });
+  assert.ok(narrative.flags.some((flag) => flag.code === 'too_fast_total'));
+  assert.equal(narrative.level, 'caution');
+  assert.deepEqual(base.ranked, [{ type: 4, score: 4 }, { type: 7, score: 2 }]);
+  const legacy = snapshot({});
+  assert.ok(!legacy.flags.some((flag) => flag.code === 'too_fast_total'));
+  for (const timings of [
+    { answeredCount: 7, avgSecondsPerAnswered: 0.2 },
+    { answeredCount: 15, avgSecondsPerAnswered: 4 },
+    { answeredCount: 15, avgSecondsPerAnswered: 0 }
+  ]) {
+    assert.ok(!snapshot({ assessmentVersion: 'word-narrative-v2', timings }).flags.some((flag) => flag.code === 'too_fast_total'));
+  }
+});

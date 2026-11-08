@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "er_coach": {
+      "type": "http",
+      "url": "https://osdynbadhtfgoxilgmpy.supabase.co/functions/v1/er-coach-mcp"
+    }
+  }
+}

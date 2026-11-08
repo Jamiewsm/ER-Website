@@ -1,0 +1,4 @@
+/* 메인 웹사이트의 Tailwind 기본 스타일과 정적 유틸리티를 생성한다. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

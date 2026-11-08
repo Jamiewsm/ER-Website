@@ -19,8 +19,8 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://er-coaching.com/parenting-workshop</loc>
-    <lastmod>2026-09-15</lastmod>
+    <loc>https://er-coaching.com/parenting-seminar</loc>
+    <lastmod>2026-11-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -38,4 +38,12 @@
     <loc>https://er-coaching.com/theology/</loc>
     <lastmod>2026-09-15</lastmod>
   </url>
+  <url>
+    <loc>https://er-coaching.com/enneagram-certification/</loc>
+    <lastmod>2026-11-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url><loc>https://er-coaching.com/parenting-workshop</loc></url>
+  <url><loc>https://er-coaching.com/church-programs</loc></url>
 </urlset>

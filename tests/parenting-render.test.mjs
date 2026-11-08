@@ -9,7 +9,9 @@ const appCoreSource = readFileSync(new URL('../js/app-core.js', import.meta.url)
 const programsSource = readFileSync(new URL('../js/sections/programs.js', import.meta.url), 'utf8');
 const homeSource = readFileSync(new URL('../js/sections/home.js', import.meta.url), 'utf8');
 const workshopSource = readFileSync(new URL('../parenting-workshop.html', import.meta.url), 'utf8');
+const seminarSource = readFileSync(new URL('../parenting-seminar.html', import.meta.url), 'utf8');
 const childTestSource = readFileSync(new URL('../child-type-test/child-type-test.html', import.meta.url), 'utf8');
+const indexSource = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 
 function loadParentingRenderer() {
   const context = {};
@@ -48,16 +50,35 @@ test('renderParenting renders hero, three lenses, and focus anchors', () => {
   assert.match(html, /id="parenting-program"/);   // 홈 Hero 카드가 스크롤하는 상품 계단 앵커
 });
 
+test('renderParenting hero embeds YouTube with muted autoplay on main entry', () => {
+  const { renderParenting } = loadParentingRenderer();
+  const mainHtml = renderParenting();
+  assert.match(mainHtml, /id="parenting-hero-video"/);
+  assert.match(mainHtml, /youtube\.com\/embed\/ZQh01Atj1l0/);
+  assert.match(mainHtml, /autoplay=1/);
+  assert.match(mainHtml, /mute=1/);
+  assert.match(mainHtml, /cc_load_policy=0/);
+
+  const focusHtml = renderParenting({ focus: 'child' });
+  assert.match(focusHtml, /youtube\.com\/embed\/ZQh01Atj1l0/);
+  assert.match(focusHtml, /mute=1/);
+  assert.match(focusHtml, /cc_load_policy=0/);
+  assert.doesNotMatch(focusHtml, /autoplay=1/);
+});
+
 test('renderParenting wires existing flows without rebuilding them', () => {
   const { renderParenting } = loadParentingRenderer();
   const html = renderParenting();
 
   // 아이 유형검사는 기존 독립 페이지로 연결.
   assert.match(html, /child-type-test\/child-type-test\.html/);
-  // 양육 해석상담은 기존 apply parenting focus 재사용 + 랜딩발 출처 attribution.
+  // 우리자녀 기질상담은 기존 apply parenting focus 재사용 + 랜딩발 출처 attribution.
   assert.match(html, /focus: 'parenting',[^}]*apply_source: 'parenting'/);
-  // 4주 과정 "알아보기"는 워크샵 상세 페이지로 안내(상세→신청 퍼널, attribution 유지).
-  assert.match(html, /parenting-workshop\.html\?apply_source=parenting/);
+  assert.match(html, /우리자녀 기질상담 신청/);
+  // 세미나 안내는 상세 페이지로 연결(상세→신청 퍼널, attribution 유지).
+  assert.match(html, /parenting-seminar\.html\?apply_source=parenting/);
+  assert.doesNotMatch(html, /parenting-workshop\.html/);
+  assert.doesNotMatch(html, /4주 Parenting 과정/);
   // 진단이 아니라 이해의 가설이라는 표현이 포함.
   assert.match(html, /이해의 가설/);
 });
@@ -123,21 +144,40 @@ test('programs section is relabeled to the locked nav IA and redirects parenting
   assert.doesNotMatch(programsSource, /individual:개인\/가정/);
 });
 
-test('home parenting hero card has a dual CTA into the journey and the workshop apply', () => {
-  // 1차 CTA: 양육 여정 보기 → 랜딩 top.
-  assert.match(homeSource, /button: '양육 여정 보기'/);
-  assert.match(homeSource, /action: "renderSection\('parenting'\)"/);
-  // 2차 CTA: 4주 과정 신청 → apply parenting_workshop (home_hero attribution).
-  assert.match(homeSource, /button2: '4주 과정 신청'/);
-  assert.match(homeSource, /focus: 'parenting_workshop', apply_source: 'home_hero'/);
-  // 홈은 정적 /parenting-workshop.html 로 직행하지 않음.
-  assert.doesNotMatch(homeSource, /parenting-workshop\.html/);
+test('home featured programs include parenting seminar as the parent-education entry', () => {
+  assert.match(homeSource, /title: '부모교육 세미나'/);
+  assert.match(homeSource, /parenting-seminar\.html\?apply_source=home_programs/);
+  assert.match(homeSource, /title: '에니어그램 기질 검사'/);
+  assert.doesNotMatch(homeSource, /관계·부부 코칭 보기/);
+  assert.doesNotMatch(homeSource, /button2: '4주 과정 신청'/);
 });
 
-test('workshop detail page links back into the Parenting journey', () => {
-  // F1 이후 고립됐던 워크샵 상세 페이지가 새 여정으로 다시 연결됨.
-  assert.match(workshopSource, /href="\/#parenting"/);
-  assert.match(workshopSource, /Parenting 여정/);
+test('workshop detail page describes independent participation and pending recruitment', () => {
+  assert.match(workshopSource, /4주 부모교육 워크숍/);
+  assert.match(workshopSource, /기본과정 수료 여부와 관계없이/);
+  assert.match(workshopSource, /모집 일정과 참가비는 확정 후/);
+  assert.match(workshopSource, /focus=parenting_workshop/);
+  assert.match(workshopSource, /일정 알림 남기기/);
+  assert.doesNotMatch(workshopSource, /http-equiv="refresh"|\$120/);
+});
+
+test('seminar landing wires org hosting apply and personal counseling fork', () => {
+  assert.match(seminarSource, /부모교육 세미나/);
+  assert.match(seminarSource, /assets\/parenting\/parenting-seminar-hero\.jpg/);
+  assert.match(seminarSource, /track=org&focus=parenting_seminar/);
+  assert.match(seminarSource, /track=paid&focus=parenting/);
+  assert.match(seminarSource, /교회·선교단체·기독교 기관/);
+  assert.match(seminarSource, /개인 참가 등록은 받지 않습니다/);
+  assert.doesNotMatch(seminarSource, /focus=parenting_workshop/);
+  assert.match(seminarSource, /parenting-workshop/);
+  assert.doesNotMatch(seminarSource, /세미나 vs 4주/);
+  assert.match(seminarSource, /href="\/#parenting"/);
+});
+
+test('site nav renames counseling and adds seminar entry', () => {
+  assert.match(indexSource, /우리자녀 기질상담 신청/);
+  assert.match(indexSource, /href="\/parenting-seminar"/);
+  assert.doesNotMatch(indexSource, /양육 해석상담/);
 });
 
 test('child type test result offers a journey CTA beyond the paid consult', () => {

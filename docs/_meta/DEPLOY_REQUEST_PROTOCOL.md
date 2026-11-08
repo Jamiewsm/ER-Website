@@ -14,7 +14,7 @@
 |------|------|------|
 | PR 생성·push | Codex / Claude | track에 맞는 파일만 변경 |
 | PR 라벨 | **CI 자동** (`PR Auto Deploy Label`) | `deploy/site` · `deploy/test` · `deploy/both` |
-| merge | Cursor Cloud 메인 | `main` protected branch |
+| merge | Cursor / Codex | `main` protected branch |
 | production deploy | **CI 자동** (`Auto Deploy On Merge`) | merge 직후 track 추론 → Deploy Production |
 
 **Codex/Claude는 merge 후 `submit_deploy_request` 를 호출하지 않는다.**  
@@ -26,8 +26,8 @@
 
 | Agent | 할 일 | 하지 말 것 |
 |-------|--------|------------|
-| Codex / Claude | PR push, 테스트, PR 본문에 track 명시 | `wrangler deploy`, main merge, merge 후 수동 deploy 요청 |
-| Cursor Cloud 메인 | PR merge 조율, Actions 실패 시 수습 | feature branch 직접 deploy |
+| Cursor / Codex | PR push, 테스트, track 명시, PR 병합·배포 조율, Actions 결과 확인·실패 수습 | 직접 `wrangler deploy`, feature branch 직접 deploy, 불필요한 merge 후 수동 deploy 요청 |
+| Claude | PR push, 테스트, PR 본문에 track 명시, Cursor/Codex에 병합 인계 | 직접 `wrangler deploy`, main merge |
 | GitHub Actions | merge·path 기반 site/test deploy | — |
 
 ---
@@ -78,9 +78,9 @@ gh workflow run deploy-production.yml -f track=both -f requested_by=human -f rea
 
 1. PR 생성 + 본문에 **Track: site | test** 명시
 2. `node --test tests/...` (해당 scope)
-3. merge는 **Cursor 메인** handoff
-4. merge 후 **아무 것도 하지 않음** — CI가 deploy + PR에 상태 댓글
-5. 실패 시에만 Actions log를 Cursor 메인 handoff에 첨부
+3. Cursor 또는 Codex가 검증과 최신 main 상태를 확인한 뒤 병합. Claude는 Cursor/Codex에 인계
+4. 병합 후 CI 결과와 실제 배포 상태 확인 — CI가 deploy + PR에 상태 댓글
+5. 실패 시 조율 담당자가 Actions log를 확인하고 복구 조율. 직접 `wrangler deploy` 금지
 
 ---
 
@@ -93,7 +93,7 @@ gh workflow run deploy-production.yml -f track=both -f requested_by=human -f rea
 
 ---
 
-## Cursor Cloud 메인 handoff (다른 AI → Cursor)
+## 병합 담당자 handoff (다른 AI → Cursor / Codex)
 
 ```markdown
 ## Merge handoff
@@ -102,4 +102,4 @@ gh workflow run deploy-production.yml -f track=both -f requested_by=human -f rea
 - Action: merge만 하면 됨. 별도 deploy 요청 불필요.
 ```
 
-Cursor 메인은 **merge + Actions 성공 확인** 만 하면 된다.
+Cursor 또는 Codex가 **병합 + Actions 성공 확인 + 실제 배포 상태 검증**을 담당합니다. 같은 PR은 한 에이전트가 조율합니다.

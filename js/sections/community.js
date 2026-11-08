@@ -77,7 +77,7 @@ function renderCommunity() {
                 <div class="grid lg:grid-cols-[1.05fr_0.95fr] gap-8 mb-10">
                     <div class="bg-er-surface rounded-[2rem] p-6 md:p-8 shadow-soft animate-fade-in-up floating-card border border-er-sand/60">
                         <h3 class="font-bold text-base text-er-inkSoft mb-6 flex items-center gap-2">
-                            <i class="fas fa-church text-er-green"></i> ER이 집중하는 자리
+                            <i class="fas fa-church text-er-green"></i> ER이 섬기는 영역
                         </h3>
                         <p class="text-xs text-er-muted mb-5 break-keep">개인의 회복이 가정과 교회 공동체로 이어지도록 다음 네 영역을 중심으로 섬깁니다.</p>
                         <div class="grid gap-3 sm:grid-cols-2">
@@ -122,12 +122,12 @@ function renderCommunity() {
                     </div>
                     <div class="grid gap-3 md:grid-cols-4">
                         ${[
-                            { label: '양육', desc: '부모-아이 기질 차이', icon: 'fas fa-child-reaching', tab: 'individual' },
-                            { label: '부부', desc: '반복 갈등·대화 회복', icon: 'fas fa-heart', tab: 'individual' },
-                            { label: '사역팀', desc: '동역·소통 회복', icon: 'fas fa-users', tab: 'church' },
-                            { label: '교회', desc: '공동체·사역자 돌봄', icon: 'fas fa-church', tab: 'church' },
+                            { label: '양육', desc: '우리자녀 기질상담·부모교육', icon: 'fas fa-child-reaching', action: "renderSection('parenting')" },
+                            { label: '부부', desc: '상담·코칭과 부부 세미나', icon: 'fas fa-heart', action: "renderSection('programs', { tab: 'individual' })" },
+                            { label: '사역팀', desc: '사역자 팀워크·소통', icon: 'fas fa-users', action: "renderSection('programs', { tab: 'church' })" },
+                            { label: '교회 세미나', desc: '부모·부부·팀워크 개최', icon: 'fas fa-church', action: "window.location.href='/church-programs'" },
                         ].map((card) => `
-                            <button onclick="renderSection('programs', { tab: '${card.tab}' })" class="text-left rounded-2xl bg-er-base/60 border border-er-sand/50 p-5 shadow-soft hover:-translate-y-1 hover:border-er-green/40 hover:bg-er-greenTint/30 transition-all">
+                            <button onclick="${card.action}" class="text-left rounded-2xl bg-er-base/60 border border-er-sand/50 p-5 shadow-soft hover:-translate-y-1 hover:border-er-green/40 hover:bg-er-greenTint/30 transition-all">
                                 <div class="w-10 h-10 rounded-xl bg-er-greenTint text-er-green flex items-center justify-center mb-3">
                                     <i class="${card.icon}"></i>
                                 </div>
@@ -138,7 +138,7 @@ function renderCommunity() {
                     </div>
                     <div class="mt-8 text-center">
                         <button onclick="renderSection('test')" class="inline-flex items-center gap-2 rounded-full bg-er-green px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-er-greenDark">
-                            먼저 프리미엄 검사 해보기 <i class="fas fa-arrow-right text-[11px]"></i>
+                            먼저 내러티브 테스트 해보기 <i class="fas fa-arrow-right text-[11px]"></i>
                         </button>
                     </div>
                 </div>

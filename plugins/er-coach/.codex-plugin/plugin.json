@@ -1,0 +1,20 @@
+{
+  "name": "er-coach",
+  "version": "0.1.0",
+  "description": "ER 코치포털의 권한별 과제·자료·일정 조회와 과제 초안 작성",
+  "author": {
+    "name": "Local developer"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ER 코치포털",
+    "shortDescription": "코치 과제, 자료, 일정을 확인합니다.",
+    "longDescription": "기존 ER 코치 계정으로 연결해 역할에 맞는 과제, 자료, 일정을 조회하고 자신의 과제 초안을 작성합니다.",
+    "developerName": "Local developer",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://coach.er-coaching.com/",
+    "defaultPrompt": ["이번 주 코치 일정과 과제를 알려줘", "코치 과제 초안을 만들어줘"]
+  },
+  "mcpServers": "./.mcp.json"
+}

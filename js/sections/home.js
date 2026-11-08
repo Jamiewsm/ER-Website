@@ -1,3 +1,19 @@
+function renderHomeParticipation(participation) {
+    return participation.map(([label, description, links]) => `
+        <details class="mt-3 rounded-xl border border-er-sand bg-er-base px-4 py-3 text-sm break-keep">
+            <summary class="min-h-11 cursor-pointer font-extrabold text-er-green">
+                ${label}
+                <span class="block pt-1 text-xs font-medium text-er-muted">${description}</span>
+            </summary>
+            ${links.map(([href, text]) => `
+                <a href="${href.replaceAll('&', '&amp;')}" class="mt-2 flex min-h-11 items-center font-bold text-er-green underline underline-offset-2">
+                    <span class="inline-block whitespace-nowrap">${text}</span>
+                </a>
+            `).join('')}
+        </details>
+    `).join('');
+}
+
 function renderHome() {
     const stories = Array.isArray(publicTestimonials?.stories) ? publicTestimonials.stories : [];
     const findStory = (matcher, fallback) => stories.find((story) => matcher(story)) || fallback;
@@ -39,53 +55,87 @@ function renderHome() {
 
     const stats = [
         { value: '400+', label: '누적인원' },
-        { value: '98%', label: '만족도' },
+        { value: '온라인', label: '교육·코칭' },
         { value: '10년+', label: '전문가 경험' },
-        { value: '4.9/5', label: '후기 평점' }
+        { value: '맞춤 코칭', label: '개인·가정·공동체' }
     ];
+
+    const images = {
+        background: { src: 'assets/er-visual/home-background-1535.webp', srcset: 'assets/er-visual/home-background-480.webp 480w, assets/er-visual/home-background-768.webp 768w, assets/er-visual/home-background-1535.webp 1535w', width: 1535, height: 864 },
+        parenting: { src: 'assets/er-visual/home-parent-child-768.webp', srcset: 'assets/er-visual/home-parent-child-480.webp 480w, assets/er-visual/home-parent-child-768.webp 768w, assets/er-visual/home-parent-child-1100.webp 1100w', width: 1100, height: 605 },
+        couple: { src: 'assets/er-visual/home-couple-768.webp', srcset: 'assets/er-visual/home-couple-480.webp 480w, assets/er-visual/home-couple-768.webp 768w, assets/er-visual/home-couple-1100.webp 1100w', width: 1100, height: 605 },
+        team: { src: 'assets/er-visual/home-team-768.webp', srcset: 'assets/er-visual/home-team-480.webp 480w, assets/er-visual/home-team-768.webp 768w, assets/er-visual/home-team-1100.webp 1100w', width: 1100, height: 605 },
+        hands: { src: 'assets/er-visual/home-hands-green-763.webp', srcset: 'assets/er-visual/home-hands-green-480.webp 480w, assets/er-visual/home-hands-green-763.webp 763w', width: 763, height: 386 }
+    };
 
     const programCards = [
         {
-            badge: '모집 중',
-            title: '에니어그램 기본과정 8주',
-            text: '10월 첫주 개강 · 정원 8명 · 8주 온라인 과정',
-            price: '한국 ₩450,000 · 미국 $330',
-            image: 'background.png',
-            position: 'center',
-            button: '자세히 보기',
-            action: "window.location.href='/basic-course.html'"
-        },
-        {
-            badge: '추천',
-            title: 'Enneagram for Parenting',
-            text: '부모의 반응 패턴과 아이의 기질을 이해하는 4주 과정',
-            price: '$120',
-            image: 'home-parent-child-photo.jpg',
-            position: 'center top',
-            button: '양육 여정 보기',
-            action: "renderSection('parenting')",
-            button2: '4주 과정 신청',
-            action2: "renderSection('apply', { track: 'paid', focus: 'parenting_workshop', apply_source: 'home_hero' })"
-        },
-        {
-            badge: '테스트',
-            title: '무료 에니어그램 검사',
-            text: '내 반복 패턴을 먼저 정리하는 10분 테스트',
+            badge: '시작',
+            title: '에니어그램 기질 검사',
+            text: '나의 반복 패턴과 기질을 먼저 정리하는 무료 진단',
             price: '무료',
-            image: 'hands and green.png',
+            image: images.hands,
             position: 'center',
-            button: '검사하기',
+            button: '검사 시작하기',
             action: "renderSection('test')"
         },
         {
-            badge: '상담',
-            title: '결과지 해석상담',
-            text: '결과지를 함께 읽으며 핵심 유형·하위유형·날개·신뢰도 정리',
-            price: '$50',
-            image: 'home-couple-photo.jpg',
+            badge: '교회·기관',
+            title: '부부 세미나',
+            text: '교회·기관이 교인 부부를 위해 개최를 요청하는 세미나입니다. 개인 부부는 상담·코칭으로 신청합니다.',
+            price: '개최 맞춤 안내',
+            image: images.couple,
             position: 'center top',
-            button: '상담 신청하기',
-            action: "renderSection('apply', { track: 'paid', focus: 'result_consult' })"
+            button: '부부 세미나 안내',
+            action: "window.location.href='/church-programs#couple'"
+        },
+        {
+            badge: '교회·기관',
+            title: '부모교육 세미나',
+            text: '교회·기관이 부모님들을 위해 개최를 요청하는 세미나입니다. 개인은 우리자녀 기질상담·4주 부모교육 워크숍으로 신청합니다.',
+            price: '개최 맞춤 안내',
+            image: images.parenting,
+            position: 'center top',
+            button: '부모교육 세미나 안내',
+            action: "window.location.href='/parenting-seminar.html?apply_source=home_programs'"
+        },
+        {
+            badge: '사역팀',
+            title: '사역팀 팀워크 세미나',
+            text: '목사·전도사·평신도 사역자가 함께 일할 때의 소통·역할·갈등을 다룹니다. 교인 대상 부모·부부 세미나와는 별도입니다.',
+            price: '맞춤 견적',
+            image: images.team,
+            position: 'center',
+            button: '사역팀 팀워크 안내',
+            action: "window.location.href='/church-programs#teamwork'"
+        },
+        {
+            badge: showBasicCourseRecruitment ? '모집 중' : '모집 마감',
+            title: '성경적 에니어그램 기본과정 8주',
+            text: showBasicCourseRecruitment ? '10월 첫주 개강 · 정원 8명 · 8주 온라인 과정' : '2026년 10월 기수 모집 마감 · 다음 기수 일정은 확정 후 안내',
+            price: '한국 ₩450,000 · 미국 $330',
+            image: images.background,
+            position: 'center',
+            button: '과정 자세히 보기',
+            action: "window.location.href='/basic-course.html'"
+        },
+        {
+            badge: '양성',
+            title: '에니어그램 교육',
+            text: '성경적 에니어그램을 삶과 관계, 사역 현장에 적용하는 교육입니다.',
+            participation: [
+                ['개인 수강 과정', '8주 기본과정에서 시작해 심화과정과 코치 트레이닝으로 이어갈 수 있습니다.', [
+                    ['/basic-course', '8주 기본과정 안내'], ['/#coach_training', '심화·코치 트레이닝 안내']
+                ]],
+                ['교회·기관 맞춤 교육', '기본·심화·전문가 교육을 3시간 특강, 2~3회 워크숍 또는 8주 과정으로 협의합니다.', [
+                    ['/church-programs#education', '기관 맞춤 교육 안내']
+                ]]
+            ],
+            price: '과정 안내',
+            image: images.team,
+            position: 'center top',
+            button: '전문가 과정 보기',
+            action: "renderSection('coach_training')"
         }
     ];
 
@@ -122,31 +172,49 @@ function renderHome() {
             eyebrow: '부모와 자녀',
             title: '아이를 바꾸기 전에, 아이를 이해하는 눈이 필요합니다',
             text: '아이의 행동 뒤에는 각자의 두려움과 욕구가 있고, 부모의 반응 뒤에도 익숙한 패턴이 있습니다.',
-            image: 'home-parent-child-photo.jpg',
+            image: images.parenting,
             position: 'center top',
             caption: '행동보다 마음을 이해하는 부모교육',
             points: ['부모의 유형과 양육 패턴', '자녀의 기질과 반응 이해', '반복되는 부모-자녀 갈등 분석'],
-            action: "renderSection('parenting')"
+            participation: [
+                ['우리 가정을 위한 양육 도움', '우리 집의 양육 고민을 우리자녀 기질상담에서 살피고, 필요에 따라 단기·장기 코칭을 협의합니다. 4주 부모교육 워크숍에서는 실제 대화와 대응을 연습합니다.', [
+                    ['/#parenting', '우리자녀 기질상담 보기'], ['/parenting-workshop', '4주 부모교육 워크숍']
+                ]],
+                ['우리 공동체를 위한 부모교육', '교회·기독교기관이 교인 부모님들을 위한 부모교육 세미나 개최를 요청할 수 있습니다.', [
+                    ['/parenting-seminar?apply_source=home_programs', '부모교육 세미나 안내']
+                ]]
+            ]
         },
         {
             eyebrow: '부부와 가정',
             title: '판단을 멈추고, 긍휼과 은혜로 다시 연결되기',
             text: '부부 갈등은 한 번의 사건보다 말투와 침묵, 통제와 회피, 인정 욕구가 반복되며 만들어지는 패턴일 때가 많습니다.',
-            image: 'home-couple-photo.jpg',
+            image: images.couple,
             position: 'center top',
             caption: '상대를 고치려는 자리에서, 이해하는 자리로',
             points: ['같은 문제로 반복되는 갈등 이해', '배우자의 방어기제를 자극하지 않는 대화', '복음 안에서 안전한 관계 다시 세우기'],
-            action: "renderSection('apply', { track: 'paid', focus: 'couple', apply_source: 'home_relationship_couple' })"
+            participation: [
+                ['우리 부부를 위한 관계 코칭', '한 번의 상담으로 반복되는 갈등을 살피고, 필요한 변화에 맞춰 단기·장기 코칭을 협의합니다.', [
+                    ['/#apply?track=paid&focus=couple&apply_source=home_relationship_couple', '부부 상담·코칭 신청']
+                ]],
+                ['우리 공동체를 위한 부부 세미나', '교회·기독교기관이 교인 부부를 위해 부부 세미나 개최를 요청할 수 있습니다.', [
+                    ['/church-programs#couple', '부부 세미나 안내']
+                ]]
+            ]
         },
         {
-            eyebrow: '교회·사역팀',
-            title: '다름을 이해하고, 복음 안에서 함께 섬기는 공동체로',
-            text: '사역 현장의 오해와 소진은 헌신의 부족이 아니라, 서로 다른 동기와 소통 방식이 겹치며 생길 때가 많습니다.',
-            image: 'home-team-photo.jpg',
+            eyebrow: '사역팀 팀워크',
+            title: '다름을 이해하고, 복음 안에서 함께 섬기는 팀으로',
+            text: '사역 현장의 오해와 소진은 헌신의 부족이 아니라, 목사·전도사·평신도 사역자마다 다른 동기와 소통 방식이 겹치며 생길 때가 많습니다.',
+            image: images.team,
             position: 'center top',
-            caption: '각 사람의 은사를 존중하며 함께 섬기는 사역팀',
-            points: ['사역자의 강점과 소명 이해', '리더와 사역팀의 소통·의사결정 패턴', '갈등을 줄이고 동역을 세우는 공동체 언어'],
-            action: "renderSection('apply', { track: 'org', focus: 'ministry_team', apply_source: 'home_relationship_ministry_team' })"
+            caption: '함께 섬기는 사역팀의 역할과 소통을 정렬합니다',
+            points: ['사역자의 강점과 소명 이해', '리더와 사역팀의 소통·의사결정 패턴', '갈등을 줄이고 동역을 세우는 팀의 언어'],
+            participation: [
+                ['우리 사역팀을 위한 팀워크', '교인 대상 세미나가 아닙니다. 교회·기관이 사역팀의 소통·역할·갈등을 다루는 세미나·워크숍 개최를 요청할 수 있습니다.', [
+                    ['/church-programs#teamwork', '사역팀 팀워크 안내']
+                ]]
+            ]
         }
     ];
 
@@ -182,18 +250,18 @@ function renderHome() {
                         </p>
 
                         ${showBasicCourseRecruitment ? `
-                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
+                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)]">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
                                     <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">모집 중</span>
                                     <p class="mt-2 text-xl font-black leading-tight tracking-[-0.01em] text-er-ink break-keep">에니어그램 8주 기본과정 모집 중</p>
                                     <p class="mt-1 text-xs font-bold text-[#6f6b60] break-keep">정원 8명</p>
                                 </div>
-                                <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_october', apply_source: 'home_hero_offer_mobile' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">신청</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_october', apply_source: 'home_hero_offer' })" class="inline-flex h-11 shrink-0 items-center justify-center rounded-xl bg-er-green px-4 text-xs font-extrabold text-white shadow-[0_10px_20px_rgba(101,116,83,0.2)] transition-all hover:bg-er-greenDark active:scale-95">신청</button>
                             </div>
                         </div>
                         ` : `
-                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)] sm:hidden">
+                        <div class="mt-5 max-w-2xl rounded-2xl border border-[#d8cbb7] bg-er-surface/95 p-4 text-left shadow-[0_16px_32px_rgba(63,50,33,0.12)]">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
                                     <span class="inline-flex rounded-full bg-er-greenTint px-2.5 py-1 text-[10px] font-black text-er-green ring-1 ring-[#dce7cd]">안내</span>
@@ -220,37 +288,22 @@ function renderHome() {
                         </div>
 
                         <div class="mt-7 flex max-w-2xl flex-col gap-3 sm:mt-9 sm:flex-row">
-                            <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg bg-er-green px-6 py-4 text-sm font-extrabold text-white shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark active:scale-95">
-                                나에게 맞는 프로그램 찾기
+                            <button onclick="document.getElementById('home-featured-programs')?.scrollIntoView({ behavior: 'smooth', block: 'start' })" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg bg-er-green px-6 py-4 text-sm font-extrabold text-white shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark active:scale-95">
+                                대표 프로그램 살펴보기
                                 <i class="fas fa-arrow-right text-xs opacity-80" aria-hidden="true"></i>
                             </button>
                             <button onclick="renderSection('test')" class="inline-flex min-h-[3.4rem] flex-1 items-center justify-center gap-2 rounded-lg border border-[#ded6c8] bg-white/80 px-6 py-4 text-sm font-extrabold text-er-ink shadow-sm transition-all hover:border-[#7f8b68] hover:bg-white active:scale-95">
-                                무료 에니어그램 검사
+                                에니어그램 기질 검사
                                 <i class="far fa-clipboard text-xs text-[#68785a]" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
 
                     <div class="relative min-h-[360px] overflow-hidden sm:min-h-[500px] lg:min-h-[720px]">
-                        <img src="background.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center; filter:saturate(1.03) contrast(0.98) brightness(1.04);">
+                        <img src="${images.background.src}" srcset="${images.background.srcset}" sizes="(min-width: 1520px) 798px, (min-width: 1024px) 53vw, 100vw" width="1535" height="864" fetchpriority="high" decoding="async" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:right center; filter:saturate(1.02) contrast(0.98) brightness(1.05);">
                         <div class="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-er-base via-er-base/70 to-transparent lg:block"></div>
                         <div class="absolute inset-0 bg-gradient-to-t from-[#f4efe6]/20 via-transparent to-white/10"></div>
 
-                        ${showBasicCourseRecruitment ? `
-                        <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
-                            <p class="text-[11px] font-bold text-[#6c6b60]">2026년 10월 첫주 개강</p>
-                            <p class="mt-4 text-xl font-black text-er-ink">에니어그램 8주 기본과정 모집</p>
-                            <p class="mt-1 text-sm font-bold text-[#68785a]">정원 8명</p>
-                            <button onclick="renderSection('apply', { track: 'paid', focus: 'enneagram_basic_october', apply_source: 'home_hero_offer' })" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">신청하기</button>
-                        </div>
-                        ` : `
-                        <div class="absolute right-5 top-6 hidden max-w-[240px] rounded-2xl bg-white/88 p-5 text-center shadow-2xl shadow-black/10 ring-1 ring-white/70 backdrop-blur-md sm:block lg:right-8 lg:top-28">
-                            <p class="text-[11px] font-bold text-[#6c6b60]">에니어그램 기본과정</p>
-                            <p class="mt-4 text-xl font-black text-er-ink">다음 기수 안내</p>
-                            <p class="mt-1 text-sm font-bold text-[#68785a] break-keep">모집 마감 · 과정 소개 보기</p>
-                            <button onclick="window.location.href='/basic-course.html'" class="mt-5 w-full rounded-lg bg-er-green px-4 py-3 text-xs font-extrabold text-white transition-colors hover:bg-er-greenDark">과정 안내</button>
-                        </div>
-                        `}
                     </div>
                 </div>
             </section>
@@ -302,7 +355,7 @@ function renderHome() {
                         ${restorationCards.map((card) => `
                             <article class="group rounded-2xl border border-er-sand/60 bg-er-surface p-4 shadow-[0_16px_45px_rgba(84,72,52,0.07)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_22px_60px_rgba(84,72,52,0.12)]">
                                 <div class="aspect-[16/10] overflow-hidden rounded-[1.15rem] bg-er-greenTint">
-                                    <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]" style="object-position:${card.position}; filter:saturate(0.96) brightness(1.04);">
+                                    <img src="${card.image.src}" srcset="${card.image.srcset}" sizes="(min-width: 1480px) 422px, (min-width: 1024px) 30vw, (min-width: 640px) calc(100vw - 144px), calc(100vw - 112px)" width="${card.image.width}" height="${card.image.height}" loading="lazy" decoding="async" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025]" style="object-position:${card.position}; filter:saturate(0.96) brightness(1.04);">
                                 </div>
                                 <div class="px-2 pb-2 pt-5">
                                     <p class="inline-flex rounded-full bg-er-greenTint px-3 py-1 text-xs font-black text-er-green ring-1 ring-[#dce5ce]">${card.eyebrow}</p>
@@ -317,10 +370,7 @@ function renderHome() {
                                             </li>
                                         `).join('')}
                                     </ul>
-                                    <button onclick="${card.action}" class="mt-6 inline-flex min-h-[2.95rem] w-full items-center justify-center gap-2 rounded-xl bg-er-green px-5 py-3 text-sm font-extrabold text-er-surface shadow-[0_14px_28px_rgba(101,116,83,0.16)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark">
-                                        상담/워크숍 문의
-                                        <i class="fas fa-arrow-right text-xs opacity-80" aria-hidden="true"></i>
-                                    </button>
+                                    ${renderHomeParticipation(card.participation)}
                                 </div>
                             </article>
                         `).join('')}
@@ -328,39 +378,33 @@ function renderHome() {
                 </div>
             </section>
 
-            <section class="mx-auto max-w-[1480px] px-4 pb-12 pt-6 sm:px-6 lg:px-8 lg:pb-16">
+            <section id="home-featured-programs" class="mx-auto max-w-[1480px] scroll-mt-24 px-4 pb-12 pt-6 sm:px-6 lg:px-8 lg:pb-16">
                 <div class="rounded-2xl border border-er-sand bg-er-surface p-5 shadow-sm sm:p-8 lg:p-10">
                     <div class="grid gap-10 lg:grid-cols-[minmax(0,1.28fr)_minmax(410px,0.88fr)] lg:gap-12">
                         <div>
                             <p class="text-sm font-black text-er-green">ER의 대표 프로그램</p>
-                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-er-inkSoft break-keep sm:text-3xl lg:text-[2rem]">당신의 변화를 위한 맞춤 여정</h2>
-                            <p class="mt-3 text-sm font-semibold leading-7 text-er-muted break-keep">검증된 프로그램으로 더 나은 나와 관계를 만들어보세요.</p>
+                            <h2 class="mt-3 text-2xl font-black tracking-[-0.02em] text-er-inkSoft break-keep sm:text-3xl lg:text-[2rem]">검사·상담부터 교회 세미나까지</h2>
+                            <p class="mt-3 text-sm font-semibold leading-7 text-er-muted break-keep">개인은 검사·상담·4주 워크숍으로, 교회·기관은 부모교육·부부 세미나와 사역팀 팀워크 개최 문의로 이어집니다.</p>
 
-                            <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                            <div class="mt-8 grid gap-4 sm:grid-cols-2">
                                 ${programCards.map((card) => `
-                                    <article class="group flex min-h-[24rem] flex-col rounded-2xl border border-er-sand/60 bg-er-surface p-4 shadow-[0_14px_40px_rgba(94,77,47,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(94,77,47,0.11)]">
+                                    <article class="group flex min-h-[20rem] flex-col rounded-2xl border border-er-sand/60 bg-er-surface p-4 shadow-[0_14px_40px_rgba(94,77,47,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(94,77,47,0.11)]">
                                         <div class="relative aspect-[1.45] overflow-hidden rounded-[1.15rem] bg-er-greenTint">
-                                            <img src="${card.image}" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
+                                            <img src="${card.image.src}" srcset="${card.image.srcset}" sizes="(min-width: 1024px) 18vw, (min-width: 640px) 40vw, calc(100vw - 112px)" width="${card.image.width}" height="${card.image.height}" loading="lazy" decoding="async" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]" style="object-position:${card.position}; filter:saturate(0.95) brightness(1.08);">
                                             <span class="absolute left-3 top-3 rounded-full bg-er-green px-3 py-1 text-[10px] font-black text-er-surface shadow-sm">${card.badge}</span>
                                         </div>
                                         <div class="flex flex-1 flex-col pt-5">
                                             <h3 class="text-[1.05rem] font-black leading-snug tracking-[-0.01em] text-er-inkSoft break-keep">${card.title}</h3>
                                             <p class="mt-3 text-sm font-medium leading-7 text-[#696a62] break-keep">${card.text}</p>
-                                            <div class="mt-auto pt-6">
-                                                <p class="text-lg font-black text-er-inkSoft">${card.price}</p>
-                                                <button onclick="${card.action}" class="mt-4 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl border border-[#dccfbc] bg-er-surface px-4 py-3 text-sm font-extrabold text-er-inkSoft transition-all hover:border-er-green hover:bg-er-green hover:text-er-surface">${card.button}</button>
-                                                ${card.button2 ? `<button onclick="${card.action2}" class="mt-2 inline-flex min-h-[2.9rem] w-full items-center justify-center rounded-xl bg-er-green px-4 py-3 text-sm font-extrabold text-er-surface transition-all hover:bg-er-greenDark">${card.button2}</button>` : ''}
-                                            </div>
+                                            ${card.participation ? renderHomeParticipation(card.participation) : `
+                                                <div class="mt-auto pt-6">
+                                                    <p class="text-base font-black text-er-inkSoft break-keep">${card.price}</p>
+                                                    <button onclick="${card.action}" class="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#dccfbc] bg-er-surface px-4 py-3 text-sm font-extrabold text-er-inkSoft transition-all hover:border-er-green hover:bg-er-green hover:text-er-surface">${card.button}</button>
+                                                </div>
+                                            `}
                                         </div>
                                     </article>
                                 `).join('')}
-                            </div>
-
-                            <div class="mt-9 text-center">
-                                <button onclick="renderSection('programs', { tab: 'individual' })" class="inline-flex min-h-[3.6rem] w-full items-center justify-center gap-3 rounded-xl bg-er-green px-6 py-4 text-base font-black text-er-surface shadow-[0_18px_36px_rgba(101,116,83,0.18)] transition-all hover:-translate-y-0.5 hover:bg-er-greenDark sm:w-auto sm:min-w-[18rem] sm:px-9">
-                                    전체 프로그램 보기
-                                    <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
-                                </button>
                             </div>
                         </div>
 
@@ -394,13 +438,14 @@ function renderHome() {
 
                     <div class="mt-10 overflow-hidden rounded-2xl border border-[#d8cbb8] bg-er-green text-er-surface shadow-[0_24px_60px_rgba(101,116,83,0.18)]">
                         <div class="relative min-h-[21rem] px-6 py-10 sm:px-10 lg:px-20 lg:py-14">
-                            <img src="green and seat.png" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center right; filter:saturate(0.94) brightness(0.92);">
+                            <img src="assets/er-visual/home-green-seat-764.webp" srcset="assets/er-visual/home-green-seat-480.webp 480w, assets/er-visual/home-green-seat-764.webp 764w" sizes="(min-width: 1480px) 1344px, 100vw" width="764" height="391" loading="lazy" decoding="async" alt="" class="absolute inset-0 h-full w-full object-cover" style="object-position:center right; filter:saturate(0.94) brightness(0.92);">
                             <div class="absolute inset-0 bg-gradient-to-r from-er-greenDeep via-[#3f5530]/88 to-er-greenDeep/12"></div>
                             <div class="relative max-w-xl">
                                 <h2 class="text-3xl font-black leading-tight tracking-[-0.02em] break-keep sm:text-4xl">지금, 당신의 변화를 시작하세요</h2>
                                 <p class="mt-5 text-base font-bold leading-8 text-er-surface/88 break-keep">작은 용기가 큰 변화를 만듭니다.<br>ER이 당신의 여정을 함께할게요.</p>
-                                <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                                    <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl bg-er-surface px-8 py-4 text-sm font-black text-er-inkSoft shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:bg-[#f5efe5]">상담 신청하기</button>
+                                <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                                    <button onclick="renderSection('apply', { track: 'paid' })" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl bg-er-surface px-8 py-4 text-sm font-black text-er-inkSoft shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:bg-[#f5efe5]">상담·코칭 신청</button>
+                                    <a href="/church-programs" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl border border-er-surface/42 bg-er-surface/5 px-8 py-4 text-sm font-black text-er-surface transition-all hover:-translate-y-0.5 hover:bg-er-surface/12">교회·기관 개최 문의</a>
                                     <button onclick="renderSection('test')" class="inline-flex min-h-[3.5rem] min-w-[14rem] items-center justify-center rounded-xl border border-er-surface/42 bg-er-surface/5 px-8 py-4 text-sm font-black text-er-surface transition-all hover:-translate-y-0.5 hover:bg-er-surface/12">무료 검사로 시작하기</button>
                                 </div>
                             </div>

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "er_website": {
+      "type": "http",
+      "url": "https://osdynbadhtfgoxilgmpy.supabase.co/functions/v1/er-website-mcp"
+    }
+  }
+}

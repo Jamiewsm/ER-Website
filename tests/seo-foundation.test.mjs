@@ -6,7 +6,7 @@ import { inferDeployTrackFromPaths } from '../scripts/infer_deploy_track.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), 'utf8');
-const pages = ['christian-enneagram/index.html', 'theology/index.html'];
+const pages = ['christian-enneagram/index.html', 'theology/index.html', 'enneagram-certification/index.html'];
 const site = 'https://er-coaching.com';
 const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
 const tags = (html, name) => [...html.matchAll(new RegExp(`<${name}\\b[^>]*>`, 'g'))].map((m) => attrs(m[0]));
@@ -68,6 +68,7 @@ test('reading page headers mirror main-site IA with CSS-only mobile nav', () => 
   }
   assert.match(read('theology/index.html'), /aria-current="page"[^>]*>신학적 기초|신학적 기초[^<]*aria-current="page"/);
   assert.match(read('christian-enneagram/index.html'), /aria-current="page"[^>]*>기독교 에니어그램 안내|기독교 에니어그램 안내[^<]*aria-current="page"/);
+  assert.match(read('enneagram-certification/index.html'), /aria-current="page"[^>]*>ER에니어그램전문가 자격|ER에니어그램전문가 자격[^<]*aria-current="page"/);
 });
 
 test('reading pages have real local targets and valid in-page anchors', () => {
@@ -75,7 +76,7 @@ test('reading pages have real local targets and valid in-page anchors', () => {
     const html = read(file);
     for (const tag of [...tags(html, 'a'), ...tags(html, 'link'), ...tags(html, 'img')]) {
       const href = tag.href || tag.src;
-      if (!href || /^(?:https:|mailto:)/.test(href)) continue;
+      if (!href || /^(?:https:|mailto:|tel:)/.test(href)) continue;
       const url = new URL(href, `${site}/${file.replace('index.html', '')}`);
       const target = fileFor(url.pathname);
       assert.ok(existsSync(new URL(target, root)), `${file}: missing ${href}`);
@@ -129,9 +130,25 @@ test('reading assets can be crawled and independently trigger site-only deployme
   const paths = [...pages, 'biblical-enneagram/index.html', 'css/reading.css', 'design-system/tokens.css', '_redirects'];
   for (const path of paths) assert.equal(inferDeployTrackFromPaths([path]).track, 'site');
   const workflow = read('.github/workflows/deploy-production.yml');
-  for (const path of ['christian-enneagram/**', 'theology/**', 'biblical-enneagram/**', 'css/reading.css', 'design-system/tokens.css', '_redirects']) {
+  for (const path of ['christian-enneagram/**', 'theology/**', 'biblical-enneagram/**', 'enneagram-certification/**', 'css/reading.css', 'design-system/tokens.css', '_redirects']) {
     assert.ok(workflow.includes(`- '${path}'`), path);
   }
+});
+
+test('certification page keeps PQI registration facts and advertising disclosure duties', () => {
+  const html = read('enneagram-certification/index.html');
+  assert.match(html, /ER에니어그램전문가/);
+  assert.match(html, /2026-008332/);
+  assert.match(html, /등록 민간자격/);
+  assert.match(html, /에니어그램 포 레스토레이션/);
+  assert.match(html, /010-9972-9310/);
+  assert.match(html, /공인자격이 아닙니다/);
+  assert.match(html, /총비용|합계/);
+  assert.match(html, /환불/);
+  assert.match(html, /pqi\.or\.kr/);
+  assert.match(html, /101 하위유형 스터디/);
+  assert.doesNotMatch(html, /국가공인 자격|국가자격으로|국가에서 인정한|국가에서 인정받/);
+  assert.match(html, /공인자격이 아닙니다/);
 });
 
 test('theology copy keeps Original Design as unfolding purpose rather than self-discovery', () => {

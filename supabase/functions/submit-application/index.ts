@@ -6,7 +6,7 @@ import {
   applicantReceivedHtml,
   programApplicationConfirmationHtml,
 } from '../_shared/email-templates.ts';
-import { extractEmailFromContact, sendResendEmail } from '../_shared/resend.ts';
+import { extractEmailFromContact, isValidEmailAddress, sendResendEmail } from '../_shared/resend.ts';
 import {
   BASIC_COURSE_OCTOBER_2026_COHORT_KEY,
   BASIC_COURSE_PROGRAM_KEY,
@@ -16,6 +16,7 @@ import {
   isGrowthCourseProgram,
 } from '../_shared/program-pricing.ts';
 import { verifyTurnstileToken } from '../_shared/turnstile.ts';
+import { isBasicCourseRecruitmentOpen } from '../_shared/application-recruitment.ts';
 
 type ApplyPayload = {
   name?: string;
@@ -102,6 +103,30 @@ Deno.serve(async (req) => {
       });
     }
 
+    const programKey = inferProgramKey(payload);
+    const isBasicCourse = programKey === BASIC_COURSE_PROGRAM_KEY;
+    // 서버 시각으로 판단하고 DB·보안 확인·메일 호출 전에 종료한다.
+    if (isBasicCourse && !isBasicCourseRecruitmentOpen()) {
+      return new Response(JSON.stringify({ error: 'recruitment_closed', message: '2026년 10월 기본과정 모집은 마감되었습니다. 다음 기수 안내를 확인해 주세요.' }), {
+        status: 409,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // 기본과정 폼의 기존 필수 계약을 직접 요청에도 적용한다.
+    if (isBasicCourse && (typeof payload.contact !== 'string' || !isValidEmailAddress(contact))) {
+      return new Response(JSON.stringify({ error: 'invalid_email', message: '기본과정 안내를 받을 이메일을 확인해 주세요.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (isBasicCourse && payload.covenant_agreed !== true) {
+      return new Response(JSON.stringify({ error: 'covenant_required', message: '공동체 약속에 동의해 주세요.' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const turnstileOk = await verifyTurnstileToken(
       String(payload.turnstile_token || ''),
       Deno.env.get('TURNSTILE_SECRET_KEY') || '',
@@ -118,9 +143,7 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
     const supabase = createClient(supabaseUrl, serviceKey);
 
-    const programKey = inferProgramKey(payload);
     const applySource = parseApplySource(source);
-    const isBasicCourse = programKey === BASIC_COURSE_PROGRAM_KEY;
     let growthCourse: { id: string; title: string } | null = null;
     if (isGrowthCourseProgram(programKey)) {
       const { data: course, error: courseError } = await supabase.from('edu_courses')
@@ -205,7 +228,7 @@ Deno.serve(async (req) => {
     const notifyEmail = Deno.env.get('APPLICATION_NOTIFY_EMAIL') || 'json@er-coaching.com';
     const replyTo = Deno.env.get('APPLICATION_REPLY_TO') || 'json@er-coaching.com';
     const label = growthCourse?.title || programLabel(programKey, category);
-    const applicantEmail = extractEmailFromContact(contact);
+    const applicantEmail = isBasicCourse ? contact : extractEmailFromContact(contact);
 
     try {
       await sendResendEmail({
