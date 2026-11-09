@@ -202,7 +202,7 @@ test('English experiment consent and feedback preserve the consent flow and tran
   assert.equal(runtime.getElement('experiment-participant-name').placeholder, 'Your full name');
   runtime.evaluate('window.__ER_DIAGNOSTIC_EXPERIMENT__ = {participantName: "Invited participant", consentAccepted: true}; window.ERDiagnosticExperiment.onResultReady({core: 6, ranked: [{type: 6, score: 4}], top3Total: 4})');
   assertEnglish(runtime.getElement('experiment-result-panel').innerHTML, 'English experiment feedback');
-  assert.match(runtime.getElement('experiment-result-panel').innerHTML, /Submit experiment data/);
+  assert.match(runtime.getElement('experiment-result-panel').innerHTML, /Submit feedback/);
 });
 
 test('English sharing preserves the language in the destination URL', () => {

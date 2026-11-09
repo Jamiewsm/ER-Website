@@ -88,7 +88,13 @@
       <div class="er-phase-intro">
         <h2 id="elim-intro-title">단어로 만나는 나</h2>
         <p id="elim-intro-desc">81개의 단어를 하나씩 살펴보며, 평소의 나와 가까운지 예 / 모르겠다 / 아니요로 답해 주세요.</p>
-        <p id="elim-hint" class="er-phase-hint">되고 싶은 모습보다, 자연스럽게 드러나는 나를 떠올려 주세요.</p>
+        <p id="elim-hint" class="er-phase-hint">최근의 특별한 상황보다, 여러 상황에서 반복되는 평소 모습을 떠올려 주세요.</p>
+        <details class="er-assessment-guidance">
+          <summary id="assessment-guidance-title">어떤 모습을 떠올리면 좋을까요?</summary>
+          <p id="assessment-guidance-baseline">최근 며칠의 기분이나 특별한 사건보다, 여러 상황에서 반복되어 온 평소 모습을 떠올려 주세요.</p>
+          <p id="assessment-guidance-context">편안할 때와 일상적인 부담이나 갈등을 겪을 때를 함께 생각해 주세요. 상황이 제시되면 그때 평소 보이는 반응을 골라 주세요.</p>
+          <p id="assessment-guidance-unknown">되고 싶은 모습보다 실제로 자주 나타나는 모습에 답해 주세요. 판단하기 어렵다면 모르겠다를 선택해도 괜찮습니다.</p>
+        </details>
       </div>
       <div id="elim-container"></div>
       <div class="er-phase-actions">
@@ -214,6 +220,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/diagnostic-experiment.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=onERAssessmentFeedbackTurnstileReady" async defer></script>
   <script src="js/program-catalog.js"></script>
   <script src="js/diagnostic-report-content.js"></script>
   <script src="js/report-support-materials.js"></script>
