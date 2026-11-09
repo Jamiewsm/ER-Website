@@ -50,15 +50,20 @@ test('reading pages deliver unique metadata and article content without executab
 });
 
 test('reading page headers mirror main-site IA with CSS-only mobile nav', () => {
-  const css = read('css/reading.css');
-  assert.match(css, /\.desktop-nav\s*\{/);
-  assert.match(css, /:has\(\.nav-toggle:checked\)/);
-  assert.match(css, /min-width:\s*1280px/);
+  const readingCss = read('css/reading.css');
+  const headerCss = read('css/site-header.css');
+  assert.match(readingCss, /@import url\('\/css\/site-header\.css'\)/);
+  assert.match(headerCss, /\.desktop-nav\s*\{/);
+  assert.match(headerCss, /:has\(\.nav-toggle:checked\)/);
+  assert.match(headerCss, /min-width:\s*1280px/);
   for (const file of [...pages, 'biblical-enneagram/index.html']) {
     const html = read(file);
     assert.match(html, /class="desktop-nav"/);
     assert.match(html, /ER 소개/);
     assert.match(html, /Parenting/);
+    assert.match(html, /관계·부부/);
+    assert.match(html, /교회·사역/);
+    assert.match(html, /에니어그램 교육/);
     assert.match(html, /href="\/theology\/"/);
     assert.match(html, /href="\/christian-enneagram\/"/);
     assert.match(html, /href="\/#coaches"/);
@@ -68,7 +73,7 @@ test('reading page headers mirror main-site IA with CSS-only mobile nav', () => 
   }
   assert.match(read('theology/index.html'), /aria-current="page"[^>]*>신학적 기초|신학적 기초[^<]*aria-current="page"/);
   assert.match(read('christian-enneagram/index.html'), /aria-current="page"[^>]*>기독교 에니어그램 안내|기독교 에니어그램 안내[^<]*aria-current="page"/);
-  assert.match(read('enneagram-certification/index.html'), /aria-current="page"[^>]*>ER에니어그램전문가 자격|ER에니어그램전문가 자격[^<]*aria-current="page"/);
+  assert.match(read('enneagram-certification/index.html'), /aria-current="page"[^>]*>자격·인증 안내|자격·인증 안내[^<]*aria-current="page"/);
 });
 
 test('reading pages have real local targets and valid in-page anchors', () => {
@@ -127,12 +132,13 @@ test('reading assets can be crawled and independently trigger site-only deployme
   const css = read('css/reading.css');
   assert.match(css, /@import url\('\/design-system\/tokens\.css'\)/);
   assert.doesNotMatch(css, /#[\da-f]{3,8}\b/i);
-  const paths = [...pages, 'biblical-enneagram/index.html', 'css/reading.css', 'design-system/tokens.css', '_redirects'];
+  const paths = [...pages, 'biblical-enneagram/index.html', 'css/reading.css', 'css/site-header.css', 'design-system/tokens.css', '_redirects'];
   for (const path of paths) assert.equal(inferDeployTrackFromPaths([path]).track, 'site');
   const workflow = read('.github/workflows/deploy-production.yml');
   for (const path of ['christian-enneagram/**', 'theology/**', 'biblical-enneagram/**', 'enneagram-certification/**', 'css/reading.css', 'design-system/tokens.css', '_redirects']) {
     assert.ok(workflow.includes(`- '${path}'`), path);
   }
+  assert.match(read('scripts/deploy-tracks.mjs'), /'css\/site-header\.css'/);
 });
 
 test('certification page keeps PQI registration facts and advertising disclosure duties', () => {

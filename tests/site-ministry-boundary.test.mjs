@@ -103,7 +103,7 @@ test('church programs and forms stay intact with ministry-specific language', ()
   assert.doesNotMatch(communitySource, /impactChart/);
   assert.doesNotMatch(stringsSource, /교회·공동체 프로그램 비중/);
   assert.match(indexHtml, /Parenting/);
-  assert.match(indexHtml, /전문가 과정/);
+  assert.match(indexHtml, /에니어그램 교육/);
   assert.match(stringsSource, /4주 부모교육 워크숍 — 일정 확정 전/);
 });
 
