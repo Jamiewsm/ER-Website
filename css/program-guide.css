@@ -1,7 +1,6 @@
 * { box-sizing: border-box; }
 html { word-break: keep-all; overflow-wrap: normal; hyphens: none; }
 body { margin: 0; background: #fbfaf5; color: #30322d; font: 1rem/1.7 system-ui, sans-serif; }
-header { background: #fffdf8; border-bottom: 1px solid #e2d8c8; }
 .guide-width { width: min(calc(100% - 2rem), 52rem); margin-inline: auto; }
 .guide-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .75rem; }
 .guide-header img { display: block; height: auto; }

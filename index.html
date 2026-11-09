@@ -359,12 +359,16 @@
                             관계·부부
                             <i class="fas fa-chevron-down text-[9px] opacity-60 group-hover:opacity-100 transition"></i>
                         </button>
-                        <div id="desktop-nav-couple" class="absolute left-0 top-full hidden pt-3 z-[70] min-w-[16rem]">
+                        <div id="desktop-nav-couple" class="absolute left-0 top-full hidden pt-3 z-[70] min-w-[17rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('programs', { tab: 'individual' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
-                                    부부 상담·코칭
+                                    관계·부부 소개
                                     <span class="block text-[11px] font-normal text-gray-400 mt-0.5">개인·가정을 위한 상담과 코칭</span>
                                 </button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'couple', apply_source: 'nav_couple' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">부부 상담·코칭</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'result_consult', apply_source: 'nav_couple' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">결과지 해석상담</button>
+                                <button onclick="renderSection('apply', { track: 'paid', focus: 'recovery_journey_8', apply_source: 'nav_couple' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">회복 코칭 프로그램</button>
+                                <div class="my-1 h-px bg-gray-100 mx-3"></div>
                                 <a href="/church-programs#couple" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
                                     부부 세미나 안내
                                     <span class="block text-[11px] font-normal text-gray-400 mt-0.5">교회·기관이 교인 부부를 위해 개최</span>
@@ -380,15 +384,17 @@
                         <div id="desktop-nav-org" class="absolute left-0 top-full hidden pt-3 z-[70] min-w-[17rem]">
                             <div class="rounded-2xl border border-gray-100 bg-white shadow-xl p-2">
                                 <button onclick="renderSection('programs', { tab: 'church' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
-                                    사역팀 팀워크
+                                    사역팀 팀워크 소개
                                     <span class="block text-[11px] font-normal text-gray-400 mt-0.5">목사·전도사·평신도 사역자 팀의 소통</span>
                                 </button>
+                                <a href="/church-programs#teamwork" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">사역팀 팀워크 세미나</a>
+                                <button onclick="renderSection('apply', { track: 'org', focus: 'teamwork_seminar', apply_source: 'nav_org' })" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">사역팀 워크숍 문의</button>
+                                <div class="my-1 h-px bg-gray-100 mx-3"></div>
                                 <a href="/church-programs" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">
                                     교회·기관 세미나 한눈에
                                     <span class="block text-[11px] font-normal text-gray-400 mt-0.5">부모·부부·사역팀·교육 개최 안내</span>
                                 </a>
                                 <button onclick="renderSection('support')" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">목회자·선교사 사역지원</button>
-                                <div class="my-1 h-px bg-gray-100 mx-3"></div>
                                 <a href="https://business.er-coaching.com/" class="block w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-er-accentLight/30 transition-colors">기업·팀 서비스 <span aria-hidden="true">↗</span></a>
                             </div>
                         </div>
@@ -399,7 +405,9 @@
                         </button>
                         <div id="desktop-nav-education" class="hidden absolute left-0 top-full z-[70] w-56 rounded-2xl border border-er-sand bg-white p-2 shadow-lg">
                             <a href="/#coach_training" class="block px-4 py-2.5 text-sm font-semibold">개인 교육 과정</a>
+                            <a href="/basic-course" class="block px-4 py-2.5 text-sm font-semibold">에니어그램 기본과정</a>
                             <a href="/church-programs#education" class="block px-4 py-2.5 text-sm font-semibold">교회·기관 맞춤 교육</a>
+                            <a href="/enneagram-certification/" class="block px-4 py-2.5 text-sm font-semibold">자격·인증 안내</a>
                         </div>
                     </div>
                     <div class="relative group py-2">
@@ -486,7 +494,10 @@
                         <i class="fas fa-chevron-down mobile-nav-chevron" aria-hidden="true"></i>
                     </button>
                     <div id="mobile-nav-couple" class="mobile-nav-panel hidden" aria-hidden="true">
-                        <button type="button" onclick="renderSection('programs', { tab: 'individual' })" class="mobile-nav-link">부부 상담·코칭</button>
+                        <button type="button" onclick="renderSection('programs', { tab: 'individual' })" class="mobile-nav-link">관계·부부 소개</button>
+                        <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'couple', apply_source: 'nav_couple' })" class="mobile-nav-link">부부 상담·코칭</button>
+                        <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'result_consult', apply_source: 'nav_couple' })" class="mobile-nav-link">결과지 해석상담</button>
+                        <button type="button" onclick="renderSection('apply', { track: 'paid', focus: 'recovery_journey_8', apply_source: 'nav_couple' })" class="mobile-nav-link">회복 코칭 프로그램</button>
                         <a href="/church-programs#couple" class="mobile-nav-link">부부 세미나 안내</a>
                     </div>
 
@@ -495,7 +506,9 @@
                         <i class="fas fa-chevron-down mobile-nav-chevron" aria-hidden="true"></i>
                     </button>
                     <div id="mobile-nav-org" class="mobile-nav-panel hidden" aria-hidden="true">
-                        <button type="button" onclick="renderSection('programs', { tab: 'church' })" class="mobile-nav-link">사역팀 팀워크</button>
+                        <button type="button" onclick="renderSection('programs', { tab: 'church' })" class="mobile-nav-link">사역팀 팀워크 소개</button>
+                        <a href="/church-programs#teamwork" class="mobile-nav-link">사역팀 팀워크 세미나</a>
+                        <button type="button" onclick="renderSection('apply', { track: 'org', focus: 'teamwork_seminar', apply_source: 'nav_org' })" class="mobile-nav-link">사역팀 워크숍 문의</button>
                         <a href="/church-programs" class="mobile-nav-link">교회·기관 세미나 한눈에</a>
                         <button type="button" onclick="renderSection('support')" class="mobile-nav-link">목회자·선교사 사역지원</button>
                         <a href="https://business.er-coaching.com/" class="mobile-nav-link">기업·팀 서비스 <span aria-hidden="true">↗</span></a>
@@ -507,7 +520,9 @@
                     </button>
                     <div id="mobile-nav-education" class="mobile-nav-panel hidden" aria-hidden="true">
                         <a href="/#coach_training" class="mobile-nav-link">개인 교육 과정</a>
+                        <a href="/basic-course" class="mobile-nav-link">에니어그램 기본과정</a>
                         <a href="/church-programs#education" class="mobile-nav-link">교회·기관 맞춤 교육</a>
+                        <a href="/enneagram-certification/" class="mobile-nav-link">자격·인증 안내</a>
                     </div>
 
                     <button type="button" class="mobile-nav-trigger" aria-expanded="false" aria-controls="mobile-nav-community" onclick="toggleMobileNavGroup('mobile-nav-community', this)">
