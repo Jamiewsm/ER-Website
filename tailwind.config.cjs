@@ -14,6 +14,8 @@ module.exports = {
         files: [
             './index.html',
             './parenting-seminar.html',
+            './couple-seminar.html',
+            './teamwork-seminar.html',
             './basic-course.html',
             ...scripts,
         ],

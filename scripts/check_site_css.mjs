@@ -37,7 +37,7 @@ try {
     const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
     assert.match(html, /<link[^>]+href="css\/site-tailwind\.css(?:\?[^\"]*)?"[^>]*>/);
     assert.doesNotMatch(html, /cdn\.tailwindcss\.com|tailwind\.config\s*=/);
-    for (const landing of ['parenting-seminar.html', 'basic-course.html']) {
+    for (const landing of ['parenting-seminar.html', 'couple-seminar.html', 'teamwork-seminar.html', 'basic-course.html']) {
         const page = readFileSync(new URL(`../${landing}`, import.meta.url), 'utf8');
         assert.match(page, /<link[^>]+href="css\/site-tailwind\.css(?:\?[^\"]*)?"[^>]*>/, `${landing} must use built CSS`);
         assert.doesNotMatch(page, /cdn\.tailwindcss\.com|tailwind\.config\s*=/, `${landing} must not use Play CDN`);

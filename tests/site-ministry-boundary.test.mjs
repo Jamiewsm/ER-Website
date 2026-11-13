@@ -19,7 +19,7 @@ test('main-site identity is church and Christian ministry focused', () => {
   assert.match(indexHtml, /assets\/er-social-share-landing\.jpg/);
   assert.match(homeSource, /기독교 에니어그램으로 회복을 배우는 곳/);
   assert.match(homeSource, /가정과 교회 공동체 안에서 관계와 소명을 회복/);
-  assert.match(homeSource, /church-programs#teamwork/);
+  assert.match(homeSource, /\/teamwork-seminar/);
   assert.match(homeSource, /교인 대상 부모·부부 세미나와는 별도/);
 });
 
