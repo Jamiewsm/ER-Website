@@ -30,7 +30,7 @@ function renderCoaches() {
         const ctaLabel = coach.ministry ? (C.ctaMinistry || '사역지원 신청하기') : (C.ctaApply || '상담 신청하기');
 
         const photoEl = coach.photo
-            ? `<img src="${coach.photo}" alt="${coach.name}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center bg-er-base\'><i class=\'fas fa-user text-4xl text-er-muted\' aria-hidden=\'true\'></i></div>'">`
+            ? `<img src="${coach.photo}" alt="${coach.name}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" decoding="async" onerror="if(/\\.webp($|\\?)/.test(this.src)){this.onerror=null;this.src=this.src.replace(/\\.webp/,'.png');}else{this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center bg-er-base\\'><i class=\\'fas fa-user text-4xl text-er-muted\\' aria-hidden=\\'true\\'></i></div>';}">`
             : `<div class="w-full h-full flex items-center justify-center bg-er-base"><i class="fas fa-user text-4xl text-er-muted" aria-hidden="true"></i></div>`;
 
         return `

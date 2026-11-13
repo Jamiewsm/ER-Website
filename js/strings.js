@@ -334,7 +334,7 @@
           id: 'coach-son',
           name: '손지영 대표',
           role: 'ER 대표 · 강사 · Head Coach',
-          photo: 'son-profile-picture.png',
+          photo: 'son-profile-picture.webp',
           bio: '손지영 대표는 오랫동안 중동 선교와 캠퍼스 사역 현장에서 목회자·선교사와 공동체를 섬겨 왔으며, 두 자녀를 양육하는 엄마로서 가정의 실제 고민을 함께 다룹니다. ER 소개에 담긴 비전처럼 에니어그램과 기독교 세계관을 통합적으로 적용해 개인과 공동체의 회복을 돕고 있습니다.',
           specialties: ['개인 자기 이해 코칭', '부부·가정 회복', '사역자·선교사 돌봄', '에니어그램 강사 양성'],
           certs: [

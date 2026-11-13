@@ -59,13 +59,14 @@ test('SPA couple and church menus follow parenting-style journey structure', () 
   assert.match(indexHtml, /focus: 'couple'/);
   assert.match(indexHtml, /focus: 'result_consult'/);
   assert.match(indexHtml, /focus: 'recovery_journey_8'/);
-  assert.match(indexHtml, /church-programs#couple/);
+  assert.match(indexHtml, /href="\/couple-seminar"/);
 
   assert.match(indexHtml, /id="desktop-nav-org"/);
   assert.match(indexHtml, /사역팀 팀워크 소개/);
-  assert.match(indexHtml, /church-programs#teamwork/);
+  assert.match(indexHtml, /href="\/teamwork-seminar"/);
   assert.match(indexHtml, /focus: 'teamwork_seminar'/);
-  assert.match(indexHtml, /교회·기관 세미나 한눈에/);
+  assert.match(indexHtml, /href="\/church-programs"/);
+  assert.match(indexHtml, /부모·부부·사역팀 세미나 한눈에/);
 
   assert.match(indexHtml, /id="mobile-nav-couple"/);
   assert.match(indexHtml, /id="mobile-nav-org"/);

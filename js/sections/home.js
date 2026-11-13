@@ -87,7 +87,7 @@ function renderHome() {
             image: images.couple,
             position: 'center top',
             button: '부부 세미나 안내',
-            action: "window.location.href='/church-programs#couple'"
+            action: "window.location.href='/couple-seminar?apply_source=home_programs'"
         },
         {
             badge: '교회·기관',
@@ -107,7 +107,7 @@ function renderHome() {
             image: images.team,
             position: 'center',
             button: '사역팀 팀워크 안내',
-            action: "window.location.href='/church-programs#teamwork'"
+            action: "window.location.href='/teamwork-seminar?apply_source=home_programs'"
         },
         {
             badge: showBasicCourseRecruitment ? '모집 중' : '모집 마감',
@@ -127,8 +127,8 @@ function renderHome() {
                 ['개인 수강 과정', '8주 기본과정에서 시작해 심화과정과 코치 트레이닝으로 이어갈 수 있습니다.', [
                     ['/basic-course', '8주 기본과정 안내'], ['/#coach_training', '심화·코치 트레이닝 안내']
                 ]],
-                ['교회·기관 맞춤 교육', '기본·심화·전문가 교육을 3시간 특강, 2~3회 워크숍 또는 8주 과정으로 협의합니다.', [
-                    ['/church-programs#education', '기관 맞춤 교육 안내']
+                ['교회·기관 맞춤 교육', '부모·부부·사역팀 세미나를 한눈에 보고, 개최를 문의할 수 있습니다.', [
+                    ['/church-programs', '세미나 한눈에 보기']
                 ]]
             ],
             price: '과정 안내',
@@ -198,7 +198,7 @@ function renderHome() {
                     ['/#apply?track=paid&focus=couple&apply_source=home_relationship_couple', '부부 상담·코칭 신청']
                 ]],
                 ['우리 공동체를 위한 부부 세미나', '교회·기독교기관이 교인 부부를 위해 부부 세미나 개최를 요청할 수 있습니다.', [
-                    ['/church-programs#couple', '부부 세미나 안내']
+                    ['/couple-seminar?apply_source=home_programs', '부부 세미나 안내']
                 ]]
             ]
         },
@@ -212,7 +212,7 @@ function renderHome() {
             points: ['사역자의 강점과 소명 이해', '리더와 사역팀의 소통·의사결정 패턴', '갈등을 줄이고 동역을 세우는 팀의 언어'],
             participation: [
                 ['우리 사역팀을 위한 팀워크', '교인 대상 세미나가 아닙니다. 교회·기관이 사역팀의 소통·역할·갈등을 다루는 세미나·워크숍 개최를 요청할 수 있습니다.', [
-                    ['/church-programs#teamwork', '사역팀 팀워크 안내']
+                    ['/teamwork-seminar?apply_source=home_programs', '사역팀 팀워크 안내']
                 ]]
             ]
         }

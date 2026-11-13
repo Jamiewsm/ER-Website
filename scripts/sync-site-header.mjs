@@ -23,6 +23,8 @@ const TARGETS = [
   { file: 'enneagram-certification/index.html', current: 'enneagram-certification' },
   { file: 'parenting-workshop.html', current: 'parenting-workshop' },
   { file: 'parenting-seminar.html', current: 'parenting-seminar' },
+  { file: 'couple-seminar.html', current: 'couple-seminar' },
+  { file: 'teamwork-seminar.html', current: 'teamwork-seminar' },
   { file: 'church-programs.html', current: 'church-programs' },
   { file: 'basic-course.html', current: 'basic-course' },
 ];

@@ -1,0 +1,179 @@
+/* 교회·기관 부부 / 사역팀 세미나 랜딩 — parenting-seminar와 동일 구조 */
+
+.os-landing {
+  font-family: "Pretendard Variable", "Pretendard", system-ui, sans-serif;
+  color: #44473F;
+  background: #FBFAF5;
+}
+
+.os-landing .os-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(72vh, 36rem);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-color: #F4EFE4;
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
+}
+
+.os-landing .os-hero--couple {
+  background-image: url("/assets/er-visual/home-couple-480.webp");
+  background-image: -webkit-image-set(
+    url("/assets/er-visual/home-couple-480.webp") 1x,
+    url("/assets/er-visual/home-couple-1100.webp") 2x
+  );
+  background-image: image-set(
+    url("/assets/er-visual/home-couple-480.webp") type("image/webp") 1x,
+    url("/assets/er-visual/home-couple-1100.webp") type("image/webp") 2x
+  );
+}
+
+.os-landing .os-hero--team {
+  background-image: url("/assets/er-visual/home-team-480.webp");
+  background-image: -webkit-image-set(
+    url("/assets/er-visual/home-team-480.webp") 1x,
+    url("/assets/er-visual/home-team-1100.webp") 2x
+  );
+  background-image: image-set(
+    url("/assets/er-visual/home-team-480.webp") type("image/webp") 1x,
+    url("/assets/er-visual/home-team-1100.webp") type("image/webp") 2x
+  );
+}
+
+@media (min-width: 640px) {
+  .os-landing .os-hero {
+    min-height: min(78vh, 40rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .os-landing .os-hero {
+    min-height: min(82vh, 44rem);
+  }
+}
+
+.os-landing .os-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(
+      105deg,
+      rgba(251, 250, 245, 0.96) 0%,
+      rgba(251, 250, 245, 0.9) 34%,
+      rgba(251, 250, 245, 0.55) 58%,
+      rgba(251, 250, 245, 0.12) 78%,
+      rgba(251, 250, 245, 0) 100%
+    );
+}
+
+@media (max-width: 639px) {
+  .os-landing .os-hero::before {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(251, 250, 245, 0.55) 0%,
+        rgba(251, 250, 245, 0.88) 42%,
+        rgba(251, 250, 245, 0.96) 100%
+      );
+  }
+}
+
+.os-landing .os-hero-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 3.5rem 1.15rem 3.25rem;
+}
+
+@media (min-width: 640px) {
+  .os-landing .os-hero-inner {
+    padding: 4.5rem 1.5rem 4.25rem;
+  }
+}
+
+.os-landing .os-hero-copy {
+  max-width: 28rem;
+  text-align: left;
+}
+
+@media (max-width: 639px) {
+  .os-landing .os-hero-copy {
+    max-width: none;
+  }
+}
+
+.os-landing .os-hero-copy h1 {
+  margin-top: 0.7rem;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.28;
+  color: #30322D;
+}
+
+.os-landing .os-hero-copy .os-lead {
+  margin-top: 1rem;
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: #44473F;
+}
+
+.os-landing .os-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1rem;
+  margin-top: 1.2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #566647;
+}
+
+.os-landing .os-meta span + span::before {
+  content: "·";
+  margin-right: 1rem;
+  color: #C9BFAE;
+}
+
+.os-landing .os-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.os-landing .os-section-rule {
+  border-top: 1px solid rgba(226, 216, 200, 0.7);
+}
+
+.os-landing .os-points {
+  display: grid;
+  gap: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .os-landing .os-points {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.75rem 2.5rem;
+  }
+}
+
+.os-landing .os-points h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #30322D;
+}
+
+.os-landing .os-points p {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  color: #44473F;
+}
