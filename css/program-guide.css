@@ -1,27 +1,247 @@
+/* 교회·기관 가이드 / 부모교육 워크숍 — DESIGN.md Restoration Green */
+@import url('/design-system/tokens.css');
+
 * { box-sizing: border-box; }
-html { word-break: keep-all; overflow-wrap: normal; hyphens: none; }
-body { margin: 0; background: #fbfaf5; color: #30322d; font: 1rem/1.7 system-ui, sans-serif; }
-.guide-width { width: min(calc(100% - 2rem), 52rem); margin-inline: auto; }
-.guide-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .75rem; }
-.guide-header img { display: block; height: auto; }
-main { padding-block: clamp(2rem, 6vw, 5rem); }
-.eyebrow { color: #536149; font-weight: 800; }
-h1, h2 { line-height: 1.25; }
-h1 { font-size: clamp(1.9rem, 5vw, 3rem); margin-block: .5rem 1rem; }
-h2 { font-size: clamp(1.2rem, 4vw, 1.5rem); margin-top: 0; }
-.lead { color: #44473f; max-width: 42rem; }
-.guide-audience { margin: 0 0 .85rem; color: #536149; font-size: .92rem; font-weight: 700; }
-a { color: #455638; font-weight: 700; text-underline-offset: .2em; }
-a:focus-visible { outline: 2px solid #455638; outline-offset: 4px; }
-.chunk { display: inline-block; white-space: nowrap; }
-.topic-nav, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; }
-.topic-nav { margin-block: 1.5rem; }
-.guide-card { margin-top: 1rem; padding: clamp(1rem, 4vw, 2rem); border: 1px solid #e2d8c8; border-radius: 1rem; background: #fffdf8; scroll-margin-top: 1rem; }
-dt { font-weight: 800; margin-top: .65rem; }
-dd { margin: .1rem 0 0; }
-.actions { margin-top: 1.25rem; }
-.guide-button { display: inline-flex; min-height: 44px; align-items: center; padding: .55rem .9rem; border-radius: .65rem; background: #536149; color: white; text-decoration: none; }
-.guide-button:hover { background: #3e4c34; }
-.guide-weeks { padding-inline-start: 1.25rem; }
-.guide-weeks p { margin: .1rem 0 .85rem; }
-.guide-note { margin-top: 1.5rem; }
+html {
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--er-base);
+  color: var(--er-body);
+  font-family: var(--er-font-sans);
+  font-size: 1rem;
+  line-height: 1.625;
+  -webkit-font-smoothing: antialiased;
+}
+
+.guide-width {
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+  .guide-width { padding-inline: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .guide-width { padding-inline: 2rem; }
+}
+
+main.guide-width,
+main#content.guide-width {
+  padding-block: 3rem 5rem;
+}
+@media (min-width: 768px) {
+  main.guide-width,
+  main#content.guide-width {
+    padding-block: 4rem 6rem;
+  }
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 1rem;
+  padding: .35rem .85rem;
+  border-radius: 9999px;
+  background: var(--er-green-tint);
+  border: 1px solid color-mix(in srgb, var(--er-green) 20%, transparent);
+  color: var(--er-ink-soft);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.break-keep { word-break: keep-all; overflow-wrap: normal; }
+
+h1 {
+  margin: 0 0 1rem;
+  color: var(--er-ink);
+  font-family: var(--er-font-display);
+  font-size: clamp(1.875rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1.25;
+}
+
+h2 {
+  margin: 0 0 1rem;
+  color: var(--er-ink-soft);
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.375;
+}
+
+.lead {
+  margin: 0 0 1.75rem;
+  max-width: 42rem;
+  color: var(--er-body);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+}
+
+.guide-audience {
+  margin: 0 0 1rem;
+  color: var(--er-green);
+  font-size: .875rem;
+  font-weight: 700;
+}
+
+.guide-width a:not(.guide-button):not(.topic-nav a) {
+  color: var(--er-green);
+  font-weight: 700;
+  text-underline-offset: .2em;
+}
+.guide-width a:not(.guide-button):not(.topic-nav a):hover {
+  color: var(--er-green-dark);
+}
+.guide-width a:focus-visible {
+  outline: 3px solid var(--er-green);
+  outline-offset: 4px;
+  border-radius: .5rem;
+}
+
+.chunk {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.topic-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .5rem .65rem;
+  margin: 0 0 2rem;
+}
+.topic-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: .4rem .9rem;
+  border: 1px solid color-mix(in srgb, var(--er-sand) 80%, transparent);
+  border-radius: 9999px;
+  background: var(--er-surface);
+  color: var(--er-ink-soft);
+  font-size: .8125rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.topic-nav a:hover,
+.topic-nav a:focus-visible {
+  background: var(--er-green-tint);
+  border-color: color-mix(in srgb, var(--er-green) 28%, transparent);
+  color: var(--er-ink);
+}
+
+.guide-card {
+  margin-top: 1.5rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid color-mix(in srgb, var(--er-sand) 55%, transparent);
+  border-radius: 2rem;
+  background: var(--er-surface);
+  box-shadow: var(--er-shadow-card);
+  scroll-margin-top: 6rem;
+}
+.guide-card > p {
+  margin: 0 0 1rem;
+  color: var(--er-body);
+}
+.guide-card > p:last-child {
+  margin-bottom: 0;
+}
+
+.guide-card dl {
+  margin: 0 0 .5rem;
+}
+.guide-card dt {
+  margin-top: .85rem;
+  color: var(--er-ink-soft);
+  font-size: .8125rem;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+.guide-card dt:first-child {
+  margin-top: 0;
+}
+.guide-card dd {
+  margin: .2rem 0 0;
+  color: var(--er-body);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem 1rem;
+  margin-top: 1.5rem;
+}
+.actions a:not(.guide-button) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--er-green);
+  font-size: .875rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: .2em;
+}
+
+.guide-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: .85rem 1.75rem;
+  border-radius: 9999px;
+  background: var(--er-green);
+  color: var(--er-surface);
+  font-size: .875rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: var(--er-shadow-soft);
+  transition: background .2s ease, transform .2s ease;
+}
+.guide-button:hover {
+  background: var(--er-green-dark);
+  color: var(--er-surface);
+  transform: translateY(-1px);
+}
+.guide-button:focus-visible {
+  outline: 3px solid var(--er-green);
+  outline-offset: 4px;
+}
+
+.guide-weeks {
+  margin: 0;
+  padding-inline-start: 1.25rem;
+  color: var(--er-body);
+}
+.guide-weeks li {
+  margin-bottom: .35rem;
+}
+.guide-weeks li strong {
+  color: var(--er-ink-soft);
+}
+.guide-weeks p {
+  margin: .2rem 0 .95rem;
+  color: var(--er-body);
+}
+
+.guide-note {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  background: var(--er-green-tint);
+  border: 1px solid color-mix(in srgb, var(--er-green) 18%, transparent);
+  color: var(--er-ink-soft);
+  font-size: .9375rem;
+}
+.guide-note a {
+  color: var(--er-green);
+}
