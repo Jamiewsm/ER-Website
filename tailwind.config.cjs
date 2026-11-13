@@ -10,7 +10,13 @@ const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["'](js\/[^"']+)["']/g)]
 module.exports = {
     content: {
         relative: true,
-        files: ['./index.html', ...scripts],
+        // Landing pages share the built CSS so Play CDN is not needed in production.
+        files: [
+            './index.html',
+            './parenting-seminar.html',
+            './basic-course.html',
+            ...scripts,
+        ],
     },
     // 유형 안내의 bg-*-50 → bg-*-400 런타임 치환은 정적 스캔으로 찾을 수 없다.
     safelist: [

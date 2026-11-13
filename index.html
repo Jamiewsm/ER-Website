@@ -9,7 +9,6 @@
     <meta name="theme-color" content="#FBFAF5">
     <link rel="icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
     <link rel="canonical" href="https://er-coaching.com/">
     <title>ER 에니어그램 | 기독교·성경적 에니어그램 교육과 코칭</title>
 
@@ -60,15 +59,17 @@
     </script>
     
     <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin />
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" /></noscript>
     <link rel="stylesheet" href="css/parenting-season-banner.css?v=20260526b" />
     <link rel="stylesheet" href="css/parenting-application.css?v=20260525a" />
     <link rel="stylesheet" href="css/course-application.css?v=20260603a" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-    <link rel="stylesheet" href="css/site-tailwind.css?v=20261108-participation" />
+    <link rel="stylesheet" href="css/site-tailwind.css?v=20261113-perf" />
     <style>
         body {
             font-family: 'Pretendard', sans-serif;
@@ -688,7 +689,7 @@
                             <div class="h-6 w-px bg-gray-200 mx-4"></div>
 
                             <a href="https://www.internationalenneagram.org" target="_blank" rel="noopener noreferrer" class="inline-flex flex-col items-center gap-1 opacity-70 hover:opacity-100 transition">
-                                <img src="IEA-logo.png" alt="IEA" class="h-14 w-14 object-contain opacity-95 hover:grayscale-0 transition-all" onerror="this.style.display='none'">
+                                <img src="IEA-logo.webp" alt="IEA" width="56" height="56" class="h-14 w-14 object-contain opacity-95 hover:grayscale-0 transition-all" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='IEA-logo.png'">
                                 <span class="text-[11px] tracking-widest text-gray-800 font-semibold">IEA</span>
                             </a>
 
@@ -734,44 +735,45 @@
         </div>
     </footer>
 
-    <!-- Config & foundation -->
-    <script src="js/config.js?v=20260922-kakao-channel"></script>
-    <script src="js/supabase-client.js"></script>
-    <script src="js/auth.js?v=20260914a"></script>
-    <script src="js/api.js?v=20261107-org-seminar"></script>
-    <script src="js/strings.js?v=20261107-org-seminar"></script>
+    <!-- Config & foundation (defer keeps order, unblocks first paint) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script defer src="js/config.js?v=20260922-kakao-channel"></script>
+    <script defer src="js/supabase-client.js"></script>
+    <script defer src="js/auth.js?v=20260914a"></script>
+    <script defer src="js/api.js?v=20261107-org-seminar"></script>
+    <script defer src="js/strings.js?v=20261113-perf"></script>
 
     <!-- App state & utilities -->
-    <script src="js/app-state.js?v=20261013-narrative-en-v1"></script>
-    <script src="js/app-helpers.js?v=20261108-participation"></script>
-    <script src="js/app-adaptive-data.js"></script>
+    <script defer src="js/app-state.js?v=20261013-narrative-en-v1"></script>
+    <script defer src="js/app-helpers.js?v=20261108-participation"></script>
+    <script defer src="js/app-adaptive-data.js"></script>
 
     <!-- Sections -->
-    <script src="js/program-catalog.js?v=20261107-org-seminar"></script>
-    <script src="js/basic-course-promo.js?v=20260827b"></script>
-    <script src="js/parents-workshop-promo.js?v=20261107-org-seminar"></script>
-    <script src="js/sections/home.js?v=20261108-participation"></script>
-    <script src="js/sections/about.js?v=20260915c"></script>
-    <script src="js/sections/theology.js?v=20260915c"></script>
-    <script src="js/sections/programs.js?v=20261108-participation"></script>
-    <script src="js/sections/parenting.js?v=20261108-participation"></script>
-    <script src="js/sections/coaches.js?v=20261107-half-scholarship"></script>
-    <script src="js/sections/coach-training.js?v=20260827b"></script>
-    <script src="js/sections/community.js?v=20261107-serving-areas"></script>
-    <script src="js/sections/support.js?v=20261107-half-scholarship"></script>
-    <script src="js/sections/apply.js?v=20261108-participation"></script>
-    <script src="js/sections/notices.js?v=20261107-org-seminar"></script>
-    <script src="js/sections/types-guide.js?v=20261013-narrative-en-v1"></script>
-    <script src="js/sections/test-embed.js?v=20261013-narrative-en-v1"></script>
-    <script src="js/sections/account.js?v=20260914a"></script>
-    <script src="js/sections/pages.js?v=20261107-org-seminar"></script>
-    <script src="js/coach/views.js?v=20260915a"></script>
-    <script src="js/coach/applications.js?v=20260915a"></script>
-    <script src="js/coach/tasks.js?v=20260406a"></script>
+    <script defer src="js/program-catalog.js?v=20261107-org-seminar"></script>
+    <script defer src="js/basic-course-promo.js?v=20260827b"></script>
+    <script defer src="js/parents-workshop-promo.js?v=20261107-org-seminar"></script>
+    <script defer src="js/sections/home.js?v=20261108-participation"></script>
+    <script defer src="js/sections/about.js?v=20260915c"></script>
+    <script defer src="js/sections/theology.js?v=20260915c"></script>
+    <script defer src="js/sections/programs.js?v=20261108-participation"></script>
+    <script defer src="js/sections/parenting.js?v=20261108-participation"></script>
+    <script defer src="js/sections/coaches.js?v=20261113-webp"></script>
+    <script defer src="js/sections/coach-training.js?v=20260827b"></script>
+    <script defer src="js/sections/community.js?v=20261107-serving-areas"></script>
+    <script defer src="js/sections/support.js?v=20261107-half-scholarship"></script>
+    <script defer src="js/sections/apply.js?v=20261108-participation"></script>
+    <script defer src="js/sections/notices.js?v=20261107-org-seminar"></script>
+    <script defer src="js/sections/types-guide.js?v=20261013-narrative-en-v1"></script>
+    <script defer src="js/sections/test-embed.js?v=20261013-narrative-en-v1"></script>
+    <script defer src="js/sections/account.js?v=20260914a"></script>
+    <script defer src="js/sections/pages.js?v=20261107-org-seminar"></script>
+    <script defer src="js/coach/views.js?v=20260915a"></script>
+    <script defer src="js/coach/applications.js?v=20260915a"></script>
+    <script defer src="js/coach/tasks.js?v=20260406a"></script>
 
     <!-- Core routing & init -->
-    <script src="js/app-core.js?v=20261018-site-review-v1"></script>
-    <script src="js/app-init.js?v=20261018-site-review-v1"></script>
-    <script src="js/coach-portal.js?v=20260914a"></script>
+    <script defer src="js/app-core.js?v=20261018-site-review-v1"></script>
+    <script defer src="js/app-init.js?v=20261018-site-review-v1"></script>
+    <script defer src="js/coach-portal.js?v=20260914a"></script>
 </body>
 </html>
