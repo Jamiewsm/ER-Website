@@ -21,6 +21,6 @@
   --er-shadow-soft: 0 22px 44px -24px rgba(80, 90, 60, 0.16);
   --er-shadow-card: 0 28px 54px -28px rgba(70, 85, 55, 0.20);
   /* Type */
-  --er-font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-  --er-font-display: 'SUIT', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --er-font-sans: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  --er-font-display: 'SUIT', 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }

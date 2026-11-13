@@ -51,8 +51,8 @@ module.exports = {
                 }
             },
             fontFamily: {
-                sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
-                display: ['SUIT', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+                sans: ['Pretendard Variable', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                display: ['SUIT', 'Pretendard Variable', 'Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
             },
             boxShadow: {
                 'soft': '0 22px 44px -24px rgba(80, 90, 60, 0.16)',

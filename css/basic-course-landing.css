@@ -1,7 +1,7 @@
 /* 에니어그램 기본과정 8주 랜딩 전용 스타일 (parenting 랜딩과 같은 미감, bc- 프리픽스로 분리) */
 
 .bc-landing {
-  font-family: "Pretendard", system-ui, sans-serif;
+  font-family: "Pretendard Variable", "Pretendard", system-ui, sans-serif;
   color: #44473F;
   background: #FBFAF5;
 }
