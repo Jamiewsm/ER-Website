@@ -7,17 +7,17 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 
 ---
 
-## Live state (마지막 배포 검증: 2026-11-08T14:53:24Z)
+## Live state (마지막 배포 검증: 2026-11-14T09:58:10Z)
 
 | Surface | Git ref (의도) | Live SHA / fingerprint | Deployed at (UTC) | Method | Notes |
 |---------|----------------|------------------------|-------------------|--------|-------|
-| **Site** (landing, menu, home, child-type-test shell) | `source` @ `faa72a17db5ddb78f8b5947612e0253fcfd47951` | source `faa72a17db5ddb78f8b5947612e0253fcfd47951`; live guard passed | 2026-11-08T14:53:24Z | GitHub Actions Deploy Production | guard success; [run](https://github.com/Jamiewsm/ER-Website/actions/runs/42491957302/attempts/1); merged PR #227: fix(site): 채팅 공유 썸네일을 랜딩 히어로 사진으로 교체 |
+| **Site** (landing, menu, home, child-type-test shell) | `source` @ `4a8af8bcf613bd2d726d07af82bc9f0977cce42b` | source `4a8af8bcf613bd2d726d07af82bc9f0977cce42b`; live guard passed | 2026-11-14T09:58:10Z | GitHub Actions Deploy Production | guard success; [run](https://github.com/Jamiewsm/ER-Website/actions/runs/43582974148/attempts/1); auto path inference on main push |
 | **Test runtime** | 이전 test 배포 기록: `origin/main` @ `0d89d95` | `js/test.js` SHA-256 `3a0a4d5ce571367eb8c73dd73e0e1d59f239489055422be626b8a6e7845da595`; runtime 10개 배포 전후 동일 | 2026-10-13T07:34:48Z (이전 기록 유지) | 이전 test-only 배포; 이번 site-only bundle에서 보존 | 2026-10-15에는 test 재배포 없음; 00:39:32 UTC 보존 확인 시각을 새 배포 시각으로 기록하지 않음 |
 | **Supabase Edge — 신청 관련 2함수** | 서버 source `34a7a2709a27c3dfd7c5769f06e7b7a4d7bb0b52` (#174/#175); 이후 #176/#173은 함수 코드 변경 없음 | `submit-application` v36 / `notify-program-application` v22; ACTIVE, source 13파일 일치 | submit 2026-10-15T00:26:54.944Z / notify 00:26:59.672Z | Supabase MCP Edge Function 배포 | project `osdynbadhtfgoxilgmpy`; JWT false/true 보존; 웹 배포와 분리 |
 
 ### Drift 요약
 
-- **Site:** source `faa72a17db5ddb78f8b5947612e0253fcfd47951`; 2026-11-08T14:53:24Z live guard success. [배포 실행](https://github.com/Jamiewsm/ER-Website/actions/runs/42491957302/attempts/1)과 원장 PR 병합 커밋을 구분한다.
+- **Site:** source `4a8af8bcf613bd2d726d07af82bc9f0977cce42b`; 2026-11-14T09:58:10Z live guard success. [배포 실행](https://github.com/Jamiewsm/ER-Website/actions/runs/43582974148/attempts/1)과 원장 PR 병합 커밋을 구분한다.
 - **Test runtime:** 이전 배포 기록 `0d89d95`를 유지한다. 이번 두 site-only CI의 deploy-test는 모두 skipped였고 live runtime 10개는 배포 전후 SHA-256이 같다.
 - **Supabase 신청 함수:** 웹 CI와 별도로 submit v36 / notify v22를 배포하고 source 13파일 및 기존 JWT false/true를 대조했다. 기존 신청·학생 데이터 변경이나 실제 신청·메일 발송은 하지 않았다.
 - **CI ledger 저장:** 보호된 main에 직접 push하지 않고 CI 원장 PR로 저장한다. 이전 GH006 실패 기록은 아래 배포 이력에 보존한다.
@@ -55,6 +55,12 @@ Git `main`, feature branch, 수동 wrangler deploy 가 서로 다를 수 있으�
 - Source: `faa72a17db5ddb78f8b5947612e0253fcfd47951`. 검증 시각이며 별도 실제 upload 완료 시각을 추정하지 않는다.
 - Site job: success; Test job: skipped. 성공한 트랙만 위 표를 갱신한다.
 - [배포 및 guard 로그](https://github.com/Jamiewsm/ER-Website/actions/runs/42491957302/attempts/1), by auto-merge. merged PR #227: fix(site): 채팅 공유 썸네일을 랜딩 히어로 사진으로 교체
+
+<!-- deploy-run:https://github.com/Jamiewsm/ER-Website/actions/runs/43582974148/attempts/1 -->
+### 2026-11-14T09:58:10Z — deploy site
+- Source: `4a8af8bcf613bd2d726d07af82bc9f0977cce42b`. 검증 시각이며 별도 실제 upload 완료 시각을 추정하지 않는다.
+- Site job: success; Test job: skipped. 성공한 트랙만 위 표를 갱신한다.
+- [배포 및 guard 로그](https://github.com/Jamiewsm/ER-Website/actions/runs/43582974148/attempts/1), by main-push. auto path inference on main push
 
 ## 갱신 템플릿 (배포 후 복사)
 
