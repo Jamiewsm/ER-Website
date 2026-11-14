@@ -96,6 +96,10 @@ test('Business links are explicit handoffs, not internal service tabs', () => {
   const churchPage = context.renderPrograms();
   assert.match(churchPage, /사역팀 팀워크/);
   assert.doesNotMatch(churchPage, /tab-individual|관계·부부 코칭과 사역팀/);
+  assert.doesNotMatch(programsSource, /교인을 위한 부모교육·부부 세미나는/);
+  assert.doesNotMatch(programsSource, /href="\/parenting-seminar"/);
+  assert.doesNotMatch(programsSource, /href="\/couple-seminar"/);
+  assert.doesNotMatch(programsSource, /반액 장학으로 별도 안내합니다/);
 });
 
 test('church programs and forms stay intact with ministry-specific language', () => {

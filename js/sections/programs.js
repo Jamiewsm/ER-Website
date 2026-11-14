@@ -111,11 +111,10 @@ function getProgramPageData(filterType) {
         },
         church: {
             heroTitle: '사역팀 팀워크',
-            heroLead: '목사·전도사·평신도 사역자가 함께 일할 때의 소통·역할·동역을 돕습니다. 교인 대상 부모·부부 세미나는 각 메뉴에서 별도로 안내합니다.',
+            heroLead: '목사·전도사·평신도 사역자가 함께 일할 때의 소통·역할·동역을 돕습니다.',
             title: '사역팀 팀워크',
             descLines: [
-                '목사·전도사·평신도 사역자가 함께 일할 때 필요한 팀워크·소통·역할 정렬을 돕습니다.',
-                '교인을 위한 부모교육·부부 세미나는 Parenting과 관계·부부 메뉴에서 개최를 문의하세요.'
+                '목사·전도사·평신도 사역자가 함께 일할 때 필요한 팀워크·소통·역할 정렬을 돕습니다.'
             ],
             problems: [
                 { t: '사역팀 소통이 엇갈려요', d: '같은 비전을 말해도 동기와 업무 방식이 달라 현장에서는 엇박자가 납니다. 서로의 강점과 취약 지점을 먼저 이해합니다.', i: 'fas fa-people-group', f: 'church' },
@@ -123,7 +122,7 @@ function getProgramPageData(filterType) {
                 { t: '동역이 소진으로 이어져요', d: '헌신의 부족이 아니라 맞지 않는 역할과 반복되는 마찰이 소진을 키울 때가 많습니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' }
             ],
             cards: [
-                { b: '세미나', t: '사역팀 팀워크 세미나', d: '사역팀의 역할·소통·갈등을 다룹니다. 교인 대상 부모·부부 세미나와는 별도 프로그램입니다.', o: '팀의 대화와 동역 원칙 정리', i: 'fas fa-people-group', href: '/teamwork-seminar' },
+                { b: '세미나', t: '사역팀 팀워크 세미나', d: '사역팀의 역할·소통·갈등을 다룹니다.', o: '팀의 대화와 동역 원칙 정리', i: 'fas fa-people-group', href: '/teamwork-seminar' },
                 { b: '워크숍', t: '사역팀 기본 워크숍 (2시간)', d: '유형 이해 + 사역팀 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 사역팀이 갈등을 다루는 공통 언어 정리', i: 'fas fa-users', applyFocus: 'teamwork_seminar' },
                 { b: '집중', t: '사역팀 집중 워크숍 (6시간)', d: '리더십 코드 + 사역자 역량 + 역할 배치 설계', p: '$1,800부터', o: '결과: 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'teamwork_seminar' }
             ]
@@ -163,24 +162,9 @@ function updateProgramView(filterType) {
         const descHtml = descLines.length
             ? `<p class="mt-2 space-y-1.5 text-xs leading-relaxed text-gray-500 break-keep">${descLines.map((line) => `<span class="block">${line}</span>`).join('')}</p>`
             : '';
-        const ministryNotice = filterType === 'church'
-            ? `<div class="mt-3 flex flex-col items-center justify-center gap-2 text-xs">
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
-                        <span class="text-gray-500 break-keep">목회자·선교사는 반액 장학으로 별도 안내합니다.</span>
-                        <button onclick="renderSection('support')" class="inline-flex min-h-11 items-center font-bold text-er-accent transition-colors hover:text-er-dark whitespace-nowrap">
-                            사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
-                        </button>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
-                        <a href="/parenting-seminar" class="inline-flex min-h-11 items-center font-bold text-er-accent hover:text-er-dark">부모교육 세미나</a>
-                        <a href="/couple-seminar" class="inline-flex min-h-11 items-center font-bold text-er-accent hover:text-er-dark">부부 세미나</a>
-                    </div>
-                </div>`
-            : '';
         introEl.innerHTML = `
             <h3 class="text-lg font-bold text-er-dark mb-1">${selected.title}</h3>
             ${descHtml}
-            ${ministryNotice}
         `;
     }
 
