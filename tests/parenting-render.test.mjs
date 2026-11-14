@@ -136,8 +136,9 @@ test('parent section has a no-score mini checklist plus a parent resource', () =
 });
 
 test('programs section is relabeled to the locked nav IA and redirects parenting', () => {
-  assert.match(programsSource, /코칭·프로그램 안내/);
-  assert.match(programsSource, /individual:관계·부부/);
+  assert.match(programsSource, /heroTitle: '관계·부부 코칭'/);
+  assert.match(programsSource, /heroTitle: '사역팀 팀워크'/);
+  assert.doesNotMatch(programsSource, /tab-individual|tab-church|individual:관계·부부/);
   assert.match(programsSource, /관계·부부 코칭/);
   assert.match(programsSource, /to: 'parenting'/);
   assert.match(programsSource, /Parenting에서 자세히 보기/);

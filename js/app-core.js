@@ -148,7 +148,7 @@ function renderSection(sectionId, payload = null, options = {}) {
     }
     const sectionLabels = {
         home: '홈', about: 'ER 소개', test: '내러티브 테스트', types_guide: '유형 안내',
-        programs: '서비스 안내', parenting: 'Parenting', coaches: '코치진 소개',
+        programs: state.programFilter === 'church' ? '사역팀 팀워크' : '관계·부부', parenting: 'Parenting', coaches: '코치진 소개',
         coach_training: 'ER 전문가 과정', community: '회복 이야기', resources: '자료실',
         support: '장학 후원', apply: '신청', thankyou: '접수 안내', notices: '공지사항',
         notice_detail: '공지 상세', privacy: '개인정보처리방침', terms: '이용약관', coach_admin: '코치 승인'
