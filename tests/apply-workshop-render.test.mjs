@@ -17,17 +17,15 @@ function loadApplyRenderer(options = {}) {
       ERProgramCatalog: {
         isJulyBasicRecruitmentOpen: () => recruitmentOpen
       }
-    },
-    buildApplySubmitSource(track, focus, attribution) {
-      return [track, focus, attribution].filter(Boolean).join(':');
     }
   };
   vm.createContext(context);
+  vm.runInContext(readFileSync(new URL('../js/app-helpers.js', import.meta.url), 'utf8'), context);
   vm.runInContext(applySource, context, { filename: 'js/sections/apply.js' });
   return context;
 }
 
-test('parenting workshop link renders a dedicated direct application form', () => {
+test('parenting workshop focus shows schedule waitlist form instead of open enrollment', () => {
   const renderer = loadApplyRenderer();
   const html = renderer.renderApply({
     track: 'paid',
@@ -35,14 +33,51 @@ test('parenting workshop link renders a dedicated direct application form', () =
     apply_source: 'qr'
   });
 
-  assert.match(html, /Enneagram for Parenting/);
-  assert.match(html, /4주 워크샵 신청/);
-  assert.match(html, /assets\/er-visual\/hero-home\.jpg/);
-  assert.match(html, /type="hidden" name="category" value="Enneagram for Parenting 4주 \(\$120\)"/);
-  assert.match(html, /4주 워크샵 신청하기/);
-  assert.match(html, /handleApplySubmit\(event, 'paid:parenting_workshop:qr', \{ focus: 'parenting_workshop' \}\)/);
-  assert.doesNotMatch(html, /희망하는 세션|<select/);
-  assert.doesNotMatch(html, /Enneagram for Parenting 4주 워크샵 신청합니다\./);
+  assert.match(html, /4주 부모교육 워크숍 일정 알림/);
+  assert.match(html, /모집 일정과 참가비는 확정 후 안내합니다/);
+  assert.match(html, /data-workshop-status="waitlist"/);
+  assert.match(html, /parenting-workshop/);
+  assert.match(html, /id="apply-form"/);
+  assert.match(html, /일정 알림 남기기/);
+  assert.match(html, /value="4주 부모교육 워크숍 일정 알림"/);
+  assert.doesNotMatch(html, /4주 워크샵 신청하기/);
+  assert.doesNotMatch(html, /\$120/);
+});
+
+test('parenting seminar link renders a dedicated org hosting inquiry distinct from workshop', () => {
+  const renderer = loadApplyRenderer();
+  const html = renderer.renderApply({
+    track: 'org',
+    focus: 'parenting_seminar',
+    apply_source: 'landing'
+  });
+
+  assert.match(html, /부모교육 세미나/);
+  assert.match(html, /교회·기관 개최 문의/);
+  assert.match(html, /교회·선교단체·기독교기관의 요청으로 진행/);
+  assert.doesNotMatch(html, /단회/);
+  assert.match(html, /assets\/parenting\/parenting-seminar-hero\.jpg/);
+  assert.match(html, /value="부모교육 세미나 개최 문의" data-focus="parenting_seminar" selected/);
+  assert.match(html, /개최 문의 보내기/);
+  assert.match(html, /교회·기관명/);
+  assert.match(html, /data-submit-source="org:parenting_seminar:landing" data-apply-focus="parenting_seminar" onsubmit="handleApplyFormSubmit\(event\)"/);
+  assert.doesNotMatch(html, /parenting-workshop/);
+  assert.doesNotMatch(html, /\$120/);
+  assert.match(html, /<select id="apply-category" name="category" required/);
+});
+
+test('parenting consult focus uses 우리자녀 기질상담 copy', () => {
+  const renderer = loadApplyRenderer();
+  const html = renderer.renderApply({
+    track: 'paid',
+    focus: 'parenting',
+    apply_source: 'parenting'
+  });
+
+  assert.match(html, /우리자녀 기질상담 신청/);
+  assert.match(html, /우리자녀 기질상담 문의/);
+  assert.doesNotMatch(html, /자녀 양육 코칭 상담/);
+  assert.doesNotMatch(html, /양육 해석상담/);
 });
 
 test('generic paid apply route keeps its selectable application categories', () => {
@@ -68,7 +103,7 @@ test('child type test result apply shows parenting-context copy, not adult test 
   // 성인 테스트용 카피는 노출하지 않음.
   assert.doesNotMatch(html, /프리미엄 테스트 후 추천/);
   // 출처 attribution 은 child_type_test 로 유지(상품·가격 무변경).
-  assert.match(html, /handleApplySubmit\(event, 'paid:result_consult:child_type_test'\)/);
+  assert.match(html, /data-submit-source="paid:result_consult:child_type_test" data-apply-focus="result_consult" onsubmit="handleApplyFormSubmit\(event\)"/);
 });
 
 test('October Enneagram basic course link renders a dedicated direct application form while recruitment is open', () => {
@@ -85,7 +120,7 @@ test('October Enneagram basic course link renders a dedicated direct application
   assert.doesNotMatch(html, /enneagram-basic-july-2026\.jpg/);
   assert.match(html, /type="hidden" name="category" value="성경적 에니어그램 기본과정 8주 \(\$330 \/ ₩450,000\)"/);
   assert.match(html, /성경적 에니어그램 기본과정 신청하기/);
-  assert.match(html, /handleApplySubmit\(event, 'paid:enneagram_basic_october:instagram', \{ focus: 'enneagram_basic_october' \}\)/);
+  assert.match(html, /data-submit-source="paid:enneagram_basic_october:instagram" data-apply-focus="enneagram_basic_october" onsubmit="handleApplyFormSubmit\(event\)"/);
   assert.match(html, /name="contact"[^>]*type="email"|type="email"[^>]*name="contact"/);
   assert.match(html, /name="phone"[^>]*required/);
   assert.match(html, /연락 및 현금영수증 발급 용도/);
@@ -156,8 +191,8 @@ test('parenting workshop confirmation uses course-specific response copy', () =>
   const renderer = loadApplyRenderer();
   const html = renderer.renderThankYou({ focus: 'parenting_workshop' });
 
-  assert.match(html, /신청이 접수되었습니다/);
-  assert.match(html, /일정과 참여 안내/);
+  assert.match(html, /일정 알림이 접수되었습니다/);
+  assert.match(html, /모집 일정이 확정되면/);
   assert.match(html, /24시간 이내/);
 });
 
@@ -244,7 +279,7 @@ test('successful focused submission carries parenting focus into confirmation', 
       constructor(form) { this.values = form.values; }
       get(name) { return this.values[name] || ''; }
     },
-    fetch: async () => ({ ok: true }),
+    fetch: async () => ({ ok: true, json: async () => ({ ok: true, id: '20000000-0000-4000-8000-000000000001' }) }),
     renderSection(...args) { renderArgs = args; },
     alert() {},
     setInterval,
@@ -269,12 +304,12 @@ test('successful focused submission carries parenting focus into confirmation', 
   assert.equal(renderArgs[1].focus, 'parenting_workshop');
 });
 
-test('October basic course submission preserves the legacy program key and sends cohort/payment metadata', async () => {
+test('parenting seminar hosting submission serializes organization and role into the message', async () => {
   let requestBody = null;
   const submitButton = {
-    dataset: { defaultLabel: '에니어그램 기본과정 신청하기', loadingLabel: '접수 중...' },
+    dataset: { defaultLabel: '세미나 개최 문의하기', loadingLabel: '접수 중...' },
     disabled: false,
-    textContent: '에니어그램 기본과정 신청하기'
+    textContent: '세미나 개최 문의하기'
   };
   const context = {
     window: { SUPABASE_CONFIG: { url: 'https://example.supabase.co' }, state: { user: null } },
@@ -290,7 +325,64 @@ test('October basic course submission preserves the legacy program key and sends
     },
     fetch: async (_url, options) => {
       requestBody = JSON.parse(options.body);
-      return { ok: true };
+      return { ok: true, json: async () => ({ ok: true, id: '20000000-0000-4000-8000-000000000002' }) };
+    },
+    renderSection() {},
+    alert() {},
+    setInterval,
+    clearInterval
+  };
+  vm.createContext(context);
+  vm.runInContext(apiSource, context, { filename: 'js/api.js' });
+
+  await context.handleApplySubmit({
+    preventDefault() {},
+    target: {
+      querySelector(selector) {
+        return selector.includes('organization') ? { required: true } : null;
+      },
+      values: {
+        name: '김담당',
+        organization: '은혜교회',
+        role: '교육목사',
+        contact: 'host@example.com',
+        preferred_time: '3월 / 약 40명',
+        category: '부모교육 세미나 개최 문의',
+        message: '부모 대상 세미나를 요청합니다.',
+        turnstile_token: 'verified-token'
+      }
+    }
+  }, 'org:parenting_seminar:landing', { focus: 'parenting_seminar' });
+
+  assert.match(requestBody.message, /교회·기관명: 은혜교회/);
+  assert.match(requestBody.message, /역할·직분: 교육목사/);
+  assert.match(requestBody.message, /희망 시간대: 3월 \/ 약 40명/);
+  assert.match(requestBody.message, /부모 대상 세미나를 요청합니다/);
+  assert.equal(requestBody.category, '부모교육 세미나 개최 문의');
+});
+
+test('October basic course submission preserves the legacy program key and sends cohort/payment metadata', async () => {
+  let requestBody = null;
+  const submitButton = {
+    dataset: { defaultLabel: '에니어그램 기본과정 신청하기', loadingLabel: '접수 중...' },
+    disabled: false,
+    textContent: '에니어그램 기본과정 신청하기'
+  };
+  const context = {
+    window: { SUPABASE_CONFIG: { url: 'https://example.supabase.co' }, state: { user: null }, ERProgramCatalog: { isBasicCourseRecruitmentOpen: () => true } },
+    document: {
+      getElementById(id) {
+        if (id === 'apply-submit-btn') return submitButton;
+        return null;
+      }
+    },
+    FormData: class FakeFormData {
+      constructor(form) { this.values = form.values; }
+      get(name) { return this.values[name] || ''; }
+    },
+    fetch: async (_url, options) => {
+      requestBody = JSON.parse(options.body);
+      return { ok: true, json: async () => ({ ok: true, id: '20000000-0000-4000-8000-000000000001' }) };
     },
     renderSection() {},
     alert() {},
@@ -440,4 +532,23 @@ test('coach registration email uses notify-program-application with apikey heade
   assert.match(applicationsSource, /sendRegistrationPaymentEmail/);
   assert.match(applicationsSource, /event:\s*'registration'/);
   assert.doesNotMatch(applicationsSource, /create-program-checkout/);
+});
+
+test('organization topics preselect the matching inquiry and submit a changed topic', () => {
+  const renderer = loadApplyRenderer();
+  for (const focus of ['teamwork_seminar', 'couple_seminar', 'organization_education']) {
+    const html = renderer.renderApply({ track: 'org', focus });
+    assert.match(html, new RegExp('data-focus="' + focus + '" selected'));
+    assert.match(html, /name="organization" required/);
+  }
+
+  let submission;
+  renderer.handleApplySubmit = (...args) => { submission = args; };
+  const form = {
+    dataset: { submitSource: 'org:teamwork_seminar:landing', applyFocus: 'teamwork_seminar' },
+    elements: { category: { selectedOptions: [{ dataset: { focus: 'couple_seminar' } }] } }
+  };
+  renderer.handleApplyFormSubmit({ currentTarget: form });
+  assert.equal(submission[1], 'org:couple_seminar:landing');
+  assert.equal(submission[2].focus, 'couple_seminar');
 });

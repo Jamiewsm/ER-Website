@@ -6,10 +6,11 @@ const indexHtml = readFileSync(new URL('../index.html', import.meta.url), 'utf8'
 const homeSource = readFileSync(new URL('../js/sections/home.js', import.meta.url), 'utf8');
 const programsSource = readFileSync(new URL('../js/sections/programs.js', import.meta.url), 'utf8');
 
-test('home mobile layout keeps trust stats compact and CTA fluid', () => {
+test('home mobile layout keeps trust stats compact and program cards touch-friendly', () => {
   assert.match(homeSource, /grid grid-cols-2[^"\n]*md:grid-cols-4/);
-  assert.match(homeSource, /w-full[^"\n]*sm:w-auto sm:min-w-\[18rem\]/);
-  assert.doesNotMatch(homeSource, /min-h-\[3\.6rem\] min-w-\[18rem\]/);
+  assert.match(homeSource, /mt-8 grid gap-4 sm:grid-cols-2/);
+  assert.match(homeSource, /inline-flex min-h-11 w-full items-center justify-center rounded-xl/);
+  assert.doesNotMatch(homeSource, /관계·부부 코칭 보기/);
 });
 
 test('shared mobile navigation exposes 44px touch targets', () => {

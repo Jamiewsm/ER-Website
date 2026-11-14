@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-13",
+  "base": "http://127.0.0.1:8765",
+  "checks": [
+    {
+      "lang": "ko",
+      "width": 320,
+      "headline": "4w5 · 성적(일대일)",
+      "reportCharacters": 5926,
+      "horizontalOverflow": false,
+      "hangulInEnglish": null
+    },
+    {
+      "lang": "ko",
+      "width": 375,
+      "headline": "4w5 · 성적(일대일)",
+      "reportCharacters": 5926,
+      "horizontalOverflow": false,
+      "hangulInEnglish": null
+    },
+    {
+      "lang": "ko",
+      "width": 1280,
+      "headline": "4w5 · 성적(일대일)",
+      "reportCharacters": 5926,
+      "horizontalOverflow": false,
+      "hangulInEnglish": null
+    },
+    {
+      "lang": "ko",
+      "savedAnswersRestored": true,
+      "shareLanguagePreserved": true,
+      "printLanguageCorrect": true,
+      "browserErrors": []
+    },
+    {
+      "lang": "en",
+      "width": 320,
+      "headline": "4w5 · One-to-one",
+      "reportCharacters": 12510,
+      "horizontalOverflow": false,
+      "hangulInEnglish": false
+    },
+    {
+      "lang": "en",
+      "width": 375,
+      "headline": "4w5 · One-to-one",
+      "reportCharacters": 12510,
+      "horizontalOverflow": false,
+      "hangulInEnglish": false
+    },
+    {
+      "lang": "en",
+      "width": 1280,
+      "headline": "4w5 · One-to-one",
+      "reportCharacters": 12510,
+      "horizontalOverflow": false,
+      "hangulInEnglish": false
+    },
+    {
+      "lang": "en",
+      "savedAnswersRestored": true,
+      "shareLanguagePreserved": true,
+      "printLanguageCorrect": true,
+      "browserErrors": []
+    }
+  ]
+}

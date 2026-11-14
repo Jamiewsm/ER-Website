@@ -9,9 +9,18 @@ on:
       - 'supabase/migrations/20260920001000_program_application_approval_archive.sql'
       - 'supabase/migrations/20260922115726_education_reserved_mentors.sql'
       - 'supabase/migrations/20260928120000_diagnostic_result_feedback.sql'
+      - 'supabase/migrations/*_student_study_enrollment.sql'
+      - 'supabase/migrations/*_er_account_consent.sql'
+      - 'supabase/migrations/*_er_consent_retention_schedule.sql'
+      - 'supabase/migrations/*_education_record_retention.sql'
+      - 'docs/projects/account-consent/APPROVED-DOCUMENTS.json'
+      - 'tests/er-account-consent.test.mjs'
+      - 'tests/er-consent-concurrency.test.mjs'
       - 'supabase/manual/education-public-notices.pending.sql'
       - 'supabase/functions/_shared/email-templates.ts'
       - 'supabase/functions/_shared/program-pricing.ts'
+      - 'supabase/functions/_shared/application-recruitment.ts'
+      - 'supabase/functions/submit-application/**'
       - 'supabase/functions/notify-program-application/**'
       - 'supabase/functions/_shared/education-onboarding-*.ts'
       - 'supabase/functions/education-onboarding-email/**'
@@ -23,8 +32,15 @@ on:
       - 'tests/basic-course-october-supabase.test.mjs'
       - 'tests/assessment-feedback-api.test.mjs'
       - 'tests/assessment-feedback-db.test.mjs'
+      - 'scripts/build_mcp_deploy_from_disk.py'
+      - 'tests/education-registration-notification.test.mjs'
       - 'tests/helpers/education-db.mjs'
       - 'tests/helpers/education-postgres.mjs'
+      - 'scripts/run_tests.mjs'
+      - 'package.json'
+      - 'tests/run-tests.test.mjs'
+      - 'scripts/update_deploy_ledger.mjs'
+      - 'tests/deploy-ledger*.test.mjs'
       - '.github/workflows/education-backend.yml'
       - '.github/workflows/education-reminders.yml'
 permissions:
@@ -41,7 +57,10 @@ jobs:
       - name: Verify public assessment feedback API and storage permissions
         run: node --test tests/assessment-feedback-api.test.mjs tests/assessment-feedback-db.test.mjs
       - run: npm test --prefix tests/education
+      - run: node --test tests/er-account-consent.test.mjs
+      - run: node --test tests/education-record-retention.test.mjs
       - run: node --test tests/basic-course-october-supabase.test.mjs
+      - run: node --test tests/education-registration-notification.test.mjs
       - name: Install local PostgreSQL test tools
         run: |
           sudo apt-get update
@@ -51,3 +70,6 @@ jobs:
           PG_TEST_BIN="$(pg_config --bindir)"
           test -x "$PG_TEST_BIN/initdb"
           PG_BIN_DIR="$PG_TEST_BIN" node --test tests/education-concurrency.test.mjs
+          PG_BIN_DIR="$PG_TEST_BIN" node --test tests/er-consent-concurrency.test.mjs
+      - name: Run complete root test suite including PostgreSQL races
+        run: npm test

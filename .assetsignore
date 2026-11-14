@@ -1,6 +1,10 @@
 # Dev/repo paths — never wrangler assets (test runtime is NOT listed here; bundles control that)
 .git/**
 node_modules/**
+package.json
+package-lock.json
+tailwind.config.cjs
+css/site-tailwind.input.css
 .github/**
 .claude/**
 .cursor/**

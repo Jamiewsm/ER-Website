@@ -7,6 +7,7 @@ import vm from 'node:vm';
 const testSource = readFileSync(new URL('../js/test.js', import.meta.url), 'utf8');
 const contentSource = readFileSync(new URL('../js/diagnostic-report-content.js', import.meta.url), 'utf8');
 const experimentSource = readFileSync(new URL('../js/diagnostic-experiment.js', import.meta.url), 'utf8');
+const supportSource = readFileSync(new URL('../js/report-support-materials.js', import.meta.url), 'utf8');
 
 class FakeElement {
   constructor(id) {
@@ -42,7 +43,7 @@ class FakeElement {
   focus() {}
 }
 
-function loadReport() {
+function loadReport({ search = '' } = {}) {
   const elements = new Map();
   const storage = new Map();
   const experimentResults = [];
@@ -67,7 +68,7 @@ function loadReport() {
     addEventListener() {}
   };
   const window = {
-    location: { search: '' },
+    location: { search },
     sessionStorage,
     addEventListener() {},
     scrollTo() {},
@@ -86,8 +87,9 @@ function loadReport() {
     requestAnimationFrame: () => 0
   });
   vm.runInContext(contentSource, context, { filename: 'js/diagnostic-report-content.js' });
+  vm.runInContext(supportSource, context, { filename: 'js/report-support-materials.js' });
   vm.runInContext(testSource, context, { filename: 'js/test.js' });
-  return { context, getElement, experimentResults };
+  return { context, getElement, experimentResults, storage };
 }
 
 function plain(value) {
@@ -227,6 +229,115 @@ test('phase 4 charts reflect three direct votes including unsure answers in the 
   assert.ok(Math.abs(model.instinctRows.find((row) => row.code === 'sx').percent - 200 / 3) < 1e-9, 'the model must not renormalize direct vote percentages');
   assert.equal(model.instinctRows.find((row) => row.code === 'sp').active, false);
 });
+
+test('clear but different common and subtype observations hold subtype without changing core', () => {
+  const { context, getElement, experimentResults } = loadReport();
+  context.input = reportFixture({ phase4: { subtypeCode: 'sx', subtypeLabel: '성적(일대일)', wingNum: 5,
+    subtypeVotes: { sp: 0, so: 0, sx: 2 }, wingVotes: { 3: 0, 5: 2 } } });
+  vm.runInContext("testState.narrativeResponses = {narrative_instinct_1:'sp',narrative_instinct_2:'sp',narrative_instinct_3:'U'}; renderResultFromScores(input)", context);
+  const result = experimentResults.at(-1);
+  assert.equal(result.core, 4);
+  assert.deepEqual(plain(result.final), inputScores(context));
+  assert.equal(result.phase4.subtypeCode, null);
+  assert.equal(result.phase4.instinctCrossCheck.status, 'conflict');
+  assert.equal(result.phase4.instinctCrossCheck.common.leader, 'sp');
+  assert.equal(result.phase4.instinctCrossCheck.subtype.leader, 'sx');
+  assert.equal(result.phase4.instinctCrossCheck.common.unsure, 1);
+  assert.equal(result.phase4.instinctCrossCheck.subtype.unsure, 1);
+  assert.equal(result.reportKey, 'pending_4w5');
+  const html = getElement('result-view').innerHTML;
+  assert.match(html, /하위유형을 보류/);
+  assert.match(html, /3개 중 2응답/);
+  assert.match(html, /보류 1개/);
+  assert.ok(result.responseQuality.flags.some(flag => flag.code === 'subtype_observation_conflict'));
+  assert.equal(result.recentStress, null);
+  assert.equal(result.stateStressAdjustment.measured, false);
+  assert.equal(result.scoringAxes.stateStressAdjustment.measured, false);
+});
+
+function inputScores(context) {
+  return plain(vm.runInContext('input.final', context));
+}
+
+test('unclear common observations do not manufacture conflict or overturn a clear subtype', () => {
+  const { context, experimentResults } = loadReport();
+  context.input = reportFixture({ phase4: { subtypeCode: 'sx', subtypeLabel: '성적(일대일)', wingNum: null,
+    subtypeVotes: { sp: 0, so: 0, sx: 2 }, wingVotes: { 3: 1, 5: 1 } } });
+  vm.runInContext("testState.narrativeResponses={narrative_instinct_1:'sp',narrative_instinct_2:'U',narrative_instinct_3:'U'}; renderResultFromScores(input)", context);
+  const result = experimentResults.at(-1);
+  assert.equal(result.phase4.subtypeCode, 'sx');
+  assert.equal(result.phase4.instinctCrossCheck.status, 'insufficient');
+  assert.equal(result.phase4.instinctCrossCheck.common.leader, null);
+  assert.equal(result.phase4.wingNum, null);
+  assert.equal(result.reportKey, 'sx_4');
+});
+
+test('withheld subtype evidence suppresses low-instinct guidance while retaining family support', () => {
+  for (const fixture of [
+    { status: 'conflict', subtypeCode: 'sx', subtypeVotes: { sp: 0, so: 1, sx: 2 }, common: ['sp', 'sp', 'so'] },
+    { status: 'insufficient', subtypeCode: null, subtypeVotes: { sp: 0, so: 1, sx: 1 }, common: ['sp', 'sp', 'so'] },
+    { status: 'insufficient', subtypeCode: 'sx', subtypeVotes: { sp: 0, so: 1, sx: 2 }, common: ['U', 'U', 'U'] },
+    { status: 'aligned', subtypeCode: 'sx', subtypeVotes: { sp: 0, so: 1, sx: 2 }, common: ['sx', 'sx', 'so'] }
+  ]) {
+    const { context, getElement, experimentResults } = loadReport({ search: '?parent=1&childType=6&siblings=1' });
+    context.input = reportFixture({ phase4: { subtypeCode: fixture.subtypeCode, wingNum: null,
+      subtypeVotes: fixture.subtypeVotes, wingVotes: { 3: 1, 5: 1 } } });
+    context.commonResponses = Object.fromEntries(fixture.common.map((answer, index) => [`narrative_instinct_${index + 1}`, answer]));
+    vm.runInContext('testState.narrativeResponses = commonResponses; renderResultFromScores(input)', context);
+    const result = experimentResults.at(-1);
+    assert.equal(result.phase4.instinctCrossCheck.status, fixture.status);
+    if (fixture.status === 'conflict' || fixture.subtypeCode === null) assert.equal(result.phase4.subtypeCode, null);
+    const html = getElement('result-view').innerHTML;
+    for (const title of ['엄마 유형 특징 정리', '아이 유형 관찰 체크리스트', '아이 유형별 대화 원칙', '형제 싸움 중재 멘트 20선']) {
+      assert.ok(html.includes(title), `${fixture.status} should retain ${title}`);
+    }
+    if (fixture.status === 'aligned') {
+      assert.match(html, /자기보존 본능 억압형 이해/);
+    } else {
+      assert.doesNotMatch(html, /본능 억압형 이해|낮은 본능 보조 해석 기준|is-suppression/);
+    }
+    assert.match(html, /하위유형 응답 비교/);
+  }
+});
+
+test('result restoration and candidate reconsideration preserve attempt and first snapshot', () => {
+  const { context, experimentResults, storage } = loadReport();
+  context.input = reportFixture();
+  vm.runInContext(`testState.wordResponses=Object.fromEntries(wordScreeningQuestions.map(q=>[q.id,'Y']));
+    testState.screening={...input.screening,suggestedCandidates:[4,6,7],reviewedCandidates:[4,6,7]};
+    testState.candidateTypes=[4,6,7];
+    testState.assessmentMetadata.initialCandidates=[4,6,7];
+    testState.assessmentMetadata.reviewedCandidates=[4,6,7];
+    input.screening=testState.screening;
+    renderResultFromScores(input)`, context);
+  const initial = plain(experimentResults.at(-1).assessmentMetadata);
+  const savedResult = storage.get('er_word_narrative_v2');
+  assert.equal(JSON.parse(savedResult).stage, 'result');
+  const restored = loadReport();
+  restored.storage.set('er_word_narrative_v2', savedResult);
+  assert.equal(vm.runInContext('restoreAssessmentSession()', restored.context), true);
+  assert.equal(vm.runInContext('testState.stage', restored.context), 'result');
+  assert.equal(restored.experimentResults.at(-1).assessmentMetadata.attemptId, initial.attemptId);
+  assert.deepEqual(plain(restored.experimentResults.at(-1).assessmentMetadata.initialResult), initial.initialResult);
+  vm.runInContext('reviewAssessmentCandidates()', restored.context);
+  const reviewed = plain(vm.runInContext('testState.assessmentMetadata', restored.context));
+  assert.equal(reviewed.attemptId, initial.attemptId);
+  assert.equal(reviewed.revision, 1);
+  assert.deepEqual(reviewed.initialResult, initial.initialResult);
+  assert.equal(reviewed.reviewHistory[0].revision, 0);
+  assert.equal(vm.runInContext('testState.stage', restored.context), 'clarify');
+  assert.equal(vm.runInContext('Object.keys(testState.wordResponses).length', restored.context), 81);
+  assert.equal(vm.runInContext('Object.keys(testState.narrativeResponses).length', restored.context), 0);
+  assert.equal(vm.runInContext('testState.resultData', restored.context), null);
+  assert.equal(vm.runInContext('testState.responseTiming.startedAt', restored.context), null);
+  assert.deepEqual(plain(vm.runInContext('testState.screening.suggestedCandidates', restored.context)), [4,6,7]);
+  assert.equal(restored.getElement('result-view').innerHTML, '');
+  assert.match(getResultButton(context), /후보 다시 살펴보기/);
+});
+
+function getResultButton(context) {
+  return vm.runInContext('document.getElementById("result-view").innerHTML', context);
+}
 
 test('complete report with unresolved subtype and wing never presents sp or pure core by default', () => {
   const { context, getElement, experimentResults } = loadReport();

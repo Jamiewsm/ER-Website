@@ -88,7 +88,7 @@
         { id: 7, tag: '안내', title: '에니어그램 기본과정 8주 — 7월 기수 개강', date: '2026-07-10', summary: 'A·B반 총 13명 · A반 7/7 · B반 7/10 개강 · 8주 온라인', body: '<p class="text-gray-600 leading-relaxed break-keep"><strong>2026년 7월 ER 성경적 에니어그램 기본과정</strong>이 A반·B반으로 나뉘어 시작되었습니다. 참여자 시간대에 맞춰 두 반으로 진행하며, 총 <strong>13명</strong>이 함께합니다.</p><div class="mt-6 grid gap-3"><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">A반</span><span class="text-sm text-gray-700 break-keep">2026년 7월 7일(월) 개강</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">B반</span><span class="text-sm text-gray-700 break-keep">2026년 7월 10일(목) 개강</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">구성</span><span class="text-sm text-gray-700 break-keep">8주 · 주 1회 강의 3시간 + 1:1 멘토링 1시간</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">모집</span><span class="text-sm text-gray-700 break-keep">7월 기수 모집 마감 (7/5)</span></div></div><p class="mt-6 flex flex-wrap gap-3"><a href="/basic-course.html" class="inline-flex items-center justify-center rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors">과정 안내 보기</a><a href="mailto:json@er-coaching.com?subject=%EB%8B%A4%EC%9D%8C%20%EA%B8%B0%EB%B3%B8%EA%B3%BC%EC%A0%95%20%EC%95%8C%EB%A6%BC%20%EC%9A%94%EC%B2%AD" class="inline-flex items-center justify-center rounded-full border border-er-accent/40 bg-er-accentLight/30 px-5 py-2.5 text-sm font-bold text-er-dark hover:border-er-accent transition-colors">다음 기수 알림 문의</a></p>' },
         { id: 6, tag: '안내', title: 'ER 인스타그램 공식 런칭', date: '2026-06-11', summary: '코칭·강의·회복 사역 소식을 더 가깝게 — @er_official_Korea', body: '<p class="text-gray-600 leading-relaxed break-keep">ER 인스타그램 계정이 공식 런칭되었습니다. 코칭·강의 일정, 회복 사역 인사이트, 짧은 묵상과 현장 소식을 더 자주 전해 드립니다.</p><p class="mt-4 text-sm text-gray-600 leading-relaxed break-keep">관심 있으시면 팔로우해 주세요. 새 소식과 모집 안내도 인스타그램에서 함께 나눕니다.</p><p class="mt-6 flex flex-wrap gap-3"><a href="https://www.instagram.com/er_official_Korea/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors"><i class="fab fa-instagram"></i> @er_official_Korea 팔로우하기</a></p>' },
         { id: 5, tag: '축하', title: '에니어그램 기본과정 수료 — 7명', date: '2026-06-10', summary: '기본과정 수료생 7분이 8주 과정을 마치고 다음 단계로 나아갑니다', body: '<p class="text-gray-600 leading-relaxed break-keep"><strong>ER 에니어그램 기본과정</strong> 수료를 축하드립니다. 8주 동안 이론과 적용, 멘토링을 함께 걸어온 <strong>7분</strong>이 과정을 마치고 스터디·코칭스쿨 등 다음 여정으로 이어갑니다.</p><p class="mt-4 text-sm text-gray-600 leading-relaxed break-keep">수료생 여러분의 회복 사역을 응원합니다. 앞으로도 ER 공동체 안에서 서로 세워 주는 동역이 이어지기를 바랍니다.</p>' },
-        { id: 4, tag: '모집중', title: 'Enneagram for Parenting — 6월 4주 워크샵 모집', date: '2026-05-24', summary: '나를 알고, 아이를 이해하는 4주 자녀양육 심화 워크샵 — 부모의 자기이해와 복음적 회복의 관점', body: '<p class="text-gray-600 leading-relaxed break-keep">양육의 변화는 부모의 자기이해에서 시작됩니다. <strong>Enneagram for Parenting</strong>는 에니어그램 입문이 아닌 심화 과정으로, 자신의 유형을 어느 정도 알고 계신 부모님이 반복되는 양육 반응을 성찰하고 자녀를 새롭게 바라보는 4주 워크샵입니다.</p><div class="mt-6 grid gap-3"><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">기간</span><span class="text-sm text-gray-700 break-keep">6월 셋째 주–7월 둘째 주 (일정 확정 후 안내)</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">대상</span><span class="text-sm text-gray-700 break-keep">ER 강의·세션 등을 통해 유형을 어느 정도 알고 계신 부모님</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">구성</span><span class="text-sm text-gray-700 break-keep">4주 / 총 10시간 · 주 1회 온라인 Zoom · $120</span></div><div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100"><span class="text-xs font-bold text-gray-500 w-20">모집</span><span class="text-sm text-gray-700 break-keep">소규모 선착순</span></div></div><p class="mt-6 flex flex-wrap gap-3"><a href="/parenting-workshop.html" class="inline-flex items-center justify-center rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors">워크샵 안내 보기</a><a href="/parenting-workshop/mobile-brochure.pdf" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-full border border-er-accent/40 bg-er-accentLight/30 px-5 py-2.5 text-sm font-bold text-er-dark hover:border-er-accent transition-colors">모바일 브로셔</a></p>' },
+        { id: 4, tag: '안내', title: '4주 부모교육 워크숍 — 일정 확정 전', date: '2026-11-08', summary: '과정 안내는 열려 있습니다. 일정·참가비 확정 후 모집을 시작합니다.', body: '<p class="text-gray-600 leading-relaxed break-keep"><strong>4주 부모교육 워크숍</strong>은 개인·가정을 위한 실습 과정입니다. 에니어그램 기본과정 수료 여부와 관계없이 참여할 수 있으며, <strong>모집 일정과 참가비는 확정 후 안내</strong>합니다.</p><p class="mt-4 text-sm text-gray-600 leading-relaxed break-keep">관심 있으시면 일정 알림을 남겨 주세요. 바로 상담이 필요하면 <strong>우리자녀 기질상담</strong>으로, 교회·기관 개최는 <strong>부모교육 세미나</strong>로 이어가 주세요.</p><p class="mt-6 flex flex-wrap gap-3"><a href="/parenting-workshop" class="inline-flex items-center justify-center rounded-full bg-er-dark text-white px-5 py-2.5 text-sm font-bold shadow-soft hover:bg-gray-800 transition-colors">4주 과정 안내</a><a href="/#apply?track=paid&amp;focus=parenting_workshop" class="inline-flex items-center justify-center rounded-full border border-er-accent/40 bg-er-accentLight/30 px-5 py-2.5 text-sm font-bold text-er-dark hover:border-er-accent transition-colors">일정 알림 남기기</a><a href="/parenting-seminar" class="inline-flex items-center justify-center rounded-full border border-er-accent/40 bg-er-accentLight/30 px-5 py-2.5 text-sm font-bold text-er-dark hover:border-er-accent transition-colors">부모교육 세미나 안내</a></p>' },
         { id: 3, tag: '발행', title: 'ER 매거진 창간호 발행', date: '2026-05-24', summary: 'ER 의 회복 사역 이야기와 인사이트를 담은 매거진 창간호', body: '<p class="text-gray-600 leading-relaxed break-keep">ER 매거진 창간호가 나왔습니다. 회복의 여정에서 만난 분들의 이야기와, 에니어그램과 기독교 세계관을 통합한 사역의 인사이트를 한 권에 담았습니다.</p><div class="mt-8 rounded-2xl border border-er-accent/25 bg-er-accentLight/25 p-5 md:p-6"><p class="text-[10px] font-bold uppercase tracking-[0.2em] text-er-accent mb-2">창간호 하이라이트</p><h3 class="text-lg font-bold text-er-dark break-keep">회복의 이야기 — 사역 현장에서 만난 변화</h3><p class="mt-3 text-sm text-gray-600 leading-relaxed break-keep">코칭·강의를 통해 자기 이해와 관계 회복을 경험한 분들의 실제 이야기, ER 관점에서 읽는 에니어그램과 복음적 세계관, 그리고 독자가 스스로 돌아볼 수 있는 성찰 질문을 소개합니다.</p><ul class="mt-4 space-y-2 text-sm text-gray-600 list-none pl-0"><li class="break-keep">· 회복 사역 현장 인터뷰와 사례</li><li class="break-keep">· 에니어그램을 삶의 언어로 바꾸는 ER 관점</li><li class="break-keep">· 계절별로 이어지는 주제 에세이</li></ul></div><p class="mt-6 text-xs text-er-muted break-keep">전체 PDF 다운로드는 준비 중이며, 계절별 하이라이트는 웹에서 먼저 만나보실 수 있습니다. 워크샵·프로그램 모집은 별도 공지에서 안내합니다.</p>' },
         { id: 2, tag: '안내', title: '홈페이지 리뉴얼 안내', date: '2024-12-20', summary: '리뉴얼 진행 중이며 일부 기능은 준비 중입니다.', body: '<p class="text-gray-600 leading-relaxed break-keep">ER 홈페이지는 더 나은 정보 제공을 위해 리뉴얼 중입니다. 일부 메뉴와 기능(로그인/공지 확장 등)은 순차적으로 업데이트됩니다.</p>' }
       ]
@@ -120,7 +120,7 @@
       ctaPrograms: '프로그램 보기',
       ctaSupport: '사역지원 후원하기',
       principle1: '전문 코칭 서비스 원칙',
-      principle2: '목회자·선교사 무료 사역지원 원칙',
+      principle2: '목회자·선교사 반액 장학 원칙',
       principle3: '협력 네트워크 기반 운영',
       restorationInMotion: 'Restoration in Motion',
       approachLabel: 'Approach',
@@ -184,11 +184,11 @@
         },
         training: {
           title: 'ER 전문가 과정',
-          desc: '에니어그램 기본과정부터 스터디와 1년 코칭스쿨까지 이어지는 전체 훈련 여정입니다.',
+          desc: '기본과정·101 하위유형 스터디·선택 심화(102~302)·1년 코칭스쿨과 등록 민간자격 ER에니어그램전문가(제 2026-008332호) 취득 경로를 안내합니다.',
           cards: [
-            { b: 'Foundation', t: '에니어그램 기본과정', d: '8주 동안 핵심 이론과 ER 관점을 배우고 실제 적용의 기초를 세웁니다.', i: 'fas fa-chalkboard' },
-            { b: 'Study', t: '팔로우업 스터디', d: '기본과정 수료 후 격주 스터디로 학습과 현장 적용을 이어갑니다.', i: 'fas fa-book-reader' },
-            { b: 'Coaching School', t: '1년 코칭스쿨', d: 'Formation, 전문 강사, 코칭 스킬, 통합 실습을 함께 이수합니다.', i: 'fas fa-user-md' }
+            { b: 'Foundation', t: '에니어그램 기본과정', d: '8주 핵심 이론과 ER 관점을 배우고, 수료 후 2급 검정에 응시할 수 있습니다.', i: 'fas fa-chalkboard' },
+            { b: 'Required', t: '101 하위유형 스터디', d: '1급 지원을 위한 필수 심화. 102 이후 100·200·300 과목은 선택입니다.', i: 'fas fa-book-reader' },
+            { b: 'Coaching School', t: '1년 코칭스쿨', d: '2급과 101 이수 후 지원하며, 수료 뒤 1급 검정에 응시할 수 있습니다.', i: 'fas fa-user-md' }
           ]
         }
       }
@@ -215,7 +215,7 @@
       howWeOperate: '이 사역을 운영하는 방식',
       operateItems: [
         ['협력 기반의 사역', '교회와 선교단체, 기독교 기관, 코치와 협력자와 함께 사역의 구조를 세워 갑니다.'],
-        ['사역지원 후원', '후원금은 목회자·선교사를 위한 무료 코칭 트랙을 유지하는 데 우선 사용됩니다.'],
+        ['사역지원 후원', '후원금은 목회자·선교사를 위한 반액 장학 트랙을 유지하는 데 우선 사용됩니다.'],
         ['빠른 해결보다 형성', '단기 해결보다 지속 가능한 회복과 형성의 과정을 중요하게 여깁니다.'],
         ['신뢰와 투명성', '사역의 목적과 운영 방향, 참여 경로를 공개적으로 설명하는 사이트를 지향합니다.']
       ]
@@ -224,7 +224,7 @@
     support: {
       label: '후원하기',
       title: '목회자·선교사의 회복 코칭을 함께 후원해 주세요',
-      desc: 'ER의 개인·가정 코칭과 교회·사역팀 프로그램은 유료 서비스로 운영됩니다. 그러나 목회자와 선교사에게는 무료로 회복 코칭을 제공합니다. 여러분의 후원이 이 무료 사역지원 트랙을 지속할 수 있게 합니다.',
+      desc: 'ER의 개인·가정 코칭과 교회·사역팀 프로그램은 유료 서비스로 운영됩니다. 목회자·선교사와 그 가족에게는 모든 프로그램·상담·코칭에 반액 장학을 제공합니다. 여러분의 후원이 이 반액 장학 트랙을 지속할 수 있게 합니다.',
       stats: [['300명+', '지금까지 섬긴 인원'], ['350회+', '누적 세션 수'], ['10곳', '협력 교회·선교단체'], ['7명', '함께하는 코치'], ['20명+', '훈련 참가자']],
       howToGive: '함께 마음을 보내는 방법',
       howToGiveItems: [
@@ -242,7 +242,7 @@
       ctaSupport: '후원·협력 신청하기',
       principlesTitle: '후원 운영 원칙',
       principles: [
-        '후원금은 목회자·선교사 무료 코칭 트랙에 우선 사용됩니다.',
+        '후원금은 목회자·선교사 반액 장학 트랙에 우선 사용됩니다.',
         '일반 개인·가정 코칭과 교회·사역팀 프로그램은 유료로 운영됩니다.',
         '협력 파트너십과 공동 프로그램은 현장에 맞게 개별 설계합니다.'
       ]
@@ -265,7 +265,7 @@
       messageLabel: '나누고 싶은 이야기',
       messagePlaceholder: '지금의 고민이나 바라는 도움을 편하게 적어주세요.',
       securityNote: '보안 확인',
-      infoNote: 'ER의 개인·가정 코칭과 교회·사역팀 프로그램은 유료 서비스입니다. 목회자·선교사를 위한 무료 사역지원 트랙은 별도 심사 후 안내드립니다. 접수 후 24시간 이내에 담당 코치가 연락드립니다.',
+      infoNote: 'ER의 개인·가정 코칭과 교회·사역팀 프로그램은 유료 서비스입니다. 목회자·선교사를 위한 반액 장학 트랙은 별도 안내드립니다. 접수 후 24시간 이내에 담당 코치가 연락드립니다.',
       submitBtn: '신청하기',
       categoryOptions: ['개인/가정 코칭 (부부, 자녀)', '교회/사역팀 회복 프로그램', '강사 양성 과정', '기타 문의'],
       categoryOptionsSupport: ['후원 문의', '교회/선교단체 협력 문의', '공동 프로그램 제안', '기타 협력 문의'],
@@ -324,7 +324,7 @@
       title: '회복의 여정을 함께하는 대표와 코치진을 소개합니다',
       desc: '에니어그램과 기독교 세계관을 통합적으로 적용해 개인·가정·공동체의 회복을 함께 걸어갑니다.',
       ministryBadge: '사역지원 전담',
-      ministryDesc: '목회자·선교사 무료 코칭 트랙을 담당합니다.',
+      ministryDesc: '목회자·선교사 반액 장학 트랙을 담당합니다.',
       ctaApply: '상담 신청하기',
       ctaMinistry: '사역지원 신청하기',
       certLabel: '약력',
@@ -334,7 +334,7 @@
           id: 'coach-son',
           name: '손지영 대표',
           role: 'ER 대표 · 강사 · Head Coach',
-          photo: 'son-profile-picture.png',
+          photo: 'son-profile-picture.webp',
           bio: '손지영 대표는 오랫동안 중동 선교와 캠퍼스 사역 현장에서 목회자·선교사와 공동체를 섬겨 왔으며, 두 자녀를 양육하는 엄마로서 가정의 실제 고민을 함께 다룹니다. ER 소개에 담긴 비전처럼 에니어그램과 기독교 세계관을 통합적으로 적용해 개인과 공동체의 회복을 돕고 있습니다.',
           specialties: ['개인 자기 이해 코칭', '부부·가정 회복', '사역자·선교사 돌봄', '에니어그램 강사 양성'],
           certs: [

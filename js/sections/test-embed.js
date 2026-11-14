@@ -68,7 +68,7 @@ function mountAdaptiveTestIframe() {
 
     const isKo = adaptiveLang !== 'en';
     const langParam = isKo ? 'ko' : 'en';
-    const title = isKo ? '적응형 에니어그램 심층 진단' : 'Adaptive Enneagram Typing Assessment';
+    const title = isKo ? '에니어그램 내러티브 테스트' : 'Enneagram Narrative Test';
     const src = `test.html?v=${ADAPTIVE_TEST_EMBED_VERSION}&lang=${langParam}`;
 
     const canReuse =
@@ -140,9 +140,9 @@ function renderTest() {
             <section class="bg-er-dark text-white py-10 md:py-14 px-6 relative overflow-hidden rounded-b-[2.5rem]">
                 <div class="absolute top-[-20%] right-[-10%] w-[320px] h-[320px] bg-er-green/20 rounded-full blur-[110px] pointer-events-none"></div>
                 <div class="max-w-5xl mx-auto relative z-10 text-center">
-                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] font-bold tracking-widest uppercase text-er-greenTint mb-4">Premium Test</span>
-                    <h2 class="font-display text-2xl md:text-3xl font-extrabold tracking-[-0.03em] break-keep">에니어그램 프리미엄 검사</h2>
-                    <p class="mt-2 text-sm text-white/80 break-keep">핵심 동기와 유형을 찾는 적응형 진단</p>
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[10px] font-bold tracking-widest uppercase text-er-greenTint mb-4">Narrative Test</span>
+                    <h2 class="font-display text-2xl md:text-3xl font-extrabold tracking-[-0.03em] break-keep">${isKo ? '에니어그램 <span class="whitespace-nowrap">내러티브 테스트</span>' : 'Enneagram <span class="whitespace-nowrap">Narrative Test</span>'}</h2>
+                    <p class="mt-2 text-sm text-white/80 break-keep">${isKo ? '단어와 일상의 이야기를 통해 핵심 동기와 유형을 살펴봅니다.' : 'Explore your core motivations through words and everyday stories.'}</p>
                 </div>
             </section>
 
@@ -157,7 +157,7 @@ function renderTest() {
                         <div class="w-full h-full rounded-2xl border border-er-sand/50 bg-er-surface/90 p-5 md:p-7">
                             <div class="flex items-center gap-2 mb-6">
                                 <span class="w-2 h-2 rounded-full bg-er-green animate-pulse"></span>
-                                <span class="text-xs font-bold tracking-wider text-er-green">진단 페이지 불러오는 중</span>
+                                <span class="text-xs font-bold tracking-wider text-er-green">${isKo ? '테스트 페이지 불러오는 중' : 'Loading the test'}</span>
                             </div>
                             <div class="space-y-4 animate-pulse">
                                 <div class="h-6 w-2/3 rounded-lg bg-er-greenTint"></div>

@@ -1,5 +1,11 @@
 // Resend API 발송 헬퍼
 
+// 기존 type=email 폼의 단일 주소 구문. 문자열 전체를 검사하며 주소를 추출하지 않는다.
+// https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+export function isValidEmailAddress(value: string): boolean {
+  return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(value);
+}
+
 function isValidReplyToEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
 }

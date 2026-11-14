@@ -30,7 +30,7 @@ function renderCoaches() {
         const ctaLabel = coach.ministry ? (C.ctaMinistry || '사역지원 신청하기') : (C.ctaApply || '상담 신청하기');
 
         const photoEl = coach.photo
-            ? `<img src="${coach.photo}" alt="${coach.name}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center bg-er-base\'><i class=\'fas fa-user text-4xl text-er-muted\' aria-hidden=\'true\'></i></div>'">`
+            ? `<img src="${coach.photo}" alt="${coach.name}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" decoding="async" onerror="if(/\\.webp($|\\?)/.test(this.src)){this.onerror=null;this.src=this.src.replace(/\\.webp/,'.png');}else{this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center bg-er-base\\'><i class=\\'fas fa-user text-4xl text-er-muted\\' aria-hidden=\\'true\\'></i></div>';}">`
             : `<div class="w-full h-full flex items-center justify-center bg-er-base"><i class="fas fa-user text-4xl text-er-muted" aria-hidden="true"></i></div>`;
 
         return `
@@ -79,7 +79,7 @@ function renderCoaches() {
                     ${coach.ministry ? `
                     <div class="mt-8 pt-5 border-t border-er-sand/50 flex items-center gap-2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-er-muted"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                        <p class="text-xs text-er-muted break-keep">${C.ministryDesc || '목회자·선교사 무료 코칭 트랙을 담당합니다.'}</p>
+                        <p class="text-xs text-er-muted break-keep">${C.ministryDesc || '목회자·선교사 반액 장학 트랙을 담당합니다.'}</p>
                     </div>` : ''}
                 </div>
             </div>
@@ -114,10 +114,10 @@ function renderCoaches() {
                     <div class="w-8 h-8 rounded-full bg-er-greenTint text-er-green flex items-center justify-center shrink-0">
                         ${svgCross}
                     </div>
-                    <span class="text-er-body font-medium text-sm break-keep">목회자·선교사와 그 가족에게는 <span class="font-bold text-er-inkSoft">무료 코칭</span>을 제공합니다.</span>
+                    <span class="text-er-body font-medium text-sm break-keep">목회자·선교사와 그 가족에게는 모든 프로그램·상담·코칭에 <span class="font-bold text-er-inkSoft">반액 장학</span>을 제공합니다.</span>
                 </div>
                 <button onclick="renderSection('support')" class="shrink-0 px-4 py-2 rounded-lg bg-er-green text-white text-sm font-semibold hover:bg-er-greenDark transition-colors">
-                    무료 지원 알아보기
+                    반액 장학 알아보기
                 </button>
             </div>
 

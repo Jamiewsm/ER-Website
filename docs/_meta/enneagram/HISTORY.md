@@ -3,7 +3,7 @@
 kb_id: enneagram_test_meta.history
 title: "Work History Log"
 created_at: "2026-05-06"
-last_updated: "2026-06-21"
+last_updated: "2026-09-28"
 retrieval_tags:
   - history
   - audit_log
@@ -14,6 +14,7 @@ retrieval_tags:
 
 | Timestamp (UTC) | Agent | Task | Event | Tokens | Note |
 |---|---|---|---|---:|---|
+| 2026-09-28T03:48:00Z | codex | premium-assessment-quality | locally_verified | - | 평소 응답 안내·9유형 후보 재검토·하위유형 충돌 보류·선택형 평가·버전/출처별 분석 구현. 검사 회귀 156개, 별도 API/격리 DB 및 기존 실험 24개 통과. 모바일/데스크톱 모의 저장 검증. test/supabase 트랙 분리, 머지·배포·실제 정확도 검증은 별도. |
 | 2026-06-21T04:05:00Z | codex | confidence_explanation_card | complete | - | `buildConfidenceExplanation` + `report-confidence` 섹션 구현. 1-2위 격차, 본능 선명도, 응답 품질, 센터-코어 일치, 타이브레이커를 근거 문장으로 설명하고 1↔6/2↔9/3↔6/3↔9/4↔7/5↔9/6↔8/7↔9 상담 확인 질문을 자동 생성. `confidenceExplanation`은 experiment row JSON에도 보존. 70/70 tests pass. |
 | 2026-06-21T03:40:00Z | codex | response_quality_engine | complete | - | `buildResponseQualitySnapshot` + `responseTiming` 구현. 너무 빠른 응답, 직선 응답, U 과다, 센터-코어 불일치, 본능 불명확성 flag를 생성하고 premium model, experiment payload, Supabase row JSON(`result_summary.response_quality`, `tie_break_log.response_timing`)에 보존. |
 | 2026-06-20T22:20:00Z | codex | active_evolution_docs | complete | - | 과거 PHASE_* plan 전부 `archived_do_not_execute`로 격리, `ACTIVE_EVOLUTION_PLAN.md` 신규 작성, `CODE_GAP_AUDIT.md`를 적용 금지/선별 적용 guardrail로 재정의. 현재 우선순위는 응답 품질 체크 → confidence 설명 카드 → 상담 확인 질문 → 자동반응 리라이팅/상황형 TB → experiment 데이터/weight calibration. |

@@ -54,24 +54,37 @@ async function shareScholarshipPage() {
 
 function renderSupport() {
     const { receiptNotice } = window.ER_SCHOLARSHIP_SUPPORT;
-    return `<div class="min-h-screen bg-er-base px-4 pb-16 sm:px-6 md:pb-24 lg:px-8">
-        <section class="mx-auto grid max-w-6xl items-center gap-10 py-12 md:py-20 lg:grid-cols-[1.5fr_1fr] lg:gap-16" aria-labelledby="scholarship-hero-title">
-            <div>
-                <p class="mb-5 text-sm font-bold text-er-green">ER 사역지원 · 반액 장학</p>
-                <h1 id="scholarship-hero-title" class="font-display text-4xl font-extrabold leading-[1.25] tracking-[-0.03em] text-er-ink break-keep md:text-5xl">사역자를 돌보는 일이<br>공동체를 돌보는 일이 되도록</h1>
-                <p class="mt-6 max-w-xl text-lg leading-relaxed text-er-body break-keep">많은 사람의 삶을 돌보는 사역자에게도, 자신의 삶과 관계를 돌아볼 자리가 필요합니다.</p>
-                <p class="mt-4 max-w-xl text-base leading-relaxed text-er-body break-keep">경제적 부담이 배움의 문턱이 되지 않도록, 목회자·선교사·사역자·사모의 <strong>기본과정·심화과정·코치트레이닝 수강료 절반을 장학으로 지원합니다.</strong></p>
-                <p class="mt-4 max-w-xl text-base leading-relaxed text-er-body break-keep">한 사람의 배움과 회복이 섬김의 자리로 이어지도록, 기쁨으로 함께해 주세요.</p>
-                <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-                    <button type="button" onclick="scrollToScholarshipSection('scholarship-giving-panel')" class="${scholarshipButtonStyle(true)}">사역지원에 함께하기</button>
-                    <button type="button" onclick="scrollToScholarshipSection('scholarship-how')" class="min-h-11 text-sm font-bold text-er-green underline underline-offset-4">장학 지원 과정 보기</button>
+    return `<div class="min-h-screen bg-er-base pb-16 md:pb-24">
+        <section class="relative overflow-hidden" aria-labelledby="scholarship-hero-title">
+            <img
+                src="assets/er-visual/support-seminar-hero.jpg"
+                alt=""
+                width="1671"
+                height="941"
+                fetchpriority="high"
+                decoding="async"
+                class="absolute inset-0 h-full w-full object-cover"
+                style="object-position: center 40%;"
+            />
+            <div class="absolute inset-0 bg-gradient-to-r from-er-base from-35% via-er-base/85 to-transparent" aria-hidden="true"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-er-base/35 via-transparent to-er-base/55" aria-hidden="true"></div>
+            <div class="relative z-10 mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+                <div class="max-w-xl">
+                    <p class="mb-5 text-sm font-bold text-er-green">ER 사역지원 · 반액 장학</p>
+                    <h1 id="scholarship-hero-title" class="font-display text-4xl font-extrabold leading-[1.25] tracking-[-0.03em] text-er-ink break-keep md:text-5xl">사역자를 돌보는 일이<br>공동체를 돌보는 일이 되도록</h1>
+                    <p class="mt-6 text-lg leading-relaxed text-er-body break-keep">많은 사람의 삶을 돌보는 사역자에게도, 자신의 삶과 관계를 돌아볼 자리가 필요합니다.</p>
+                    <p class="mt-4 text-base leading-relaxed text-er-body break-keep">경제적 부담이 배움의 문턱이 되지 않도록, 목회자·선교사·사역자·사모와 그 가족에게 <strong>모든 프로그램·상담·코칭 비용의 절반을 반액 장학으로 지원합니다.</strong></p>
+                    <p class="mt-4 text-base leading-relaxed text-er-body break-keep">한 사람의 배움과 회복이 섬김의 자리로 이어지도록, 기쁨으로 함께해 주세요.</p>
+                    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+                        <button type="button" onclick="scrollToScholarshipSection('scholarship-giving-panel')" class="${scholarshipButtonStyle(true)}">사역지원에 함께하기</button>
+                        <button type="button" onclick="scrollToScholarshipSection('scholarship-how')" class="min-h-11 text-sm font-bold text-er-green underline underline-offset-4">장학 지원 과정 보기</button>
+                    </div>
+                    <p class="mt-3 text-sm text-er-muted">계좌를 통한 일시후원으로 참여하실 수 있습니다.</p>
                 </div>
-                <p class="mt-3 text-sm text-er-muted">계좌를 통한 일시후원으로 참여하실 수 있습니다.</p>
             </div>
-            <img src="assets/er-visual/hero-home.jpg" alt="햇살이 들어오는 창가에 놓인 편안한 의자" width="1920" height="2880" class="h-64 w-full rounded-[2rem] object-cover object-bottom sm:h-80 lg:h-[32rem]">
         </section>
 
-        <div class="mx-auto max-w-3xl">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
             <section class="border-t border-er-sand py-12 md:py-20" aria-labelledby="scholarship-why-title">
                 <h2 id="scholarship-why-title" class="text-2xl font-bold leading-snug text-er-inkSoft break-keep">돌보는 사람에게도 돌봄이 필요합니다</h2>
                 <div class="mt-6 max-w-xl space-y-4 text-base leading-relaxed text-er-body break-keep">
@@ -87,14 +100,14 @@ function renderSupport() {
                     <div><dt class="text-lg font-bold text-er-inkSoft">자신을 돌아볼 자리</dt><dd class="mt-3 text-base leading-relaxed text-er-body break-keep">다른 사람을 돌보느라 미뤄 두었던 자신의 생각과 감정, 삶의 패턴을 천천히 살펴봅니다.</dd></div>
                     <div><dt class="text-lg font-bold text-er-inkSoft">관계를 새롭게 이해할 자리</dt><dd class="mt-3 text-base leading-relaxed text-er-body break-keep">가족과 공동체 안에서 반복되는 반응을 이해하고, 서로를 대하는 새로운 길을 배웁니다.</dd></div>
                     <div><dt class="text-lg font-bold text-er-inkSoft">삶과 소명을 다시 바라볼 자리</dt><dd class="mt-3 text-base leading-relaxed text-er-body break-keep">하나님 앞에서 지금의 삶을 정직하게 돌아보고, 자신에게 맡겨진 관계와 소명을 살펴봅니다.</dd></div>
-                    <div><dt class="text-lg font-bold text-er-inkSoft">부담을 덜고 배움을 이어갈 자리</dt><dd class="mt-3 text-base leading-relaxed text-er-body break-keep">수강료의 절반을 장학으로 지원해, 기본과정에서 심화과정과 코치트레이닝으로 이어지는 배움의 부담을 덜어드립니다.</dd></div>
+                    <div><dt class="text-lg font-bold text-er-inkSoft">부담을 덜고 배움을 이어갈 자리</dt><dd class="mt-3 text-base leading-relaxed text-er-body break-keep">프로그램·상담·코칭 비용의 절반을 장학으로 지원해, 배움과 회복의 부담을 덜어드립니다.</dd></div>
                 </dl>
             </section>
 
             <section id="scholarship-how" tabindex="-1" class="scroll-mt-24 border-t border-er-sand py-12 md:py-20" aria-labelledby="scholarship-how-title">
                 <h2 id="scholarship-how-title" class="text-2xl font-bold leading-snug text-er-inkSoft break-keep">장학 지원은 이렇게 연결됩니다</h2>
                 <ol class="mt-8 space-y-7">
-                    <li class="flex gap-5"><span class="pt-1 text-sm font-bold tabular-nums text-er-green" aria-hidden="true">01</span><div><h3 class="text-lg font-bold text-er-inkSoft break-keep">참여하고 싶은 과정의 장학을 문의합니다</h3><p class="mt-2 max-w-xl text-base leading-relaxed text-er-body break-keep">목회자·선교사·사역자·사모님께서 기본과정, 심화과정 또는 코치트레이닝 참여를 문의합니다.</p></div></li>
+                    <li class="flex gap-5"><span class="pt-1 text-sm font-bold tabular-nums text-er-green" aria-hidden="true">01</span><div><h3 class="text-lg font-bold text-er-inkSoft break-keep">참여하고 싶은 프로그램의 장학을 문의합니다</h3><p class="mt-2 max-w-xl text-base leading-relaxed text-er-body break-keep">목회자·선교사·사역자·사모님께서 프로그램, 상담 또는 코칭 참여를 문의합니다.</p></div></li>
                     <li class="flex gap-5"><span class="pt-1 text-sm font-bold tabular-nums text-er-green" aria-hidden="true">02</span><div><h3 class="text-lg font-bold text-er-inkSoft break-keep">과정과 장학 적용 내용을 안내받습니다</h3><p class="mt-2 max-w-xl text-base leading-relaxed text-er-body break-keep">참여를 희망하는 과정과 상황을 나누고, 등록 전에 장학 적용 여부와 수강료를 안내받습니다.</p></div></li>
                     <li class="flex gap-5"><span class="pt-1 text-sm font-bold tabular-nums text-er-green" aria-hidden="true">03</span><div><h3 class="text-lg font-bold text-er-inkSoft break-keep">반액 장학으로 배움을 이어갑니다</h3><p class="mt-2 max-w-xl text-base leading-relaxed text-er-body break-keep">안내받은 과정에 참여해 자신과 관계를 이해하는 배움을 시작합니다. 후원은 이 장학 지원이 이어지는 데 사용됩니다.</p></div></li>
                 </ol>
@@ -120,7 +133,7 @@ function renderSupport() {
             <section class="border-t border-er-sand py-12 md:py-20" aria-labelledby="scholarship-trust-title">
                 <h2 id="scholarship-trust-title" class="text-2xl font-bold leading-snug text-er-inkSoft break-keep">후원금은 한 사람의 배움에 사용됩니다</h2>
                 <div class="mt-6 max-w-xl space-y-4 text-base leading-relaxed text-er-body break-keep">
-                    <p>ER의 일반 교육과 코칭 프로그램은 유료로 운영됩니다. 이 페이지를 통해 보내주시는 후원은 <strong>기본과정·심화과정·코치트레이닝에 참여하는 목회자·선교사·사역자·사모의 반액 장학</strong>을 위한 것입니다.</p>
+                    <p>ER의 일반 교육과 코칭 프로그램은 유료로 운영됩니다. 이 페이지를 통해 보내주시는 후원은 <strong>목회자·선교사·사역자·사모와 그 가족이 프로그램·상담·코칭에 참여할 때 적용되는 반액 장학</strong>을 위한 것입니다.</p>
                     <p>보내주신 마음은 안내한 장학 목적에 맞게 사용하고, 사용 현황은 개인이 드러나지 않는 전체 집계로 안내하겠습니다.</p>
                     <p>장학을 받는 분의 이름과 개인 사정은 공개하지 않습니다. 배움의 이야기를 나눌 때에도 당사자가 동의한 범위를 지키겠습니다.</p>
                 </div>
@@ -130,9 +143,9 @@ function renderSupport() {
             <section class="border-t border-er-sand py-12 md:py-20" aria-labelledby="scholarship-faq-title">
                 <h2 id="scholarship-faq-title" class="text-2xl font-bold leading-snug text-er-inkSoft break-keep">자주 묻는 질문</h2>
                 <div class="mt-6 divide-y divide-er-sand">
-                    <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">누가 반액 장학을 받을 수 있나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">기본과정·심화과정·코치트레이닝에 참여하는 목회자·선교사·사역자·사모를 지원합니다. 참여를 원하시는 과정과 상황을 이메일로 문의해 주세요.</p></details>
-                    <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">어느 정도의 수강료를 지원하나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">반액 장학은 해당 과정 수강료의 50%를 지원합니다. 나머지 수강료는 참여자가 부담하며, 장학 적용 내용은 등록 전에 안내받으실 수 있습니다.</p></details>
-                    <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">일반 프로그램과 장학 후원은 어떻게 연결되나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">일반 프로그램은 유료로 운영됩니다. 장학 후원은 사역자가 해당 과정에 참여할 때 수강료 부담을 덜어드리는 데 사용됩니다.</p></details>
+                    <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">누가 반액 장학을 받을 수 있나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">목회자·선교사·사역자·사모와 그 가족이 프로그램·상담·코칭에 참여할 때 지원합니다. 참여를 원하시는 내용과 상황을 이메일로 문의해 주세요.</p></details>
+                    <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">어느 정도의 비용을 지원하나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">반액 장학은 해당 프로그램·상담·코칭 비용의 50%를 지원합니다. 나머지 비용은 참여자가 부담하며, 장학 적용 내용은 등록 전에 안내받으실 수 있습니다.</p></details>
+                    <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">일반 프로그램과 장학 후원은 어떻게 연결되나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">일반 프로그램은 유료로 운영됩니다. 장학 후원은 사역자와 그 가족이 프로그램·상담·코칭에 참여할 때 비용 부담을 덜어드리는 데 사용됩니다.</p></details>
                     <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">어떻게 후원할 수 있나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">한국에서는 안내된 카카오뱅크 계좌로, 미국에서는 안내된 수취 정보로 Zelle 또는 Venmo를 통해 직접 송금하실 수 있습니다. 송금 메모에 ‘후원’을 적어 주세요.</p></details>
                     <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">장학을 받는 분의 이야기가 공개되나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">개인의 이름과 사정은 공개하지 않습니다. 후기는 실제 참여자가 공개에 동의한 경우에만, 동의한 범위 안에서 소개합니다.</p></details>
                     <details class="py-4"><summary class="min-h-11 cursor-pointer py-3 font-bold text-er-inkSoft break-keep">기부금영수증을 받을 수 있나요?</summary><p class="max-w-xl pb-3 text-base leading-relaxed text-er-body break-keep">현재 안내드리는 증빙은 입금 내역을 확인한 후 보내드리는 후원금 수령 확인서입니다. 소득·세액공제용 기부금영수증이 아닙니다.</p><p class="max-w-xl pb-3 text-sm leading-relaxed text-er-muted break-keep">${escapeHtml(receiptNotice)}</p></details>

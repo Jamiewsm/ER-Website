@@ -1,6 +1,11 @@
 // ER-Website: Apply form / Turnstile and submit-application API (depends on config.js; uses global state, renderSection)
 var applyTurnstileWidgetId = null;
 var applyTurnstileInitTimer = null;
+var applyTurnstileResizeObserver = null;
+
+function getApplyTurnstileSize(container) {
+  return typeof container.getBoundingClientRect === 'function' && container.getBoundingClientRect().width < 300 ? 'compact' : 'flexible';
+}
 
 function setApplyTurnstileStatus(message, tone) {
   var el = document.getElementById('apply-turnstile-status');
@@ -50,16 +55,20 @@ function mountApplyTurnstileWidget() {
 
   tokenInput.value = '';
   container.innerHTML = '';
+  if (applyTurnstileResizeObserver) applyTurnstileResizeObserver.disconnect();
+  applyTurnstileResizeObserver = null;
   if (applyTurnstileWidgetId !== null) {
     try { window.turnstile.remove(applyTurnstileWidgetId); } catch (_e) {}
     applyTurnstileWidgetId = null;
   }
 
   try {
+    var widgetSize = getApplyTurnstileSize(container);
     applyTurnstileWidgetId = window.turnstile.render('#apply-turnstile-widget', {
       sitekey: sitekey,
       theme: 'light',
-      size: 'flexible',
+      // flexible도 최소 300px이 필요하므로 실제 폼 안쪽 너비를 기준으로 선택한다.
+      size: widgetSize,
       callback: function (token) {
         tokenInput.value = token;
         setApplyTurnstileStatus('보안 확인이 완료되었습니다. 아래 신청하기를 눌러 주세요.', 'success');
@@ -73,6 +82,19 @@ function mountApplyTurnstileWidget() {
         setApplyTurnstileStatus('보안 확인을 표시하지 못했습니다. 아래 버튼으로 다시 시도해 주세요.', 'error');
       }
     });
+    if (typeof ResizeObserver === 'function') {
+      var resizeObserver = new ResizeObserver(function () {
+        if (applyTurnstileResizeObserver !== resizeObserver) return;
+        if (!container.isConnected) {
+          resizeObserver.disconnect();
+          return;
+        }
+        // 방향 전환으로 크기 모드가 바뀔 때만 토큰을 갱신한다. 작성 내용은 유지한다.
+        if (getApplyTurnstileSize(container) !== widgetSize) mountApplyTurnstileWidget();
+      });
+      applyTurnstileResizeObserver = resizeObserver;
+      resizeObserver.observe(container);
+    }
     setApplyTurnstileStatus('', null);
     return true;
   } catch (err) {
@@ -152,6 +174,8 @@ async function handleApplySubmit(event, source, successPayload) {
   var kakaoId = (formData.get('kakao_id') || '').toString().trim();
   var country = (formData.get('country') || '').toString().trim();
   var preferredTime = (formData.get('preferred_time') || '').toString().trim();
+  var organization = (formData.get('organization') || '').toString().trim();
+  var role = (formData.get('role') || '').toString().trim();
   var category = (formData.get('category') || '').toString().trim();
   var rawMessage = (formData.get('message') || '').toString().trim();
   var experience = (formData.get('enneagram_experience') || '').toString().trim();
@@ -171,6 +195,8 @@ async function handleApplySubmit(event, source, successPayload) {
   var extraLines = [];
   if (phone) extraLines.push('전화번호: ' + phone);
   if (kakaoId) extraLines.push('카카오톡 ID: ' + kakaoId);
+  if (organization) extraLines.push('교회·기관명: ' + organization);
+  if (role) extraLines.push('역할·직분: ' + role);
   if (country) extraLines.push('거주 국가: ' + country);
   if (preferredTime) extraLines.push('희망 시간대: ' + preferredTime);
   if (isFullTimeMinistry) {
@@ -206,9 +232,34 @@ async function handleApplySubmit(event, source, successPayload) {
     : '';
   var isOctoberBasicCourse = requestedProgramKey === 'enneagram_basic_october'
     || requestedProgramKey === 'basic_course_october';
+  // 오래된 일반 폼의 선택지도 필수 입력 없는 기본과정 요청을 보내지 않는다.
+  var basicCategory = /기본과정|basic/i.test(category);
+  if (basicCategory && !isOctoberBasicCourse) {
+    if (!setApplySubmitStatus('기본과정은 기수별 전용 안내에서 신청해 주세요. 아래 기본과정·다음 기수 안내를 확인해 주세요.', 'error')) {
+      alert('기본과정은 기수별 전용 안내에서 신청해 주세요.');
+    }
+    return;
+  }
+  if (isOctoberBasicCourse) {
+    var recruitmentOpen = typeof isBasicCourseRecruitmentOpen === 'function'
+      ? isBasicCourseRecruitmentOpen()
+      : Boolean(window.ERProgramCatalog && window.ERProgramCatalog.isBasicCourseRecruitmentOpen && window.ERProgramCatalog.isBasicCourseRecruitmentOpen());
+    if (!recruitmentOpen) {
+      if (typeof renderSection === 'function') renderSection('apply', { track: 'paid', focus: 'enneagram_basic_october' });
+      return;
+    }
+  }
   if (!name || !contact || !category) {
     if (!setApplySubmitStatus('이름과 연락받으실 곳을 확인해 주세요.', 'error')) {
       alert('이름, 연락처, 신청 분야를 확인해 주세요.');
+    }
+    return;
+  }
+  var organizationRequired = typeof form.querySelector === 'function'
+    && Boolean(form.querySelector('[name="organization"][required]'));
+  if (organizationRequired && !organization) {
+    if (!setApplySubmitStatus('교회·기관명을 입력해 주세요.', 'error')) {
+      alert('교회·기관명을 입력해 주세요.');
     }
     return;
   }
@@ -282,13 +333,29 @@ async function handleApplySubmit(event, source, successPayload) {
 
     if (!response.ok) {
       var errorText = await response.text();
-      throw new Error(errorText || 'HTTP ' + response.status);
+      var responseError;
+      try { responseError = JSON.parse(errorText); } catch (_) {}
+      throw new Error(responseError?.error === 'recruitment_closed' ? 'recruitment_closed' : errorText || 'HTTP ' + response.status);
     }
 
-    if (typeof renderSection === 'function') renderSection('thankyou', successPayload || null);
+    var result;
+    try { result = await response.json(); } catch (_) { throw new Error('application_result_uncertain'); }
+    if (result?.ok !== true || typeof result.id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(result.id)) {
+      throw new Error('application_result_uncertain');
+    }
+    var receipt = { id: result.id, warning: typeof result.warning === 'string' ? result.warning : '' };
+    try {
+      sessionStorage.setItem('er_application_receipt', JSON.stringify({ receipt: receipt, focus: String(successPayload?.focus || ''), savedAt: Date.now() }));
+    } catch (_) {}
+    if (typeof renderSection === 'function') renderSection('thankyou', { ...(successPayload || {}), applicationReceipt: receipt }, { replaceHash: true });
   } catch (err) {
     var msg = err instanceof Error ? err.message : String(err);
-    if (!setApplySubmitStatus('신청을 접수하지 못했습니다. 잠시 후 다시 시도해 주세요.', 'error')) {
+    var failureMessage = msg === 'recruitment_closed'
+      ? '이번 기본과정 모집은 마감되었습니다. 재신청하지 말고 다음 기수 안내를 확인해 주세요.'
+      : msg === 'application_result_uncertain'
+      ? '접수 결과를 확인하지 못했습니다. 중복 신청을 피하려면 재신청하지 말고 담당자에게 문의해 주세요.'
+      : '신청을 접수하지 못했습니다. 잠시 후 다시 시도해 주세요.';
+    if (!setApplySubmitStatus(failureMessage, 'error')) {
       alert('제출에 실패했습니다: ' + msg);
     }
     if (window.turnstile && applyTurnstileWidgetId !== null) {

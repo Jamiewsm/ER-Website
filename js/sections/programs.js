@@ -84,8 +84,8 @@ function renderBusinessHandoff(destination = 'programs') {
 function openProgramApply() {
     const isChurchProgram = state.programFilter === 'church';
     renderSection('apply', isChurchProgram
-        ? { track: 'org', focus: 'church' }
-        : { track: 'paid' });
+        ? { track: 'org', focus: 'teamwork_seminar' }
+        : { track: 'paid', focus: 'couple' });
 }
 
 function updateProgramView(filterType) {
@@ -122,17 +122,20 @@ function updateProgramView(filterType) {
             ]
         },
         church: {
-            title: '교회·사역팀 프로그램',
-            desc: '교회·선교단체·사역팀의 공동체 회복을 돕습니다. 목회자·선교사 개인은 지원 원칙에 따라 별도 안내해 드립니다.',
+            title: '사역팀 팀워크',
+            descLines: [
+                '목사·전도사·평신도 사역자가 함께 일할 때 필요한 팀워크·소통·역할 정렬을 돕습니다.',
+                '교인을 위한 부모교육·부부 세미나는 Parenting과 관계·부부 메뉴에서 개최를 문의하세요.'
+            ],
             problems: [
-                { t: '공동체 갈등 회복', d: '서로 다른 동기와 소통 방식을 이해하고, 오해와 갈등을 복음 안에서 다룰 수 있는 공통 언어를 세웁니다.', i: 'fas fa-people-group', f: 'church' },
-                { t: '사역자 소진 돌봄', d: '정서적 소진과 관계 피로를 살피고, 회복의 리듬과 건강한 역할 분담을 함께 정리합니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' },
-                { t: '사역 리더십과 동역 정렬', d: '리더와 사역팀의 의사결정·소통 패턴을 점검하고, 은사와 역할을 존중하는 동역의 흐름을 설계합니다.', i: 'fas fa-comments', f: 'leadership' }
+                { t: '사역팀 소통이 엇갈려요', d: '같은 비전을 말해도 동기와 업무 방식이 달라 현장에서는 엇박자가 납니다. 서로의 강점과 취약 지점을 먼저 이해합니다.', i: 'fas fa-people-group', f: 'church' },
+                { t: '역할과 의사결정이 불분명해요', d: '리더의 방향과 팀원의 실행이 어긋날 때, 의사결정·보고·피드백의 패턴을 함께 정리합니다.', i: 'fas fa-comments', f: 'leadership' },
+                { t: '동역이 소진으로 이어져요', d: '헌신의 부족이 아니라 맞지 않는 역할과 반복되는 마찰이 소진을 키울 때가 많습니다.', i: 'fas fa-hand-holding-heart', f: 'ministry' }
             ],
             cards: [
-                { b: '워크숍', t: '기본 워크숍 (2시간)', d: '유형 이해 + 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 공동체 갈등을 다루는 공통 언어 정리', i: 'fas fa-chalkboard-teacher', applyFocus: 'church' },
-                { b: '집중', t: '집중 워크숍 (6시간)', d: '사역팀·리더 분석 + 갈등 구조 해석 + 적용 설계', p: '$1,800부터', o: '결과: 교회 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'church' },
-                { b: '후속', t: '리더 디브리핑 패키지', d: '리더 디브리핑 + 소그룹 가이드 + 4주 후속 코호트', p: '맞춤 견적', o: '결과: 워크숍 이후 현장 적용이 끊기지 않게 유지', i: 'fas fa-file-signature', applyFocus: 'church' }
+                { b: '세미나', t: '사역팀 팀워크 세미나', d: '사역팀의 역할·소통·갈등을 다룹니다. 교인 대상 부모·부부 세미나와는 별도 프로그램입니다.', o: '팀의 대화와 동역 원칙 정리', i: 'fas fa-people-group', href: '/teamwork-seminar' },
+                { b: '워크숍', t: '사역팀 기본 워크숍 (2시간)', d: '유형 이해 + 사역팀 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 사역팀이 갈등을 다루는 공통 언어 정리', i: 'fas fa-users', applyFocus: 'teamwork_seminar' },
+                { b: '집중', t: '사역팀 집중 워크숍 (6시간)', d: '리더십 코드 + 사역자 역량 + 역할 배치 설계', p: '$1,800부터', o: '결과: 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'teamwork_seminar' }
             ]
         }
     };
@@ -142,22 +145,34 @@ function updateProgramView(filterType) {
 
     if (primaryCtaEl) {
         primaryCtaEl.textContent = filterType === 'church'
-            ? '교회·사역팀 프로그램 문의'
-            : '상담 신청';
+            ? '사역팀 팀워크 개최 문의'
+            : '부부 상담·코칭 신청';
     }
 
     if (introEl) {
+        const descLines = Array.isArray(selected.descLines)
+            ? selected.descLines
+            : (selected.desc ? [selected.desc] : []);
+        const descHtml = descLines.length
+            ? `<p class="mt-2 space-y-1.5 text-xs leading-relaxed text-gray-500 break-keep">${descLines.map((line) => `<span class="block">${line}</span>`).join('')}</p>`
+            : '';
         const ministryNotice = filterType === 'church'
-            ? `<div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs">
-                    <span class="text-gray-500 break-keep">목회자·선교사 본인은 무료/감면 사역지원 트랙으로 안내드립니다.</span>
-                    <button onclick="renderSection('support')" class="inline-flex min-h-11 items-center font-bold text-er-accent transition-colors hover:text-er-dark whitespace-nowrap">
-                        사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
-                    </button>
+            ? `<div class="mt-3 flex flex-col items-center justify-center gap-2 text-xs">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                        <span class="text-gray-500 break-keep">목회자·선교사는 반액 장학으로 별도 안내합니다.</span>
+                        <button onclick="renderSection('support')" class="inline-flex min-h-11 items-center font-bold text-er-accent transition-colors hover:text-er-dark whitespace-nowrap">
+                            사역지원 보기 <i class="fas fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+                        <a href="/parenting-seminar" class="inline-flex min-h-11 items-center font-bold text-er-accent hover:text-er-dark">부모교육 세미나</a>
+                        <a href="/couple-seminar" class="inline-flex min-h-11 items-center font-bold text-er-accent hover:text-er-dark">부부 세미나</a>
+                    </div>
                 </div>`
             : '';
         introEl.innerHTML = `
             <h3 class="text-lg font-bold text-er-dark mb-1">${selected.title}</h3>
-            ${selected.desc ? `<p class="text-xs text-gray-500 break-keep">${selected.desc}</p>` : ''}
+            ${descHtml}
             ${ministryNotice}
         `;
     }
@@ -191,9 +206,11 @@ function updateProgramView(filterType) {
                 <p class="text-gray-500 text-xs leading-relaxed mb-4 flex-grow break-keep whitespace-pre-line">${c.d}</p>
                 <p class="text-sm font-extrabold text-er-dark mb-5">${c.p || ''}</p>
                 <p class="text-[11px] text-gray-500 mb-5 break-keep"><span class="font-bold text-er-dark">기대 효과:</span> ${c.o || ''}</p>
-                <button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}'${c.applyFocus ? `, focus: '${c.applyFocus}', source: 'programs'` : ''} })" class="min-h-11 w-full rounded-xl px-4 ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
+                ${c.href
+                    ? `<a href="${c.href}" class="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-er-sand px-4 text-xs font-bold text-er-green hover:bg-er-greenTint">프로그램 안내</a>`
+                    : `<button onclick="renderSection('apply', { track: '${filterType === 'church' ? 'org' : 'paid'}'${c.applyFocus ? `, focus: '${c.applyFocus}', source: 'programs'` : ''} })" class="min-h-11 w-full rounded-xl px-4 ${c.featured ? 'bg-er-accent text-white border border-transparent shadow-md hover:bg-er-accentDark hover:-translate-y-0.5' : 'border border-gray-200 text-gray-600 hover:bg-er-dark hover:text-white hover:border-transparent'} font-bold text-xs transition-all">
                     신청/문의
-                </button>
+                </button>`}
             </div>
         `).join('');
     }
@@ -210,10 +227,10 @@ function renderPrograms() {
                 <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                 <div class="relative z-10 max-w-7xl mx-auto text-center">
                     <h2 class="text-2xl md:text-4xl font-bold mb-3">코칭·프로그램 안내</h2>
-                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">관계·부부 코칭과 교회·사역팀 프로그램을 통해 개인의 회복이 가정과 공동체로 이어지도록 돕습니다. 자녀 양육은 Parenting 메뉴에서 따로 안내합니다.</p>
+                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">관계·부부 코칭과 사역팀 팀워크를 통해 개인의 회복이 가정과 동역으로 이어지도록 돕습니다. 자녀 양육과 부모교육 세미나는 Parenting 메뉴에서 안내합니다.</p>
                     
                     <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
-                        ${['individual:관계·부부', 'church:교회·사역팀'].map(item => {
+                        ${['individual:관계·부부', 'church:사역팀 팀워크'].map(item => {
                             const [key, label] = item.split(':');
                             const isActive = state.programFilter === key;
                             return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
@@ -265,7 +282,7 @@ function renderPrograms() {
                     </div>
                     <div class="text-center mt-10">
                         <button id="program-primary-cta" onclick="openProgramApply()" class="bg-er-dark text-white px-8 py-3.5 rounded-full font-bold shadow-soft hover:bg-gray-800 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">
-                            ${state.programFilter === 'church' ? '교회·사역팀 프로그램 문의' : '상담 신청'}
+                            ${state.programFilter === 'church' ? '사역팀 팀워크 개최 문의' : '부부 상담·코칭 신청'}
                         </button>
                     </div>
                 </div>
@@ -286,8 +303,8 @@ function renderPrograms() {
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         ${[
                             ['USD 기준', '모든 서비스 가격은 USD 기준으로 안내됩니다. 국가별 결제 수단과 환율에 따라 최종 청구 금액이 달라질 수 있습니다.', null],
-                            ['사역지원 트랙', '목회자·선교사 대상 무료/감면 원칙은 유지됩니다. 사역지원은 별도 심사 후 배정됩니다.', { label: '사역지원 보기', section: 'support' }],
-                            ['패키지 우선', '단회보다 4회/8회 패키지 전환율이 높고 변화 유지에 유리합니다. 초기 상담 후 최적 트랙을 제안합니다.', null]
+                            ['사역지원 트랙', '목회자·선교사와 그 가족에게는 모든 프로그램·상담·코칭에 반액 장학을 제공합니다.', { label: '사역지원 보기', section: 'support' }],
+                            ['회기 구성 선택', '한 가지 주제를 다루는 1회 코칭과 여러 회기에 걸쳐 실천을 이어가는 4회·8회 패키지를 선택할 수 있습니다. 초기 상담에서 현재 상황과 목표에 맞는 구성을 함께 정리합니다.', null]
                         ].map(([title, desc, link]) => `
                             <div class="rounded-2xl border border-er-sand/50 bg-er-base/60 p-5">
                                 <h4 class="text-sm font-bold text-er-dark">${title}</h4>
