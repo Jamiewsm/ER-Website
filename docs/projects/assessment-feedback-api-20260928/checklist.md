@@ -12,4 +12,7 @@
 - [x] 논리 단위 커밋과 부모 작업 인계를 위한 검증·운영 적용 조건 정리.
 - [x] 재평가 revision 범위를 PostgreSQL integer에 맞추고 21·최댓값 허용 및 음수·소수·초과값 거부 검증.
 
-운영 DB migration 적용·함수 배포·실제 고객 제출 검증은 이번 작업에 포함하지 않는다.
+- [x] 운영 DB migration 적용 (`diagnostic_result_feedback`, RLS, service_role SELECT/INSERT) — 2026-11-14
+- [x] Edge Function `submit-assessment-feedback` 배포 (`verify_jwt=false`, v1) — 2026-11-14
+- [x] 서버 스모크: origin 거부 / invalid_payload / fake Turnstile → `turnstile_failed` (시크릿 정상)
+- [ ] 라이브 브라우저에서 Turnstile 통과 후 실제 체감 평가 1건 저장 확인 (수동)
