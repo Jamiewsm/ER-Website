@@ -19,9 +19,10 @@ test('shared mobile navigation exposes 44px touch targets', () => {
   assert.match(indexHtml, /\.mobile-nav-link \{[\s\S]*?min-height: 2\.75rem;/);
 });
 
-test('program filters and compact text actions expose 44px touch targets', () => {
-  assert.match(programsSource, /inline-flex min-h-11 items-center justify-center whitespace-nowrap/);
+test('program page actions expose 44px touch targets without shared tab filters', () => {
+  assert.doesNotMatch(programsSource, /tab-individual|tab-church|updateProgramView\('church'\)/);
   assert.doesNotMatch(programsSource, /whitespace-nowrap px-5 py-2\.5 rounded-full/);
   assert.match(programsSource, /inline-flex min-h-11 items-center gap-1 text-xs font-bold/);
   assert.match(programsSource, /class="min-h-11 w-full rounded-xl px-4/);
+  assert.match(programsSource, /inline-flex min-h-11 w-full items-center justify-center rounded-xl/);
 });

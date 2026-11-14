@@ -88,26 +88,14 @@ function openProgramApply() {
         : { track: 'paid', focus: 'couple' });
 }
 
-function updateProgramView(filterType) {
+function getProgramPageData(filterType) {
     if (filterType !== 'individual' && filterType !== 'church') {
         filterType = 'individual';
     }
-    state.programFilter = filterType;
-
-    document.querySelectorAll('[id^="tab-"]').forEach(btn => {
-        const isActive = btn.id === `tab-${filterType}`;
-        btn.className = isActive
-            ? "inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all duration-300 md:text-sm bg-white text-er-dark shadow-md scale-105"
-            : "inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all duration-300 md:text-sm bg-white/10 text-gray-300 hover:bg-white/20";
-    });
-
-    const introEl = document.getElementById('program-intro');
-    const problemCardsEl = document.getElementById('program-problem-cards');
-    const cardsEl = document.getElementById('program-cards');
-    const primaryCtaEl = document.getElementById('program-primary-cta');
-
-    const data = {
+    const pages = {
         individual: {
+            heroTitle: '관계·부부 코칭',
+            heroLead: '부부 관계와 자기 이해를 위한 코칭·상담입니다. 자녀 양육과 부모교육은 Parenting 메뉴에서 안내합니다.',
             title: '관계·부부 코칭',
             desc: '',
             problems: [
@@ -122,6 +110,8 @@ function updateProgramView(filterType) {
             ]
         },
         church: {
+            heroTitle: '사역팀 팀워크',
+            heroLead: '목사·전도사·평신도 사역자가 함께 일할 때의 소통·역할·동역을 돕습니다. 교인 대상 부모·부부 세미나는 각 메뉴에서 별도로 안내합니다.',
             title: '사역팀 팀워크',
             descLines: [
                 '목사·전도사·평신도 사역자가 함께 일할 때 필요한 팀워크·소통·역할 정렬을 돕습니다.',
@@ -139,9 +129,26 @@ function updateProgramView(filterType) {
             ]
         }
     };
+    return { filterType, selected: pages[filterType] };
+}
 
-    const selected = data[filterType];
+function updateProgramView(filterType) {
+    const page = getProgramPageData(filterType);
+    filterType = page.filterType;
+    state.programFilter = filterType;
+    const selected = page.selected;
+
+    const heroTitleEl = document.getElementById('program-hero-title');
+    const heroLeadEl = document.getElementById('program-hero-lead');
+    const introEl = document.getElementById('program-intro');
+    const problemCardsEl = document.getElementById('program-problem-cards');
+    const cardsEl = document.getElementById('program-cards');
+    const primaryCtaEl = document.getElementById('program-primary-cta');
+
     if (!selected || !selected.cards) return;
+
+    if (heroTitleEl) heroTitleEl.textContent = selected.heroTitle;
+    if (heroLeadEl) heroLeadEl.textContent = selected.heroLead;
 
     if (primaryCtaEl) {
         primaryCtaEl.textContent = filterType === 'church'
@@ -221,24 +228,17 @@ function renderPrograms() {
         return renderBusinessHandoff();
     }
 
+    const page = getProgramPageData(state.currentPayload?.tab || state.programFilter);
+    state.programFilter = page.filterType;
+    const { selected } = page;
+
     return `
         <div class="bg-er-base min-h-screen">
             <div class="bg-er-dark text-white py-16 px-6 relative overflow-hidden rounded-b-[3rem]">
                 <div class="absolute inset-0 bg-pattern opacity-5 pointer-events-none"></div>
                 <div class="relative z-10 max-w-7xl mx-auto text-center">
-                    <h2 class="text-2xl md:text-4xl font-bold mb-3">코칭·프로그램 안내</h2>
-                    <p class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">관계·부부 코칭과 사역팀 팀워크를 통해 개인의 회복이 가정과 동역으로 이어지도록 돕습니다. 자녀 양육과 부모교육 세미나는 Parenting 메뉴에서 안내합니다.</p>
-                    
-                    <div class="mt-8 flex justify-start md:justify-center gap-2 overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-hide">
-                        ${['individual:관계·부부', 'church:사역팀 팀워크'].map(item => {
-                            const [key, label] = item.split(':');
-                            const isActive = state.programFilter === key;
-                            return `<button onclick="updateProgramView('${key}')" id="tab-${key}" 
-                                class="inline-flex min-h-11 items-center justify-center whitespace-nowrap rounded-full px-5 text-xs font-bold transition-all duration-300 md:text-sm ${isActive ? 'bg-white text-er-dark shadow-md scale-105' : 'bg-white/10 text-gray-300 hover:bg-white/20'}">
-                                ${label}
-                            </button>`
-                        }).join('')}
-                    </div>
+                    <h2 id="program-hero-title" class="text-2xl md:text-4xl font-bold mb-3 break-keep">${selected.heroTitle}</h2>
+                    <p id="program-hero-lead" class="text-gray-300 text-sm md:text-base max-w-xl mx-auto break-keep">${selected.heroLead}</p>
                 </div>
             </div>
 

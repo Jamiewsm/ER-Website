@@ -87,8 +87,15 @@ test('Business links are explicit handoffs, not internal service tabs', () => {
 
   context.state.currentPayload = { tab: 'unknown' };
   context.state.programFilter = 'unknown';
-  assert.match(context.renderPrograms(), /관계·부부/);
+  assert.match(context.renderPrograms(), /관계·부부 코칭/);
+  assert.doesNotMatch(context.renderPrograms(), /tab-individual|tab-church|updateProgramView\('church'\)/);
   assert.match(programsSource, /filterType !== 'individual' && filterType !== 'church'/);
+
+  context.state.currentPayload = { tab: 'church' };
+  context.state.programFilter = 'church';
+  const churchPage = context.renderPrograms();
+  assert.match(churchPage, /사역팀 팀워크/);
+  assert.doesNotMatch(churchPage, /tab-individual|관계·부부 코칭과 사역팀/);
 });
 
 test('church programs and forms stay intact with ministry-specific language', () => {
