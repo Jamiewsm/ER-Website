@@ -1,0 +1,24 @@
+# 공개 검사 체감 평가 API·DB 권한만 검증한다 (supabase 트랙).
+name: Assessment feedback API
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20260928120000_diagnostic_result_feedback.sql'
+      - 'supabase/functions/submit-assessment-feedback/**'
+      - 'supabase/config.toml'
+      - 'tests/assessment-feedback-api.test.mjs'
+      - 'tests/assessment-feedback-db.test.mjs'
+      - '.github/workflows/assessment-feedback.yml'
+permissions:
+  contents: read
+jobs:
+  assessment-feedback:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --prefix tests/education --ignore-scripts
+      - name: Verify public assessment feedback API and storage permissions
+        run: node --test tests/assessment-feedback-api.test.mjs tests/assessment-feedback-db.test.mjs
