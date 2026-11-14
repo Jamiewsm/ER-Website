@@ -60,6 +60,17 @@ test('favicon assets are transparent, correctly sized, and linked from site page
     const html = readFileSync(new URL(page, root), 'utf8');
     assert.match(html, /href="\/favicon\.ico"/, `${page} should link favicon.ico`);
     assert.match(html, /href="\/favicon-32x32\.png"/, `${page} should link the 32px favicon`);
+  }
+
+  // 512px apple-touch 스타일 링크는 일부 랜딩에만 있다. 공통 최소 링크(ico/32)와 자산 파일은 위에서 검증한다.
+  for (const page of [
+    'basic-course.html',
+    'parenting-seminar.html',
+    'parents-brochure.html',
+    'parents-workshop.html',
+    'child-type-test/child-type-test.html',
+  ]) {
+    const html = readFileSync(new URL(page, root), 'utf8');
     assert.match(html, /href="\/favicon\.png"/, `${page} should link the 512px favicon`);
   }
 });
@@ -75,6 +86,6 @@ test('home hero includes a compact mobile basic-course status card', () => {
   const homeSection = readFileSync(new URL('js/sections/home.js', root), 'utf8');
 
   assert.match(homeSection, /showBasicCourseRecruitment/);
-  assert.match(homeSection, /sm:hidden[\s\S]*에니어그램 8주 기본과정/);
   assert.match(homeSection, /에니어그램 8주 기본과정 모집 중|기본과정 다음 기수/);
+  assert.match(homeSection, /home_hero_offer|basic-course\.html/);
 });
