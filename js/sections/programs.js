@@ -124,7 +124,7 @@ function getProgramPageData(filterType) {
             cards: [
                 { b: '세미나', t: '사역팀 팀워크 세미나', d: '사역팀의 역할·소통·갈등을 다룹니다.', o: '팀의 대화와 동역 원칙 정리', i: 'fas fa-people-group', href: '/teamwork-seminar' },
                 { b: '워크숍', t: '사역팀 기본 워크숍 (2시간)', d: '유형 이해 + 사역팀 관계 패턴 진단 + 적용 가이드', p: '$500부터', o: '결과: 사역팀이 갈등을 다루는 공통 언어 정리', i: 'fas fa-users', applyFocus: 'teamwork_seminar' },
-                { b: '집중', t: '사역팀 집중 워크숍 (6시간)', d: '리더십 코드 + 사역자 역량 + 역할 배치 설계', p: '$1,800부터', o: '결과: 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'teamwork_seminar' }
+                { b: '집중', t: '사역팀 집중 워크숍 (6시간)', d: '리더십 코드 + 사역자 역량 + 역할 배치 설계', p: '$1,300부터', o: '결과: 리더와 사역팀의 소통·의사결정 원칙 정리', i: 'fas fa-users-cog', applyFocus: 'teamwork_seminar' }
             ]
         }
     };
